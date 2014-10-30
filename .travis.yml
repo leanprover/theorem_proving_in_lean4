@@ -1,0 +1,41 @@
+language: emacs-lisp
+
+os:
+  - linux
+  - osx
+
+env:
+  global:
+   # GH_TOKEN=[secure]             (to push to osx/windows repo under soonhokong)
+   - secure: "LAgBomK36BzF2mN/lOwua+gDzLgF6RyuMYBjMlP5KY3knUZT8m/9wff2GlWGm87anb6aIJH69ERjVyFU4sWi9qcD+26vs1m9agMFxuqTfpibeDoz/rd9D/9LA3mNeO6v5kR2FTQ/OTTC6nMC4olRxdzz22Jg9ly7cNzfFPuSGFA="
+   # REPO=BLESSED                  (to perform extra stuff only for pushes to the blessed repo)
+   - secure: "Du/ZXFXdhRZL6AU6t6G8A3BNr3oPpHK4h2UCK00b+bgonHy7kDgTE0YxRVOf8VpXqfJwekzT4hWJhnKXasTp5avNEVEbdWC4nyM4tZbl6a8g8iI3Oo+JB6seSO6fIhrv6sZ7BCa6iuKDwzWJ0sQnXL+kx/zUqcle5eVUu5ic/24="
+  matrix:
+   - EVM_EMACS=emacs-24.3-bin
+
+before_install:
+  - curl -fsSkL https://gist.github.com/soonhokong/0219fd4986d35a3ec06d/raw | sh
+  - export PATH="/home/travis/.cask/bin:$PATH"
+  - export PATH="/home/travis/.evm/bin:$PATH"
+  - evm install $EVM_EMACS --use --force
+  - cask
+
+script:
+  - EMACS_BIN=$(evm bin $EVM_EMACS) make
+
+after_script:
+  - if [[ $REPO == BLESSED ]]; then
+      git config --global user.email "notifications@travis-ci.org";
+      git config --global user.name "Travis CI";
+      git checkout --orphan gh-pages;
+      rm .git/index;
+      git add -f *.html;
+      git clean -fxd;
+      git commit -m "Update `date -R`";
+      git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages;
+    fi
+
+notifications:
+  email:
+    recipients:
+     - lean-build@googlegroups.com
