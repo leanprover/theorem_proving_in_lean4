@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/soonhokong/lean-tutorial.svg?branch=master)](https://travis-ci.org/soonhokong/lean-tutorial)
+[![Build Status](https://travis-ci.org/leanprover/tutorial.svg?branch=master)](https://travis-ci.org/leanprover/tutorial)
 
 Lean Tutorial
 =============
