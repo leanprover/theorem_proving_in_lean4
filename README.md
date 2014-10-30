@@ -46,3 +46,13 @@ make watch-off
 ```
 
 [watchman]: https://github.com/facebook/watchman
+
+
+Auto-reload HTML page
+---------------------
+
+ - Firefox: [Auto Reload][firefox-auto-reload] add-on
+ - Chrome: [Tincr][google-tincr] (does *not* work on Linux)
+
+[firefox-auto-reload]: https://addons.mozilla.org/en-US/firefox/addon/auto-reload
+[google-tincr]: http://tin.cr
