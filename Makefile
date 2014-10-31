@@ -23,7 +23,6 @@ watch-off:
 	$(WATCHMAN_BIN) -- trigger-del $(CWD) org-files
 	$(WATCHMAN_BIN) watch-del $(CWD)
 
-
 install-cask:
 	curl -fsSkL https://raw.github.com/cask/cask/master/go | python
 
@@ -31,4 +30,4 @@ install-watchman:
 	git clone https://github.com/facebook/watchman.git
 	cd watchman &&./autogen.sh && ./configure && make
 
-.PHONY: all clean install-cask install-watchman
+.PHONY: all clean install-cask install-watchman watch-on watch-off
