@@ -7,10 +7,13 @@ WATCHMAN_BIN ?= $(CWD)/watchman/watchman
 
 all: $(HTMLS)
 
-%.html: %.org
+%.html: %.org .cask
 	@if [ ! -f ~/.cask/bin/cask ]; then echo "Cask Not Found. Please do 'make install-cask' first"; exit 1; fi
-	@EMACS=$(EMACS_BIN) $(CASK_BIN)
 	$(EMACS_BIN) -no-site-file -q --batch -l elisp/org-batch.el --visit $< -f org-html-export-to-html
+
+.cask: Cask
+	@EMACS=$(EMACS_BIN) $(CASK_BIN)
+	@touch .cask
 
 clean:
 	rm -rf *.html *~
