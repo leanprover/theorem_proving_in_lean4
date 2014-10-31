@@ -28,7 +28,7 @@ install-cask:
 	curl -fsSkL https://raw.github.com/cask/cask/master/go | python
 
 install-watchman:
-	git clone git@github.com:facebook/watchman
+	git clone https://github.com/facebook/watchman.git
 	cd watchman &&./autogen.sh && ./configure && make
 
 .PHONY: all clean install-cask install-watchman
