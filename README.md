@@ -56,3 +56,19 @@ Auto-reload HTML page
 
 [firefox-auto-reload]: https://addons.mozilla.org/en-US/firefox/addon/auto-reload
 [google-tincr]: http://tin.cr
+
+
+How to preview generated HTML files
+-----------------------------------
+
+It requires a webserver to preview generated HTML files. We can use Python's `SimpleHTTPServer` module:
+
+```bash
+tutorial $ python -m SimpleHTTPServer
+```
+
+The above command starts a HTTP server at `tutorial` directory (default port: `8000`). For example, `example.html` is available at `http://localhost:8000/example.html`.
+
+
+
+
