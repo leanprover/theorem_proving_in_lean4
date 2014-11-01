@@ -30,6 +30,7 @@ org-files, and trigger re-builds automatically on the background.
 To install [watchman][watchman]:
 
 ```
+sudo apt-get install automake
 make install-watchman
 ```
 
