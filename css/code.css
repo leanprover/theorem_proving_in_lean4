@@ -1,0 +1,28 @@
+@font-face {
+    font-family: 'freemono-lean';
+    src: url('/fonts/freemono.eot');
+    src: url('/fonts/freemono.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/freemono.woff2') format('woff2'),
+         url('/fonts/freemono.woff') format('woff'),
+         url('/fonts/freemono.ttf') format('truetype'),
+         url('/fonts/freemono.svg#freemonomedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'freemono-lean';
+    src: url('/fonts/freemonobold.eot');
+    src: url('/fonts/freemonobold.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/freemonobold.woff2') format('woff2'),
+         url('/fonts/freemonobold.woff') format('woff'),
+         url('/fonts/freemonobold.ttf') format('truetype'),
+         url('/fonts/freemonobold.svg#freemonomedium') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+#juicy-ace-editor-container {
+    font-family: freemono-lean, Monaco, Menlo, 'Ubuntu Mono', 'Arial Unicode MS', Consolas, source-code-pro, monospace;
+    line-height: inherit;
+}
