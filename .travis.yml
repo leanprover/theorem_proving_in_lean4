@@ -30,6 +30,9 @@ after_script:
       git checkout --orphan gh-pages;
       rm .git/index;
       git add -f *.html;
+      git add css;
+      git add fonts;
+      git add js;
       git clean -fxd;
       git commit -m "Update `date -R`";
       git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages;
