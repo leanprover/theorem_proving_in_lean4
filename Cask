@@ -2,7 +2,6 @@
 (source gnu)
 (source org)
 (development
- (depends-on "lean" :git "https://github.com/leanprover/lean.git" :files ("src/emacs/*.el"))
  (depends-on "cl-lib")
  (depends-on "dash" 2.8.0)
  (depends-on "dash-functional" 1.1.0)
