@@ -128,8 +128,8 @@ button,
 input[type="button"],
 input[type="reset"],
 input[type="submit"] {
-  cursor: pointer;
-  -webkit-appearance: button;
+    cursor: pointer;
+    -webkit-appearance: button;
 }
 input[type=checkbox], input[type=radio] {
   cursor: pointer;
@@ -229,24 +229,24 @@ button {
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  background-color: #0064cd;
+  background-color:  #f9b529; /* #0064cd; */
   background-repeat: repeat-x;
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#049cdb), to(#0064cd));
-  background-image: -moz-linear-gradient(top, #049cdb, #0064cd);
-  background-image: -ms-linear-gradient(top, #049cdb, #0064cd);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #049cdb), color-stop(100%, #0064cd));
-  background-image: -webkit-linear-gradient(top, #049cdb, #0064cd);
-  background-image: -o-linear-gradient(top, #049cdb, #0064cd);
-  background-image: linear-gradient(top, #049cdb, #0064cd);
-  color: #fff;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#fac539), to(#f2b225));
+  background-image: -moz-linear-gradient(top, #fac539, #f2b225);
+  background-image: -ms-linear-gradient(top, #fac539, #f2b225);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fac539), color-stop(100%, #f2b225));
+  background-image: -webkit-linear-gradient(top, #fac539, #f2b225);
+  background-image: -o-linear-gradient(top, #fac539, #f2b225);
+  background-image: linear-gradient(top, #fac539, #f2b225);
+  color: #000;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   border: 1px solid #004b9a;
   border-bottom-color: #003f81;
   -webkit-transition: 0.1s linear all;
   -moz-transition: 0.1s linear all;
   transition: 0.1s linear all;
-  border-color: #0064cd #0064cd #003f81;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  border-color: #fac539 #f9b529 #f2b225;
+  border-color: #f9b529; /* rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25); */
 }
 button:hover {
   color: #fff;
