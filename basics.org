@@ -61,6 +61,7 @@ Having defined =day=, we can write functions that operate on `day`s.
 inductive day :=
 monday, tuesday, wednesday, thursday, friday, saturday, sunday
 
+-- BEGIN
 definition next_weekday (d : day) : day :=
 day.rec_on d
   day.tuesday
@@ -70,6 +71,7 @@ day.rec_on d
   day.monday
   day.monday
   day.monday
+-- END
 #+END_SRC
 
 One thing to note is that the argument and return types of this
@@ -86,12 +88,14 @@ Here is an alternative (and more compact) definition.
 inductive day :=
 monday, tuesday, wednesday, thursday, friday, saturday, sunday
 
+-- BEGIN
 namespace day
 
   definition next_weekday d :=
   rec_on d tuesday wednesday thursday friday monday monday monday
 
 end day
+-- END
 #+END_SRC
 
 In the "compressed" definition above, we also omitted the argument and return types, and let
@@ -111,12 +115,12 @@ namespace day
   definition next_weekday d :=
   rec_on d tuesday wednesday thursday friday monday monday monday
 
+-- BEGIN
   eval next_weekday friday
   --  monday
-
   eval next_weekday (next_weekday saturday)
   -- tuesday
-
+-- END
 end day
 #+END_SRC
 
@@ -133,9 +137,10 @@ namespace day
   definition next_weekday d :=
   rec_on d tuesday wednesday thursday friday monday monday monday
 
+-- BEGIN
   example : next_weekday (next_weekday saturday) = tuesday :=
   rfl
-
+-- END
 end day
 #+END_SRC
 
