@@ -73,6 +73,7 @@
             editor.renderer.setShowGutter(false);
             editor.renderer.setPadding(20);
             editor.renderer.setScrollMargin(20, 20, 20, 20);
+            editor.setReadOnly(true);
             var session = editor.getSession();
             session.setMode( this.getAttribute("mode") );
             session.setUseSoftTabs( this.getAttribute("softtabs") );
