@@ -10,9 +10,11 @@
 
 * Basics: Functional Programming in Lean
 
-Disclaimer: this document is based on the [[http://www.cis.upenn.edu/~bcpierce/sf/current/index.html][Software Foundations]] book by
+Disclaimer: this document is heavily based on the [[http://www.cis.upenn.edu/~bcpierce/sf/current/index.html][Software Foundations]] book by
 Benjamin C. Pierce, Chris Casinghino, Marco Gaboardi, Michael Greenberg, Cătălin Hriţcu, Vilhelm Sjöberg, Brent Yorgey.
-Their book is based on the Coq system. We just adapted it to Lean.
+Their book is based on the Coq system.
+We adapted it to Lean, and added Lean specific information.
+Of course, all mistakes introduced are our fault.
 
 ** Introduction
 
@@ -303,3 +305,703 @@ example : and3 true true false = false :=
 -- END
 end boolean
 #+END_SRC
+
+** Function Types
+
+The =check= command causes Lean to print the type of an expression.
+For example, the type of =and true false= is =boolean=.
+
+#+BEGIN_SRC lean
+import logic
+
+inductive boolean :=
+true, false
+
+namespace boolean
+
+definition neg (b : boolean) : boolean :=
+rec_on b false true
+
+definition and (b1 b2 : boolean) : boolean :=
+rec_on b1 b2 false
+
+definition or (b1 b2 : boolean) : boolean :=
+rec_on b1 true b2
+
+end boolean
+
+open boolean
+-- BEGIN
+check true
+-- true : boolean
+check neg true
+-- neg true : boolean
+-- END
+#+END_SRC
+
+Functions like =neg= itself are also data values, just like =true= and =false=.
+Their types are called function types, and they are written with arrows.
+
+#+BEGIN_SRC lean
+inductive boolean :=
+true, false
+
+namespace boolean
+
+definition neg (b : boolean) : boolean :=
+rec_on b false true
+
+definition and (b1 b2 : boolean) : boolean :=
+rec_on b1 b2 false
+
+definition or (b1 b2 : boolean) : boolean :=
+rec_on b1 true b2
+
+end boolean
+
+open boolean
+-- BEGIN
+check neg
+-- negb : boolean → boolean
+-- END
+#+END_SRC
+
+The type of =neg=, written =boolean → boolean= and pronounced "boolean arrow
+boolean," can be read, "Given an input of type =boolean=, this function
+produces an output of type =boolean=." Similarly, the type of =and=, written
+=boolean → boolean → boolean=, can be read, "Given two inputs, both of type =boolean=,
+this function produces an output of type =boolean=."
+
+_Remark_: in the Lean web interface and Emacs mode, we can input the unicode character
+=→= by typing =\r=. We can also use =->= instead of =→=.
+
+#+BEGIN_SRC lean
+import logic
+
+inductive boolean :=
+true, false
+-- BEGIN
+example : (boolean -> boolean) = (boolean → boolean) :=
+rfl
+-- END
+#+END_SRC
+
+Not every function must have a name. The keyword =fun= introduces an anonymous function.
+=(fun x : A, e)= is the function which takes an argument =x= of type =A= and returns the result =e=.
+For example, the function =neg= above could be also written as
+
+#+BEGIN_SRC lean
+import logic
+
+inductive boolean :=
+true, false
+
+-- BEGIN
+namespace boolean
+
+check fun b : boolean, boolean.rec_on b false true
+
+end boolean
+-- END
+#+END_SRC
+
+We say =(fun x : A, e)= is a "lambda abstraction". We can also use the unicode character =λ= instead of =fun=.
+We cna input this character by typing =\fun=. In many cases, the type =A= can be inferred automatically by Lean, and
+be omitted.
+
+#+BEGIN_SRC lean
+import logic
+
+inductive boolean :=
+true, false
+-- BEGIN
+namespace boolean
+
+check λ b, rec_on b false true
+
+end boolean
+-- END
+#+END_SRC
+
+Functions with multiple arguments are very common. We can write =(fun x_1 : A_1, fun x_2 : A_2, ..., e)=
+as =(fun (x_1 : A_1) (x_2 : A_2) ..., e)=. Moreover, if =x_1= and =x_2= have the same type, we can
+write =(fun (x_1 x_2 : A) ..., e)=.
+For example, the function =and= above could be also written as one of the following forms:
+
+#+BEGIN_SRC lean
+import logic
+
+inductive boolean :=
+true, false
+-- BEGIN
+namespace boolean
+
+check fun b1 : boolean, fun b2 : boolean, rec_on b1 b2 false
+check fun (b1 b2 : boolean), rec_on b1 b2 false
+check λ (b1 b2 : boolean), rec_on b1 b2 false
+check λ b1 b2, rec_on b1 b2 false
+
+end boolean
+-- END
+#+END_SRC
+
+** Numbers
+
+Technical digression: Lean provides a fairly sophisticated "module" system, to aid in organizing large developments.
+If we enclose a collection of declarations between =namespace X= and =end X= markers,
+then, in the remainder of the file after the =end=,
+these definitions will be referred to by names like =X.foo= instead of just =foo=.
+Here, we use this feature to introduce the definition of the type =nat= in an inner namespace so that it does not
+shadow the one from the standard library.
+
+#+BEGIN_SRC lean
+namespace playground
+
+end playground
+#+END_SRC
+
+The types we have defined so far are examples of "enumerated types": their definitions explicitly enumerate a
+finite set of elements. A more interesting way of defining a type is to give a collection of "inductive rules"
+describing its elements. For example, we can define the natural numbers as follows:
+
+#+BEGIN_SRC lean
+namespace playground
+-- BEGIN
+inductive nat :=
+O : nat,
+S : nat → nat
+-- END
+end playground
+#+END_SRC
+
+The clauses of this definition can be read: =O= is a natural number (note that this is the letter "O," not the numeral "0").
+=S= is a "constructor" that takes a natural number and yields another one — that is, if =n= is a natural number, then =S n= is too.
+Let's look at this in a little more detail.
+Every inductively defined set (=day=, =nat=, =booleal=, etc.) is actually a set of expressions.
+The definition of =nat= says how expressions in the set =nat= can be constructed:
+the expression =O= belongs to the set nat;
+if =n= is an expression belonging to the set =nat=, then =S n= is also an expression belonging to the set =nat=;
+and expressions formed in these two ways are the only ones belonging to the set =nat=.
+The same rules apply for our definitions of =day= and =bool=.
+The annotations we used for their constructors are analogous to the one for the =O= constructor,
+and indicate that each of those constructors doesn't take any arguments.
+These three conditions are the precise force of the Inductive declaration.
+They imply that the expression =O=, the expression =S O=, the expression =S (S O)=,
+the expression =S (S (S O))=, and so on all belong to the set =nat=,
+while other expressions like =true=, =and true false=, and =S (S false)= do not.
+Each inductive declaration has an associated recursor that allow us to
+define things by recursion on the structure of the inductive type
+elements. For example, the predecessor function:
+
+#+BEGIN_SRC lean
+import logic
+
+namespace playground
+inductive nat :=
+O : nat,
+S : nat → nat
+-- BEGIN
+namespace nat
+definition pred (n : nat) : nat :=
+rec_on n
+  O                               -- case n is O
+  (fun (n₁ : nat) (r : nat), n₁)  -- case n is S n₁
+
+eval pred (S (S O))
+
+example : pred (S (S O)) = S O :=
+rfl
+
+end nat
+-- END
+end playground
+#+END_SRC
+
+The second branch can be read: "if =n= has the form =S n₁= for some =n₁=, then return =n₁=."
+The parameter =r= is not needed in this definition, it contains =pred n₁=.
+Lean automatically generates different recursors whenever an inductive datatype is declared.
+The recursor =case_on= is similar to =rec_on=, but the recursive parameter =r= is omitted.
+It is more convenient to define =pred= using =cases_on=.
+
+_Remark_: numeric subscripts can be conveniently inputed by typing =\1=, =\2=, ....
+This feature is available in the Lean web interface and Emacs mode.
+
+#+BEGIN_SRC lean
+import logic
+
+namespace playground
+inductive nat :=
+O : nat,
+S : nat → nat
+-- BEGIN
+namespace nat
+definition pred (n : nat) : nat :=
+cases_on n
+  O                     -- case n is O
+  (fun (n₁ : nat), n₁)  -- case n is S n₁
+
+eval pred (S (S O))
+
+example : pred (S (S O)) = S O :=
+rfl
+
+end nat
+-- END
+end playground
+#+END_SRC
+
+Now, we define the function =minustwo= using two nested =cases_on=.
+
+#+BEGIN_SRC lean
+import logic
+
+namespace playground
+inductive nat :=
+O : nat,
+S : nat → nat
+namespace nat
+
+-- BEGIN
+definition minustwo (n : nat) : nat :=
+cases_on n
+  O                     -- n is O
+  (fun n₁, cases_on n₁  -- n is S n₁
+    O                   -- n₁ is O
+    (fun n₂, n₂))       -- n₁ is S n₂
+
+eval minustwo (S (S (S O)))
+
+example : minustwo (S (S (S O))) = (S O) :=
+rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+Lean provides support for parsing and printing numeric types as ordinary arabic numerals.
+The "trick" is based on a type called =num= that has builtin support for parsing and printing using arabic numerals.
+If we want similar support for other numeric types we must define a coercion to =num=.
+The =nat= type in standard library provides that.
+
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+check succ 2
+eval succ 2
+#+END_SRC
+
+In the example above, =succ= has type =nat → nat=, and =2= is a =num=. To make the expression type check,
+Lean automatically injects a coercion from =num= to =nat=. By default, Lean does not display coercions.
+We can change that by setting the option =pp.coercions=. Note that, in the following example, we use the
+standard library =nat= type.
+
+#+BEGIN_SRC lean
+import data.nat
+open nat
+-- BEGIN
+set_option pp.coercions true
+check succ 2
+
+example : succ 2 = succ (of_num 2) :=
+rfl
+
+check of_num
+-- END
+#+END_SRC
+
+The coercion =of_num= is just a function from =num= to =nat=.
+
+Returning to our =nat= type, the constructor =S= has the type =nat → nat=,
+just like the functions =minustwo= and =pred=:
+
+#+BEGIN_SRC lean
+import logic
+
+namespace playground
+inductive nat :=
+O : nat,
+S : nat → nat
+namespace nat
+definition pred (n : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), n₁)
+
+definition minustwo (n : nat) : nat :=
+pred (pred n)
+
+-- BEGIN
+check S
+check pred
+check minustwo
+-- END
+end nat
+end playground
+#+END_SRC
+
+These are all things that can be applied to a number to yield a number.
+However, there is a fundamental difference: functions like =pred= and =minustwo=
+come with computation rules -- e.g., the definition of =pred= says that =pred (S (S O))= can be simplified to
+=S O= -- while the definition of =S= has no such behavior attached.
+Although it is like a function in the sense that it can be applied to an argument,
+it does not do anything at all!
+For most function definitions over numbers, pure case analysis is not enough:
+we also need recursion. For example, to check that a number =n= is even,
+we may need to recursively check whether =n-1= is odd.
+We can also write this kind of function using recursors.
+
+#+BEGIN_SRC lean
+import logic
+
+namespace playground
+
+inductive boolean :=
+true, false
+
+namespace boolean
+  definition neg (b : boolean) : boolean :=
+  rec_on b false true
+end boolean
+
+open boolean
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+-- BEGIN
+definition even (n : nat) : boolean :=
+rec_on n
+  true
+  (fun (n₁ : nat) (r : boolean), neg r)
+
+eval even O
+eval even (S O)
+eval even (S (S O))
+-- END
+end nat
+end playground
+#+END_SRC
+
+The definition above can be read as: "if =n= is =O=, then it is even;
+if =n= has the form =S n₁= for some =n₁=, and =n₁= is even (this information
+is stored in =r=), then =n₁= is *not* even.
+
+We can define =odd= in a similar way, but here is a simpler definition:
+
+#+BEGIN_SRC lean
+import logic
+
+namespace playground
+
+inductive boolean :=
+true, false
+
+namespace boolean
+  definition neg (b : boolean) : boolean :=
+  rec_on b false true
+end boolean
+
+open boolean
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition even (n : nat) : boolean :=
+rec_on n
+  true
+  (fun (n₁ : nat) (r : boolean), neg r)
+
+-- BEGIN
+definition odd (n : nat) : boolean :=
+neg (even n)
+
+example : odd (S O) = true :=
+rfl
+
+example : odd (S (S (S (S O)))) = false :=
+rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+Naturally, we can also define multi-argument functions using recursors.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+-- BEGIN
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+-- Adding three to two gives us five, as we'd expect.
+example : add (S (S (S O))) (S (S O)) = S (S (S (S (S O)))) :=
+rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+The definition above can be read: "if =n= is =O=, then the result of the addition is =m=;
+if =n= has the form =S n₁= for some =n₁= and =r= contains =add n₁ m=, then return =S r=.
+
+We can use =add= to define a coercion from =num= to our =nat=.
+The type =num= is defined as
+#+BEGIN_SRC lean
+namespace playground
+-- BEGIN
+inductive pos_num :=
+one  : pos_num,
+bit1 : pos_num → pos_num,
+bit0 : pos_num → pos_num
+
+inductive num :=
+zero  : num,
+pos   : pos_num → num
+-- END
+end playground
+#+END_SRC
+
+It uses binary encoding for compactly representing big numbers:
+=bit1 n= encodes =2*n+1=, and =bit0 n= encodes =2*n=.
+As any inductive type, Lean automatically creates the recursors =rec_on= and =cases_on=.
+We use them to define a coercion.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+-- BEGIN
+definition num_to_nat [coercion] (n : num) : nat :=
+num.cases_on n
+  O
+  (fun (p : pos_num), pos_num.rec_on p
+    (S O)
+    (fun (p₁ : pos_num) (r : nat), S (add r r))
+    (fun (p₁ : pos_num) (r : nat), add r r))
+
+example : add 2 2 = 4 :=
+rfl
+
+example : add 1 2 = S (S (S O)) :=
+rfl
+
+check add 2 1
+set_option pp.coercions true
+check add 2 1
+
+-- END
+end nat
+end playground
+#+END_SRC
+
+The annotation =[coercion]= instructs Lean to use =num_to_nat= whenever we
+have a =num=, but the system expects a =nat=. In the example above, the function
+=add= expects two =nat='s, but we are providing two =num='s. Thus, Lean
+automatically inserts =num_to_nat.
+
+Now, we define subtraction =sub= and multiplication =mul= using =add= and =pred=.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition pred (n : nat) : nat :=
+cases_on n
+  O
+  (fun (n₁ : nat), n₁)
+
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+-- BEGIN
+definition sub (n m : nat) : nat :=
+rec_on m
+  n
+  (fun (n₁ : nat) (r : nat), pred r)
+
+example : sub (S (S (S O))) (S (S O)) = S O :=
+rfl
+
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
+example : mul (S (S O)) (S (S (S O))) = (S (S (S (S (S (S O)))))) :=
+rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+Now, we define the exponential function =exp= using =mul=.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
+-- BEGIN
+definition exp (base power : nat) : nat :=
+rec_on power
+  (S O)
+  (fun (n₁ : nat) (r : nat), mul base r)
+
+eval exp (S (S O)) (S (S (S O)))
+-- END
+end nat
+end playground
+#+END_SRC
+
+**** Exercise =factorial=
+
+Recall the standard factorial function:
+#+BEGIN_SRC
+    factorial(0)  =  1
+    factorial(n)  =  n * factorial(n-1)     (if n>0)
+#+END_SRC
+Translate this into Lean.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
+definition num_to_nat [coercion] (n : num) : nat :=
+num.cases_on n
+  O
+  (fun (p : pos_num), pos_num.rec_on p
+    (S O)
+    (fun (p₁ : pos_num) (r : nat), S (add r r))
+    (fun (p₁ : pos_num) (r : nat), add r r))
+
+-- BEGIN
+definition factorial (n : nat) : nat :=
+/- FILL IN HERE -/ sorry
+
+example : factorial 3 = 6 :=
+/- FILL IN HERE -/ sorry
+
+example : factorial 5 = (mul 10 12) :=
+/- FILL IN HERE -/ sorry
+-- END
+end nat
+end playground
+#+END_SRC
+
+We can make numerical expressions a little easier to read and write by introducing "notations"
+for addition, multiplication, and subtraction.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition pred (n : nat) : nat :=
+cases_on n
+  O
+  (fun (n₁ : nat), n₁)
+
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+definition sub (n m : nat) : nat :=
+rec_on m
+  n
+  (fun (n₁ : nat) (r : nat), pred r)
+
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
+definition num_to_nat [coercion] (n : num) : nat :=
+num.cases_on n
+  O
+  (fun (p : pos_num), pos_num.rec_on p
+    (S O)
+    (fun (p₁ : pos_num) (r : nat), S (add r r))
+    (fun (p₁ : pos_num) (r : nat), add r r))
+
+-- BEGIN
+notation a + b := add a b
+notation a - b := sub a b
+notation a * b := mul a b
+
+eval 2 + 3 * 2 - 1
+
+example : 2 + 3 * 2 - 1 = 7 :=
+rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+In the example above, we did not have to provide precedence levels for the new
+notation because the Lean standard library already assigns precedence
+for commonly used operators such as =+=, =*= and =-=.
