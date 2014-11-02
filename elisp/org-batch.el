@@ -20,6 +20,40 @@
 '(org-export-html-with-timestamp nil)
 '(org-modules (quote (org-bbdb org-bibtex org-info org-jsinfo org-irc org-w3m org-mouse org-eval org-eval-light org-exp-bibtex org-man org-mtags org-panel org-R org-special-blocks org-exp-blocks)))
 
+;; TODO(Leo): improve string escape for javascript
+(defun lean-escape-code (code)
+  (replace-regexp-in-string "\n" "\\\\n" code))
+
+;; Decode an Lean tutorial example encoded using the '-- BEGIN' and '-- END' delimiters
+(defun lean-decode-example (code)
+  (let ((begstart (string-match "-- BEGIN" code)))
+    (when begstart
+      (let ((preamble (substring code 0 begstart))
+            (begend (string-match "\n" code begstart)))
+        (when begend
+          (let ((endstart (string-match "-- END" code)))
+            (when endstart
+              (let ((maincode (substring code (+ begend 1) endstart))
+                    (endend (string-match "\n" code endstart)))
+                (when endend
+                  (let* ((epilogue (substring code (+ endend 1)))
+                         (fullcode (concat preamble (concat maincode epilogue))))
+                    (cons maincode fullcode)))))))))))
+
+;; Return the Lean tutorial example main part
+(defun lean-example-main-part (code)
+  (let ((decoded (lean-decode-example code)))
+    (if decoded
+        (car decoded)
+      code)))
+
+;; Return the Lean tutorial example full code.
+(defun lean-example-full (code)
+  (let ((decoded (lean-decode-example code)))
+    (if decoded
+        (cdr decoded)
+      code)))
+
 ;; Redefine org-html-src-block to use juicy-ace-editor
 (eval-after-load "ox-html"
   '(defun org-html-src-block (src-block contents info)
@@ -43,6 +77,6 @@ contextual information."
                       (org-export-data caption info)))
             (if lang
                 (format "\n<juicy-ace-editor mode=\"ace/mode/%s\" readonly=\"true\">%s</juicy-ace-editor><button type=\"button\" onclick=\"invoke_leanjs('%s');\">Try</button>"
-                        lang code (replace-regexp-in-string "\n" "\\\\n" code))
+                        lang (lean-example-main-part code) (lean-escape-code (lean-example-full code)))
               (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label
                       code))))))))
