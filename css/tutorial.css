@@ -22,13 +22,13 @@ h2 {
     /* The bottom margin is small. It's designed to be used with gray meta text
      * below a post title. */
     margin: 24px 0 6px;
-    border-bottom: 8px solid #225378;
+    border-bottom: 8px solid #b08011;
     display: inline-block
 }
 h3 {
     font-size: 24px;
     margin: 24px 0 6px;
-    border-bottom: 4px solid #1695a3;
+    border-bottom: 4px solid #d4a319;
     display: inline-block
 }
 h4 {
