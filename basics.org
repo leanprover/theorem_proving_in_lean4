@@ -230,7 +230,7 @@ exercises. In general, your job in the exercises is to replace
 =sorry= with real definitions or proofs.
 
 
-**** _Exercise: 1_ =nand=
+**** _Exercise:_ =nand=
 
 Complete the definition of the following function, then make sure that the =example=
 assertions below can each be verified by Lean.
@@ -276,7 +276,7 @@ end boolean
 #+END_SRC
 
 
-**** _Exercise: 2_ =and3=
+**** _Exercise:_ =and3=
 
 Do the same for the and3 function below.
  This function should return true when all of its inputs are true, and false otherwise.
