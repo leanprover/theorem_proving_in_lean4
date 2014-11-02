@@ -129,4 +129,9 @@
         prototype: TomalecAceEditorPrototype
     });
 }(window, document));
+
+function invoke_leanjs(code) {
+    var encodedText = btoa(unescape(encodeURIComponent(code)));
+    var url = "http://leanprover.net/live/?code=" + encodedText; window.open(url);
+}
 </script>

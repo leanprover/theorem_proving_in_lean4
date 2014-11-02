@@ -42,7 +42,7 @@ contextual information."
               (format "<label class=\"org-src-name\">%s</label>"
                       (org-export-data caption info)))
             (if lang
-                (format "\n<juicy-ace-editor mode=\"ace/mode/%s\">%s</juicy-ace-editor>"
-                        lang code)
+                (format "\n<juicy-ace-editor mode=\"ace/mode/%s\" readonly=\"true\">%s</juicy-ace-editor><button type=\"button\" onclick=\"invoke_leanjs('%s');\">Try</button>"
+                        lang code (replace-regexp-in-string "\n" "\\\\n" code))
               (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label
                       code))))))))
