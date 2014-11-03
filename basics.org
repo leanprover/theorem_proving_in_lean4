@@ -1,9 +1,9 @@
 #+Author: [[http://leodemoura.github.io][Leonardo de Moura]]
 #+HTML_HEAD: <link rel='stylesheet' href='css/tutorial.css'>
 #+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/jquery-ui.css'>
-#+HTML_HEAD_EXTRA:<script src=js/jquery-1.10.2.js'></script>
-#+HTML_HEAD_EXTRA:<script src='js/jquery-ui.js'></script>
 #+HTML_HEAD_EXTRA:<script src='js/platform.js'></script>
+#+HTML_HEAD_EXTRA:<script src='js/jquery-1.10.2.js'></script>
+#+HTML_HEAD_EXTRA:<script src='js/jquery-ui.js'></script>
 #+HTML_HEAD_EXTRA:<link rel='import' href='juicy-ace-editor.html'>
 #+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/code.css'>
 #+OPTIONS: toc:nil
@@ -747,7 +747,7 @@ rec_on n
   m
   (fun (n₁ : nat) (r : nat), S r)
 
--- Adding three to two gives us five, as we'd expect.
+-- Adding three to two gives us five, as we would expect.
 example : add (S (S (S O))) (S (S O)) = S (S (S (S (S O)))) :=
 rfl
 -- END
