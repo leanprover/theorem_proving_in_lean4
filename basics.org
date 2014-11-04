@@ -1106,7 +1106,13 @@ rec_on n
   m
   (fun (n₁ : nat) (r : nat), S r)
 
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
 notation a + b := add a b
+notation a * b := mul a b
 
 definition num_to_nat [coercion] (n : num) : nat :=
 num.cases_on n
