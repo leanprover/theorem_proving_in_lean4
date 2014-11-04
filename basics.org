@@ -1500,3 +1500,72 @@ theorem mult_S_1 : ∀n m : nat, m = S n → m * (1 + n) = m * m :=
 end nat
 end playground
 #+END_SRC
+
+** Proof by Case Analysis
+
+Of course, not everything can be proved by simple calculation: In
+general, unknown, hypothetical values (arbitrary numbers, booleans,
+lists, etc.) can block the evaluation. Here is a simple example
+
+#+BEGIN_SRC lean
+import logic
+
+inductive boolean :=
+true, false
+
+namespace boolean
+definition neg (b : boolean) : boolean :=
+cases_on b false true
+
+-- BEGIN
+theorem neg_involutive : ∀b : boolean, neg (neg b) = b :=
+/- rfl -/ -- fails
+sorry
+-- END
+end boolean
+#+END_SRC
+
+The reason for the failure is that =neg= is defined using
+=cases_on= on =b=. But here, =b= is the unknown boolean =b=.
+Thus, the expression =(neg b)= cannot be evaluated/reduced.
+We say it is _stuck_.
+
+The same way we use =cases_on= to define functions, we can use it to prove
+theorems by case-analysis.
+
+#+BEGIN_SRC lean
+import logic
+
+inductive boolean :=
+true, false
+
+namespace boolean
+definition neg (b : boolean) : boolean :=
+cases_on b false true
+
+-- BEGIN
+theorem neg_involutive : ∀b : boolean, neg (neg b) = b :=
+take b : boolean,
+  cases_on b
+    rfl   -- proof for the case b is true
+    rfl   -- proof for the case b is false
+-- END
+end boolean
+#+END_SRC
+
+The proof above can be read as: "take a boolean =b=, it can be =true= or =false=,
+in both cases if we evaluate the left/right hand sides, we obtain the same value.
+
+If we replace the =rfl='s by =_= in the proof above, Lean will say the placeholders =_='s
+cannot be synthesized, and will show what needs to be proved:
+#+BEGIN_SRC
+  ⊢ neg (neg false) = false
+#+END_SRC
+and
+#+BEGIN_SRC
+  ⊢ neg (neg true) = true
+#+END_SRC
+
+For readers using the Lean Emacs mode, they can simply hover over the incomplete proof
+to obtain information about missing parts. Lean also reports the type of every =sorry= used in
+an input file.
