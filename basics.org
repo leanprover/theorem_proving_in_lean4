@@ -373,7 +373,8 @@ produces an output of type =boolean=." Similarly, the type of =and=, written
 this function produces an output of type =boolean=."
 
 _Remark_: in the Lean web interface and Emacs mode, we can input the unicode character
-=→= by typing =\r=. We can also use =->= instead of =→=.
+=→= by typing =\r=. We can also use =->= instead of =→=. In the web interface, the replacement only occurs
+after we press =space= after typing =\r=.
 
 #+BEGIN_SRC lean
 import logic
