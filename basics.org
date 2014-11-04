@@ -1033,7 +1033,7 @@ In the example above, we did not have to provide precedence levels for the new
 notation because the Lean standard library already assigns precedence
 for commonly used operators such as =+=, =*= and =-=.
 
-** Proof by reflexivity
+** Proof by Reflexivity
 
 Now that we've defined a few datatypes and functions, let's turn to
 the question of how to state and prove properties of their
@@ -1128,6 +1128,374 @@ take n : nat, rfl
 
 theorem mult_0_left : ∀n : nat, 0 * n = 0 :=
 take n : nat, rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+We have been using =rfl= as a short hand for reflexivity.
+That is, a proof for =?a = ?a=, but which =?a=?.
+Lean infers the =?a= from the context where =rfl= is used.
+Sometimes, it is convenient to provide =?a= explicility
+(e.g., as a form of documentation in a longer proof).
+In this cases, we can use =eq.refl t= as a proof for =t = t=.
+
+#+BEGIN_SRC lean
+import logic
+-- BEGIN
+check rfl
+check eq.refl 1
+
+example : 1 = 1 :=
+rfl
+
+example : 1 = 1 :=
+eq.refl 1
+-- END
+#+END_SRC
+
+Here are the =add_1_left= and =mult_0_left= theorems using =eq.refl=.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
+notation a + b := add a b
+notation a * b := mul a b
+
+definition num_to_nat [coercion] (n : num) : nat :=
+num.cases_on n
+  O
+  (fun (p : pos_num), pos_num.rec_on p
+    (S O)
+    (fun (p₁ : pos_num) (r : nat), S (add r r))
+    (fun (p₁ : pos_num) (r : nat), add r r))
+
+-- BEGIN
+theorem add_1_left : ∀n : nat, 1 + n = S n :=
+take n : nat, eq.refl (1 + n)
+
+theorem mult_0_left : ∀n : nat, 0 * n = 0 :=
+take n : nat, eq.refl (0 * n)
+-- END
+end nat
+end playground
+#+END_SRC
+
+** Proof by Substitution
+
+Here is a slightly more interesting theorem:
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+notation a + b := add a b
+
+-- BEGIN
+theorem plus_id_example : ∀n m : nat, n = m → n + n = m + m :=
+-- END
+take n m : nat, assume H : n = m,
+  eq.subst H (eq.refl (n + n))
+
+end nat
+end playground
+#+END_SRC
+
+Instead of making a completely universal claim about all numbers =n= and =m=,
+this theorem talks about a more specialized property that only holds when =n = m=.
+The arrow symbol is pronounced "implies." As before, we need to be able to reason by
+assuming the existence of some numbers =n= and =m=. We also need to assume the hypothesis =n = m=.
+We can use lambda abstraction for doing all three.
+To make proofs look like more text book proofs, Lean provides yet another syntax sugar for
+lambda abstraction: =assume=.
+Since =n= and =m= are arbitrary numbers, we can't just use evaluation to prove this theorem.
+Instead, we prove it by observing that, if we are assuming =n = m=, then we can replace =n= with =m= in
+the right hand side of the equality =n + n = n + n=. Moreover, the equality =n + n = n + n= can be justified
+by reflexivity. Lean provides a function =eq.subst H1 H2=, given =(H1 : n = m)=, the expression =(eq.subst H1 H2)= replaces =n= with
+=m= in =H2=. Now, we provide different proofs for the theorem =plus_id_example= using =eq.subst=.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+notation a + b := add a b
+
+-- BEGIN
+theorem plus_id_example : ∀n m : nat, n = m → n + n = m + m :=
+take n m : nat, assume H : n = m,
+  eq.subst H (eq.refl (n + n))
+
+-- We can avoid the eq prefix by opening the namespace eq
+open eq
+theorem plus_id_example_2 : ∀n m : nat, n = m → n + n = m + m :=
+take n m : nat, assume H : n = m,
+  subst H (refl (n + n))
+
+-- We can use rfl instead of refl
+theorem plus_id_example_3 : ∀n m : nat, n = m → n + n = m + m :=
+take n m : nat, assume H : n = m,
+  subst H rfl
+
+-- We can use λ instead of take and assume
+theorem plus_id_example_4 : ∀n m : nat, n = m → n + n = m + m :=
+λ (n m : nat) (H : n = m),
+  subst H rfl
+
+-- We can omit types
+theorem plus_id_example_5 : ∀n m : nat, n = m → n + n = m + m :=
+λ n m H, subst H rfl
+
+-- END
+end nat
+end playground
+#+END_SRC
+
+The functions =eq.subst= is extensively used in the standard library. To make it more
+convenient to use, the notation =H₁ ▸ H₂= can be used as syntax sugar for =eq.subst H₁ H₂=.
+This notation is defined in the namespace =eq.ops=.
+The character =▸= is inputed by typing =\t=.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+notation a + b := add a b
+
+-- BEGIN
+open eq.ops
+theorem plus_id_example : ∀n m : nat, n = m → n + n = m + m :=
+λ n m H, H ▸ rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+**** Exercise =add_id_exercise=
+
+Remove =sorry= and fill in the proof.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+notation a + b := add a b
+
+open eq eq.ops
+-- BEGIN
+theorem plus_id_exercise : ∀n m o : nat, n = m → m = o → n + m = m + o :=
+/- FILL IN HERE -/ sorry
+-- END
+
+end nat
+end playground
+#+END_SRC
+
+As we've seen in earlier examples, the =sorry= expression tells Lean that we want to skip trying
+to prove this theorem and just accept it as a given. This can be useful for developing longer proofs,
+since we can state subsidiary facts that we believe will be useful for making some larger argument,
+use =sorry= to accept them on faith for the moment, and continue thinking about the larger argument
+until we are sure it makes sense; then we can go back and fill in the proofs we skipped.
+Be careful, though: every time you say =sorry= you are leaving a door open for total nonsense to enter Lean rigorous and
+formally checked world! Note that, Lean produces warning messages whenever we use =sorry= and/or
+import a module that contains sorry.
+
+We can also use the =eq.subst= with a previously proved theorem instead of
+a hypothesis from the context.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
+notation a + b := add a b
+notation a * b := mul a b
+
+definition num_to_nat [coercion] (n : num) : nat :=
+num.cases_on n
+  O
+  (fun (p : pos_num), pos_num.rec_on p
+    (S O)
+    (fun (p₁ : pos_num) (r : nat), S (add r r))
+    (fun (p₁ : pos_num) (r : nat), add r r))
+
+theorem add_0_n : ∀n : nat, 0 + n = n :=
+take n : nat, rfl
+
+open eq eq.ops
+
+-- BEGIN
+theorem mult_0_plus : ∀n m : nat, (0 + n) * m = n * m :=
+take n m,
+  subst (add_0_n n) rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+In the example above, the =n= in =(add_0_n n)= can be inferred automatically by Lean.
+We can use =_= to indicate arguments that should be inferred automatically by Lean.
+That is, we can write =(add_0_n _)= instead of =(add_0_n n)=. In this example, it is straighforward
+how to fill/synthesize =_=, but this will not always be the case.
+To avoid the proliferation of terms such as =(f _ _ _)=, Lean provides the alternative syntax =!f=.
+Later, we explain in detail the semantics of the operator =!=.
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
+notation a + b := add a b
+notation a * b := mul a b
+
+definition num_to_nat [coercion] (n : num) : nat :=
+num.cases_on n
+  O
+  (fun (p : pos_num), pos_num.rec_on p
+    (S O)
+    (fun (p₁ : pos_num) (r : nat), S (add r r))
+    (fun (p₁ : pos_num) (r : nat), add r r))
+
+theorem add_0_n : ∀n : nat, 0 + n = n :=
+take n : nat, rfl
+
+open eq eq.ops
+
+-- BEGIN
+theorem mult_0_plus : ∀n m : nat, (0 + n) * m = n * m :=
+take n m,
+  subst !add_0_n rfl
+
+-- Here is another proof using the notation ▸
+theorem mult_0_plus_2 : ∀n m : nat, (0 + n) * m = n * m :=
+take n m, !add_0_n ▸ rfl
+-- END
+end nat
+end playground
+#+END_SRC
+
+**** Exercise =mult_S_1=
+
+#+BEGIN_SRC lean
+import logic
+namespace playground
+
+inductive nat :=
+O : nat,
+S : nat → nat
+
+namespace nat
+definition add (n m : nat) : nat :=
+rec_on n
+  m
+  (fun (n₁ : nat) (r : nat), S r)
+
+definition mul (n m : nat) : nat :=
+rec_on n
+  O
+  (fun (n₁ : nat) (r : nat), add m r)
+
+notation a + b := add a b
+notation a * b := mul a b
+
+definition num_to_nat [coercion] (n : num) : nat :=
+num.cases_on n
+  O
+  (fun (p : pos_num), pos_num.rec_on p
+    (S O)
+    (fun (p₁ : pos_num) (r : nat), S (add r r))
+    (fun (p₁ : pos_num) (r : nat), add r r))
+
+theorem add_1_left : ∀n : nat, 1 + n = S n :=
+take n : nat, rfl
+
+open eq eq.ops
+-- BEGIN
+theorem mult_S_1 : ∀n m : nat, m = S n → m * (1 + n) = m * m :=
+/- FILL IN HERE -/ sorry
 -- END
 end nat
 end playground
