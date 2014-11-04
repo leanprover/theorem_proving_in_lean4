@@ -54,6 +54,7 @@
     TomalecAceEditorPrototype.attachedCallback = function() {
 
         var text = this.childNodes[0];
+        var trimed_text = text.data.trim();
         var container = document.createElement("div");
             container.id = "juicy-ace-editor-container";
         // shadowRoot.appendChild(container);
@@ -63,7 +64,7 @@
             text && container.appendChild(text);
 
         var editor = this.editor || ace.edit(container);
-            editor.setValue(text.data.trim(), 1);
+            editor.setValue(trimed_text, 1);
         // initial attributes
             editor.setTheme( this.getAttribute("theme") || "ace/theme/subatomic");
             editor.setFontSize( this.getAttribute("fontsize") || "15px" );
