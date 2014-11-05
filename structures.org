@@ -1,4 +1,5 @@
 #+Author: [[http://leodemoura.github.io][Leonardo de Moura]]
+#+TITLE: Structures
 #+HTML_HEAD: <link rel='stylesheet' href='css/tutorial.css'>
 #+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/jquery-ui.css'>
 #+HTML_HEAD_EXTRA:<script src='js/platform.js'></script>

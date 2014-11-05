@@ -7,10 +7,11 @@
 #+HTML_HEAD_EXTRA:<link rel='import' href='juicy-ace-editor.html'>
 #+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/code.css'>
 #+OPTIONS: toc:nil
+#+Title: Lean Tutorial
 
 * Basics: Functional Programming in Lean
 
-Disclaimer: this document is heavily based on the [[http://www.cis.upenn.edu/~bcpierce/sf/current/index.html][Software Foundations]] book by
+_Disclaimer_: this document is heavily based on the [[http://www.cis.upenn.edu/~bcpierce/sf/current/index.html][Software Foundations]] book by
 Benjamin C. Pierce, Chris Casinghino, Marco Gaboardi, Michael Greenberg, Cătălin Hriţcu, Vilhelm Sjöberg, Brent Yorgey.
 Their book is based on the Coq system.
 We adapted it to Lean, and added Lean specific information.
