@@ -1559,11 +1559,15 @@ in both cases if we evaluate the left/right hand sides, we obtain the same value
 If we replace the =rfl='s by =_= in the proof above, Lean will say the placeholders =_='s
 cannot be synthesized, and will show what needs to be proved:
 #+BEGIN_SRC
+
   ⊢ neg (neg false) = false
+
 #+END_SRC
 and
 #+BEGIN_SRC
+
   ⊢ neg (neg true) = true
+
 #+END_SRC
 
 For readers using the Lean Emacs mode, they can simply hover over the incomplete proof
