@@ -66,7 +66,7 @@
         var editor = this.editor || ace.edit(container);
             editor.setValue(trimed_text, 1);
         // initial attributes
-            editor.setTheme( this.getAttribute("theme") || "ace/theme/subatomic");
+            editor.setTheme( this.getAttribute("theme") || "ace/theme/solarized_light.css");
             editor.setFontSize( this.getAttribute("fontsize") || "15px" );
             editor.setOptions({maxLines:Infinity});
             editor.setOption("highlightActiveLine", false);
