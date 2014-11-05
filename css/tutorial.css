@@ -286,3 +286,11 @@ button::-moz-focus-inner {
 .ace_scrollbar {
     display: none !important;
 }
+
+@media print
+{
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}

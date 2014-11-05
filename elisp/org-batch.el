@@ -76,7 +76,7 @@ contextual information."
               (format "<label class=\"org-src-name\">%s</label>"
                       (org-export-data caption info)))
             (if lang
-                (format "\n<juicy-ace-editor mode=\"ace/mode/%s\" readonly=\"true\">%s</juicy-ace-editor><div align=\"left\"><button type=\"button\" onclick=\"invoke_leanjs('%s');\">Try it yourself &raquo;</button></div>"
+                (format "\n<juicy-ace-editor mode=\"ace/mode/%s\" readonly=\"true\">%s</juicy-ace-editor><div class='no-print' align=\"left\"><button type=\"button\" onclick=\"invoke_leanjs('%s');\">Try it yourself &raquo;</button></div>"
                         lang (lean-example-main-part code) (lean-escape-code (lean-example-full code)))
               (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label
                       code))))))))
