@@ -444,7 +444,7 @@ end boolean
 #+END_SRC
 
 We say =(fun x : A, e)= is a "lambda abstraction". We can also use the unicode character =λ= instead of =fun=.
-We cna input this character by typing =\fun=. In many cases, the type =A= can be inferred automatically by Lean, and
+We can input this character by typing =\fun=. In many cases, the type =A= can be inferred automatically by Lean, and
 be omitted.
 
 #+BEGIN_SRC lean
@@ -515,7 +515,7 @@ end playground
 The clauses of this definition can be read: =O= is a natural number (note that this is the letter "O," not the numeral "0").
 =S= is a "constructor" that takes a natural number and yields another one — that is, if =n= is a natural number, then =S n= is too.
 Let's look at this in a little more detail.
-Every inductively defined set (=day=, =nat=, =booleal=, etc.) is actually a set of expressions.
+Every inductively defined set (=day=, =nat=, =boolean=, etc.) is actually a set of expressions.
 The definition of =nat= says how expressions in the set =nat= can be constructed:
 the expression =O= belongs to the set nat;
 if =n= is an expression belonging to the set =nat=, then =S n= is also an expression belonging to the set =nat=;
@@ -1081,14 +1081,14 @@ end playground
 #+END_SRC
 
 The symbol =∀= can be inputed by typing =\all=. We can also
-use the toke =forall= instead of the unicode character =∀=.
+use the token =forall= instead of the unicode character =∀=.
 The form of this theorem and proof are almost exactly the same as the examples above; there are just a few differences.
 First, we've used the keyword =theorem= instead of =example=. We provided a name to identify the theorem.
 The keywords =definition= and =theorem= are almost the same thing in Lean.
 Secondly, we've added the quantifier =∀ n:nat=, so that our theorem talks about all natural numbers =n=.
 In order to prove theorems of this form, we need to to be able to reason by assuming the existence of an arbitrary natural number =n=.
 This is achieved in the proof by =take n : nat, ...=. In effect, we start the proof by saying "OK, suppose =n= is some arbitrary number."
-Eventually, it will become clear that =take= is just annother syntax sugar for lambda abstraction. We could also have used =fun= or =λ=
+Eventually, it will become clear that =take= is just another syntax sugar for lambda abstraction. We could also have used =fun= or =λ=
 in the proof above. In Lean, proof checking is type checking. The same procedure used to type check our definitions is used to
 proof/type check our theorems. Here are other simple theorems.
 
@@ -1136,7 +1136,7 @@ end playground
 We have been using =rfl= as a short hand for reflexivity.
 That is, a proof for =?a = ?a=, but which =?a=?.
 Lean infers the =?a= from the context where =rfl= is used.
-Sometimes, it is convenient to provide =?a= explicility
+Sometimes, it is convenient to provide =?a= explicitly
 (e.g., as a form of documentation in a longer proof).
 In this cases, we can use =eq.refl t= as a proof for =t = t=.
 
@@ -1404,7 +1404,7 @@ end playground
 
 In the example above, the =n= in =(add_0_n n)= can be inferred automatically by Lean.
 We can use =_= to indicate arguments that should be inferred automatically by Lean.
-That is, we can write =(add_0_n _)= instead of =(add_0_n n)=. In this example, it is straighforward
+That is, we can write =(add_0_n _)= instead of =(add_0_n n)=. In this example, it is straightforward
 how to fill/synthesize =_=, but this will not always be the case.
 To avoid the proliferation of terms such as =(f _ _ _)=, Lean provides the alternative syntax =!f=.
 Later, we explain in detail the semantics of the operator =!=.
