@@ -153,8 +153,8 @@ The type =color_point= inherits all the fields from =point= and declares a new o
 Lean automatically generates a _coercion_ from =color_point= to =point=.
 
 #+BEGIN_SRC lean
-import logic data.nat
-open nat
+import logic
+open num
 
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
@@ -165,10 +165,10 @@ red, green, blue
 structure color_point (A : Type) extends point A :=
 mk :: (c : color)
 -- BEGIN
-definition x_plus_y (p : point nat) :=
+definition x_plus_y (p : point num) :=
 point.x p + point.y p
 
-definition green_point : color_point nat :=
+definition green_point : color_point num :=
 color_point.mk 10 20 color.green
 
 eval x_plus_y green_point
@@ -191,8 +191,8 @@ We can request Lean to *not* mark these functions as coercions by
 using the =private= keyword.
 
 #+BEGIN_SRC lean
-import logic data.nat
-open nat
+import logic
+open num
 
 -- BEGIN
 structure point (A : Type) :=
