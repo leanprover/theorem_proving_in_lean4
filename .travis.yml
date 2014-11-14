@@ -17,7 +17,7 @@ before_install:
   - curl -fsSkL https://gist.github.com/soonhokong/0219fd4986d35a3ec06d/raw | sh
   - export PATH="/home/travis/.cask/bin:$PATH"
   - export PATH="/home/travis/.evm/bin:$PATH"
-  - evm install $EVM_EMACS --use --force
+  - evm install $EVM_EMACS --use --force || true
   - cask
 
 script:
