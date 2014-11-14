@@ -74,7 +74,7 @@ pre {
     border:0;
     box-shadow:none;
     white-space: pre-wrap;
-    background: #FDF6E3;
+    /* background: #FDF6E3; */
 }
 pre.example {
     padding: 20px;
