@@ -14,11 +14,15 @@ env:
    - EVM_EMACS=emacs-24.3-bin
 
 before_install:
-  - curl -fsSkL https://gist.github.com/soonhokong/0219fd4986d35a3ec06d/raw | sh
+  - sudo mkdir /usr/local/evm
+  - sudo chown travis:travis /usr/local/evm
   - export PATH="/home/travis/.cask/bin:$PATH"
   - export PATH="/home/travis/.evm/bin:$PATH"
-  - evm install $EVM_EMACS --use --force || true
+  - curl -fsSkL https://raw.github.com/rejeep/evm/master/go | bash
+  - evm install $EVM_EMACS --use
+  - curl -fsSkL https://raw.github.com/cask/cask/master/go | python
   - cask
+  - evm list
 
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
