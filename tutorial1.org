@@ -1,0 +1,387 @@
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
+#+HTML_HEAD: <link rel='stylesheet' href='css/tutorial.css'>
+#+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/jquery-ui.css'>
+#+HTML_HEAD_EXTRA:<script src='js/platform.js'></script>
+#+HTML_HEAD_EXTRA:<script src='js/jquery-1.10.2.js'></script>
+#+HTML_HEAD_EXTRA:<script src='js/jquery-ui.js'></script>
+#+HTML_HEAD_EXTRA:<link rel='import' href='juicy-ace-editor.html'>
+#+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/code.css'>
+#+OPTIONS: toc:nil
+#+Title: Dependent Type Theory in Lean
+
+* The Language of Dependent Type Theory
+
+This tutorial is an introduction to dependent type theory using the
+_Lean_ theorem prover. Often you will come across examples and
+exercises that you can execute in a browser-version of Lean by
+pressing the "Try it yourself" button.  We encourage you to experiment
+with concepts and commands as they are introduced. For more
+substantial uses of Lean, we recommend downloading and installing a
+stand-alone version of Lean, and its powerful Emacs interface.
+
+Lean's underlying logic is a type theory known as the _Calculus of
+Constructions_, with a countable hierarchy of universes and inductive
+types. By the end of this tutorial, you will understand what all this
+means. We also expect that you will come to appreciate how powerful
+and expressive the language of dependent type theory is, allowing us
+to express complex mathematical assertions, write complex hardware and
+software specifications, and reason about both of these, in a natural
+and uniform way.
+
+** Simple Type Theory
+
+As a foundation for mathematics, set theory has an appealingly simple
+ontology: everything is a set, including numbers, functions,
+triangles, and Riemannian manifolds. It is remarkable that one can
+construct a rich mathematical universe using a small number of axioms,
+which support basic set-theoretic constructions.
+
+For many purposes, including interactive theorem proving, it is better
+to have an infrastructure that helps us manage and keep track of the
+various kinds of mathematical objects we are working with. "Type
+theory" gets its name from the fact that every expression has a
+_type_. For example, in a given contenxt, =x + 0= may denote a natural
+number and =f= may denote a function on the natural numbers.
+
+Here are some examples of how we can declare objects in Lean and
+check their types.
+
+#+BEGIN_SRC lean
+-- BEGIN
+import standard
+open bool nat
+
+/- declare some constants -/
+
+constant m : nat        -- m is a natural number
+constant n : nat
+constants b1 b2 : bool  -- here we declare two constants at once
+
+/- check their types -/
+
+check m
+check n
+check 0
+check n + 0
+check m * (n + 0)
+check b1
+check b1 && b2
+check b1 || b2
+check true
+-- END
+
+-- Try some examples of your own.
+
+#+END_SRC
+
+The first command, =import standard=, tells Lean that you intend to
+use the standard library. The next command tells Lean that you
+will use constants, facts, and notations from the theory of the
+booleans and the theory of natural numbers. In technical terms, =bool=
+and =nat= and _namespaces_; you will learn more about them later. To
+shorten the examples, we will usually hide the relevant imports, when 
+they have already been made explicit in a previous example. 
+
+The =/-= and =-/= annotations indicate that the next line is a comment
+block that is ignored by Lean. Similarly, two dashes indicate that the
+rest of the line contains a comment that is also ignored.
+
+The =constant= and =constants= commands are used to introduce new
+constant symbols into the working environment, and the =check= command
+asks Lean to report their type. You should test this, and try typing
+some examples of your own.
+
+What makes simple type theory powerful is that one can build new types
+out of others. For example, if =A= and =B= are types, =A → B= denotes
+the type of functions from A to B, and =A × B= denotes the cartesian
+product, that is, the type of ordered pairs consisting of an element
+of =A= paired with an element of =B=.
+
+#+BEGIN_SRC lean
+import standard
+open bool nat
+-- BEGIN
+open prod   -- notation for the product
+
+constants m n : nat
+
+constant f : nat → nat           -- type the arrow as "\to" or "\r"
+constant f' : nat -> nat         -- alterantive notation
+constant p : nat × nat           -- type the product as "\times"
+constant q : nat * nat           -- alternative notation
+constant g : nat → nat → nat
+constant g' : nat → (nat → nat)  -- the same type as g!
+constant h : nat × nat → nat
+
+constant F : (nat → nat) → nat
+
+check f
+check f n
+check g m n
+check g m
+check pair m n
+check pr1 p
+check pr2 p
+check pr1 (pair m n)
+check pair (pr1 p) n
+check F f
+-- END
+
+-- Write down some types, declare some constants, and check some expressions.
+
+#+END_SRC
+
+There are a number of things to notice here. First, the application of
+a function =f= to a value =x= is denoted =f x=. Second, when writing
+type expressions, arrows associate to the =right=; for example, the
+type of =g= is =nat → (nat → nat)=. Thus we can view =g= as a function
+that takes natural numbers and returns a natural number. In type
+theory, this is generally more convenient than writing =g= as a
+function that takes a pair of natural numbers as input, and returns a
+natural number as output. For example, it allow us to "partially
+apply" the function =g=. The example above shows that =g m= has type
+=nat → nat=, that is, the function that "waits" for a second argument,
+=n=, and then returns =g m n=. Taking a function =h= of type =nat ×
+nat → nat= and "redefining" it to look like =g= is a process known as
+_currying_, something we will come back to below.
+
+By now you may also have guessed that, in Lean, =pair m n= denotes the
+ordered pair of =m= and =n=, and if =p= is a pair, =pr1 p= and =pr2 p=
+denote the two projections.
+
+
+** Types as Objects
+
+One way in which Lean's dependent type theory extends simple type
+theory is that types themselves -- entities like =nat= and =bool= --
+are first-class citizens, which is to say that they themselves are
+objects of study. For that to be the case, each of them also has to have a type.
+
+#+BEGIN_SRC lean
+import standard
+open bool nat
+
+-- BEGIN
+check nat
+check bool 
+check nat → bool
+check nat -> bool
+check nat × bool
+check nat * book          
+check nat → nat  
+check nat × nat → nat
+check nat → nat → nat
+check nat → (nat → nat)
+check nat → nat → bool
+check (nat → nat) → nat
+-- END
+#+END_SRC
+
+We see that each one of the expressions above is an object of type
+=Type=. We can also declare new constants and constructors for types:
+
+#+BEGIN_SRC lean
+import standard
+open bool nat
+
+-- BEGIN
+constants A B : Type
+constant F : Type → Type
+constant G : Type → Type → Type
+
+check A
+check F A
+check F nat
+check G A
+check G A B
+check G A nat
+-- END
+#+END_SRC
+
+Indeed, we have already seen an example of a function of type =Type →
+Type → Type=, namely, the Cartesian product.
+
+#+BEGIN_SRC lean
+import standard
+open nat prod
+
+-- BEGIN
+constants A B : Type
+
+check prod
+check prod A
+check prod A B
+check prod nat nat
+-- END
+#+END_SRC
+
+For another example, given any type =A=, the type =list A= denotes the
+type lists of elements of type =A=.
+
+#+BEGIN_SRC lean
+import standard
+open list
+
+constant A : Type
+
+check list
+check list A
+check list nat
+#+END_SRC
+
+We will see that the ability to treat type constructors as instances
+of ordinary mathematical functions is a powerful feature of dependent
+type theory.
+
+For those more comfortable with set-theoretic foundations, it may be
+helpful to think of a type as nothing more than a set, in which case,
+the elements of the type are just the elements of the set. But there
+is a funny circularity lurking nearby. =Type= itself is an expression
+like =nat=; if =nat= has a type, shouldn't =Type= have a type as well?
+
+#+BEGIN_SRC lean
+check Type
+#+END_SRC
+
+This seems to indicates that =Type= is an element of itself. But this
+is misleading. Russell's paradox shows that it is inconsistent with
+the other axioms of set theory to assume the existence of a set of all
+sets. One can derive a similar paradox in dependent type theory. So,
+it Lean inconsistent?
+
+What is going on is that Lean's foundational fragment actually has a
+hierarchy of types, =Type.{0} : Type.{1} : Type.{2} : ....= Think of
+=Type.{0}= as a universe of "small" or "ordinary" types. =Type.{1}= is
+then a larger universe of types, which contains =Type.{0}= as an
+element. When we declare a constant =A : Type=, Lean implicitly
+creates a variable =l=, and declares =A : Type.{l}=. In other words,
+=A= is a type in some unspecified universe. Lean silently keeps track
+of implicit universe levels, but you can ask Lean's pretty printer to
+make this information explicit. You can even specify universe levels
+explicitly.
+
+#+BEGIN_SRC lean
+constants A B : Type
+check A
+check B
+check Type
+check Type → Type
+
+set_option pp.universes true
+
+check A
+check B
+check Type
+check Type → Type
+
+universe variable u
+constant C : Type.{u}
+check C
+check A → C
+check Type → C
+#+END_SRC
+
+For most purposes, however, it will suffice to leave the "universe
+management" to Lean.
+
+
+** Function Abstraction and Evaluation
+
+We have seen that if we have =m n : nat=, then we have =pair m n : nat
+× nat=. This gives us a way of creating pairs of natural numbers.
+Conversely, if we have =p : nat × nat=, then we have =pr1 p : nat= and
+=pr2 : nat=. This gives us a way of "using" a pair, by extracting its
+two components.
+
+We already know how to "use" a function =f : A → B=: given =a : A=, we
+have =f a : B=. But how do we create a function from another
+expression?
+
+The converse to application is a process known as "abstraction" or
+"lambda abstraction." Suppose that if, by temporarily postulating a
+variable =x : A=, we can construct an expression =t : B=. Then the
+expression =fun x : A, t=, or, equivalently, =λx : A, t=, is an object
+of type =A → B=. Think of this as the function from =A= to =B= which
+maps any value =x= to the value =t=, which depends on =x=. For
+example, in mathematics it is common to say "let =f= be the function
+which maps any =x : nat= to =x + 5=". The expression =λx : nat, x + 5=
+is just a symbolic representation of the right-hand side of this assignment.
+
+#+BEGIN_SRC lean
+import nat
+open nat
+
+check fun x : nat, x + 5
+check λx : nat, x + 5
+#+END_SRC
+
+Here are some more abstract examples:
+#+BEGIN_SRC lean
+constants A B  : Type
+constants a1 a2 : A
+constants b1 b2 : B
+
+constant F : A → A
+constant G : A → B
+constant H : A → B → A
+constant P : A → A → bool
+
+check fun x : A, F x
+check λx : A, F x
+check λx : A, F (F x)
+check λx : A, H x b1
+check λy : B, H a1 y
+check λx : A, P (F (F x)) (H (F a1) b2)
+check λx : A, λy : B, H (F x) y
+#+END_SRC
+Be sure to try out some of your own.
+
+Some mathematically common examples of operations of functions can be
+described in these terms. (Examples: Composition, identity, constant
+function.)
+
+Check type of application. (Some examples.)
+
+Reduction. eval. (Some examples.)
+
+In dependent type theory, other expressions reduce. Pairing and
+projections. 3 + 2. Computational behavior. 
+
+** Introducing Definitions
+
+Declaring constants in the Lean environment is a good way to postulate
+new objects to experiment with, but most of the time what we really
+want to do is =define= new objects in Lean, and prove things about
+them. 
+
+Lean provides a mechanism to define new objects. Examples.
+
+Parameters.
+
+Leaving out type information, type inference.
+
+
+
+** Dependent Types
+
+We now have some rudimentary means to define functions and objects in
+Lean, and we will gradually introduce you to many more. Our goal in
+Lean is to _prove_ things about the object we define, and the next
+chapter will introduce you to Lean's mechanisms for stating theorems
+and constructing proofs. Let us remain on the topic of defining
+objects in dependent type theory for a just a moment longer, in order
+to explain what it that makes dependent type theory _dependent_, and
+why that is useful.
+
+The short answer is that what makes dependent type theory dependent is
+that types can depend on parameters. You have already seen a nice
+example of this: the type =list A= depends on the argument =A=; this
+dependence is what distinguishes =list nat= and =list bool=.
+
+Pi types and dependent functions.
+
+Examples: cons, append, vec_add.
+
+Sigma types. Pairing and projections.
+
+Implicit arguments.
