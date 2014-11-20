@@ -73,6 +73,10 @@ Auto-reload HTML page
 ![3](https://cloud.githubusercontent.com/assets/403281/4966613/b6461110-67d5-11e4-9d62-93c1e2a8f0da.png)
 
  - Chrome: [Tincr][google-tincr] (does *not* work on Linux)
+   - Right-click and choose "Inspect Element" 
+![5](https://cloud.githubusercontent.com/assets/403281/5134646/03701bf0-70de-11e4-801f-65f307d30e69.png)
+   - Go to "tincr" tab, choose "Http Web Server" for project type, then select Root directory.
+![4](https://cloud.githubusercontent.com/assets/403281/5134645/036c6bfe-70de-11e4-86af-c21ec79a4471.png)
 
 [firefox-auto-reload]: https://addons.mozilla.org/en-US/firefox/addon/auto-reload
 [google-tincr]: http://tin.cr
