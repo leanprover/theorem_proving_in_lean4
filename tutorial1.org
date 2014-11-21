@@ -78,7 +78,7 @@ The first command, =import standard=, tells Lean that you intend to
 use the standard library. The next command tells Lean that you
 will use constants, facts, and notations from the theory of the
 booleans and the theory of natural numbers. In technical terms, =bool=
-and =nat= and _namespaces_; you will learn more about them later. To
+and =nat= are _namespaces_; you will learn more about them later. To
 shorten the examples, we will usually hide the relevant imports, when 
 they have already been made explicit in a previous example. 
 
@@ -133,12 +133,12 @@ check F f
 
 There are a number of things to notice here. First, the application of
 a function =f= to a value =x= is denoted =f x=. Second, when writing
-type expressions, arrows associate to the =right=; for example, the
+type expressions, arrows associate to the *right*; for example, the
 type of =g= is =nat → (nat → nat)=. Thus we can view =g= as a function
 that takes natural numbers and returns a natural number. In type
 theory, this is generally more convenient than writing =g= as a
 function that takes a pair of natural numbers as input, and returns a
-natural number as output. For example, it allow us to "partially
+natural number as output. For example, it allows us to "partially
 apply" the function =g=. The example above shows that =g m= has type
 =nat → nat=, that is, the function that "waits" for a second argument,
 =n=, and then returns =g m n=. Taking a function =h= of type =nat ×
@@ -247,7 +247,7 @@ This seems to indicates that =Type= is an element of itself. But this
 is misleading. Russell's paradox shows that it is inconsistent with
 the other axioms of set theory to assume the existence of a set of all
 sets. One can derive a similar paradox in dependent type theory. So,
-it Lean inconsistent?
+is Lean inconsistent?
 
 What is going on is that Lean's foundational fragment actually has a
 hierarchy of types, =Type.{0} : Type.{1} : Type.{2} : ....= Think of
