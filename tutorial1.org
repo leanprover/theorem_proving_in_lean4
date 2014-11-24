@@ -22,7 +22,7 @@ stand-alone version of Lean, and its powerful Emacs interface.
 Dependent type theory is a powerful and expressive language, allowing
 us to express complex mathematical assertions, write complex hardware
 and software specifications, and reason about both of these in a
-natural and uniform way. Lean's is based on a version of dependent
+natural and uniform way. Lean is based on a version of dependent
 type theory known as the /Calculus of Constructions/, with a countable
 hierarchy of non-cumulative universes and inductive types. By the end
 of this chapter, you will understand much of what this means.
@@ -90,7 +90,7 @@ rest of the line contains a comment that is also ignored.
 
 The =constant= and =constants= commands are used to introduce new
 constant symbols into the working environment, and the =check= command
-asks Lean to report their type. You should test this, and try typing
+asks Lean to report their types. You should test this, and try typing
 some examples of your own.
 
 What makes simple type theory powerful is that one can build new types
@@ -250,7 +250,7 @@ existence of a set of all sets, and one can derive a similar paradox in
 dependent type theory. So, is Lean inconsistent?
 
 What is going on is that Lean's foundational fragment actually has a
-hierarchy of types, =Type.{1} : Type.{1} : Type.{2} : ....= Think of
+hierarchy of types, =Type.{1} : Type.{2} : Type.{3} : ....= Think of
 =Type.{1}= as a universe of "small" or "ordinary" types. =Type.{2}= is
 then a larger universe of types, which contains =Type.{1}= as an
 element. When we declare a constant =A : Type=, Lean implicitly
@@ -267,7 +267,7 @@ check B
 check Type
 check Type → Type
 
-set_option pp.universes true
+set_option pp.universes true    -- display universe information
 
 check A
 check B
@@ -459,7 +459,7 @@ to recognize and support these identifications.
 Declaring constants in the Lean environment is a good way to postulate
 new objects to experiment with, but most of the time what we really
 want to do is /define/ new objects in Lean, and prove things about
-them. The =definition= command proves a mechanism to do so:
+them. The =definition= command provides a mechanism to do so:
 
 #+BEGIN_SRC lean
 constants A B C : Type
@@ -624,7 +624,7 @@ identifier we declare has a full name with prefix "=foo.=" Within the
 namespace, we can refer to identifiers by their shorter names, but
 once we end the namespace, we have to use the longer names. 
 
-The =open= command imports the shorter names to the current
+The =open= command brings the shorter names into the current
 context. Often, when we =import= a module, we will want to open one or
 more of the namespaces it contains, to have access to the short
 identifiers, notations, and so on. But sometimes we will want to leave
@@ -742,6 +742,10 @@ section useful
   check do_thrice
 
 end useful
+
+print definition compose
+print definition do_twice
+print definition do_thrice
 #+END_SRC
 
 The =variable= and =variables= commands look like the =constant= and
@@ -785,7 +789,7 @@ Lean is to /prove/ things about the object we define, and the next
 chapter will introduce you to Lean's mechanisms for stating theorems
 and constructing proofs. Meanwhile, let us remain on the topic of
 defining objects in dependent type theory for a just a moment longer,
-in order to explain what it that makes dependent type theory
+in order to explain what makes dependent type theory
 /dependent/, and why that is useful.
 
 The short answer is that what makes dependent type theory dependent is
@@ -886,7 +890,7 @@ end vec
 In the coming chapters, you will come across many instances of
 dependent types. Here we will mention just one more important and
 illustrative example, the /Sigma types/, =Σx : A, B x=, sometimes also
-known as . These are, in a
+known as /dependent pairs/. These are, in a
 sense, companions to the Pi types. The type =Σx : A, B x= denotes the
 type of pairs =dpair a b= where =a : A= and =b : B a=. Just as Pi
 types =Πx : A, B x= generalize the notion of a function type =A → B=,
@@ -1023,7 +1027,7 @@ check append (append (cons a nil) l1) l2
 -- END
 #+END_SRC
 
-All that has changed are the squiggly braces around =A : Type= in the
+All that has changed are the curly braces around =A : Type= in the
 declaration of the constants. We can also use this device in variable
 declarations and function definitions:
 
