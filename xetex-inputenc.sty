@@ -1,0 +1,83 @@
+%%
+%% This is file `xetex-inputenc.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% xetex-inputenc.dtx  (with options: `package')
+%% 
+%%   ___________________________________
+%%   The xetex-inputenc override package
+%%   (C) 2009  Will Robertson
+%%   License information appended
+%% 
+%% 
+\ProvidesPackage{xetex-inputenc}
+  [2009/03/09 v0.2 XeTeX-specific inputenc package]
+\def\xIE@encoding#1#2{%
+  \DeclareOption{#1}{%
+    \xIE@set{#2}
+  }%
+}
+\DeclareOption*{%
+  \PackageWarning{xetex-inputenc}{%
+    Encoding "\CurrentOption" not recognised; attempting to use it anyway
+  }%
+  \xIE@set{\CurrentOption}%
+}
+\newcommand\xIE@set[1]{%
+  \edef\xetex@inputenc{#1}%
+  \AtEndOfPackage{%
+    \XeTeXinputencoding   "\xetex@inputenc"
+    \XeTeXdefaultencoding "\xetex@inputenc"
+  }
+}
+\xIE@encoding{ascii}    {ascii}
+\xIE@encoding{latin1}   {latin1}
+\xIE@encoding{latin2}   {latin2}
+\xIE@encoding{latin3}   {latin3}
+\xIE@encoding{latin4}   {latin4}
+\xIE@encoding{latin5}   {latin5}
+\xIE@encoding{latin9}   {latin9}
+\xIE@encoding{latin10}  {latin10}
+\xIE@encoding{decmulti} {dec}
+\xIE@encoding{cp850}    {cp850}
+\xIE@encoding{cp852}    {cp852}
+\xIE@encoding{cp858}    {cp858}
+\xIE@encoding{cp437}    {cp437}
+\xIE@encoding{cp865}    {cp865}
+\xIE@encoding{applemac} {mac}
+\xIE@encoding{cp1250}   {windows-1250}
+\xIE@encoding{cp1252}   {windows-1252}
+\xIE@encoding{cp1257}   {windows-1257}
+\xIE@encoding{ansinew}  {windows-1252}
+\xIE@encoding{utf8}     {utf8}
+\ExecuteOptions{utf8}
+\ProcessOptions
+\def\@input#1{%
+  \IfFileExists{#1}{%
+    \XeTeXdefaultencoding "utf8"
+    \@@input\@filef@und
+    \XeTeXdefaultencoding "\xetex@inputenc"
+  }{\typeout{No file #1.}}%
+}
+\AtBeginDocument{%
+  \immediate\write\@auxout{\string\XeTeXinputencoding "utf8"}%
+}
+%% 
+%% Copyright (C) 2009 by Will Robertson <wspr81@gmail.com>
+%% 
+%% Distributable under the LaTeX Project Public License,
+%% version 1.3c or higher (your choice). The latest version of
+%% this license is at: http://www.latex-project.org/lppl.txt
+%% 
+%% This work is "maintained" (as per LPPL maintenance status)
+%% by Will Robertson.
+%% 
+%% This work consists of the file  xetex-inputenc.dtx
+%%           and the derived files xetex-inputenc.sty,
+%%                                 xetex-inputenc.ins, and
+%%                                 xetex-inputenc.pdf.
+%% 
+%%
+%% End of file `xetex-inputenc.sty'.
