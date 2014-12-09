@@ -7,6 +7,12 @@
 (require 'org)
 (require 'ox)
 (setq org-confirm-babel-evaluate nil)
+
+;;; XeLaTeX customisations
+;; remove "inputenc" from default packages as it clashes with xelatex
+(setf org-latex-default-packages-alist
+      (remove '("AUTO" "inputenc" t) org-latex-default-packages-alist))
+
 (setq org-latex-listings 'minted)
 (setq org-export-with-smart-quotes t)
 (add-to-list 'org-export-smart-quotes-alist
