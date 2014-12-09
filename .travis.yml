@@ -23,7 +23,7 @@ before_install:
   - cask
   - evm list
   - sudo apt-get update
-  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science || true
+  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended || true
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
 script:
