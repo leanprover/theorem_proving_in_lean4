@@ -1,11 +1,4 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
-#+HTML_HEAD: <link rel='stylesheet' href='css/tutorial.css'>
-#+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/jquery-ui.css'>
-#+HTML_HEAD_EXTRA:<script src='js/platform.js'></script>
-#+HTML_HEAD_EXTRA:<script src='js/jquery-1.10.2.js'></script>
-#+HTML_HEAD_EXTRA:<script src='js/jquery-ui.js'></script>
-#+HTML_HEAD_EXTRA:<link rel='import' href='juicy-ace-editor.html'>
-#+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/code.css'>
 #+OPTIONS: toc:nil
 #+Title: Propositions and Proofs
 
@@ -227,9 +220,9 @@ import logic
 constants p q : Prop
 
 -- BEGIN
-theorem t1 : p → q → p := 
-assume Hp : p, 
-assume Hq : q, 
+theorem t1 : p → q → p :=
+assume Hp : p,
+assume Hq : q,
 Hp
 -- END
 #+END_SRC
@@ -243,9 +236,9 @@ import logic
 constants p q : Prop
 
 -- BEGIN
-theorem t1 : p → q → p := 
-assume Hp : p, 
-assume Hq : q, 
+theorem t1 : p → q → p :=
+assume Hp : p,
+assume Hq : q,
 show p, from Hp
 -- END
 #+END_SRC
@@ -268,7 +261,7 @@ check t1
 -- END
 #+END_SRC
 
-Now we can apply the theorem =t1= just as a function application. 
+Now we can apply the theorem =t1= just as a function application.
 
 #+BEGIN_SRC lean
 import logic
@@ -301,11 +294,11 @@ check t1
 #+END_SRC
 The type of =t1= is now =Πp q : Prop, p → q → p=. We can read this as
 the assertion "for every pair of propositions =p q=, we have =p → q →
-p=. Later we will see how Pi types let us model universal quantifiers
+p=". Later we will see how Pi types let us model universal quantifiers
 more generally. For the moment, however, we will focus on theorems
 in propositional logic, generalized over the propositions. We will
 tend to work in sections with variables over the propositions, to that
-they are generalized for us automatically. 
+they are generalized for us automatically.
 
 When we generalize =t1= in that way, we can then apply it to different
 pairs of propositions, to obtain different instances of the general
@@ -315,7 +308,7 @@ theorem.
 import logic
 
 -- BEGIN
-section 
+section
   variables p q r s : Prop
 
   theorem t1 (Hp : p) (Hq : q) : p := Hp
@@ -340,7 +333,7 @@ in the last chapter, now with propositions instead of types.
 import logic
 
 -- BEGIN
-section 
+section
   variables p q r s : Prop
 
   theorem t2 (H1 : q → r) (H2 : p → q) : p → r :=
@@ -350,7 +343,7 @@ end
 -- END
 #+END_SRC
 As a theorem of propositional logic, what does =t2= say?
-  
+
 
 ** Propositional Logic
 
@@ -368,7 +361,7 @@ propositional connectives come with the following notation:
 | ->    |               →       |              |
 | <->   |               ↔       |   iff        |
 
-They all take values in =Prop=. 
+They all take values in =Prop=.
 
 #+BEGIN_SRC lean
 import logic
@@ -395,7 +388,7 @@ establish an implication. Application can be viewed as an "elimination
 rule," showing how to "eliminate" or use an implication in a
 proof. The other propositional connectives are defined in the standard
 library in the module =logic.connectives=, and each comes with its
-canonical introduction and elimination rules. 
+canonical introduction and elimination rules.
 
 *** Conjunction (=and=)
 
@@ -445,7 +438,7 @@ import logic
 section
   variables p q : Prop
 
-  example (H : p ∧ q) : q ∧ p := 
+  example (H : p ∧ q) : q ∧ p :=
   and.intro (and.elim_right H) (and.elim_left H)
 end
 -- END
@@ -495,9 +488,9 @@ section
   variables p q r: Prop
   example (H : p ∨ q) : q ∨ p :=
   or.elim H
-    (assume Hp : p, 
+    (assume Hp : p,
       show q ∨ p, from or.intro_right q Hp)
-    (assume Hq : q, 
+    (assume Hq : q,
       show q ∨ p, from or.intro_left p Hq)
 end
 -- END
@@ -536,8 +529,8 @@ import logic
 section
   variables p q : Prop
   example (Hpq : p → q) (Hnq : ¬q) : ¬p :=
-  not_intro 
-    (assume Hp : p, 
+  not_intro
+    (assume Hp : p,
       show false, from not_elim Hnq (Hpq Hp))
 end
 -- END
@@ -563,7 +556,7 @@ end
 #+END_SRC
 
 The connective =false= has a single elimination rule, =false_elim=,
-which expresses the fact that anything follows from a contradiction. 
+which expresses the fact that anything follows from a contradiction.
 
 #+BEGIN_SRC lean
 import logic
@@ -594,9 +587,9 @@ Here, for example, is a proof of =¬p → q → (q → p) → r=:
 #+BEGIN_SRC lean
 import logic
 -- BEGIN
-section 
+section
   variables p q r : Prop
-  example (Hnp : ¬p) (Hq : q) (Hqp : q → p) : r := 
+  example (Hnp : ¬p) (Hq : q) (Hqp : q → p) : r :=
   absurd (Hqp Hq) Hnp
 end
 -- END
@@ -621,9 +614,9 @@ section
   variables p q : Prop
   example : p ∧ q ↔ q ∧ p :=
   iff.intro
-    (assume H : p ∧ q, 
+    (assume H : p ∧ q,
       show q ∧ p, from and.intro (and.elim_right H) (and.elim_left H))
-    (assume H : q ∧ p, 
+    (assume H : q ∧ p,
       show p ∧ q, from and.intro (and.elim_right H) (and.elim_left H))
 end
 -- END
@@ -642,7 +635,7 @@ import logic
 section
   variables p q : Prop
 
-  example (H : p ∧ q) : q ∧ p := 
+  example (H : p ∧ q) : q ∧ p :=
   have Hp : p, from and.elim_left H,
   have Hq : q, from and.elim_right H,
   show q ∧ p, from and.intro Hq Hp
@@ -731,7 +724,7 @@ section
   example : p ∧ q ↔ q ∧ p := sorry
   example : p ∨ q ↔ q ∨ p := sorry
 
-  -- associativity of ∧ and ∨ 
+  -- associativity of ∧ and ∨
   example : (p ∧ q) ∧ r ↔ p ∧ (q ∧ r) := sorry
   example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) := sorry
 
@@ -819,9 +812,3 @@ section
       (assume Hnq : ¬q, absurd (and.intro Hp Hnq) H)
 end
 #+END_SRC
-
-
-
-
-
-

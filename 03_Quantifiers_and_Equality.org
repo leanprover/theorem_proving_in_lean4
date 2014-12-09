@@ -333,7 +333,7 @@ meant to be composed by basic principles such as the transitivity of
 ===. In Lean, a calculation proof starts with the keyword =calc=, and has
 the following syntax:
 
-#+BEGIN_SRC
+#+BEGIN_SRC lean
 calc  
   <expr>_0  'op_1'  <expr>_1  ':'  <proof>_1
     '...'   'op_2'  <expr>_2  ':'  <proof>_2

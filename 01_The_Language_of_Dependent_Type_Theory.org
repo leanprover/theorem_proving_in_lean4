@@ -1,13 +1,5 @@
-#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
-#+HTML_HEAD: <link rel='stylesheet' href='css/tutorial.css'>
-#+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/jquery-ui.css'>
-#+HTML_HEAD_EXTRA:<script src='js/platform.js'></script>
-#+HTML_HEAD_EXTRA:<script src='js/jquery-1.10.2.js'></script>
-#+HTML_HEAD_EXTRA:<script src='js/jquery-ui.js'></script>
-#+HTML_HEAD_EXTRA:<link rel='import' href='juicy-ace-editor.html'>
-#+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/code.css'>
-#+OPTIONS: toc:nil
-#+Title: The Language of Dependent Type Theory
+#+Title: Dependent Type Theory in Lean
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
 
 * The Language of Dependent Type Theory
 
@@ -81,8 +73,8 @@ use the standard library. The next command tells Lean that you
 will use constants, facts, and notations from the theory of the
 booleans and the theory of natural numbers. In technical terms, =bool=
 and =nat= are /namespaces/; you will learn more about them later. To
-shorten the examples, we will usually hide the relevant imports, when 
-they have already been made explicit in a previous example. 
+shorten the examples, we will usually hide the relevant imports, when
+they have already been made explicit in a previous example.
 
 The =/-= and =-/= annotations indicate that the next line is a comment
 block that is ignored by Lean. Similarly, two dashes indicate that the
@@ -166,10 +158,10 @@ open bool nat prod
 
 -- BEGIN
 check nat
-check bool 
+check bool
 check nat → bool
 check nat × bool
-check nat → nat  
+check nat → nat
 check nat × nat → nat
 check nat → nat → nat
 check nat → (nat → nat)
@@ -571,7 +563,7 @@ definition uncurry (A B C : Type) (f : A → B → C) : A × B → C := sorry
 
 This is a good place to introduce some organizational features of Lean
 that are not a part of the axiomatic framework /per se/, but make it
-possible to work in the framework more efficiently. 
+possible to work in the framework more efficiently.
 
 Lean provides us with the ability to group definitions, notations, and
 other information into nested, hierarchical /namespaces/:
@@ -622,7 +614,7 @@ check foo.fa
 When we declare that we are working in the namespace =foo=, every
 identifier we declare has a full name with prefix "=foo.=" Within the
 namespace, we can refer to identifiers by their shorter names, but
-once we end the namespace, we have to use the longer names. 
+once we end the namespace, we have to use the longer names.
 
 The =open= command brings the shorter names into the current
 context. Often, when we =import= a module, we will want to open one or
@@ -652,7 +644,7 @@ constants m n : nat
 check m + n
 check 0
 check m + 0
-#+END_SRC 
+#+END_SRC
 
 Namespaces can be nested:
 #+BEGIN_SRC lean
@@ -664,7 +656,7 @@ namespace foo
 
   definition fa : A := f a
 
-  namespace bar 
+  namespace bar
     definition ffa : A := f (f a)
 
     check fa
@@ -712,7 +704,7 @@ information. When we develop a theory, we will often reuse variables
 in successive definitions:
 
 #+BEGIN_SRC lean
-definition compose (A B C : Type) (g : B → C) (f : A → B) (x : A) : 
+definition compose (A B C : Type) (g : B → C) (f : A → B) (x : A) :
   C := g (f x)
 
 definition do_twice (A : Type) (h : A → A) (x : A) : A := h (h x)
@@ -729,8 +721,8 @@ With a section, you can declare the variables once and for all:
 #+BEGIN_SRC lean
 section useful
 
-  variables (A B C : Type) 
-  variables (g : B → C) (f : A → B) (h : A → A) 
+  variables (A B C : Type)
+  variables (g : B → C) (f : A → B) (h : A → A)
   variable x : A
 
   definition compose := g (f x)
@@ -765,7 +757,7 @@ have to close it using the same name.
 
 Like namespaces, nested sections have to be closed in the order they
 are opened. Also, a namespace cannot be opened within a section;
-namespaces have to live on the outer levels. 
+namespaces have to live on the outer levels.
 
 Namespaces and sections serve different purposes: namespaces organize
 data and sections declare variables for insertion in theorems. A
@@ -778,7 +770,7 @@ If you use the =open= command at the "top level" of a file to import
 information from a namespace, that information remains in the context
 until the end of the file. But if you use the =open= command within a
 section or namespace, the information remains in the context until
-that section or namespace is closed. 
+that section or namespace is closed.
 
 
 ** Dependent Types
@@ -852,7 +844,7 @@ namespace list
 end list
 -- END
 end hide
-#+END_SRC 
+#+END_SRC
 
 In fact, these are essentially the types of the defined objects in the
 list library (we will explain the =@= symbol and the difference
@@ -868,8 +860,8 @@ check @cons
 check @nil
 check @head
 check @tail
-check @append 
-#+END_SRC 
+check @append
+#+END_SRC
 
 Vector operations are handled similarly:
 
@@ -882,7 +874,7 @@ constant vec : Type → nat → Type
 namespace vec
   constant empty : ΠA : Type, vec A 0
   constant cons : Π(A : Type) (n : nat), A → vec A n → vec A (n + 1)
-  constant append : Π(A : Type) (n m : nat), vec A m → vec A n → vec A (n + m) 
+  constant append : Π(A : Type) (n m : nat), vec A m → vec A n → vec A (n + m)
 end vec
 
 #+END_SRC
@@ -896,7 +888,7 @@ type of pairs =dpair a b= where =a : A= and =b : B a=. Just as Pi
 types =Πx : A, B x= generalize the notion of a function type =A → B=,
 Sigma types =Σx : A, B x= generalize the cartesian product =A × B=: in
 the expression =dpair a b=, the type of the second element of the
-pair, =b : B a=, depends on the first element of the pair, =a : A=. 
+pair, =b : B a=, depends on the first element of the pair, =a : A=.
 
 #+BEGIN_SRC lean
 import data.sigma
@@ -932,7 +924,7 @@ namespace list
 end list
 -- END
 end hide
-#+END_SRC 
+#+END_SRC
 
 Then, given a type =A=, some elements of =A=, and some lists of
 elements of =A=, we can construct new lists using the constructors.
@@ -1045,7 +1037,7 @@ check id b
 -- declaring an implicit argument as a section variable
 section
   variable {A : Type}
-  variable x : A 
+  variable x : A
   definition id2 := x
 end
 
@@ -1065,7 +1057,7 @@ Sometimes, however, we may find ourselves in a situation where we have
 declared an argument to a function to be implicit, but now want to
 provide the argument explicitly. If =foo= is such a function, the
 notation =@foo= denotes the same function with all the arguments made
-explicit. 
+explicit.
 
 #+BEGIN_SRC lean
 -- the polymorphic identity function

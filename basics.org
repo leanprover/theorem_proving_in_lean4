@@ -1,3 +1,4 @@
+#+Title: Lean Tutorial
 #+Author: [[http://leodemoura.github.io][Leonardo de Moura]]
 #+HTML_HEAD: <link rel='stylesheet' href='css/tutorial.css'>
 #+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/jquery-ui.css'>
@@ -7,7 +8,43 @@
 #+HTML_HEAD_EXTRA:<link rel='import' href='juicy-ace-editor.html'>
 #+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/code.css'>
 #+OPTIONS: toc:nil
-#+Title: Lean Tutorial
+
+#+BEGIN_SRC emacs-lisp :results silent :exports results
+  (require 'cl) ;; The find function is in the cl library.
+  (unless (find "per-file-class" org-latex-classes :key 'car :test 'equal)
+    (add-to-list 'org-latex-classes
+                 '("per-file-class"
+                   "\\documentclass{memoir}"
+                   ("\\part{%s}" . "\\part{%s}")
+                   ("\\chapter{%s}" . "\\chapter*{%s}")
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+  (add-to-list 'org-export-smart-quotes-alist
+               '("en"
+                 (opening-double-quote :utf-8 "“" :html "&ldquo;" :latex "\\enquote{" :texinfo "``")
+                 (closing-double-quote :utf-8 "”" :html "&rdquo;" :latex "}" :texinfo "''")
+                 (opening-single-quote :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+                 (closing-single-quote :utf-8 "’" :html "&rsquo;" :latex "}" :texinfo "'")
+                 (apostrophe :utf-8 "’" :html "&rsquo;")))
+
+  ;; Header.tex explicitly loads all necessary packages.
+  (make-local-variable 'org-latex-default-packages-alist)
+  (setf org-latex-default-packages-alist nil)
+#+END_SRC
+
+#+LANGUAGE: en
+# #+OPTIONS: H:5 ':t
+#+LATEX_CLASS: per-file-class
+#+LATEX_CLASS_OPTIONS: [11pt,ebook,table,dvipsnames,oneside,openany]
+#+LATEX_HEADER: \input{Header}
+
+#+BEGIN_LATEX
+%\OnehalfSpacing
+#+END_LATEX
+
 
 * Basics: Functional Programming in Lean
 
@@ -700,7 +737,7 @@ end playground
 
 The definition above can be read as: "if =n= is =O=, then it is even;
 if =n= has the form =S n₁= for some =n₁=, and =n₁= is even (this information
-is stored in =r=), then =n₁= is *not* even. We say =r= is the
+is stored in =r=), then =n₁= is *not* even". We say =r= is the
 _recursive parameter_ in the minor premise associated with the constructor
 =S=. For non-recursive inductive datatypes, the recursors =cases_on= and =rec_on=
 are identical.
@@ -784,7 +821,7 @@ end playground
 #+END_SRC
 
 The definition above can be read: "if =n= is =O=, then the result of the addition is =m=;
-if =n= has the form =S n₁= for some =n₁= and =r= contains =add n₁ m=, then return =S r=.
+if =n= has the form =S n₁= for some =n₁= and =r= contains =add n₁ m=, then return =S r=".
 
 We can use =add= to define a coercion from =num= to our =nat=.
 The type =num= is defined as
@@ -929,7 +966,7 @@ end playground
 **** Exercise =factorial=
 
 Recall the standard factorial function:
-#+BEGIN_SRC
+#+BEGIN_SRC text
     factorial(0)  =  1
     factorial(n)  =  n * factorial(n-1)     (if n>0)
 #+END_SRC
@@ -1555,17 +1592,17 @@ end boolean
 #+END_SRC
 
 The proof above can be read as: "take a boolean =b=, it can be =true= or =false=,
-in both cases if we evaluate the left/right hand sides, we obtain the same value.
+in both cases if we evaluate the left/right hand sides, we obtain the same value".
 
 If we replace the =rfl='s by =_= in the proof above, Lean will say the placeholders =_='s
 cannot be synthesized, and will show what needs to be proved:
-#+BEGIN_SRC
+#+BEGIN_SRC text
 
   ⊢ neg (neg false) = false
 
 #+END_SRC
 and
-#+BEGIN_SRC
+#+BEGIN_SRC text
 
   ⊢ neg (neg true) = true
 
@@ -1574,3 +1611,5 @@ and
 For readers using the Lean Emacs mode, they can simply hover over the incomplete proof
 to obtain information about missing parts. Lean also reports the type of every =sorry= used in
 an input file.
+
+
