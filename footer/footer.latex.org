@@ -1,0 +1,8 @@
+#+BEGIN_LATEX
+\bibliographystyle{plain}
+\bibliography{lean}
+
+%\setglossarystyle{altlisthypergroup}
+\glsaddall
+\printglossaries
+#+END_LATEX
