@@ -1,7 +1,7 @@
-#+Title: Dependent Type Theory in Lean
+#+Title: Theorem Proving in Lean
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
 
-* The Language of Dependent Type Theory
+* Dependent Type Theory
 
 This tutorial is an introduction to dependent type theory using the
 /Lean/ theorem prover. Often you will come across examples and
