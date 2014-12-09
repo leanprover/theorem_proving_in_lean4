@@ -80,3 +80,4 @@ contextual information."
                         lang (lean-example-main-part code) (lean-escape-code (lean-example-full code)))
               (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label
                       code))))))))
+(setq org-confirm-babel-evaluate nil)
