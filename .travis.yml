@@ -2,7 +2,6 @@ language: emacs-lisp
 
 os:
   - linux
-  - osx
 
 env:
   global:
@@ -24,6 +23,9 @@ before_install:
   - curl -fsSkL https://raw.github.com/cask/cask/master/go | python
   - cask
   - evm list
+  - sudo apt-get update
+  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science || true
+  - tar xvfz header/l3kernel.tar.gz -C ~/
 
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
@@ -34,7 +36,7 @@ after_script:
       git config --global user.name "Travis CI";
       git checkout --orphan gh-pages;
       rm .git/index;
-      git add -f *.html;
+      git add -f *.html tutorial.pdf tutorial.html;
       git add css;
       git add fonts;
       git add js;
