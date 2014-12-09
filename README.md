@@ -9,9 +9,14 @@ How to Build
 We use [cask][cask] to install emacs dependencies ([org-mode][org-mode], [lean-mode][lean-mode], [htmlize][htmlize]).
 
 ```
+sudo apt-get install mercurial python2.7 texlive-latex-recommended \
+                     texlive-humanities texlive-xetex texlive-science \
+                     texlive-latex-extra texlive-fonts-recommended
 git clone git@github.com:leanprover/tutorial
 cd tutorial
+tar xvfz header/l3kernel.tar.gz -C ~/
 make install-cask
+make install-pygments  
 make
 ```
 
