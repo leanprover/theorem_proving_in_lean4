@@ -1,8 +1,7 @@
 language: emacs-lisp
-
 os:
   - linux
-
+cache: apt
 env:
   global:
    # GH_TOKEN=[secure]             (to push to osx/windows repo under soonhokong)
