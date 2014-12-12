@@ -7,6 +7,8 @@
 
 ;;; ORG mode
 (require 'org)
+(require 'dash)
+(require 'dash-functional)
 
 ;; set auto load on .org files
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -20,9 +22,15 @@
 '(org-export-html-with-timestamp nil)
 '(org-modules (quote (org-bbdb org-bibtex org-info org-jsinfo org-irc org-w3m org-mouse org-eval org-eval-light org-exp-bibtex org-man org-mtags org-panel org-R org-special-blocks org-exp-blocks)))
 
-;; TODO(Leo): improve string escape for javascript
 (defun lean-escape-code (code)
-  (replace-regexp-in-string "\n" "\\\\n" code))
+  "Escape special symbols
+     ' becomes \x27
+    \" becomes \x22
+    \n becomes \\n"
+  (funcall (-compose (lambda (s) (replace-regexp-in-string "'"  "\\\\x27" s))
+                     (lambda (s) (replace-regexp-in-string "\""  "\\\\x22" s))
+                     (lambda (s) (replace-regexp-in-string "\n" "\\\\n" s)))
+           code))
 
 ;; Decode an Lean tutorial example encoded using the '-- BEGIN' and '-- END' delimiters
 (defun lean-decode-example (code)
