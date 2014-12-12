@@ -3,6 +3,10 @@
 Lean Tutorial
 =============
 
+ - Web : https://leanprover.github.io/tutorial
+ - PDF : https://leanprover.github.io/tutorial/tutorial.pdf
+
+
 How to Build
 ------------
 
