@@ -25,6 +25,8 @@
 #juicy-ace-editor-container {
     font-family: freemono-lean, Monaco, Menlo, 'Ubuntu Mono', 'Arial Unicode MS', Consolas, source-code-pro, monospace;
     line-height: inherit;
+    margin-top:20px;
+    margin-bottom:20px;
 }
 .ace_hidden-cursors {opacity:0}
 .ace_cursor {opacity:0}

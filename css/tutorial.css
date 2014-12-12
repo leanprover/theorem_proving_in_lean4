@@ -3,8 +3,6 @@ body{
     font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
     color: #444444;
     line-height: 1;
-    max-width: 960px;
-    padding: 30px;
 }
 h1, h2, h3, h4 {
     color: #111111;
@@ -303,4 +301,10 @@ button::-moz-focus-inner {
     {
         display: none !important;
     }
+}
+#resizable_tutorial {
+    overflow-y: scroll;
+}
+#tutorial_contents {
+    padding: 20px;
 }
