@@ -19,6 +19,13 @@ tutorial.org: $(ORGS)
 	mv temp.html $@
 	rm temp.org
 
+tutorial.html: tutorial.org .cask elisp/org-html-export.el
+	@if [ ! -f ~/.cask/bin/cask ]; then echo "Cask Not Found. Please do 'make install-cask' first"; exit 1; fi
+	cat header/header.index.html.org $< > temp.org
+	$(EMACS_BIN) -no-site-file -q --batch -l elisp/org-html-export.el --visit temp.org -f org-html-export-to-html
+	mv temp.html $@
+	rm temp.org
+
 %.tex: %.org .cask elisp/org-pdf-export.el header/header.latex.org header/header.tex footer/footer.latex.org
 	cat header/header.latex.org $< footer/footer.latex.org > temp.org
 	$(EMACS_BIN) -no-site-file -q --batch -l elisp/org-pdf-export.el --visit temp.org -f org-latex-export-to-latex
