@@ -1,6 +1,4 @@
 <script src="//leanprover.github.io/ace/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-<!-- <script src="../ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script> -->
-<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script> -->
 
 <template>
     <style shim-shadowdom>
@@ -73,15 +71,14 @@
             editor.setShowPrintMargin(false);
             editor.renderer.setShowGutter(false);
             editor.renderer.setPadding(20);
-            editor.renderer.setScrollMargin(20, 20, 20, 20);
+            editor.renderer.setScrollMargin(0, 0, 0, 0);
             editor.setReadOnly(true);
             var session = editor.getSession();
             session.setMode( this.getAttribute("mode") );
             session.setUseSoftTabs( this.getAttribute("softtabs") );
-
-
+            session.on('changeScrollTop', function(scroll) { });
+            session.on('changeScrollLeft', function(scroll) { });
         this.editor = editor;
-
         // Observe input textNode changes
         // Could be buggy as editor was also added to Light DOM;
             var observer = new MutationObserver(function(mutations) {
@@ -133,7 +130,13 @@
 }(window, document));
 
 function invoke_leanjs(code) {
-    var encodedText = btoa(unescape(encodeURIComponent(code)));
-    var url = "http://leanprover.net/live/?code=" + encodedText; window.open(url);
+    console.log("================");
+    if (typeof myModule !== 'undefined') {
+        myModule.editor_main.setValue(code, 1)
+        myModule.process_main_buffer();
+    } else {
+        var encodedText = btoa(unescape(encodeURIComponent(code)));
+        var url = "https://leanprover.github.io/live/?code=" + encodedText; window.open(url);
+    }
 }
 </script>
