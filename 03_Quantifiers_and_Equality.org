@@ -22,7 +22,7 @@ Notice that if =A= is any type, we can represent a unary predicate =p=
 on =A= as on object of type =A → Prop=. In that case, given =x : A=,
 =p x= denotes the assertion that =p= holds of =x=. Similarly, an
 object =r : A → A → Prop= denotes a binary relation on =A=: given =x
-y : A=, =r x y= denotes the assertion that =x= is related to =y=. 
+y : A=, =r x y= denotes the assertion that =x= is related to =y=.
 
 The universal quantifier, =∀x : A, p x= is supposed to denote the
 assertion that "for every =x : A=, =p x=" holds. As with the
@@ -72,7 +72,7 @@ import logic
 
 section
   variables (A : Type) (p q : A → Prop)
- 
+
   example : (∀x : A, p x ∧ q x) → ∀y : A, p y  :=
   assume H : ∀x : A, p x ∧ q x,
   take y : A,
@@ -99,7 +99,7 @@ import logic
 
 section
   variables (A : Type) (p q : A → Prop)
--- BEGIN 
+-- BEGIN
   example : (∀x : A, p x ∧ q x) → ∀y : A, p y  :=
   assume H : ∀x : A, p x ∧ q x,
   take z : A,
@@ -198,7 +198,6 @@ section
   example : (∀x, P x ∨ R) ↔ (∀x, P x) ∨ R := sorry
   example : (∀x, R → P x) ↔ (R → ∀x, P x) := sorry
 end
--- END
 #+END_SRC
 
 As a final example, consider the "barber paradox", that is, the claim
@@ -208,7 +207,7 @@ contradiction:
 #+BEGIN_SRC lean
 section
   variables (men : Type) (barber : men) (shaves : men → men → Prop)
-  
+
   example (H : ∀x : men, shaves barber x ↔ ¬shaves x x) : false := sorry
 end
 #+END_SRC
@@ -219,7 +218,7 @@ end
 Let us now turn to one of the most fundamental relations defined in
 Lean's library, namely, the equality relation. In the next chapter, we
 will explain /how/ equality is defined, from the primitives of Lean's
-logical framework. In the meanwhile, here we explain how to use it. 
+logical framework. In the meanwhile, here we explain how to use it.
 
 Of course, a fundamental property of equality is that it is an
 equivalence relation:
@@ -287,10 +286,10 @@ the truth value.
 #+BEGIN_SRC lean
 open eq.ops
 -- BEGIN
-example (A : Type) (a b : A) (P : A → Prop) (H1 : a = b) (H2 : P a) : P b := 
+example (A : Type) (a b : A) (P : A → Prop) (H1 : a = b) (H2 : P a) : P b :=
 eq.subst H1 H2
 
-example (A : Type) (a b : A) (P : A → Prop) (H1 : a = b) (H2 : P a) : P b := 
+example (A : Type) (a b : A) (P : A → Prop) (H1 : a = b) (H2 : P a) : P b :=
 H1 ▸ H2
 -- END
 #+END_SRC
@@ -334,7 +333,7 @@ meant to be composed by basic principles such as the transitivity of
 the following syntax:
 
 #+BEGIN_SRC lean
-calc  
+calc
   <expr>_0  'op_1'  <expr>_1  ':'  <proof>_1
     '...'   'op_2'  <expr>_2  ':'  <proof>_2
      ...
@@ -362,7 +361,7 @@ section
   variable H4 : e = 1 + d
 
   theorem T : a = e :=
-  calc 
+  calc
     a     = b      : H1
       ... = c + 1  : H2
       ... = d + 1  : {H3}
@@ -378,8 +377,8 @@ some form of transitivity. It can even combine different relations.
 import data.nat
 open nat
 
-theorem T2 (a b c : nat) (H1 : a = b) (H2 : b = c + 1) : a ≠ 0 := 
-calc  
+theorem T2 (a b c : nat) (H1 : a = b) (H2 : b = c + 1) : a ≠ 0 :=
+calc
   a     = b      : H1
     ... = c + 1  : H2
     ... = succ c : add.one c
@@ -412,7 +411,7 @@ calc
 
 As an exercise, we suggest carrying out a similar expansion of =(x -
 y) * (x - y)=, using the theorems =mul_sub_distr_right= and
-=mul_sub_distr_right= in the module [[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]]. 
+=mul_sub_distr_right= in the module [[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]].
 
 
 ** The Simplifier
@@ -458,7 +457,7 @@ predicate =p=, corresponding to the theorems =∃ x, g x x = x=, =∃ x, g x x =
 =∃ x, g x 0 = x=, etc. Lean uses the context to infer which one is
 appropriate. This is illustrated in the following example, in which we
 set the optoin =pp.implicit= to true to ask Lean's pretty-printer to
-show the implicit arguments. 
+show the implicit arguments.
 
 #+BEGIN_SRC lean
 import data.nat
@@ -509,7 +508,7 @@ theorem even_plus_even {a b : nat} (H1 : even a) (H2 : even b) : even (a + b) :=
 exists_elim H1 (fun (w1 : nat) (Hw1 : a = 2*w1),
 exists_elim H2 (fun (w2 : nat) (Hw2 : b = 2*w2),
   exists_intro (w1 + w2)
-    (calc 
+    (calc
       a + b = 2*w1 + b      : Hw1
         ... = 2*w1 + 2*w2   : Hw2
         ... = 2*(w1 + w2)   : mul.distr_left)))
@@ -531,7 +530,7 @@ exists_elim H2 (fun (w2 : nat) (Hw2 : b = 2*w2),
 obtain (w1 : nat) (Hw1 : a = 2*w1), from H1,
 obtain (w2 : nat) (Hw2 : b = 2*w2), from H2,
 exists_intro (w1 + w2)
-  (calc 
+  (calc
     a + b = 2*w1 + b      : Hw1
       ... = 2*w1 + 2*w2   : Hw2
       ... = 2*(w1 + w2)   : mul.distr_left)))
@@ -563,4 +562,3 @@ section
   example : (¬∀x, p x) ↔ (∃x, ¬p x) := sorry
 end
 #+END_SRC
-
