@@ -198,6 +198,7 @@ Type → Type=, namely, the Cartesian product.
 import data.nat data.prod
 open nat prod
 
+-- BEGIN
 constants A B : Type
 
 check prod
