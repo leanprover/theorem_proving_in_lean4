@@ -304,6 +304,7 @@ button::-moz-focus-inner {
 }
 #resizable_tutorial {
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 #tutorial_contents {
     padding: 20px;
