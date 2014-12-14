@@ -130,7 +130,6 @@
 }(window, document));
 
 function invoke_leanjs(code) {
-    console.log("================");
     if (typeof myModule !== 'undefined') {
         myModule.editor_main.setValue(code, 1)
         myModule.process_main_buffer();

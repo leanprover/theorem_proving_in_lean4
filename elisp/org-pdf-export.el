@@ -3,9 +3,10 @@
 (setq working-dir (f-dirname (f-this-file)))
 (add-to-list 'load-path working-dir)
 (setq make-backup-files nil)
-
+(add-to-list 'load-path (f-join working-dir "elisp"))
 (require 'org)
 (require 'ox)
+(require 'lean-export-util)
 (setq org-confirm-babel-evaluate nil)
 
 ;;; XeLaTeX customisations
@@ -36,19 +37,11 @@
   '(progn
      (defun lean-extract-main-code (code-info)
        "Given a code-info which is a cons cell whose car element is source code,
-Extract the main part wrapped with -- BEGIN and -- END (if any)"
+Extract the full code without -- BEGIN and -- END lines"
        (let* ((code (car code-info))
               (rest (cdr code-info))
-              (lines (s-split "\n" code))
-              (begin-marker "-- BEGIN")
-              (end-marker "-- END")
-              (new-lines
-               (cond ((and (-contains? lines begin-marker) (-contains? lines end-marker))
-                      (car (--split-when (or (s-equals? it begin-marker)
-                                             (s-equals? it end-marker))
-                                         (--drop-while (not (s-equals? it begin-marker)) lines))))
-                     (t lines))))
-         (cons (s-join "\n" new-lines) rest)))
+              (full-lines (cdr (lean-extract-code code))))
+         (cons full-lines rest)))
      (defun org-latex-src-block (src-block contents info)
        "Transcode a SRC-BLOCK element from Org to LaTeX.
 CONTENTS holds the contents of the item.  INFO is a plist holding

@@ -9,6 +9,11 @@
 (require 'org)
 (require 'dash)
 (require 'dash-functional)
+(add-to-list 'load-path (f-join working-dir "elisp"))
+(require 'lean-export-util)
+
+(setq org-html-style-include-default nil)
+(setq org-html-style-include-scripts nil)
 
 ;; set auto load on .org files
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -22,45 +27,15 @@
 '(org-export-html-with-timestamp nil)
 '(org-modules (quote (org-bbdb org-bibtex org-info org-jsinfo org-irc org-w3m org-mouse org-eval org-eval-light org-exp-bibtex org-man org-mtags org-panel org-R org-special-blocks org-exp-blocks)))
 
-(defun lean-escape-code (code)
-  "Escape special symbols
-     ' becomes \x27
-    \" becomes \x22
-    \n becomes \\n"
-  (funcall (-compose (lambda (s) (replace-regexp-in-string "'"  "\\\\x27" s))
-                     (lambda (s) (replace-regexp-in-string "\""  "\\\\x22" s))
-                     (lambda (s) (replace-regexp-in-string "\n" "\\\\n" s)))
-           code))
-
-;; Decode an Lean tutorial example encoded using the '-- BEGIN' and '-- END' delimiters
-(defun lean-decode-example (code)
-  (let ((begstart (string-match "-- BEGIN" code)))
-    (when begstart
-      (let ((preamble (substring code 0 begstart))
-            (begend (string-match "\n" code begstart)))
-        (when begend
-          (let ((endstart (string-match "-- END" code)))
-            (when endstart
-              (let ((maincode (substring code (+ begend 1) endstart))
-                    (endend (string-match "\n" code endstart)))
-                (when endend
-                  (let* ((epilogue (substring code (+ endend 1)))
-                         (fullcode (concat preamble (concat maincode epilogue))))
-                    (cons maincode fullcode)))))))))))
-
 ;; Return the Lean tutorial example main part
 (defun lean-example-main-part (code)
-  (let ((decoded (lean-decode-example code)))
-    (if decoded
-        (car decoded)
-      code)))
+  (car (lean-extract-code code)))
 
 ;; Return the Lean tutorial example full code.
 (defun lean-example-full (code)
-  (let ((decoded (lean-decode-example code)))
-    (if decoded
-        (cdr decoded)
-      code)))
+  (cdr (lean-extract-code code)))
+
+(defvar-local lean-src-block-counter 0)
 
 ;; Redefine org-html-src-block to use juicy-ace-editor
 (eval-after-load "ox-html"
@@ -68,6 +43,7 @@
      "Transcode a SRC-BLOCK element from Org to HTML.
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
+     (setq lean-src-block-counter (1+ lean-src-block-counter))
      (if (org-export-read-attribute :attr_html src-block :textarea)
          (org-html--textarea-block src-block)
        (let ((lang (org-element-property :language src-block))
@@ -84,8 +60,16 @@ contextual information."
               (format "<label class=\"org-src-name\">%s</label>"
                       (org-export-data caption info)))
             (if lang
-                (format "\n<juicy-ace-editor mode=\"ace/mode/%s\" readonly=\"true\">%s</juicy-ace-editor><div class='no-print' align=\"left\"><button type=\"button\" onclick=\"invoke_leanjs('%s');\">Try it yourself &raquo;</button></div>"
-                        lang (lean-example-main-part code) (lean-escape-code (lean-example-full code)))
-              (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label
-                      code))))))))
+                (let ((juicy-ace-editor-html
+                       (format "<juicy-ace-editor id='lean-juicy-ace-editor-%d' mode=\"ace/mode/%s\" readonly=\"true\">%s</juicy-ace-editor>"
+                               lean-src-block-counter
+                               lang
+                               (lean-example-main-part code)))
+                      (full-code-html (format "<div id='lean-full-code-%d' style='display:none'>%s</div>"
+                                             lean-src-block-counter
+                                             (lean-example-full code)))
+                      (button-html (format "<div class='no-print' align=\"left\"><button type=\"button\" onclick=\"invoke_leanjs($('#lean-full-code-%d').text());\">Try it yourself &raquo;</button></div>"
+                                          lean-src-block-counter)))
+                  (concat juicy-ace-editor-html full-code-html button-html))
+              (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label code))))))))
 (setq org-confirm-babel-evaluate nil)
