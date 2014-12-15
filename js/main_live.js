@@ -110,9 +110,9 @@ var myModule = (function() {
                 main_left        = tutorial_width + handle_width;
                 sub_handle_left  = main_left;
                 console_left     = main_left;
-                main_handle_background_image = "url(/css/images/handle-v.png)";
+                main_handle_background_image = "url(css/images/handle-v.png)";
                 main_handle_cursor = "col-resize";
-                sub_handle_background_image = "url(/css/images/handle-h.png)";
+                sub_handle_background_image = "url(css/images/handle-h.png)";
                 sub_handle_cursor = "row-resize";
 
                 main_handle_width  = handle_width;
@@ -139,9 +139,9 @@ var myModule = (function() {
                 sub_handle_left  = main_width + handle_width;
                 console_left     = main_width + handle_width + handle_width;
 
-                main_handle_background_image = "url(/css/images/handle-h.png)";
+                main_handle_background_image = "url(css/images/handle-h.png)";
                 main_handle_cursor = "row-resize";
-                sub_handle_background_image = "url(/css/images/handle-v.png)";
+                sub_handle_background_image = "url(css/images/handle-v.png)";
                 sub_handle_cursor = "col-resize";
 
                 main_handle_width  = tutorial_width;
