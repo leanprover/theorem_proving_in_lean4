@@ -59,7 +59,7 @@ contextual information."
             (if (not caption) ""
               (format "<label class=\"org-src-name\">%s</label>"
                       (org-export-data caption info)))
-            (if lang
+            (if (string= lang "lean")
                 (let ((juicy-ace-editor-html
                        (format "<juicy-ace-editor id='lean-juicy-ace-editor-%d' mode=\"ace/mode/%s\" readonly=\"true\">%s</juicy-ace-editor>"
                                lean-src-block-counter
