@@ -36,9 +36,15 @@
         <span id="username"></span>
       </div>
     </div>
-    <div id="resizable_tutorial"><div id="tutorial_contents"></div></div>
-    <div id="resizable_console"><div id="editor_console"></div></div>
-    <div id="resizable_main"><div id="editor_main"></div></div>
+    <div id="main_window">
+      <div id="tutorial_contents"></div>
+      <div id="resizable_handle_main" class="resizable_handle"></div>
+      <div id="main_and_console">
+        <div id="editor_main"></div>
+        <div id="resizable_handle_sub" class="resizable_handle"></div>
+        <div id="editor_console"></div>
+      </div>
+    </div>
     <script src="js/main_live.js" type="text/javascript" charset="utf-8"></script>
     <script src="//leanprover.github.io/lean.js/lean.js" type="text/javascript" charset="utf-8"></script>
   </body>

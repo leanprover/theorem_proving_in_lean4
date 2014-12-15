@@ -307,5 +307,12 @@ button::-moz-focus-inner {
     overflow-x: hidden;
 }
 #tutorial_contents {
-    padding: 20px;
+    margin: 0px;
+    padding: 0px;
+    overflow:auto;
 }
+#content {
+    margin: 20px;
+    margin-left: 40px;
+}
+.resizable_handle  { background-position: center; }

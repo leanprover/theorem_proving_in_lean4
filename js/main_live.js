@@ -42,6 +42,7 @@ var myModule = (function() {
     var tutorial_main_ratio = 0.5;
     var main_console_ratio = 0.5;
     var menu_height = 40;
+    var handle_width = 10;
     var theme = "ace/theme/subatomic";
     var lean_output_buffer = [];
     var default_filename = "input.lean";
@@ -92,44 +93,77 @@ var myModule = (function() {
             if (w >= h) {
                 // side by side
                 tutorial_width  = w * tutorial_main_ratio;
-                main_width      = w - tutorial_width;
-                console_width   = main_width;
+                main_width      = w - tutorial_width - handle_width;
+                console_width   = main_width - handle_width;
                 tutorial_height = h - menu_height;
                 main_height     = tutorial_height * main_console_ratio;
-                console_height  = tutorial_height - main_height;
+                console_height  = tutorial_height - main_height - handle_width;
 
-                tutorial_top   = menu_height;
-                main_top       = tutorial_top;
-                console_top    = main_top + main_height;
-                tutorial_left  = 0;
-                main_left      = tutorial_width;
-                console_left   = main_left;
-                $("#resizable_tutorial").resizable("option", "handles", "e");
-                $("#resizable_main").resizable("option", "handles", "s");
+                tutorial_top    = menu_height;
+                main_handle_top = menu_height;
+                main_top        = tutorial_top;
+                sub_handle_top  = main_top + main_height;
+                console_top     = main_top + main_height + handle_width;
+
+                tutorial_left    = 0;
+                main_handle_left = tutorial_width;
+                main_left        = tutorial_width + handle_width;
+                sub_handle_left  = main_left;
+                console_left     = main_left;
+                main_handle_background_image = "url(/css/images/handle-v.png)";
+                main_handle_cursor = "col-resize";
+                sub_handle_background_image = "url(/css/images/handle-h.png)";
+                sub_handle_cursor = "row-resize";
+
+                main_handle_width  = handle_width;
+                main_handle_height = tutorial_height;
+                sub_handle_width   = console_width;
+                sub_handle_height  = handle_width;
             } else {
                 // top bottom
                 tutorial_width  = w;
                 main_width      = w * main_console_ratio;
-                console_width   = w - main_width;
-                console_ratio   = tutorial_width - main_width;
+                console_width   = w - main_width - handle_width;
                 tutorial_height = (h - menu_height) * tutorial_main_ratio;
-                main_height     = (h - menu_height) - tutorial_height;
+                main_height     = (h - menu_height) - tutorial_height - handle_width;
                 console_height  = main_height;
 
-                tutorial_top   = menu_height;
-                main_top       = tutorial_top + tutorial_height;
-                console_top    = main_top;
-                tutorial_left  = 0;
-                main_left      = 0;
-                console_left   = main_width;
-                $("#resizable_tutorial").resizable("option", "handles", "s");
-                $("#resizable_main").resizable("option", "handles", "e");
+                tutorial_top     = menu_height;
+                main_handle_top  = tutorial_top + tutorial_height;
+                main_top         = tutorial_top + tutorial_height + handle_width;
+                console_top      = main_top;
+                sub_handle_top   = main_top;
+                tutorial_left    = 0;
+                main_handle_left = 0;
+                main_left        = 0;
+                sub_handle_left  = main_width + handle_width;
+                console_left     = main_width + handle_width + handle_width;
+
+                main_handle_background_image = "url(/css/images/handle-h.png)";
+                main_handle_cursor = "row-resize";
+                sub_handle_background_image = "url(/css/images/handle-v.png)";
+                sub_handle_cursor = "col-resize";
+
+                main_handle_width  = tutorial_width;
+                main_handle_height = handle_width;
+                sub_handle_width   = handle_width;
+                sub_handle_height  = console_height;
             }
-            $("#resizable_console").css({position: "absolute", top: console_top, left: console_left,  width: console_width, height: console_height})
-            $("#resizable_main").css({position: "absolute", top: main_top, left:main_left, width: main_width, height: main_height})
+            $("#editor_console").css({position: "absolute", top: console_top, left: console_left,  width: console_width, height: console_height});
+            $("#editor_main").css({position: "absolute", top: main_top, left:main_left, width: main_width, height: main_height});
+            $("#resizable_handle_main").css({position: "absolute", top: main_handle_top, left:main_handle_left, width: main_handle_width, height: main_handle_height,
+                                             "background-image": main_handle_background_image,
+                                             "background-repeat": "no-repeat", cursor: main_handle_cursor,
+                                             "border": "solid 1px #cccccc"
+                                            });
+            $("#resizable_handle_sub").css({position: "absolute", top: sub_handle_top, left:sub_handle_left, width: sub_handle_width, height: sub_handle_height,
+                                             "background-image": sub_handle_background_image,
+                                             "background-repeat": "no-repeat", cursor: sub_handle_cursor,
+                                             "border": "solid 1px #cccccc"
+                                           });
             editor_main.resize();
             editor_console.resize();
-            $("#resizable_tutorial").css({position: "absolute", top: tutorial_top, left:tutorial_left, width: tutorial_width, height: tutorial_height})
+            $("#tutorial_contents").css({position: "absolute", top: tutorial_top, left:tutorial_left, width: tutorial_width, height: tutorial_height});
         },
         init_editor_keybindings: function() {
             var process_main_buffer_command = {
@@ -147,34 +181,41 @@ var myModule = (function() {
             editor_console.commands.addCommand(process_main_buffer_command);
         },
         init_resizable: function() {
-            $("#resizable_main").resizable({resize: function( event, ui ) {
-                var h = window.innerHeight;
-                var w = window.innerWidth;
-                if (w >= h) {
-                    // side by side
-                    var y_pos = Math.max(menu_height, Math.min(event.clientY, h));
-                    main_console_ratio = (y_pos - menu_height) / (h - menu_height);
-                } else {
-                    // top and bottom
-                    var x_pos = Math.min(w, event.clientX);
-                    main_console_ratio = x_pos / w;
-                }
-                myModule.resize_editors();
-            }});
-            $("#resizable_tutorial").resizable({resize: function( event, ui ) {
-                var h = window.innerHeight;
-                var w = window.innerWidth;
-                if (w >= h) {
-                    // side by side
-                    var x_pos = Math.min(w, event.clientX);
-                    tutorial_main_ratio = x_pos / w;
-                } else {
-                    // top and bottom
-                    var y_pos = Math.max(menu_height, Math.min(event.clientY, h));
-                    tutorial_main_ratio = (y_pos - menu_height) / (h - menu_height);
-                }
-                myModule.resize_editors();
-            }});
+            $('#resizable_handle_main').mousedown(function(e){
+                e.preventDefault();
+                $(document).mousemove(function(event){
+                    var h = window.innerHeight;
+                    var w = window.innerWidth;
+                    if (w >= h) {
+                        // side by side
+                        var x_pos = Math.min(w, event.clientX);
+                        tutorial_main_ratio = x_pos / w;
+                    } else {
+                        // top and bottom
+                        var y_pos = Math.max(menu_height, Math.min(event.clientY, h));
+                        tutorial_main_ratio = (y_pos - menu_height) / (h - menu_height);
+                    }
+                    myModule.resize_editors();
+                });
+            });
+            $('#resizable_handle_sub').mousedown(function(e){
+                e.preventDefault();
+                $(document).mousemove(function(event){
+                    var h = window.innerHeight;
+                    var w = window.innerWidth;
+                    if (w >= h) {
+                        var y_pos = Math.max(menu_height, Math.min(event.pageY, h));
+                        main_console_ratio = (y_pos - menu_height) / (h - menu_height);
+                    } else {
+                        var x_pos = Math.min(w, event.pageX);
+                        main_console_ratio = x_pos / w;
+                    }
+                    myModule.resize_editors();
+                });
+            });
+            $(document).mouseup(function(e){
+                $(document).unbind('mousemove');
+            });
         },
         init_autocomplete: function() {
             var leanCompleter = {
