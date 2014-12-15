@@ -1,5 +1,4 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
-#+OPTIONS: toc:nil
 #+Title: Propositions and Proofs
 
 * Propositions and Proofs

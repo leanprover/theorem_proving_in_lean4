@@ -1,11 +1,4 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
-#+HTML_HEAD: <link rel='stylesheet' href='css/tutorial.css'>
-#+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/jquery-ui.css'>
-#+HTML_HEAD_EXTRA:<script src='js/platform.js'></script>
-#+HTML_HEAD_EXTRA:<script src='js/jquery-1.10.2.js'></script>
-#+HTML_HEAD_EXTRA:<script src='js/jquery-ui.js'></script>
-#+HTML_HEAD_EXTRA:<link rel='import' href='juicy-ace-editor.html'>
-#+HTML_HEAD_EXTRA:<link rel='stylesheet' href='css/code.css'>
 #+OPTIONS: toc:nil
 #+Title: Theorem Proving in Lean
 
@@ -72,7 +65,7 @@ package, which we will describe in the next chapter.
 
 Another useful command, although the implementation is still
 rudimentary at this stage, is the =find decl= command. This can be
-used to find theorems whose conclusion matches a given pattern. 
+used to find theorems whose conclusion matches a given pattern.
 The syntax is as follows:
 #+BEGIN_SRC text
 find_decl <pattern>  [, filter]*
@@ -81,7 +74,7 @@ where =<pattern>= is just an expression with "holes" (underscores),
 and a filter is of the form
 #+BEGIN_SRC text
 + id  (id is a substring of the declaration)
-- id  (id is not a substring of the declaration) 
+- id  (id is not a substring of the declaration)
   id  (id is a substring of the declaration)
 #+END_SRC
 For example:
@@ -165,7 +158,7 @@ unavoidable.
 
 Lean has two libraries. Here we will focus on the standard
 library, which offers a conventional mathematical farmework. We will
-discuss the library for homotopy type theory in a later chapter. 
+discuss the library for homotopy type theory in a later chapter.
 
 There are a number of ways to explore the contents of the standard
 library. You can find the file structure online, on github:
@@ -500,7 +493,7 @@ notation for multiplying and adding one. The =infix= command declares
 a new infix operator, with precedence 50, which associates to the
 left. (More precisely, the token is given left-binding power 50.) The
 command =infixr= defines notation which associates to the right,
-instead. 
+instead.
 
 If you declare these notations in a namespace, the notation is only
 operant when the namespace is open. You can declare temporary notation
@@ -519,7 +512,7 @@ infix [local] `<*>`:50 := λa b : ℕ, a * a * b * b
 
 The file =reserved_notation.lean= in the =init= folder of the library
 declares the left-binding powers of a number of common symbols that
-are used in the library. 
+are used in the library.
 #+BEGIN_CENTER
 https://github.com/leanprover/lean/blob/master/library/init/reserved_notation.lean
 #+END_CENTER
