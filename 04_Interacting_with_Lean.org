@@ -12,7 +12,7 @@ which introduces the notion of an /inductive/ data type. But first, in
 this chapter, we take a break from the mechanics of type theory to
 explore pragmatic aspects of interaction with Lean.
 
-** Querying Lean for Information
+** Displaying Information
 
 There are a number of ways in which you can query Lean for information
 about its current state and the defined objects and theorems that are
@@ -62,6 +62,39 @@ definition eq= or =print definition and.intro= yields an error. This
 is because =eq= and =and.intro= are not defined symbols, but, rather,
 symbols introduced axiomatically by the Lean's inductive definition
 package, which we will describe in the next chapter.
+
+There are other useful =print= commands:
+#+BEGIN_SRC txt
+print notation               : display all notation
+print notation <tokens>      : display notation using any of the tokens
+print axioms                 : display assumed axioms
+print options                : display options set by user or emacs mode
+print prefix <namespace>     : display all declarations in the namespace
+print coercions              : display all coercions
+print coercions <source>     : display only the coercions from <source>
+print classes                : display all classes
+print instances <class name> : display all instances of the given class
+print fields <structure>     : display all "fields" of a structure
+#+END_SRC
+We will discuss classes, instances, and structures in a later
+chapter. Here are exmaples of how the =print= commands are used: 
+#+BEGIN_SRC lean
+import standard algebra.ring
+
+open prod sum int nat algebra
+
+print notation
+print notation + * -
+print axioms
+print options
+print prefix nat
+print prefix nat.le
+print coercions
+print coercions num
+print classes
+print instances ring
+print fields ring
+#+END_SRC
 
 Another useful command, although the implementation is still
 rudimentary at this stage, is the =find decl= command. This can be
@@ -243,7 +276,7 @@ import standard algebra.ordered_ring
 open nat algebra
 
 -- BEGIN
-check @neg_neg_eq   -- TO DO: will be neg_neg
+check @neg_neg
 check pred.succ     -- TO DO: will be pred_succ
 -- END
 #+END_SRC
@@ -455,7 +488,7 @@ Incidentally, outside of Emacs, from a terminal window, you can type
 have compiled, =.olean= counterparts, and that they are up to date.
 
 
-** Defining Notation
+** Notation, Overloads, and Coercions
 
 Lean's parser is an instance of a Pratt parser, a non-backtracking
 parser that is fast and flexible. You can read about Pratt parsers in
@@ -518,3 +551,179 @@ https://github.com/leanprover/lean/blob/master/library/init/reserved_notation.le
 #+END_CENTER
 You are welcome to overload these symbols for your own use, but you
 cannot change their right-binding power.
+
+# TODO: describe [parsing-only] option, etc.
+
+Lean also provides mechanisms for iterated notation, such as =[a, b,
+c, d, e]= to denote a list with the indicated elements. See the
+discussion of =list= in the next chapter for an example.
+
+Notation in Lean can be /overloaded/, which is to say, the same
+notation can be used for more than one purpose. In that case, Lean's
+elaborator will try to disambiguate based on context.
+
+#+BEGIN_SRC lean
+import data.nat data.int
+open nat int
+
+section
+  variables a b : int
+  variables m n : nat
+  check a + b
+  check m + n
+  print notation +
+end
+#+END_SRC
+
+Lean also provides mechanisms to automatically insert /coercions/
+between types. These are user-defined functions between datatypes that
+make it possible to "view" one datatype as another. For example, Lean
+parses numerals like =123= to a special datatype known as =num=, which
+can, in turn, be coerced to the natural numbers, integers, reals and
+so on. Similarly, in any expression =a + n= where =a= is an integer
+and =n= is a natural number, =n= is coerced to an integer.
+
+#+BEGIN_SRC lean
+import data.nat data.int
+open nat int
+
+section
+  variables a b : int
+  variables m n : nat
+
+-- BEGIN
+  check 123
+  check typeof 123 : nat
+  check typeof 123 : int
+  check a + n
+  check n + a
+  check a + 123
+
+  set_option pp.coercions true
+  check 123
+  check typeof 123 : nat
+  check typeof 123 : int
+  check a + n
+  check n + a
+  check a + 123
+-- END
+end
+#+END_SRC
+Setting the option =pp.coercions= to =true= makes the coercions
+explicit. Coercions that are declared in a namespace are only
+available to the system when the namespace is opened. The token
+=typeof= is nothing more than fancy notation for the identity
+function that makes it possible to specify the intended type of an
+expression. In the first =check= command, Lean decides that =123= is a
+numeral. The two commands after than indicate that it is intended to
+be viewed as a =nat= and as an =int=, respectively.
+
+Here is an example of how we can define a coercion from the booleans
+to the natural numbers. 
+#+BEGIN_SRC lean
+import data.bool data.nat
+open bool nat
+
+definition bool.to_nat [coercion] (b : bool) : nat :=
+bool.cond b 1 0
+
+eval 2 + ff
+eval 2 + tt
+eval tt + tt + tt + ff
+
+print coercions        -- show all coercions
+print coercions bool   -- show all coercions from bool
+#+END_SRC
+We could also declare =bool.to_nat= to be a coercion after the fact as follows:
+#+BEGIN_SRC lean
+import data.bool data.nat
+open bool nat
+
+-- BEGIN
+definition bool.to_nat (b : bool) : nat :=
+bool.cond b 1 0
+
+coercion bool.to_nat
+-- END
+eval 2 + ff
+eval 2 + tt
+eval tt + tt + tt + ff
+#+END_SRC
+In that case, the scope of the declaration is only the current section
+or namespace, or the current file if the declaration is at "top
+level". To make the declaration persist to the whole namespace, use
+the =[persistent]= modifier:
+
+#+BEGIN_SRC lean
+import data.bool data.nat
+open bool nat
+
+-- BEGIN
+definition bool.to_nat (b : bool) : nat :=
+bool.cond b 1 0
+
+coercion [persistent] bool.to_nat
+-- END
+eval 2 + ff
+eval 2 + tt
+eval tt + tt + tt + ff
+#+END_SRC
+For the elaborator to handle coercions effectively, restrictions are
+imposed on the types one can serve as the source and target: roughly,
+they have to be inductively defined types, as described in the next
+chapter. As we will see, most defined datatypes are naturally of this
+form, and in any case it is always possible to "wrap" a definition as
+an inductively defined datatype.
+
+Overloads and coercions introduce "choice points" in the elaboration
+process, forcing the elaborator to consider multiple options and
+backtrack appropriately. This can slow down the elaboration
+process. More seriously, it can make error messages less informative:
+Lean only reports the result of the last backtracking path, which
+means the failure that is reported to the user may be due to the wrong
+interpretation of an overload or coercion. This is why Lean provides
+mechanism for namespace management: parsing and elaboration go more
+smoothly when we only import the notation that we need.
+
+Nonetheless, overloading is quite convenient, and often causes no
+problems. There are various ways to manually disambiguate an
+expression when necessary. One is to precede the expression with the
+notation =#<namespace>=, to specify the namespace in which notation is
+to be interpreted. Another is to replace the notation with an explicit
+function name. Yet a third is to use the =typeof= notation to indicate
+the intended type.
+
+#+BEGIN_SRC lean
+import data.nat data.int
+open nat int
+
+check 2 + 2
+eval 2 + 2
+
+check #nat 2 + 2
+eval #nat 2 + 2
+
+check #int 2 + 2
+eval #int 2 + 2
+
+check nat.add 2 2
+eval nat.add 2 2
+
+check int.add 2 2
+eval int.add 2 2
+
+check typeof 2 + 2 : nat
+eval typeof 2 + 2 : nat
+
+check typeof 2 + 2 : int
+eval typeof 2 + 2 : int
+
+check 0
+
+check nat.zero
+
+check typeof 0 : nat
+check typeof 0 : int
+#+END_SRC
+
+
