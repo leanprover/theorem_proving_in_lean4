@@ -30,8 +30,7 @@
 (setq org-export-latex-listings 'minted)
 (setq org-latex-minted-options
       '(("frame" "lines")
-        ("fontsize" "\\scriptsize")
-        ("numbers" "left")))
+        ("fontsize" "\\scriptsize")))
 (setq-default indent-tabs-mode nil)
 (eval-after-load "ox-latex"
   '(progn
