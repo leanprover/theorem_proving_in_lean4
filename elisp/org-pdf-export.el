@@ -34,13 +34,13 @@
 (setq-default indent-tabs-mode nil)
 (eval-after-load "ox-latex"
   '(progn
-     (defun lean-extract-main-code (code-info)
+     (defun lean-extract-core-code (code-info)
        "Given a code-info which is a cons cell whose car element is source code,
-Extract the full code without -- BEGIN and -- END lines"
+Extract the core code between -- BEGIN and -- END lines"
        (let* ((code (car code-info))
               (rest (cdr code-info))
-              (full-lines (cdr (lean-extract-code code))))
-         (cons full-lines rest)))
+              (core-lines (car (lean-extract-code code))))
+         (cons core-lines rest)))
      (defun org-latex-src-block (src-block contents info)
        "Transcode a SRC-BLOCK element from Org to LaTeX.
 CONTENTS holds the contents of the item.  INFO is a plist holding
@@ -109,9 +109,9 @@ contextual information."
                       (or (cadr (assq (intern lang) org-latex-minted-langs))
                           (downcase lang))
                       ;; Source code.
-                      ;; Soonho Kong: call lean-extract-main-code to
+                      ;; Soonho Kong: call lean-extract-core-code to
                       ;; extract the lines between begin and end
-                      (let* ((code-info (lean-extract-main-code (org-export-unravel-code src-block)))
+                      (let* ((code-info (lean-extract-core-code (org-export-unravel-code src-block)))
                              (max-width
                               (apply 'max
                                      (mapcar 'length
