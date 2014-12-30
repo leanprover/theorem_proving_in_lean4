@@ -1,0 +1,32 @@
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
+#+OPTIONS: toc:nil
+#+Title: Theorem Proving in Lean
+
+* Induction and Recursion
+
+Other than the type universes and Pi types, inductively defined types
+provide the only means of defining new types in the Calculus of
+Inductive Constructions. We have also seen that, fundamentally, the
+constructors and the recursors provide the only means of defining
+functions on these types. By the propositions-as-types correspondence,
+this means that induction is the fundamental method of proof for these
+types.
+
+Working with induction and recursion is therefore fundamental to
+working in the Calculus of Inductive Constructions. For that reason
+Lean provides more natural ways of defining recursive
+functions and writing inductive proofs. Behind the scenes, these are
+"compiled" down to constructors and recursors, but they can be much
+more convenient to use.
+
+** Structural recursion 
+
+[TODO: write this section.]
+
+** Structual induction 
+
+[TODO: write this section.]
+
+** Well-founded induction and recursion
+
+[TODO: write this section.]

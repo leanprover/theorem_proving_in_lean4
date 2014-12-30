@@ -3,10 +3,10 @@
 
 * Quantifiers and Equality
 
-The last chapter introduced you to methods to construct basic proofs
-using the propositional connectives. In this chapter, we extend the
-repertoire of logical constructions to include the universal and
-existential quantifiers, and the equality relation.
+The last chapter introduced you to methods that construct proofs of
+statements involving the propositional connectives. In this chapter,
+we extend the repertoire of logical constructions to include the
+universal and existential quantifiers, and the equality relation.
 
 ** The Universal Quantifier
 
@@ -45,20 +45,19 @@ In the case where =p x= has type =Prop=, if we replace =Πx : A, B x=
 with =∀x : A, p x=, we can read these as the correct rules for
 building proofs involving the universal quantifier.
 
-The Calculus of Constructions therefore identifies =Π= and =∀= in this
-way. If =p= is any expression, =∀x : A, p= is nothing more than
-alternative notation for =Πx : A, p=, with the idea is that the former
-is more natural in cases where where =p= is a proposition. Typically,
-the expression =p= will depend on =x : A=. Recall that, in the case of
-ordinary function spaces, we could interpret =A → B= as the special
-case of =Πx : A, B= in which =B= does not depend on =x=. Similarly,
-we can think of an implication =p → q= between propositions as the
-special case of =∀x : p, q= in which the expression =q= does not
-depend on =x=.
+The Calculus of Inductive Constructions therefore identifies =Π= and
+=∀= in this way. If =p= is any expression, =∀x : A, p= is nothing more
+than alternative notation for =Πx : A, p=, with the idea is that the
+former is more natural in cases where where =p= is a
+proposition. Typically, the expression =p= will depend on =x :
+A=. Recall that, in the case of ordinary function spaces, we could
+interpret =A → B= as the special case of =Πx : A, B= in which =B= does
+not depend on =x=. Similarly, we can think of an implication =p → q=
+between propositions as the special case of =∀x : p, q= in which the
+expression =q= does not depend on =x=.
 
 Here is an example of how the propositions-as-types correspondence
 gets put into practice.
-
 #+BEGIN_SRC lean
 import logic
 
@@ -76,21 +75,21 @@ As a notational convention, we give the universal quantifier the
 widest scope possible, so parentheses are needed to limit the
 quantifier over =x= to the hypothesis in the example above. The
 canonical way to prove =∀y : A, p y= is to take an arbitrary =y=, and
-prove =p y=. This is the "introduction rule." Now, given that =H= has
+prove =p y=. This is the introduction rule. Now, given that =H= has
 type =∀x : A, p x ∧ q x=, =H y= has type =p y ∧ q y=. This is the
-"elimination rule." Taking the left conjunct gives the desired
+elimination rule. Taking the left conjunct gives the desired
 conclusion, =p y=.
 
 Remember that expressions which differ up to renaming of bound
 variables are considered to be equivalent. So, for example, we could
 have used the same variable, =x=, in both the hypothesis and
 conclusion, or chosen the variable =z= instead of =y= in the proof:
-
 #+BEGIN_SRC lean
 import logic
 
 section
   variables (A : Type) (p q : A → Prop)
+
 -- BEGIN
   example : (∀x : A, p x ∧ q x) → ∀y : A, p y  :=
   assume H : ∀x : A, p x ∧ q x,
@@ -102,7 +101,6 @@ end
 
 As another example, here is how we can express the fact that a
 relation, =r=, is transitive:
-
 #+BEGIN_SRC lean
 section
   variables (A : Type) (r : A → A → Prop)
@@ -126,7 +124,6 @@ hypothesis =Hbc= yields a proof of the conlusion =r a c=.
 In situtations like this, it can be tedious to supply the arguments =a
 b c=, when they can be inferred from =Hab Hbc=. For that reason, it is
 common to make these arguments implicit:
-
 #+BEGIN_SRC lean
 section
   variables (A : Type) (r : A → A → Prop)
@@ -140,7 +137,6 @@ section
   check trans_r Hab Hbc
 end
 #+END_SRC
-
 The advantage is that we can simply write =trans_r Hab Hbc= as a proof
 of =r a c=. The disadvantage is that Lean does not have enough
 information to infer the types of the arguments in the expressions
@@ -163,7 +159,6 @@ section
   trans_r (trans_r Hab (symm_r Hcb)) Hcd
 end
 #+END_SRC
-
 You might want to try to prove some of these equivalences:
 #+BEGIN_SRC lean
 import logic
@@ -204,7 +199,6 @@ section
 end
 #+END_SRC
 
-
 ** Equality
 
 Let us now turn to one of the most fundamental relations defined in
@@ -221,11 +215,11 @@ check eq.refl
 check eq.symm
 check eq.trans
 #+END_SRC
-
 Thus, for example, we can specialize the example from the previous section
 to the equality relation:
 #+BEGIN_SRC lean
-example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : a = d :=
+example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : 
+  a = d :=
 eq.trans (eq.trans Hab (eq.symm Hcb)) Hcd
 #+END_SRC
 
@@ -233,24 +227,26 @@ If we "open" the eq namespace, the names become shorter:
 #+BEGIN_SRC lean
 open eq
 
-example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : a = d :=
+example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : 
+  a = d :=
 trans (trans Hab (symm Hcb)) Hcd
 #+END_SRC
 Lean even defines convenient notation for writing proofs like this:
 #+BEGIN_SRC lean
 open eq.ops
 
-example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : a = d :=
+example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : 
+  a = d :=
 Hab ⬝ Hcb⁻¹ ⬝ Hcd
 #+END_SRC
 You can use =\tr= to enter the transitivity dot, and =\sy= to enter
 the inverse/symmetry symbol.
 
 Reflexivity is more powerful than it looks. Recall that terms in the
-Calculus of Constructions have a computational interpretation, and
-that the logical framework treats terms with a common reduct as the
-same. As a result, some nontrivial identities can be proved by
-reflexivity:
+Calculus of Inductive Constructions have a computational
+interpretation, and that the logical framework treats terms with a
+common reduct as the same. As a result, some nontrivial identities can
+be proved by reflexivity:
 #+BEGIN_SRC lean
 import data.nat data.prod
 open nat prod
@@ -301,9 +297,9 @@ import data.nat
 open nat eq.ops
 
 example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-have H1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, from !mul.distr_left,
+have H1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, from !mul.left_distrib,
 have H2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y),
-  from !mul.distr_right ▸ !mul.distr_right ▸ H1,
+  from !mul.right_distrib ▸ !mul.right_distrib ▸ H1,
 !add.assoc⁻¹ ▸ H2
 #+END_SRC
 
@@ -324,15 +320,14 @@ meant to be composed by basic principles such as the transitivity of
 ===. In Lean, a calculation proof starts with the keyword =calc=, and has
 the following syntax:
 
-#+BEGIN_SRC lean
+#+BEGIN_SRC text
 calc
   <expr>_0  'op_1'  <expr>_1  ':'  <proof>_1
     '...'   'op_2'  <expr>_2  ':'  <proof>_2
      ...
     '...'   'op_n'  <expr>_n  ':'  <proof>_n
 #+END_SRC
-
-Each =<proof>_i= is a proof for =<expr>_{i-1} op_i <expr>_i=. he
+Each =<proof>_i= is a proof for =<expr>_{i-1} op_i <expr>_i=. The
 =<proof>_i= may also be of the form ={ <pr> }=, where =<pr>= is a
 proof for some equality =a = b=. The form ={ <pr> }= is just syntactic
 sugar for =eq.subst <pr> (refl <expr>_{i-1})= In other words, we are
@@ -340,7 +335,6 @@ claiming we can obtain =<expr>_i= by replacing =a= with =b= in
 =<expr>_{i-1}=.
 
 Here is an example:
-
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -364,7 +358,6 @@ end
 
 The =calc= command can be configured for any relation that supports
 some form of transitivity. It can even combine different relations.
-
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -373,20 +366,18 @@ theorem T2 (a b c : nat) (H1 : a = b) (H2 : b = c + 1) : a ≠ 0 :=
 calc
   a     = b      : H1
     ... = c + 1  : H2
-    ... = succ c : add.one c
+    ... = succ c : add_one c
     ... ≠ 0      : succ_ne_zero c
 #+END_SRC
 
-The =calc= command offers some nice additional features. If the
-justification for a line of a calculations proof is =foo=, =calc= will
-try adding implicit arguments if =foo= alone fails to do the job. If
-that doesn't work, =calc= will try the symmetric version, =foo⁻¹=,
-again adding arguments if necessary. If that doesn't work, =calc=
-proceeds to try ={foo}= and ={foo⁻¹}=, again, adding arguments if
-necessary. This can simplify the presentation of a =calc= proof
-considerably. Consider, for example, the following proof of the
-identity in the last section:
-
+Lean offers some nice additional features. If the justification for a
+line of a calculations proof is =foo=, Lean will try adding implicit
+arguments if =foo= alone fails to do the job. If that doesn't work,
+Lean will try the symmetric version, =foo⁻¹=, again adding arguments
+if necessary. If that doesn't work, Lean proceeds to try ={foo}= and
+={foo⁻¹}=, again, adding arguments if necessary. This can simplify the
+presentation of a =calc= proof considerably. Consider, for example,
+the following proof of the identity in the last section:
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -394,23 +385,20 @@ open nat
 -- BEGIN
 example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
 calc
-  (x + y) * (x + y) = (x + y) * x + (x + y) * y  : mul.distr_left
-    ... = x * x + y * x + (x + y) * y            : mul.distr_right
-    ... = x * x + y * x + (x * y + y * y)        : mul.distr_right
+  (x + y) * (x + y) = (x + y) * x + (x + y) * y  : mul.left_distrib
+    ... = x * x + y * x + (x + y) * y            : mul.right_distrib
+    ... = x * x + y * x + (x * y + y * y)        : mul.right_distrib
     ... = x * x + y * x + x * y + y * y          : add.assoc
 -- END
 #+END_SRC
-
 As an exercise, we suggest carrying out a similar expansion of =(x -
 y) * (x - y)=, using the theorems =mul_sub_distr_right= and
 =mul_sub_distr_right= in the module [[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]].
-
 
 ** The Simplifier
 
 [TO DO: this section needs to be written. Emphasize that the
 simplifier can be used in conjunction with calc.]
-
 
 ** The Existential Quantifier
 
@@ -423,33 +411,31 @@ As you should by now expect, the library includes both an introduction
 rule and an elimination rule. The introduction rule is
 straightforward: to prove =∃x : A, p x=, it suffices to provide a
 suitable term =t= and a proof of =p t=. Here are some examples:
-
 #+BEGIN_SRC lean
 import data.nat
 open nat
 
 example : ∃x, x > 0 :=
 have H : 1 > 0, from succ_pos 0,
-exists_intro 1 H
+exists.intro 1 H
 
 example (x : ℕ) (H : x > 0) : ∃y, y < x :=
-exists_intro 0 H
+exists.intro 0 H
 
 example (x y z : ℕ) (Hxy : x < y) (Hyz : y < z) : ∃w, x < w ∧ w < z :=
-exists_intro y (and.intro Hxy Hyz)
+exists.intro y (and.intro Hxy Hyz)
 
-check @exists_intro
+check @exists.intro
 #+END_SRC
-
-Note that =exists_intro= has implicit arguments: Lean has to infer the
+Note that =exists.intro= has implicit arguments: Lean has to infer the
 predicate =p : A → Prop= in the conclusion =∃x, p x=. This is not a
 trivial affair. For example, if we have have =Hg : g 0 0 = 0= and
-write =exists_intro 0 Hg=, there are different many possible values for the
-predicate =p=, corresponding to the theorems =∃ x, g x x = x=, =∃ x, g x x = 0=,
-=∃ x, g x 0 = x=, etc. Lean uses the context to infer which one is
-appropriate. This is illustrated in the following example, in which we
-set the optoin =pp.implicit= to true to ask Lean's pretty-printer to
-show the implicit arguments.
+write =exists.intro 0 Hg=, there are many possible values for the
+predicate =p=, corresponding to the theorems =∃ x, g x x = x=, =∃ x, g
+x x = 0=, =∃ x, g x 0 = x=, etc. Lean uses the context to infer which
+one is appropriate. This is illustrated in the following example, in
+which we set the option =pp.implicit= to true to ask Lean's
+pretty-printer to show the implicit arguments.
 
 #+BEGIN_SRC lean
 import data.nat
@@ -459,10 +445,10 @@ section
   variable g : ℕ → ℕ → ℕ
   variable Hg : g 0 0 = 0
 
-  theorem gex1 : ∃ x, g x x = x := exists_intro 0 Hg
-  theorem gex2 : ∃ x, g x 0 = x := exists_intro 0 Hg
-  theorem gex3 : ∃ x, g 0 0 = x := exists_intro 0 Hg
-  theorem gex4 : ∃ x, g x x = 0 := exists_intro 0 Hg
+  theorem gex1 : ∃ x, g x x = x := exists.intro 0 Hg
+  theorem gex2 : ∃ x, g x 0 = x := exists.intro 0 Hg
+  theorem gex3 : ∃ x, g 0 0 = x := exists.intro 0 Hg
+  theorem gex4 : ∃ x, g x x = 0 := exists.intro 0 Hg
 
   set_option pp.implicit true  -- display implicit arguments
   check gex1
@@ -472,67 +458,63 @@ section
 end
 #+END_SRC
 
-We can view =exists_intro= (aka existential introduction) as an
-information-hiding procedure: we are "hiding" the witness to the body
-of the assertion. The existential elimination rule, =exists_elim=,
-performs the opposite operation. It allows us to prove a proposition
-=q= from =∃x : A, p x=, by showing that =q= follows from =p w=, for an
-arbitrary value =w=. Roughly speaking, since we know there is an =x=
-satisfying =p x=, we can give it a name, say, =w=. Showing that =q=
-follows from =p w=, where =q= does not mention =w=, is tantamount to
-showing the =q= follows from the existence of such an =x=.
+We can view =exists.intro= as an information-hiding operation: we are
+"hiding" the witness to the body of the assertion. The existential
+elimination rule, =exists.elim=, performs the opposite operation. It
+allows us to prove a proposition =q= from =∃x : A, p x=, by showing
+that =q= follows from =p w= for an arbitrary value =w=. Roughly
+speaking, since we know there is an =x= satisfying =p x=, we can give
+it a name, say, =w=. Showing that =q= follows from =p w=, where =q=
+does not mention =w=, is tantamount to showing the =q= follows from
+the existence of any such =x=.
 
-(It may be helpful to compare the exists elimination rule to the or
-elimination rule. The assertion =∃x : A, p x= can be thought of as a
-big disjunction of the propositions =p a=, as =a= ranges over all the
-elements of =A=.)
+(It may be helpful to compare the exists-elimination rule to the
+or-elimination rule. The assertion =∃x : A, p x= can be thought of as
+a big disjunction of the propositions =p a=, as =a= ranges over all
+the elements of =A=.)
 
 In the following example, we define =even a= as =∃ b, a = 2*b=, and
 then we show that the sum of two even numbers is an even number.
-
 #+BEGIN_SRC lean
 import data.nat
 open nat
 
-definition even (a : nat) := ∃ b, a = 2*b
+definition even (a : nat) := ∃b, a = 2*b
 
 theorem even_plus_even {a b : nat} (H1 : even a) (H2 : even b) : even (a + b) :=
-exists_elim H1 (fun (w1 : nat) (Hw1 : a = 2*w1),
-exists_elim H2 (fun (w2 : nat) (Hw2 : b = 2*w2),
-  exists_intro (w1 + w2)
+exists.elim H1 (fun (w1 : nat) (Hw1 : a = 2*w1),
+exists.elim H2 (fun (w2 : nat) (Hw2 : b = 2*w2),
+  exists.intro (w1 + w2)
     (calc
       a + b = 2*w1 + b      : Hw1
         ... = 2*w1 + 2*w2   : Hw2
-        ... = 2*(w1 + w2)   : mul.distr_left)))
+        ... = 2*(w1 + w2)   : mul.left_distrib)))
 #+END_SRC
 
-Lean provides syntactic sugar for =exists_elim=, with expressions of
+Lean provides syntactic sugar for =exists.elim=, with expressions of
 the form =obtain _, from _, _=. With this syntax, the example above
-can be presented in a more natural way, as follows:
-
+can be presented in a more natural way:           :
 #+BEGIN_SRC lean
 import data.nat
 open nat
 
-definition even (a : nat) := ∃ b, a = 2*b
+definition even (a : nat) := ∃b, a = 2*b
 
-theorem even_plus_even {a b : nat} (H1 : even a) (H2 : even b) : even (a + b) :=
-exists_elim H1 (fun (w1 : nat) (Hw1 : a = 2*w1),
-exists_elim H2 (fun (w2 : nat) (Hw2 : b = 2*w2),
+theorem even_plus_even {a b : nat} (H1 : even a) (H2 : even b) : 
+  even (a + b) :=
 obtain (w1 : nat) (Hw1 : a = 2*w1), from H1,
 obtain (w2 : nat) (Hw2 : b = 2*w2), from H2,
-exists_intro (w1 + w2)
+exists.intro (w1 + w2)
   (calc
     a + b = 2*w1 + b      : Hw1
       ... = 2*w1 + 2*w2   : Hw2
-      ... = 2*(w1 + w2)   : mul.distr_left)))
+      ... = 2*(w1 + w2)   : mul.left_distrib)
 #+END_SRC
 
 What follows are some common identities involving the existential
 quantifier. We encourage you to prove as many as you can. Be careful:
 many of them are nonconstructive, and require the use of the law of
 the excluded middle.
-
 #+BEGIN_SRC lean
 import logic
 

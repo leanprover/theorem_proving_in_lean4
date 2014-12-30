@@ -8,21 +8,20 @@ You are now familiar with the fundamentals of dependent type theory,
 both as a language for defining mathematical objects and a language
 for constructing proofs. The one thing you are missing is a mechanism
 for defining new data types. We will fill this gap in the next chapter,
-which introduces the notion of an /inductive/ data type. But first, in
+which introduces the notion of an /inductive data type/. But first, in
 this chapter, we take a break from the mechanics of type theory to
-explore pragmatic aspects of interaction with Lean.
+explore some pragmatic aspects of interacting with Lean.
 
 ** Displaying Information
 
 There are a number of ways in which you can query Lean for information
-about its current state and the defined objects and theorems that are
+about its current state and the objects and theorems that are
 available in the current context. You have already seen two of the
-most common ones, =check= and =eval=. We remind you that =eval= is
-often used in conjunction with the =@= operator, which makes all of
-the arguments to a theorem or definition explicit. In addition, Lean
+most common ones, =check= and =eval=. Remember that =eval= is often
+used in conjunction with the =@= operator, which makes all of the
+arguments to a theorem or definition explicit. In addition, Lean
 offers a =print definition= command, that shows the value of a defined
 symbol.
-
 #+BEGIN_SRC lean
 import data.nat
 
@@ -55,7 +54,6 @@ eval foo
 eval (foo @nat.zero)
 print definition foo
 #+END_SRC
-
 Note that =print definition= only works with objects introduced with
 =definition=, =theorem=, and the like. For example, entering =print
 definition eq= or =print definition and.intro= yields an error. This
@@ -64,7 +62,7 @@ symbols introduced axiomatically by the Lean's inductive definition
 package, which we will describe in the next chapter.
 
 There are other useful =print= commands:
-#+BEGIN_SRC txt
+#+BEGIN_SRC text
 print notation               : display all notation
 print notation <tokens>      : display notation using any of the tokens
 print axioms                 : display assumed axioms
@@ -77,7 +75,7 @@ print instances <class name> : display all instances of the given class
 print fields <structure>     : display all "fields" of a structure
 #+END_SRC
 We will discuss classes, instances, and structures in a later
-chapter. Here are exmaples of how the =print= commands are used: 
+chapter. Here are examples of how the =print= commands are used:
 #+BEGIN_SRC lean
 import standard algebra.ring
 
@@ -103,7 +101,7 @@ The syntax is as follows:
 #+BEGIN_SRC text
 find_decl <pattern>  [, filter]*
 #+END_SRC
-where =<pattern>= is just an expression with "holes" (underscores),
+where =<pattern>= is an expression with "holes" (underscores),
 and a filter is of the form
 #+BEGIN_SRC text
 + id  (id is a substring of the declaration)
@@ -122,11 +120,10 @@ find_decl (_ * _) = _, -assoc
 find_decl _ < succ _, +imp, -le
 #+END_SRC
 
-
 ** Setting Options
 
-Lean also maintains a number of internal variables that can be set by
-users to control its behavior. The syntax is
+Lean maintains a number of internal variables that can be set by users
+to control its behavior. The syntax for doing so is as follows:
 #+BEGIN_SRC text
 set option <name> <value>
 #+END_SRC
@@ -134,14 +131,12 @@ set option <name> <value>
 One very useful family of options controls the way Lean's /pretty-
 printer/ displays terms. The following options take an input of true
 or false:
-
 #+BEGIN_SRC text
-pp.implicit : display implicit arguments
+pp.implicit  : display implicit arguments
 pp.universes : display hidden universe parameters
 pp.coercions : show coercions
-pp.notation : display output using defined notations
+pp.notation  : display output using defined notations
 #+END_SRC
-
 In Lean, /coercions/ can be inserted automatically to cast an element
 of one data type to another, for example, to cast an element of =nat=
 to an element of =int=. We will discuss coercions in a later
@@ -162,12 +157,10 @@ set_option pp.numerals false
 check 2 + 2 = 4
 eval (λx, x + 2) = (λx, x + 3)
 #+END_SRC
-
 Pretty printing additional information is often very useful when you
 are debugging a proof, or trying to understand a cryptic error
 message. Too much information can be overwhelming, though, and Lean's
 defaults are generally sufficient for ordinary interactions.
-
 
 ** Using the Library
 
@@ -177,9 +170,9 @@ command at the beginning of a file imports previously compiled results
 from other files, and that importing is transitive; if you import
 =foo= and =foo= imports =bar=, then the definitions and theorems from
 =bar= are available to you as well. But the act of opening a namespace
--- which provides shorter names, notations, rewrite rules, and more --
-does not carry over. In each file, you need to open the namespaces you
-wish to use.
+--- which provides shorter names, notations, rewrite rules, and more
+--- does not carry over. In each file, you need to open the namespaces
+you wish to use.
 
 For many purposes, =import standard= and =open standard= will give you
 a good set of defaults. Even so, it is important for you to be
@@ -195,9 +188,9 @@ discuss the library for homotopy type theory in a later chapter.
 
 There are a number of ways to explore the contents of the standard
 library. You can find the file structure online, on github:
-#+BEGIN_CENTER
+#+BEGIN_QUOTE
 [[https://github.com/leanprover/lean/tree/master/library]]
-#+END_CENTER
+#+END_QUOTE
 You can see the contents of the directories and files using github's
 browser interface. If you have installed Lean on your own computer,
 you can find the library in the =lean= folder, and explore it
@@ -207,9 +200,9 @@ provide additional information.
 Alternatively, there are "markdown" files in the library that provide
 links to the same files but list them in a more natural order, and
 provide additional information and annotations.
-#+BEGIN_CENTER
+#+BEGIN_QUOTE
 [[https://github.com/leanprover/lean/blob/master/library/library.md]]
-#+END_CENTER
+#+END_QUOTE
 You can again browse these through the github interface, or with a
 markdown reader on your computer.
 
@@ -219,7 +212,6 @@ tab completion in Lean's Emacs mode, which is discussed in the next
 section. To start with, common "axiomatic" properties of an operation
 like conjunction or multiplication are put in a namespace that begins
 with the name of the operation:
-
 #+BEGIN_SRC lean
 import standard algebra.ordered_ring
 open nat algebra
@@ -228,14 +220,11 @@ check and.comm
 check mul.comm
 check and.assoc
 check mul.assoc
-check @mul.left_id
 check succ.inj -- successor is injective
 check @mul.left_cancel -- multiplication is left cancelative
 #+END_SRC
-
 In particular, this includes =intro= and =elim= operations for logical
 connectives, and properties of relations:
-
 #+BEGIN_SRC lean
 import standard algebra.ordered_ring
 open nat algebra
@@ -255,22 +244,20 @@ check eq.trans
 
 For the most part, however, we rely on descriptive names. Often the
 name of theorem simply describes the conclusion:
-
 #+BEGIN_SRC lean
 import standard algebra.ordered_ring
 open nat algebra
 
 -- BEGIN
 check succ_ne_zero
-check @mul_zero_eq
+check @mul_zero
+check @mul_one
 check @sub_add_eq_add_sub
 check @le_iff_lt_or_eq
 -- END
 #+END_SRC
-
 If only a prefix of the description is enough to convey the meaning,
 the name may be made even shorter:
-
 #+BEGIN_SRC lean
 import standard algebra.ordered_ring
 open nat algebra
@@ -280,11 +267,9 @@ check @neg_neg
 check pred.succ     -- TO DO: will be pred_succ
 -- END
 #+END_SRC
-
 Sometimes, to disambiguate the name of theorem or better convey the
 intended reference, it is necessary to describe some of the
 hypotheses. The word "of" is used to separate these hypotheses:
-
 #+BEGIN_SRC lean
 import standard algebra.ordered_ring
 open nat algebra
@@ -293,29 +278,25 @@ open nat algebra
 check lt_of_succ_le
 check @lt_of_not_le
 check @lt_of_le_of_ne
-check @add_lt_add_of_lt_of_lt
+check @add_lt_add_of_lt_of_le
 -- END
 #+END_SRC
-
 Sometimes abbreviations or alternative descriptions are easier to work
 with. For example, we use =pos=, =neg=, =nonpos=, =nonneg= rather than
 =zero_lt=, =lt_zero=, =le_zero=, and =zero_le=.
-
 #+BEGIN_SRC lean
 import standard algebra.ordered_ring
 open nat algebra
 
 -- BEGIN
-check @mul_pos_of_pos_of_pos
+check @mul_pos
 check @mul_nonpos_of_nonneg_of_nonpos
 check @add_lt_of_lt_of_nonpos
 check @add_lt_of_nonpos_of_lt
 -- END
 #+END_SRC
-
 Sometimes the word "left" or "right" is helpful to describe variants
 of a theorem.
-
 #+BEGIN_SRC lean
 import standard algebra.ordered_ring
 open nat algebra
@@ -327,7 +308,6 @@ check @le_of_mul_le_mul_left
 check @le_of_mul_le_mul_right
 -- END
 #+END_SRC
-
 
 ** Lean's Emacs Mode
 
@@ -342,32 +322,33 @@ If you have never used the Emacs text editor before, you should spend
 some time experimenting with it. Emacs is an extremely powerful text
 editor, but it can also be overwhelming. There are a number of
 introductory tutorials on the web, including these:
-#+BEGIN_CENTER
+#+BEGIN_QUOTE
 [[http://www.gnu.org/software/emacs/tour/]]
 
 [[http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/]]
 
 http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf
-#+END_CENTER
-But you can get pretty far simply using the menus at the top of the
+#+END_QUOTE
+You can get pretty far simply using the menus at the top of the
 screen for basic editing and file management. Those menus list
 keyboard-equivalents for the commands. Notation like "C-x", short for
 "control x," means "hold down the control key while typing x." The
 notation "M-x", short for "Meta x," means "hold down the Alt key while
 typing x," or, equivalently, "press the Esc key, followed by x." For
 example, the "File" menu lists "C-c C-s" as a keyboard-equivalent for
-the save file command.
+the "save file" command.
 
-There are a number of benefits to using Emacs instead of the web
-interface. Perhaps the most important is file management. The web interface
-imports the entire standard library internally, which is why some
-examples in this tutorial have to put examples in a namespace, "hide,"
-to avoid conflicting with objects already defined in the standard
-library.  Moreover, the web interface only operates on one file at a
-time. Using the Emacs editor, you can create and edit Lean theory
-files anywhere on your file system, as with any editor or word
-processor. From these files, you can import pieces of the library at
-will, as well as your own theories, defined in separate files.
+There are a number of benefits to using the native version of Lean
+instead of the web interface. Perhaps the most important is file
+management. The web interface imports the entire standard library
+internally, which is why some examples in this tutorial have to put
+examples in a namespace, "hide," to avoid conflicting with objects
+already defined in the standard library. Moreover, the web interface
+only operates on one file at a time. Using the Emacs editor, you can
+create and edit Lean theory files anywhere on your file system, as
+with any editor or word processor. From these files, you can import
+pieces of the library at will, as well as your own theories, defined
+in separate files.
 
 To use the Emacs with Lean, you simply need to create a file with the
 extension ".lean" and edit it. (For files that should be checked in
@@ -375,14 +356,13 @@ the homotopy type theory framework, use ".hlean" instead.) For
 example, you can create a file by typing =emacs my_file.lean= in a
 terminal window, in the directory where you want to keep the
 file. Assuming everything has been installed correctly, Emacs will
-start up in Lean mode, already checking your (still empty) file in the
-background.
+start up in Lean mode, already checking your file in the background.
 
 You can then start typing, or copy any of the examples in this
 tutorial. (In the latter case, make sure you include the =import= and
-=open= commands that are sometimes hidden in the html.) Lean mode
-offers syntax highlighting, so command, identifiers, and so on are
-helpfullly color-coded. Any errors that Lean detects are subtly
+=open= commands that are sometimes hidden in the text.) Lean mode
+offers syntax highlighting, so commands, identifiers, and so on are
+helpfully color-coded. Any errors that Lean detects are subtly
 underlined in red, and the editor displays an exclamation mark in the
 left margin. As you continue to type and eliminate errors, these
 annotations magically disappear.
@@ -395,16 +375,17 @@ compilation errors.
 It may be disconcerting to see a perfectly good proof suddenly "break"
 when you change a single character. If this proof is in the middle of
 a file you are working on, the Lean interface will moreover raise an
-error at every subsequent reference to the theorem. But these complaints
-vanish as soon as the correctness of the theorem is restored. Lean is
-quite fast and caches previous work to speed up compilation, and
-changes you make are registered almost instantaneously.
+error at every subsequent reference to the theorem. But these
+complaints vanish as soon as the correctness of the theorem is
+restored. Lean is quite fast and caches previous work to speed up
+compilation, and changes you make are registered almost
+instantaneously.
 
 The Emacs Lean mode maintains a continuous dialog with a background
 Lean process and uses it to present useful information to you. For
-example, if you put your cursor on any identifier -- a theorem name, a
-defined symbol, or a variable -- Emacs displays the its type in the
-information line at the bottom. If you put the cursor on the openening
+example, if you put your cursor on any identifier --- a theorem name,
+a defined symbol, or a variable --- Emacs displays the its type in the
+information line at the bottom. If you put the cursor on the opening
 parenthesis of an expression, Emacs displays the type of the
 expression.
 
@@ -435,17 +416,16 @@ autocompletion popup window: if you start typing an identifier, press
 the tab key, choose a completion from the list of options, and press
 "M-.", you are taken to the symbol's definition. These commands and
 others are summarized here:
-#+BEGIN_CENTER
+#+BEGIN_QUOTE
 [[https://github.com/leanprover/lean/blob/master/src/emacs/README.md]]
-#+END_CENTER
+#+END_QUOTE
 
 This is a good place to mention another trick that is sometimes useful
 when editing long files. In Lean, the "exit" command halts processing
-of the file and returns. If you are making changes at the top of a
+of the file abruptly. If you are making changes at the top of a
 long file and want to defer checking of the remainder of the file
 until you are done making those changes, you can temporarily insert an
 "exit".
-
 
 ** Working with Multiple Files
 
@@ -467,7 +447,7 @@ background process to ensure that whenever you are working on a file
 in this folder, compiled versions of all the files it depends on are
 available and up to date.
 
-Suppose you are editing =foo.lean=, which imports on =bar.lean=. You
+Suppose you are editing =foo.lean=, which imports =bar.lean=. You
 can switch to =bar= and make additions or corrections to that file,
 then switch back to =foo= and continue working. The process =linja=,
 based on the =ninja= build system, ensures that =bar= is recompiled
@@ -477,27 +457,26 @@ Whenever you enter =import foo= at the top of a =.lean= file, Lean
 searches both the library directory and the current directory for
 =foo.lean=. If you want to specify that the location of =foo= is
 relative to the current directory, type =import .foo=. It is perfectly
-o.k. if your project folder has subfolders, as long as the build file
--- the one you created with "create project" -- sits at the top. To
+o.k.~if your project folder has subfolders, as long as the build file
+--- the one you created with "create project" --- sits at the top. To
 import =foo= from folder =bar= relative to the current directory, type
 =import .bar.foo=. To import =foo= from folder =bar= in the parent of
 the current directory, type =import ..bar.foo=, and so on.
 
 Incidentally, outside of Emacs, from a terminal window, you can type
 =linja= anywhere in your project folder to ensure that all your files
-have compiled, =.olean= counterparts, and that they are up to date.
-
+have compiled =.olean= counterparts, and that they are up to date.
 
 ** Notation, Overloads, and Coercions
 
 Lean's parser is an instance of a Pratt parser, a non-backtracking
 parser that is fast and flexible. You can read about Pratt parsers in
 a number of places online, such as here:
-#+BEGIN_CENTER
+#+BEGIN_QUOTE
 [[http://en.wikipedia.org/wiki/Pratt_parser]]
 
 [[http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing]]
-#+END_CENTER
+#+END_QUOTE
 Identifiers can include any alphanumeric characters, including Greek
 characters (other than Π, Σ, and λ, which, as we have seen, have a
 special meaning in the dependent type theory). They can also include
@@ -506,7 +485,6 @@ by the desired subscripted character.
 
 Lean's parser is moreover extensible, which is to say, we can define
 new notation.
-
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -520,7 +498,6 @@ infix `<*>`:50 := mul_square
 eval [2 ** 3]
 eval 2 <*> 3
 #+END_SRC
-
 In this example, the =notation= command defines a complex binary
 notation for multiplying and adding one. The =infix= command declares
 a new infix operator, with precedence 50, which associates to the
@@ -532,7 +509,6 @@ If you declare these notations in a namespace, the notation is only
 operant when the namespace is open. You can declare temporary notation
 using the keyword "[local]", in which case the notation is operant
 only in the current file.
-
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -546,9 +522,9 @@ infix [local] `<*>`:50 := λa b : ℕ, a * a * b * b
 The file =reserved_notation.lean= in the =init= folder of the library
 declares the left-binding powers of a number of common symbols that
 are used in the library.
-#+BEGIN_CENTER
+#+BEGIN_QUOTE
 https://github.com/leanprover/lean/blob/master/library/init/reserved_notation.lean
-#+END_CENTER
+#+END_QUOTE
 You are welcome to overload these symbols for your own use, but you
 cannot change their right-binding power.
 
@@ -561,7 +537,6 @@ discussion of =list= in the next chapter for an example.
 Notation in Lean can be /overloaded/, which is to say, the same
 notation can be used for more than one purpose. In that case, Lean's
 elaborator will try to disambiguate based on context.
-
 #+BEGIN_SRC lean
 import data.nat data.int
 open nat int
@@ -582,7 +557,6 @@ parses numerals like =123= to a special datatype known as =num=, which
 can, in turn, be coerced to the natural numbers, integers, reals and
 so on. Similarly, in any expression =a + n= where =a= is an integer
 and =n= is a natural number, =n= is coerced to an integer.
-
 #+BEGIN_SRC lean
 import data.nat data.int
 open nat int
@@ -653,7 +627,6 @@ In that case, the scope of the declaration is only the current section
 or namespace, or the current file if the declaration is at "top
 level". To make the declaration persist to the whole namespace, use
 the =[persistent]= modifier:
-
 #+BEGIN_SRC lean
 import data.bool data.nat
 open bool nat
@@ -692,7 +665,6 @@ notation =#<namespace>=, to specify the namespace in which notation is
 to be interpreted. Another is to replace the notation with an explicit
 function name. Yet a third is to use the =typeof= notation to indicate
 the intended type.
-
 #+BEGIN_SRC lean
 import data.nat data.int
 open nat int
@@ -725,5 +697,3 @@ check nat.zero
 check typeof 0 : nat
 check typeof 0 : int
 #+END_SRC
-
-
