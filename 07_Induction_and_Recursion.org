@@ -23,7 +23,7 @@ more convenient to use.
 
 [TODO: write this section.]
 
-** Structual induction 
+** Structural induction 
 
 [TODO: write this section.]
 
