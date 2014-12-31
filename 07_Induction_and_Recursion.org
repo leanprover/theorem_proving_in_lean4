@@ -19,14 +19,14 @@ functions and writing inductive proofs. Behind the scenes, these are
 "compiled" down to constructors and recursors, but they can be much
 more convenient to use.
 
-** Structural recursion 
+** Structural Recursion 
 
 [TODO: write this section.]
 
-** Structural induction 
+** Structural Induction 
 
 [TODO: write this section.]
 
-** Well-founded induction and recursion
+** Well-Founded Induction and Recursion
 
 [TODO: write this section.]

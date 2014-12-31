@@ -7,7 +7,7 @@
 
 /Formal verification/ involves the use of logical and computational
 methods to establish claims that are expressed in precise mathematical
-terms. These can include ordinary mathematical theorems as well as
+terms. These can include ordinary mathematical theorems, as well as
 claims that pieces of hardware or software, network protocols, and
 mechanical and hybrid systems meet their specifications. In practice,
 there is not a sharp distinction between verifying a piece of

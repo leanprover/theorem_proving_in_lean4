@@ -141,7 +141,7 @@ function application and abstraction can conveniently help us keep
 track of which elements of /Prop/ are inhabited. So constructing an
 element =t : p= tells us that =p= is indeed true. You can think of the
 inhabitant of =p= as being the "fact that =p= is true." A proof of =p
-→ q= has uses "the fact that =p= is true" to obtain "the fact that =q=
+→ q= uses "the fact that =p= is true" to obtain "the fact that =q=
 is true."
 
 Indeed, if =p : Prop= is any proposition, Lean's kernel treats any two
@@ -574,7 +574,7 @@ only an introduction rule, =true.intro : true=, sometimes abbreviated
 =trivial : true=. In other words, =true= is simply true, and has a
 canonical proof, =trivial=.
 
-*** Logical equivalence
+*** Logical Equivalence
 
 The expression =iff.intro H1 H2= produces a proof of =p ↔ q= from
 =H1 : p → q= and =H2 : q → p=. The expression =iff.elim_left H=

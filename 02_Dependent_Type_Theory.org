@@ -25,7 +25,7 @@ But for many purposes, including formal theorem proving, it is better
 to have an infrastructure that helps us manage and keep track of the
 various kinds of mathematical objects we are working with. "Type
 theory" gets its name from the fact that every expression has an
-associated /type/. For example, in a given contenxt, =x + 0= may
+associated /type/. For example, in a given context, =x + 0= may
 denote a natural number and =f= may denote a function on the natural
 numbers.
 
