@@ -1,0 +1,946 @@
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
+#+OPTIONS: toc:nil
+#+Title: Theorem Proving in Lean
+
+* Building Theories and Proofs
+
+In this chapter, we return to a discussion of pragmatic features of
+Lean, which make support the development of structures theories and
+proofs.
+
+** More on Coercions
+
+In Section [[Notation, Overloads, and Coercions]], we discussed coercions
+briefly, and noted that there are restrictions on the types that one
+can coerce from and to. Now that we have discussed inductive types in
+the Calculus of Constructions, we can be more precise. 
+
+First, let us introduce some terminology. An ordinary /class/ is an
+inductive datatype. An inductive data type without parameters or
+indices, like =nat= or =bool=, has only one instance. (So =nat= and
+=bool= are both classes and instances.) Inductive types with
+parameters and/or indices have multiple instances; for example, =list
+nat= and =list bool= are both instances of the class list. There are
+also two special classes, namely, the class of /sorts/, whose
+instances are =Type.{i}= for the various values of =i=, and the class
+of /function types/, whose instances are the Pi types.
+
+Lean allows users to define three kinds of coercions:
++ coercions from a class to another class
++ coercions from a class to the class of sorts
++ coercions from a class to the class of function types.
+A coercion of the first kind takes any element of an instance =A1= of
+the first class to an element of an instance =A2= of the second
+class. A coercion of the second kind takes any element of =A1= to a
+type. A coercion of the third kind takes any element of =A1= to a
+function. Let us consider each of these in turn.
+
+# TODO: should we use the terminology "instance"? It is confusing
+# because we also say, e.g., =nat.ring= is an instance of =Ring=.
+
+The first type of coercion allows us to write =f a= where =f= has type
+=Πx : A1, B x=, =a= has type =A2=, and =A1= and =A2= are instances of
+classes =C1= and =C2=, respectively. The idea is that the coercion
+from =C1= to =C2= tells us how to any element of an instance of =C1=
+as an element of a corresponding instance of =C2=. A standard example
+is the coercion from the class =nat= to the class =int=, which enables
+us to view any element of =nat= as an element of =int= via the usual
+embedding. Another example is the coercion from the class =list= to
+the class =set=, which tells us how to view any element of =list A= as
+an element of =set A= by taking the set of elements that occur in the
+list. These are the types of coercions we considered in Section
+[[Notation, Overloads, and Coercions]].
+
+# TODO: give Lean source for these examples.
+
+The second type of coercion, from a class =C= to =sort=, allows us to
+write =x : t= whenever =t= belongs to an instance of a class each of whose
+elements can be associated with a =Type=. We will see in
+a later chapter that this is very useful when defining algebraic
+structures in which one component, the carrier of the structure, is a
+=Type=. For example, we can define a semigroup as follows:
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+
+notation a `*` b := Semigroup.mul _ a b
+#+END_SRC
+In other words, a semigroup consists of a type, =carrier=, and a
+multiplication, =mul=, with the property that the multiplication is
+associative. The =notation= command allows us to write =a * b= instead
+of =Semigroup.mul S a b= whenever we have =a b : carrier S=; notice
+that Lean can infer the argument =S= from the types of =a= and =b=.
+The function =Semigroup.carrier= maps the class =Semigroup= to the
+sort =Type=:
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+
+notation a `*` b := Semigroup.mul _ a b
+
+-- BEGIN
+check Semigroup.carrier
+-- END
+#+END_SRC
+If we declare this function to be a coercion, then whenever we have a
+semigroup =S : Semigroup=, we can write =a : S= instead of =a :
+Semigroup.carrier S=:
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+
+notation a `*` b := Semigroup.mul _ a b
+
+-- BEGIN
+coercion Semigroup.carrier
+
+example (S : Semigroup) (a b : S) : a * b * a = a * (b * a) :=
+!Semigroup.mul_assoc
+-- END
+#+END_SRC
+It is the coercion that makes it possible to write =(a b : S)=.
+
+The third type of coercion makes it possible to write =t a= where =t=
+belongs to an instance of a class whose elements can be viewed as
+functions. Continuing the example above, we can define the notion of a
+morphism between semigroups:
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+
+notation a `*` b := Semigroup.mul _ a b
+
+coercion Semigroup.carrier
+
+-- BEGIN
+structure morphism (S1 S2 : Semigroup) : Type :=
+(mor : S1 → S2)
+(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+-- END
+#+END_SRC
+In other words, a morphism from =S1= to =S2= is a function from the
+carrier of =S1= to the carrier of =S2= (note the implicit coercion)
+that respects the multiplication. The projection =morphism.mor= takes
+a morphism to the underlying function:
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+
+notation a `*` b := Semigroup.mul _ a b
+
+coercion Semigroup.carrier
+
+structure morphism (S1 S2 : Semigroup) : Type :=
+(mor : S1 → S2)
+(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+
+-- BEGIN
+check morphism.mor
+-- END
+#+END_SRC
+As a result, it is a prime candidate for the third type of coercion. 
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+
+notation a `*` b := Semigroup.mul _ a b
+
+coercion Semigroup.carrier
+
+structure morphism (S1 S2 : Semigroup) : Type :=
+(mor : S1 → S2)
+(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+
+-- BEGIN
+coercion morphism.mor
+
+example (S1 S2 : Semigroup) (f : morphism S1 S2) (a : S1) :
+  f (a * a * a) = f a * f a * f a :=
+calc
+  f (a * a * a) = f (a * a) * f a : morphism.resp_mul f
+            ... = f a * f a * f a : morphism.resp_mul f
+-- END
+#+END_SRC
+With the coercion in place, we can write =f (a * a * a)= instead of
+=morphism.mor f (a * a * a)=. When the =morphism=, =f=, is used where
+a function is expected, Lean inserts the coercion.
+
+In the examples above, the coercion is only active in the current
+module (that is, file). Remember that to create a coercion that
+survives when the module is imported by another module, use the
+=persistent= modifier:
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+
+notation a `*` b := Semigroup.mul _ a b
+
+coercion Semigroup.carrier
+
+structure morphism (S1 S2 : Semigroup) : Type :=
+(mor : S1 → S2)
+(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+
+-- BEGIN
+coercion [persistent] morphism.mor
+-- END
+#+END_SRC
+You can also declare a persistent coercion using the =coercion=
+modifier when you define the function initially, as described in
+Section [[Notation, Overloads, and Coercions]]. Coercions that are defined
+in a namespace "live" in that namespace, and are made active when the
+namespace is opened.
+
+Remember also that you can
+instruct Lean's pretty-printer to show coercions with =set_option=,
+and you can print all the coercions in the environment using =print coercions=:
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+
+notation a `*` b := Semigroup.mul _ a b
+
+coercion Semigroup.carrier
+
+structure morphism (S1 S2 : Semigroup) : Type :=
+(mor : S1 → S2)
+(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+
+coercion morphism.mor
+
+-- BEGIN
+theorem test (S1 S2 : Semigroup) (f : morphism S1 S2) (a : S1) :
+  f (a * a * a) = f a * f a * f a :=
+calc
+  f (a * a * a) = f (a * a) * f a : morphism.resp_mul f
+            ... = f a * f a * f a : morphism.resp_mul f
+
+set_option pp.coercions true
+check test
+
+print coercions
+-- END
+#+END_SRC
+
+Lean will also chain coercions as necessary. You can think of the
+coercion declarations as forming a directed graph where the nodes are classes
+and the edges are the coercions between them. More precisely, the
+nodes are ordinary classes, plus two special classes, =sort-class=
+and =fun-class=, which are sinks in the graph. Internally, Lean
+automatically computes the transitive closure of this graph.
+
+** Elaboration and Unification
+
+When you enter an expression like =λx y z, f (x + y) z= for Lean to
+process, you are leaving information implicit. For example, the types
+of =x=, =y=, and =z= have to be inferred from the context, the
+notation =+= may be overloaded, and there may be implicit arguments to
+=f= that need to be filled in as well.
+
+The process of taking a partially-specified expression and inferring
+what is left implicit is known as /elaboration/. Lean's
+elaboration algorithm is powerful, but at the same time, subtle and
+complex. Working in a system of dependent type theory requires knowing
+what sorts of information the elaborator can reliably infer, as well
+as knowing how to respond to error messages that are raised when the
+elaborator fails. To that end, it will be helpful to have a general
+idea of how Lean's elaborator works.
+
+When Lean is parsing an expression, it first enters a preprocessing
+phase. First, the "holes" in a term --- the unspecified values --- are
+instantiated by /metavariables/ =?M1, ?M2, ?M3, ...=. Each overloaded
+notation is associated with a list of choices, that is, the possible
+interpretations. Similarly, Lean tries to detect the points where a
+coercion may need to be inserted in an application =s t=, to make the
+inferred type of =t= match the argument type of =s=. These become
+choice points too. If one possible outcome of the elaboration
+procedure is that no coercion is needed, then one of the choices on
+the list is the identity.
+
+After preprocessing, Lean extracts a list of constraints that need to
+be solved in order for the term to have a valid type. Each application
+term =s t= gives rise to a constraint =T1 = T2=, where =t= has type
+=T1= and =s= has type =Πx : T2, T3=. Notice that the expressions =T1=
+and =T2= will often contain metavariables; they may even be
+metavariables themselves. Moreover, a definition of the form
+~definition foo : T := t~ or a theorem of the form ~theorem bar : T :=
+t~ generates the constraint that the inferred type of =t= should be
+=T=.
+
+The elaborator now has a straightforward task: find expressions to
+substitute for all the metavariables so that all of the constraints
+are simultaneously satisifed. An assignment of terms to metavariables
+is known as a /substitution/, and the general task of finding a
+substitution that makes two expressions coincide is known as a
+/unification/ problem. (If only one of the expressions contains
+metavariables, it is a special case known as a /matching/ problem.)
+
+Some constraints are straightforwardly handled. If =f= and =g= are
+distinct constants, it is clear that there is no way to unify the
+terms =f s_1 ... s_m= and =g t_1 ... t_n=. On the other hand, one can
+unify =f s_1 ... s_m= and =f t_1 ... t_m= by unifying =s_1= with
+=t_1=, =s_2= with =t_2=, and so on. If =?M= is a metavariable, one can
+unify =?M= with any term =t= simply by assigning =t= to =?M=. These
+are all aspects of /first-order/ unification, and such constraints are
+solved first.
+
+In contrast, /higher-order/ unification is much more
+tricky. Consider, for example, the expressions =?M a b= and =f (g a) b
+b=. All of the following assignments to =?M= are among the possible
+solutions:
+- =λx y, f (g x) y y=
+- =λx y, f (g x) y b=
+- =λx y, f (g a) b y=
+- =λx y, f (g a) b b=
+Notice that such problems in many ways, such as:
+- When you use =induction_on x= for an inductively defined type, Lean
+  has to infer the relevant induction predicate.
+- When you write =eq.subst e p= with an equation =e : a = b= to
+  convert a proposition =P a= to a proposition =P b=, Lean has to
+  infer the relevant predicate.
+- When you write =sigma.mk a b= to build an element of =Σx : A, B x=
+  from an element =a : A= and an element =B : B a=, Lean has to infer
+  the relevant =B=. (And notice that there is an ambiguity; =sigma.mk
+  a b= could also denote an element of =Σx : A, B a=, which is
+  essentially the same as =A × B a=.)
+In cases like this, Lean has to perform a backtracking search to find
+a suitable value of a higher-order metavariable. It is known that even
+second-order unification is generally undecidable. The algorithm that
+Lean uses is not complete (which means that it can fail to find a
+solution even if one exists) and potentially
+nonterminating. Nonetheless, it performs quite well in ordinary
+situations.
+
+Moreover, the elaborator performs a global backtracking search over
+all the nondeterministic choice points introduced by overloads and
+coercions. In other words, the elaborator starts by trying to solve
+the equations with the first choice on each list. Each time the
+procedure fails, it analyzes the failure, and determines the next
+viable choice to try.
+
+To complicate matters even further, sometimes the elaborator has to
+reduce terms using the CIC's internal computation rules. For example,
+if it happens to be the case that =f= is defined to be =λx, g x x=, we
+can unify expressions =f ?M= and =g a a= by assigning =?M= to =a=. In
+general, any number of computation steps may be needed to unify
+terms. It is computationally infeasible to try all possible reductions
+in the search, so, once again, Lean's elaborator relies on an
+incomplete strategy.
+
+The interaction of computation with higher-order unification is
+particularly knotty. For the most part, Lean avoids peforming
+computational reduction when trying to solve higher-order
+constraints. You can override this, however, by marking some symbols
+as =reducible=. This is one of a number of ways of providing hints to
+the elaboration process. To tell the elaborator to consider reducing
+=foo= when solving higher-order unification problems, use the
+=reducible= command:
+#+BEGIN_SRC lean
+import standard
+
+definition foo (x : nat) : nat := x
+
+-- BEGIN
+reducible foo
+-- END
+#+END_SRC
+To turn off this hint, use the =irreducible= command:
+#+BEGIN_SRC lean
+import standard
+
+definition foo (x : nat) : nat := x
+
+-- BEGIN
+irreducible foo
+-- END
+#+END_SRC
+As with coercions, the "scope" of these hints is only until the end of
+the module (i.e., the file) that contain them. To make the effect
+persist in modules that import the one in which they are declared, use
+the =persistent= modifier:
+#+BEGIN_SRC lean
+import standard
+
+definition foo (x : nat) : nat := x
+
+-- BEGIN
+reducible [persistent] foo
+irreducible [persistent] foo
+-- END
+#+END_SRC
+You can alternatively declare a symbol to be reducible when you define
+it:
+#+BEGIN_SRC lean
+import standard
+
+definition foo [reducible] (x : nat) : nat := x
+#+END_SRC
+This has the same effect as the following:
+#+BEGIN_SRC lean
+import standard
+
+definition foo (x : nat) : nat := x
+reducible [persistent] foo
+#+END_SRC
+
+The elaborator relies on additional tricks and gadgets to solve a list
+of constraints and instantiate metavariables. Below we will see that
+users can specify that some parts of terms should be filled in by
+/tactics/, which can, in turn, invoke arbitrary automated
+procedures. In the next chapter, we will discuss the mechanism of
+=class inference=, which can be configured to execute a
+prolog-like search for appropriate instantiations of an implicit
+argument. These can be used to help the elaborator find implicit facts
+on the fly, such as the fact that a particular set is finite, as well
+as implicit data, such as a default element of a type, or the
+appropriate multiplication in an algebraic structure.
+
+It is important to keep in mind that all these mechanisms
+interact. The elaborator processes its list of constraints, trying to
+solve the easier ones first, postponing others until more information
+is available, and branching and backtracking at choice points. Even
+small proofs can generate hundreds or thousands of constraints. The
+elaboration process continues until the elaborator fails to solve a
+constraint and has exhausted all its backtracking options, or until
+all the constraints are solved. In the first case, it returns an error
+message which tries to provide the user with helpful information as to
+where and why it failed. In the second case, the type checker is asked
+to confirm that the assignment that the elaborator has found does
+indeed make the term type check. If all the metavariables in the
+original expression have been assigned, the result is a fully
+elaborated, type-correct expression. Otherwise, Lean flags the sources
+of the remaining metavariables as "placeholders" or "goals" that could
+not be filled.
+
+# TODO: does anything distinguish "placeholders" from "goals"?
+
+** Helping the Elaborator
+
+Because proof terms and expressions in dependent type theory can
+become quite complex, working in dependent type theory effectively
+involves relying on the system to fill in details automatically. When
+the elaborator fails to elaborate a term, there are two
+possibilities. One possibility is that there is an error in the term,
+and no solution is possible. In that case, your goal, as the user, is
+to find the error and correct it. The second possibility is that the
+term has a valid elaboration, but the elaborator failed to find it. In
+that case, you have to help the elaborator along by providing
+information. This section provides some guidance in both situations.
+
+If the error message is not sufficient to allow you to identify the
+problem, a first strategy is to ask Lean's pretty printer to show more
+information, as discussed in Section [[Setting Options]]:
+#+BEGIN_SRC lean
+set_option pp.implicit true
+set_option pp.universes true
+set_option pp.notation false
+set_option pp.numerals false
+#+END_SRC
+Sometimes, the elaborator will fail with the message that the unifier
+has exceeded its maximum number of steps. As we noted in the last
+section, some elaboration problems can lead to nonterminating
+behavior, and so Lean simply gives up after it has reached a pre-set
+maximum. You can change this with the =set_option= command:
+#+BEGIN_SRC lean
+set_option unifier.max_steps 100000
+#+END_SRC
+This can sometimes help you determine whether there is an error in the
+term or whether the elaboration problem has simply grown too
+complex. In the latter case, there are steps you can take to cut down
+the complexity.
+
+To start with, Lean provides a mechanism to break large elaboration
+problems down into simpler ones, with a =proof ... qed= block. Here is
+the sample proof from Section [[Examples of Propositional Validities]],
+with additional =proof ... qed= annotations:
+#+BEGIN_SRC lean
+import logic
+
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+iff.intro
+  (assume H : p ∧ (q ∨ r),
+    have Hp : p, from and.elim_left H,
+    show (p ∧ q) ∨ (p ∧ r), from 
+    proof 
+      or.elim (and.elim_right H)
+        (assume Hq : q,
+          show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro Hp Hq))
+        (assume Hr : r,
+          show (p ∧ q) ∨ (p ∧ r), from or.inr (and.intro Hp Hr))
+    qed)
+  (assume H : (p ∧ q) ∨ (p ∧ r),
+    show p ∧ (q ∨ r), from
+    proof
+      or.elim H
+        (assume Hpq : p ∧ q,
+          have Hp : p, from and.elim_left Hpq,
+          have Hq : q, from and.elim_right Hpq,
+          show p ∧ (q ∨ r), from and.intro Hp (or.inl Hq))
+        (assume Hpr : p ∧ r,
+          have Hp : p, from and.elim_left Hpr,
+          have Hr : r, from and.elim_right Hpr,
+          show p ∧ (q ∨ r), from and.intro Hp (or.inr Hr))
+    qed)
+#+END_SRC
+Writing =proof t qed= as a subterm of a larger term breaks up the
+elaboration problem as follows: first, the elaborator tries to
+elaborate the surrounding term, independent of =t=. If it succeeds,
+that solution is used to constrain the type of =t=, and the elaborator
+processes that term independently. The net result is that a big
+elaboration problem gets broken down into smaller elaboration
+problems. This "localizes" the elaboration procedure, which has both
+positive and negative effects. A disadvantage is that information is
+insulated, so that the solution to one problem cannot inform the
+solution to another. The key advantage is that it can simplify the
+elaborator's task. For example, backtracking points within a =proof
+... qed= do not become backtracking points for the outside term; the
+elaborator either succeeds or fails to elaborate each
+independently. As another benefit, error messages are often improved;
+an error that ultimately stems from an incorrect choice of an overload
+in one subterm is not "blamed" on another part of the term.
+
+# TODO: find an example where [visible] is needed
+# TODO: is there an analog of proof ... qed blocks for definitions?
+
+In principle, one can write =proof t qed= for any term =t=, but it is
+used most effectively following a =have= or =show=, as in the example
+above. This is because =have= and =show= specify the intended type of
+the =proof ... qed= block, reducing any ambiguity about the subproblem
+the elaborator needs to solve.
+
+The use of =proof ... qed= blocks with =have= and =show= illustrates
+two general strategies that can help the elaborator: first, breaking
+large problems into smaller problems, and, second, providing
+additional information. The first strategy can also be achieved by
+breaking a large definition into smaller definitions, or breaking a
+theorem with a large proof into auxiliary lemmas. Even breaking up
+long terms internal to a proof using auxiliary =have= statements can
+help locate the source of an error.
+
+The second strategy, providing additional information, can be achieved
+by using =have=, =show=, and the =typeof= construct (see Section
+[[Notation, Overloads, and Coercions]]) to indicate expected types. More
+directly, it often help to specify the implicit arguments. When Lean
+cannot solve for the value of a metavariable corresponding to an
+implicit argument, you can always use =@= to provide that argument
+explicitly. Doing so will either help the elaborator solve the
+elaboration problem, or help you find an error in the term that is
+blocking the intended solution.
+
+** Using Tactics
+
+In this section, we describe an alterantive approach to constructing
+proofs, using /tactics/. A proof term is a representation of a
+mathematical proof; tactics are commands, or instructions, that
+describe how to build such a proof. Informally, we might begin a
+mathematical proof by saying "to prove the forward direction, unfold
+the definition, apply the previous lemma, and simplify." Just as these
+are instructions that tell the reader how to find the relevant proof,
+tactics are instructions that tell Lean how to construct a proof term.
+
+Conceptually, stating a theorem or introducing a =have= statement
+creates a goal, namely, the goal of constructing a term with the
+expected type. For example, the following creates the goal of
+constructing a term of type =p ∧ q ∧ p=, in a context with constants
+=p q : Prop=, =Hp : p= and =Hq : q=:
+#+BEGIN_SRC lean
+import logic
+
+theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+sorry
+#+END_SRC
+We can write this goal as follows:
+#+BEGIN_SRC text
+p : Prop, q : Prop, Hp : p, Hq : q ⊢ p ∧ q ∧ p
+#+END_SRC
+Indeed, if you replace the "sorry" by an underscore in the example
+above, Lean will report that it is exactly this goal that has been
+left unsolved.
+
+Ordinarily, we meet such a goal by writing an explicit term. But
+wherever a term is expected, Lean allows us to insert instead a =begin
+... end= block, followed by a sequence of commands, separated by
+commas. We can prove the theorem above in that way:
+#+BEGIN_SRC lean
+import logic
+
+-- BEGIN
+theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+begin
+  apply and.intro,
+  exact Hp,
+  apply and.intro,
+  exact Hq,
+  exact Hp
+end
+-- END
+#+END_SRC
+The =apply= tactic applies an expression, viewed as denoting a
+function with zero or more arguments. It unifies the conclusion with
+the expression in the current goal, and creates new goals for the
+remaining arguments, provided that no later arguments depend on
+them. In the example above, the command =apply and.intro= yields two
+subgoals:
+#+BEGIN_SRC text
+p : Prop,
+q : Prop,
+Hp : p,
+Hq : q
+⊢ p
+
+⊢ q ∧ p
+#+END_SRC
+For brevity, Lean only displays the context for the first goal, which
+is the one addressed by the next tactic command. The first goal is met
+with the command =exact Hp=. The =exact= command is just a variant of
+=apply= which signals that the expression given should fill the goal
+exactly. It is good form to use it in a tactic proof, since its
+failure signals that something has gone wrong; but otherwise =apply=
+would work just as well.
+
+You can see the resulting proof term with =print definition=:
+#+BEGIN_SRC lean
+import logic
+
+theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+begin
+  apply and.intro,
+  exact Hp,
+  apply and.intro,
+  exact Hq,
+  exact Hp
+end
+
+-- BEGIN
+print definition test
+-- END
+#+END_SRC
+
+Tactic commands can take compound expressions, not just single
+identifiers. The following is a shorter version of the preceding
+proof:
+#+BEGIN_SRC lean
+import logic
+
+-- BEGIN
+theorem test2 (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+begin
+  apply (and.intro Hp),
+  exact (and.intro Hq Hp)
+end
+-- END
+#+END_SRC
+Unsuprisingly, it produces exactly the same proof term. 
+#+BEGIN_SRC lean
+import logic
+
+theorem test2 (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+begin
+  apply (and.intro Hp),
+  exact (and.intro Hq Hp)
+end
+
+-- BEGIN
+print definition test2
+-- END
+#+END_SRC
+
+You can write a tactic script incrementally. If you run Lean on an
+incomplete tactic proof bracketed by =begin= and =end=, the system
+reports all the unsolved goals that remain. If you are running Lean
+with its Emacs interface, you can see this information by putting your
+cursor on the =end= symbol, which should be underlined. In the Emacs
+interface, there is another useful trick: if you open up the
+=*lean-info*= buffer in a separate window and put your cursor on the
+comma after a tactic command, Lean shows you the goals that remain
+open at that stage in the proof.
+
+Another useful tactic is =intro=, which introduces a
+hypothesis. What follows is an example of an identity from
+propositional logic that we proved in Section [[Examples of
+Propositional Validities]], but now prove using tactics. We adopt the
+following convention regarding indentation: whenever a tactic
+introduces one or more additional subgoals, we indent another two
+spaces, until the additional subgoals are deleted.
+
+#+BEGIN_SRC lean
+import logic
+
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+    intro H,
+    apply (or.elim (and.elim_right H)),
+      intro Hq,
+      apply or.intro_left,
+      apply and.intro,
+        exact (and.elim_left H),
+      exact Hq,
+    intro Hr,
+    apply or.intro_right,
+    apply and.intro,
+    exact (and.elim_left H),
+    exact Hr,
+  intro H,
+  apply (or.elim H),
+    intro Hpq,
+    apply and.intro,
+      exact (and.elim_left Hpq),
+    apply or.intro_left,
+    exact (and.elim_right Hpq),
+  intro Hpr,
+  apply and.intro,
+    exact (and.elim_left Hpr),
+  apply or.intro_right,
+  exact (and.elim_right Hpr)
+end
+#+END_SRC
+
+A variant of =apply= called =fapply= is more aggressive in creating
+new subgoals for arguments. Here is an example of how it is used:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+example : ∃a : ℕ, a = a :=  
+begin
+  fapply exists.intro,
+  exact nat.zero,
+  apply rfl
+end
+#+END_SRC
+The command =fapply exists.intro= creates two goals. The first is to
+provide a natural number, =a=, and the second is to prove that =a =
+a=. Notice that the second goal depends on the first; solving the
+first goal instantiates a metavariable in the second.
+
+Notice also that we could not write =exact 0= in the proof above,
+because =0= is a numeral that is coerced to a natural number. In the
+context of a tactic proof, expressions are elaborated "locally,"
+before being sent to the tactic command. When the tactic command is
+being processed, Lean does not have enough information to determine
+that =0= needs to be coerced. We can get around that by stating the
+type explicitly:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+-- BEGIN
+example : ∃a : ℕ, a = a :=  
+begin
+  fapply exists.intro,
+  exact (typeof 0 : ℕ),
+  apply rfl
+end
+-- END
+#+END_SRC
+
+One thing that is nice about Lean's proof-writing syntax is that it is
+possible to mix "declarative" and "tactic-style" proofs, and pass
+between the two freely. For example, the tactics =apply= and =exact=
+expect arbitrary terms, which you can write using =have=, =show=,
+=obtains=, and so on. Conversely, when writing an aribtrary Lean term,
+you can always invoke the tactic mode by inserting a =begin ... end=
+block. In the next example, we use =show= within a tactic block to
+fulfill a goal by providing an explicit term.
+ 
+#+BEGIN_SRC lean
+import logic
+
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+    intro H,
+    apply (or.elim (and.elim_right H)),
+      intro Hq,
+      show (p ∧ q) ∨ (p ∧ r),
+        from or.inl (and.intro (and.elim_left H) Hq),
+    intro Hr,
+    show (p ∧ q) ∨ (p ∧ r),
+      from or.inr (and.intro (and.elim_left H) Hr),
+  intro H,
+  apply (or.elim H),
+    intro Hpq,
+    show p ∧ (q ∨ r), from
+      and.intro
+        (and.elim_left Hpq)
+        (or.inl (and.elim_right Hpq)),
+  intro Hpr,
+  show p ∧ (q ∨ r), from
+    and.intro
+      (and.elim_left Hpr)
+      (or.inr (and.elim_right Hpr))
+end
+#+END_SRC
+
+# TODO: add a longer list of tactics, including generalize.
+
+# TODO: is there a way of using "have" in a tactic proof?
+
+# TODO: need an example of how [visible] is used.
+
+** Namespaces, Sections, and Contexts
+
+Just as =proof ... qed= and =begin ... end= blocks help structure a
+proof, namespaces, sections, and contexts help structure a theory. We
+saw in Section [[Namespaces and Sections]] that the =section= command
+makes it possible not only to group together elements of a theory that
+go together, but also to declare variables that are inserted as
+arguments to theorems and definitions, as necessary.
+
+Lean has another sectioning construct, the =context= command, which is
+similar to the =section= command. There are two key differences. The
+first is that, in a context, you can declare /parameters/. A parameter
+declaration is like a variable declaration, except theorems and
+definitions that depend on a parameter are not generalized within the
+=context=, they are only generalized when the context is closed. The
+idea is within the context, the parameter is a single, fixed
+value. For example, if you declare =parameter (x : ℤ)= in a context,
+and then define ~foo := 2 * x~, within the context =foo= is a
+constant, not a function of =x=. The second difference is that
+notations defined in a context are transient: they disappear when the
+context is closed. The reason for this is that a notation that depends
+on a parameter would not make sense outside the context.
+
+Contexts are useful when a series of definitions and theorems involves
+a set of parameters that you can think of as being fixed throughout
+the development, and for which it is useful to have temporary
+notation. Here is an example of how you might use a context to define
+the notion of equivalence modulo an integer =m=. Throughout the
+context, =m= is fixed, and we can write =a ≡ b= for equivalence modulo
+=m=. As soon as the context is closed, however, the dependence on =m=
+becomes explicit, and the notation is no longer valid.
+
+#+BEGIN_SRC lean
+import data.int
+open int eq.ops
+
+context mod_m
+  parameter (m : ℤ)
+  variables (a b c : ℤ)
+
+  definition mod_equiv := m | b - a
+
+  notation a `≡`:50 b := mod_equiv a b
+
+  theorem mod_refl : a ≡ a := !sub_self⁻¹ ▸ !dvd_zero
+
+  theorem mod_sym (H : a ≡ b) : b ≡ a :=
+  have H1 : m | -(b - a), from iff.mp' !dvd_neg_iff_dvd H,
+  int.neg_sub_eq b a ▸ H1
+
+  theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
+  have H1 : m | (c - b) + (b - a), from !dvd_add H2 H1,
+  eq.subst
+    (calc
+      (c - b) + (b - a) = c - b + b - a : add.assoc
+                    ... = c - a         : neg_add_cancel_right)
+    H1
+end mod_m
+
+check mod_refl
+check mod_sym
+check mod_trans
+#+END_SRC
+
+# TODO: somewhere, we need to describe include / omit. Maybe mention
+# it here and then discuss it more fully, with examples, in the
+# chapter on structures.
+
+Finally, recall from Section [[Namespaces and Sections]] that namespaces
+not only package shorter names for theorems and identifiers, but also
+things like notation, coercions, classes, rewrite rules, and so
+on. These can be opened independently using modifiers to the =open=
+command:
+#+BEGIN_SRC lean
+import data.nat
+
+open [notation] nat
+open [coercions] nat
+open [classes] nat
+#+END_SRC
+For example, =open [coercions] nat= makes the coercions in the
+namespace =nat= available (and nothing else). You can also import
+only certain theorems by providing an explicit list in parentheses:
+#+BEGIN_SRC lean
+import data.nat
+open nat (add add.assoc add.comm)
+
+check add
+check add.assoc
+check add.comm
+#+END_SRC
+Or, when importing theorems and definitions, you can change the rename
+them at the same time:
+#+BEGIN_SRC lean
+import data.nat
+open nat (renaming add -> plus)
+
+check plus
+#+END_SRC
+Or you can /exclude/ a list of items from being imported:
+#+BEGIN_SRC lean
+import data.nat
+open nat (hiding add)
+#+END_SRC
+
+Within a namespace, you can declare certain identifiers to be
+=protected=. This means that when the namespace is opened, the short
+version of these names are not made available:
+#+BEGIN_SRC lean
+namespace foo
+  protected definition bar (A : Type) (x : A) := x
+end foo
+
+open foo
+check foo.bar  -- "check bar" yields an error
+#+END_SRC
+In the Lean library, this is used for common names. For example, we
+want to write =nat.rec_on=, =int.rec_on=, and =list.rec_on=, even when
+all of these namespaces are open, to avoid ambiguity and overloading.
+
+You may find that at times you want to cobble together a namespace,
+with notation, rewrite rules, or whatever, from existing
+namespaces. Lean provides an =export= command for that. The =export=
+command supports the same options and modifiers as the =open= command:
+when you export to a namespace, aliases for all the items you export
+become part of the new namespace. For example, below we define a new
+namespace, =my_namespace=, which includes items from =bool=, =nat=,
+and =list=.
+#+BEGIN_SRC lean
+import standard
+
+namespace my_namespace
+  export bool (hiding measurable)
+  export nat
+  export list
+end my_namespace
+
+check my_namespace.band
+check my_namespace.add
+check my_namespace.append
+
+open my_namespace
+
+check band
+check add
+check append
+#+END_SRC
+This makes it possible for you to define nicely prepackaged
+configurations for those who will use your theories later on.

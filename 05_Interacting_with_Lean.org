@@ -626,7 +626,7 @@ eval tt + tt + tt + ff
 In that case, the scope of the declaration is only the current section
 or namespace, or the current file if the declaration is at "top
 level". To make the declaration persist to the whole namespace, use
-the =[persistent]= modifier:
+the =persistent= modifier:
 #+BEGIN_SRC lean
 import data.bool data.nat
 open bool nat
@@ -637,10 +637,19 @@ bool.cond b 1 0
 
 coercion [persistent] bool.to_nat
 -- END
-eval 2 + ff
-eval 2 + tt
-eval tt + tt + tt + ff
 #+END_SRC
+Alternatively, you can declare a persistent coercion by using the
+=coercion= modifier when you define the function initially:
+#+BEGIN_SRC lean
+import data.bool data.nat
+open bool nat
+
+-- BEGIN
+definition bool.to_nat [coercion] (b : bool) : nat :=
+bool.cond b 1 0
+-- END
+#+END_SRC
+
 For the elaborator to handle coercions effectively, restrictions are
 imposed on the types one can serve as the source and target: roughly,
 they have to be inductively defined types, as described in the next
