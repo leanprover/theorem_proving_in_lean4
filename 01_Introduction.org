@@ -76,7 +76,7 @@ mathematical libraries freely.
 There are currently two ways to use Lean. The first is to run it from
 the web: a Javascript version of Lean, a standard library of
 definitions and theorems, and an editor are actually downloaded to
-your browserand run there. This provides a quick and convenient way to
+your browser and run there. This provides a quick and convenient way to
 begin experimenting with the system.
 
 The second way to use Lean is to install and run it natively on your
