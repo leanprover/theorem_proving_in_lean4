@@ -843,10 +843,12 @@ In the coming chapters, you will come across many instances of
 dependent types. Here we will mention just one more important and
 illustrative example, the /Sigma types/, =Σx : A, B x=, sometimes also
 known as /dependent pairs/. These are, in a sense, companions to the
-Pi types. The type =Σx : A, B x= denotes the type of pairs =⟨a, b⟩=
-where =a : A= and =b : B a=. Just as Pi types =Πx : A, B x= generalize
+Pi types. The type =Σx : A, B x= denotes the type of pairs =sigma.mk a b=
+where =a : A= and =b : B a=. We can also use angle brackets =<a, b>= as notation
+for =sigma a b=. We can input angle brackets using the shortcuts =\<= and =\>=.
+Just as Pi types =Πx : A, B x= generalize
 the notion of a function type =A → B=, Sigma types =Σx : A, B x=
-generalize the cartesian product =A × B=: in the expression =⟨a, b⟩=,
+generalize the cartesian product =A × B=: in the expression =sigma.mk a b=,
 the type of the second element of the pair, =b : B a=, depends on
 the first element of the pair, =a : A=.
 #+BEGIN_SRC lean
@@ -858,13 +860,12 @@ constant B : A → Type
 constant a : A
 constant b : B a
 
-check ⟨a, b⟩
-check sigma.mk a b -- ⟨a, b⟩ is notation for sigma.mk a b
-check pr1 ⟨a, b⟩
-check pr2 ⟨a, b⟩
+check sigma.mk a b
+check pr1 sigma.mk a b
+check pr2 sigma.mk a b
 
-eval pr1 ⟨a, b⟩
-eval pr2 ⟨a, b⟩
+eval pr1 sigma a b
+eval pr2 sigma a b
 #+END_SRC
 
 ** Implicit Arguments
