@@ -235,7 +235,7 @@ namespace weekday
 
 -- BEGIN
   theorem next_previous (d: weekday) : next (previous d) = d :=
-  weekday.induction_on d 
+  weekday.induction_on d
     (show next (previous sunday) = sunday, from rfl)
     (show next (previous monday) = monday, from rfl)
     (show next (previous tuesday) = tuesday, from rfl)
@@ -272,7 +272,7 @@ namespace weekday
 
 -- BEGIN
   theorem next_previous (d: weekday) : next (previous d) = d :=
-  weekday.cases_on d 
+  weekday.cases_on d
     (show next (previous sunday) = sunday, from rfl)
     (show next (previous monday) = monday, from rfl)
     (show next (previous tuesday) = tuesday, from rfl)
@@ -392,7 +392,7 @@ use this to define the two projections for prod; remember that the
 standard library defines notation =A × B= for =prod A B= and =(a, b)=
 for =prod.mk a b=.
 #+BEGIN_SRC lean
-import data.prod 
+import data.prod
 open prod
 
 namespace hide
@@ -410,7 +410,7 @@ end hide
 The function =pr1= takes a pair, =p=. Applying the recursor
 =prod.rec_on p (take a b, a)= inteprets =p= as a pair, =prod.mk a b=,
 and then uses the second argument to determine what to do with =a= and
-=b=. 
+=b=.
 
 Here is another example:
 #+BEGIN_SRC lean
@@ -458,7 +458,7 @@ In the section after next we will see what happens when the construtor
 of an inductive type takes arguments from the inductive type
 itself. What characterizes the examples we consider in this section is
 that this is not the case: each constructor relies only on
-antecedently specified types. 
+antecedently specified types.
 
 Notice that a type with multiple constructors is disjunctive: an
 element of =sum A B= is either of the form =inl a= /or/ of the form
@@ -590,7 +590,7 @@ intro_right : b → or a b
 -- END
 
 end hide
-#+END_SRC 
+#+END_SRC
 You should think about how these give rise to the introduction and
 elimination rules that you have already seen. There are rules that
 govern what the eliminator of an inductive type can eliminate /to/,
@@ -624,7 +624,7 @@ analogous to the definitions of =empty=, =unit=, =prod=, and
 =sum=. The difference is that the first group yields elements of
 =Prop=, and the second yields elements of =Type.{i}= for =i= greater
 than 0. In a similar way, =∃x : A, P= is a =Prop=-valued variant of
-=Σx : A, P=. 
+=Σx : A, P=.
 
 This is a good place to mention another inductive type, denoted ={x :
 A, P}=, which is sort of a hybrid between =∃x : A, P= and =Σx : A, P=.
@@ -878,6 +878,7 @@ induction_on n
           ... = succ n : IH)
 
 -- BEGIN
+reducible add
 theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
 induction_on k rfl (take k IH, eq.subst IH rfl)
 -- END
@@ -917,6 +918,7 @@ induction_on n
         0 + succ n = succ (0 + n) : rfl
           ... = succ n : IH)
 
+reducible add
 theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
 induction_on k rfl (take k IH, eq.subst IH rfl)
 
@@ -966,6 +968,7 @@ induction_on n
         0 + succ n = succ (0 + n) : rfl
           ... = succ n : IH)
 
+reducible add
 theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
 induction_on k rfl (take k IH, eq.subst IH rfl)
 
@@ -1021,6 +1024,7 @@ induction_on n
         0 + succ n = succ (0 + n) : rfl
           ... = succ n : IH)
 
+reducible add
 theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
 induction_on k rfl (take k IH, eq.subst IH rfl)
 
@@ -1143,7 +1147,7 @@ In the first =check=, Lean assumes that =[1, 2, 3, 4, 5]= is merely a
 list of numerals. The =typeof= command forces Lean to interpret it as
 a list of natural numbers.
 
-As an exercise, prove the following: 
+As an exercise, prove the following:
 #+BEGIN_SRC lean
 namespace hide
 
