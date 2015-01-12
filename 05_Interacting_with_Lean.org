@@ -58,7 +58,7 @@ Note that =print definition= only works with objects introduced with
 =definition=, =theorem=, and the like. For example, entering =print
 definition eq= or =print definition and.intro= yields an error. This
 is because =eq= and =and.intro= are not defined symbols, but, rather,
-symbols introduced axiomatically by the Lean's inductive definition
+symbols introduced by the Lean's inductive definition
 package, which we will describe in the next chapter.
 
 There are other useful =print= commands:
@@ -125,7 +125,7 @@ find_decl _ < succ _, +imp, -le
 Lean maintains a number of internal variables that can be set by users
 to control its behavior. The syntax for doing so is as follows:
 #+BEGIN_SRC text
-set option <name> <value>
+set_option <name> <value>
 #+END_SRC
 
 One very useful family of options controls the way Lean's /pretty-
@@ -136,6 +136,7 @@ pp.implicit  : display implicit arguments
 pp.universes : display hidden universe parameters
 pp.coercions : show coercions
 pp.notation  : display output using defined notations
+pp.beta      : beta reduce terms before displaying them
 #+END_SRC
 In Lean, /coercions/ can be inserted automatically to cast an element
 of one data type to another, for example, to cast an element of =nat=
@@ -156,6 +157,9 @@ set_option pp.numerals false
 
 check 2 + 2 = 4
 eval (λx, x + 2) = (λx, x + 3)
+
+set_option pp.beta true
+check (λ x, x + 1) 1
 #+END_SRC
 Pretty printing additional information is often very useful when you
 are debugging a proof, or trying to understand a cryptic error
@@ -264,7 +268,7 @@ open nat algebra
 
 -- BEGIN
 check @neg_neg
-check pred.succ     -- TO DO: will be pred_succ
+check pred_succ
 -- END
 #+END_SRC
 Sometimes, to disambiguate the name of theorem or better convey the
@@ -593,7 +597,7 @@ numeral. The two commands after than indicate that it is intended to
 be viewed as a =nat= and as an =int=, respectively.
 
 Here is an example of how we can define a coercion from the booleans
-to the natural numbers. 
+to the natural numbers.
 #+BEGIN_SRC lean
 import data.bool data.nat
 open bool nat

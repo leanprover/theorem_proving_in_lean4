@@ -861,11 +861,11 @@ constant a : A
 constant b : B a
 
 check sigma.mk a b
-check pr1 sigma.mk a b
-check pr2 sigma.mk a b
+check pr1 (sigma.mk a b)
+check pr2 (sigma.mk a b)
 
-eval pr1 sigma a b
-eval pr2 sigma a b
+eval pr1 (sigma.mk a b)
+eval pr2 (sigma.mk a b)
 #+END_SRC
 
 ** Implicit Arguments
