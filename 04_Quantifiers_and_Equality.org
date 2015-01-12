@@ -218,7 +218,7 @@ check eq.trans
 Thus, for example, we can specialize the example from the previous section
 to the equality relation:
 #+BEGIN_SRC lean
-example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : 
+example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) :
   a = d :=
 eq.trans (eq.trans Hab (eq.symm Hcb)) Hcd
 #+END_SRC
@@ -227,7 +227,7 @@ If we "open" the eq namespace, the names become shorter:
 #+BEGIN_SRC lean
 open eq
 
-example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : 
+example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) :
   a = d :=
 trans (trans Hab (symm Hcb)) Hcd
 #+END_SRC
@@ -235,7 +235,7 @@ Lean even defines convenient notation for writing proofs like this:
 #+BEGIN_SRC lean
 open eq.ops
 
-example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) : 
+example (A : Type) (a b c d : A) (Hab : a = b) (Hcb : c = b) (Hcd : c = d) :
   a = d :=
 Hab ⬝ Hcb⁻¹ ⬝ Hcd
 #+END_SRC
@@ -282,7 +282,7 @@ H1 ▸ H2
 -- END
 #+END_SRC
 The triangle in the second presentation is, once again, made available
-by opening =eq.ops=.
+by opening =eq.ops=, and you can use =\t= to enter it.
 
 Here is an example of a calculation in the natural numbers that uses
 substitution combined with associativity, commutativity, and
@@ -473,6 +473,13 @@ or-elimination rule. The assertion =∃x : A, p x= can be thought of as
 a big disjunction of the propositions =p a=, as =a= ranges over all
 the elements of =A=.)
 
+Notice that exists introduction and elimination are very similar to the
+sigma introduction =sigma.mk= and elimination.
+The difference is that given =a : A= and =h : p a=, =exists.intro a h=
+has type =(∃x : A, p x) : Prop= and =sigma.mk a h= has type
+=(Σ x : A, p x) : Type=. The similarity
+between =∃= and =Σ= is another instance of the Curry-Howard isomorphism.
+
 In the following example, we define =even a= as =∃ b, a = 2*b=, and
 then we show that the sum of two even numbers is an even number.
 #+BEGIN_SRC lean
@@ -500,7 +507,7 @@ open nat
 
 definition even (a : nat) := ∃b, a = 2*b
 
-theorem even_plus_even {a b : nat} (H1 : even a) (H2 : even b) : 
+theorem even_plus_even {a b : nat} (H1 : even a) (H2 : even b) :
   even (a + b) :=
 obtain (w1 : nat) (Hw1 : a = 2*w1), from H1,
 obtain (w2 : nat) (Hw2 : b = 2*w2), from H2,
