@@ -1,4 +1,4 @@
-#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]] and Leonardo de Moura
 #+Title: Propositions and Proofs
 
 * Propositions and Proofs
@@ -144,7 +144,7 @@ inhabitant of =p= as being the "fact that =p= is true." A proof of =p
 → q= uses "the fact that =p= is true" to obtain "the fact that =q=
 is true."
 
-Indeed, if =p : Prop= is any proposition, Lean's kernel treats any two
+Indeed, if =p : Prop= is any proposition, Lean's /standard kernel/ treats any two
 elements =t1 t2 : Prop= as being "definitionally equal," much the same
 way as it treats =(λx, t)s= and =t[s/x]= as definitionally equal. This
 is known as "proof irrelevance," and is consistent with the
@@ -152,6 +152,11 @@ interpretation in the last paragraph. It means that even though we can
 treat proofs =t : p= as ordinary objects in the language of dependent
 type theory, they carry no information beyond the fact that =p= is
 true.
+
+In the previous paragraph, we use the term /standard kernel/ because
+Lean also supports an alternative /proof relevant kernel/.
+The alternative kernel will be described later when we discuss how
+[[http://homotopytypetheory.org/][Homotopy Type Theory]] can be developed using Lean.
 
 ** Working with Propositions as Types
 
@@ -176,21 +181,13 @@ Note that the =theorem= command is really a version of the
 =definition= command: under the propositions and types correspondence,
 proving the theorem =p → q → p= is really the same as defining an
 element of the associated type. The only difference is that =theorem=
-marks the definition as "opaque." Modules that import =t1= above can
-only use the fact that =t1= is a proof of =p → q → p=, but cannot
-"unfold" the definition and see the proof. The point is that later
-developments should not care what the proof is; by the assumption of
-proof irrelevance, they are all treated the same. Thus the example
-above has the same effect as this:
-#+BEGIN_SRC lean
-import logic
-
-constants p q : Prop
-
--- BEGIN
-opaque definition t1 : p → q → p := λHp : p, λHq : q, Hp
--- END
-#+END_SRC
+are always treated as "opaque" definitions, and Lean never tries to
+"unfold" the definition and "see" the proof.
+The point is that later definitions and theorems should not care what the proof is;
+by the assumption of proof irrelevance, they are all treated the same.
+Note that =theorems= are essentially =opaque definitions=. There is only a
+small difference: in Lean, opaque definitions are treated as transparent in the
+module where they were defined.
 
 Notice that the lambda abstractions =Hp : p= and =Hq : q= can be
 viewed as temporary assumptions in the proof of =t1=. Lean provides
@@ -328,15 +325,15 @@ When you import the standard library, or even just the module logic,
 Lean defines all the standard logical connectives and notation. The
 propositional connectives come with the following notation:
 
-| Ascii |             Unicode   | Definition   |
-|-------|-----------------------|--------------|
-| true  |                       |   true       |
-| false |                       |   false      |
-| not   |               ¬       |   not        |
-| /\    |               ∧       |   and        |
-| ‌\/    |               ∨       |   or         |
-| ->    |               →       |              |
-| <->   |               ↔       |   iff        |
+| Ascii |             Unicode   | Emacs shortcut for unicode | Definition |
+|-------|-----------------------|----------------|------------|
+| true  |                       |                | true       |
+| false |                       |                | false      |
+| not   |               ¬       |    =\neg=      | not        |
+| /\    |               ∧       |    =\and=      | and        |
+| ‌\/    |               ∨       |    =\or=       | or         |
+| ->    |               →       |    =\r=        |            |
+| <->   |               ↔       |    =\lr=       | iff        |
 They all take values in =Prop=.
 #+BEGIN_SRC lean
 import logic
@@ -362,7 +359,7 @@ as an "introduction rule" for =→=. In the current setting, it shows
 how to "introduce" or establish an implication. Application can be
 viewed as an "elimination rule," showing how to "eliminate" or use an
 implication in a proof. The other propositional connectives are
-defined in the standard library in the module =logic.connectives=, and
+defined in the standard library in the module =init.datatypes=, and
 each comes with its canonical introduction and elimination rules.
 
 *** Conjunction
@@ -390,7 +387,7 @@ will use it often.
 
 The expression =and.elim_left H= creates a proof of =p= from a proof
 =H : p ∧ q=.  Similarly, =and.elim_right H= is a proof of =q=. They
-are commonly known as the right and left /and-elimination/ rules. 
+are commonly known as the right and left /and-elimination/ rules.
 #+BEGIN_SRC lean
 import logic
 
@@ -531,7 +528,8 @@ end
 #+END_SRC
 
 The connective =false= has a single elimination rule, =false.elim=,
-which expresses the fact that anything follows from a contradiction.
+which expresses the /principle of explosion/ in logic: the fact that
+anything follows from a contradiction.
 #+BEGIN_SRC lean
 import logic
 
@@ -624,7 +622,7 @@ combined by a lambda abstraction and application. This simple device
 is extremely useful when it comes to structuring long
 proofs, since we can use intermediate =have='s as stepping stones
 leading to the final goal.
- 
+
 ** Classical Logic
 
 The introduction and elimination rules we have seen so far are all
