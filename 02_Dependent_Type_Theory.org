@@ -71,7 +71,7 @@ The =/-= and =-/= annotations indicate that the next line is a comment
 block that is ignored by Lean. Similarly, two dashes indicate that the
 rest of the line contains a comment that is also ignored. Comment
 blocks can be nested, making it possible to "comment out" chunks of
-code, just as in many programming languages. 
+code, just as in many programming languages.
 
 The =constant= and =constants= commands introduce new constant symbols
 into the working environment, and the =check= command asks Lean to
@@ -428,7 +428,7 @@ now, we only wish to emphasize that this is an important feature of
 the Calculus of Inductive Constructions: every term has a
 computational behavior, and supports a notion of reduction, or
 /normalization/. In principle, two terms that reduce to the same value
-are considered "the same" by the underlying logical framework, and
+are considered morally "the same" by the underlying logical framework, and
 Lean does its best to recognize and support these identifications.
 
 ** Introducing Definitions
@@ -843,11 +843,11 @@ In the coming chapters, you will come across many instances of
 dependent types. Here we will mention just one more important and
 illustrative example, the /Sigma types/, =Σx : A, B x=, sometimes also
 known as /dependent pairs/. These are, in a sense, companions to the
-Pi types. The type =Σx : A, B x= denotes the type of pairs =dpair a b=
+Pi types. The type =Σx : A, B x= denotes the type of pairs =⟨a, b⟩=
 where =a : A= and =b : B a=. Just as Pi types =Πx : A, B x= generalize
 the notion of a function type =A → B=, Sigma types =Σx : A, B x=
-generalize the cartesian product =A × B=: in the expression =dpair a
-b=, the type of the second element of the pair, =b : B a=, depends on
+generalize the cartesian product =A × B=: in the expression =⟨a, b⟩=,
+the type of the second element of the pair, =b : B a=, depends on
 the first element of the pair, =a : A=.
 #+BEGIN_SRC lean
 import data.sigma
@@ -858,12 +858,13 @@ constant B : A → Type
 constant a : A
 constant b : B a
 
-check sigma.mk a b
-check pr1 (sigma.mk a b)
-check pr2 (sigma.mk a b)
+check ⟨a, b⟩
+check sigma.mk a b -- ⟨a, b⟩ is notation for sigma.mk a b
+check pr1 ⟨a, b⟩
+check pr2 ⟨a, b⟩
 
-eval pr1 (sigma.mk a b)
-eval pr2 (sigma.mk a b)
+eval pr1 ⟨a, b⟩
+eval pr2 ⟨a, b⟩
 #+END_SRC
 
 ** Implicit Arguments
