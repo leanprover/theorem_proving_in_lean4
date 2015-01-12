@@ -13,7 +13,7 @@ proofs.
 In Section [[Notation, Overloads, and Coercions]], we discussed coercions
 briefly, and noted that there are restrictions on the types that one
 can coerce from and to. Now that we have discussed inductive types in
-the Calculus of Constructions, we can be more precise. 
+the Calculus of Constructions, we can be more precise.
 
 First, let us introduce some terminology. An ordinary /class/ is an
 inductive datatype. An inductive data type without parameters or
@@ -148,7 +148,7 @@ structure morphism (S1 S2 : Semigroup) : Type :=
 check morphism.mor
 -- END
 #+END_SRC
-As a result, it is a prime candidate for the third type of coercion. 
+As a result, it is a prime candidate for the third type of coercion.
 #+BEGIN_SRC lean
 structure Semigroup : Type :=
 (carrier : Type)
@@ -476,8 +476,8 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 iff.intro
   (assume H : p ∧ (q ∨ r),
     have Hp : p, from and.elim_left H,
-    show (p ∧ q) ∨ (p ∧ r), from 
-    proof 
+    show (p ∧ q) ∨ (p ∧ r), from
+    proof
       or.elim (and.elim_right H)
         (assume Hq : q,
           show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro Hp Hq))
@@ -646,7 +646,7 @@ begin
 end
 -- END
 #+END_SRC
-Unsuprisingly, it produces exactly the same proof term. 
+Unsuprisingly, it produces exactly the same proof term.
 #+BEGIN_SRC lean
 import logic
 
@@ -718,7 +718,7 @@ new subgoals for arguments. Here is an example of how it is used:
 import data.nat
 open nat
 
-example : ∃a : ℕ, a = a :=  
+example : ∃a : ℕ, a = a :=
 begin
   fapply exists.intro,
   exact nat.zero,
@@ -742,7 +742,7 @@ import data.nat
 open nat
 
 -- BEGIN
-example : ∃a : ℕ, a = a :=  
+example : ∃a : ℕ, a = a :=
 begin
   fapply exists.intro,
   exact (typeof 0 : ℕ),
@@ -759,7 +759,7 @@ expect arbitrary terms, which you can write using =have=, =show=,
 you can always invoke the tactic mode by inserting a =begin ... end=
 block. In the next example, we use =show= within a tactic block to
 fulfill a goal by providing an explicit term.
- 
+
 #+BEGIN_SRC lean
 import logic
 
@@ -843,7 +843,7 @@ context mod_m
 
   theorem mod_sym (H : a ≡ b) : b ≡ a :=
   have H1 : m | -(b - a), from iff.mp' !dvd_neg_iff_dvd H,
-  int.neg_sub_eq b a ▸ H1
+  int.neg_sub b a ▸ H1
 
   theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
   have H1 : m | (c - b) + (b - a), from !dvd_add H2 H1,
