@@ -238,7 +238,8 @@ vector.cases_on v
     nat.no_confusion e (fun n1_eq_n : n1 = n, eq.rec_on n1_eq_n t))
  (eq.refl (succ n))
 
-definition map {A B C : Type} (f : A → B → C) : Π {n : nat}, vector A n → vector B n → vector C n :=
+definition map {A B C : Type} (f : A → B → C)
+               : Π {n : nat}, vector A n → vector B n → vector C n :=
 sorry
 -- END
 
@@ -275,7 +276,8 @@ tail (h :: t) := t
 theorem eta {A : Type} : ∀ {n} (v : vector A (succ n)), head v :: tail v = v,
 eta (h::t) := rfl
 
-definition map {A B C : Type} (f : A → B → C) : Π {n : nat}, vector A n → vector B n → vector C n,
+definition map {A B C : Type} (f : A → B → C)
+               : Π {n : nat}, vector A n → vector B n → vector C n,
 map nil     nil     := nil,
 map (a::va) (b::vb) := f a b :: map va vb
 

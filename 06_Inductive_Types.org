@@ -1372,8 +1372,8 @@ inductive eq {A : Type} (a : A) : A → Prop :=
 refl : eq a a
 
 -- BEGIN
-theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x) (H : eq a b) :
-               eq (eq.rec_on H (f a)) (f b) :=
+theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
+               (H : eq a b) : eq (eq.rec_on H (f a)) (f b) :=
 have h₁ : ∀ h : eq a a, eq (eq.rec_on h (f a)) (f a), from
   assume h : eq a a, eq.refl (eq.rec_on h (f a)),
 have h₂ : ∀ h : eq a b, eq (eq.rec_on h (f a)) (f b), from
@@ -1418,7 +1418,8 @@ inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
 refl : heq a a
 
 -- BEGIN
-theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x) (H : eq a b) : heq (f a) (f b) :=
+theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
+               (H : eq a b) : heq (f a) (f b) :=
 eq.rec_on H (heq.refl (f a))
 -- END
 
@@ -1488,7 +1489,8 @@ open nat
 print definition nat.rec_on
 
 -- Possible definition for rec_on
-definition rec_on {C : nat → Type} (n : nat) (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
+definition rec_on {C : nat → Type} (n : nat)
+                  (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
 nat.rec fz fs n
 #+END_SRC
 
@@ -1506,11 +1508,13 @@ print definition nat.induction_on
 print definition nat.cases_on
 
 -- Possible definition for induction_on
-definition induction_on {C : nat → Prop} (n : nat) (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
+definition induction_on {C : nat → Prop} (n : nat)
+                        (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
 nat.rec_on n fz fs
 
 -- Possible definition for cases_on
-definition cases_on {C : nat → Prop} (n : nat) (fz : C zero) (fs : Π a, C (succ a)) : C n :=
+definition cases_on {C : nat → Prop} (n : nat)
+                    (fz : C zero) (fs : Π a, C (succ a)) : C n :=
 nat.rec_on n fz (fun (a : nat) (r : C a), fs a)
 #+END_SRC
 
