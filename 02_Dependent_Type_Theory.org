@@ -740,9 +740,9 @@ that section or namespace is closed.
 
 ** Dependent Types
 
-You now have rudimentary ways defining functions and objects in Lean,
+You now have rudimentary ways of defining functions and objects in Lean,
 and we will gradually introduce you to many more. Our ultimate goal in
-Lean is to /prove/ things about the object we define, and the next
+Lean is to /prove/ things about the objects we define, and the next
 chapter will introduce you to Lean's mechanisms for stating theorems
 and constructing proofs. Meanwhile, let us remain on the topic of
 defining objects in dependent type theory for a just a moment longer,
@@ -765,7 +765,7 @@ an arbitrary type =A= to behave the same way. So it makes sense to
 take the type to be the first argument to =cons=, so that for any
 type, =A=, =cons A= is the insertion function for lists of type
 =A=. In other words, for every =A=, =cons A= is the function that
-takes an element =a : A= and a list =l : list A=, and return a new
+takes an element =a : A= and a list =l : list A=, and returns a new
 list, so we have =cons a l : list A=.
 
 It is clear that =cons A= should have type =A → list A → list A=. But
