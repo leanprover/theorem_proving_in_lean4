@@ -327,11 +327,11 @@ some time experimenting with it. Emacs is an extremely powerful text
 editor, but it can also be overwhelming. There are a number of
 introductory tutorials on the web, including these:
 #+BEGIN_QUOTE
-[[http://www.gnu.org/software/emacs/tour/]]
+[[http://www.gnu.org/software/emacs/tour/][Emacs tour]]
 
-[[http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/]]
+[[http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/][Emacs beginners guide]
 
-http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf
+[[http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf][Emacs course]]
 #+END_QUOTE
 You can get pretty far simply using the menus at the top of the
 screen for basic editing and file management. Those menus list
@@ -421,7 +421,7 @@ the tab key, choose a completion from the list of options, and press
 "M-.", you are taken to the symbol's definition. These commands and
 others are summarized here:
 #+BEGIN_QUOTE
-[[https://github.com/leanprover/lean/blob/master/src/emacs/README.md]]
+[[https://github.com/leanprover/lean/blob/master/src/emacs/README.md][Lean Emacs mode README]]
 #+END_QUOTE
 
 This is a good place to mention another trick that is sometimes useful
@@ -477,9 +477,9 @@ Lean's parser is an instance of a Pratt parser, a non-backtracking
 parser that is fast and flexible. You can read about Pratt parsers in
 a number of places online, such as here:
 #+BEGIN_QUOTE
-[[http://en.wikipedia.org/wiki/Pratt_parser]]
+[[http://en.wikipedia.org/wiki/Pratt_parser][Pratt's parser at Wikipedia]]
 
-[[http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing]]
+[[http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing][Top down operator precedence parsing]]
 #+END_QUOTE
 Identifiers can include any alphanumeric characters, including Greek
 characters (other than Π, Σ, and λ, which, as we have seen, have a
