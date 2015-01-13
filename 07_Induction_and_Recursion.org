@@ -1,4 +1,4 @@
-#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]]
 #+OPTIONS: toc:nil
 #+Title: Theorem Proving in Lean
 
@@ -14,19 +14,325 @@ types.
 
 Working with induction and recursion is therefore fundamental to
 working in the Calculus of Inductive Constructions. For that reason
-Lean provides more natural ways of defining recursive
-functions and writing inductive proofs. Behind the scenes, these are
-"compiled" down to constructors and recursors, but they can be much
-more convenient to use.
+Lean provides more natural ways of defining recursive functions,
+performing pattern matching and writing inductive proofs.  Behind the
+scenes, these are "compiled" down into recursors and auxiliary
+definitions we covered in previous chapters.
 
-** Structural Recursion 
+** Pattern matching
+
+The =cases_on= recursor can be used to define functions and prove
+theorems by cases. Complicated definitions may use several nested
+=cases_on= applications, and may be hard to read and understand.
+Pattern-matching is a more convenient and standard description technique
+or defining functions and proving theorems. Actually, Lean supports an extension of
+pattern-matching called /dependent pattern-matching/. Internally,
+dependent pattern-matching is compiled using =cases_on=, =no_confusion=
+and =eq.rec=. Thus, the compiler is not part of the trusted code
+base. A pattern matching definition is of the following form
+
+#+BEGIN_SRC text
+definition [name] [parameters] : [domain] → [codomain],
+[name] [patterns_1] := [value_1],
+...
+[name] [patterns_n] := [value_n]
+#+END_SRC
+
+The parameters are fixed, and each assignment defines the value of the function
+for a different case specified by the given pattern. As a first example, we
+define the function =sub2= for natural numbers:
+
+#+BEGIN_SRC lean
+open nat
+
+definition sub2 : nat → nat,
+sub2 0     := 0,
+sub2 1     := 0,
+sub2 (a+2) := a
+
+example : sub2 5 = 3 :=
+rfl
+#+END_SRC
+
+The default compilation method guarantees that the pattern matching "equations"
+hold definitionally.
+
+#+BEGIN_SRC lean
+open nat
+
+definition sub2 : nat → nat,
+sub2 0     := 0,
+sub2 1     := 0,
+sub2 (a+2) := a
+
+-- BEGIN
+example : sub2 0 = 0 :=
+rfl
+
+example : sub2 1 = 0 :=
+rfl
+
+example (a : nat) : sub2 (a + 2) = a :=
+rfl
+-- END
+#+END_SRC
+
+We can use the command =print definition= to inspect how our definition was compiled into
+recursors.
+
+#+BEGIN_SRC lean
+open nat
+
+definition sub2 : nat → nat,
+sub2 0     := 0,
+sub2 1     := 0,
+sub2 (a+2) := a
+
+-- BEGIN
+print definition sub2
+-- END
+#+END_SRC
+
+Next, we use pattern-matching for defining Boolean negation =neg=, and proving that =neg (neg b) = b=.
+
+#+BEGIN_SRC lean
+open bool
+
+definition neg : bool → bool,
+neg tt := ff,
+neg ff := tt
+
+theorem neg_neg : ∀ (b : bool), neg (neg b) = b,
+neg_neg tt := rfl,   -- proof for neg (neg tt) = tt
+neg_neg ff := rfl    -- proof for neg (neg ff) = ff
+#+END_SRC
+
+As described in previous chapters, Lean inductive datatypes can be parametric.
+The following example defines the =tail= function using pattern matching.
+The argument =A : Type= is a parameter and occurs before =:= to indicate it
+does not participate in the pattern matching. Lean allows parameters to occur
+after =:=, but it cannot pattern match on them.
+
+#+BEGIN_SRC lean
+import data.list
+open list
+
+definition tail {A : Type} : list A → list A,
+tail nil      := nil,
+tail (h :: t) := t
+
+-- Parameter A may occur after ':'
+definition tail2 : Π {A : Type}, list A → list A,
+tail2 (@nil A) := (@nil A),
+tail2 (h :: t) := t
+
+-- @ is allowed on the left-hand-side
+definition tail3 : Π {A : Type}, list A → list A,
+@tail3 A nil      := nil,
+@tail3 A (h :: t) := t
+
+-- A is explicit parameter
+definition tail4 : Π (A : Type), list A → list A,
+tail4 A nil      := nil,
+tail4 A (h :: t) := t
+#+END_SRC
+
+
+** Structural recursion/induction
+
+The default compilation method supports structural recursion:
+recursive applications where one of the arguments is a subterm of the
+corresponding term on the left-hand-side. Later, we describe
+how to compile recursive equations using well-founded recursion.
+The main advantage of the default compilation method is that the
+recursive equations hold definitionally.
+Our first recursive example is the Fibonacci function =fib=, and the =fib_pos=
+theorem which combines pattern-matching, recursive equations, and calculational
+proofs. The theorem =fib_pos= makes it clear again that there is no
+difference between recursion and induction in Lean.
+
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+definition fib : nat → nat,
+fib 0     := 1,
+fib 1     := 1,
+fib (a+2) := fib (a+1) + fib a
+
+-- The defining equations hold definitionally
+
+example : fib 0 = 1 :=
+rfl
+
+example : fib 1 = 1 :=
+rfl
+
+example (a : nat) : fib (a+2) = fib (a+1) + fib a :=
+rfl
+
+-- fib is always positive
+theorem fib_pos : ∀ n, 0 < fib n,
+fib_pos 0     := show 0 < 1, from zero_lt_succ 0,
+fib_pos 1     := show 0 < 1, from zero_lt_succ 0,
+fib_pos (a+2) := calc
+  0 = 0 + 0             : rfl
+... < fib (a+1) + 0     : add_lt_add_right (fib_pos (a+1)) 0
+... < fib (a+1) + fib a : add_lt_add_left  (fib_pos a)     (fib (a+1))
+... = fib (a+2)         : rfl
+#+END_SRC
+
+Another classical example is the list =append= function.
+
+#+BEGIN_SRC lean
+import data.list
+open list
+
+definition append {A : Type} : list A → list A → list A,
+append nil    l := l,
+append (h::t) l := h :: append t l
+
+example : append [1, 2, 3] [4, 5] = [1, 2, 3, 4, 5] :=
+rfl
+#+END_SRC
+
+** Dependent pattern-matching
+
+All the examples we have seen so far can be easily written
+using =cases_on= and =rec_on=. However, this is not the case
+for indexed inductive families such as =vector A n=.
+A lot of boiler plate code needs to be written to define
+very simple functions such as =map=, =zip=, =unzip= using
+recursors.
+In the next example, we define the indexed inductive family
+vector, the tail function and leave as exercise the function =map=
+which maps a function onto each pair of elements coming from
+input vectors. We encourage you to try to define =map= using =rec_on=,
+=cases_on= and =no_confusion=.
+
+#+BEGIN_SRC lean
+namespace hide
+-- BEGIN
+open nat
+
+inductive vector (A : Type) : nat → Type :=
+nil {} : vector A zero,
+cons   : Π {n}, A → vector A n → vector A (succ n)
+
+open vector
+notation h :: t := cons h t
+
+check @vector.cases_on
+-- Π {A : Type}
+--   {C : Π (a : ℕ), vector A a → Type}
+--   {a : ℕ}
+--   (n : vector A a),
+--   (e1 : C 0 nil)
+--   (e2 : Π {n : ℕ} (a : A) (a_1 : vector A n), C (succ n) (cons a a_1)),
+--   C a n
+
+definition tail {A : Type} {n : nat} (v : vector A (succ n)) : vector A n :=
+vector.cases_on v
+ (fun (e : zero = succ n), nat.no_confusion e)
+ (fun (n1 : nat) (h : A) (t : vector A n1) (e : succ n1 = succ n),
+    nat.no_confusion e (fun n1_eq_n : n1 = n, eq.rec_on n1_eq_n t))
+ (eq.refl (succ n))
+
+definition map {A B C : Type} (f : A → B → C) : Π {n : nat}, vector A n → vector B n → vector C n :=
+sorry
+-- END
+
+end hide
+#+END_SRC
+
+The main difficulty is to maintain the relationship between the indices.
+The extra parameter =e= in =tail= is used to "communicate" the relationship
+between =n= and index associated with each minor premise.
+Moreover, some cases are "unreachable" (e.g., =zero = succ n= in the first case at
+=tail=), and the default way to discard them is using =no_confusion=.
+The =map= function is even more tedious to define. All these functions are trivial
+to define using recursive equations. The compiler generates all boiler plate code
+automatically for us.
+
+#+BEGIN_SRC lean
+namespace hide
+open nat
+
+inductive vector (A : Type) : nat → Type :=
+nil {} : vector A zero,
+cons   : Π {n}, A → vector A n → vector A (succ n)
+
+open vector prod
+notation h :: t := cons h t
+
+-- BEGIN
+definition head {A : Type} : Π {n}, vector A (succ n) → A,
+head (h :: t) := h
+
+definition tail {A : Type} : Π {n}, vector A (succ n) → vector A n,
+tail (h :: t) := t
+
+theorem eta {A : Type} : ∀ {n} (v : vector A (succ n)), head v :: tail v = v,
+eta (h::t) := rfl
+
+definition map {A B C : Type} (f : A → B → C) : Π {n : nat}, vector A n → vector B n → vector C n,
+map nil     nil     := nil,
+map (a::va) (b::vb) := f a b :: map va vb
+
+-- The automatically generated definition is not as straightforward as the previous ones.
+print definition map
+
+definition zip {A B : Type} : Π {n}, vector A n → vector B n → vector (A × B) n,
+zip nil nil         := nil,
+zip (a::va) (b::vb) := (a, b) :: zip va vb
+-- END
+
+end hide
+#+END_SRC
+
+Note that we can omit recursive equations for "unreachable" cases such as =head nil=.
+
+** Overlapping patterns
 
 [TODO: write this section.]
 
-** Structural Induction 
+** Inaccessible terms
 
 [TODO: write this section.]
 
-** Well-Founded Induction and Recursion
+** Match Expressions
+
+Lean also provides a compiler for /match-with/ expressions found in many functional languages.
+It uses essentially the same infrastructure used to compile recursive equations.
+
+#+BEGIN_SRC lean
+import data.list
+open nat bool list
+
+-- BEGIN
+definition is_not_zero (a : nat) : bool :=
+match a with
+ zero   := ff,
+ succ _ := tt
+end
+
+-- We can use recursive equations and match
+variable {A : Type}
+variable p : A → bool
+
+definition filter : list A → list A,
+filter nil      := nil,
+filter (a :: l) :=
+  match p a with
+    tt := a :: filter l,
+    ff := filter l
+  end
+
+example : filter is_not_zero [1, 0, 0, 3, 0] = [1, 3] :=
+rfl
+-- END
+#+END_SRC
+
+** Well-Founded Recursion
 
 [TODO: write this section.]
