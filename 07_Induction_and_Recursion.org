@@ -19,7 +19,7 @@ performing pattern matching and writing inductive proofs.  Behind the
 scenes, these are "compiled" down into recursors and auxiliary
 definitions we covered in previous chapters.
 
-** Pattern matching
+** Pattern Matching
 
 The =cases_on= recursor can be used to define functions and prove
 theorems by cases. Complicated definitions may use several nested
@@ -93,6 +93,16 @@ print definition sub2
 -- END
 #+END_SRC
 
+We say a term is a /constructor application/ if it is of the form =c a_1 ... a_n= where
+=c= is the constructor of some inductive datatype.
+Note that in the definition =sub2=, the terms =1= and =a+2= are not constructor applications.
+However, the compiler normalizes them at compilation time, and obtains the constructor applications
+=succ zero= and =succ (succ a)= respectively. This normalization step is just a simple convenience
+that allows us to write definitions resembling the ones found in textbooks.
+Note that, there is no "magic", the compiler is just using the kernel normalizer/evaluator.
+If we had written =2+a=, the definition would be rejected since =2+a= does not normalize into a
+constructor application.
+
 Next, we use pattern-matching for defining Boolean negation =neg=, and proving that =neg (neg b) = b=.
 
 #+BEGIN_SRC lean
@@ -138,7 +148,7 @@ tail4 A (h :: t) := t
 #+END_SRC
 
 
-** Structural recursion/induction
+** Structural Recursion/Induction
 
 The default compilation method supports structural recursion:
 recursive applications where one of the arguments is a subterm of the
@@ -196,7 +206,7 @@ example : append [1, 2, 3] [4, 5] = [1, 2, 3, 4, 5] :=
 rfl
 #+END_SRC
 
-** Dependent pattern-matching
+** Dependent Pattern-Matching
 
 All the examples we have seen so far can be easily written
 using =cases_on= and =rec_on=. However, this is not the case
@@ -281,7 +291,7 @@ definition map {A B C : Type} (f : A → B → C)
 map nil     nil     := nil,
 map (a::va) (b::vb) := f a b :: map va vb
 
--- The automatically generated definition is not as straightforward as the previous ones.
+-- The automatically generated definitions for indexed families are not straightforward
 print definition map
 
 definition zip {A B : Type} : Π {n}, vector A n → vector B n → vector (A × B) n,
@@ -294,13 +304,169 @@ end hide
 
 Note that we can omit recursive equations for "unreachable" cases such as =head nil=.
 
-** Overlapping patterns
+** Overlapping Patterns
 
-[TODO: write this section.]
+We say a set of recursive equations /overlap/ when there is an input that more than
+one left-hand-side can match. In the following definition the input =0 0= matches
+the left-hand-side of the first two equations. Should the function return =1= or =2=?
 
-** Inaccessible terms
+#+BEGIN_SRC lean
+open nat
+-- BEGIN
+definition f : nat → nat → nat,
+f 0     y     := 1,
+f x     0     := 2,
+f (x+1) (y+1) := 3
+-- END
+#+END_SRC
 
-[TODO: write this section.]
+Overlapping patterns are often used to succinctly express complex patterns in data.
+Thus, they are allowed in Lean. Lean eliminates the ambiguity by using the first
+applicable equation. In the example above, the following equations hold definitionally.
+
+#+BEGIN_SRC lean
+open nat
+definition f : nat → nat → nat,
+f 0     y     := 1,
+f x     0     := 2,
+f (x+1) (y+1) := 3
+-- BEGIN
+variables (a b : nat)
+example : f 0     0     = 1 := rfl
+example : f 0     (a+1) = 1 := rfl
+example : f (a+1) 0     = 2 := rfl
+example : f (a+1) (b+1) = 3 := rfl
+-- END
+#+END_SRC
+
+** Wildcard Patterns
+
+Lean also supports /wildcard patterns/ aka anonymous variables =_=. They are useful to create
+patterns where we don't care about the value of a specific argument.
+In the function =f= defined in the previous section, the values of =x= and =y= are not used
+in the right-hand-side. Here is the same example using wildcards.
+
+#+BEGIN_SRC lean
+open nat
+definition f : nat → nat → nat,
+f 0  _  := 1,
+f _  0  := 2,
+f _  _  := 3
+variables (a b : nat)
+example : f 0     0     = 1 := rfl
+example : f 0     (a+1) = 1 := rfl
+example : f (a+1) 0     = 2 := rfl
+example : f (a+1) (b+1) = 3 := rfl
+#+END_SRC
+
+** Incomplete Patterns
+
+Some functional languages support incomplete patterns. In these
+languages, the interpreter produces an exception or returns an
+arbitrary value for incomplete cases. We can simulate the arbitrary
+value approach using inhabited types.
+An element of =inhabited A= is simply a
+witness to the fact that there is an element of =A=. Later, we will
+see that =inhabited= is an instance of a =type class= in Lean: Lean
+can be instructed that suitable base types are inhabited, and can
+automatically infer that other constructed types are inhabited on that
+basis. The standard library provides the opaque definition =arbitrary
+A= for inhabited types. The function =arbitrary A= just returns the
+witness for =A=, but since =arbitrary A= is opaque, we cannot rely on
+the witness chosen.
+
+We can also use the type =option A= to simulate incomplete patterns.
+The idea is to return =some a= for the provided patterns, and use =none=
+for the incomplete cases.
+
+In the following example we demonstrate both approaches.
+
+#+BEGIN_SRC lean
+open nat option
+
+definition f1 : nat → nat → nat,
+f1 0  _  := 1,
+f1 _  0  := 2,
+f1 _  _  := arbitrary nat -- "incomplete" case
+
+variables (a b : nat)
+example : f1 0     0     = 1 := rfl
+example : f1 0     (a+1) = 1 := rfl
+example : f1 (a+1) 0     = 2 := rfl
+example : f1 (a+1) (b+1) = arbitrary nat := rfl
+
+definition f2 : nat → nat → option nat,
+f2 0  _  := some 1,
+f2 _  0  := some 2,
+f2 _  _  := none    -- "incomplete" case
+
+example : f2 0     0     = some 1 := rfl
+example : f2 0     (a+1) = some 1 := rfl
+example : f2 (a+1) 0     = some 2 := rfl
+example : f2 (a+1) (b+1) = none   := rfl
+#+END_SRC
+
+** Inaccessible Terms
+
+Another complication in dependent pattern matching is that some parts
+require constructor matching, and others are just report
+specialization. Lean allows users to mark subterms are /inaccessible/
+for parttern matching. These annotations are essential, for example,
+when a term occurring in the left-hand-side is not a variable nor a
+constructor application. We can view /inaccessible/ terms as
+"don't care" patterns.
+
+An inaccessible subterm can be declared using one of the following two
+notations: =⌞t⌟= or =?(t)=. The unicode version is inputed by entering
+=\cll= (corner-lower-left) and =\clr= (corner-lower-right).
+
+In the following example due to Goguen-McBride-McKinna, we declare
+an inductive type that defines the property of "being in the image of =f=".
+Then, we equip =f= with an "inverse". The typing rules forces us to
+write =f a= for the first argument, this term is not a variable nor
+a constructor application. We can view elements of the type =image_of f b= as
+evidence that =b= is in the image of =f=. The constructor =imf= is used to
+build such evidence.
+
+#+BEGIN_SRC lean
+variables {A B : Type}
+inductive image_of (f : A → B) : B → Type :=
+imf : Π a, image_of f (f a)
+
+open image_of
+
+definition inv {f : A → B} : Π b, image_of f b → A,
+inv ⌞f a⌟ (imf f a) := a
+#+END_SRC
+
+Inaccessible terms can also be used to reduce the complexity of the generated
+definition. Depedent pattern matching is compiled using basically the
+=cases_on= and =no_confusion= constructions. The number of =cases_on= introduced
+by the compiler can be reduced by marking parts that just report specialization.
+In the next example, we define the type of finite ordinals =fin n=, this type has
+=n= inhabitants. We also define the function =to_nat= that maps a =fin n= into a
+=nat=. If we do not mark =n+1= as inaccessible, the compiler will generate a definition
+containing two =cases_on= expressions. We encourage you to replace
+=⌞n+1⌟= with =(n+1)= and inspect the generated definition using =print definition to_nat=.
+
+#+BEGIN_SRC lean
+namespace hide
+-- BEGIN
+open nat
+
+inductive fin : nat → Type :=
+fz : Π n, fin (succ n),
+fs : Π {n}, fin n → fin (succ n)
+
+open fin
+
+definition to_nat : Π {n : nat}, fin n → nat,
+@to_nat ⌞n+1⌟ (fz n) := zero,
+@to_nat ⌞n+1⌟ (fs f) := succ (to_nat f)
+-- END
+
+end hide
+#+END_SRC
 
 ** Match Expressions
 
@@ -333,6 +499,73 @@ filter (a :: l) :=
 example : filter is_not_zero [1, 0, 0, 3, 0] = [1, 3] :=
 rfl
 -- END
+#+END_SRC
+
+** Other Examples
+
+In some definitions, we have to help the compiler by providing some implicit arguments explicitly in the
+left-hand-side of recursive equations. If we don't provide the implicit arguments, the elaborator is unable
+to solve some placeholders (aka meta-variables) in the nested match expression.
+
+#+BEGIN_SRC lean
+namespace hide
+open nat
+
+inductive vector (A : Type) : nat → Type :=
+nil {} : vector A zero,
+cons   : Π {n}, A → vector A n → vector A (succ n)
+
+open vector prod
+notation h :: t := cons h t
+
+-- BEGIN
+variables {A B : Type}
+definition unzip : Π {n : nat}, vector (A × B) n → vector A n × vector B n,
+@unzip zero     nil         := (nil, nil),
+@unzip (succ n) ((a, b)::v) :=
+  match unzip v with
+    (va, vb) := (a :: va, b :: vb)
+  end
+
+example : unzip ((1, 10) :: (2, 20) :: nil) = (1 :: 2 :: nil, 10 :: 20 :: nil) :=
+rfl
+-- END
+
+end hide
+#+END_SRC
+
+Next, we define the function =diag= which extracts the diagonal of a square matrix =vector (vector A n) n=.
+Note that, this function is defined by structural induction. However, the term =map tail v= is not a subterm
+of =((a :: va) :: v)=. Could you explain what is going on?
+
+#+BEGIN_SRC lean
+namespace hide
+open nat
+
+inductive vector (A : Type) : nat → Type :=
+nil {} : vector A zero,
+cons   : Π {n}, A → vector A n → vector A (succ n)
+
+open vector
+notation h :: t := cons h t
+
+-- BEGIN
+variables {A B : Type}
+
+definition tail : Π {n}, vector A (succ n) → vector A n,
+tail (h :: t) := t
+
+definition map (f : A → B)
+               : Π {n : nat}, vector A n → vector B n,
+map nil     := nil,
+map (a::va) := f a :: map va
+
+definition diag : Π {n : nat}, vector (vector A n) n → vector A n,
+diag nil              := nil,
+diag ((a :: va) :: v) := a :: diag (map tail v)
+-- END
+
+end hide
 #+END_SRC
 
 ** Well-Founded Recursion
