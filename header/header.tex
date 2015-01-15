@@ -83,6 +83,13 @@
     \IfValueTF{#4}{\label{#4}}{}
   \end{figure}
 }
+
+% Exercise Environment
+\newtheorem{exercise}{Exercise}[chapter]
+\newenvironment{exercise*}
+  {\renewcommand\theex{\thechapter.\arabic{ex}\rlap{$^*$}}\ex}
+  {\endex}
+
 % Special subsection commands
 \definecolor{shadecolor}{HTML}{AABAD1}
 \DeclareDocumentCommand{\advanced}{
