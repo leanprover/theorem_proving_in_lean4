@@ -66,7 +66,7 @@ type, by writing ~inductive foo (T : Type) := mk : T → foo~.
 
 Let us now consider the second kind of coercion. By the /class of
 sorts/, we mean the collection of universes =Type.{i}=. A coercion of
-the second kind is of the form 
+the second kind is of the form
 #+BEGIN_SRC text
 c : Πx1 : A1, ..., xn : An, F x1 ... xn → Type
 #+END_SRC
@@ -1106,7 +1106,5 @@ private definition inc (x : nat) := x + 1
 private theorem inc_eq_succ (x : nat) : succ x = inc x :=
   rfl
 #+END_SRC
-In this example, the definition inc and theorem inc_eq_succ are not
+In this example, the definition inc and theorem =inc_eq_succ= are not
 visible or accessible in modules that import this one.
-
-
