@@ -316,3 +316,13 @@ button::-moz-focus-inner {
     margin-left: 40px;
 }
 .resizable_handle  { background-position: center; }
+
+.exercise {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 5px;
+    border: solid 1px #333333;
+}
+.exercise:before {
+  content: "Exercise";
+}
