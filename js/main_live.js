@@ -299,13 +299,16 @@ var myModule = (function() {
                 if (line.startsWith("FLYCHECK_BEGIN")) {
                     mode = "flycheck";
                     type = line.split(" ")[1].toLowerCase();
+                    if (type == "information") {
+                        type = "info";
+                    }
                     line = buffer[i++];
                     items = line.split(":")
                     filename = items[0];
                     row = parseInt(items[1]) - 1;
                     endRow = row + 1;
                     endColumn = column = parseInt(items[2]);
-                    text = items.slice(3).join(":");
+                    text = items.slice(3).join(":").trim();
                 } else if (line.startsWith("FLYCHECK_END")) {
                     errors.push({row: row,
                                  endRow: endRow,
@@ -313,7 +316,7 @@ var myModule = (function() {
                                  endColumn: endColumn,
                                  text: text,
                                  type: type});
-                    this.append_console_nl("line " + (row + 1) + ", column " + column + ":" + text);
+                    // this.append_console_nl("line " + (row + 1) + ", column " + column + ":" + text);
                     mode = "outside";
                 } else if (mode === "outside") {
                     this.append_console_nl(line);
