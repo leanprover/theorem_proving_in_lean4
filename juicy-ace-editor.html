@@ -62,6 +62,7 @@
             text && container.appendChild(text);
 
         var editor = this.editor || ace.edit(container);
+            editor.$blockScrolling = Infinity;
             editor.setValue(trimed_text, 1);
         // initial attributes
             editor.setTheme( this.getAttribute("theme") || "ace/theme/chrome");
