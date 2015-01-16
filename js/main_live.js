@@ -94,7 +94,7 @@ var myModule = (function() {
                 // side by side
                 tutorial_width  = w * tutorial_main_ratio;
                 main_width      = w - tutorial_width - handle_width;
-                console_width   = main_width - handle_width;
+                console_width   = main_width;
                 tutorial_height = h - menu_height;
                 main_height     = tutorial_height * main_console_ratio;
                 console_height  = tutorial_height - main_height - handle_width;
