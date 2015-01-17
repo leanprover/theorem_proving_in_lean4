@@ -175,13 +175,14 @@ You should also try to understand why the reverse implication is not
 derivable in the last example.
 
 It is often possible to bring a component outside a universal
-quantifier, when it does not depend on the quantified variable:
+quantifier, when it does not depend on the quantified variable (one
+direction of the second of these requires classical logic):
 #+BEGIN_SRC lean
 section
   variables (A : Type) (P Q : A → Prop)
   variable R : Prop
 
-  example : (∀x : A, R) ↔ R := sorry
+  example : A → (∀x : A, R) ↔ R := sorry
   example : (∀x, P x ∨ R) ↔ (∀x, P x) ∨ R := sorry
   example : (∀x, R → P x) ↔ (R → ∀x, P x) := sorry
 end
