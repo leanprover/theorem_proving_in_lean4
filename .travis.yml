@@ -27,9 +27,9 @@ before_install:
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
 install:
-  - sudo add-apt-repository ppa:leanprover/lean
+  - sudo add-apt-repository --yes ppa:leanprover/lean
   - sudo apt-get update
-  - sudo apt-get install lean
+  - sudo apt-get -qq install lean
 
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
