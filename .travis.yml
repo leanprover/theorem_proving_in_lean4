@@ -48,6 +48,7 @@ after_script:
       git commit -m "Update `date -R`";
       git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages;
     fi
+  - git checkout master
   - make test
 
 notifications:
