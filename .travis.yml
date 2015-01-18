@@ -26,8 +26,14 @@ before_install:
   - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended || true
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
+install:
+  - sudo add-apt-repository ppa:leanprover/lean
+  - sudo apt-get update
+  - sudo apt-get install lean
+
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
+  - make test
 
 after_script:
   - if [[ $REPO == BLESSED ]]; then

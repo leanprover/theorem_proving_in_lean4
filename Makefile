@@ -1,5 +1,6 @@
 CASK_BIN ?= cask
 EMACS_BIN ?= emacs
+LEAN_BIN ?= lean
 ORGS  := $(wildcard [0-9][0-9]_*.org)
 HTMLS := $(ORGS:.org=.html)
 TEXS  := $(ORGS:.org=.tex)
@@ -64,5 +65,8 @@ pygments-main: install-pygments
 
 install-pygments:
 	if [ ! -d pygments-main ] ; then hg clone https://bitbucket.org/birkenfeld/pygments-main && cd pygments-main && sudo python setup.py install; fi
+
+test:
+	for ORG in $(ORGS); do ./test.sh $(LEAN_BIN) $$ORG; done
 
 .PHONY: all clean install-cask install-watchman watch-on watch-off
