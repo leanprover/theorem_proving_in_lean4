@@ -356,7 +356,7 @@ var myModule = (function() {
                     button.addEventListener("click", function() {
                         myModule.dropbox_connect()
                     });
-                    $("#signin-button").prepend("<img class=\"menu_icon\" src=\"/images/dropbox.svg\"/>");
+                    $("#signin-button").prepend("<img class=\"menu_icon\" src=\"/images/dropbox.svg\" title=\"signin\"/>");
                 } else {
                     myModule.dropbox_show_username();
                 }
