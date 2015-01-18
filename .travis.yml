@@ -33,8 +33,6 @@ install:
 
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
-
-after_script:
   - if [[ $REPO == BLESSED ]]; then
       git config --global user.email "notifications@travis-ci.org";
       git config --global user.name "Travis CI";
