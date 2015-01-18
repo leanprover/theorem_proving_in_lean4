@@ -793,10 +793,10 @@ fundamental, and =A → B= is nothing more than notation for =Πx : A, B=
 when =B= does not depend on =A=.
 
 Returning to the example of lists, we can model some basic list
-operations as follows:
+operations as follows. We use =namespace hide= to avoid a conflict
+with the =list= type defined in the standard library.
 #+BEGIN_SRC lean
 namespace hide
--- BEGIN
 constant list : Type → Type
 
 namespace list
@@ -806,7 +806,6 @@ namespace list
   constant tail : ΠA : Type, list A → list A  -- returns the remainder
   constant append : ΠA : Type, list A → list A → list A -- concatenates two lists
 end list
--- END
 end hide
 #+END_SRC
 In fact, these are essentially the types of the defined objects in the
@@ -872,8 +871,8 @@ eval pr2 (sigma.mk a b)
 
 Suppose we have an implementation of lists as described above.
 #+BEGIN_SRC lean
-namespace hide
 -- BEGIN
+namespace hide
 constant list : Type → Type
 
 namespace list
@@ -881,8 +880,8 @@ namespace list
   constant nil : ΠA : Type, list A
   constant append : ΠA : Type, list A → list A → list A
 end list
--- END
 end hide
+-- END
 #+END_SRC
 Then, given a type =A=, some elements of =A=, and some lists of
 elements of =A=, we can construct new lists using the constructors.
