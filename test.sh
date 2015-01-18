@@ -19,6 +19,7 @@ while read -r line; do
         i=$((i + 1))
         lastbegin=$linenum
         rm -f $f.$i.lean
+        echo -E "import standard" >> $f.$i.lean
     elif [[ $line =~ ^#\+END_SRC ]]; then
         if [[ $in_code_block -eq 1 ]]; then
             if $LEAN -t 100000 $f.$i.lean > $f.$i.produced.out; then
