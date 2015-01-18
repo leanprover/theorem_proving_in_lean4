@@ -91,6 +91,14 @@ Auto-reload HTML page
 [google-tincr]: http://tin.cr
 
 
+Test Lean Code in .org files
+----------------------------
+
+```bash
+make test
+```
+
+
 
 
 
