@@ -897,7 +897,7 @@ namespace list
 end list
 
 -- BEGIN
-open list
+open hide.list
 
 constant  A : Type
 constant  a : A
@@ -934,7 +934,7 @@ namespace list
   constant append : ΠA : Type, list A → list A → list A
 end list
 
-open list
+open hide.list
 
 constant  A : Type
 constant  a : A
@@ -954,6 +954,8 @@ context, Lean allows us to specify that this argument should, by
 default, be left implicit.
 
 #+BEGIN_SRC lean
+namespace hide
+
 constant list : Type → Type
 
 namespace list
@@ -962,7 +964,7 @@ namespace list
   constant append : Π{A : Type}, list A → list A → list A
 end list
 
-open list
+open hide.list
 
 constant  A : Type
 constant  a : A
@@ -973,6 +975,8 @@ check cons a nil
 check append (cons a nil) l1
 check append (append (cons a nil) l1) l2
 -- END
+
+end hide
 #+END_SRC
 
 All that has changed are the curly braces around =A : Type= in the
