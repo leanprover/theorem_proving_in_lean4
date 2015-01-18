@@ -24,11 +24,13 @@ before_install:
   - evm list
   - sudo add-apt-repository --yes ppa:leanprover/lean
   - sudo apt-get update
+  - DEBIAN_FRONTEND=noninteractive DEBIAN_PRIORITY=critical sudo apt-get -q -y -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" upgrade || true
   - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended || true
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
 install:
-  - sudo apt-get -qq install --fix-broken lean
+  - dpkg --get-selections | grep hold
+  - sudo apt-get -qq install lean
 
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
