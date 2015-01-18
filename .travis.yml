@@ -29,6 +29,7 @@ before_install:
 install:
   - sudo add-apt-repository --yes ppa:leanprover/lean
   - sudo apt-get update
+  - sudo apt-get upgrade
   - sudo apt-get -qq install lean
 
 script:
