@@ -9,11 +9,12 @@ h1, h2, h3, h4 {
     font-weight: 400;
 }
 h1, h2, h3, h4, h5 {
-    margin-bottom: 24px;
+    margin-bottom: 35px;
     padding: 0;
 }
 p {
-    margin-bottom: 0px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     padding: 0;
 }
 h1 {
