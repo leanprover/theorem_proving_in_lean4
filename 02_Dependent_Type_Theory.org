@@ -602,7 +602,7 @@ identifiers and notations in another namespace we want to use. Thus
 namespaces give us a way to manage our working environment.
 
 For example, when we work with the natural numbers, we usually want
-access to the function =plus=, and its associated notation, =+=. The
+access to the function =add=, and its associated notation, =+=. The
 command =open nat= makes these available to us.
 #+BEGIN_SRC lean
 import data.nat   -- imports the nat module
@@ -842,14 +842,14 @@ In the coming chapters, you will come across many instances of
 dependent types. Here we will mention just one more important and
 illustrative example, the /Sigma types/, =Σx : A, B x=, sometimes also
 known as /dependent pairs/. These are, in a sense, companions to the
-Pi types. The type =Σx : A, B x= denotes the type of pairs =sigma.mk a b=
-where =a : A= and =b : B a=. We can also use angle brackets =<a, b>= as notation
-for =sigma a b=. We can input angle brackets using the shortcuts =\<= and =\>=.
-Just as Pi types =Πx : A, B x= generalize
+Pi types. The type =Σx : A, B x= denotes the type of pairs =sigma.mk a
+b= where =a : A= and =b : B a=. You can also use angle brackets =<a,
+b>= as notation for =sigma a b=. (To type these brackets, use the
+shortcuts =\<= and =\>=.)  Just as Pi types =Πx : A, B x= generalize
 the notion of a function type =A → B=, Sigma types =Σx : A, B x=
-generalize the cartesian product =A × B=: in the expression =sigma.mk a b=,
-the type of the second element of the pair, =b : B a=, depends on
-the first element of the pair, =a : A=.
+generalize the cartesian product =A × B=: in the expression =sigma.mk
+a b=, the type of the second element of the pair, =b : B a=, depends
+on the first element of the pair, =a : A=.
 #+BEGIN_SRC lean
 import data.sigma
 open sigma
@@ -954,9 +954,9 @@ default, be left implicit.
 
 #+BEGIN_SRC lean
 namespace hide
-
 constant list : Type → Type
 
+-- BEGIN
 namespace list
   constant cons : Π{A : Type}, A → list A → list A
   constant nil : Π{A : Type}, list A
@@ -969,12 +969,10 @@ constant  A : Type
 constant  a : A
 constants l1 l2 : list A
 
--- BEGIN
 check cons a nil
 check append (cons a nil) l1
 check append (append (cons a nil) l1) l2
 -- END
-
 end hide
 #+END_SRC
 

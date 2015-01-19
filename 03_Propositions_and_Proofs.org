@@ -180,14 +180,16 @@ q → p= assumes =p= and =q= are true, and uses the first hypothesis
 Note that the =theorem= command is really a version of the
 =definition= command: under the propositions and types correspondence,
 proving the theorem =p → q → p= is really the same as defining an
-element of the associated type. The only difference is that =theorem=
-are always treated as "opaque" definitions, and Lean never tries to
-"unfold" the definition and "see" the proof.
-The point is that later definitions and theorems should not care what the proof is;
-by the assumption of proof irrelevance, they are all treated the same.
-Note that =theorems= are essentially =opaque definitions=. There is only a
-small difference: in Lean, opaque definitions are treated as transparent in the
-module where they were defined.
+element of the associated type. The only difference is that a
+=theorem= is always treated as an /opaque/ definition, and Lean never
+tries to "unfold" the definition and "see" the proof. The point is
+that later definitions and theorems should not care what the proof is;
+by the assumption of proof irrelevance, they are all treated the
+same. In Lean, we can also mark a definition opaque, by introducing it
+as an =opaque definition=. There is only one small difference: in
+Lean, opaque definitions are treated as transparent in the module
+where they are defined. See Section [[Opaque Definitions]] for further
+discussion.
 
 Notice that the lambda abstractions =Hp : p= and =Hq : q= can be
 viewed as temporary assumptions in the proof of =t1=. Lean provides
