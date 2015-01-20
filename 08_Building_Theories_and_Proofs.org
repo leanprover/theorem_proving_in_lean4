@@ -997,8 +997,9 @@ context mod_m
   have H1 : m | (c - b) + (b - a), from !dvd_add H2 H1,
   eq.subst
     (calc
-      (c - b) + (b - a) = c - b + b - a : add.assoc
-                    ... = c - a         : neg_add_cancel_right)
+      (c - b) + (b - a) = c - b + b - a  : add.assoc
+                    ... = c + -b + b - a : rfl
+                    ... = c - a          : neg_add_cancel_right)
     H1
 end mod_m
 
