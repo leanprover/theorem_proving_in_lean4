@@ -5,9 +5,12 @@
 
 By now, you have seen how to define some elementary notions in
 dependent type theory. You have also seen that it is possible to
-import notions that are defined in Lean's library. In this chapter,
-we will begin to explain how you can start /proving/ assertions about
-objects and notations that have been defined.
+import notions that are defined in Lean's library. In this chapter, we
+will explain how mathematical propositions and proofs are expressed in
+the language of dependent type theory, so that you can start proving
+assertions about the objects and notations that have been defined. The
+encoding we use here is specific to the standard library; we will
+discuss proofs in /homotopy type theory/ in a later chapter.
 
 ** Propositions as Types
 
@@ -39,9 +42,9 @@ end
 
 end hide
 #+END_SRC
-We could then introduce, for each =p : Prop=, another type =Proof p=,
-for the type of proofs. An "axiom" would be constant of such a type
-type.
+We could then introduce, for each element =p : Prop=, another type
+=Proof p=, for the type of proofs of =p=. An "axiom" would be constant
+of such a type.
 #+BEGIN_SRC lean
 namespace hide
 
@@ -103,23 +106,32 @@ constant implies_intro (p q : Prop) : (Proof p → Proof q) → Proof (implies p
 
 end hide
 #+END_SRC
+This approach would provide us with a reasonable way of building
+assertions and proofs. Determining that an expression =t= is a correct
+proof of assertion =p= would then simply be a matter of checking that
+=t= has type =Proof p=.
 
-These two rules, however, show that we can pass back and forth between
-=Proof (implies p q)= and =Proof p → Proof q=. In other words,
-implication between propositions corresponds to having a function that
-takes one proof to another. We can further simplify matters by
-dropping the predicate "Proof," and interpreting any element =p :
-Prop= as a type, so we can write =t : p= instead of =t : Proof
-p=. Then the introduction of the connective =implies= is entirely
-redundant: we can use the usual function space constructor =p → q=
-from dependent type theory as our notion of implication.
+Some simplifications are possible, however. To start with, we can
+avoid writing the term =Proof= repeatedly by conflating =Proof p= with
+=p= itself. In other, whenever we have =p : Prop=, we can interpret
+=p= as a type, namely, the type of its proofs. We can then read =t :
+p= as the assertion that =t= is a proof of =p=.
+
+Moreover, once we make this identification, the rules for implication
+show that we can pass back and forth between =implies p q= and =p →
+q=. In other words, implication between propositions =p= and =q=
+corresponds to having a function that takes any element of =p= to an
+element of =q=. As a result, the introduction of the connective
+=implies= is entirely redundant: we can use the usual function space
+constructor =p → q= from dependent type theory as our notion of
+implication.
 
 This is the approach followed in the Calculus of Inductive
 Constructions, and hence in Lean as well. The fact that the rules for
 implication in a proof system for natural deduction correspond exactly
 to the rules governing abstraction and application for functions is an
 instance of the /Curry-Howard isomorphism/, sometimes known as the
-/propositions-as-types/ paradigm.  In fact, the type =Prop= is
+/propositions-as-types/ paradigm. In fact, the type =Prop= is
 syntactic sugar for =Type.{0}=, the very bottom of the type hierarchy
 described in the last chapter. =Prop= has some special features, but
 like the other type universes, it is closed under the arrow
@@ -144,19 +156,18 @@ inhabitant of =p= as being the "fact that =p= is true." A proof of =p
 → q= uses "the fact that =p= is true" to obtain "the fact that =q=
 is true."
 
-Indeed, if =p : Prop= is any proposition, Lean's /standard kernel/ treats any two
-elements =t1 t2 : Prop= as being "definitionally equal," much the same
-way as it treats =(λx, t)s= and =t[s/x]= as definitionally equal. This
-is known as "proof irrelevance," and is consistent with the
-interpretation in the last paragraph. It means that even though we can
-treat proofs =t : p= as ordinary objects in the language of dependent
-type theory, they carry no information beyond the fact that =p= is
-true.
+Indeed, if =p : Prop= is any proposition, Lean's /standard kernel/
+treats any two elements =t1 t2 : Prop= as being "definitionally
+equal," much the same way as it treats =(λx, t)s= and =t[s/x]= as
+definitionally equal. This is known as "proof irrelevance," and is
+consistent with the interpretation in the last paragraph. It means
+that even though we can treat proofs =t : p= as ordinary objects in
+the language of dependent type theory, they carry no information
+beyond the fact that =p= is true.
 
-In the previous paragraph, we use the term /standard kernel/ because
-Lean also supports an alternative /proof relevant kernel/.
-The alternative kernel will be described later when we discuss how
-[[http://homotopytypetheory.org/][Homotopy Type Theory]] can be developed using Lean.
+Lean also supports an alternative /proof relevant kernel/, which forms
+the basis for [[http://homotopytypetheory.org/][homotopy type theory]]. We will return to this topic in a
+later chapter.
 
 ** Working with Propositions as Types
 
