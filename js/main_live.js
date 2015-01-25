@@ -105,11 +105,11 @@ var myModule = (function() {
             var main_top, main_left, console_top, console_left, tutorial_top, tutorial_left;
             if (w >= h) {
                 // side by side
-                tutorial_width  = w * tutorial_main_ratio;
+                tutorial_width  = Math.floor(w * tutorial_main_ratio);
                 main_width      = w - tutorial_width - handle_width;
                 console_width   = main_width;
                 tutorial_height = h - menu_height;
-                main_height     = tutorial_height * main_console_ratio;
+                main_height     = Math.floor(tutorial_height * main_console_ratio);
                 console_height  = tutorial_height - main_height - handle_width;
 
                 tutorial_top    = menu_height;
@@ -128,16 +128,16 @@ var myModule = (function() {
                 sub_handle_background_image = "url(css/images/handle-h.png)";
                 sub_handle_cursor = "row-resize";
 
-                main_handle_width  = handle_width;
-                main_handle_height = tutorial_height;
-                sub_handle_width   = console_width;
-                sub_handle_height  = handle_width;
+                main_handle_width  = handle_width - 2;
+                main_handle_height = tutorial_height - 2;
+                sub_handle_width   = console_width - 2;
+                sub_handle_height  = handle_width - 2;
             } else {
                 // top bottom
                 tutorial_width  = w;
-                main_width      = w * main_console_ratio;
+                main_width      = Math.floor(w * main_console_ratio);
                 console_width   = w - main_width - handle_width;
-                tutorial_height = (h - menu_height) * tutorial_main_ratio;
+                tutorial_height = Math.floor((h - menu_height) * tutorial_main_ratio);
                 main_height     = (h - menu_height) - tutorial_height - handle_width;
                 console_height  = main_height;
 
