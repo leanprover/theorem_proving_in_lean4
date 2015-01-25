@@ -171,8 +171,8 @@ var myModule = (function() {
             var process_main_buffer_command = {
                 name: 'run_lean',
                 bindKey: {
-                    win: 'Ctrl-x',
-                    mac: 'Command-x',
+                    win: 'shift-enter',
+                    mac: 'shift-enter',
                     sender: 'editor|cli'
                 },
                 exec: function(env, args, request) {
