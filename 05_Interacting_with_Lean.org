@@ -621,14 +621,14 @@ open bool nat
 definition bool.to_nat (b : bool) : nat :=
 bool.cond b 1 0
 
-coercion bool.to_nat
+attribute bool.to_nat [coercion]
 -- END
 eval 2 + ff
 eval 2 + tt
 eval tt + tt + tt + ff
 #+END_SRC
-In that case, the scope of the declaration is only the current section
-or namespace, or the current file if the declaration is at "top
+In that case, the scope of the declaration is only the current namespace,
+or the current file if the declaration is at "top
 level". To make the declaration persist to the whole namespace, use
 the =persistent= modifier:
 #+BEGIN_SRC lean
@@ -639,7 +639,7 @@ open bool nat
 definition bool.to_nat (b : bool) : nat :=
 bool.cond b 1 0
 
-coercion [persistent] bool.to_nat
+persistent attribute bool.to_nat [coercion]
 -- END
 #+END_SRC
 Alternatively, you can declare a persistent coercion by using the

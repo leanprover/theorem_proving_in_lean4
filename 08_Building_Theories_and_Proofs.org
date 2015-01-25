@@ -116,7 +116,7 @@ structure Semigroup : Type :=
 notation a `*` b := Semigroup.mul _ a b
 
 -- BEGIN
-coercion Semigroup.carrier
+attribute Semigroup.carrier [coercion]
 
 example (S : Semigroup) (a b : S) : a * b * a = a * (b * a) :=
 !Semigroup.mul_assoc
@@ -143,7 +143,7 @@ structure Semigroup : Type :=
 
 notation a `*` b := Semigroup.mul _ a b
 
-coercion Semigroup.carrier
+attribute Semigroup.carrier [coercion]
 
 -- BEGIN
 structure morphism (S1 S2 : Semigroup) : Type :=
@@ -163,7 +163,7 @@ structure Semigroup : Type :=
 
 notation a `*` b := Semigroup.mul _ a b
 
-coercion Semigroup.carrier
+attribute Semigroup.carrier [coercion]
 
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
@@ -182,14 +182,14 @@ structure Semigroup : Type :=
 
 notation a `*` b := Semigroup.mul _ a b
 
-coercion Semigroup.carrier
+attribute Semigroup.carrier [coercion]
 
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
 (resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
 
 -- BEGIN
-coercion morphism.mor
+attribute morphism.mor [coercion]
 
 example (S1 S2 : Semigroup) (f : morphism S1 S2) (a : S1) :
   f (a * a * a) = f a * f a * f a :=
@@ -214,17 +214,17 @@ structure Semigroup : Type :=
 
 notation a `*` b := Semigroup.mul _ a b
 
-coercion Semigroup.carrier
+attribute Semigroup.carrier [coercion]
 
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
 (resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
 
 -- BEGIN
-coercion [persistent] morphism.mor
+persistent attribute morphism.mor [coercion]
 -- END
 #+END_SRC
-You can also declare a persistent coercion using the =coercion=
+You can also declare a persistent coercion using the =persistent=
 modifier when you define the function initially, as described in
 Section [[Notation, Overloads, and Coercions]]. Coercions that are defined
 in a namespace "live" in that namespace, and are made active when the
@@ -241,13 +241,13 @@ structure Semigroup : Type :=
 
 notation a `*` b := Semigroup.mul _ a b
 
-coercion Semigroup.carrier
+attribute Semigroup.carrier [coercion]
 
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
 (resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
 
-coercion morphism.mor
+attribute morphism.mor [coercion]
 
 -- BEGIN
 theorem test (S1 S2 : Semigroup) (f : morphism S1 S2) (a : S1) :
@@ -541,42 +541,30 @@ higher-order unification problems, use the =reducible= annotation:
 definition pr1 [reducible] (A : Type) (a b : A) : A := a
 #+END_SRC
 The annotation is saved with =pr1= in the compiled .olean files. You
-can temporarily alter the annotation with the =reducible= and
-=irreducible= commands. These changes are effective only in the
+can temporarily alter the annotation with the =attribute= command.
+These changes are effective only in the
 current file, and is not saved in the produced .olean file.
 #+BEGIN_SRC lean
 definition id (A : Type) (a : A) : A := a
 definition pr2 (A : Type) (a b : A) : A := b
 
 -- mark pr2 as reducible
-reducible pr2
+attribute pr2 [reducible]
 
 -- mark id and pr2 as irreducible
-irreducible id pr2
+attribute id [irreducible]
+attribute pr2 [irreducible]
 #+END_SRC
 
-The annotation =[persistent]= can be used to instruct Lean to make the
+The annotation =persistent= can be used to instruct Lean to make the
 modification permanent, and save it in the .olean file.
 #+BEGIN_SRC lean
 definition pr2 (A : Type) (a b : A) : A := b
 
-irreducible [persistent] pr2
+persistent attribute pr2 [irreducible]
 #+END_SRC
 The modification will affect modules that import the one in which the
-persistent declaration occurs. The reducible and irreducible
-annotations can be removed using the modifier =[none]=.
-
-#+BEGIN_SRC lean
-definition pr2 (A : Type) (a b : A) : A := b
-
--- temporarily remove any reducible and irreducible annotation from pr2
-reducible [none] pr2
-
--- permanently remove any reducible and irreducible annotation from pr2
-reducible [persistent] [none] pr2
-#+END_SRC
-The command =irreducible= is syntactic sugar for =reducible [off]=.
-The commands =reducible= and =reducible [on]= are equivalent.
+persistent declaration occurs.
 
 ** Helping the Elaborator
 

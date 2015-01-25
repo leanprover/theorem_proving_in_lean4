@@ -929,7 +929,7 @@ induction_on n
         0 + succ n = succ (0 + n) : rfl
           ... = succ n : IH)
 
-reducible add
+attribute add [reducible]
 theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
 induction_on k rfl (fun k IH, eq.subst IH rfl)
 
@@ -979,7 +979,7 @@ induction_on n
         0 + succ n = succ (0 + n) : rfl
           ... = succ n : IH)
 
-reducible add
+attribute add [reducible]
 theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
 induction_on k rfl (take k IH, eq.subst IH rfl)
 
@@ -1035,7 +1035,7 @@ induction_on n
         0 + succ n = succ (0 + n) : rfl
           ... = succ n : IH)
 
-reducible add
+attribute add [reducible]
 theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
 induction_on k rfl (take k IH, eq.subst IH rfl)
 
