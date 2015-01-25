@@ -42,7 +42,7 @@ var myModule = (function() {
     var editor_console = ace.edit("editor_console");
     editor_console.$blockScrolling = Infinity;
     var tutorial_main_ratio = 0.5;
-    var main_console_ratio = 0.5;
+    var main_console_ratio = 0.8;
     var menu_height = 40;
     var handle_width = 10;
     var theme = "ace/theme/subatomic";
@@ -67,6 +67,17 @@ var myModule = (function() {
                                     enableSnippets: true
                                    });
             editor_main.resize();
+            // When there is a change in the main editor, clear the
+            // annotations which are in the current line or come after
+            // the current line.
+            editor_main.on('change',
+                           function() {
+                               var currentAnnotations = editor_main.session.getAnnotations();
+                               var newAnnotations = currentAnnotations.filter(function(elem) {
+                                   return (elem.row < editor_main.selection.getCursor().row);
+                               });
+                               myModule.editor_main.session.setAnnotations(newAnnotations);
+                           });
         },
         init_editor_console: function() {
             editor_console.session.setNewLineMode("unix");
@@ -580,5 +591,5 @@ myModule.append_console("-- Loading lean.js...             ");
 Module.preRun.push(function() {
     myModule.append_console("Done");
     myModule.append_console_nl("(" + elapsed_time_string(lean_loading_start_time) + ")");
-    $("#tutorial_contents").load("tutorial.html")
+    // $("#tutorial_contents").load("tutorial.html")
 })
