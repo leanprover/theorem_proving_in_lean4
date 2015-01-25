@@ -327,3 +327,6 @@ button::-moz-focus-inner {
 .exercise:before {
   content: "Exercise";
 }
+#tutorialNav {
+    margin-top:6px;
+}
