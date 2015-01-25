@@ -1,5 +1,4 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
-#+OPTIONS: toc:nil
 #+Title: Theorem Proving in Lean
 
 * Type Classes
