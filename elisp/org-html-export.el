@@ -6,6 +6,8 @@
 (setq make-backup-files nil)
 
 ;;; ORG mode
+(require 's)
+(require 'f)
 (require 'org)
 (require 'dash)
 (require 'dash-functional)
@@ -73,3 +75,30 @@ contextual information."
                   (concat juicy-ace-editor-html full-code-html button-html))
               (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label code))))))))
 (setq org-confirm-babel-evaluate nil)
+
+(defun lean-filter-headline (text backend info)
+  "Adjust the chapter number based on the filename. For example,
+when the filename is '07_Induction_and_Recursion.org', it uses
+'7' as a chapter number instead of '1' which is the default
+value."
+  (when (org-export-derived-backend-p backend 'html)
+    (let ((file-name (f-filename (buffer-file-name))))
+      (save-match-data
+      (when (and
+             (>= (length file-name) 2)
+             (not (= (string-to-int (s-left 2 file-name))
+                     0))
+             (let ((case-fold-search t))
+                 (string-match (rx
+                                (group "<span class=\"section-number-"
+                                       (+ (char digit))
+                                       "\">")
+                                (group (char digit))
+                                (group (* (char digit ".")))
+                                (group "</span>"))
+                               text))) (replace-match (format "\\1 %d\\3\\4" (string-to-int (s-left 2 file-name)))
+                       t nil text))))))
+(eval-after-load 'ox
+  '(progn
+     (add-to-list 'org-export-filter-headline-functions
+                  'lean-filter-headline)))
