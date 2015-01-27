@@ -25,7 +25,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
   - sudo add-apt-repository --yes ppa:leanprover/lean
   - sudo apt-get update
-  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended || true
+  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended latexmk || true
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
 install:
