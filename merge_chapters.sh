@@ -13,9 +13,11 @@ rm -f ${TUTORIAL_ORG_FILE}
 for CHAPTER in [0-9][0-9]*.org
 do
     if [ ! -f ${TUTORIAL_ORG_FILE} ] ; then
-        cp -v $CHAPTER tutorial.org
+        echo "$CHAPTER -> ${TUTORIAL_ORG_FILE}"
+        cp -- ${CHAPTER} ${TUTORIAL_ORG_FILE}
     else
         START_LINE=`grep -n '^\* ' ${CHAPTER} | cut -d ':' -f 1`
-        tail -n +${START_LINE} $CHAPTER >> ${TUTORIAL_ORG_FILE}
+        echo "$CHAPTER : +${START_LINE} -> ${TUTORIAL_ORG_FILE}"
+        tail -n +${START_LINE} -- ${CHAPTER} >> ${TUTORIAL_ORG_FILE}
     fi
 done
