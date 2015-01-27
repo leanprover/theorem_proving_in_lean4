@@ -31,12 +31,14 @@ tutorial.org: $(ORGS)
 	rm $(TMPDIR)/$<.temp.org
 
 %.pdf: %.tex pygments-main
-	# Use latexmk if exists otherwise use xelatex + bibtex
-	if hash latexmk 2>/dev/null; then \
-	    latexmk --xelatex --shell-escape $<; \
-	else \
-	    xelatex -shell-escape $<; bibtex $(<:.tex=); xelatex -shell-escape $<; xelatex -shell-escape $<; \
-	fi
+	# # Use latexmk if exists otherwise use xelatex + bibtex
+	# if hash latexmk 2>/dev/null; then \
+	#     latexmk --xelatex --shell-escape $<; \
+	# else \
+	#     xelatex -shell-escape $<; bibtex $(<:.tex=); xelatex -shell-escape $<; xelatex -shell-escape $<; \
+	# fi
+	# Ubuntu-12.04 uses an old version of latexmk which does not support XeLaTeX related options
+	xelatex -shell-escape $<; bibtex $(<:.tex=); xelatex -shell-escape $<; xelatex -shell-escape $<
 
 .cask: Cask
 	@EMACS=$(EMACS_BIN) $(CASK_BIN)
