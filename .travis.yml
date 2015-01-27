@@ -42,6 +42,7 @@ script:
       git add css &&
       git add fonts &&
       git add -f js/* &&
+      sudo rm -rf pygments-main &&
       git clean -fxd &&
       git commit -m "Update `date -R`" &&
       git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages;
