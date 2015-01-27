@@ -42,7 +42,7 @@ var myModule = (function() {
     var editor_console = ace.edit("editor_console");
     editor_console.$blockScrolling = Infinity;
     var tutorial_main_ratio = 0.5;
-    var main_console_ratio = 0.8;
+    var main_console_ratio = (window.innerWidth > window.innerHeight) ? 0.8 : 0.5
     var menu_height = 40;
     var handle_width = 10;
     var theme = "ace/theme/subatomic";
@@ -149,18 +149,18 @@ var myModule = (function() {
                 tutorial_left    = 0;
                 main_handle_left = 0;
                 main_left        = 0;
-                sub_handle_left  = main_width + handle_width;
-                console_left     = main_width + handle_width + handle_width;
+                sub_handle_left  = main_width;
+                console_left     = main_width + handle_width;
 
                 main_handle_background_image = "url(css/images/handle-h.png)";
                 main_handle_cursor = "row-resize";
                 sub_handle_background_image = "url(css/images/handle-v.png)";
                 sub_handle_cursor = "col-resize";
 
-                main_handle_width  = tutorial_width;
-                main_handle_height = handle_width;
-                sub_handle_width   = handle_width;
-                sub_handle_height  = console_height;
+                main_handle_width  = tutorial_width - 2;
+                main_handle_height = handle_width - 2;
+                sub_handle_width   = handle_width -2;
+                sub_handle_height  = console_height - 2;
             }
             $("#editor_console").css({position: "absolute", top: console_top, left: console_left,  width: console_width, height: console_height});
             $("#editor_main").css({position: "absolute", top: main_top, left:main_left, width: main_width, height: main_height});
