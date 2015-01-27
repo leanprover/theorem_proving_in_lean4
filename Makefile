@@ -8,8 +8,9 @@ PDFS  := $(ORGS:.org=.pdf)
 CWD   := $(shell pwd)
 WATCHMAN_BIN ?= $(CWD)/watchman/watchman
 TMPDIR := $(shell mktemp -d /tmp/lean-tutorial.XXXX)
+NAV_DATA := js/nav_data.js
 
-all: $(HTMLS) tutorial.pdf
+all: $(HTMLS) tutorial.pdf build_nav_data
 
 htmls: $(HTMLS)
 
@@ -71,5 +72,10 @@ install-pygments:
 
 test:
 	for ORG in $(ORGS); do ./test.sh $(LEAN_BIN) $$ORG || exit 1; done
+
+build_nav_data:
+	echo "var lean_nav_data = [" > $(NAV_DATA)
+	ls -1 [0-9][0-9]_*.html | sed 's/\(.*\)/"\1",/' >> $(NAV_DATA)
+	echo "];" >> $(NAV_DATA)
 
 .PHONY: all clean install-cask install-watchman watch-on watch-off

@@ -415,7 +415,26 @@ var myModule = (function() {
             myModule.resize_editors();
             window.onresize = function(event) { myModule.resize_editors(); };
         },
+        init_nav: function() {
+            // Setup Navigation: note that the variable lean_nav_data
+            // is loaded from 'js/nav_data.js' which is built by
+            // 'build_nav_data' build target.
+            $.getScript("js/nav_data.js", function(){
+                $.each(lean_nav_data, function(key, value) {
+                    // e.g. "02_Dependent_Type_Theory.html" => "02 Dependent Type Theory"
+                    var replacedValue = value.split("_").join(" ").replace(".html", "");
+                    $('#tutorialNav').append("<option>" + replacedValue + "</option>");
+                });
+                $('#tutorialNav').on('change', function (e) {
+                    var fileName = this.value.split(" ").join("_") + ".html";
+                    $("#tutorial_contents").load(fileName);
+                });
+                // By default, load the first chapter
+                $("#tutorial_contents").load(lean_nav_data[0]);
+            });
+        },
         init: function() {
+            myModule.init_nav();
             this.append_console_nl("Lean.JS: running Lean Theorem Prover on your browser");
             this.append_console("-- Initializing Ace Editor...     ");
             var start_time = new Date().getTime();
@@ -591,29 +610,4 @@ myModule.append_console("-- Loading lean.js...             ");
 Module.preRun.push(function() {
     myModule.append_console("Done");
     myModule.append_console_nl("(" + elapsed_time_string(lean_loading_start_time) + ")");
-
-    // Setup Navigation:
-    var chapter_files = [
-        "01_Introduction.html",
-        "02_Dependent_Type_Theory.html",
-        "03_Propositions_and_Proofs.html",
-        "04_Quantifiers_and_Equality.html",
-        "05_Interacting_with_Lean.html",
-        "06_Inductive_Types.html",
-        "07_Induction_and_Recursion.html",
-        "08_Building_Theories_and_Proofs.html",
-        "09_Type_Classes.html",
-        "10_Structures_Records.html"
-    ];
-    $.each(chapter_files, function(key, value) {
-        // e.g. "02_Dependent_Type_Theory.html" => "02 Dependent Type Theory"
-        var replacedValue = value.split("_").join(" ").replace(".html", "");
-        $('#tutorialNav').append("<option>" + replacedValue + "</option>");
-    });
-    $('#tutorialNav').on('change', function (e) {
-        var fileName = this.value.split(" ").join("_") + ".html";
-        $("#tutorial_contents").load(fileName);
-    });
-    // By default, load the first chapter
-    $("#tutorial_contents").load(chapter_files[0]);
 })
