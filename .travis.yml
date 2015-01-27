@@ -38,7 +38,7 @@ script:
       git config --global user.name "Travis CI" &&
       git checkout --orphan gh-pages &&
       rm -f .git/index &&
-      git add -f *.html tutorial.pdf tutorial.html &&
+      git add -f *.html tutorial.pdf &&
       git add css &&
       git add fonts &&
       git add -f js/* &&
