@@ -67,6 +67,6 @@ install-pygments:
 	if [ ! -d pygments-main ] ; then hg clone https://bitbucket.org/birkenfeld/pygments-main && cd pygments-main && sudo python setup.py install; fi
 
 test:
-	for ORG in $(ORGS); do ./test.sh $(LEAN_BIN) $$ORG; done
+	for ORG in $(ORGS); do ./test.sh $(LEAN_BIN) $$ORG || exit 1; done
 
 .PHONY: all clean install-cask install-watchman watch-on watch-off
