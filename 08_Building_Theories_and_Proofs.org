@@ -201,10 +201,9 @@ With the coercion in place, we can write =f (a * a * a)= instead of
 =morphism.mor f (a * a * a)=. When the =morphism=, =f=, is used where
 a function is expected, Lean inserts the coercion.
 
-In the examples above, the coercion is only active in the current
-module (that is, file). Remember that to create a coercion that
-survives when the module is imported by another module, use the
-=persistent= modifier:
+Remember that you can create a coercion whose scope is limited to the
+current module using the =local= modifier:
+
 #+BEGIN_SRC lean
 structure Semigroup : Type :=
 (carrier : Type)
@@ -220,7 +219,7 @@ structure morphism (S1 S2 : Semigroup) : Type :=
 (resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
 
 -- BEGIN
-persistent attribute morphism.mor [coercion]
+local attribute morphism.mor [coercion]
 -- END
 #+END_SRC
 You can also declare a persistent coercion using the =persistent=
@@ -539,10 +538,9 @@ higher-order unification problems, use the =reducible= annotation:
 #+BEGIN_SRC lean
 definition pr1 [reducible] (A : Type) (a b : A) : A := a
 #+END_SRC
-The annotation is saved with =pr1= in the compiled .olean files. You
-can temporarily alter the annotation with the =attribute= command.
-These changes are effective only in the
-current file, and is not saved in the produced .olean file.
+The annotation is saved with =pr1= in the compiled .olean files. You can
+also achieve the same result with the =attribute= command:
+
 #+BEGIN_SRC lean
 definition id (A : Type) (a : A) : A := a
 definition pr2 (A : Type) (a b : A) : A := b
@@ -555,15 +553,14 @@ attribute id [irreducible]
 attribute pr2 [irreducible]
 #+END_SRC
 
-The annotation =persistent= can be used to instruct Lean to make the
-modification permanent, and save it in the .olean file.
+The =local= modifier can be used to instruct Lean to limit the scope
+to the current module.
+
 #+BEGIN_SRC lean
 definition pr2 (A : Type) (a b : A) : A := b
 
-persistent attribute pr2 [irreducible]
+local attribute pr2 [irreducible]
 #+END_SRC
-The modification will affect modules that import the one in which the
-persistent declaration occurs.
 
 ** Helping the Elaborator
 
