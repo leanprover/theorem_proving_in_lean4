@@ -537,6 +537,57 @@ definition curry (A B C : Type) (f : A × B → C) : A → B → C := sorry
 definition uncurry (A B C : Type) (f : A → B → C) : A × B → C := sorry
 #+END_SRC
 
+** Local definitions 
+
+Lean also allows you to introduce "local" definitions using the =let=
+construct. The expression ~let a := t1 in t2~ is definitionally equal to
+the result of replacing every occurrence of =a= in =t1= by =t2=.
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+section
+  variable x : ℕ
+  check let y := x + x in y * y
+end
+
+definition t (x : ℕ) : ℕ :=
+let y := x + x in y * y
+#+END_SRC
+Here, =t= is definitionally equal to the term =(x + x) * (x + x)=.
+You can combine multiple assignments in a single =let= statement:
+#+BEGIN_SRC lean
+import standard 
+open nat
+
+-- BEGIN
+section
+  variable x : ℕ
+  check let y := x + x, z := y + y in z * z
+end
+-- END
+#+END_SRC
+
+Notice that the meaning of the expression ~let a := t1 in t2~ is very
+similar to the meaning of =(λa, t1) t2=, but the two are not the
+same. In the first expression, you should think of every instance of
+=a= in =t2= as a syntactic abbreviation for =t1=. In the second
+expression, =a= is a variable, and the expression =λa, t1= has to make
+sense independent of the value of =a=. The =let= construct is a
+stronger means of abbreviation, and there are expressions of the form
+~let a := t1 in t2~ that cannot be expressed as =(λa, t1) t2=. As an
+exercise, try to understand why the definition of =foo= below type
+checks, but the definition of =bar= does not.
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+definition foo := let a := nat in λx : a, x + 2
+
+/-
+definition bar := (λa, λx : a, x + 2) nat
+-/
+#+END_SRC
 
 ** Namespaces and Sections
 
