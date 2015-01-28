@@ -427,6 +427,9 @@ section
 end
 -- END
 #+END_SRC
+Because they are so commonly use, the standard library provides the
+abbreviations =and.left= and =and.right= for =and.elim_left= and
+=and.elim_right=, respectively.
 
 Notice that and introduction and and elimination are similar to the
 pairing and projection operations for the cartesian product. The
@@ -601,9 +604,9 @@ section
   example : p ∧ q ↔ q ∧ p :=
   iff.intro
     (assume H : p ∧ q,
-      show q ∧ p, from and.intro (and.elim_right H) (and.elim_left H))
+      show q ∧ p, from and.intro (and.right H) (and.left H))
     (assume H : q ∧ p,
-      show p ∧ q, from and.intro (and.elim_right H) (and.elim_left H))
+      show p ∧ q, from and.intro (and.right H) (and.left H))
 end
 -- END
 #+END_SRC
@@ -622,8 +625,8 @@ section
   variables p q : Prop
 
   example (H : p ∧ q) : q ∧ p :=
-  have Hp : p, from and.elim_left H,
-  have Hq : q, from and.elim_right H,
+  have Hp : p, from and.left H,
+  have Hq : q, from and.right H,
   show q ∧ p, from and.intro Hq Hp
 end
 -- END
@@ -769,8 +772,8 @@ section
   example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
   iff.intro
     (assume H : p ∧ (q ∨ r),
-      have Hp : p, from and.elim_left H,
-      or.elim (and.elim_right H)
+      have Hp : p, from and.left H,
+      or.elim (and.right H)
         (assume Hq : q,
           show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro Hp Hq))
         (assume Hr : r,
@@ -778,12 +781,12 @@ section
     (assume H : (p ∧ q) ∨ (p ∧ r),
       or.elim H
         (assume Hpq : p ∧ q,
-          have Hp : p, from and.elim_left Hpq,
-          have Hq : q, from and.elim_right Hpq,
+          have Hp : p, from and.left Hpq,
+          have Hq : q, from and.right Hpq,
           show p ∧ (q ∨ r), from and.intro Hp (or.inl Hq))
         (assume Hpr : p ∧ r,
-          have Hp : p, from and.elim_left Hpr,
-          have Hr : r, from and.elim_right Hpr,
+          have Hp : p, from and.left Hpr,
+          have Hr : r, from and.right Hpr,
           show p ∧ (q ∨ r), from and.intro Hp (or.inr Hr)))
 
   -- an example that requires classical reasoning
