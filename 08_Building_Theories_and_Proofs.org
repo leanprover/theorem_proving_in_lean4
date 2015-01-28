@@ -927,37 +927,131 @@ end
 
 # TODO: need an example of how [visible] is used.
 
-** More Structuring Commands
+** Sections and Contexts
 
 Just as =proof ... qed= and =begin ... end= blocks help structure a
-proof, namespaces, sections, and contexts help structure a theory. We
-saw in Section [[Namespaces and Sections]] that the =section= command
-makes it possible not only to group together elements of a theory that
-go together, but also to declare variables that are inserted as
-arguments to theorems and definitions, as necessary.
+proof, Lean provides various sectioning mechanisms that help structure
+a theory. We saw in Section [[Namespaces and Sections]] that the =section=
+command makes it possible not only to group together elements of a
+theory that go together, but also to declare variables that are
+inserted as arguments to theorems and definitions, as necessary. 
+In fact, Lean has two ways of introducing local elements into the
+contexts, namely, as =variables= or as =parameters=. And it has two
+slightly different sectioning notions, namely, =section= and
+=context=. The goal of this section is to explain these variations.
+
+Remember that the =point of the variable command is to declare
+variables for use in theorems, as in the following example:
+#+BEGIN_SRC lean
+import standard
+open nat
+
+section
+  variables x y : ℕ
+
+  definition double := x + x
+
+  check double y
+  check double (2 * x)
+
+  theorem t1 : double x = 2 * x :=
+  calc
+    double x = x + x         : rfl
+         ... = 1 * x + x     : one_mul
+         ... = 1 * x + 1 * x : one_mul
+         ... = (1 + 1) * x   : mul.right_distrib
+         ... = 2 * x         : rfl
+
+  check t1 y
+  check t1 (2 * x)
+
+  theorem t2 : double (2 * x) = 4 * x :=
+  calc
+    double (2 * x) = 2 * (2 * x) : t1
+               ... = 2 * 2 * x   : mul.assoc
+               ... = 4 * x       : rfl
+end
+#+END_SRC
+The definition of =double= does not have to declare =x= as an
+argument; Lean detects the dependence and inserts it
+automatically. Similarly, Lean detects the occurrence of =x= in =t1=
+and =t2=, and inserts it automatically there, too.
+
+Notice that the variable =x= is generalized immediately, so that
+even within the section =double= is a function of =x=, and =t1= and
+=t2= depend explicitly on =x=. This is what makes it possible to apply
+=double= and =t1= to other expressions, like =y= and =2 * x=. It
+corresponds to the ordinary mathematical locution "in this section,
+let =x= and =y= range over the natural numbers." Whenever =x= and =y=
+occur, we assume they denotes natural numbers.
+
+Sometimes, however, we wish to /fix/ a single value in a section. For
+example, in an ordinary mathematical text, we might say "in this
+section, we fix a type, =A=, and a binary relation on =A=." The notion
+of a =parameter= captures this usage:
+#+BEGIN_SRC lean
+import standard
+
+section
+  parameters {A : Type} (R : A → A → Type)
+  hypothesis transR : ∀{x y z}, R x y → R y z → R x z
+
+  variables {a b c d e : A}
+
+  theorem t1 (H1 : R a b) (H2 : R b c) (H3 : R c d) : R a d :=
+  transR (transR H1 H2) H3
+
+  theorem t2 (H1 : R a b) (H2 : R b c) (H3 : R c d) (H4 : R d e) :
+    R a e :=
+  transR H1 (t1 H2 H3 H4)
+
+  check t1
+  check t2
+end
+
+check t1
+check t2
+#+END_SRC
+Here, =hypothesis= functions as a synonym for parameter, so that =A=,
+=R=, and =transR= are all parameters in the section. This means that,
+as before, they are inserted as arguments to definitions and theorems
+as needed. But there is a difference: within the section, =t1= is an
+abbreviation for =@t1 A R transR=, which is to say, these arguments
+are fixed until the section is closed. This means that you do not have
+to specify the explicit arguments =R= and =transR= when you write =t1
+H2 H3 H4=, in constrast to the previous example. But it also means
+that you cannot specify other arguments in their place. In this
+example, making =R= a parameter is appropriate if =R= is the only
+binary relation you want to reason about in the section. If you want
+to apply your theorems to arbitrary binary relations within the
+section, make =R= a variable.
 
 Lean has another sectioning construct, the =context= command, which is
-similar to the =section= command. There are two key differences. The
-first is that, in a context, you can declare /parameters/. A parameter
-declaration is like a variable declaration, except theorems and
-definitions that depend on a parameter are not generalized within the
-=context=, they are only generalized when the context is closed. The
-idea is within the context, the parameter is a single, fixed
-value. For example, if you declare =parameter (x : ℤ)= in a context,
-and then define ~foo := 2 * x~, within the context =foo= is a
-constant, not a function of =x=. The second difference is that
-notations defined in a context are transient: they disappear when the
-context is closed. The reason for this is that a notation that depends
-on a parameter would not make sense outside the context.
+similar to the =section= command. The difference has to do with the
+way that meta-theoretic data is handled. In a =section=, you can
+declare notation, classes, instances, rewrite rules, and so on, and
+they persist when the section is closed. Their scope is the entire
+namespace in which the section resides, and when another module
+imports the once containing the section and opens the relevant
+namespace, all these objects are available. There is a catch: in a
+section, a piece of notation cannot depend on a parameter. After all,
+a notation that is defined with respect to a fixed parameter, like =R=
+above, no longer makes sense when =R= is no longer fixed. As a result,
+in a section, if you try to define notation that depends on a
+parameter, Lean will flag an error.
 
-Contexts are useful when a series of definitions and theorems involves
-a set of parameters that you can think of as being fixed throughout
-the development, and for which it is useful to have temporary
-notation. Here is an example of how you might use a context to define
+In a context, however, all meta-theoretic data is /transient/; it
+disappears when the section is closed. This is useful when you want to
+define notation, rewrite rules, or class instances that are used only
+temporarily and not exported to the outside world. There is therefore
+no problem making notation depend on a parameter in a context; when
+the context is closed, the notation goes with it.
+
+Here is an example of how you might use a context to define
 the notion of equivalence modulo an integer =m=. Throughout the
 context, =m= is fixed, and we can write =a ≡ b= for equivalence modulo
 =m=. As soon as the context is closed, however, the dependence on =m=
-becomes explicit, and the notation is no longer valid.
+becomes explicit, and the notation =a ≡ b= is no longer valid.
 
 #+BEGIN_SRC lean
 import data.int
@@ -996,7 +1090,9 @@ check mod_trans
 # it here and then discuss it more fully, with examples, in the
 # chapter on structures.
 
-Finally, recall from Section [[Namespaces and Sections]] that namespaces
+** More on Namespaces
+
+Recall from Section [[Namespaces and Sections]] that namespaces
 not only package shorter names for theorems and identifiers, but also
 things like notation, coercions, classes, rewrite rules, and so
 on. These can be opened independently using modifiers to the =open=

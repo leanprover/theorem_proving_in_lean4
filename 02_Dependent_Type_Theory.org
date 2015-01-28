@@ -977,8 +977,8 @@ end hide
 #+END_SRC
 
 All that has changed are the curly braces around =A : Type= in the
-declaration of the constants. We can also use this device in variable
-declarations and function definitions:
+declaration of the constants. We can also use this device in function
+definitions:
 #+BEGIN_SRC lean
 -- the polymorphic identity function
 definition id {A : Type} (x : A) := x
@@ -989,25 +989,30 @@ constants (a : A) (b : B)
 check id
 check id a
 check id b
+#+END_SRC
+This makes the first argument to =id= implicit. Notationally, this
+hides the specification of the type, making it look as though =id=
+simply takes an argument of any type.
 
--- declaring an implicit argument as a section variable
+Implicit arguments can also be declared as section variables:
+#+BEGIN_SRC lean
 section
   variable {A : Type}
   variable x : A
-  definition id2 := x
+  definition id := x
 end
 
-check id2
-check id2 a
-check id2 b
+check id
+check id a
+check id b
 #+END_SRC
+This definition of =id= has the same effect as the one above.
 
-Lean has very complex mechanisms for instantiating such implicit
-arguments, and we will see that they can be used to infer function
-types, predicates, and even proofs. The process of instantiating
- "holes" in a term is often known as /elaboration/. As this tutorial
-progresses, we will gradually learn more of what Lean's powerful
-elaborator can do.
+Lean has very complex mechanisms for instantiating implicit arguments,
+and we will see that they can be used to infer function types,
+predicates, and even proofs. The process of instantiating "holes" in a
+term is often known as /elaboration/. As this tutorial progresses, we
+will gradually learn more of what Lean's powerful elaborator can do.
 
 Sometimes, however, we may find ourselves in a situation where we have
 declared an argument to a function to be implicit, but now want to
