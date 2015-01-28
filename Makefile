@@ -17,7 +17,7 @@ htmls: $(HTMLS)
 tutorial.org: $(ORGS)
 	./merge_chapters.sh
 
-%.html: %.org .cask elisp/org-html-export.el
+%.html: %.org .cask elisp/org-html-export.el header/header.html.org
 	@if [ ! -f ~/.cask/bin/cask ]; then echo "Cask Not Found. Please do 'make install-cask' first"; exit 1; fi
 	cat header/header.html.org $< > $(TMPDIR)/$<.temp.org
 	$(EMACS_BIN) -no-site-file -q --batch -l elisp/org-html-export.el --visit $(TMPDIR)/$<.temp.org -f org-html-export-to-html
