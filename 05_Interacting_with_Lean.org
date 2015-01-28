@@ -611,7 +611,12 @@ eval tt + tt + tt + ff
 print coercions        -- show all coercions
 print coercions bool   -- show all coercions from bool
 #+END_SRC
-We could also declare =bool.to_nat= to be a coercion after the fact as follows:
+The tag "coercion" is an /attribute/ that is associated with the
+symbol =bool.to_nat=. It does not change the meaning of
+=bool.to_nat=. Rather, it associates additional information to the
+symbol that informs Lean's elaboration algorithm, as discussed in
+Section [[Elaboration and Unification]]. We could also declare
+=bool.to_nat= to be a coercion after the fact as follows:
 #+BEGIN_SRC lean
 import data.bool data.nat
 open bool nat
@@ -626,19 +631,6 @@ eval 2 + ff
 eval 2 + tt
 eval tt + tt + tt + ff
 #+END_SRC
-
-Alternatively, you can declare a coercion by using the
-=coercion= modifier when you define the function initially:
-#+BEGIN_SRC lean
-import data.bool data.nat
-open bool nat
-
--- BEGIN
-definition bool.to_nat [coercion] (b : bool) : nat :=
-bool.cond b 1 0
--- END
-#+END_SRC
-
 In both cases, the scope of the coercion is the current namespace, so
 the coercion will be in place whenever the module is imported and the
 namespace is open. Sometimes it is useful to assign an attribute only
@@ -658,10 +650,10 @@ local attribute bool.to_nat [coercion]
 
 For the elaborator to handle coercions effectively, restrictions are
 imposed on the types one can serve as the source and target: roughly,
-they have to be inductively defined types, as described in the next
-chapter. As we will see, most defined datatypes are naturally of this
-form, and in any case it is always possible to "wrap" a definition as
-an inductively defined datatype.
+they have to be inductively defined types, as discussed in Section
+[[More on Coercions]]. As we will see, most defined datatypes are
+naturally of this form, and in any case it is always possible to
+"wrap" a definition as an inductively defined datatype.
 
 Overloads and coercions introduce "choice points" in the elaboration
 process, forcing the elaborator to consider multiple options and

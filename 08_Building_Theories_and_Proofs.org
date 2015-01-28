@@ -11,15 +11,15 @@ proofs.
 
 In Section [[Notation, Overloads, and Coercions]], we discussed coercions
 briefly, and noted that there are restrictions on the types that one
-can coerce from and to. Now that we have discussed inductive types in
-the Calculus of Constructions, we can be more precise.
+can coerce from and to. Now that we have discussed inductive types, we
+can be more precise.
 
 The most basic type of coercion maps elements of one type to
 another. For example, a coercion from =nat= to =int= allows us to view
 any element =n : nat= as an element of =int=. But some coercions
 depend on parameters; for example, for any type =A=, we can view any
 element =l : list A= as an element of =set A=, namely, the set of
-elements occurring in the list. This corresponding coercion is defined
+elements occurring in the list. The corresponding coercion is defined
 on the "family" of types =list A=, parameterized by =A=.
 
 In fact, Lean allows us to declare three kinds of coercions:
@@ -222,15 +222,15 @@ structure morphism (S1 S2 : Semigroup) : Type :=
 local attribute morphism.mor [coercion]
 -- END
 #+END_SRC
-You can also declare a persistent coercion using the =persistent=
-modifier when you define the function initially, as described in
-Section [[Notation, Overloads, and Coercions]]. Coercions that are defined
-in a namespace "live" in that namespace, and are made active when the
+You can also declare a persistent coercion by assigning the attribute
+when you define the function initially, as described in Section
+[[Notation, Overloads, and Coercions]]. Coercions that are defined in a
+namespace "live" in that namespace, and are made active when the
 namespace is opened.
 
-Remember also that you can
-instruct Lean's pretty-printer to show coercions with =set_option=,
-and you can print all the coercions in the environment using =print coercions=:
+Remember also that you can instruct Lean's pretty-printer to show
+coercions with =set_option=, and you can print all the coercions in
+the environment using =print coercions=:
 #+BEGIN_SRC lean
 structure Semigroup : Type :=
 (carrier : Type)
@@ -371,7 +371,8 @@ The interaction of computation with higher-order unification is
 particularly knotty. For the most part, Lean avoids peforming
 computational reduction when trying to solve higher-order
 constraints. You can override this, however, by marking some symbols
-as =reducible=, as decribed in Section [[Reducible Definitions]].
+with the =reducible= attribute, as decribed in Section [[Reducible
+Definitions]].
 
 The elaborator relies on additional tricks and gadgets to solve a list
 of constraints and instantiate metavariables. Below we will see that
@@ -486,16 +487,17 @@ because that requires unfolding the definition of =id=.
 ** Reducible Definitions
 
 In addition to being transparent or opaque, identifiers can be
-/reducible/ or /irreducible/. In contrast to declaring an identifier to be
-transparent or opaque, declaring an identifier to be reducible or
-irreducible is nothing more than a hint to help the elaborator solve
-higher-order unification problems. It has no bearing on type checking
-at all, which is to say, once a fully elaborated term is type
+/reducible/ or /irreducible/. Whereas being transparent or opaque is a
+fixed, irrevocable feature of an identifier, being reducible or
+irreducible is an attribute that can be altered. This status provides
+hints that govern the way the elaborator tries to solve higher-order
+unification problems. As with other attributes, the status of an
+identifier with respect to reducibility has no bearing on type
+checking at all, which is to say, once a fully elaborated term is type
 correct, marking one of the constants it contains to be reducible does
 not change the correctness. The type checker in the kernel of Lean
-ignores the annotations. For that reason, the tags are less rigid:
-there is no problem marking a constant reducible at one point, and
-then irreducible later on, or vice-versa.
+ignores such attributes, and there is no problem marking a constant
+reducible at one point, and then irreducible later on, or vice-versa.
 
 The purpose of the annotation is to help Lean's unification procedure
 decide which declarations should be unfolded. The higher-order
@@ -508,10 +510,9 @@ the procedure to consider an extra case split. It is /complex/ if the
 unfolding produces at least one extra case, and consequently increases
 the search space.
 
-Lean users can mark a definition =reducible= or =irreducible=.  We
-write =reducible(C)= to denote that =C= was marked as reducible by the
-user, and =irreducible(C)= to denote that =C= was marked as
-irreducible by the user. Theorems are never unfolded. For a
+Let us write =reducible(C)= to denote that =C= has been assigned the
+=reducible= attribute by a user, and =irreducible(C)= to denote that
+=C= has been marked =irreducible=. Theorems are never unfolded. For a
 transparent definition =C=, the higher-order unification procedure
 uses the following decision tree.
 #+BEGIN_SRC text
@@ -533,13 +534,12 @@ For an opaque definition =D=, the higher-order unification procedure
 uses the same decision tree if =D= was declared in the current
 module. Otherwise, it does not unfold =D=.
 
-To tell the elaborator to consider unfolding a definition when solving
-higher-order unification problems, use the =reducible= annotation:
+You can assign the =reducible= attribute when a symbol is defined:
 #+BEGIN_SRC lean
 definition pr1 [reducible] (A : Type) (a b : A) : A := a
 #+END_SRC
-The annotation is saved with =pr1= in the compiled .olean files. You can
-also achieve the same result with the =attribute= command:
+The assignment persists to other modules. You can achieve the same
+result with the =attribute= command:
 
 #+BEGIN_SRC lean
 definition id (A : Type) (a : A) : A := a
