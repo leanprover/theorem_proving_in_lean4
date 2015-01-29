@@ -33,24 +33,21 @@ The structure command is essentially a "macro" built on top of the
 inductive datatype provided by the Lean kernel. Every =structure=
 declaration introduces a namespace with the same name. The general
 form of a structure declaration is as follows:
-
 #+BEGIN_SRC text
   structure <name> <parameters> <parent-structures> : Type :=
     <constructor> :: <fields>
 #+END_SRC
-
-Most parts are optional. Here is a small example
-
+Most parts are optional. Here is a small example:
 #+BEGIN_SRC lean
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
 #+END_SRC
 
-Values of type =point= are created using =point.mk a b=, the fields of
-a point =p= are accessed using =point.x p= and =point.y p=. The
-structure command also generates useful recursors and theorems. Here
-are some of the constructions generated for the declaration above.
-
+Values of type =point= are created using =point.mk a b=, and the
+fields of a point =p= are accessed using =point.x p= and =point.y
+p=. The structure command also generates useful recursors and
+theorems. Here are some of the constructions generated for the
+declaration above.
 #+BEGIN_SRC lean
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
@@ -67,7 +64,6 @@ check point.y            -- projection/field accessor
 
 You can obtain the complete list of generated construction using the
 command =print prefix=.
-
 #+BEGIN_SRC lean
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
@@ -78,9 +74,8 @@ print prefix point
 #+END_SRC
 
 Here is some simple theorems and expressions using the generated
-constructions.  As usual, you can avoid the prefix =point= by using
+constructions. As usual, you can avoid the prefix =point= by using
 the command =open point=.
-
 #+BEGIN_SRC lean
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
@@ -100,7 +95,6 @@ rfl
 #+END_SRC
 
 If the constructor is not provided, then a constructor named =mk= is generated.
-
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
@@ -113,14 +107,12 @@ end hide
 #+END_SRC
 
 The keyword =record= is an alias for =structure=.
-
 #+BEGIN_SRC lean
 record point (A : Type) :=
 mk :: (x : A) (y : A)
 #+END_SRC
 
 You can provide universe levels explicitly.
-
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
@@ -135,9 +127,10 @@ check prod.mk
 end hide
 #+END_SRC
 
-We use =max 1 l= as the resultant universe level to ensure the universe level is never =0=
-even when the parameter =A= and =B= are propositions.
-Recall that in Lean, =Type.{0}= is =Prop= which is impredicative and proof irrelevant.
+We use =max 1 l= as the resultant universe level to ensure the
+universe level is never =0= even when the parameter =A= and =B= are
+propositions.  Recall that in Lean, =Type.{0}= is =Prop=, which is
+impredicative and proof irrelevant.
 
 ** Objects
 
@@ -146,15 +139,12 @@ types. For structures containing many fields, it is quite inconvenient
 to use the constructor to create objects because we have to remember
 the exact order the fields were defined. Therefore, Lean provides
 the following alternative notations for defining objects of structure/record types.
-
 #+BEGIN_SRC text
   {| <structure-type> (, <field-name> := <expr>)* |}
   or
   ⦃ <structure-type> (, <field-name> := <expr>)* ⦄
 #+END_SRC
-
-For an example, let us define objects of the point record.
-
+For example, let us define objects of the point record.
 #+BEGIN_SRC lean
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
@@ -171,7 +161,6 @@ rfl
 Note that =point= is a parametric type, but we did not provide its parameters.
 Lean infers the parameters automatically for us. The parameters can be explicitly
 provided (if needed).
-
 #+BEGIN_SRC lean
 open nat
 structure point (A : Type) :=
@@ -184,7 +173,6 @@ check ⦃ point nat, x := 10, y := 20 ⦄
 If the value of a field is not specified, Lean tries to infer it.
 If the unspecified fields cannot be inferred, Lean signs an error
 indicating the corresponding placeholder could not be synthesized.
-
 #+BEGIN_SRC lean
 structure my_struct :=
 mk :: (A : Type) (B : Type) (a : A) (b : B)
@@ -193,8 +181,7 @@ check {| my_struct, a := 10, b := true |}
 #+END_SRC
 
 The notation for defining record objects can also be used in
-pattern-matching expressions
-
+pattern-matching expressions.
 #+BEGIN_SRC lean
 open nat
 structure big :=
@@ -216,19 +203,16 @@ example : v3 = 3 := rfl
 a new record object by modifying the value of one or more fields.
 Lean provides a variation of the notation described above for
 record updates.
-
 #+BEGIN_SRC text
   {| <structure-type> (, <field-name> := <expr>)* (, <record-obj>)* |}
   or
   ⦃ <structure-type> (, <field-name> := <expr>)* (, <record-obj>)* ⦄
 #+END_SRC
-
-The semantics is quite simple, record objects =<record-obj>=
+The semantics is quite simple: record objects =<record-obj>=
 "provides" the value for unspecified fields. If more than one record
 object is provided, then they are visited in order until Lean finds
 one the contains the unspecified field. Lean signs an error
 if a record object has *not* provided any field.
-
 #+BEGIN_SRC lean
 open nat
 
@@ -250,7 +234,6 @@ rfl
 
 We can /extend/ existing structures by adding new fields.
 This feature allow us to simulate a form of "inheritance".
-
 #+BEGIN_SRC lean
 -- BEGIN
 structure point (A : Type) :=
@@ -267,7 +250,6 @@ mk :: (c : color)
 The type =color_point= inherits all the fields from =point= and
 declares a new one =c : color=.  Lean automatically generates a
 /coercion/ from =color_point= to =point=.
-
 #+BEGIN_SRC lean
 open num
 
@@ -304,7 +286,6 @@ The coercions are named =to_<parent structure>=.
 Lean always declare functions that map the child structure to its parents.
 We can request Lean to *not* mark these functions as coercions by
 using the =private= keyword.
-
 #+BEGIN_SRC lean
 open num
 
@@ -328,7 +309,6 @@ rfl
 #+END_SRC
 
 We can "rename" fields inherited from parent structures using the =renaming= clause.
-
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
@@ -353,7 +333,6 @@ end hide
 For another example, we define a structure using "multiple
 inheritance", and then define an object using objects of the parent
 structures.
-
 #+BEGIN_SRC lean
 import data.nat.basic
 open nat
