@@ -1053,6 +1053,9 @@ section
   definition id := x
 end
 
+constants A B : Type
+constants (a : A) (b : B)
+
 check id
 check id a
 check id b
