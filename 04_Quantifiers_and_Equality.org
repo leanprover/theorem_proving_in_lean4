@@ -271,7 +271,8 @@ example : 2 + 3 = 5 := rfl
 Equality is much more than an equivalence relation, however. It has
 the important property that every assertion respects the equivalence,
 in the sense that we can substitute equal expressions without changing
-the truth value.
+the truth value. That is, given =H1 : a = b= and =H2 : P a=, we can construct
+a proof for =P b= using substitution: =eq.subst H1 H2=.
 #+BEGIN_SRC lean
 open eq.ops
 -- BEGIN
@@ -283,7 +284,9 @@ H1 ▸ H2
 -- END
 #+END_SRC
 The triangle in the second presentation is, once again, made available
-by opening =eq.ops=, and you can use =\t= to enter it.
+by opening =eq.ops=, and you can use =\t= to enter it. The term
+=H1 ▸ H2= is just notation for =eq.subst H1 H2=. This notation is used
+extensively in the Lean standard library.
 
 Here is an example of a calculation in the natural numbers that uses
 substitution combined with associativity, commutativity, and
