@@ -84,11 +84,11 @@ value."
   (when (org-export-derived-backend-p backend 'html)
     (let ((file-name (f-filename (buffer-file-name))))
       (save-match-data
-      (when (and
-             (>= (length file-name) 2)
-             (not (= (string-to-int (s-left 2 file-name))
-                     0))
-             (let ((case-fold-search t))
+        (when (and
+               (>= (length file-name) 2)
+               (not (= (string-to-int (s-left 2 file-name))
+                       0))
+               (let ((case-fold-search t))
                  (string-match (rx
                                 (group "<span class=\"section-number-"
                                        (+ (char digit))
@@ -96,9 +96,43 @@ value."
                                 (group (char digit))
                                 (group (* (char digit ".")))
                                 (group "</span>"))
-                               text))) (replace-match (format "\\1 %d\\3\\4" (string-to-int (s-left 2 file-name)))
-                       t nil text))))))
+                               text)))
+          (replace-match (format "\\1 %d\\3\\4" (string-to-int (s-left 2 file-name)))
+                         t nil text))))))
+
+(defun lean-filter-html-link (text backend info)
+  (when (eq backend 'html)
+    (cond
+     ;; 1. Extenral Links (starting with 'https://', 'http://', or '//')
+     ;;    => add "target='_blank'"
+     ((string-match
+       (rx (group "href=\"" (or "http://" "https://" "//"))) text)
+      (message "=================")
+      (message "External Link: %s" text)
+      (replace-match "target='_blank' \\1" t nil text))
+     ;; 2. Internal Links
+     ;; 2.1. (matched with "<a href="filename#anchor">
+     ((string-match
+       (rx "<a href=\"" (group (+ (not (any "#")))) "#" (group (+ (not (any "\"")))) "\"") text)
+      (message "=================")
+      (message "Internal Link -- filename + anchor: %s" text)
+      (replace-match "<a href=\"#\" onclick=\"myModule.loadTutorial('\\1', '\\2')\"" t nil text))
+     ;; 2.2. (matched with "<a href="#anchor">
+     ((string-match
+       (rx "<a href=\"#" (group (+ (not (any "\"")))) "\"") text)
+      (message "=================")
+      (message "Internal Link -- only anchor: %s" text)
+      (replace-match "<a href=\"#\" onclick=\"myModule.scrollTutorialTo('\\1')\"" t nil text)
+      )
+     ;; 2.3. (matched with "<a href="filename">
+     ((string-match
+       (rx "<a href=\"" (group (+ (not (any "\"")))) "\"") text)
+      (message "=================")
+      (message "Internal Link -- only file: %s" text)
+      (replace-match "<a href=\"#\" onclick=\"myModule.loadTutorial('\\1', null)\"" t nil text))
+     )))
+
 (eval-after-load 'ox
   '(progn
-     (add-to-list 'org-export-filter-headline-functions
-                  'lean-filter-headline)))
+     (add-to-list 'org-export-filter-link-functions 'lean-filter-html-link)
+     (add-to-list 'org-export-filter-headline-functions 'lean-filter-headline)))
