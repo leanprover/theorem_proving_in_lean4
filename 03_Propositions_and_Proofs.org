@@ -1,5 +1,5 @@
+#+Title: Theorem Proving in Lean
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]] and Leonardo de Moura
-#+Title: Propositions and Proofs
 
 * Propositions and Proofs
 

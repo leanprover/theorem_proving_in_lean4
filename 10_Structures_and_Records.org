@@ -1,5 +1,5 @@
-#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], Leonardo de Moura
 #+Title: Theorem Proving in Lean
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], Leonardo de Moura
 
 * Structures and Records
 

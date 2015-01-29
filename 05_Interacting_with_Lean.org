@@ -1,5 +1,5 @@
-#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
 #+Title: Theorem Proving in Lean
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
 
 * Interacting with Lean
 
@@ -418,7 +418,7 @@ definition in the library file itself. This works even in an
 autocompletion popup window: if you start typing an identifier, press
 the tab key, choose a completion from the list of options, and press
 "M-.", you are taken to the symbol's definition. When you are done,
-pressing "M-*" takes you back to your original position. 
+pressing "M-*" takes you back to your original position.
 
 There are other useful tricks. If you see some notation in a Lean file
 and you want to know how to enter it from the keyboard, put the cursor

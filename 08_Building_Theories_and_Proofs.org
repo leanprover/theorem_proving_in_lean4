@@ -1,5 +1,5 @@
-#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
 #+Title: Theorem Proving in Lean
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
 
 * Building Theories and Proofs
 
@@ -934,7 +934,7 @@ proof, Lean provides various sectioning mechanisms that help structure
 a theory. We saw in Section [[Namespaces and Sections]] that the =section=
 command makes it possible not only to group together elements of a
 theory that go together, but also to declare variables that are
-inserted as arguments to theorems and definitions, as necessary. 
+inserted as arguments to theorems and definitions, as necessary.
 In fact, Lean has two ways of introducing local elements into the
 contexts, namely, as =variables= or as =parameters=. And it has two
 slightly different sectioning notions, namely, =section= and

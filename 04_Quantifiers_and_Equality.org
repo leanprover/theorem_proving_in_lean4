@@ -1,5 +1,5 @@
+#+Title: Theorem Proving in Lean
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
-#+Title: Quantifiers and Equality
 
 * Quantifiers and Equality
 
