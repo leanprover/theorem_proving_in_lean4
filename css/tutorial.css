@@ -60,6 +60,7 @@ ul, ol {
     margin: 0;
 }
 li {
+    margin-left: 30px;
     line-height: 24px;
 }
 li ul, li ul {
@@ -329,4 +330,7 @@ button::-moz-focus-inner {
 }
 #tutorialNav {
     margin-top:6px;
+}
+pre.src.src-text {
+    margin-left: 24px;
 }
