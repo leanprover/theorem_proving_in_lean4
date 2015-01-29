@@ -417,11 +417,22 @@ library and hit "M-.", Emacs will take you to the identifier's
 definition in the library file itself. This works even in an
 autocompletion popup window: if you start typing an identifier, press
 the tab key, choose a completion from the list of options, and press
-"M-.", you are taken to the symbol's definition. These commands and
-others are summarized here:
+"M-.", you are taken to the symbol's definition. When you are done,
+pressing "M-*" takes you back to your original position. 
+
+There are other useful tricks. If you see some notation in a Lean file
+and you want to know how to enter it from the keyboard, put the cursor
+on the symbol and type "C-c C-k". You can set common Lean options with
+"C-c C-o", and you can execute a Lean command using "C-c C-e". These
+commands and others are summarized here:
 #+BEGIN_QUOTE
 [[https://github.com/leanprover/lean/blob/master/src/emacs/README.md][Lean Emacs mode README]]
 #+END_QUOTE
+If for some reason the Lean background process does not seem to be
+responding (for example, the information line no longer shows you type
+information), type "C-c C-r", or "M-x lean-server-restart-process", or
+choose "restart lean process" from the Lean menu, and with luck that
+will set things right again.
 
 This is a good place to mention another trick that is sometimes useful
 when editing long files. In Lean, the "exit" command halts processing
