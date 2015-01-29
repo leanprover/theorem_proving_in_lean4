@@ -9,7 +9,7 @@ proofs.
 
 ** More on Coercions
 
-In Section [[file:05_Interacting_with_Lean::Notation_Overloads_and_Coercions][Notations, Overloads, and Coercions]], we discussed coercions
+In Section [[file:05_Interacting_with_Lean.org::#Notation_Overloads_and_Coercions][Notations, Overloads, and Coercions]], we discussed coercions
 briefly, and noted that there are restrictions on the types that one
 can coerce from and to. Now that we have discussed inductive types, we
 can be more precise.
