@@ -415,6 +415,29 @@ var myModule = (function() {
             myModule.resize_editors();
             window.onresize = function(event) { myModule.resize_editors(); };
         },
+        scrollTutorialTo: function(anchor) {
+            setTimeout(function() {
+                $('#tutorial_contents').animate({
+                    scrollTop: $('#tutorial_contents').scrollTop() + $('#' + anchor).position().top
+                }, 'slow');
+            }, 10);
+        },
+        file2title: function(filename) {
+            return filename.split("_").join(" ").replace(".html", "");
+        },
+        title2file: function(title) {
+            return title.split(" ").join("_") + ".html";
+        },
+        loadTutorial: function(filename, anchor) {
+            // Load File
+            $("#tutorial_contents").load(filename, function() {
+                if (anchor) {
+                    myModule.scrollTutorialTo(anchor);
+                }
+            });
+            // Set the right value for tutorialNav
+            $('#tutorialNav').val(myModule.file2title(filename));
+        },
         init_nav: function() {
             // Setup Navigation: note that the variable lean_nav_data
             // is loaded from 'js/nav_data.js' which is built by
@@ -422,15 +445,15 @@ var myModule = (function() {
             $.getScript("js/nav_data.js", function(){
                 $.each(lean_nav_data, function(key, value) {
                     // e.g. "02_Dependent_Type_Theory.html" => "02 Dependent Type Theory"
-                    var replacedValue = value.split("_").join(" ").replace(".html", "");
-                    $('#tutorialNav').append("<option>" + replacedValue + "</option>");
+                    var title = myModule.file2title(value);
+                    $('#tutorialNav').append("<option>" + title + "</option>");
                 });
                 $('#tutorialNav').on('change', function (e) {
-                    var fileName = this.value.split(" ").join("_") + ".html";
+                    var fileName = myModule.title2file(this.value);
                     $("#tutorial_contents").load(fileName);
                 });
                 // By default, load the first chapter
-                $("#tutorial_contents").load(lean_nav_data[0]);
+                myModule.loadTutorial(lean_nav_data[0], null);
             });
         },
         init: function() {
