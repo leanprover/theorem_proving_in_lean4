@@ -417,10 +417,11 @@ var myModule = (function() {
         },
         scrollTutorialTo: function(anchor) {
             setTimeout(function() {
-                $('#tutorial_contents').animate({
-                    scrollTop: $('#tutorial_contents').scrollTop() + $('#' + anchor).position().top
-                }, 'slow');
-            }, 10);
+                $('#tutorial_contents').ready(function() {
+                    $('#tutorial_contents').animate({
+                        scrollTop: $('#tutorial_contents').scrollTop() + $('#' + anchor).position().top
+                    }, 'slow');
+                })}, 50);
         },
         file2title: function(filename) {
             return filename.split("_").join(" ").replace(".html", "");
@@ -434,6 +435,8 @@ var myModule = (function() {
                 if (anchor) {
                     myModule.scrollTutorialTo(anchor);
                 }
+                // save the file in cookie
+                $.cookie("leanjs_tutorial_chapter_filename", filename);
             });
             // Set the right value for tutorialNav
             $('#tutorialNav').val(myModule.file2title(filename));
@@ -450,10 +453,15 @@ var myModule = (function() {
                 });
                 $('#tutorialNav').on('change', function (e) {
                     var fileName = myModule.title2file(this.value);
-                    $("#tutorial_contents").load(fileName);
+                    myModule.loadTutorial(fileName, null);
                 });
-                // By default, load the first chapter
-                myModule.loadTutorial(lean_nav_data[0], null);
+                // Load chapter (cookie or default?)
+                var saved_file = $.cookie("leanjs_tutorial_chapter_filename");
+                if (saved_file && saved_file != "" && $.inArray(saved_file, lean_nav_data)) {
+                    myModule.loadTutorial(saved_file, null);
+                } else {
+                    myModule.loadTutorial(lean_nav_data[0], null);
+                }
             });
         },
         init: function() {
@@ -546,7 +554,6 @@ $(function () {
         if (myModule.get_dropbox_client().isAuthenticated()) {
             var options = {
                 success: function(files) {
-                    console.log(files[0]);
                     $.get(files[0].link, function(data) {
                         myModule.editor_main.setValue(data, 1);
                     });
