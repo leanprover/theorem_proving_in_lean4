@@ -419,8 +419,8 @@ eval tt && ff
 eval b && ff
 
 print "reducing arithmetic expressions"
-eval 0 + n
-eval 2 + n
+eval n + 0
+eval n + 2
 eval 2 + 3
 #+END_SRC
 In a later chapter, we will explain how these terms are evaluated. For
@@ -599,7 +599,6 @@ Lean provides us with the ability to group definitions, notations, and
 other information into nested, hierarchical /namespaces/:
 #+BEGIN_SRC lean
 namespace foo
-
   constant A : Type
   constant a : A
   constant f : A → A
@@ -616,7 +615,6 @@ namespace foo
   check ffa
   check foo.A
   check foo.fa
-
 end foo
 
 print "outside the namespace"
@@ -676,7 +674,6 @@ check m + 0
 Namespaces can be nested:
 #+BEGIN_SRC lean
 namespace foo
-
   constant A : Type
   constant a : A
   constant f : A → A
@@ -874,6 +871,9 @@ check @head
 check @tail
 check @append
 #+END_SRC
+There is a small subtlety in the definition of =head=: when passed the
+empty list, the function must determine a default element of the
+relevant type. We will explain how this is done in Chapter  [[file:09_Type_Classes.org::#Type_Classes][Type Classes]].
 
 Vector operations are handled similarly:
 #+BEGIN_SRC lean
@@ -911,11 +911,38 @@ constant a : A
 constant b : B a
 
 check sigma.mk a b
-check pr1 (sigma.mk a b)
-check pr2 (sigma.mk a b)
+check ⟨a, b⟩
+check pr1 ⟨a, b⟩
+check pr2 ⟨a, b⟩
 
-eval pr1 (sigma.mk a b)
-eval pr2 (sigma.mk a b)
+eval pr1 ⟨a, b⟩
+eval pr2 ⟨a, b⟩
+#+END_SRC
+Note, by the way, that the identitifiers =pr1= and =pr2= are also used
+for the product type. The notations are made available when you open
+the namespaces =prod= and =sigma= respectively; if you open both, the
+identifier is simply overloaded. Without opening the namespaces, you
+can refer to them as =prod.pr1=, =prod.pr2=, =sigma.pr1=, and
+=sigma.pr2=. 
+
+Moreover, if you open the namespaces =prod.ops= and =sigma.ops=, you
+can use additional convenient notation for the projections:
+#+BEGIN_SRC lean
+import data.sigma data.prod
+
+constant A : Type
+constant B : A → Type
+constants (a : A) (b : B a)
+constants C D : Type
+constants (c : C) (d : D)
+
+open sigma.ops
+open prod.ops
+
+eval (a, b).1
+eval (a, b).2
+eval ⟨c, d⟩.1
+eval ⟨c, d⟩.2
 #+END_SRC
 
 ** Implicit Arguments

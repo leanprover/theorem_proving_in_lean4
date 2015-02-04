@@ -48,10 +48,10 @@ for some =y1 ... ym=. For example, if =F= is =list : ΠA : Type, Type=,
 =G= is =set ΠA : Type, Type=, then a coercion =c : ΠA : Type, list A →
 set A= allows us to pass an argument of type =list T= for some =T= any
 time an element of type =set T= is expected. These are the types of
-coercions we considered in Section [[Notation, Overloads, and Coercions]].
+coercions we considered in Section [[file:05_Interacting_with_Lean.org::#Notation_Overloads_and_Coercions][Notations, Overloads, and Coercions]]
 
 Lean imposes the restriction that the source and target families have
-to be families of inductive types, as defined in Chapter [[Inductive
+to be families of inductive types, as defined in Chapter [[file:06_Inductive_Types.org::#Inductive_Types][Inductive
 Types]]. Note that these include parameterized structures, as discussed
 in the next chapter. Because inductive types are atomic --- they do
 not unfold, definitionally, to other expressions --- this reduces

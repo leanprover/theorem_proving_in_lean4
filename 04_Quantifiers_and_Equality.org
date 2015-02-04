@@ -396,8 +396,8 @@ calc
 -- END
 #+END_SRC
 As an exercise, we suggest carrying out a similar expansion of =(x -
-y) * (x - y)=, using the theorems =mul_sub_distr_right= and
-=mul_sub_distr_right= in the module [[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]].
+y) * (x - y)=, using the theorems =mul_sub_right_distrib= and
+=mul_sub_left_distrib= in the module [[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]].
 
 ** The Simplifier
 

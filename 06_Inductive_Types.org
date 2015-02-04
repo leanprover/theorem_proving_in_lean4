@@ -2,6 +2,9 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]]
 
 * Inductive Types
+:PROPERTIES:
+  :CUSTOM_ID: Inductive_Types
+:END:
 
 We have seen that the Calculus of Constructions includes basic types,
 =Prop, Type.{1}, Type.{2}, ...=, and allows for the formation of
