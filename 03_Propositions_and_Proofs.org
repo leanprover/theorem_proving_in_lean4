@@ -338,15 +338,16 @@ When you import the standard library, or even just the module logic,
 Lean defines all the standard logical connectives and notation. The
 propositional connectives come with the following notation:
 
-| Ascii |             Unicode   | Emacs shortcut for unicode | Definition |
-|-------|-----------------------|----------------|------------|
-| true  |                       |                | true       |
-| false |                       |                | false      |
-| not   |               ¬       |    =\neg=      | not        |
-| /\    |               ∧       |    =\and=      | and        |
-| ‌\/    |               ∨       |    =\or=       | or         |
-| ->    |               →       |    =\r=        |            |
-| <->   |               ↔       |    =\lr=       | iff        |
+| Ascii | Unicode | Emacs shortcut for unicode | Definition |
+|-------+---------+----------------------------+------------|
+| true  |         |                            | true       |
+| false |         |                            | false      |
+| not   | ¬       | =\not=, =\neg=             | not        |
+| /\    | ∧       | =\and=                     | and        |
+| ‌\/    | ∨       | =\or=                      | or         |
+| ->    | →       | =\to=, =\r=, =\implies=    |            |
+| <->   | ↔       | =\iff=, =\lr=              | iff        | 
+  
 They all take values in =Prop=.
 #+BEGIN_SRC lean
 import logic
@@ -544,8 +545,10 @@ end
 #+END_SRC
 
 The connective =false= has a single elimination rule, =false.elim=,
-which expresses the /principle of explosion/ in logic: the fact that
-anything follows from a contradiction.
+which expresses the fact that anything follows from a contradiction.
+This rule is sometimes called the /principle of explosion/, or /ex
+falso/ (short for /ex falso sequitur quodlibet/).
+
 #+BEGIN_SRC lean
 import logic
 
@@ -648,11 +651,13 @@ propositions-as-types correspondence. Ordinary classical logic adds to
 this the law of the excluded middle, =p ∨ ¬p=. To use this principle,
 you have to load the appropriate classical axioms.
 #+BEGIN_SRC lean
-import logic logic.axioms.classical
+import logic.axioms.classical
 
 constant p : Prop
 check em p
 #+END_SRC
+Alternatively, you can simply write =import classical= to import the
+classical version of the standard library.
 
 Intuitively, the constructive "or" is very strong: asserting =p ∨ q=
 amounts to knowing which is the case. If =RH= represents the Riemann
@@ -662,7 +667,7 @@ even though we cannot yet assert either disjunct.
 One consequence of the law of the excluded middle is the principle of
 double-negation elimination:
 #+BEGIN_SRC lean
-import logic logic.axioms.classical
+import logic.axioms.classical
 
 -- BEGIN
 theorem dne {p : Prop} (H : ¬¬p) : p :=
@@ -671,18 +676,56 @@ or.elim (em p)
   (assume Hnp : ¬p, absurd Hnp H)
 -- END
 #+END_SRC
-
 Double-negation elimination allows one to prove any proposition, =p=,
 by assuming =¬p= and deriving =false=, because the latter amounts to
 proving =¬¬p=. In other words, double-negation elimination allows one
 to carry out a proof by contradiction, something which is not
-generally possible in constructive logic.
+generally possible in constructive logic. As an exercise, you might
+try proving the converse, that is, showing that =em= can be proved
+from =dne=.
+
+Loading the classical axioms also gives you access to additional
+patterns of proof, what can be justified by appeal to =em=. For
+example, one can carry out a proof by cases:
+#+BEGIN_SRC lean
+import logic.axioms.classical
+
+-- BEGIN
+section
+  variable p : Prop
+
+  example (H : ¬¬p) : p :=
+  by_cases
+    (assume H1 : p, H1)
+    (assume H1 : ¬p, absurd H1 H)
+end
+-- END
+#+END_SRC
+Or you can carry out a proof by contradiction:
+#+BEGIN_SRC lean
+import logic.axioms.classical
+
+-- BEGIN
+section
+  variable p : Prop
+
+  example (H : ¬¬p) : p :=
+  by_contradiction
+    (assume H1 : ¬p,
+      show false, from H H1)
+end
+-- END
+#+END_SRC
 
 We will see later that there /are/ situations in constructive logic
 where principles like excluded middle and double-negation elimination
 are permissible, and Lean supports the use of classical reasoning in
 such contexts. Importing =logic.axioms.classical= allows one to use
 such reasoning freely.
+
+There are additional classical axioms that are not included by default
+in the standard library. We will discuss these in detail in a later
+chapter.
 
 ** Examples of Propositional Validities
 
@@ -724,17 +767,17 @@ section
   example : (p → q) → ((q → r) → (p → r)) := sorry
   example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
   example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
-  example : ¬ (p ∨ q) ↔ ¬ p ∧ ¬ q := sorry
-  example : ¬ (p ∧ q) ↔ ¬ p ∨ ¬ q := sorry
-  example : ¬ (p ∧ ¬ p) := sorry
-  example : ¬ (p → q) ↔ p ∧ ¬ q := sorry
-  example : ¬ p → (p → q) := sorry
-  example : (¬ p ∨ q) ↔ (p → q) := sorry
+  example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
+  example : ¬(p ∧ q) ↔ ¬p ∨ ¬q := sorry
+  example : ¬(p ∧ ¬ p) := sorry
+  example : ¬(p → q) ↔ p ∧ ¬q := sorry
+  example : ¬p → (p → q) := sorry
+  example : (¬p ∨ q) ↔ (p → q) := sorry
   example : p ∨ false ↔ p := sorry
   example : p ∧ false ↔ false := sorry
-  example : ¬ (p ↔ ¬ p) := sorry
-  example : (p → q) ↔ (¬ q → ¬ p) := sorry
-  example : p ∨ ¬ p := sorry
+  example : ¬(p ↔ ¬p) := sorry
+  example : (p → q) ↔ (¬q → ¬p) := sorry
+  example : p ∨ ¬p := sorry
   example : (((p → q) → p) → p) := sorry
 end
 #+END_SRC

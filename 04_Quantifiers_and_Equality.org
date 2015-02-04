@@ -104,7 +104,7 @@ relation, =r=, is transitive:
 #+BEGIN_SRC lean
 section
   variables (A : Type) (r : A → A → Prop)
-  variable (trans_r : ∀x y z, r x y → r y z → r x z)
+  variable trans_r : ∀x y z, r x y → r y z → r x z
 
   variables (a b c : A)
   variables (Hab : r a b) (Hbc : r b c)
@@ -151,9 +151,9 @@ an equivalence relation:
 section
   variables (A : Type) (r : A → A → Prop)
 
-  variable (refl_r : ∀x, r x x)
-  variable (symm_r : ∀{x y}, r x y → r y x)
-  variable (trans_r : ∀{x y z}, r x y → r y z → r x z)
+  variable refl_r : ∀x, r x x
+  variable symm_r : ∀{x y}, r x y → r y x
+  variable trans_r : ∀{x y z}, r x y → r y z → r x z
 
   example (a b c d : A) (Hab : r a b) (Hcb : r c b) (Hcd : r c d) : r a d :=
   trans_r (trans_r Hab (symm_r Hcb)) Hcd
@@ -164,11 +164,11 @@ You might want to try to prove some of these equivalences:
 import logic
 
 section
-  variables (A : Type) (P Q : A → Prop)
+  variables (A : Type) (p q : A → Prop)
 
-  example : (∀x, P x ∧ Q x) ↔ (∀x, P x) ∧ (∀x, Q x) := sorry
-  example : (∀x, P x → Q x) → (∀x, P x) → (∀x, Q x) := sorry
-  example : (∀x, P x) ∨ (∀x, Q x) → ∀x, P x ∨ Q x := sorry
+  example : (∀x, p x ∧ q x) ↔ (∀x, p x) ∧ (∀x, q x) := sorry
+  example : (∀x, p x → q x) → (∀x, p x) → (∀x, q x) := sorry
+  example : (∀x, p x) ∨ (∀x, q x) → ∀x, p x ∨ q x := sorry
 end
 #+END_SRC
 You should also try to understand why the reverse implication is not
@@ -179,12 +179,12 @@ quantifier, when it does not depend on the quantified variable (one
 direction of the second of these requires classical logic):
 #+BEGIN_SRC lean
 section
-  variables (A : Type) (P Q : A → Prop)
-  variable R : Prop
+  variables (A : Type) (p q : A → Prop)
+  variable r : Prop
 
-  example : A → (∀x : A, R) ↔ R := sorry
-  example : (∀x, P x ∨ R) ↔ (∀x, P x) ∨ R := sorry
-  example : (∀x, R → P x) ↔ (R → ∀x, P x) := sorry
+  example : A → (∀x : A, r) ↔ r := sorry
+  example : (∀x, p x ∨ r) ↔ (∀x, p x) ∨ r := sorry
+  example : (∀x, r → p x) ↔ (r → ∀x, p x) := sorry
 end
 #+END_SRC
 
@@ -435,8 +435,8 @@ Note that =exists.intro= has implicit arguments: Lean has to infer the
 predicate =p : A → Prop= in the conclusion =∃x, p x=. This is not a
 trivial affair. For example, if we have have =Hg : g 0 0 = 0= and
 write =exists.intro 0 Hg=, there are many possible values for the
-predicate =p=, corresponding to the theorems =∃ x, g x x = x=, =∃ x, g
-x x = 0=, =∃ x, g x 0 = x=, etc. Lean uses the context to infer which
+predicate =p=, corresponding to the theorems =∃x, g x x = x=, =∃x, g
+x x = 0=, =∃x, g x 0 = x=, etc. Lean uses the context to infer which
 one is appropriate. This is illustrated in the following example, in
 which we set the option =pp.implicit= to true to ask Lean's
 pretty-printer to show the implicit arguments.
@@ -481,10 +481,10 @@ Notice that exists introduction and elimination are very similar to the
 sigma introduction =sigma.mk= and elimination.
 The difference is that given =a : A= and =h : p a=, =exists.intro a h=
 has type =(∃x : A, p x) : Prop= and =sigma.mk a h= has type
-=(Σ x : A, p x) : Type=. The similarity
+=(Σx : A, p x) : Type=. The similarity
 between =∃= and =Σ= is another instance of the Curry-Howard isomorphism.
 
-In the following example, we define =even a= as =∃ b, a = 2*b=, and
+In the following example, we define =even a= as =∃b, a = 2*b=, and
 then we show that the sum of two even numbers is an even number.
 #+BEGIN_SRC lean
 import data.nat
