@@ -932,7 +932,8 @@ import data.sigma data.prod
 
 constant A : Type
 constant B : A → Type
-constants (a : A) (b : B a)
+constant a : A
+constant b : B a
 constants C D : Type
 constants (c : C) (d : D)
 
