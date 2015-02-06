@@ -41,7 +41,8 @@ var myModule = (function() {
     var Range = ace.require("ace/range").Range;
     var editor_console = ace.edit("editor_console");
     editor_console.$blockScrolling = Infinity;
-    var tutorial_main_ratio = 0.5;
+    var livemode = gup("live") ? true : false;
+    var tutorial_main_ratio = livemode ? 0.0 : 0.5;
     var main_console_ratio = (window.innerWidth > window.innerHeight) ? 0.8 : 0.5
     var menu_height = 40;
     var handle_width = 10;
@@ -103,75 +104,144 @@ var myModule = (function() {
             var w = window.innerWidth;
             var main_width, main_height, console_width, console_height, tutorial_width, tutorial_height;
             var main_top, main_left, console_top, console_left, tutorial_top, tutorial_left;
-            if (w >= h) {
-                // side by side
-                tutorial_width  = Math.floor(w * tutorial_main_ratio);
-                main_width      = w - tutorial_width - handle_width;
-                console_width   = main_width;
-                tutorial_height = h - menu_height;
-                main_height     = Math.floor(tutorial_height * main_console_ratio);
-                console_height  = tutorial_height - main_height - handle_width;
+            if (livemode) {
+                if (w >= h) {
+                    // side by side + livemode
+                    tutorial_width  = 0;
+                    main_width      = Math.floor(w * main_console_ratio);
+                    console_width   = w - main_width - handle_width;
+                    tutorial_height = 0;
+                    main_height     = (h - menu_height);
+                    console_height  = main_height;
 
-                tutorial_top    = menu_height;
-                main_handle_top = menu_height;
-                main_top        = tutorial_top;
-                sub_handle_top  = main_top + main_height;
-                console_top     = main_top + main_height + handle_width;
+                    tutorial_top     = menu_height;
+                    main_handle_top  = menu_height;
+                    main_top         = menu_height;
+                    console_top      = main_top;
+                    sub_handle_top   = main_top;
+                    tutorial_left    = 0;
+                    main_handle_left = 0;
+                    main_left        = 0;
+                    sub_handle_left  = main_width;
+                    console_left     = main_width + handle_width;
 
-                tutorial_left    = 0;
-                main_handle_left = tutorial_width;
-                main_left        = tutorial_width + handle_width;
-                sub_handle_left  = main_left;
-                console_left     = main_left;
-                main_handle_background_image = "url(css/images/handle-v.png)";
-                main_handle_cursor = "col-resize";
-                sub_handle_background_image = "url(css/images/handle-h.png)";
-                sub_handle_cursor = "row-resize";
+                    main_handle_background_image = "url(css/images/handle-h.png)";
+                    main_handle_cursor = "row-resize";
+                    sub_handle_background_image = "url(css/images/handle-v.png)";
+                    sub_handle_cursor = "col-resize";
 
-                main_handle_width  = handle_width - 2;
-                main_handle_height = tutorial_height - 2;
-                sub_handle_width   = console_width - 2;
-                sub_handle_height  = handle_width - 2;
+                    main_handle_width  = 2;
+                    main_handle_height = 2;
+                    sub_handle_width   = handle_width;
+                    sub_handle_height  = console_height;
+                } else {
+                    // top & down + livemode
+                    tutorial_width  = 0;
+                    tutorial_height = 0;
+                    main_width      = w;
+                    main_height     = Math.floor((h - menu_height) * main_console_ratio);
+                    console_width   = main_width;
+                    console_height  = h - main_height - handle_width;
+
+                    tutorial_top    = 0;
+                    tutorial_left   = 0;
+                    main_handle_top = menu_height;
+                    main_handle_left = 0;
+
+                    main_top        = menu_height;
+                    main_left        = 0;
+                    sub_handle_top  = main_top + main_height;
+                    sub_handle_left  = main_left;
+                    console_top     = main_top + main_height + handle_width;
+                    console_left     = main_left;
+                    main_handle_background_image = "url(css/images/handle-v.png)";
+                    main_handle_cursor = "col-resize";
+                    sub_handle_background_image = "url(css/images/handle-h.png)";
+                    sub_handle_cursor = "row-resize";
+
+                    main_handle_width  = 2;
+                    main_handle_height = 2;
+                    sub_handle_width   = console_width;
+                    sub_handle_height  = handle_width;
+                }
             } else {
-                // top bottom
-                tutorial_width  = w;
-                main_width      = Math.floor(w * main_console_ratio);
-                console_width   = w - main_width - handle_width;
-                tutorial_height = Math.floor((h - menu_height) * tutorial_main_ratio);
-                main_height     = (h - menu_height) - tutorial_height - handle_width;
-                console_height  = main_height;
+                if (w >= h) {
+                    // side by side, no livemode
+                    tutorial_width  = Math.floor(w * tutorial_main_ratio);
+                    main_width      = w - tutorial_width - handle_width;
+                    console_width   = main_width;
+                    tutorial_height = h - menu_height;
+                    main_height     = Math.floor(tutorial_height * main_console_ratio);
+                    console_height  = tutorial_height - main_height - handle_width;
 
-                tutorial_top     = menu_height;
-                main_handle_top  = tutorial_top + tutorial_height;
-                main_top         = tutorial_top + tutorial_height + handle_width;
-                console_top      = main_top;
-                sub_handle_top   = main_top;
-                tutorial_left    = 0;
-                main_handle_left = 0;
-                main_left        = 0;
-                sub_handle_left  = main_width;
-                console_left     = main_width + handle_width;
+                    tutorial_top    = menu_height;
+                    main_handle_top = menu_height;
+                    main_top        = tutorial_top;
+                    sub_handle_top  = main_top + main_height;
+                    console_top     = main_top + main_height + handle_width;
 
-                main_handle_background_image = "url(css/images/handle-h.png)";
-                main_handle_cursor = "row-resize";
-                sub_handle_background_image = "url(css/images/handle-v.png)";
-                sub_handle_cursor = "col-resize";
+                    tutorial_left    = 0;
+                    main_handle_left = tutorial_width;
+                    main_left        = tutorial_width + handle_width;
+                    sub_handle_left  = main_left;
+                    console_left     = main_left;
+                    main_handle_background_image = "url(css/images/handle-v.png)";
+                    main_handle_cursor = "col-resize";
+                    sub_handle_background_image = "url(css/images/handle-h.png)";
+                    sub_handle_cursor = "row-resize";
 
-                main_handle_width  = tutorial_width - 2;
-                main_handle_height = handle_width - 2;
-                sub_handle_width   = handle_width -2;
-                sub_handle_height  = console_height - 2;
+                    main_handle_width  = handle_width;
+                    main_handle_height = tutorial_height;
+                    sub_handle_width   = console_width;
+                    sub_handle_height  = handle_width;
+                } else {
+                    // top bottom, no livemode
+                    tutorial_width  = w;
+                    main_width      = Math.floor(w * main_console_ratio);
+                    console_width   = w - main_width - handle_width;
+                    tutorial_height = Math.floor((h - menu_height) * tutorial_main_ratio);
+                    main_height     = (h - menu_height) - tutorial_height - handle_width;
+                    console_height  = main_height;
+
+                    tutorial_top     = menu_height;
+                    main_handle_top  = tutorial_top + tutorial_height;
+                    main_top         = tutorial_top + tutorial_height + handle_width;
+                    console_top      = main_top;
+                    sub_handle_top   = main_top;
+                    tutorial_left    = 0;
+                    main_handle_left = 0;
+                    main_left        = 0;
+                    sub_handle_left  = main_width;
+                    console_left     = main_width + handle_width;
+
+                    main_handle_background_image = "url(css/images/handle-h.png)";
+                    main_handle_cursor = "row-resize";
+                    sub_handle_background_image = "url(css/images/handle-v.png)";
+                    sub_handle_cursor = "col-resize";
+
+                    main_handle_width  = tutorial_width;
+                    main_handle_height = handle_width;
+                    sub_handle_width   = handle_width;
+                    sub_handle_height  = console_height;
+                }
             }
+            main_handle_width  -= 2;
+            main_handle_height -= 2;
+            sub_handle_width   -= 2;
+            sub_handle_height  -= 2;
+
             $("#editor_console").css({position: "absolute", top: console_top, left: console_left,  width: console_width, height: console_height});
             $("#editor_main").css({position: "absolute", top: main_top, left:main_left, width: main_width, height: main_height});
             $("#resizable_handle_main").css({position: "absolute", top: main_handle_top, left:main_handle_left, width: main_handle_width, height: main_handle_height,
                                              "background-image": main_handle_background_image,
                                              "background-repeat": "no-repeat", cursor: main_handle_cursor,
+                                             "background-position": "center",
                                              "border": "solid 1px #cccccc"
                                             });
             $("#resizable_handle_sub").css({position: "absolute", top: sub_handle_top, left:sub_handle_left, width: sub_handle_width, height: sub_handle_height,
                                              "background-image": sub_handle_background_image,
                                              "background-repeat": "no-repeat", cursor: sub_handle_cursor,
+                                             "background-position": "center",
                                              "border": "solid 1px #cccccc"
                                            });
             editor_main.resize();
@@ -216,12 +286,22 @@ var myModule = (function() {
                 $(document).mousemove(function(event){
                     var h = window.innerHeight;
                     var w = window.innerWidth;
-                    if (w >= h) {
-                        var y_pos = Math.max(menu_height, Math.min(event.pageY, h));
-                        main_console_ratio = (y_pos - menu_height) / (h - menu_height);
+                    if (livemode) {
+                        if (w >= h) {
+                            var x_pos = Math.min(w, event.pageX);
+                            main_console_ratio = x_pos / w;
+                        } else {
+                            var y_pos = Math.max(menu_height, Math.min(event.pageY, h));
+                            main_console_ratio = (y_pos - menu_height) / (h - menu_height);
+                        }
                     } else {
-                        var x_pos = Math.min(w, event.pageX);
-                        main_console_ratio = x_pos / w;
+                        if (w >= h) {
+                            var y_pos = Math.max(menu_height, Math.min(event.pageY, h));
+                            main_console_ratio = (y_pos - menu_height) / (h - menu_height);
+                        } else {
+                            var x_pos = Math.min(w, event.pageX);
+                            main_console_ratio = x_pos / w;
+                        }
                     }
                     myModule.resize_editors();
                 });
@@ -445,24 +525,30 @@ var myModule = (function() {
             // Setup Navigation: note that the variable lean_nav_data
             // is loaded from 'js/nav_data.js' which is built by
             // 'build_nav_data' build target.
-            $.getScript("js/nav_data.js", function(){
-                $.each(lean_nav_data, function(key, value) {
-                    // e.g. "02_Dependent_Type_Theory.html" => "02 Dependent Type Theory"
-                    var title = myModule.file2title(value);
-                    $('#tutorialNav').append("<option>" + title + "</option>");
+            if (gup("live") != "") {
+                // Hide tutorial navigation if '?live=' used.
+                $('#tutorialNav').hide();
+            } else {
+                $.getScript("js/nav_data.js", function(){
+                    $.each(lean_nav_data, function(key, value) {
+                        // e.g. "02_Dependent_Type_Theory.html" => "02 Dependent Type Theory"
+                        var title = myModule.file2title(value);
+                        $('#tutorialNav').append("<option>" + title + "</option>");
+                    });
+                    $('#tutorialNav').on('change', function (e) {
+                        var fileName = myModule.title2file(this.value);
+                        myModule.loadTutorial(fileName, null);
+                    });
+                    $('#tutorialNav').show();
+                    // Load chapter (cookie or default?)
+                    var saved_file = $.cookie("leanjs_tutorial_chapter_filename");
+                    if (saved_file && saved_file != "" && $.inArray(saved_file, lean_nav_data)) {
+                        myModule.loadTutorial(saved_file, null);
+                    } else {
+                        myModule.loadTutorial(lean_nav_data[0], null);
+                    }
                 });
-                $('#tutorialNav').on('change', function (e) {
-                    var fileName = myModule.title2file(this.value);
-                    myModule.loadTutorial(fileName, null);
-                });
-                // Load chapter (cookie or default?)
-                var saved_file = $.cookie("leanjs_tutorial_chapter_filename");
-                if (saved_file && saved_file != "" && $.inArray(saved_file, lean_nav_data)) {
-                    myModule.loadTutorial(saved_file, null);
-                } else {
-                    myModule.loadTutorial(lean_nav_data[0], null);
-                }
-            });
+            }
         },
         init: function() {
             myModule.init_nav();
