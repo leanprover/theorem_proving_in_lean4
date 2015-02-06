@@ -12,7 +12,7 @@ based on the one available in SSReflect.
 
 The =rewrite= tactic has many features. The most basic form is =rewrite t=,
 where =t= is a term which conclusion is an equality. In the following example,
-we using this basic form to rewrite the goal using a hypothesis.
+we use this basic form to rewrite the goal using a hypothesis.
 #+BEGIN_SRC lean
 open nat
 variables (f : nat → nat) (k : nat)
@@ -30,7 +30,7 @@ the form =t = t=.
 
 Multiple rewrites can be combined using the notations =rewrite [t_1, ..., t_n]= or
 =rewrite ⟨t_1, ..., t_n⟩=. Both notations are just shorthands for =rewrite t_1, ..., rewrite t_n=.
-The previous example can be concisely written as:
+The previous example can be written as:
 #+BEGIN_SRC lean
 open nat
 variables (f : nat → nat) (k : nat)
@@ -72,7 +72,7 @@ the form =t + s= since commutativity would be always applicable. The limit can b
 setting the option =rewriter.max_iter=
 
 The notation =rewrite n t= where =n= is a positive number indicates that =t= must be applied
-exactly =t= times. Similarly, =rewrite n>t= is notation for at most =n= times.
+exactly =n= times. Similarly, =rewrite n>t= is notation for at most =n= times.
 
 A pattern =p= can be optionally provided to a rewriting step =t= using
 the notation ={p}t= .  It allows us to specify whether the rewrite
@@ -80,8 +80,8 @@ should be applied. This feature is particularly useful for rewrite
 rules such as commutativity =a + b = b + a= which may be applied to
 many different sub-terms. A pattern may contain placeholders =_=. In
 the following example, the pattern =b + _= instructs the =rewrite=
-tactic to apply commutativity to the first term that matches =b + _=
-where =_= represents an arbitrary term.
+tactic to apply commutativity to the first term that matches =b + _=,
+where =_= can be matched with an arbitrary term.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -132,7 +132,7 @@ end
 #+END_SRC
 
 We may also use =t at *= to indicate that all hypotheses and the goal should
-be rewritten using =t=. The tactic fails if none of them can be rewritten.
+be rewritten using =t=. The tactic step fails if none of them can be rewritten.
 The notation =t at * ⊢= applies =t= to all hypotheses. The character =⊢=
 is entered by typing =\|-=.
 #+BEGIN_SRC lean
@@ -152,7 +152,7 @@ The step =add_zero at *= rewrites the hypotheses =H₁=, =H₂= and the main goa
 using the =add_zero (x : nat) : x + 0 = x=, producing =a = 0=, =b = 0= and
 =a + b = 0= respectively.
 
-The =rewrite= tactic is not restrict to propositions. In the following example,
+The =rewrite= tactic is not restricted to propositions. In the following example,
 we use =rewrite H at v= to rewrite the hypothesis =v : vector A n= into
 =v : vector A 0=.
 #+BEGIN_SRC lean
@@ -170,8 +170,8 @@ end
 Given a rewrite =(t : l = r)=, by default, the tactic =rewrite t=
 locates a sub-term =s= which matches the left-hand-side =l=, and then
 replaces all occurrences of =s= with the corresponding
-right-hand-side. The notation =at {i_1 ... i_k}= can be used to restrict which occurrences of the sub-term =s=
-are replaced. For example, =rewrite t at {1 3}= specifies that only the first and third occurrences should be replaced.
+right-hand-side. The notation =at {i_1, ..., i_k}= can be used to restrict which occurrences of the sub-term =s=
+are replaced. For example, =rewrite t at {1, 3}= specifies that only the first and third occurrences should be replaced.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -179,16 +179,29 @@ open nat
 variables (f : nat → nat → nat → nat) (a b : nat)
 
 example (H₁ : a = b) (H₂ : f b a b = 0) : f a a a = 0 :=
-by rewrite ⟨H₁ at {1 3}, H₂⟩
+by rewrite ⟨H₁ at {1, 3}, H₂⟩
 -- END
 #+END_SRC
 
-Similarly, =rewrite t at H {1 3}= specifies that =t= must be applied
+Similarly, =rewrite t at H {1, 3}= specifies that =t= must be applied
 to hypothesis =H= and only the first and third occurrences must be replaced.
+
+You can also specify which occurrences should not be replaced using the notation
+=rewrite t at -{i_1, ..., i_k}=. Here is the previous example using this feature.
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables (f : nat → nat → nat → nat) (a b : nat)
+-- BEGIN
+example (H₁ : a = b) (H₂ : f b a b = 0) : f a a a = 0 :=
+by rewrite ⟨H₁ at -{2}, H₂⟩
+-- END
+#+END_SRC
 
 So far, we have used existing theorems/lemmas and hypotheses as rewriting rules.
 In both cases, the term =t= is just an identifier.
-The notation =rewrite (t)= can be used to use an arbitrary term =t= as rewriting rules.
+The notation =rewrite (t)= can be used to use an arbitrary term =t= as a rewriting rule.
 #+BEGIN_SRC lean
 import algebra.group
 open algebra
@@ -216,7 +229,7 @@ calc
 
 The =rewrite= tactic also supports reduction steps: =↑f=, =▸*= and =▸ t=.
 The step =↑f= unfolds =f= and performs beta and iota reduction. This step
-fails if there is not =f= to be unfolded. The step =▸*= just performs
+fails if there is no =f= to be unfolded. The step =▸*= just performs
 beta and iota reduction, and it never fails. Finally, =▸ t= tries to reduce
 the goal (or a given hypothesis) to =t=, and fails if it is not convertible to =t=.
 The following alternative ASCII notation is also supported =^f=, =>*=, => t=.
@@ -241,10 +254,13 @@ cases using the =rewrite= tactic. The base case is solved by simply applying
 reflexivity because =nil ++ t ++ u= and =nil ++ (t ++ u)= are definitionally
 equal. In the inductive step, we first reduce the goal
 =a :: s ++ t ++ u = a :: s ++ (t ++ u)= into =a :: (s ++ t ++ u) = a :: s ++ (t ++ u)=
-by applying the reduction step =▸ a :: (l ++ t ++ u) = _=. Note that, we have
-used a placeholder in the right-hand-side. The idea is to expose the term
+by applying the reduction step =▸ a :: (l ++ t ++ u) = _=.
+The basic idea is to expose the term
 =l ++ t ++ u= that can be rewritten using the inductive hypothesis
 =append_assoc (s t u : list A) : s ++ t ++ u = s ++ (t ++ u)=.
+Note that, we have used a placeholder =_= in the right-hand-side of this reduction step.
+This placeholder is unified with the right-hand-side of the main goal.
+By using this placeholder, you do not have to "copy" the goal's right-hand-side.
 
 #+BEGIN_SRC lean
 import data.list
@@ -262,7 +278,9 @@ append_assoc (a :: l) t u :=
 
 The =rewrite= tactic supports Type Classes. In the following example we
 use theorems from the =mul_zero_class= and =add_monoid= classes in
-an example for the =comm_ring= class.
+an example for the =comm_ring= class. The rewrite is acceptable because
+every =comm_ring= (commutative ring) is an instance of the classes
+=mul_zero_class= and =add_monoid=.
 
 #+BEGIN_SRC lean
 import algebra.ring
