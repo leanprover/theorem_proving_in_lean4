@@ -90,7 +90,7 @@ example (a b c : nat) : a + b + c = a + c + b :=
 begin
   rewrite [add.assoc, {b + _}add.comm, -add.assoc]
 end
---END
+-- END
 #+END_SRC
 In the example above, the first step rewrites =a + b + c= into =a + (b + c)=.
 Then, ={b + _}add.comm= applies commutativity to term =b + c=. Without the pattern
@@ -110,7 +110,7 @@ example (H : a + 0 = 0) : f a = f 0 :=
 begin
   rewrite [add_zero at H, H]
 end
---END
+-- END
 #+END_SRC
 The step =add_zero at H= rewrites the hypothesis =(H : a + 0 = 0)=
 into =a = 0=. Then, the "new" =(H : a = 0)= is used to rewrite the
@@ -128,7 +128,7 @@ begin
   rewrite add_zero at (H₁, H₂),
   rewrite [H₁, H₂]
 end
---END
+-- END
 #+END_SRC
 
 We may also use =t at *= to indicate that all hypotheses and the goal should
@@ -146,7 +146,7 @@ begin
   rewrite add_zero at *,
   rewrite [H₁, H₂]
 end
---END
+-- END
 #+END_SRC
 The step =add_zero at *= rewrites the hypotheses =H₁=, =H₂= and the main goal
 using the =add_zero (x : nat) : x + 0 = x=, producing =a = 0=, =b = 0= and
@@ -270,6 +270,6 @@ open algebra
 
 example {A : Type} [s : comm_ring A] (a b c : A) : a * 0 + 0 * b + c * 0 + 0 * a = 0 :=
 begin
-  rewrite [+mul_zero, +zero_mul, +add_zero] -- in rewrite rules, + is notation for one or more
+  rewrite [+mul_zero, +zero_mul, +add_zero]
 end
 #+END_SRC
