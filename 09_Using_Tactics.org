@@ -3,7 +3,261 @@
 
 * Using Tactics
 
-** Rewrite Tactic
+In this chapter, we describe an alterantive approach to constructing
+proofs, using /tactics/. A proof term is a representation of a
+mathematical proof; tactics are commands, or instructions, that
+describe how to build such a proof. Informally, we might begin a
+mathematical proof by saying "to prove the forward direction, unfold
+the definition, apply the previous lemma, and simplify." Just as these
+are instructions that tell the reader how to find the relevant proof,
+tactics are instructions that tell Lean how to construct a proof term.
+
+** Entering the Tactic Mode
+
+Conceptually, stating a theorem or introducing a =have= statement
+creates a goal, namely, the goal of constructing a term with the
+expected type. For example, the following creates the goal of
+constructing a term of type =p ∧ q ∧ p=, in a context with constants
+=p q : Prop=, =Hp : p= and =Hq : q=:
+#+BEGIN_SRC lean
+import logic
+
+theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+sorry
+#+END_SRC
+We can write this goal as follows:
+#+BEGIN_SRC text
+p : Prop, q : Prop, Hp : p, Hq : q ⊢ p ∧ q ∧ p
+#+END_SRC
+Indeed, if you replace the "sorry" by an underscore in the example
+above, Lean will report that it is exactly this goal that has been
+left unsolved.
+
+Ordinarily, we meet such a goal by writing an explicit term. But
+wherever a term is expected, Lean allows us to insert instead a =begin
+... end= block, followed by a sequence of commands, separated by
+commas. We can prove the theorem above in that way:
+#+BEGIN_SRC lean
+import logic
+
+-- BEGIN
+theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+begin
+  apply and.intro,
+  exact Hp,
+  apply and.intro,
+  exact Hq,
+  exact Hp
+end
+-- END
+#+END_SRC
+The =apply= tactic applies an expression, viewed as denoting a
+function with zero or more arguments. It unifies the conclusion with
+the expression in the current goal, and creates new goals for the
+remaining arguments, provided that no later arguments depend on
+them. In the example above, the command =apply and.intro= yields two
+subgoals:
+#+BEGIN_SRC text
+p : Prop,
+q : Prop,
+Hp : p,
+Hq : q
+⊢ p
+
+⊢ q ∧ p
+#+END_SRC
+For brevity, Lean only displays the context for the first goal, which
+is the one addressed by the next tactic command. The first goal is met
+with the command =exact Hp=. The =exact= command is just a variant of
+=apply= which signals that the expression given should fill the goal
+exactly. It is good form to use it in a tactic proof, since its
+failure signals that something has gone wrong; but otherwise =apply=
+would work just as well.
+
+You can see the resulting proof term with =print definition=:
+#+BEGIN_SRC lean
+import logic
+
+theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+begin
+  apply and.intro,
+  exact Hp,
+  apply and.intro,
+  exact Hq,
+  exact Hp
+end
+
+-- BEGIN
+print definition test
+-- END
+#+END_SRC
+
+Tactic commands can take compound expressions, not just single
+identifiers. The following is a shorter version of the preceding
+proof:
+#+BEGIN_SRC lean
+import logic
+
+-- BEGIN
+theorem test2 (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+begin
+  apply (and.intro Hp),
+  exact (and.intro Hq Hp)
+end
+-- END
+#+END_SRC
+Unsuprisingly, it produces exactly the same proof term.
+#+BEGIN_SRC lean
+import logic
+
+theorem test2 (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
+begin
+  apply (and.intro Hp),
+  exact (and.intro Hq Hp)
+end
+
+-- BEGIN
+print definition test2
+-- END
+#+END_SRC
+
+You can write a tactic script incrementally. If you run Lean on an
+incomplete tactic proof bracketed by =begin= and =end=, the system
+reports all the unsolved goals that remain. If you are running Lean
+with its Emacs interface, you can see this information by putting your
+cursor on the =end= symbol, which should be underlined. In the Emacs
+interface, there is another useful trick: if you open up the
+=*lean-info*= buffer in a separate window and put your cursor on the
+comma after a tactic command, Lean shows you the goals that remain
+open at that stage in the proof.
+
+** Basic Tactics
+
+In addition to =apply= and =exact=, another useful tactic is =intro=,
+which introduces a hypothesis. What follows is an example of an
+identity from propositional logic that we proved in Section [[Examples
+of Propositional Validities]], but now prove using tactics. We adopt the
+following convention regarding indentation: whenever a tactic
+introduces one or more additional subgoals, we indent another two
+spaces, until the additional subgoals are deleted.
+
+#+BEGIN_SRC lean
+import logic
+
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+    intro H,
+    apply (or.elim (and.elim_right H)),
+      intro Hq,
+      apply or.intro_left,
+      apply and.intro,
+        exact (and.elim_left H),
+      exact Hq,
+    intro Hr,
+    apply or.intro_right,
+    apply and.intro,
+    exact (and.elim_left H),
+    exact Hr,
+  intro H,
+  apply (or.elim H),
+    intro Hpq,
+    apply and.intro,
+      exact (and.elim_left Hpq),
+    apply or.intro_left,
+    exact (and.elim_right Hpq),
+  intro Hpr,
+  apply and.intro,
+    exact (and.elim_left Hpr),
+  apply or.intro_right,
+  exact (and.elim_right Hpr)
+end
+#+END_SRC
+
+A variant of =apply= called =fapply= is more aggressive in creating
+new subgoals for arguments. Here is an example of how it is used:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+example : ∃a : ℕ, a = a :=
+begin
+  fapply exists.intro,
+  exact nat.zero,
+  apply rfl
+end
+#+END_SRC
+The command =fapply exists.intro= creates two goals. The first is to
+provide a natural number, =a=, and the second is to prove that =a =
+a=. Notice that the second goal depends on the first; solving the
+first goal instantiates a metavariable in the second.
+
+Notice also that we could not write =exact 0= in the proof above,
+because =0= is a numeral that is coerced to a natural number. In the
+context of a tactic proof, expressions are elaborated "locally,"
+before being sent to the tactic command. When the tactic command is
+being processed, Lean does not have enough information to determine
+that =0= needs to be coerced. We can get around that by stating the
+type explicitly:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+-- BEGIN
+example : ∃a : ℕ, a = a :=
+begin
+  fapply exists.intro,
+  exact (typeof 0 : ℕ),
+  apply rfl
+end
+-- END
+#+END_SRC
+
+One thing that is nice about Lean's proof-writing syntax is that it is
+possible to mix "declarative" and "tactic-style" proofs, and pass
+between the two freely. For example, the tactics =apply= and =exact=
+expect arbitrary terms, which you can write using =have=, =show=,
+=obtains=, and so on. Conversely, when writing an aribtrary Lean term,
+you can always invoke the tactic mode by inserting a =begin ... end=
+block. In the next example, we use =show= within a tactic block to
+fulfill a goal by providing an explicit term.
+
+#+BEGIN_SRC lean
+import logic
+
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+    intro H,
+    apply (or.elim (and.elim_right H)),
+      intro Hq,
+      show (p ∧ q) ∨ (p ∧ r),
+        from or.inl (and.intro (and.elim_left H) Hq),
+    intro Hr,
+    show (p ∧ q) ∨ (p ∧ r),
+      from or.inr (and.intro (and.elim_left H) Hr),
+  intro H,
+  apply (or.elim H),
+    intro Hpq,
+    show p ∧ (q ∨ r), from
+      and.intro
+        (and.elim_left Hpq)
+        (or.inl (and.elim_right Hpq)),
+  intro Hpr,
+  show p ∧ (q ∨ r), from
+    and.intro
+      (and.elim_left Hpr)
+      (or.inr (and.elim_right Hpr))
+end
+#+END_SRC
+
+# TODO: add a longer list of tactics, including generalize.
+
+# TODO: is there a way of using "have" in a tactic proof?
+
+# TODO: need an example of how [visible] is used.
+
+** The Rewrite Tactic
 
 The =rewrite= tactic provide a basic mechanism for applying
 substitutions to goals and hypotheses. It is a simple and efficient
@@ -28,9 +282,10 @@ in the goal =f k = 0=.  Then, the second =rewrite= replace =f 0= with
 =0=. The =rewrite= tactic automatically closes any _trivial_ goal of
 the form =t = t=.
 
-Multiple rewrites can be combined using the notations =rewrite [t_1, ..., t_n]= or
-=rewrite ⟨t_1, ..., t_n⟩=. Both notations are just shorthands for =rewrite t_1, ..., rewrite t_n=.
-The previous example can be written as:
+Multiple rewrites can be combined using the notations =rewrite [t_1,
+..., t_n]= or =rewrite ⟨t_1, ..., t_n⟩=. Both notations are just
+shorthands for =rewrite t_1, ..., rewrite t_n=.  The previous example
+can be written as:
 #+BEGIN_SRC lean
 open nat
 variables (f : nat → nat) (k : nat)
@@ -55,8 +310,8 @@ end
 #+END_SRC
 The term =-H₁= instructs the =rewriter= to replace =b= with =a=.
 
-The notation =*t= instructs the rewriter to apply the rewrite =t= zero or more times,
-and =+t= one or more. Note that, =*t= never fails.
+The notation =*t= instructs the rewriter to apply the rewrite =t= zero
+or more times, and =+t= one or more. Note that, =*t= never fails.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -65,14 +320,17 @@ example (x y : nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
 by rewrite ⟨*mul.left_distrib, *mul.right_distrib, -add.assoc⟩
 #+END_SRC
 
-To avoid non-termination, the =rewriter= tactic has a limit on the maximum number of
-iterations performed by rewriting steps of the form =*t= and =+t=. For example, without this limit,
-the tactic =rewrite *add.comm=  would make Lean diverge on any goal that contains a sub-term of
-the form =t + s= since commutativity would be always applicable. The limit can be modified by
-setting the option =rewriter.max_iter=
+To avoid non-termination, the =rewriter= tactic has a limit on the
+maximum number of iterations performed by rewriting steps of the form
+=*t= and =+t=. For example, without this limit, the tactic =rewrite
+*add.comm= would make Lean diverge on any goal that contains a
+sub-term of the form =t + s= since commutativity would be always
+applicable. The limit can be modified by setting the option
+=rewriter.max_iter=
 
-The notation =rewrite n t= where =n= is a positive number indicates that =t= must be applied
-exactly =n= times. Similarly, =rewrite n>t= is notation for at most =n= times.
+The notation =rewrite n t= where =n= is a positive number indicates
+that =t= must be applied exactly =n= times. Similarly, =rewrite n>t=
+is notation for at most =n= times.
 
 A pattern =p= can be optionally provided to a rewriting step =t= using
 the notation ={p}t= .  It allows us to specify whether the rewrite
@@ -92,14 +350,14 @@ begin
 end
 -- END
 #+END_SRC
-In the example above, the first step rewrites =a + b + c= into =a + (b + c)=.
-Then, ={b + _}add.comm= applies commutativity to term =b + c=. Without the pattern
-={b + _}=, the tactic would rewrite =a + (b + c)= into =(b + c) + a=.
-Finally, =-add.assoc= applies associativity in the "reverse direction" rewriting
-=a + (c + b)= into =a + c + b=.
+In the example above, the first step rewrites =a + b + c= into =a +
+(b + c)=.  Then, ={b + _}add.comm= applies commutativity to term =b +
+c=. Without the pattern ={b + _}=, the tactic would rewrite =a + (b +
+c)= into =(b + c) + a=.  Finally, =-add.assoc= applies associativity
+in the "reverse direction" rewriting =a + (c + b)= into =a + c + b=.
 
-By default, the tactic affects only the goal. The notation =t at H= applies the rewrite =t= at
-hypothesis =H=.
+By default, the tactic affects only the goal. The notation =t at H=
+applies the rewrite =t= at hypothesis =H=.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -152,9 +410,9 @@ The step =add_zero at *= rewrites the hypotheses =H₁=, =H₂= and the main goa
 using the =add_zero (x : nat) : x + 0 = x=, producing =a = 0=, =b = 0= and
 =a + b = 0= respectively.
 
-The =rewrite= tactic is not restricted to propositions. In the following example,
-we use =rewrite H at v= to rewrite the hypothesis =v : vector A n= into
-=v : vector A 0=.
+The =rewrite= tactic is not restricted to propositions. In the
+following example, we use =rewrite H at v= to rewrite the hypothesis
+=v : vector A n= into =v : vector A 0=.
 #+BEGIN_SRC lean
 import data.vector
 open nat
@@ -170,8 +428,10 @@ end
 Given a rewrite =(t : l = r)=, by default, the tactic =rewrite t=
 locates a sub-term =s= which matches the left-hand-side =l=, and then
 replaces all occurrences of =s= with the corresponding
-right-hand-side. The notation =at {i_1, ..., i_k}= can be used to restrict which occurrences of the sub-term =s=
-are replaced. For example, =rewrite t at {1, 3}= specifies that only the first and third occurrences should be replaced.
+right-hand-side. The notation =at {i_1, ..., i_k}= can be used to
+restrict which occurrences of the sub-term =s= are replaced. For
+example, =rewrite t at {1, 3}= specifies that only the first and third
+occurrences should be replaced.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -186,8 +446,9 @@ by rewrite ⟨H₁ at {1, 3}, H₂⟩
 Similarly, =rewrite t at H {1, 3}= specifies that =t= must be applied
 to hypothesis =H= and only the first and third occurrences must be replaced.
 
-You can also specify which occurrences should not be replaced using the notation
-=rewrite t at -{i_1, ..., i_k}=. Here is the previous example using this feature.
+You can also specify which occurrences should not be replaced using
+the notation =rewrite t at -{i_1, ..., i_k}=. Here is the previous
+example using this feature.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -199,9 +460,10 @@ by rewrite ⟨H₁ at -{2}, H₂⟩
 -- END
 #+END_SRC
 
-So far, we have used existing theorems/lemmas and hypotheses as rewriting rules.
-In both cases, the term =t= is just an identifier.
-The notation =rewrite (t)= can be used to use an arbitrary term =t= as a rewriting rule.
+So far, we have used existing theorems/lemmas and hypotheses as
+rewriting rules.  In both cases, the term =t= is just an identifier.
+The notation =rewrite (t)= can be used to use an arbitrary term =t= as
+a rewriting rule.
 #+BEGIN_SRC lean
 import algebra.group
 open algebra
@@ -285,17 +547,18 @@ end
 
 Here is another example: given any type =A=, we show that the =list A=
 append operation =s ++ t= is associative. We discharge the inductive
-cases using the =rewrite= tactic. The base case is solved by simply applying
-reflexivity because =nil ++ t ++ u= and =nil ++ (t ++ u)= are definitionally
-equal. In the inductive step, we first reduce the goal
-=a :: s ++ t ++ u = a :: s ++ (t ++ u)= into =a :: (s ++ t ++ u) = a :: s ++ (t ++ u)=
-by applying the reduction step =▸ a :: (l ++ t ++ u) = _=.
-The basic idea is to expose the term
-=l ++ t ++ u= that can be rewritten using the inductive hypothesis
-=append_assoc (s t u : list A) : s ++ t ++ u = s ++ (t ++ u)=.
-Note that, we have used a placeholder =_= in the right-hand-side of this reduction step.
-This placeholder is unified with the right-hand-side of the main goal.
-By using this placeholder, you do not have to "copy" the goal's right-hand-side.
+cases using the =rewrite= tactic. The base case is solved by simply
+applying reflexivity because =nil ++ t ++ u= and =nil ++ (t ++ u)= are
+definitionally equal. In the inductive step, we first reduce the goal
+=a :: s ++ t ++ u = a :: s ++ (t ++ u)= into =a :: (s ++ t ++ u) =
+a :: s ++ (t ++ u)= by applying the reduction step =▸ a :: (l ++ t ++
+u) = _=.  The basic idea is to expose the term =l ++ t ++ u= that can
+be rewritten using the inductive hypothesis =append_assoc (s t u :
+list A) : s ++ t ++ u = s ++ (t ++ u)=.  Note that, we have used a
+placeholder =_= in the right-hand-side of this reduction step.  This
+placeholder is unified with the right-hand-side of the main goal.  By
+using this placeholder, you do not have to "copy" the goal's
+right-hand-side.
 
 #+BEGIN_SRC lean
 import data.list
@@ -311,11 +574,11 @@ append_assoc (a :: l) t u :=
   end
 #+END_SRC
 
-The =rewrite= tactic supports Type Classes. In the following example we
-use theorems from the =mul_zero_class= and =add_monoid= classes in
-an example for the =comm_ring= class. The rewrite is acceptable because
-every =comm_ring= (commutative ring) is an instance of the classes
-=mul_zero_class= and =add_monoid=.
+The =rewrite= tactic supports type classes. In the following example
+we use theorems from the =mul_zero_class= and =add_monoid= classes in
+an example for the =comm_ring= class. The rewrite is acceptable
+because every =comm_ring= (commutative ring) is an instance of the
+classes =mul_zero_class= and =add_monoid=.
 
 #+BEGIN_SRC lean
 import algebra.ring
