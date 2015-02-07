@@ -227,12 +227,14 @@ calc
 -- END
 #+END_SRC
 
-The =rewrite= tactic also supports reduction steps: =↑f=, =▸*= and =▸ t=.
-The step =↑f= unfolds =f= and performs beta and iota reduction. This step
-fails if there is no =f= to be unfolded. The step =▸*= just performs
-beta and iota reduction, and it never fails. Finally, =▸ t= tries to reduce
+The =rewrite= tactic also supports reduction steps: =↑f=, =▸*=, =↓ t=, and =▸ t=.
+The step =↑f= unfolds =f= and performs beta/iota reduction and simplify projections.
+This step fails if there is no =f= to be unfolded. The step =▸*= is similar to
+=↑f=, but does not take a constant to unfold as argument, therefore it never fails.
+The _fold_ step =↓ t= unfolds the head symbol of =t=, then search for the result in the goal
+(or a given hypothesis), and replaces any match with =t=. Finally, =▸ t= tries to reduce
 the goal (or a given hypothesis) to =t=, and fails if it is not convertible to =t=.
-The following alternative ASCII notation is also supported =^f=, =>*=, => t=.
+The following alternative ASCII notation is also supported =^f=, =>*=, =<D t=, => t=.
 
 #+BEGIN_SRC lean
 import data.nat
@@ -247,6 +249,39 @@ by rewrite ⟨↑double at H1, H1, H3⟩
 -- END
 #+END_SRC
 The step =↑double at H1= unfolds =double= in the hypothesis =H1=.
+The notation =rewrite ↑{f_1, ..., f_n}= is shorthand for
+=rewrite [↑f_1, ..., ↑f_n]=
+
+The tactic =esimp= is a shorthand for =rewrite ▸*=. Here are two simple examples:
+#+BEGIN_SRC lean
+open sigma nat
+
+example (x y : nat) (H : (fun (a : nat), pr1 ⟨a, y⟩) x = 0) : x = 0 :=
+begin
+  esimp at H,
+  exact H
+end
+
+example (x y : nat) (H : x = 0) : (fun (a : nat), pr1 ⟨a, y⟩) x = 0 :=
+begin
+  esimp,
+  exact H
+end
+#+END_SRC
+
+Here is an example where the _fold_ step is used to replace =a + 1= with =f a=
+in the main goal.
+#+BEGIN_SRC lean
+open nat
+
+definition foo [irreducible] (x : nat) := x + 1
+
+example (a b : nat) (H : foo a = b) : a + 1 = b :=
+begin
+  rewrite ↓foo a,
+  exact H
+end
+#+END_SRC
 
 Here is another example: given any type =A=, we show that the =list A=
 append operation =s ++ t= is associative. We discharge the inductive
