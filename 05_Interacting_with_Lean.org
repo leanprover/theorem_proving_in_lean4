@@ -12,6 +12,9 @@ this chapter, we take a break from the mechanics of type theory to
 explore some pragmatic aspects of interacting with Lean.
 
 ** Displaying Information
+:PROPERTIES:
+  :CUSTOM_ID: Displaying_Information
+:END:
 
 There are a number of ways in which you can query Lean for information
 about its current state and the objects and theorems that are
