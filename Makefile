@@ -72,7 +72,7 @@ install-watchman:
 pygments-main: install-pygments
 
 install-pygments:
-	if [ ! -d pygments-main ] ; then hg clone https://bitbucket.org/soonhok/pygments-main && cd pygments-main && sudo python setup.py install; fi
+	if [ ! -d pygments-main ] ; then hg clone https://bitbucket.org/soonhok/pygments-main && cd pygments-main && python setup.py build; fi
 
 test:
 	for ORG in $(ORGS); do ./test.sh $(LEAN_BIN) $$ORG || exit 1; done
