@@ -1187,7 +1187,7 @@
 \newcommand{\listoflistingscaption}{List of Listings}
 \providecommand{\listoflistings}{\listof{listing}{\listoflistingscaption}}
 \fi
-\AtEndOfPackage{%
+\AtEndPreamble{%
   \ifthenelse{\boolean{minted@draft}}{}{%
     \ifnum\pdf@shellescape=1\relax\else
       \PackageError{minted}%
@@ -1196,7 +1196,7 @@
        {Pass the -shell-escape flag to LaTeX. Refer to the minted.sty
         documentation for more information.}%
     \fi
-    \TestAppExists{pygmentize}
+    \TestAppExists{\MintedPygmentize}
     \ifAppExists\else
       \PackageError{minted}%
        {You must have `pygmentize' installed
