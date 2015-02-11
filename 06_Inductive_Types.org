@@ -163,9 +163,18 @@ weekday.cases_on d 1 2 3 4 5 6 7
 -- END
 #+END_SRC
 
-We can put the =number_of_day= function in the =weekday=
-namespace and use a shorter name, and use just =cases_on= instead
-of =weekday.cases_on=:
+It is often useful to group definitions and theorems related to a
+structure in a namespace with the same name. For example, we can put
+the =number_of_day= function in the =weekday= namespace. We are then
+allowed to use the shorter name when we open the namespace. 
+
+The names =rec_on=, =cases_on=, =induction_on=, and so on are
+generated automatically, and they are /protected/ to avoid clashes; in
+other words, those names are not shorted by default when the namespace
+is open. You can explicitly declare the shorter identifiers as
+abbreviations at any time, however. Or, you can "unprotect" them using 
+the =renaming= option when you open a namespace.
+
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -181,11 +190,20 @@ saturday : weekday
 
 -- BEGIN
 namespace weekday
-  definition number (d : weekday) : nat :=
+  local abbreviation cases_on := @weekday.cases_on
+
+  definition number_of_day (d : weekday) : nat :=
   cases_on d 1 2 3 4 5 6 7
 end weekday
 
-eval weekday.number weekday.sunday
+eval weekday.number_of_day weekday.sunday
+
+section
+  open weekday (renaming cases_on → cases_on)
+
+  eval number_of_day sunday
+  check cases_on
+end
 -- END
 #+END_SRC
 In the same vein, we can define functions from =weekday= to =weekday=:
@@ -202,10 +220,10 @@ saturday : weekday
 -- BEGIN
 namespace weekday
   definition next (d : weekday) : weekday :=
-  cases_on d monday tuesday wednesday thursday friday saturday sunday
+  weekday.cases_on d monday tuesday wednesday thursday friday saturday sunday
 
   definition previous (d : weekday) : weekday :=
-  cases_on d saturday sunday monday tuesday wednesday thursday friday
+  weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
   eval next (next tuesday)
   eval next (previous tuesday)
@@ -231,10 +249,10 @@ saturday : weekday
 
 namespace weekday
   definition next (d : weekday) : weekday :=
-  cases_on d monday tuesday wednesday thursday friday saturday sunday
+  weekday.cases_on d monday tuesday wednesday thursday friday saturday sunday
 
   definition previous (d : weekday) : weekday :=
-  cases_on d saturday sunday monday tuesday wednesday thursday friday
+  weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
 -- BEGIN
   theorem next_previous (d: weekday) : next (previous d) = d :=
@@ -722,7 +740,7 @@ succ : nat → nat
 namespace nat
 
 definition add (m n : nat) : nat :=
-rec_on n m (fun n add_m_n, succ add_m_n)
+nat.rec_on n m (fun n add_m_n, succ add_m_n)
 
 -- try it out
 eval add (succ zero) (succ (succ zero))
@@ -746,7 +764,7 @@ succ : nat → nat
 namespace nat
 
 definition add (m n : nat) : nat :=
-rec_on n m (fun n add_m_n, succ add_m_n)
+nat.rec_on n m (fun n add_m_n, succ add_m_n)
 -- BEGIN
 notation 0 := zero
 infix `+` := add
@@ -775,7 +793,7 @@ succ : nat → nat
 namespace nat
 
 definition add (m n : nat) : nat :=
-rec_on n m (fun n add_m_n, succ add_m_n)
+nat.rec_on n m (fun n add_m_n, succ add_m_n)
 
 notation 0 := zero
 infix `+` := add
@@ -783,6 +801,8 @@ infix `+` := add
 theorem add_zero (m : nat) : m + 0 = m := rfl
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
 -- BEGIN
+local abbreviation induction_on := @nat.induction_on
+
 theorem zero_add (n : nat) : 0 + n = n :=
 induction_on n
   (show 0 + 0 = 0, from rfl)
@@ -819,13 +839,15 @@ succ : nat → nat
 namespace nat
 
 definition add (m n : nat) : nat :=
-rec_on n m (fun n add_m_n, succ add_m_n)
+nat.rec_on n m (fun n add_m_n, succ add_m_n)
 
 notation 0 := zero
 infix `+` := add
 
 theorem add_zero (m : nat) : m + 0 = m := rfl
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
+
+local abbreviation induction_on := @nat.induction_on
 
 theorem zero_add (n : nat) : 0 + n = n :=
 induction_on n
@@ -913,13 +935,15 @@ succ : nat → nat
 namespace nat
 
 definition add (m n : nat) : nat :=
-rec_on n m (fun n add_m_n, succ add_m_n)
+nat.rec_on n m (fun n add_m_n, succ add_m_n)
 
 notation 0 := zero
 infix `+` := add
 
 theorem add_zero (m : nat) : m + 0 = m := rfl
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
+
+local abbreviation induction_on := @nat.induction_on
 
 theorem zero_add (n : nat) : 0 + n = n :=
 induction_on n
@@ -963,13 +987,15 @@ succ : nat → nat
 namespace nat
 
 definition add (m n : nat) : nat :=
-rec_on n m (fun n add_m_n, succ add_m_n)
+nat.rec_on n m (fun n add_m_n, succ add_m_n)
 
 notation 0 := zero
 infix `+` := add
 
 theorem add_zero (m : nat) : m + 0 = m := rfl
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
+
+local abbreviation induction_on := @nat.induction_on
 
 theorem zero_add (n : nat) : 0 + n = n :=
 induction_on n
@@ -1018,7 +1044,7 @@ succ : nat → nat
 namespace nat
 
 definition add (m n : nat) : nat :=
-rec_on n m (fun n add_m_n, succ add_m_n)
+nat.rec_on n m (fun n add_m_n, succ add_m_n)
 
 notation 0 := zero
 infix `+` := add
@@ -1026,6 +1052,8 @@ infix `+` := add
 theorem add_zero (m : nat) : m + 0 = m := rfl
 
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
+
+local abbreviation induction_on := @nat.induction_on
 
 theorem zero_add (n : nat) : 0 + n = n :=
 induction_on n
@@ -1081,7 +1109,7 @@ theorem mul_assoc (m n k : nat) : m * n * k = m * (n * k) := sorry
 -- hint: you will need to prove an auxiliary statement
 theorem mul_comm (m n : nat) : m * n = n * m := sorry
 
-definition pred (n : nat) : nat := cases_on n zero (fun n, n)
+definition pred (n : nat) : nat := nat.cases_on n zero (fun n, n)
 
 theorem pred_succ (n : nat) : pred (succ n) = n := sorry
 
@@ -1111,7 +1139,7 @@ variable {A : Type}
 notation h :: t  := cons h t
 
 definition append (s t : list A) : list A :=
-rec t (λx l u, x::u) s
+list.rec t (λx l u, x::u) s
 
 notation s ++ t := append s t
 
@@ -1177,7 +1205,7 @@ variable {A : Type}
 notation h :: t  := cons h t
 
 definition append (s t : list A) : list A :=
-rec t (λx l u, x::u) s
+list.rec_on s t (λx l u, x::u)
 
 notation s ++ t := append s t
 
@@ -1473,12 +1501,12 @@ kernel (i.e., the /trusted code base/).  We say it is trusted because
 a bug in the kernel may compromise the soundness of the whole system.
 
 When we define an inductive datatype, Lean automatically generates
-many useful definitions. We have already seen some of them:
-=rec_on=, =induction_on=, and =cases_on=. The module =M= that generates
-these definitions is *not* part of the trusted code base.
-A bug in =M= does not compromise the soundness of the whole system, since the kernel
-would caught it when type checking any incorrectly generated definition
-produced by =M=.
+many useful definitions. We have already seen some of them: =rec_on=,
+=induction_on=, and =cases_on=. The module =M= that generates these
+definitions is *not* part of the trusted code base.  A bug in =M= does
+not compromise the soundness of the whole system, since the kernel
+will catch such errors when type checking any incorrectly generated
+definition produced by =M=.
 
 As described before, =rec_on= just uses its arguments in a more convenient
 order than =rec=. In =rec_on=, the major premise is provided before the minor
@@ -1520,15 +1548,18 @@ definition cases_on {C : nat → Prop} (n : nat)
 nat.rec_on n fz (fun (a : nat) (r : C a), fs a)
 #+END_SRC
 
-For any inductive datatype, which is not a proposition, we can show that its constructors are
-injective and disjoint. For =nat=, we can show that =succ a = succ b → a = b= (injectivity), and
-=succ a ≠ zero= (disjointness). Both proofs can be performed using the automatically generated
-definition =nat.no_confusion=. For any inductive datatype =I= (which is not a proposition), Lean
-automatically generates =I.no_confusion=. Given a motive =C= and an equality =h : c₁ t = c₂ s=,
-where =c₁= and =c₂= are two distinct =I= constructors, =I.no_confusion= constructs an inhabitant of =C=.
-This is essentially the /principle of explosion/: anything follows from a contradiction.
-Given =h : c t = c s= (same constructor on both sides) and =t = s → C=, =I.no_confusion= also constructs
-an inhabitant of =C=.
+For any inductive datatype, which is not a proposition, we can show
+that its constructors are injective and disjoint. For =nat=, we can
+show that =succ a = succ b → a = b= (injectivity), and =succ a ≠ zero=
+(disjointness). Both proofs can be performed using the automatically
+generated definition =nat.no_confusion=. For any inductive datatype
+=I= (which is not a proposition), Lean automatically generates
+=I.no_confusion=. Given a motive =C= and an equality =h : c₁ t = c₂
+s=, where =c₁= and =c₂= are two distinct =I= constructors,
+=I.no_confusion= constructs an inhabitant of =C=.  This is essentially
+the /principle of explosion/: anything follows from a contradiction.
+Given =h : c t = c s= (same constructor on both sides) and =t = s →
+C=, =I.no_confusion= also constructs an inhabitant of =C=.
 
 The type of =no_confusion= is based on the auxiliary definition =no_confusion_type=.
 Note also that the motive is an implicit argument in =no_confusion=.
@@ -1609,5 +1640,6 @@ eval sigma.no_confusion_type C (sigma.mk a1 b1) (sigma.mk a2 b2)
 
 Lean also generates the predicate transformer =below= and the recursor
 =brec_on=.  These constructions are rarely (never) used directly by
-users. They are auxiliary definitions used by the recursive equation compiler we describe in
-the next chapter. Thus, we do not cover them in this document.
+users. They are auxiliary definitions used by the recursive equation
+compiler we will describe in the next chapter, and we will not discuss
+them further here.

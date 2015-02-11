@@ -850,7 +850,7 @@ command:
 #+BEGIN_SRC lean
 import data.nat
 
-open [notation] nat
+open [notations] nat
 open [coercions] nat
 open [classes] nat
 #+END_SRC
