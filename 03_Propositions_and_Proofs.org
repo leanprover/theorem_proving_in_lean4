@@ -236,7 +236,21 @@ show p, from Hp
 Adding such extra information can improve the clarity of a proof and
 help detect errors when writing a proof. The =show= command does
 nothing more than annotate the type, and, internally, all the
-presentations of =t1= that we have seen produce the same term.
+presentations of =t1= that we have seen produce the same term. Lean
+also allows you to use the alternative syntax =lemma= and =corollary=
+instead of theorem:
+#+BEGIN_SRC lean
+import logic
+
+constants p q : Prop
+
+-- BEGIN
+lemma t1 : p → q → p :=
+assume Hp : p,
+assume Hq : q,
+show p, from Hp
+-- END
+#+END_SRC
 
 As with ordinary definitions, one can move the lambda-abstracted
 variables to the left of the colon:
@@ -318,9 +332,6 @@ s= holds.
 As another example, let us consider the composition function discussed
 in the last chapter, now with propositions instead of types.
 #+BEGIN_SRC lean
-import logic
-
--- BEGIN
 section
   variables p q r s : Prop
 
@@ -328,9 +339,23 @@ section
   assume H3 : p,
   show r, from H1 (H2 H3)
 end
--- END
 #+END_SRC
 As a theorem of propositional logic, what does =t2= say?
+
+Lean allows alternative the alterative syntax =premise= and =premises=
+for =variable= and =variables=. This makes sense, of course, for
+variables whose type is an element of =Prop=. The following definition
+of =t2= has the same net effect as the preceding one.
+#+BEGIN_SRC lean
+section
+  variables p q r s : Prop
+  premises (H1 : q → r) (H2 : p → q)
+
+  theorem t2 : p → r :=
+  assume H3 : p,
+  show r, from H1 (H2 H3)
+end
+#+END_SRC
 
 ** Propositional Logic
 

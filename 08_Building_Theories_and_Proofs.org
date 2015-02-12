@@ -775,6 +775,18 @@ binary relation you want to reason about in the section. If you want
 to apply your theorems to arbitrary binary relations within the
 section, make =R= a variable.
 
+Notice the Lean is consistent when it comes to providing alternative
+syntax for =Prop=-valued variants of declarations:
+
+| Type      | Prop       |
+|-----------+------------+
+| constant  | axiom      |
+| variable  | premise    |
+| parameter | hypothesis |
+| take      | assume     |
+
+Lean also allows you to use =conjecture= in place of =hypothesis=.
+
 Lean has another sectioning construct, the =context= command, which is
 similar to the =section= command. The difference has to do with the
 way that meta-theoretic data is handled. In a =section=, you can
