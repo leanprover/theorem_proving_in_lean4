@@ -71,7 +71,7 @@ p, ul, ol {
     line-height: 24px;
 }
 pre {
-    font-family: 'freemono-lean';
+    font-family: 'FreeMono-lean', 'DejaVuSansMono-lean';
     border:0;
     box-shadow:none;
     white-space: pre-wrap;
