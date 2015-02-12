@@ -484,9 +484,9 @@ Incidentally, outside of Emacs, from a terminal window, you can type
 =linja= anywhere in your project folder to ensure that all your files
 have compiled =.olean= counterparts, and that they are up to date.
 
-** Notation, Overloads, and Coercions
+** Notation and Abbreviations
 :PROPERTIES:
-  :CUSTOM_ID: Notation_Overloads_and_Coercions
+  :CUSTOM_ID: Notation_and_Abbreviations
 :END:
 
 Lean's parser is an instance of a Pratt parser, a non-backtracking
@@ -527,7 +527,7 @@ instead.
 
 If you declare these notations in a namespace, the notation is only
 operant when the namespace is open. You can declare temporary notation
-using the keyword "[local]", in which case the notation is operant
+using the keyword =local=, in which case the notation is operant
 only in the current file.
 #+BEGIN_SRC lean
 import data.nat
@@ -548,7 +548,23 @@ https://github.com/leanprover/lean/blob/master/library/init/reserved_notation.le
 You are welcome to overload these symbols for your own use, but you
 cannot change their right-binding power.
 
-# TODO: describe [parsing-only] option, etc.
+Remember that you can direct the pretty-printer to suppress notation
+with the command =set_option pp.notation false=. You can also declare
+notation to be used for input purposes only with the =[parsing-only]=
+attribute:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+notation [parsing-only] `[` a `**` b `]` := a * b + 1
+
+section
+  variables a b : ℕ
+  check [a ** b]
+end
+#+END_SRC
+The output of the =check= command displays the expression as =a * b +
+1=. 
 
 Lean also provides mechanisms for iterated notation, such as =[a, b,
 c, d, e]= to denote a list with the indicated elements. See the
@@ -569,6 +585,40 @@ section
   print notation +
 end
 #+END_SRC
+
+Lean provides an =abbreviation= mechanism that is similar to the
+notation mechanism.
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+abbreviation double (x : ℕ) : ℕ := x + x
+
+theorem foo (x : ℕ) : double x = x + x := rfl
+check foo
+#+END_SRC
+An abbreviation is a transient form of definition that is expanded as
+soon as an expression is processed. As with notation, however, the
+pretty-printer re-constitutes the expression and prints the type of
+=foo= as =double x = x + x=. As with notation, you can designate
+an abbreviation to be =[parsing-only]=, and you can direct the
+pretty-printer to suppress their use with the command =set_option
+pp.notation false=. Finally, again as with notation, you can limit
+the scope of an abbreviations by prefixing the declarations with the
+=local= modifier.
+
+As the name suggests, abbreviations are intended to be used as
+convenient shorthand for long expressions. One common use is to
+abbreviate a long identifier:
+#+BEGIN_SRC lean
+definition my_long_identity_function {A : Type} (x : A) : A := x
+local abbreviation my_id := @my_long_identity_function
+#+END_SRC
+
+** Coercions
+:PROPERTIES:
+  :CUSTOM_ID: Coercions
+:END:
 
 Lean also provides mechanisms to automatically insert /coercions/
 between types. These are user-defined functions between datatypes that

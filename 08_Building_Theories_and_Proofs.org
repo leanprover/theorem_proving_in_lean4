@@ -12,10 +12,10 @@ proofs.
   :CUSTOM_ID: More_on_Coercions
 :END:
 
-In Section [[file:05_Interacting_with_Lean.org::#Notation_Overloads_and_Coercions][Notations, Overloads, and Coercions]], we discussed coercions
-briefly, and noted that there are restrictions on the types that one
-can coerce from and to. Now that we have discussed inductive types, we
-can be more precise.
+In Section [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]], we discussed coercions briefly, and noted that
+there are restrictions on the types that one can coerce from and
+to. Now that we have discussed inductive types, we can be more
+precise.
 
 The most basic type of coercion maps elements of one type to
 another. For example, a coercion from =nat= to =int= allows us to view
@@ -51,7 +51,7 @@ for some =y1 ... ym=. For example, if =F= is =list : ΠA : Type, Type=,
 =G= is =set ΠA : Type, Type=, then a coercion =c : ΠA : Type, list A →
 set A= allows us to pass an argument of type =list T= for some =T= any
 time an element of type =set T= is expected. These are the types of
-coercions we considered in Section [[file:05_Interacting_with_Lean.org::#Notation_Overloads_and_Coercions][Notations, Overloads, and Coercions]]
+coercions we considered in Section [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]].
 
 Lean imposes the restriction that the source and target families have
 to be families of inductive types, as defined in Chapter [[file:06_Inductive_Types.org::#Inductive_Types][Inductive
@@ -227,9 +227,8 @@ local attribute morphism.mor [coercion]
 #+END_SRC
 You can also declare a persistent coercion by assigning the attribute
 when you define the function initially, as described in Section
-[[Notation, Overloads, and Coercions]]. Coercions that are defined in a
-namespace "live" in that namespace, and are made active when the
-namespace is opened.
+[[file:05_Interacting_with_Lean.org::#Coercions][Coercions]]. Coercions that are defined in a namespace "live" in that
+namespace, and are made active when the namespace is opened.
 
 Remember also that you can instruct Lean's pretty-printer to show
 coercions with =set_option=, and you can print all the coercions in
@@ -845,18 +844,54 @@ check mod_trans
 Recall from Section [[Namespaces and Sections]] that namespaces
 not only package shorter names for theorems and identifiers, but also
 things like notation, coercions, classes, rewrite rules, and so
-on. These can be opened independently using modifiers to the =open=
+on. You can ask Lean to display a list of these "metaclasses":
+#+BEGIN_SRC lean
+print metaclasses
+#+END_SRC
+These can be opened independently using modifiers to the =open=
 command:
 #+BEGIN_SRC lean
 import data.nat
 
+open [declarations] nat
 open [notations] nat
 open [coercions] nat
 open [classes] nat
+open [abbreviations] nat
+open [tactic-hints] nat
+open [reduce-hints] nat
 #+END_SRC
 For example, =open [coercions] nat= makes the coercions in the
-namespace =nat= available (and nothing else). You can also import
-only certain theorems by providing an explicit list in parentheses:
+namespace =nat= available (and nothing else). You can multiple
+metaclasses on one line:
+#+BEGIN_SRC lean
+import data.nat
+
+open [declarations] [notations] [coercions] nat
+#+END_SRC
+You can also open a namespace while /excluding certain
+metaclasses. For example,
+#+BEGIN_SRC lean
+import data.nat
+
+open - [notations] [coercions] nat
+#+END_SRC
+imports all metaclasses but =[notations]= and =[coercions]=. Remember
+also that you can limit the scope of an =open= command by putting it
+in a section. For example,
+#+BEGIN_SRC lean
+import data.nat
+
+section
+  open [notations] nat
+
+  /- ... -/
+end
+#+END_SRC
+imports notation from nat only within the section.
+
+You can also import only certain theorems by providing an explicit
+list in parentheses:
 #+BEGIN_SRC lean
 import data.nat
 open nat (add add.assoc add.comm)
@@ -892,7 +927,29 @@ check foo.bar  -- "check bar" yields an error
 #+END_SRC
 In the Lean library, this is used for common names. For example, we
 want to write =nat.rec_on=, =int.rec_on=, and =list.rec_on=, even when
-all of these namespaces are open, to avoid ambiguity and overloading.
+all of these namespaces are open, to avoid ambiguity and
+overloading. You can always define a local abbreviation to use the
+shorter name:
+#+BEGIN_SRC lean
+import data.list
+open list
+local abbreviation induction_on := @list.induction_on
+check induction_on
+#+END_SRC
+Alternatively, you can "unprotect" the definition by renaming it when
+you open the namespace:
+#+BEGIN_SRC lean
+import data.list
+open list (renaming induction_on → induction_on)
+check induction_on
+#+END_SRC
+As yet a third alternative, you obtain an alias for the shorter name
+by opening the namespace for that identifier only:
+#+BEGIN_SRC lean
+import data.list
+open list (induction_on)
+check induction_on
+#+END_SRC
 
 You may find that at times you want to cobble together a namespace,
 with notation, rewrite rules, or whatever, from existing
@@ -937,5 +994,5 @@ private definition inc (x : nat) := x + 1
 private theorem inc_eq_succ (x : nat) : succ x = inc x :=
   rfl
 #+END_SRC
-In this example, the definition inc and theorem =inc_eq_succ= are not
+In this example, the definition =inc= and theorem =inc_eq_succ= are not
 visible or accessible in modules that import this one.
