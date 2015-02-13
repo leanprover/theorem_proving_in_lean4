@@ -91,7 +91,7 @@ This book is designed to teach you to develop and verify proofs in
 Lean. There are many aspects to this, some of which are not specific
 to Lean at all. To start with, we will explain the logical system that
 underlies Lean's standard library, a system known as the /Calculus of
-Inductive Constructions/, or /CIC/. The CIC is a version of /dependent
+Inductive Constructions/\cite{Coquand1988}, or /CIC/. The CIC is a version of /dependent
 type theory/ that is powerful enough to prove almost any conventional
 mathematical theorem, and expressive enough to do it in a natural
 way. We will explain not only how to define mathematical objects and
