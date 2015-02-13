@@ -9,6 +9,7 @@
 (require 's)
 (require 'f)
 (require 'org)
+(require 'ox-bibtex)
 (require 'dash)
 (require 'dash-functional)
 (add-to-list 'load-path (f-join working-dir "elisp"))

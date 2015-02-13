@@ -17,14 +17,16 @@ htmls: $(HTMLS)
 tutorial.org: $(ORGS)
 	./merge_chapters.sh
 
-%.html: %.org .cask elisp/org-html-export.el header/header.html.org
+%.html: %.org .cask elisp/org-html-export.el header/header.html.org footer/bib.html.org lean.bib
 	@if [ ! -f ~/.cask/bin/cask ]; then echo "Cask Not Found. Please do 'make install-cask' first"; exit 1; fi
 	cat header/header.html.org $< > $(TMPDIR)/$<.temp.org
+	(grep "\\\\cite{" $< && cat footer/bib.html.org >> $(TMPDIR)/$<.temp.org) || true
+	cp *.bib $(TMPDIR)
 	$(EMACS_BIN) -no-site-file -q --batch -l elisp/org-html-export.el --visit $(TMPDIR)/$<.temp.org -f org-html-export-to-html
 	mv $(TMPDIR)/$<.temp.html $@
 	rm $(TMPDIR)/$<.temp.org
 
-%.tex: %.org .cask elisp/org-pdf-export.el header/header.latex.org header/header.tex footer/footer.latex.org
+%.tex: %.org .cask elisp/org-pdf-export.el header/header.latex.org header/header.tex footer/footer.latex.org lean.bib
 	cat header/header.latex.org $< footer/footer.latex.org > $(TMPDIR)/$<.temp.org
 	$(EMACS_BIN) -no-site-file -q --batch -l elisp/org-pdf-export.el --visit $(TMPDIR)/$<.temp.org -f org-latex-export-to-latex
 	mv $(TMPDIR)/$<.temp.tex $@
