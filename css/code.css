@@ -26,7 +26,6 @@
     font-family: 'DejaVuSansMono-lean';
     src: url('../fonts/DejaVuSansMono.eot');
     src: url('../fonts/DejaVuSansMono.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/DejaVuSansMono.woff2') format('woff2'),
          url('../fonts/DejaVuSansMono.woff') format('woff'),
          url('../fonts/DejaVuSansMono.ttf') format('truetype'),
          url('../fonts/DejaVuSansMono.svg') format('svg');
@@ -38,7 +37,6 @@
     font-family: 'DejaVuSansMono-lean';
     src: url('../fonts/DejaVuSansMono-Bold.eot');
     src: url('../fonts/DejaVuSansMono-Bold.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/DejaVuSansMono-Bold.woff2') format('woff2'),
          url('../fonts/DejaVuSansMono-Bold.woff') format('woff'),
          url('../fonts/DejaVuSansMono-Bold.ttf') format('truetype'),
          url('../fonts/DejaVuSansMono-Bold.svg') format('svg');
