@@ -766,3 +766,107 @@ Remember also that in the Emacs Lean mode, tab completion works in
 # the efficiency of the program and the solutions that are found can
 # depend on the order in which the system tries the instance.
 # ... Can users control this?
+
+** Bounded quantification
+
+We say a proposition is a "bounded universal quantifier" if it is of the form
+=∀ x : nat, x < n → P x=. In the following example, we demonstrate that
+propositions of this form are decidable.
+
+#+BEGIN_SRC lean
+import data.nat
+open nat decidable
+
+-- define (ball n P) as a shorthand for ∀ x : nat, x < n → P x
+definition ball (n : nat) (P : nat → Prop) : Prop :=
+∀ x, x < n → P x
+
+-- We now prove some auxiliary constructions for the decidability proof
+
+-- Prove: ∀ x : nat, x < 0 → P x
+definition ball_zero (P : nat → Prop) : ball zero P :=
+λ x Hlt, absurd Hlt !not_lt_zero
+
+variables {n : nat} {P : nat → Prop}
+
+-- Prove: (∀ x : nat, x < succ n → P x) implies (∀ x : nat, x < n → P x)
+definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
+λ x Hlt, H x (lt.step Hlt)
+
+-- We use the following theorem from the standard library
+check eq_or_lt_of_le
+-- ?a ≤ ?b → ?a = ?b ∨ ?a < ?b
+
+-- Prove: (∀ x : nat, x < n → P x) and (P n) implies (∀ x : nat, x < succ n → P x)
+definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
+λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le Hlt)
+  (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
+  (λ hlt : x < n, H₁ x hlt)
+
+-- Prove: (¬ P n) implies ¬ (∀ x : nat, x < succ n → P x)
+definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
+λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
+
+-- Prove: ¬ (∀ x : nat, x < n → P x) implies ¬ (∀ x : nat, x < succ n → P x)
+definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
+λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
+
+-- Prove by induction/recursion that if P is a decidable predicate, then so is
+-- (∀ x : nat, x < n → P x)
+definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P),
+dec_ball 0     := inl (ball_zero P),
+dec_ball (a+1) :=
+  match dec_ball a with
+    inl iH  :=
+      match H a with
+        inl Pa  := inl (ball_succ_of_ball iH Pa),
+        inr nPa := inr (not_ball_of_not nPa)
+      end,
+    inr niH := inr (not_ball_succ_of_not_ball niH)
+  end
+
+-- Now, we can use dec_trivial to solve prove simple theorems by "evaluation"
+example : ∀ x : nat, x ≤ 4 → x ≠ 6 :=
+dec_trivial
+
+example : ¬ ∀ x, x ≤ 5 → ∀ y, y < x → y * y ≠ x :=
+dec_trivial
+
+-- We can use use bounded quantifiers to implement computable functions.
+-- The function (is_constant_range a n) returns tt iff it evaluates
+-- to the same value for all 0 <= i < n
+open bool
+definition is_constant_range (a : nat → nat) (n : nat) : bool :=
+if ∀ i, i < n → a i = a 0 then tt else ff
+
+example : is_constant_range (λ i, zero) 10 = tt :=
+rfl
+#+END_SRC
+
+As exercise, we encourage you to show that =∃ x : nat, x < n ∧ P x= is also
+decidable.
+
+#+BEGIN_SRC lean
+import data.nat
+open nat decidable
+
+definition bex (n : nat) (P : nat → Prop) : Prop :=
+∃ x : nat, x < n ∧ P x
+
+definition not_bex_zero (P : nat → Prop) : ¬ bex 0 P :=
+sorry
+
+variables {n : nat} {P : nat → Prop}
+
+definition bex_succ (H : bex n P) : bex (succ n) P :=
+sorry
+
+definition bex_succ_of_pred  (H : P n) : bex (succ n) P :=
+sorry
+
+definition not_bex_succ (H₁ : ¬ bex n P) (H₂ : ¬ P n) : ¬ bex (succ n) P :=
+sorry
+
+definition dec_bex [instance] (H : decidable_pred P) : Π (n : nat), decidable (bex n P) :=
+sorry
+#+END_SRC
