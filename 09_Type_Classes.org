@@ -25,7 +25,7 @@ coercion. In much the same way, any family of inductive types can be
 marked as a /type class/. Then we can declare particular elements of a
 type class to be /instances/. These provide hints to the elaborator:
 any time the elaborator is looking for an element of a type class, it
-can consult a table of declared instances to find a suitable element. 
+can consult a table of declared instances to find a suitable element.
 
 More precisely, there are three steps involved:
 + First, we declare a family of inductive types to be a type class.
@@ -350,7 +350,7 @@ opaque definition arbitrary (A : Type) [H : inhabited A] : A :=
 inhabited.rec (λa, a) H
 
 -- BEGIN
-theorem exists_eq_of_inhabited (A : Type) [H : inhabited A] : 
+theorem exists_eq_of_inhabited (A : Type) [H : inhabited A] :
   ∃x : A, x = x :=
 exists.intro (arbitrary A) rfl
 
@@ -489,7 +489,7 @@ definition prod.is_inhabited [instance] {A B : Type} [H1 : inhabited A]
 inhabited.mk ((default A, default B))
 
 -- BEGIN
-definition inhabited_fun [instance] (A : Type) {B : Type} (H : inhabited B) : 
+definition inhabited_fun [instance] (A : Type) {B : Type} (H : inhabited B) :
   inhabited (A → B) :=
 inhabited.rec_on H (λb, inhabited.mk (λa, b))
 
@@ -523,7 +523,7 @@ namespace hide
 inductive decidable [class] (p : Prop) : Type :=
 inl :  p → decidable p,
 inr : ¬p → decidable p
--- END 
+-- END
 end hide
 #+END_SRC
 Logically speaking, having an element =t : decidable p= is stronger
@@ -693,7 +693,7 @@ open nat
 
 check (1, 2) + (3, 4)
 eval (1, 2) + (3, 4)
---END
+-- END
 #+END_SRC
 We can similarly define pointwise addition of functions:
 #+BEGIN_SRC lean
@@ -757,9 +757,9 @@ set_option class.trace_instances true
 You can also limit the search depth:
 #+BEGIN_SRC lean
 set_option class.instance_max_depth 5
-#+END_SRC lean
+#+END_SRC
 Remember also that in the Emacs Lean mode, tab completion works in
-"set_option", to help you find suitable options.
+=set_option=, to help you find suitable options.
 
 # As noted above, the type class instances in a given context represent
 # a prolog-like program, which gives rise to a backtracking search. Both
