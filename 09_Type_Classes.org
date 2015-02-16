@@ -53,12 +53,12 @@ example : foo = 1 := rfl
 Here we declare =nat= to be a class with a "canonical" instance
 =1=. Then we declare =foo= to be, essentially, the identity function
 on the natural numbers, but we mark the argument implicit, and
-indicate that it should be inferred by type inference. When we write
+indicate that it should be inferred by type class inference. When we write
 =foo=, the preprocessor interprets it as =foo ?x=, where =?x= is an
 implicit argument. But when the elaborator gets hold of the
 expression, it sees that =?x : ℕ= is supposed to be solved by type
 class inference. It looks for a suitable element of the class, and it
-finds it in the instance =one=. Thus, when we evaluate =foo=, we
+finds the instance =one=. Thus, when we evaluate =foo=, we
 simply get =1=.
 
 It is tempting to think of =foo= as defined to be equal to =1=, but
@@ -89,7 +89,7 @@ eval foo
 example : foo ≠ 1 := dec_trivial
 -- END
 #+END_SRC
-Now the same expression, =foo= evaluates to =2=. The more recent
+Now the "same" expression =foo= evaluates to =2=. The more recent
 instance declaration is tried first; below we will see how to change
 the priority. Whereas before we could prove =foo = 1=, now we can
 prove =foo ≠ 1=, because the inferred implicit argument has
@@ -97,8 +97,8 @@ changed. (The proof =dec_trivial= will be explained below.)
 
 As with =coercion= and other attributes, you can assign the =class= or
 =instance= attributes in a definition, or after the fact, with an
-=attribute= command. As usual, the assignments =attribute foo class=
-and =attribute foo instance= are only operant in the current
+=attribute= command. As usual, the assignments =attribute foo [class]=
+and =attribute foo [instance]= are only operant in the current
 namespace, but the assignments persist on import. To limit the scope
 of an assignment to the current file, use the =local attribute=
 variant.
