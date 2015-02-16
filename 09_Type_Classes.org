@@ -832,12 +832,12 @@ dec_trivial
 example : ¬ ∀ x, x ≤ 5 → ∀ y, y < x → y * y ≠ x :=
 dec_trivial
 
--- We can use use bounded quantifiers to implement computable functions.
--- The function (is_constant_range a n) returns tt iff it evaluates
+-- We can use bounded quantifiers to implement computable functions.
+-- The function (is_constant_range f n) returns tt iff the function f evaluates
 -- to the same value for all 0 <= i < n
 open bool
-definition is_constant_range (a : nat → nat) (n : nat) : bool :=
-if ∀ i, i < n → a i = a 0 then tt else ff
+definition is_constant_range (f : nat → nat) (n : nat) : bool :=
+if ∀ i, i < n → f i = f 0 then tt else ff
 
 example : is_constant_range (λ i, zero) 10 = tt :=
 rfl
