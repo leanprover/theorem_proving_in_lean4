@@ -6,7 +6,7 @@ HTMLS := $(ORGS:.org=.html)
 TEXS  := $(ORGS:.org=.tex)
 PDFS  := $(ORGS:.org=.pdf)
 CWD   := $(shell pwd)
-WATCHMAN_BIN ?= $(CWD)/watchman/watchman
+WATCHMAN_BIN ?= $(CWD)/watchman/bin/watchman
 TMPDIR := $(shell mktemp -d /tmp/lean-tutorial.XXXX)
 NAV_DATA := js/nav_data.js
 
@@ -68,7 +68,7 @@ install-cask:
 
 install-watchman:
 	git clone https://github.com/facebook/watchman.git
-	cd watchman &&./autogen.sh && ./configure && make
+	cd watchman &&./autogen.sh && ./configure --prefix $(CWD)/watchman && make install
 
 pygments-main: install-pygments
 
