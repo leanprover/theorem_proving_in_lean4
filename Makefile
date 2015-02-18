@@ -52,7 +52,8 @@ clean:
 	       ${TEXS} \
 	       *.acn *.aux *.glo *.idx *.ist *.log *.out *.toc *.fdb_latexmk *.fls *.ilg *.ind \
 	       *.out.pyg *.pyg tutorial.* \
-	       [0-9][0-9]*.lean
+	       [0-9][0-9]*.lean \
+	       minted_*
 
 watch-on:
 	$(WATCHMAN_BIN) watch $(CWD)
