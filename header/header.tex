@@ -14,6 +14,7 @@
 \usepackage{etoolbox}
 \usepackage{csquotes}
 \usepackage{ulem}
+\usepackage{xstring}
 
 % Minted
 \usepackage{minted}
@@ -133,14 +134,17 @@
   \vspace*{\baselineskip}
   \vfill
   \hbox{%
-    \hspace*{0.2\textwidth}%
+    \hspace*{0.22\textwidth}%
     \rule{1pt}{\dimexpr\textheight-28pt\relax}%
     \hspace*{0.05\textwidth}%
-    \parbox[b]{0.75\textwidth}{%
+    \parbox[b]{0.73\textwidth}{%
       \vbox{%
         \vspace{\drop}
                {\Huge\bfseries\raggedright\@title\par}\vskip2.37\baselineskip
-               {\Large\bfseries\@author\par}
+               {\raggedleft
+                 \Large\bfseries
+                 \expandarg{\StrSubstitute{\@author}{,}{\par}}
+                 \par}
                \vspace{0.5\textheight}
       }% end of vbox
     }% end of parbox
