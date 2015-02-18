@@ -28,7 +28,7 @@ tutorial.org: $(ORGS)
 
 %.tex: %.org .cask elisp/org-pdf-export.el header/header.latex.org header/header.tex footer/footer.latex.org lean.bib
 	cat header/header.latex.org $< footer/footer.latex.org > $(TMPDIR)/$<.temp.org
-	$(EMACS_BIN) -no-site-file -q --batch -l elisp/org-pdf-export.el --visit $(TMPDIR)/$<.temp.org -f org-latex-export-to-latex
+	$(EMACS_BIN) --no-site-file --no-site-lisp -q --batch -l elisp/org-pdf-export.el --visit $(TMPDIR)/$<.temp.org -f org-latex-export-to-latex
 	mv $(TMPDIR)/$<.temp.tex $@
 	rm $(TMPDIR)/$<.temp.org
 
