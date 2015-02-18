@@ -125,6 +125,7 @@
 % Title page markup
 \usepackage{geometry}
 \usepackage{titlesec}
+\usepackage{datetime}
 \makeatletter
 \newlength\drop
 \renewcommand{\maketitle}{
@@ -146,6 +147,7 @@
                  \expandarg{\StrSubstitute{\@author}{,}{\par}}
                  \par}
                \vspace{0.5\textheight}
+               {\bfseries Updated on \today\ at \currenttime}
       }% end of vbox
     }% end of parbox
   }% end of hbox
