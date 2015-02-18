@@ -10,16 +10,17 @@ Lean Tutorial
 How to Build
 ------------
 
-We use [cask][cask] to install emacs dependencies ([org-mode][org-mode], [lean-mode][lean-mode], [htmlize][htmlize]).
+We use [cask][cask] to install emacs dependencies ([org-mode][org-mode], [lean-mode][lean-mode], [htmlize][htmlize]) and [pygments][pygments] and [minted][minted] to syntax-highlight Lean code in LaTeX. We assume that you already have emacs-24.3 or higher installed in your system.
 
 ```
 sudo apt-get install mercurial python2.7 texlive-latex-recommended \
                      texlive-humanities texlive-xetex texlive-science \
-                     texlive-latex-extra texlive-fonts-recommended
-git clone git@github.com:leanprover/tutorial
+                     texlive-latex-extra texlive-fonts-recommended \
+                     bibtex2html git make mercurial
+git clone https://github.com/leanprover/tutorial
 cd tutorial
 tar xvfz header/l3kernel.tar.gz -C ~/
-make install-cask
+make install-cask # after this, you need to add 
 make install-pygments  
 make
 ```
@@ -28,6 +29,8 @@ make
 [org-mode]: http://orgmode.org/
 [lean-mode]: https://github.com/leanprover/lean/tree/master/src/emacs
 [htmlize]: https://github.com/emacsmirror/htmlize
+[pygments]: http://pygments.org/
+[minted]: https://github.com/gpoore/minted
 
 
 Automatic Build using Watchman
@@ -94,12 +97,13 @@ Auto-reload HTML page
 Test Lean Code in .org files
 ----------------------------
 
+First, you need to install Lean. Please follow the instructions at the [download page](http://leanprover.github.io/download/). You can test all Lean code blocks in `*.org` files by executing the following command:
+
 ```bash
 make test
 ```
 
-
-
-
-
-
+To use a specific binary of Lean in test, please do the following:
+```bash
+LEAN_BIN=/path/to/your/lean make test
+```
