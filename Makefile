@@ -43,7 +43,7 @@ tutorial.org: $(ORGS)
 	xelatex -shell-escape $<; bibtex $(<:.tex=); xelatex -shell-escape $<; xelatex -shell-escape $<
 
 .cask: Cask
-	@EMACS=$(EMACS_BIN) $(CASK_BIN)
+	@EMACS=$(EMACS_BIN) $(CASK_BIN) install
 	@touch .cask
 
 clean:
@@ -54,6 +54,10 @@ clean:
 	       *.out.pyg *.pyg tutorial.* \
 	       [0-9][0-9]*.lean \
 	       minted_*
+
+dist-clean:
+	make clean
+	rm -rf .cask watchman pygments-main
 
 watch-on:
 	$(WATCHMAN_BIN) watch $(CWD)
