@@ -351,7 +351,7 @@ the variable =x= is a "bound variable": it is really a placeholder,
 whose "scope" does not extend beyond =t=. For example, the variable
 =b= in the expression =λ(b : B) (x : A), x= has nothing to do with the
 constant =b= declared earlier. In fact, the expression denotes the
-same function as =λ(u : B) (z : A), u=. Formally, the expressions that
+same function as =λ(u : B) (z : A), z=. Formally, the expressions that
 are the same up to a renaming of bound variables are called /alpha
 equivalent/, and are considered morally "the same". Lean recognizes
 this equivalence.
