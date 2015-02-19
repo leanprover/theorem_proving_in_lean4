@@ -518,10 +518,10 @@ eval do_twice double 2
 As an exercise, we encourage you to use =do_twice= and =double= to
 define functions that quadruple their input, and multiply the input
 by 8. As a further exercise, we encourage you to try defining a
-function 
+function
 =Do_Twice : ((nat → nat) → (nat → nat)) → (nat → nat) → (nat → nat)=
 which iterates /its/ argument twice, so that =Do_Twice do_twice= a
-function which iterates /its/ input four times, and evaluate 
+function which iterates /its/ input four times, and evaluate
 =Do_Twice do_twice double 2=.
 
 
@@ -541,7 +541,7 @@ definition curry (A B C : Type) (f : A × B → C) : A → B → C := sorry
 definition uncurry (A B C : Type) (f : A → B → C) : A × B → C := sorry
 #+END_SRC
 
-** Local definitions 
+** Local definitions
 
 Lean also allows you to introduce "local" definitions using the =let=
 construct. The expression ~let a := t1 in t2~ is definitionally equal to
@@ -561,7 +561,7 @@ let y := x + x in y * y
 Here, =t= is definitionally equal to the term =(x + x) * (x + x)=.
 You can combine multiple assignments in a single =let= statement:
 #+BEGIN_SRC lean
-import standard 
+import standard
 open nat
 
 -- BEGIN
@@ -923,11 +923,11 @@ eval pr1 ⟨a, b⟩
 eval pr2 ⟨a, b⟩
 #+END_SRC
 Note, by the way, that the identitifiers =pr1= and =pr2= are also used
-for the product type. The notations are made available when you open
+for the cartesian product type. The notations are made available when you open
 the namespaces =prod= and =sigma= respectively; if you open both, the
 identifier is simply overloaded. Without opening the namespaces, you
 can refer to them as =prod.pr1=, =prod.pr2=, =sigma.pr1=, and
-=sigma.pr2=. 
+=sigma.pr2=.
 
 Moreover, if you open the namespaces =prod.ops= and =sigma.ops=, you
 can use additional convenient notation for the projections:
