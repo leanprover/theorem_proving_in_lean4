@@ -33,7 +33,7 @@ install:
 
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
-  - if [[ $REPO == BLESSED ]]; then
+  - if [[ "${REPO}" == "BLESSED" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
       git config --global user.email "notifications@travis-ci.org" &&
       git config --global user.name "Travis CI" &&
       git checkout --orphan gh-pages &&
