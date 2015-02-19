@@ -27,6 +27,7 @@ tutorial.org: $(ORGS)
 	rm $(TMPDIR)/$<.temp.org
 
 %.tex: %.org .cask elisp/org-pdf-export.el header/header.latex.org header/header.tex footer/footer.latex.org lean.bib
+	make gitinfo
 	cat header/header.latex.org $< footer/footer.latex.org > $(TMPDIR)/$<.temp.org
 	$(EMACS_BIN) --no-site-file --no-site-lisp -q --batch -l elisp/org-pdf-export.el --visit $(TMPDIR)/$<.temp.org -f org-latex-export-to-latex
 	mv $(TMPDIR)/$<.temp.tex $@
@@ -79,6 +80,10 @@ pygments-main: install-pygments
 install-pygments:
 	if [ ! -d pygments-main ] ; then hg clone https://bitbucket.org/leanprover/pygments-main && cd pygments-main && python setup.py build; fi
 
+gitinfo:
+	git log -1 --date=short \
+	--pretty=format:"\usepackage[shash={%h},lhash={%H},authname={%an},authemail={%ae},authsdate={%ad},authidate={%ai},authudate={%at},commname={%an},commemail={%ae},commsdate={%ad},commidate={%ai},commudate={%at},refnames={%d}]{gitsetinfo}" HEAD > $(CWD)/gitHeadInfo.gin
+
 test:
 	for ORG in $(ORGS); do ./test.sh $(LEAN_BIN) $$ORG || exit 1; done
 
@@ -87,4 +92,4 @@ build_nav_data: $(HTMLS)
 	ls -1 [0-9][0-9]_*.html | sed 's/\(.*\)/"\1",/' >> $(NAV_DATA)
 	echo "];" >> $(NAV_DATA)
 
-.PHONY: all clean install-cask install-watchman watch-on watch-off
+.PHONY: all clean install-cask install-watchman watch-on watch-off gitinfo

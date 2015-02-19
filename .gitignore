@@ -27,3 +27,5 @@ auto/
 tutorial.html
 tutorial.org
 _minted-*/
+.DS_Store
+gitHeadInfo.gin

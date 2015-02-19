@@ -15,6 +15,7 @@
 \usepackage{csquotes}
 \usepackage{ulem}
 \usepackage{xstring}
+\usepackage{gitinfo}
 
 % Minted
 \usepackage{minted}
@@ -147,7 +148,9 @@
                  \expandarg{\StrSubstitute{\@author}{,}{\par}}
                  \par}
                \vspace{0.5\textheight}
-               {\bfseries Updated on \today\ at \currenttime}
+               {\bfseries
+                 \href{https://github.com/leanprover/tutorial/commit/\gitHash}{Version \gitAbbrevHash},
+                 updated at \gitAuthorIsoDate}
       }% end of vbox
     }% end of parbox
   }% end of hbox
