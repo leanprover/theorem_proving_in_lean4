@@ -852,7 +852,7 @@ namespace hide
 constant list : Type → Type
 
 namespace list
-  constant cons : ΠA : Type, A → list A → list A
+  constant cons : ΠA : Type, A → list A → list A -- type the product as "\Pi"
   constant nil : ΠA : Type, list A            -- the empty list
   constant head : ΠA : Type, list A → A       -- returns the first element
   constant tail : ΠA : Type, list A → list A  -- returns the remainder
