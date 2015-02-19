@@ -22,7 +22,7 @@ tutorial.org: $(ORGS)
 	cat header/header.html.org $< > $(TMPDIR)/$<.temp.org
 	(grep "\\\\cite{" $< && cat footer/bib.html.org >> $(TMPDIR)/$<.temp.org) || true
 	cp *.bib $(TMPDIR)
-	$(EMACS_BIN) -no-site-file -q --batch -l elisp/org-html-export.el --visit $(TMPDIR)/$<.temp.org -f org-html-export-to-html
+	$(EMACS_BIN) --no-site-file --no-site-lisp -q --batch -l elisp/org-html-export.el --visit $(TMPDIR)/$<.temp.org -f org-html-export-to-html
 	mv $(TMPDIR)/$<.temp.html $@
 	rm $(TMPDIR)/$<.temp.org
 
