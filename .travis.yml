@@ -45,9 +45,9 @@ script:
       sudo rm -rf pygments-main &&
       git clean -fxd &&
       git commit -m "Update `date -R`" &&
-      git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages;
+      git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages &&
+      git checkout -f master;
     fi
-  - git checkout -f master
   - make test
 
 notifications:
