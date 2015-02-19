@@ -518,9 +518,13 @@ eval do_twice double 2
 As an exercise, we encourage you to use =do_twice= and =double= to
 define functions that quadruple their input, and multiply the input
 by 8. As a further exercise, we encourage you to try defining a
-function =Do_Twice : (nat → nat) → (nat → nat)= which iterates /its/
-argument twice, so that =Do_Twice do_twice= a function which iterates
-/its/ input four times, and evaluate =Do_Twice do_twice double 2=.
+function 
+=Do_Twice : ((nat → nat) → (nat → nat)) → (nat → nat) → (nat → nat)=
+which iterates /its/ argument twice, so that =Do_Twice do_twice= a
+function which iterates /its/ input four times, and evaluate 
+=Do_Twice do_twice double 2=.
+
+
 
 Above, we discussed the process of "currying" a function, that is,
 taking a function =f (a, b)= that takes an ordered pair as an
