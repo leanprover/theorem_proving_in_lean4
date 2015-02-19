@@ -400,7 +400,7 @@ eval (λ(Q R S : Type) (v : R → S) (u : Q → R) (x : Q), v (u x)) A B C g f a
 The command =eval= tells Lean to /evaluate/ an expression. The process
 of simplifying an expression =(λx, t)s= to =t[s/x]= -- that is, =t=
 with =s= substituted for the variable =x= -- is known as /beta
-reduction/, and two terms the beta reduce to a common term are called
+reduction/, and two terms that beta reduce to a common term are called
 /beta equivalent/. But the =eval= command carries out other forms of
 reduction as well:
 #+BEGIN_SRC lean
