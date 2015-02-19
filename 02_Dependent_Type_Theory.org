@@ -797,7 +797,7 @@ and we will gradually introduce you to many more. Our ultimate goal in
 Lean is to /prove/ things about the objects we define, and the next
 chapter will introduce you to Lean's mechanisms for stating theorems
 and constructing proofs. Meanwhile, let us remain on the topic of
-defining objects in dependent type theory for a just a moment longer,
+defining objects in dependent type theory for just a moment longer,
 in order to explain what makes dependent type theory /dependent/, and
 why that is useful.
 
