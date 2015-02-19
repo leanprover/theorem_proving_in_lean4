@@ -356,7 +356,7 @@ are the same up to a renaming of bound variables are called /alpha
 equivalent/, and are considered morally "the same". Lean recognizes
 this equivalence.
 
-Notice that applying an term =t : A → B= to a term =s : A= yields an
+Notice that applying a term =t : A → B= to a term =s : A= yields an
 expression =t s : B=. Returning to the previous example and renaming
 bound variables for clarity, notice the types of the following
 expressions:
