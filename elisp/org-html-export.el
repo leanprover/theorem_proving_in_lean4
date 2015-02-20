@@ -136,4 +136,10 @@ value."
 (eval-after-load 'ox
   '(progn
      (add-to-list 'org-export-filter-link-functions 'lean-filter-html-link)
-     (add-to-list 'org-export-filter-headline-functions 'lean-filter-headline)))
+     (add-to-list 'org-export-filter-headline-functions 'lean-filter-headline)
+     (setq org-html-mathjax-options
+           '((path  "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
+             (scale "100")
+             (align "center")
+             (indent "2em")
+             (mathml nil)))))
