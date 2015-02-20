@@ -314,7 +314,7 @@ import logic
 section
   variables p q r s : Prop
 
-  theorem t1 (Hp : p) (Hq : q) : p := Hp
+  theorem t1 (p q : Prop) (Hp : p) (Hq : q) : p := Hp
 
   check t1 p q
   check t1 r s
