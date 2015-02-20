@@ -218,7 +218,7 @@ Hp
 -- END
 #+END_SRC
 
-Lean also allows us to specify the type of the final term =H1=,
+Lean also allows us to specify the type of the final term =Hp=,
 explicitly, with a =show= statement.
 #+BEGIN_SRC lean
 import logic
@@ -371,8 +371,8 @@ propositional connectives come with the following notation:
 | /\    | ∧       | =\and=                     | and        |
 | ‌\/    | ∨       | =\or=                      | or         |
 | ->    | →       | =\to=, =\r=, =\implies=    |            |
-| <->   | ↔       | =\iff=, =\lr=              | iff        | 
-  
+| <->   | ↔       | =\iff=, =\lr=              | iff        |
+
 They all take values in =Prop=.
 #+BEGIN_SRC lean
 import logic
