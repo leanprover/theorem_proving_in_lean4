@@ -54,7 +54,7 @@ clean:
 	       *.acn *.aux *.glo *.idx *.ist *.log *.out *.toc *.fdb_latexmk *.fls *.ilg *.ind \
 	       *.out.pyg *.pyg tutorial.* \
 	       [0-9][0-9]*.lean \
-	       minted_*
+	       _minted-*
 
 dist-clean:
 	make clean
