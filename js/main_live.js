@@ -10,10 +10,10 @@ if (typeof String.prototype.startsWith != 'function') {
 // Client side redirect to HTTPS
 // Soonhok: This is not as good as server-side methods,
 // however it seems that this is all we can do with github pages.
-if (window.location.protocol != "https:") {
-    if (!window.location.href.startsWith("http://localhost")) {
-    window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
-    }
+if (window.location.protocol != "https:" && window.location.hostname.indexOf("lean") >= 0) {
+   if (!window.location.href.startsWith("http://localhost")) {
+   window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+   }
 }
 
 function gup( name ){
