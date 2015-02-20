@@ -342,7 +342,7 @@ end
 #+END_SRC
 As a theorem of propositional logic, what does =t2= say?
 
-Lean allows alternative the alterative syntax =premise= and =premises=
+Lean allows the alternative syntax =premise= and =premises=
 for =variable= and =variables=. This makes sense, of course, for
 variables whose type is an element of =Prop=. The following definition
 of =t2= has the same net effect as the preceding one.
