@@ -492,7 +492,7 @@ that we can prove =r= from =p ∨ q=, by showing that =r= follows from
 cases." In the expression =or.elim Hpq Hpr Hqr=, =or.elim= takes three
 arguments, =Hpq : p ∨ q=, =Hpr : p → r= and =Hqr : q → r=, and
 produces a proof of =r=. In the following example, we use =or.elim= to
-prove =p v q → q ∨ p=.
+prove =p ∨ q → q ∨ p=.
 #+BEGIN_SRC lean
 import logic
 
