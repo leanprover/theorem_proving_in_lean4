@@ -395,6 +395,13 @@ calc
     ... = x * x + y * x + x * y + y * y          : add.assoc
 -- END
 #+END_SRC
+As an exercise, we suggest carrying out a similar expansion of =(x -
+y) * (x + y)=, using in the appropriate order the theorems
+=mul.left_distrib=, =mul.comm= and =add.comm= and the theorems
+=mul_sub_right_distrib= and =add_sub_add_left= in the module
+[[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]]. Note that this exercise is slightly more involved than
+the previous example, because the subtraction on natural numbers
+is truncated (with =n - m = 0= when =m= is greater than or equal to =n=).
 
 ** The Simplifier
 
