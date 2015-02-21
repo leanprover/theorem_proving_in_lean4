@@ -395,9 +395,6 @@ calc
     ... = x * x + y * x + x * y + y * y          : add.assoc
 -- END
 #+END_SRC
-As an exercise, we suggest carrying out a similar expansion of =(x -
-y) * (x - y)=, using the theorems =mul_sub_right_distrib= and
-=mul_sub_left_distrib= in the module [[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]].
 
 ** The Simplifier
 
