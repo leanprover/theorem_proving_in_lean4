@@ -754,18 +754,78 @@ trace of the search:
 #+BEGIN_SRC lean
 set_option class.trace_instances true
 #+END_SRC
-You can also limit the search depth:
+You can also limit the search depth (the default is 32):
 #+BEGIN_SRC lean
 set_option class.instance_max_depth 5
 #+END_SRC
 Remember also that in the Emacs Lean mode, tab completion works in
 =set_option=, to help you find suitable options.
 
-# As noted above, the type class instances in a given context represent
-# a prolog-like program, which gives rise to a backtracking search. Both
-# the efficiency of the program and the solutions that are found can
-# depend on the order in which the system tries the instance.
-# ... Can users control this?
+As noted above, the type class instances in a given context represent
+a prolog-like program, which gives rise to a backtracking search. Both
+the efficiency of the program and the solutions that are found can
+depend on the order in which the system tries the instance.
+Instances which are declared last are tried first.
+Moreover, if instances are declared in other modules, the order in which
+they are tried depends on the order in which namespaces are opened.
+Instances declared in namespaces which are opened later are tried earlier.
+
+** Instances in Sections
+
+We can easily assume instances of type classes in a complete section
+using variables (or in a context using parameters). Recall
+that variables are only included in declarations when they are actually
+mentioned. Instances of type classes are rarely explicitly mentioned in
+definitions, so to make sure that an instance of a type class is included
+in definitions, we use the =include= command.
+#+BEGIN_SRC lean
+import standard
+
+inductive has_add [class] (A : Type) : Type :=
+mk : (A → A → A) → has_add A
+
+definition add {A : Type} [s : has_add A] :=
+has_add.rec (λx, x) s
+
+notation a `+` b := add a b
+
+-- BEGIN
+section
+  variables {A : Type} [H : has_add A] (a b : A)
+  include H
+
+  definition foo : a + b = a + b := rfl
+  check @foo
+end
+-- END
+#+END_SRC
+Note that the =include= command includes a variable in every definition in that section.
+If we want to declare some definitions which do not use the instance, we can use the =omit= command:
+#+BEGIN_SRC lean
+inductive has_add [class] (A : Type) : Type :=
+mk : (A → A → A) → has_add A
+
+definition add {A : Type} [s : has_add A] :=
+has_add.rec (λx, x) s
+
+notation a `+` b := add a b
+
+-- BEGIN
+section
+  variables {A : Type} [H : has_add A] (a b : A)
+  include H
+  definition foo1 : a + b = a + b := rfl
+  omit H
+  definition foo2 : a  = a := rfl -- H is not an argument of foo2
+  include H
+  definition foo3 : a + a = a + a := rfl
+
+  check @foo1
+  check @foo2
+  check @foo3
+end
+-- END
+#+END_SRC
 
 ** Bounded quantification
 

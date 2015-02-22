@@ -488,8 +488,8 @@ because that requires unfolding the definition of =id=.
 
 ** Reducible Definitions
 
-In addition to being transparent or opaque, identifiers can be
-/reducible/ or /irreducible/. Whereas being transparent or opaque is a
+Transparent identifiers can be declared to be /reducible/ or /irreducible/ or /none/.
+By default, a definition is none. Whereas being transparent or opaque is a
 fixed, irrevocable feature of an identifier, being reducible or
 irreducible is an attribute that can be altered. This status provides
 hints that govern the way the elaborator tries to solve higher-order
@@ -505,36 +505,21 @@ The purpose of the annotation is to help Lean's unification procedure
 decide which declarations should be unfolded. The higher-order
 unification procedure has to perform case analysis, implementing a
 backtracking search. At various stages, the procedure has to decide
-whether a definition =C= should be unfolded or not.  Here, we roughly
-divide this decision in two groups: /simple/ and /complex/. Let us say
-an unfolding decision is /simple/ if the unfolding does not require
-the procedure to consider an extra case split. It is /complex/ if the
-unfolding produces at least one extra case, and consequently increases
-the search space.
+whether a definition =C= should be unfolded or not.
++ An /irreducible/ definition will never be unfolded during higher-order unification
+  (but can still be unfolded in other situations, for example during type checking)
++ A /reducible/ definition will be always eligible for unfolding
++ A definition which is /none/ can be unfolded during /simple/ decisions
+  and won't be unfolded during /complex/ decisions.
+  An unfolding decision is /simple/ if the unfolding does not require
+  the procedure to consider an extra case split. It is /complex/ if the
+  unfolding produces at least one extra case, and consequently increases
+  the search space.
 
-Let us write =reducible(C)= to denote that =C= has been assigned the
-=reducible= attribute by a user, and =irreducible(C)= to denote that
-=C= has been marked =irreducible=. Theorems are never unfolded. For a
-transparent definition =C=, the higher-order unification procedure
-uses the following decision tree.
-#+BEGIN_SRC text
-if simple unfolding decision then
-  if irreducible(C) then
-     do not unfold
-  else
-     unfold
-  end
-else -- complex unfolding decision
-  if reducible(C) then
-     unfold
-  else
-     do not unfold
-  end
-end
-#+END_SRC
-For an opaque definition =D=, the higher-order unification procedure
-uses the same decision tree if =D= was declared in the current
-module. Otherwise, it does not unfold =D=.
+Identifiers which are opaque (theorems and opaque definitions declared
+in a different module) will never be unfolded. Opaque definitions declared
+in the current module can be marked to be reducible and irreducible as normal,
+since they are transparent in the current module.
 
 You can assign the =reducible= attribute when a symbol is defined:
 #+BEGIN_SRC lean
@@ -564,6 +549,8 @@ definition pr2 (A : Type) (a b : A) : A := b
 local attribute pr2 [irreducible]
 #+END_SRC
 
+# TODO: add command to remove reducible/irreducible attribute (i.e. go back to "none")
+
 ** Helping the Elaborator
 
 Because proof terms and expressions in dependent type theory can
@@ -579,12 +566,15 @@ information. This section provides some guidance in both situations.
 
 If the error message is not sufficient to allow you to identify the
 problem, a first strategy is to ask Lean's pretty printer to show more
-information, as discussed in Section [[Setting Options]]:
+information, as discussed in Section [[Setting Options]],
+using some or all of the following options:
 #+BEGIN_SRC lean
 set_option pp.implicit true
 set_option pp.universes true
 set_option pp.notation false
+set_option pp.coercions true
 set_option pp.numerals false
+set_option pp.full_names true
 #+END_SRC
 Sometimes, the elaborator will fail with the message that the unifier
 has exceeded its maximum number of steps. As we noted in the last
@@ -668,7 +658,7 @@ long terms internal to a proof using auxiliary =have= statements can
 help locate the source of an error.
 
 The second strategy, providing additional information, can be achieved
-by using =have=, =show=, and the =typeof= construct (see Section
+by using =have=, =show=, =typeof= and =#<namespace>= (see Section
 [[Notation, Overloads, and Coercions]]) to indicate expected types. More
 directly, it often help to specify the implicit arguments. When Lean
 cannot solve for the value of a metavariable corresponding to an
@@ -689,7 +679,7 @@ contexts, namely, as =variables= or as =parameters=. And it has two
 slightly different sectioning notions, namely, =section= and
 =context=. The goal of this section is to explain these variations.
 
-Remember that the =point of the variable command is to declare
+Remember that the point of the variable command is to declare
 variables for use in theorems, as in the following example:
 #+BEGIN_SRC lean
 import standard
@@ -725,6 +715,10 @@ The definition of =double= does not have to declare =x= as an
 argument; Lean detects the dependence and inserts it
 automatically. Similarly, Lean detects the occurrence of =x= in =t1=
 and =t2=, and inserts it automatically there, too.
+Note that double does /not/ have =y= as argument. Variables are only
+included in declarations where they are actually mentioned.
+To force that a variable is included in every definition in a section, use
+the =include= command. This is useful for type classes, see next chapter.
 
 Notice that the variable =x= is generalized immediately, so that
 even within the section =double= is a function of =x=, and =t1= and
@@ -846,10 +840,6 @@ check mod_refl
 check mod_sym
 check mod_trans
 #+END_SRC
-
-# TODO: somewhere, we need to describe include / omit. Maybe mention
-# it here and then discuss it more fully, with examples, in the
-# chapter on structures.
 
 ** More on Namespaces
 
