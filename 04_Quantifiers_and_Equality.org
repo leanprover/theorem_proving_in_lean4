@@ -59,8 +59,6 @@ expression =q= does not depend on =x=.
 Here is an example of how the propositions-as-types correspondence
 gets put into practice.
 #+BEGIN_SRC lean
-import logic
-
 section
   variables (A : Type) (p q : A → Prop)
 
@@ -85,8 +83,6 @@ variables are considered to be equivalent. So, for example, we could
 have used the same variable, =x=, in both the hypothesis and
 conclusion, or chosen the variable =z= instead of =y= in the proof:
 #+BEGIN_SRC lean
-import logic
-
 section
   variables (A : Type) (p q : A → Prop)
 
@@ -161,8 +157,6 @@ end
 #+END_SRC
 You might want to try to prove some of these equivalences:
 #+BEGIN_SRC lean
-import logic
-
 section
   variables (A : Type) (p q : A → Prop)
 
@@ -210,8 +204,6 @@ logical framework. In the meanwhile, here we explain how to use it.
 Of course, a fundamental property of equality is that it is an
 equivalence relation:
 #+BEGIN_SRC lean
-import logic.eq
-
 check eq.refl
 check eq.symm
 check eq.trans
@@ -531,8 +523,6 @@ quantifier. We encourage you to prove as many as you can. Be careful:
 many of them are nonconstructive, and require the use of the law of
 the excluded middle.
 #+BEGIN_SRC lean
-import logic
-
 section
   variables (A : Type) (p q : A → Prop)
   variable r : Prop

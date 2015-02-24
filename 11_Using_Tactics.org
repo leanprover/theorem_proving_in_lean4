@@ -20,8 +20,6 @@ expected type. For example, the following creates the goal of
 constructing a term of type =p ∧ q ∧ p=, in a context with constants
 =p q : Prop=, =Hp : p= and =Hq : q=:
 #+BEGIN_SRC lean
-import logic
-
 theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
 sorry
 #+END_SRC
@@ -38,8 +36,6 @@ wherever a term is expected, Lean allows us to insert instead a =begin
 ... end= block, followed by a sequence of commands, separated by
 commas. We can prove the theorem above in that way:
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
 begin
@@ -76,8 +72,6 @@ would work just as well.
 
 You can see the resulting proof term with =print definition=:
 #+BEGIN_SRC lean
-import logic
-
 theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
 begin
   apply and.intro,
@@ -96,8 +90,6 @@ Tactic commands can take compound expressions, not just single
 identifiers. The following is a shorter version of the preceding
 proof:
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 theorem test2 (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
 begin
@@ -108,8 +100,6 @@ end
 #+END_SRC
 Unsuprisingly, it produces exactly the same proof term.
 #+BEGIN_SRC lean
-import logic
-
 theorem test2 (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
 begin
   apply (and.intro Hp),
@@ -142,8 +132,6 @@ introduces one or more additional subgoals, we indent another two
 spaces, until the additional subgoals are deleted.
 
 #+BEGIN_SRC lean
-import logic
-
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 begin
   apply iff.intro,
@@ -223,8 +211,6 @@ block. In the next example, we use =show= within a tactic block to
 fulfill a goal by providing an explicit term.
 
 #+BEGIN_SRC lean
-import logic
-
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 begin
   apply iff.intro,

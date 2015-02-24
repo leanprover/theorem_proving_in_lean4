@@ -594,8 +594,6 @@ problems down into simpler ones, with a =proof ... qed= block. Here is
 the sample proof from Section [[Examples of Propositional Validities]],
 with additional =proof ... qed= annotations:
 #+BEGIN_SRC lean
-import logic
-
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 iff.intro
   (assume H : p ∧ (q ∨ r),

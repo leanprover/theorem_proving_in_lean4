@@ -175,8 +175,6 @@ In the propositions-as-types paradigm, theorems involving only =→= can
 be proved using only lambda abstraction and application. In Lean, the
 =theorem= command introduces a new theorem:
 #+BEGIN_SRC lean
-import logic    -- defines notation for Prop as Type.{0}
-
 constants p q : Prop
 
 theorem t1 : p → q → p := λHp : p, λHq : q, Hp
@@ -206,8 +204,6 @@ Notice that the lambda abstractions =Hp : p= and =Hq : q= can be
 viewed as temporary assumptions in the proof of =t1=. Lean provides
 the alternative syntax =assume= for such a lambda abstraction:
 #+BEGIN_SRC lean
-import logic
-
 constants p q : Prop
 
 -- BEGIN
@@ -221,8 +217,6 @@ Hp
 Lean also allows us to specify the type of the final term =Hp=,
 explicitly, with a =show= statement.
 #+BEGIN_SRC lean
-import logic
-
 constants p q : Prop
 
 -- BEGIN
@@ -240,8 +234,6 @@ presentations of =t1= that we have seen produce the same term. Lean
 also allows you to use the alternative syntax =lemma= and =corollary=
 instead of theorem:
 #+BEGIN_SRC lean
-import logic
-
 constants p q : Prop
 
 -- BEGIN
@@ -255,8 +247,6 @@ show p, from Hp
 As with ordinary definitions, one can move the lambda-abstracted
 variables to the left of the colon:
 #+BEGIN_SRC lean
-import logic
-
 constants p q : Prop
 
 -- BEGIN
@@ -266,8 +256,6 @@ check t1
 #+END_SRC
 Now we can apply the theorem =t1= just as a function application.
 #+BEGIN_SRC lean
-import logic
-
 constants p q : Prop
 
 theorem t1 (Hp : p) (Hq : q) : p := Hp
@@ -290,7 +278,6 @@ propositions =p= and =q=, not just the particular constants
 declared. So it would be more natural to define the theorem so that it
 quantifies over those, too:
 #+BEGIN_SRC lean
-import logic
 -- BEGIN
 theorem t1 (p q : Prop) (Hp : p) (Hq : q) : p := Hp
 check t1
@@ -308,8 +295,6 @@ When we generalize =t1= in that way, we can then apply it to different
 pairs of propositions, to obtain different instances of the general
 theorem.
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   theorem t1 (p q : Prop) (Hp : p) (Hq : q) : p := Hp
@@ -359,7 +344,6 @@ end
 
 ** Propositional Logic
 
-When you import the standard library, or even just the module logic,
 Lean defines all the standard logical connectives and notation. The
 propositional connectives come with the following notation:
 
@@ -375,8 +359,6 @@ propositional connectives come with the following notation:
 
 They all take values in =Prop=.
 #+BEGIN_SRC lean
-import logic
-
 constants p q : Prop
 
 check p → q → p ∧ q
@@ -408,8 +390,6 @@ proofs =H1 : p= and =H2 : q=. It is common to describe =and.intro= as
 the /and-introduction/ rule. In the next example we use =and.intro=
 to create a proof of =p → q → p ∧ q=.
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -428,8 +408,6 @@ The expression =and.elim_left H= creates a proof of =p= from a proof
 =H : p ∧ q=.  Similarly, =and.elim_right H= is a proof of =q=. They
 are commonly known as the right and left /and-elimination/ rules.
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -443,7 +421,6 @@ end
 
 We can now prove =p ∧ q → q ∧ p= with the following proof term.
 #+BEGIN_SRC lean
-import logic
 -- BEGIN
 section
   variables p q : Prop
@@ -474,8 +451,6 @@ proof =Hp : p=.  Similarly, =or.intro_right p Hq= creates a proof for
 =p ∨ q= using a proof =Hq : q=. These are the left and right
 /or-introduction/ rules.
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -494,8 +469,6 @@ arguments, =Hpq : p ∨ q=, =Hpr : p → r= and =Hqr : q → r=, and
 produces a proof of =r=. In the following example, we use =or.elim= to
 prove =p ∨ q → q ∨ p=.
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q r: Prop
@@ -515,8 +488,6 @@ provides =or.inr= and =or.inl= as shorthands for =or.intro_right _=
 and =or.intro_left _=. Thus the proof term above could be written more
 concisely:
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q r: Prop
@@ -537,8 +508,6 @@ false=. That is, we obtain =¬p= if we can derive a contradiction from
 =Hp : p= and =Hnp : ¬p=. The next example uses these rules to produce
 a proof of =(p → q) → ¬q → ¬p=.
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -558,8 +527,6 @@ false=, can be derived from function application as the term =assume
 Hnp, assume Hp, Hnp Hp=. We can thus avoid the use of =not.intro= and
 =not.elim= entirely, in favor of abstraction and elimination:
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -575,8 +542,6 @@ This rule is sometimes called the /principle of explosion/, or /ex
 falso/ (short for /ex falso sequitur quodlibet/).
 
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -589,8 +554,6 @@ argument in =false.elim= and is inferred automatically. This pattern,
 deriving an arbitrary fact from contradictory hypotheses, is quite
 common, and is represented by =absurd=.
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -600,8 +563,6 @@ end
 #+END_SRC
 Here, for example, is a proof of =¬p → q → (q → p) → r=:
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q r : Prop
@@ -624,8 +585,6 @@ produces a proof of =p → q= from =H : p ↔ q=. Similarly,
 =iff.elim_right H= produces a proof of =q → p= from =H : p ↔ q=.  Here
 is a proof of =p ∧ q ↔ q ∧ p=:
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -646,8 +605,6 @@ structure long proofs, namely, the =have= construct, which introduces
 an auxiliary subgoal in a proof. Here is a small example, adapted from
 the last section:
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 section
   variables p q : Prop
@@ -758,8 +715,7 @@ Lean's standard library contains proofs of many valid statements of
 propositional logic, all of which you are free to use in proofs of
 your own. In this section, we will review some common identities, and
 encourage you to try proving them on your own using the rules
-above. All the proofs in this section assume that we have imported the
-module =logic=, directly or indirectly.
+above.
 
 The following is a long list of assertions in propositional
 logic. Prove as many as you can, using the rules introduced above to
@@ -770,7 +726,7 @@ r) ∨ (p → s))=, the forward direction of =¬ (p ∧ q) ↔ ¬ p ∨ ¬ q= an
 the reverse direction of =(¬ p ∨ q) ↔ (p → q)=.
 
 #+BEGIN_SRC lean
-import logic logic.axioms.classical
+import logic.axioms.classical
 
 section
   variables p q r s : Prop
@@ -831,7 +787,7 @@ then construct a proof by incrementally filling in these placeholders.
 For reference, below are two sample proofs of validities taken from the
 list above.
 #+BEGIN_SRC lean
-import logic logic.axioms.classical
+import logic.axioms.classical
 
 section
   variables p q r : Prop

@@ -123,8 +123,6 @@ the various windows if you would like.
 Throughout the text you will find examples of Lean code like the one
 below:
 #+BEGIN_SRC lean
-import logic
-
 -- BEGIN
 theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=
 assume Hpq : p ∧ q,
