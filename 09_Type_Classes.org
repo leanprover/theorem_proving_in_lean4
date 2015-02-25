@@ -489,7 +489,7 @@ definition prod.is_inhabited [instance] {A B : Type} [H1 : inhabited A]
 inhabited.mk ((default A, default B))
 
 -- BEGIN
-definition inhabited_fun [instance] (A : Type) {B : Type} (H : inhabited B) :
+definition inhabited_fun [instance] (A : Type) {B : Type} [H : inhabited B] :
   inhabited (A → B) :=
 inhabited.rec_on H (λb, inhabited.mk (λa, b))
 
