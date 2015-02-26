@@ -60,7 +60,7 @@ body, html {
     stroke:#000000;
 }
 #lean_logo { float: left; margin-left:2px; margin-top:2px; height: 36px; }
-#username { margin-top: 12px; margin-right:10px;}
+#username { margin-top: 12px; margin-left:10px; margin-right:10px;}
 
 #resizable_main {position: absolute;
             border: 0}
