@@ -240,7 +240,7 @@ structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
 inductive color :=
-red, green, blue
+red | green | blue
 
 structure color_point (A : Type) extends point A :=
 mk :: (c : color)
@@ -257,7 +257,7 @@ structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
 inductive color :=
-red, green, blue
+red | green | blue
 
 structure color_point (A : Type) extends point A :=
 mk :: (c : color)
@@ -294,7 +294,7 @@ structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
 inductive color :=
-red, green, blue
+red | green | blue
 
 structure color_point (A : Type) extends private point A :=
 mk :: (c : color)

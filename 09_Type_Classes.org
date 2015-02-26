@@ -521,8 +521,8 @@ namespace hide
 
 -- BEGIN
 inductive decidable [class] (p : Prop) : Type :=
-inl :  p → decidable p,
-inr : ¬p → decidable p
+| inl :  p → decidable p
+| inr : ¬p → decidable p
 -- END
 end hide
 #+END_SRC
@@ -548,10 +548,10 @@ equality and comparisons on the natural numbers and the integers are
 decidable. Moreover, decidability is preserved under propositional
 connectives:
 #+BEGIN_SRC lean
-check @and.decidable
-check @or.decidable
-check @not.decidable
-check @implies.decidable
+check @decidable_and
+check @decidable_or
+check @decidable_not
+check @decidable_implies
 #+END_SRC
 Thus we can carry out definitions by cases on decidable predicates on
 the natural numbers:
@@ -873,16 +873,16 @@ definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :
 
 -- Prove by induction/recursion that if P is a decidable predicate, then so is
 -- (∀ x : nat, x < n → P x)
-definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P),
-dec_ball 0     := inl (ball_zero P),
-dec_ball (a+1) :=
+definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P)
+| dec_ball 0     := inl (ball_zero P)
+| dec_ball (a+1) :=
   match dec_ball a with
-    inl iH  :=
+  | inl iH  :=
       match H a with
-        inl Pa  := inl (ball_succ_of_ball iH Pa),
-        inr nPa := inr (not_ball_of_not nPa)
-      end,
-    inr niH := inr (not_ball_succ_of_not_ball niH)
+      | inl Pa  := inl (ball_succ_of_ball iH Pa)
+      | inr nPa := inr (not_ball_of_not nPa)
+      end
+  | inr niH := inr (not_ball_succ_of_not_ball niH)
   end
 
 -- Now, we can use dec_trivial to solve prove simple theorems by "evaluation"

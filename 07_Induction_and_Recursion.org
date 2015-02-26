@@ -31,10 +31,10 @@ and =eq.rec=. Thus, the compiler is not part of the trusted code
 base. A pattern matching definition is of the following form
 
 #+BEGIN_SRC text
-definition [name] [parameters] : [domain] → [codomain],
-[name] [patterns_1] := [value_1],
+definition [name] [parameters] : [domain] → [codomain]
+| [name] [patterns_1] := [value_1]
 ...
-[name] [patterns_n] := [value_n]
+| [name] [patterns_n] := [value_n]
 #+END_SRC
 
 The parameters are fixed, and each assignment defines the value of the function
@@ -44,10 +44,10 @@ define the function =sub2= for natural numbers:
 #+BEGIN_SRC lean
 open nat
 
-definition sub2 : nat → nat,
-sub2 0     := 0,
-sub2 1     := 0,
-sub2 (a+2) := a
+definition sub2 : nat → nat
+| sub2 0     := 0
+| sub2 1     := 0
+| sub2 (a+2) := a
 
 example : sub2 5 = 3 :=
 rfl
@@ -59,10 +59,10 @@ hold definitionally.
 #+BEGIN_SRC lean
 open nat
 
-definition sub2 : nat → nat,
-sub2 0     := 0,
-sub2 1     := 0,
-sub2 (a+2) := a
+definition sub2 : nat → nat
+| sub2 0     := 0
+| sub2 1     := 0
+| sub2 (a+2) := a
 
 -- BEGIN
 example : sub2 0 = 0 :=
@@ -82,10 +82,10 @@ recursors.
 #+BEGIN_SRC lean
 open nat
 
-definition sub2 : nat → nat,
-sub2 0     := 0,
-sub2 1     := 0,
-sub2 (a+2) := a
+definition sub2 : nat → nat
+| sub2 0     := 0
+| sub2 1     := 0
+| sub2 (a+2) := a
 
 -- BEGIN
 print definition sub2
@@ -107,13 +107,13 @@ Next, we use pattern-matching for defining Boolean negation =neg=, and proving t
 #+BEGIN_SRC lean
 open bool
 
-definition neg : bool → bool,
-neg tt := ff,
-neg ff := tt
+definition neg : bool → bool
+| neg tt := ff
+| neg ff := tt
 
-theorem neg_neg : ∀ (b : bool), neg (neg b) = b,
-neg_neg tt := rfl,   -- proof for neg (neg tt) = tt
-neg_neg ff := rfl    -- proof for neg (neg ff) = ff
+theorem neg_neg : ∀ (b : bool), neg (neg b) = b
+| neg_neg tt := rfl   -- proof for neg (neg tt) = tt
+| neg_neg ff := rfl    -- proof for neg (neg ff) = ff
 #+END_SRC
 
 As described in previous chapters, Lean inductive datatypes can be parametric.
@@ -126,24 +126,24 @@ after =:=, but it cannot pattern match on them.
 import data.list
 open list
 
-definition tail {A : Type} : list A → list A,
-tail nil      := nil,
-tail (h :: t) := t
+definition tail {A : Type} : list A → list A
+| tail nil      := nil
+| tail (h :: t) := t
 
 -- Parameter A may occur after ':'
-definition tail2 : Π {A : Type}, list A → list A,
-tail2 (@nil A) := (@nil A),
-tail2 (h :: t) := t
+definition tail2 : Π {A : Type}, list A → list A
+| tail2 (@nil A) := (@nil A)
+| tail2 (h :: t) := t
 
 -- @ is allowed on the left-hand-side
-definition tail3 : Π {A : Type}, list A → list A,
-@tail3 A nil      := nil,
-@tail3 A (h :: t) := t
+definition tail3 : Π {A : Type}, list A → list A
+| @tail3 A nil      := nil
+| @tail3 A (h :: t) := t
 
 -- A is explicit parameter
-definition tail4 : Π (A : Type), list A → list A,
-tail4 A nil      := nil,
-tail4 A (h :: t) := t
+definition tail4 : Π (A : Type), list A → list A
+| tail4 A nil      := nil
+| tail4 A (h :: t) := t
 #+END_SRC
 
 
@@ -164,10 +164,10 @@ difference between recursion and induction in Lean.
 import data.nat
 open nat
 
-definition fib : nat → nat,
-fib 0     := 1,
-fib 1     := 1,
-fib (a+2) := fib (a+1) + fib a
+definition fib : nat → nat
+| fib 0     := 1
+| fib 1     := 1
+| fib (a+2) := fib (a+1) + fib a
 
 -- The defining equations hold definitionally
 
@@ -181,14 +181,14 @@ example (a : nat) : fib (a+2) = fib (a+1) + fib a :=
 rfl
 
 -- fib is always positive
-theorem fib_pos : ∀ n, 0 < fib n,
-fib_pos 0     := show 0 < 1, from zero_lt_succ 0,
-fib_pos 1     := show 0 < 1, from zero_lt_succ 0,
-fib_pos (a+2) := calc
-  0 = 0 + 0             : rfl
-... < fib (a+1) + 0     : add_lt_add_right (fib_pos (a+1)) 0
-... < fib (a+1) + fib a : add_lt_add_left  (fib_pos a)     (fib (a+1))
-... = fib (a+2)         : rfl
+theorem fib_pos : ∀ n, 0 < fib n
+| fib_pos 0     := show 0 < 1, from zero_lt_succ 0
+| fib_pos 1     := show 0 < 1, from zero_lt_succ 0
+| fib_pos (a+2) := calc
+    0 = 0 + 0             : rfl
+  ... < fib (a+1) + 0     : add_lt_add_right (fib_pos (a+1)) 0
+  ... < fib (a+1) + fib a : add_lt_add_left  (fib_pos a)     (fib (a+1))
+  ... = fib (a+2)         : rfl
 #+END_SRC
 
 Another classical example is the list =append= function.
@@ -197,9 +197,9 @@ Another classical example is the list =append= function.
 import data.list
 open list
 
-definition append {A : Type} : list A → list A → list A,
-append nil    l := l,
-append (h::t) l := h :: append t l
+definition append {A : Type} : list A → list A → list A
+| append nil    l := l
+| append (h::t) l := h :: append t l
 
 example : append [1, 2, 3] [4, 5] = [1, 2, 3, 4, 5] :=
 rfl
@@ -225,8 +225,8 @@ namespace hide
 open nat
 
 inductive vector (A : Type) : nat → Type :=
-nil {} : vector A zero,
-cons   : Π {n}, A → vector A n → vector A (succ n)
+| nil {} : vector A zero
+| cons   : Π {n}, A → vector A n → vector A (succ n)
 
 open vector
 notation h :: t := cons h t
@@ -269,33 +269,33 @@ namespace hide
 open nat
 
 inductive vector (A : Type) : nat → Type :=
-nil {} : vector A zero,
-cons   : Π {n}, A → vector A n → vector A (succ n)
+| nil {} : vector A zero
+| cons   : Π {n}, A → vector A n → vector A (succ n)
 
 open vector prod
 notation h :: t := cons h t
 
 -- BEGIN
-definition head {A : Type} : Π {n}, vector A (succ n) → A,
-head (h :: t) := h
+definition head {A : Type} : Π {n}, vector A (succ n) → A
+| head (h :: t) := h
 
-definition tail {A : Type} : Π {n}, vector A (succ n) → vector A n,
-tail (h :: t) := t
+definition tail {A : Type} : Π {n}, vector A (succ n) → vector A n
+| tail (h :: t) := t
 
-theorem eta {A : Type} : ∀ {n} (v : vector A (succ n)), head v :: tail v = v,
-eta (h::t) := rfl
+theorem eta {A : Type} : ∀ {n} (v : vector A (succ n)), head v :: tail v = v
+| eta (h::t) := rfl
 
 definition map {A B C : Type} (f : A → B → C)
-               : Π {n : nat}, vector A n → vector B n → vector C n,
-map nil     nil     := nil,
-map (a::va) (b::vb) := f a b :: map va vb
+               : Π {n : nat}, vector A n → vector B n → vector C n
+| map nil     nil     := nil
+| map (a::va) (b::vb) := f a b :: map va vb
 
 -- The automatically generated definitions for indexed families are not straightforward
 print definition map
 
-definition zip {A B : Type} : Π {n}, vector A n → vector B n → vector (A × B) n,
-zip nil nil         := nil,
-zip (a::va) (b::vb) := (a, b) :: zip va vb
+definition zip {A B : Type} : Π {n}, vector A n → vector B n → vector (A × B) n
+| zip nil nil         := nil
+| zip (a::va) (b::vb) := (a, b) :: zip va vb
 -- END
 
 end hide
@@ -312,10 +312,10 @@ the left-hand-side of the first two equations. Should the function return =1= or
 #+BEGIN_SRC lean
 open nat
 -- BEGIN
-definition f : nat → nat → nat,
-f 0     y     := 1,
-f x     0     := 2,
-f (x+1) (y+1) := 3
+definition f : nat → nat → nat
+| f 0     y     := 1
+| f x     0     := 2
+| f (x+1) (y+1) := 3
 -- END
 #+END_SRC
 
@@ -325,10 +325,10 @@ applicable equation. In the example above, the following equations hold definiti
 
 #+BEGIN_SRC lean
 open nat
-definition f : nat → nat → nat,
-f 0     y     := 1,
-f x     0     := 2,
-f (x+1) (y+1) := 3
+definition f : nat → nat → nat
+| f 0     y     := 1
+| f x     0     := 2
+| f (x+1) (y+1) := 3
 -- BEGIN
 variables (a b : nat)
 example : f 0     0     = 1 := rfl
@@ -347,10 +347,10 @@ in the right-hand-side. Here is the same example using wildcards.
 
 #+BEGIN_SRC lean
 open nat
-definition f : nat → nat → nat,
-f 0  _  := 1,
-f _  0  := 2,
-f _  _  := 3
+definition f : nat → nat → nat
+| f 0  _  := 1
+| f _  0  := 2
+| f _  _  := 3
 variables (a b : nat)
 example : f 0     0     = 1 := rfl
 example : f 0     (a+1) = 1 := rfl
@@ -383,10 +383,10 @@ In the following example we demonstrate both approaches.
 #+BEGIN_SRC lean
 open nat option
 
-definition f1 : nat → nat → nat,
-f1 0  _  := 1,
-f1 _  0  := 2,
-f1 _  _  := arbitrary nat -- "incomplete" case
+definition f1 : nat → nat → nat
+| f1 0  _  := 1
+| f1 _  0  := 2
+| f1 _  _  := arbitrary nat -- "incomplete" case
 
 variables (a b : nat)
 example : f1 0     0     = 1 := rfl
@@ -394,10 +394,10 @@ example : f1 0     (a+1) = 1 := rfl
 example : f1 (a+1) 0     = 2 := rfl
 example : f1 (a+1) (b+1) = arbitrary nat := rfl
 
-definition f2 : nat → nat → option nat,
-f2 0  _  := some 1,
-f2 _  0  := some 2,
-f2 _  _  := none    -- "incomplete" case
+definition f2 : nat → nat → option nat
+| f2 0  _  := some 1
+| f2 _  0  := some 2
+| f2 _  _  := none    -- "incomplete" case
 
 example : f2 0     0     = some 1 := rfl
 example : f2 0     (a+1) = some 1 := rfl
@@ -434,8 +434,8 @@ imf : Π a, image_of f (f a)
 
 open image_of
 
-definition inv {f : A → B} : Π b, image_of f b → A,
-inv ⌞f a⌟ (imf f a) := a
+definition inv {f : A → B} : Π b, image_of f b → A
+| inv ⌞f a⌟ (imf f a) := a
 #+END_SRC
 
 Inaccessible terms can also be used to reduce the complexity of the generated
@@ -454,14 +454,14 @@ namespace hide
 open nat
 
 inductive fin : nat → Type :=
-fz : Π n, fin (succ n),
-fs : Π {n}, fin n → fin (succ n)
+| fz : Π n, fin (succ n)
+| fs : Π {n}, fin n → fin (succ n)
 
 open fin
 
-definition to_nat : Π {n : nat}, fin n → nat,
-@to_nat ⌞n+1⌟ (fz n) := zero,
-@to_nat ⌞n+1⌟ (fs f) := succ (to_nat f)
+definition to_nat : Π {n : nat}, fin n → nat
+| @to_nat ⌞n+1⌟ (fz n) := zero
+| @to_nat ⌞n+1⌟ (fs f) := succ (to_nat f)
 -- END
 
 end hide
@@ -479,20 +479,20 @@ open nat bool list
 -- BEGIN
 definition is_not_zero (a : nat) : bool :=
 match a with
- zero   := ff,
- succ _ := tt
+| zero   := ff
+| succ _ := tt
 end
 
 -- We can use recursive equations and match
 variable {A : Type}
 variable p : A → bool
 
-definition filter : list A → list A,
-filter nil      := nil,
-filter (a :: l) :=
+definition filter : list A → list A
+| filter nil      := nil
+| filter (a :: l) :=
   match p a with
-    tt := a :: filter l,
-    ff := filter l
+  |  tt := a :: filter l
+  |  ff := filter l
   end
 
 example : filter is_not_zero [1, 0, 0, 3, 0] = [1, 3] :=
@@ -511,17 +511,17 @@ namespace hide
 open nat
 
 inductive vector (A : Type) : nat → Type :=
-nil {} : vector A zero,
-cons   : Π {n}, A → vector A n → vector A (succ n)
+| nil {} : vector A zero
+| cons   : Π {n}, A → vector A n → vector A (succ n)
 
 open vector prod
 notation h :: t := cons h t
 
 -- BEGIN
 variables {A B : Type}
-definition unzip : Π {n : nat}, vector (A × B) n → vector A n × vector B n,
-@unzip zero     nil         := (nil, nil),
-@unzip (succ n) ((a, b)::v) :=
+definition unzip : Π {n : nat}, vector (A × B) n → vector A n × vector B n
+| @unzip zero     nil         := (nil, nil)
+| @unzip (succ n) ((a, b)::v) :=
   match unzip v with
     (va, vb) := (a :: va, b :: vb)
   end
@@ -542,8 +542,8 @@ namespace hide
 open nat
 
 inductive vector (A : Type) : nat → Type :=
-nil {} : vector A zero,
-cons   : Π {n}, A → vector A n → vector A (succ n)
+| nil {} : vector A zero
+| cons   : Π {n}, A → vector A n → vector A (succ n)
 
 open vector
 notation h :: t := cons h t
@@ -551,17 +551,17 @@ notation h :: t := cons h t
 -- BEGIN
 variables {A B : Type}
 
-definition tail : Π {n}, vector A (succ n) → vector A n,
-tail (h :: t) := t
+definition tail : Π {n}, vector A (succ n) → vector A n
+| tail (h :: t) := t
 
 definition map (f : A → B)
-               : Π {n : nat}, vector A n → vector B n,
-map nil     := nil,
-map (a::va) := f a :: map va
+               : Π {n : nat}, vector A n → vector B n
+| map nil     := nil
+| map (a::va) := f a :: map va
 
-definition diag : Π {n : nat}, vector (vector A n) n → vector A n,
-diag nil              := nil,
-diag ((a :: va) :: v) := a :: diag (map tail v)
+definition diag : Π {n : nat}, vector (vector A n) n → vector A n
+| diag nil              := nil
+| diag ((a :: va) :: v) := a :: diag (map tail v)
 -- END
 
 end hide

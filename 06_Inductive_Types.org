@@ -24,15 +24,16 @@ Intuitively, an inductive type is built up from a specified list of
 constructors. In Lean, the syntax for specifying such a type is as follows:
 #+BEGIN_SRC text
 inductive foo : Type :=
-constructor₁ : ... → foo
-constructor₂ : ... → foo
+| constructor₁ : ... → foo
+| constructor₂ : ... → foo
 ...
-constructorₙ : ... → foo
+| constructorₙ : ... → foo
 #+END_SRC
 The intuition is that each constructor specifies a way of building new
 objects of =foo=, possibly from previously constructed values. The type
 =foo= consists of nothing more than the objects that are constructed in
-this way.
+this way. The first character =|= in an inductive declaration is optional.
+We can also separate constructors using the character =,= instead of =|=.
 
 We will see below that the arguments to the constructors can include
 objects of type =foo=, subject to a certain "positivity" constraint,
@@ -67,25 +68,25 @@ The simplest kind of inductive type is simply a type with a finite,
 enumerated list of elements.
 #+BEGIN_SRC lean
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 #+END_SRC
 The =inductive= command creates a new type, =weekday=. The
 constructors all live in the =weekday= namespace.
 #+BEGIN_SRC lean
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 
 -- BEGIN
 check weekday.sunday
@@ -117,13 +118,13 @@ import data.nat
 open nat
 
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 
 -- BEGIN
 definition number_of_day (d : weekday) : nat :=
@@ -149,13 +150,13 @@ import data.nat
 open nat
 
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 
 -- BEGIN
 definition number_of_day (d : weekday) : nat :=
@@ -166,13 +167,13 @@ weekday.cases_on d 1 2 3 4 5 6 7
 It is often useful to group definitions and theorems related to a
 structure in a namespace with the same name. For example, we can put
 the =number_of_day= function in the =weekday= namespace. We are then
-allowed to use the shorter name when we open the namespace. 
+allowed to use the shorter name when we open the namespace.
 
 The names =rec_on=, =cases_on=, =induction_on=, and so on are
 generated automatically, and they are /protected/ to avoid clashes; in
 other words, those names are not shorted by default when the namespace
 is open. You can explicitly declare the shorter identifiers as
-abbreviations at any time, however. Or, you can "unprotect" them using 
+abbreviations at any time, however. Or, you can "unprotect" them using
 the =renaming= option when you open a namespace.
 
 #+BEGIN_SRC lean
@@ -180,13 +181,13 @@ import data.nat
 open nat
 
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 
 -- BEGIN
 namespace weekday
@@ -209,13 +210,13 @@ end
 In the same vein, we can define functions from =weekday= to =weekday=:
 #+BEGIN_SRC lean
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 
 -- BEGIN
 namespace weekday
@@ -239,13 +240,13 @@ recursion principle: we simply have to provide a proof of the claim
 for each constructor:
 #+BEGIN_SRC lean
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 
 namespace weekday
   definition next (d : weekday) : weekday :=
@@ -276,13 +277,13 @@ proof instead of a piece of data. We could equally well have used
 =cases_on=:
 #+BEGIN_SRC lean
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 
 namespace weekday
   definition next (d : weekday) : weekday :=
@@ -308,13 +309,13 @@ While the =show= commands make the proof clearer and more
 readable, they are not necessary:
 #+BEGIN_SRC lean
 inductive weekday : Type :=
-sunday : weekday,
-monday : weekday,
-tuesday : weekday,
-wednesday : weekday,
-thursday : weekday,
-friday : weekday,
-saturday : weekday
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
 
 namespace weekday
   definition next (d : weekday) : weekday :=
@@ -344,8 +345,8 @@ inductive unit : Type :=
 star : unit
 
 inductive bool : Type :=
-ff : bool,
-tt : bool
+| ff : bool
+| tt : bool
 -- END
 
 end hide
@@ -396,8 +397,8 @@ inductive prod (A B : Type) :=
 mk : A → B → prod A B
 
 inductive sum (A B : Type) : Type :=
-inl {} : A → sum A B,
-inr {} : B → sum A B
+| inl {} : A → sum A B
+| inr {} : B → sum A B
 -- END
 
 end hide
@@ -527,8 +528,8 @@ namespace hide
 
 -- BEGIN
 inductive sum (A B : Type) : Type :=
-inl {} : A → sum A B,
-inr {} : B → sum A B
+| inl {} : A → sum A B
+| inr {} : B → sum A B
 -- END
 
 end hide
@@ -555,8 +556,8 @@ namespace hide
 
 -- BEGIN
 inductive option (A : Type) : Type :=
-none {} : option A,
-some    : A → option A
+| none {} : option A
+| some    : A → option A
 
 inductive inhabited (A : Type) : Type :=
 mk : A → inhabited A
@@ -605,8 +606,8 @@ inductive and (a b : Prop) : Prop :=
 intro : a → b → and a b
 
 inductive or (a b : Prop) : Prop :=
-intro_left  : a → or a b,
-intro_right : b → or a b
+| intro_left  : a → or a b
+| intro_right : b → or a b
 -- END
 
 end hide
@@ -676,8 +677,8 @@ namespace hide
 
 -- BEGIN
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 -- END
 
 end hide
@@ -705,8 +706,8 @@ n=. If we check the type of the recursor,
 namespace hide
 
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 -- BEGIN
 check @nat.rec_on
 -- END
@@ -734,8 +735,8 @@ assuming the value =add m n= is already determined, we define =add m
 namespace hide
 
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 -- BEGIN
 namespace nat
 
@@ -758,8 +759,8 @@ defining equations for addition now hold definitionally:
 namespace hide
 
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 
 namespace nat
 
@@ -787,8 +788,8 @@ proof: to prove =∀n, C n=, first prove =C 0=, and then, for arbitrary
 namespace hide
 
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 
 namespace nat
 
@@ -833,8 +834,8 @@ itself:
 namespace hide
 
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 
 namespace nat
 
@@ -929,8 +930,8 @@ follows:
 namespace hide
 
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 
 namespace nat
 
@@ -981,8 +982,8 @@ that =succ (n + m) = succ n + m=. We can prove this by induction on
 namespace hide
 
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 
 namespace nat
 
@@ -1038,8 +1039,8 @@ properties, building on the theorems we have already proved.
 namespace hide
 
 inductive nat : Type :=
-zero : nat,
-succ : nat → nat
+| zero : nat
+| succ : nat → nat
 
 namespace nat
 
@@ -1129,8 +1130,8 @@ of =A= is defined in the library.
 namespace hide
 -- BEGIN
 inductive list (A : Type) : Type :=
-nil {} : list A,
-cons : A → list A → list A
+| nil {} : list A
+| cons : A → list A → list A
 
 namespace list
 
@@ -1166,8 +1167,8 @@ namespace hide
 
 -- BEGIN
 inductive list (A : Type) : Type :=
-nil {} : list A,
-cons : A → list A → list A
+| nil {} : list A
+| cons : A → list A → list A
 
 namespace list
 
@@ -1193,8 +1194,8 @@ As an exercise, prove the following:
 namespace hide
 
 inductive list (A : Type) : Type :=
-nil {} : list A,
-cons : A → list A → list A
+| nil {} : list A
+| cons : A → list A → list A
 
 namespace list
 
@@ -1230,8 +1231,8 @@ espected (for example, =length (s ++ t) = length s + length t=).
 For another example, we can define the type of binary trees:
 #+BEGIN_SRC lean
 inductive binary_tree :=
-leaf : binary_tree,
-node : binary_tree → binary_tree → binary_tree
+| leaf : binary_tree
+| node : binary_tree → binary_tree → binary_tree
 #+END_SRC
 In fact, we can even define the type of countably branching trees:
 #+BEGIN_SRC lean
@@ -1239,8 +1240,8 @@ import data.nat
 open nat
 
 inductive cbtree :=
-leaf : cbtree,
-sup : (ℕ → cbtree) → cbtree
+| leaf : cbtree
+| sup : (ℕ → cbtree) → cbtree
 
 namespace cbtree
 
@@ -1262,10 +1263,10 @@ at the same time, where each one refers to the other.
 
 #+BEGIN_SRC lean
 inductive tree (A : Type) : Type :=
-node : A → forest A → tree A
+| node : A → forest A → tree A
 with forest : Type :=
-nil  : forest A,
-cons : tree A → forest A → forest A
+| nil  : forest A
+| cons : tree A → forest A → forest A
 #+END_SRC
 In this example, a =tree= with elements labeled from =A= is of the
 form =node a f=, where =a= is an element of =A= (the label), and =f= a
@@ -1279,10 +1280,10 @@ generalization is given by the possibility of defining inductive type
 simultaneous induction of the following form:
 #+BEGIN_SRC text
 inductive foo : ... → Type :=
-constructor₁ : ... → foo ...
-constructor₂ : ... → foo ...
+| constructor₁ : ... → foo ...
+| constructor₂ : ... → foo ...
 ...
-constructorₙ : ... → foo ...
+| constructorₙ : ... → foo ...
 #+END_SRC
 In contrast to ordinary inductive definition, which construct an
 element of =Type=, the more general version constructs a function
@@ -1600,8 +1601,8 @@ theorem succ_inj (a b : nat) (h : succ a = succ b) : a = b :=
 nat.no_confusion h (fun e : a = b, e)
 
 inductive tree (A : Type) : Type :=
-leaf : A → tree A,
-node : tree A → tree A → tree A
+| leaf : A → tree A
+| node : tree A → tree A → tree A
 
 open tree
 
