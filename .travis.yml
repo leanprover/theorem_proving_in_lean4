@@ -40,6 +40,7 @@ script:
       rm -f .git/index &&
       git add -f *.html tutorial.pdf &&
       git add css &&
+      git add images &&
       git add fonts &&
       git add -f js/* &&
       sudo rm -rf pygments-main &&
