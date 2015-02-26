@@ -237,9 +237,44 @@ begin
 end
 #+END_SRC
 
-# TODO: add a longer list of tactics, including generalize.
+We can also structure long proofs in "tactic-style".  Similarly to the
+"declarative" style, the =have= construct introduces an auxiliary
+subgoal in a proof.  We can also use nested =begin-end= blocks.  In
+the nested block, Lean focuses on the first goal, and generates an
+error when it has not been fully solved at the end of the block.
+Here is a small example:
+#+BEGIN_SRC lean
+-- BEGIN
+variables p q : Prop
 
-# TODO: is there a way of using "have" in a tactic proof?
+example : p ∧ q ↔ q ∧ p :=
+begin
+  apply iff.intro,
+  begin
+    intro H,
+    -- The following command creates the subgoal (Hp : p), and solves it
+    -- using and.left H
+    have Hp : p, from and.left H,
+    have Hq : q, from and.right H,
+    apply and.intro,
+    assumption
+  end,
+  begin
+    intro H,
+    have Hp : p,
+      begin
+        -- We can also prove the subgoal using tactic-style
+        apply and.right,
+        apply H
+      end,
+    have Hq : q, by apply and.left; exact H,
+    apply (and.intro Hp Hq)
+  end
+end
+-- END
+#+END_SRC
+
+# TODO: add a longer list of tactics, including generalize.
 
 # TODO: need an example of how [visible] is used.
 
