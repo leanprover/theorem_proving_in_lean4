@@ -525,7 +525,7 @@ var myModule = (function() {
             // Setup Navigation: note that the variable lean_nav_data
             // is loaded from 'js/nav_data.js' which is built by
             // 'build_nav_data' build target.
-            if (gup("live") != "") {
+            if (livemode) {
                 // Hide tutorial navigation if '?live=' used.
                 $('#tutorialNav').hide();
             } else {
