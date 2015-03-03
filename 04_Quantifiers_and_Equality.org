@@ -67,7 +67,7 @@ the universes of =A= and =B=. Suppose, however, that =B= is of
 is an element of =Type.{0}= as well, no matter which type universe =A=
 lives in. In other words, if =B= is a proposition depending on =A=,
 then =∀x : A, B= is again a proposition. This reflects the
-intepretation of =Prop= as the type of propositions rather than data,
+interpretation of =Prop= as the type of propositions rather than data,
 and it is what makes =Prop= /impredicative/. The key feature
 distinguishing Lean's library for homotopy type theory from the
 standard library is the absence of =Prop=, making that theory

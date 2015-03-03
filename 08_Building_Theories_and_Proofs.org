@@ -228,7 +228,9 @@ local attribute morphism.mor [coercion]
 You can also declare a persistent coercion by assigning the attribute
 when you define the function initially, as described in Section
 [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]]. Coercions that are defined in a namespace "live" in that
-namespace, and are made active when the namespace is opened.
+namespace, and are made active when the namespace is opened. If you
+want a coercion to be active as soon as a module is imported, be sure
+to declare it at the "top level", i.e. outside any namespace.
 
 Remember also that you can instruct Lean's pretty-printer to show
 coercions with =set_option=, and you can print all the coercions in
@@ -489,18 +491,19 @@ because that requires unfolding the definition of =id=.
 
 ** Reducible Definitions
 
-Transparent identifiers can be declared to be /reducible/ or /irreducible/ or /none/.
-By default, a definition is none. Whereas being transparent or opaque is a
-fixed, irrevocable feature of an identifier, being reducible or
-irreducible is an attribute that can be altered. This status provides
-hints that govern the way the elaborator tries to solve higher-order
-unification problems. As with other attributes, the status of an
-identifier with respect to reducibility has no bearing on type
-checking at all, which is to say, once a fully elaborated term is type
-correct, marking one of the constants it contains to be reducible does
-not change the correctness. The type checker in the kernel of Lean
-ignores such attributes, and there is no problem marking a constant
-reducible at one point, and then irreducible later on, or vice-versa.
+Transparent identifiers can be declared to be /reducible/ or
+/irreducible/ or /none/.  By default, a definition is none. Whereas
+being transparent or opaque is a fixed, irrevocable feature of an
+identifier, being reducible or irreducible is an attribute that can be
+altered. This status provides hints that govern the way the elaborator
+tries to solve higher-order unification problems. As with other
+attributes, the status of an identifier with respect to reducibility
+has no bearing on type checking at all, which is to say, once a fully
+elaborated term is type correct, marking one of the constants it
+contains to be reducible does not change the correctness. The type
+checker in the kernel of Lean ignores such attributes, and there is no
+problem marking a constant reducible at one point, and then
+irreducible later on, or vice-versa.
 
 The purpose of the annotation is to help Lean's unification procedure
 decide which declarations should be unfolded. The higher-order
@@ -528,7 +531,6 @@ definition pr1 [reducible] (A : Type) (a b : A) : A := a
 #+END_SRC
 The assignment persists to other modules. You can achieve the same
 result with the =attribute= command:
-
 #+BEGIN_SRC lean
 definition id (A : Type) (a : A) : A := a
 definition pr2 (A : Type) (a b : A) : A := b
@@ -543,12 +545,20 @@ attribute pr2 [irreducible]
 
 The =local= modifier can be used to instruct Lean to limit the scope
 to the current module.
-
 #+BEGIN_SRC lean
 definition pr2 (A : Type) (a b : A) : A := b
 
 local attribute pr2 [irreducible]
 #+END_SRC
+When reducibility hints are declared in a namespace, their scope is
+restricted to the namespace. In other words, even if you import the
+module in which the attributes are declared, they do not take effect
+until the namespace is opened. As with coercions, if you want a
+reducibility attribute to be set whenever a module is imported, be
+sure to declare it at the top level. See also Section [[More on
+Namespaces]] below for more information on how to import only the
+reducibility attributes, without exposing other aspects of the
+namespace.
 
 # TODO: add command to remove reducible/irreducible attribute (i.e. go back to "none")
 
@@ -638,9 +648,6 @@ elaborator either succeeds or fails to elaborate each
 independently. As another benefit, error messages are often improved;
 an error that ultimately stems from an incorrect choice of an overload
 in one subterm is not "blamed" on another part of the term.
-
-# TODO: find an example where [visible] is needed
-# TODO: is there an analog of proof ... qed blocks for definitions?
 
 In principle, one can write =proof t qed= for any term =t=, but it is
 used most effectively following a =have= or =show=, as in the example
@@ -941,19 +948,19 @@ import data.nat
 
 open - [notations] [coercions] nat
 #+END_SRC
-imports all metaclasses but =[notations]= and =[coercions]=. Remember
-also that you can limit the scope of an =open= command by putting it
-in a section. For example,
+imports all metaclasses but =[notations]= and =[coercions]=. You can
+limit the scope of an =open= command by putting it in a context. For
+example,
 #+BEGIN_SRC lean
 import data.nat
 
-section
+context
   open [notations] nat
 
   /- ... -/
 end
 #+END_SRC
-imports notation from nat only within the section.
+imports notation from nat only within the context.
 
 You can also import only certain theorems by providing an explicit
 list in parentheses:
@@ -965,8 +972,14 @@ check add
 check add.assoc
 check add.comm
 #+END_SRC
-Or, when importing theorems and definitions, you can rename them at
-the same time:
+The =open= command above imports all metaobjects from =nat=, but
+limits the shortened identifiers to the ones listed. If you want to
+import /only/ the shortened identifiers, use the following:
+#+BEGIN_SRC lean
+import data.nat
+open [declarations] nat (add add.assoc add.comm)
+#+END_SRC
+When you open a section, you can rename identifiers on the fly:
 #+BEGIN_SRC lean
 import data.nat
 open nat (renaming add -> plus)
