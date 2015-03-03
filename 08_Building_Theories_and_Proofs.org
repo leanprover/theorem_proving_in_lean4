@@ -3,9 +3,9 @@
 
 * Building Theories and Proofs
 
-In this chapter, we return to a discussion of pragmatic features of
-Lean, which make support the development of structures theories and
-proofs.
+In this chapter, we return to a discussion of some of the pragmatic
+features of Lean that support the development of structured theories
+and proofs.
 
 ** More on Coercions
 :PROPERTIES:
