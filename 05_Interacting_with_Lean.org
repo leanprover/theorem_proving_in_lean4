@@ -374,9 +374,15 @@ left margin. As you continue to type and eliminate errors, these
 annotations magically disappear.
 
 If you put the cursor on a highlighted error, Emacs displays the error
-message in at the bottom of the frame. Alteratively, if you type "C-c
-! l" while in Lean mode, Emacs opens a new window with a list of
-compilation errors.
+message in at the bottom of the frame. Alteratively, if you type =C-c
+! l= while in Lean mode, Emacs opens a new window with a list of
+compilation errors. Lean relies on an Emacs mode, /Flycheck/, for this
+functionality, as evidenced by the letters "FlyC" that appear in the
+Emacs information line. An asterisk next to these letters indicates
+that Flycheck is actively checking the file, using Lean. Flycheck
+offers a number of commands that begin with =C-c !=. For example, =C-c
+! n= moves the cursor to the next error, and =C-c ! p= moves the
+cursor to the previous error.
 
 It may be disconcerting to see a perfectly good proof suddenly "break"
 when you change a single character. If this proof is in the middle of
@@ -387,13 +393,13 @@ restored. Lean is quite fast and caches previous work to speed up
 compilation, and changes you make are registered almost
 instantaneously.
 
-The Emacs Lean mode maintains a continuous dialog with a background
-Lean process and uses it to present useful information to you. For
-example, if you put your cursor on any identifier --- a theorem name,
-a defined symbol, or a variable --- Emacs displays the its type in the
-information line at the bottom. If you put the cursor on the opening
-parenthesis of an expression, Emacs displays the type of the
-expression.
+The Emacs Lean mode also maintains a continuous dialog with a
+background Lean process and uses it to present useful information to
+you. For example, if you put your cursor on any identifier --- a
+theorem name, a defined symbol, or a variable --- Emacs displays the
+its type in the information line at the bottom. If you put the cursor
+on the opening parenthesis of an expression, Emacs displays the type
+of the expression.
 
 This works even for implicit arguments. If you put your cursor on an
 underscore symbol, then, assuming Lean's elaborator was successful in
@@ -413,7 +419,10 @@ The Lean mode supports tab completion. In a context where Lean expects
 an identifier (e.g. a theorem name or a defined symbol), if you start
 typing and then hit the tab key, a popup window suggests possible
 matches or near-matches for the expression you have typed. This helps
-you find the theorems you need without having to browse the library.
+you find the theorems you need without having to browse the
+library. You can also press tab after an =import= command, to see a
+list of possible imports, or after the =set_option= command, to see a
+list of options.
 
 If you put your cursor on an identifier that is defined in Lean's
 library and hit "M-.", Emacs will take you to the identifier's
@@ -444,41 +453,60 @@ long file and want to defer checking of the remainder of the file
 until you are done making those changes, you can temporarily insert an
 "exit".
 
-** Working with Multiple Files
+** Projects
 
-Working with multiple files is only slightly more complex than working
-with a development that fits into a single file. From Lean's
-perspective, processing an input file is a matter of constructing
-terms in the calculus of constructions, filling in the values of
-implicit arguments if necessary. These terms can then be saved,
-typically in a file with the same name but the extension ".olean", a
-Lean "object" file. It is these files that are loaded by the "import"
-command.
+At this point, it will be helpful to convey more information about the
+inner workings of Lean. A .lean file (or .hlean file, if you are
+working on homotopy type theory) consists of instructions that tell
+Lean how to construct formal terms in dependent type
+theory. "Processing" this file is a matter of filling in missing or
+implicit information, constructing the relevant terms, and sending
+them to the type checker to confirm that they are well-formed an have
+the specified types. This is analogous to the compilation process for
+a programming language: the .lean or .hlean file contains the source
+code that is then compiled down to machine representations of the
+desired formal objects. Lean stores the output of the compilation
+process in files with the extension ".olean", for "object Lean".
 
-To start a project that may, potentially, involve more than one file,
-choose the folder where you want the project to reside, open an
-initial file in Emacs, and choose "create a new project" from the Lean
-menu. The default file the system suggests is fine for most purposes,
-and you can just press the "open" button. This step enables a
-background process to ensure that whenever you are working on a file
-in this folder, compiled versions of all the files it depends on are
-available and up to date.
+It is these files, which we also refer to as "modules", that are
+loaded by the =import= command. When Lean processes an =import=
+command, it looks for the relevant .olean files in standard places. By
+default, the search path consists of the root of the standard library
+(or the hott library, if the file is a .hlean file) and the current
+directory. You can specify subdirectories using periods in the module
+name: for example, =import foo.bar.baz= looks for the file
+"foo/bar/baz.olean" relative to any of the locations listed in the
+search path. A leading period, as in =import .foo.bar=, indicates that
+the .olean file in question is specified relative to the current
+directory. Two leading periods, as in =import ..foo.bar=, indicates
+that the address is relative to the parent directory, and so on.
 
-Suppose you are editing =foo.lean=, which imports =bar.lean=. You
-can switch to =bar= and make additions or corrections to that file,
-then switch back to =foo= and continue working. The process =linja=,
-based on the =ninja= build system, ensures that =bar= is recompiled
-and that an up-to-date version is available to =foo=.
+If you enter the command =lean -o foo.olean foo.lean= from the command
+line, Lean processes =foo.lean= and, if it compiles successfully, it
+stores the output in =foo.olean=. The result is that another file can
+then =import foo=.
 
-Whenever you enter =import foo= at the top of a =.lean= file, Lean
-searches both the library directory and the current directory for
-=foo.lean=. If you want to specify that the location of =foo= is
-relative to the current directory, type =import .foo=. It is perfectly
-o.k.~if your project folder has subfolders, as long as the build file
---- the one you created with "create project" --- sits at the top. To
-import =foo= from folder =bar= relative to the current directory, type
-=import .bar.foo=. To import =foo= from folder =bar= in the parent of
-the current directory, type =import ..bar.foo=, and so on.
+When you are editing a single file with either the web interface or
+the Emacs Lean mode, however, Lean only checks the file internally,
+without saving the .olean output. Suppose, then, you wish to build a
+project that has multiple files. What you really want is for Lean's
+Emacs mode to build all the relevant .olean files in the background,
+so that you can import other modules freely. 
+
+The Emacs mode makes this easy. To start a project that may
+potentially involve more than one file, choose the folder where you
+want the project to reside, open an initial file in Emacs, choose
+"create a new project" from the Lean menu, and press the "open"
+button. This creates a file, =.project=, which instructs a background
+process to ensure that whenever you are working on a file in that
+folder (or any subfolder thereof), compiled versions of all the
+modules it depends on are available and up to date.
+
+Suppose you are editing =foo.lean=, which imports =bar=. You can
+switch to =bar.lean= and make additions or corrections to that file, then
+switch back to =foo= and continue working. The process =linja=, based
+on the =ninja= build system, ensures that =bar= is recompiled and that
+an up-to-date version is available to =foo=.
 
 Incidentally, outside of Emacs, from a terminal window, you can type
 =linja= anywhere in your project folder to ensure that all your files
