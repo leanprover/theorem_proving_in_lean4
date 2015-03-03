@@ -14,33 +14,34 @@ types.
 Working with induction and recursion is therefore fundamental to
 working in the Calculus of Inductive Constructions. For that reason
 Lean provides more natural ways of defining recursive functions,
-performing pattern matching and writing inductive proofs.  Behind the
-scenes, these are "compiled" down into recursors and auxiliary
-definitions we covered in previous chapters.
+performing pattern matching, and writing inductive proofs. Behind the
+scenes, these are "compiled" down to recursors, using some of the
+auxiliary definitions we covered in the previous chapter. Thus, the
+function definition package, which performs this reduction, is not
+part of the trusted code base.
 
 ** Pattern Matching
 
 The =cases_on= recursor can be used to define functions and prove
-theorems by cases. Complicated definitions may use several nested
+theorems by cases. But complicated definitions may use several nested
 =cases_on= applications, and may be hard to read and understand.
-Pattern-matching is a more convenient and standard description technique
-or defining functions and proving theorems. Actually, Lean supports an extension of
-pattern-matching called /dependent pattern-matching/. Internally,
-dependent pattern-matching is compiled using =cases_on=, =no_confusion=
-and =eq.rec=. Thus, the compiler is not part of the trusted code
-base. A pattern matching definition is of the following form
+Pattern matching provides a more convenient and standard way of
+defining functions and proving theorems. Lean supports a very general
+form of pattern matching called /dependent
+pattern matching/. Internally, Lean compiles these definitions down to
+recurors using the constructions =cases_on=, =no_confusion= and
+=eq.rec=, described in Section [[file:06_Inductive_Types.org::#Automatically_Generated_Constructions][Automatically Generated Constructions]].
 
+A pattern-matching definition is of the following form:
 #+BEGIN_SRC text
 definition [name] [parameters] : [domain] → [codomain]
 | [name] [patterns_1] := [value_1]
 ...
 | [name] [patterns_n] := [value_n]
 #+END_SRC
-
-The parameters are fixed, and each assignment defines the value of the function
-for a different case specified by the given pattern. As a first example, we
-define the function =sub2= for natural numbers:
-
+The parameters are fixed, and each assignment defines the value of the
+function for a different case specified by the given pattern. As a
+first example, we define the function =sub2= for natural numbers:
 #+BEGIN_SRC lean
 open nat
 
@@ -52,10 +53,8 @@ definition sub2 : nat → nat
 example : sub2 5 = 3 :=
 rfl
 #+END_SRC
-
-The default compilation method guarantees that the pattern matching "equations"
+The default compilation method guarantees that the pattern matching equations
 hold definitionally.
-
 #+BEGIN_SRC lean
 open nat
 
@@ -78,7 +77,6 @@ rfl
 
 We can use the command =print definition= to inspect how our definition was compiled into
 recursors.
-
 #+BEGIN_SRC lean
 open nat
 
@@ -92,18 +90,20 @@ print definition sub2
 -- END
 #+END_SRC
 
-We say a term is a /constructor application/ if it is of the form =c a_1 ... a_n= where
-=c= is the constructor of some inductive datatype.
-Note that in the definition =sub2=, the terms =1= and =a+2= are not constructor applications.
-However, the compiler normalizes them at compilation time, and obtains the constructor applications
-=succ zero= and =succ (succ a)= respectively. This normalization step is just a simple convenience
-that allows us to write definitions resembling the ones found in textbooks.
-Note that, there is no "magic", the compiler is just using the kernel normalizer/evaluator.
-If we had written =2+a=, the definition would be rejected since =2+a= does not normalize into a
-constructor application.
+We will say a term is a /constructor application/ if it is of the form
+=c a_1 ... a_n= where =c= is the constructor of some inductive
+datatype.  Note that in the definition =sub2=, the terms =1= and =a+2=
+are not constructor applications.  However, the compiler normalizes
+them at compilation time, and obtains the constructor applications
+=succ zero= and =succ (succ a)= respectively. This normalization step
+is just a simple convenience that allows us to write definitions
+resembling the ones found in textbooks.  Note that, there is no
+"magic", the compiler is just using the kernel normalizer/evaluator.
+If we had written =2+a=, the definition would be rejected since =2+a=
+does not normalize into a constructor application.
 
-Next, we use pattern-matching for defining Boolean negation =neg=, and proving that =neg (neg b) = b=.
-
+Next, we use pattern-matching for defining Boolean negation =neg=, and
+proving that =neg (neg b) = b=.
 #+BEGIN_SRC lean
 open bool
 
@@ -116,12 +116,12 @@ theorem neg_neg : ∀ (b : bool), neg (neg b) = b
 | neg_neg ff := rfl    -- proof for neg (neg ff) = ff
 #+END_SRC
 
-As described in previous chapters, Lean inductive datatypes can be parametric.
-The following example defines the =tail= function using pattern matching.
-The argument =A : Type= is a parameter and occurs before =:= to indicate it
-does not participate in the pattern matching. Lean allows parameters to occur
-after =:=, but it cannot pattern match on them.
-
+As described in Chapter [[file:06_Inductive_Types.org#Inductive_Types][Inductive Types]], Lean inductive datatypes can
+be parametric. The following example defines the =tail= function
+using pattern matching.  The argument =A : Type= is a parameter and
+occurs before =:= to indicate it does not participate in the pattern
+matching. Lean allows parameters to occur after =:=, but it cannot
+pattern match on them.
 #+BEGIN_SRC lean
 import data.list
 open list
@@ -149,17 +149,54 @@ definition tail4 : Π (A : Type), list A → list A
 
 ** Structural Recursion/Induction
 
-The default compilation method supports structural recursion:
+The function definition package supports structural recursion:
 recursive applications where one of the arguments is a subterm of the
-corresponding term on the left-hand-side. Later, we describe
-how to compile recursive equations using well-founded recursion.
-The main advantage of the default compilation method is that the
-recursive equations hold definitionally.
-Our first recursive example is the Fibonacci function =fib=, and the =fib_pos=
-theorem which combines pattern-matching, recursive equations, and calculational
-proofs. The theorem =fib_pos= makes it clear again that there is no
-difference between recursion and induction in Lean.
+corresponding term on the left-hand-side. Later, we describe how to
+compile recursive equations using well-founded recursion.  The main
+advantage of the default compilation method is that the recursive
+equations hold definitionally.
 
+Here are some examples from the last chapter, written in the new
+style:
+#+BEGIN_SRC lean
+namespace hide
+
+inductive nat : Type :=
+| zero : nat
+| succ : nat → nat
+
+namespace nat
+
+notation 0 := zero
+
+-- BEGIN
+definition add : nat → nat → nat
+| add m 0        := m
+| add m (succ n) := succ (add m n)
+
+infix `+` := add
+
+theorem add_zero (m : nat) : m + 0 = m := rfl
+theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
+
+theorem zero_add : ∀n, 0 + n = n
+| zero_add 0        := rfl
+| zero_add (succ n) := eq.subst (zero_add n) rfl
+
+definition mul : nat → nat → nat
+| mul n 0        := 0
+| mul n (succ m) := mul n m + m
+-- END
+
+end nat
+end hide
+#+END_SRC
+The "definition" of =zero_add= makes it clear that proof by induction
+is really a form of induction in Lean.
+
+A more example is the Fibonacci function =fib=, together with a
+theorem, =fib_pos=, which combines pattern matching, recursive
+equations, and calculational proofs. 
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -191,8 +228,7 @@ theorem fib_pos : ∀ n, 0 < fib n
   ... = fib (a+2)         : rfl
 #+END_SRC
 
-Another classical example is the list =append= function.
-
+Another classic example is the list =append= function.
 #+BEGIN_SRC lean
 import data.list
 open list
@@ -209,16 +245,15 @@ rfl
 
 All the examples we have seen so far can be easily written
 using =cases_on= and =rec_on=. However, this is not the case
-for indexed inductive families such as =vector A n=.
-A lot of boiler plate code needs to be written to define
-very simple functions such as =map=, =zip=, =unzip= using
+with indexed inductive families, such as =vector A n=.
+A lot of boilerplate code needs to be written to define
+very simple functions such as =map=, =zip=, and =unzip= using
 recursors.
-In the next example, we define the indexed inductive family
-vector, the tail function and leave as exercise the function =map=
-which maps a function onto each pair of elements coming from
-input vectors. We encourage you to try to define =map= using =rec_on=,
-=cases_on= and =no_confusion=.
 
+To understand the difficulty, consider what it would take to define a
+function =tail= which takes a vector =v : vector A (succ n)= and
+deletes the first element. A first thought might be to use the
+=cases_on= function:
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
@@ -239,31 +274,58 @@ check @vector.cases_on
 --   (e1 : C 0 nil)
 --   (e2 : Π {n : ℕ} (a : A) (a_1 : vector A n), C (succ n) (cons a a_1)),
 --   C a n
-
-definition tail {A : Type} {n : nat} (v : vector A (succ n)) : vector A n :=
-vector.cases_on v
- (fun (e : zero = succ n), nat.no_confusion e)
- (fun (n1 : nat) (h : A) (t : vector A n1) (e : succ n1 = succ n),
-    nat.no_confusion e (fun n1_eq_n : n1 = n, eq.rec_on n1_eq_n t))
- (eq.refl (succ n))
-
-definition map {A B C : Type} (f : A → B → C)
-               : Π {n : nat}, vector A n → vector B n → vector C n :=
-sorry
 -- END
 
 end hide
 #+END_SRC
+But what value should we return in the =nil= case? Something funny is
+going on: if =v= has type =vector A (succ n)=, it /can't/ be nil, but
+it is not clear how to tell that to =cases_on=. 
 
-The main difficulty is to maintain the relationship between the indices.
-The extra parameter =e= in =tail= is used to "communicate" the relationship
-between =n= and index associated with each minor premise.
-Moreover, some cases are "unreachable" (e.g., =zero = succ n= in the first case at
-=tail=), and the default way to discard them is using =no_confusion=.
-The =map= function is even more tedious to define. All these functions are trivial
-to define using recursive equations. The compiler generates all boiler plate code
-automatically for us.
+A standard solution is to define an auxiliary function:
+#+BEGIN_SRC lean
+namespace hide
+open nat
 
+inductive vector (A : Type) : nat → Type :=
+| nil {} : vector A zero
+| cons   : Π {n}, A → vector A n → vector A (succ n)
+
+open vector
+notation h :: t := cons h t
+
+-- BEGIN
+definition tail_aux {A : Type} {n m : nat} (v : vector A m) :
+    m = succ n → vector A n :=
+vector.cases_on v
+  (assume H : 0 = succ n, nat.no_confusion H)
+  (take m (a : A) w : vector A m,
+    assume H : succ m = succ n,
+      have H1 : m = n, from succ.inj H,
+      eq.rec_on H1 w)
+
+definition tail {A : Type} {n : nat} (v : vector A (succ n)) : vector A n :=
+tail_aux v rfl
+-- END
+
+end hide
+#+END_SRC
+In the =nil= case, =m= is instantiated to =0=, and =no_confusion=
+(discussed in Section [[file:06_Inductive_Types.org::#Automatically_Generated_Constructions][Automatically Generated Constructions]]) makes use
+of the fact that =0 = succ n= cannot occur. Otherwise, =v= is of the
+form =a :: w=, and we can simply return =w=, after casting it from a
+vector of length =m= to a vector of length =n=. 
+
+The difficulty in defining =tail= is to maintain the relationships
+between the indices.  The hypothesis =e : m = succ n= in =tail_aux= is
+used to "communicate" the relationship between =n= and the index
+associated with the minor premise. Moreover, the =zero = succ n= case
+is "unreachable", and the standard way to discard such a case is to
+use =no_confusion=.
+
+The =tail= function is, however, easy to define using recursive
+equations, and the function definition package generates all the
+boilerplate code automatically for us. Here are a number of examples:
 #+BEGIN_SRC lean
 namespace hide
 open nat
@@ -300,15 +362,19 @@ definition zip {A B : Type} : Π {n}, vector A n → vector B n → vector (A ×
 
 end hide
 #+END_SRC
+Note that we can omit recursive equations for "unreachable" cases such
+as =head nil=.
 
-Note that we can omit recursive equations for "unreachable" cases such as =head nil=.
+The =map= function is even more tedious to define by hand than the
+=tail= function. We encourage you to try it, using =rec_on=,
+=cases_on= and =no_confusion=.
 
-** Overlapping Patterns
+** Variations on Pattern Matching
 
-We say a set of recursive equations /overlap/ when there is an input that more than
-one left-hand-side can match. In the following definition the input =0 0= matches
-the left-hand-side of the first two equations. Should the function return =1= or =2=?
-
+We say a set of recursive equations /overlap/ when there is an input
+that more than one left-hand-side can match. In the following
+definition the input =0 0= matches the left-hand-side of the first two
+equations. Should the function return =1= or =2=?
 #+BEGIN_SRC lean
 open nat
 -- BEGIN
@@ -318,11 +384,10 @@ definition f : nat → nat → nat
 | f (x+1) (y+1) := 3
 -- END
 #+END_SRC
-
-Overlapping patterns are often used to succinctly express complex patterns in data.
-Thus, they are allowed in Lean. Lean eliminates the ambiguity by using the first
-applicable equation. In the example above, the following equations hold definitionally.
-
+Overlapping patterns are often used to succinctly express complex
+patterns in data, and they are allowed in Lean. Lean eliminates the
+ambiguity by using the first applicable equation. In the example
+above, the following equations hold definitionally:
 #+BEGIN_SRC lean
 open nat
 definition f : nat → nat → nat
@@ -338,13 +403,11 @@ example : f (a+1) (b+1) = 3 := rfl
 -- END
 #+END_SRC
 
-** Wildcard Patterns
-
-Lean also supports /wildcard patterns/ aka anonymous variables =_=. They are useful to create
-patterns where we don't care about the value of a specific argument.
-In the function =f= defined in the previous section, the values of =x= and =y= are not used
-in the right-hand-side. Here is the same example using wildcards.
-
+Lean also supports /wildcard patterns/, also known as /anonymous
+variables/. They are used to create patterns where we don't care about
+the value of a specific argument.  In the function =f= defined above,
+the values of =x= and =y= are not used in the right-hand-side. Here is
+the same example using wildcards:
 #+BEGIN_SRC lean
 open nat
 definition f : nat → nat → nat
@@ -358,28 +421,23 @@ example : f (a+1) 0     = 2 := rfl
 example : f (a+1) (b+1) = 3 := rfl
 #+END_SRC
 
-** Incomplete Patterns
-
-Some functional languages support incomplete patterns. In these
+Some functional languages support /incomplete patterns/. In these
 languages, the interpreter produces an exception or returns an
 arbitrary value for incomplete cases. We can simulate the arbitrary
-value approach using inhabited types.
-An element of =inhabited A= is simply a
-witness to the fact that there is an element of =A=. Later, we will
-see that =inhabited= is an instance of a =type class= in Lean: Lean
-can be instructed that suitable base types are inhabited, and can
-automatically infer that other constructed types are inhabited on that
-basis. The standard library provides the opaque definition =arbitrary
-A= for inhabited types. The function =arbitrary A= just returns the
-witness for =A=, but since =arbitrary A= is opaque, we cannot rely on
-the witness chosen.
+value approach using inhabited types.  An element of =inhabited A= is
+simply a witness to the fact that there is an element of =A=. In
+Chapter [[file:09_Type_Classes.org#Type_Classes][Type Classes]], we will see that =inhabited= is an instance of a
+=type class=: Lean can be instructed that suitable base types are
+inhabited, and can automatically infer that other constructed types
+are inhabited on that basis. The standard library provides the opaque
+definition =arbitrary A= for inhabited types. The function =arbitrary
+A= returns a witness for =A=, but since the definition of =arbitrary=
+is opaque, we cannot infer anything about the witness chosen.
 
 We can also use the type =option A= to simulate incomplete patterns.
-The idea is to return =some a= for the provided patterns, and use =none=
-for the incomplete cases.
-
-In the following example we demonstrate both approaches.
-
+The idea is to return =some a= for the provided patterns, and use
+=none= for the incomplete cases. The following example demonstrates
+both approaches.
 #+BEGIN_SRC lean
 open nat option
 
@@ -410,22 +468,23 @@ example : f2 (a+1) (b+1) = none   := rfl
 Another complication in dependent pattern matching is that some parts
 require constructor matching, and others are just report
 specialization. Lean allows users to mark subterms are /inaccessible/
-for parttern matching. These annotations are essential, for example,
-when a term occurring in the left-hand-side is not a variable nor a
-constructor application. We can view /inaccessible/ terms as
-"don't care" patterns.
+for pattern matching. These annotations are essential, for example,
+when a term occurring in the left-hand-side is neither a variable nor
+a constructor application. We can view inaccessible terms as "don't
+care" patterns.
 
 An inaccessible subterm can be declared using one of the following two
-notations: =⌞t⌟= or =?(t)=. The unicode version is inputed by entering
+notations: =⌞t⌟= or =?(t)=. The unicode version is input by entering
 =\cll= (corner-lower-left) and =\clr= (corner-lower-right).
 
-In the following example due to Goguen-McBride-McKinna, we declare
-an inductive type that defines the property of "being in the image of =f=".
-Then, we equip =f= with an "inverse". The typing rules forces us to
-write =f a= for the first argument, this term is not a variable nor
-a constructor application. We can view elements of the type =image_of f b= as
-evidence that =b= is in the image of =f=. The constructor =imf= is used to
-build such evidence.
+In the following example can be find in \cite{goguen:et:al:06}. We
+declare an inductive type that defines the property of "being in the
+image of =f=".  Then, we equip =f= with an "inverse" which takes
+anything in the image of =f= to an element that is mapped to it. The
+typing rules forces us to write =f a= for the first argument, this
+term is not a variable nor a constructor application. We can view
+elements of the type =image_of f b= as evidence that =b= is in the
+image of =f=. The constructor =imf= is used to build such evidence.
 
 #+BEGIN_SRC lean
 variables {A B : Type}
@@ -438,15 +497,17 @@ definition inv {f : A → B} : Π b, image_of f b → A
 | inv ⌞f a⌟ (imf f a) := a
 #+END_SRC
 
-Inaccessible terms can also be used to reduce the complexity of the generated
-definition. Depedent pattern matching is compiled using basically the
-=cases_on= and =no_confusion= constructions. The number of =cases_on= introduced
-by the compiler can be reduced by marking parts that just report specialization.
-In the next example, we define the type of finite ordinals =fin n=, this type has
-=n= inhabitants. We also define the function =to_nat= that maps a =fin n= into a
-=nat=. If we do not mark =n+1= as inaccessible, the compiler will generate a definition
-containing two =cases_on= expressions. We encourage you to replace
-=⌞n+1⌟= with =(n+1)= and inspect the generated definition using =print definition to_nat=.
+Inaccessible terms can also be used to reduce the complexity of the
+generated definition. Depedent pattern matching is compiled using the
+=cases_on= and =no_confusion= constructions. The number of instances
+of =cases_on= introduced by the compiler can be reduced by marking
+parts that only report specialization.  In the next example, we define
+the type of finite ordinals =fin n=, this type has =n= inhabitants. We
+also define the function =to_nat= that maps a =fin n= into a =nat=. If
+we do not mark =n+1= as inaccessible, the compiler will generate a
+definition containing two =cases_on= expressions. We encourage you to
+replace =⌞n+1⌟= with =(n+1)= in the next example and inspect the
+generated definition using =print definition to_nat=.
 
 #+BEGIN_SRC lean
 namespace hide
@@ -454,12 +515,12 @@ namespace hide
 open nat
 
 inductive fin : nat → Type :=
-| fz : Π n, fin (succ n)
-| fs : Π {n}, fin n → fin (succ n)
+| fz : Πn, fin (succ n)
+| fs : Π{n}, fin n → fin (succ n)
 
 open fin
 
-definition to_nat : Π {n : nat}, fin n → nat
+definition to_nat : Π{n : nat}, fin n → nat
 | @to_nat ⌞n+1⌟ (fz n) := zero
 | @to_nat ⌞n+1⌟ (fs f) := succ (to_nat f)
 -- END
