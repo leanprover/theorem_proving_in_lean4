@@ -800,20 +800,51 @@ Remember also that in the Emacs Lean mode, tab completion works in
 As noted above, the type class instances in a given context represent
 a prolog-like program, which gives rise to a backtracking search. Both
 the efficiency of the program and the solutions that are found can
-depend on the order in which the system tries the instance.
-Instances which are declared last are tried first.
-Moreover, if instances are declared in other modules, the order in which
-they are tried depends on the order in which namespaces are opened.
-Instances declared in namespaces which are opened later are tried earlier.
+depend on the order in which the system tries the instance.  Instances
+which are declared last are tried first.  Moreover, if instances are
+declared in other modules, the order in which they are tried depends
+on the order in which namespaces are opened.  Instances declared in
+namespaces which are opened later are tried earlier.
+
+You can modify change the order that type classes instances are tried
+by assigning them a /priority/. When an instance is declared, it is
+assigned a priority value =std.priority.default=, defined to be 1000
+in module =init.priority= in both the standard and hott libraries. You
+can assign other priorities when defining an instance, and you can
+later change the priority with the =attribute= command. The following
+example illustrates how this is done:
+#+BEGIN_SRC lean
+open nat
+
+structure foo [class] :=
+(a : nat) (b : nat)
+
+definition i1 [instance] [priority default+10] : foo :=
+foo.mk 1 1
+
+definition i2 [instance] : foo :=
+foo.mk 2 2
+
+example : foo.a = 1 := rfl
+
+definition i3 [instance] [priority default+20] : foo :=
+foo.mk 3 3
+
+example : foo.a = 3 := rfl
+
+attribute i3 [instance] [priority 500]
+
+example : foo.a = 1 := rfl
+#+END_SRC
 
 ** Instances in Sections
 
-We can easily assume instances of type classes in a complete section
-using variables (or in a context using parameters). Recall
-that variables are only included in declarations when they are actually
-mentioned. Instances of type classes are rarely explicitly mentioned in
-definitions, so to make sure that an instance of a type class is included
-in definitions, we use the =include= command.
+We can easily introduces instances of type classes in a section or
+context using variables and parameters. Recall that variables are only
+included in declarations when they are explicitly mentioned. Instances
+of type classes are rarely explicitly mentioned in definitions, so to
+make sure that an instance of a type class is included in every
+definition and theorem, we use the =include= command.
 #+BEGIN_SRC lean
 import standard
 
@@ -835,8 +866,10 @@ section
 end
 -- END
 #+END_SRC
-Note that the =include= command includes a variable in every definition in that section.
-If we want to declare some definitions which do not use the instance, we can use the =omit= command:
+Note that the =include= command includes a variable in every
+definition and theorem in that section.  If we want to declare a
+definition of theorem which does not use the instance, we can use the
+=omit= command:
 #+BEGIN_SRC lean
 inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
