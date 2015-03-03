@@ -315,7 +315,8 @@ are simultaneously satisifed. An assignment of terms to metavariables
 is known as a /substitution/, and the general task of finding a
 substitution that makes two expressions coincide is known as a
 /unification/ problem. (If only one of the expressions contains
-metavariables, it is a special case known as a /matching/ problem.)
+metavariables, the task is a special case known as a /matching/
+problem.)
 
 Some constraints are straightforwardly handled. If =f= and =g= are
 distinct constants, it is clear that there is no way to unify the

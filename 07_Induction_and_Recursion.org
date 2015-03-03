@@ -147,7 +147,7 @@ definition tail4 : Π (A : Type), list A → list A
 #+END_SRC
 
 
-** Structural Recursion/Induction
+** Structural Recursion and Induction
 
 The function definition package supports structural recursion:
 recursive applications where one of the arguments is a subterm of the
@@ -194,9 +194,43 @@ end hide
 The "definition" of =zero_add= makes it clear that proof by induction
 is really a form of induction in Lean.
 
-A more example is the Fibonacci function =fib=, together with a
-theorem, =fib_pos=, which combines pattern matching, recursive
-equations, and calculational proofs.
+As with definition by pattern matching, parameters to a structural
+recursion or induction may appear before the colon. Such parameters
+are simply added to the local context before the definition is
+processed. For example, the definition of addition may be written as
+follows:
+#+BEGIN_SRC lean
+namespace hide
+
+inductive nat : Type :=
+| zero : nat
+| succ : nat → nat
+
+namespace nat
+
+notation 0 := zero
+
+-- BEGIN
+definition add (m : nat) : nat → nat
+| add 0        := m
+| add (succ n) := succ (add n)
+-- END
+
+end nat
+end hide
+#+END_SRC
+This may seem a little odd, but you should read the definition as
+follows: "Fix =m=, and define the function which adds something to =m=
+recursively, as follows. To add zero, return =m=. To add the successor
+of =n=, first add =n=, and then take the successor." The mechanism
+for adding parameters to the local context is what makes it possible
+to process match expressions within terms, as described below.
+
+A more interesting example of strutural recursion is given by the
+Fibonacci function =fib=. The subsequent theorem, =fib_pos=, which
+combines pattern matching, recursive equations, and calculational
+proof.
+
 #+BEGIN_SRC lean
 import data.nat
 open nat
