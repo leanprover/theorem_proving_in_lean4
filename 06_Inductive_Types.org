@@ -38,10 +38,13 @@ We can also separate constructors using the character =,= instead of =|=.
 We will see below that the arguments to the constructors can include
 objects of type =foo=, subject to a certain "positivity" constraint,
 which guarantees that elements of =foo= are built from the bottom
-up. We will not specify this constraint precisely, but we will
-illustrate it with a number of examples. At the end of this chapter,
-we will also consider a slight generalization of this scheme, to
-so-called /inductive families/.
+up. Roughly speaking, each =...= can be any Pi type constructed from
+=foo= and previously defined types, in which =foo= appears, if at all,
+only as the "target" of the Pi type. For more details, see \cite{dyjber:94}.
+
+We will provide a number of examples of inductive types. We will also
+consider slight generalizations of the scheme above, to mutually
+defined inductive types, and so-called /inductive families/.
 
 As with the logical connectives, every inductive type comes with
 introduction rules, which show how to construct an element of the
