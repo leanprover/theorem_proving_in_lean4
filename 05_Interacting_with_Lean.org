@@ -382,7 +382,8 @@ Emacs information line. An asterisk next to these letters indicates
 that Flycheck is actively checking the file, using Lean. Flycheck
 offers a number of commands that begin with =C-c !=. For example, =C-c
 ! n= moves the cursor to the next error, and =C-c ! p= moves the
-cursor to the previous error.
+cursor to the previous error. You can get to a help menu that lists
+these key bindings by clicking on the "FlyC" tag.
 
 It may be disconcerting to see a perfectly good proof suddenly "break"
 when you change a single character. If this proof is in the middle of
