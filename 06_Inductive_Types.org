@@ -40,7 +40,7 @@ objects of type =foo=, subject to a certain "positivity" constraint,
 which guarantees that elements of =foo= are built from the bottom
 up. Roughly speaking, each =...= can be any Pi type constructed from
 =foo= and previously defined types, in which =foo= appears, if at all,
-only as the "target" of the Pi type. For more details, see \cite{dyjber:94}.
+only as the "target" of the Pi type. For more details, see \cite{dybjer:94}.
 
 We will provide a number of examples of inductive types. We will also
 consider slight generalizations of the scheme above, to mutually
