@@ -2,6 +2,9 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], Leonardo de Moura
 
 * Structures and Records
+:PROPERTIES:
+  :CUSTOM_ID: Structures_and_Records
+:END:
 
 We have seen that the Calculus of Inductive Constructions includes
 inductive types, and the remarkable fact that it is possible to

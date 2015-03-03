@@ -207,7 +207,7 @@ section
 end
 -- END
 #+END_SRC
-In the same vein, we can define functions from =weekday= to =weekday=:
+We can define functions from =weekday= to =weekday=:
 #+BEGIN_SRC lean
 inductive weekday : Type :=
 | sunday : weekday
@@ -351,10 +351,10 @@ inductive bool : Type :=
 
 end hide
 #+END_SRC
-(To run these examples in Lean's web interface, we put them in a
-namespace called =hide=, so that a name like =bool= does not conflict
-with the =bool= in the standard library. This is only necessary because
-these types are part of the Lean prelude that is automatically imported.
+(To run these examples, we put them in a namespace called =hide=, so
+that a name like =bool= does not conflict with the =bool= in the
+standard library. This is necessary because these types are part
+of the Lean prelude that is automatically imported.)
 
 The type =empty= is an inductive datatype with no constructors. The
 type =unit= has a single element, =star=, and the type =bool=
@@ -420,10 +420,10 @@ namespace hide
 
 -- BEGIN
 definition pr1 {A B : Type} (p : A × B) : A :=
-prod.rec_on p (fun a b, a)
+prod.rec_on p (λa b, a)
 
 definition pr2 {A B : Type} (p : A × B) : A :=
-prod.rec_on p (fun a b, a)
+prod.rec_on p (λa b, a)
 -- END
 
 end hide
@@ -439,7 +439,7 @@ import data.bool data.prod data.nat data.prod data.sum
 open prod sum nat bool
 -- BEGIN
 definition prod_example (p : bool × ℕ) : ℕ :=
-prod.rec_on p (fun b n, cond b (2 * n) (2 * n + 1))
+prod.rec_on p (λb n, cond b (2 * n) (2 * n + 1))
 
 eval prod_example (tt, 3)
 eval prod_example (ff, 3)
@@ -464,7 +464,7 @@ open prod sum nat bool
 
 -- BEGIN
 definition sum_example (s : ℕ + ℕ) : ℕ :=
-sum.cases_on s (fun n, 2 * n) (fun n, 2 * n + 1)
+sum.cases_on s (λn, 2 * n) (λn, 2 * n + 1)
 
 eval sum_example (inl 3)
 eval sum_example (inr 3)
@@ -475,10 +475,10 @@ This example is similar to the previous one, but now an input to
 the first case, the function returns =2 * n=, and the second case, it
 returns =2 * n + 1=.
 
-In the section after next we will see what happens when the construtor
-of an inductive type takes arguments from the inductive type
-itself. What characterizes the examples we consider in this section is
-that this is not the case: each constructor relies only on
+In the section after next we will see what happens when the
+constructor of an inductive type takes arguments from the inductive
+type itself. What characterizes the examples we consider in this
+section is that this is not the case: each constructor relies only on
 previously specified types.
 
 Notice that a type with multiple constructors is disjunctive: an
@@ -495,7 +495,7 @@ of data, essentially a tuple where the type of subsequent arguments
 can depend on the type of the initial argument. We can also think of
 such a type as a "record" or a "structure". In Lean, these two words
 are synonymous, and provide alternative syntax for inductive types
-with a single construtor.
+with a single constructor.
 #+BEGIN_SRC lean
 namespace hide
 
@@ -506,12 +506,36 @@ mk :: (pr1 : A) (pr2 : B)
 
 end hide
 #+END_SRC
-The =structure= command simulatenously introduces the inductive type,
+The =structure= command simultaneously introduces the inductive type,
 =prod=, its constructor, =mk=, the usual eliminators (=rec=,
 =rec_on=), as well as the projections, =pr1= and =pr2=, as defined
-above. The =structure= command is especially useful for defining
-algebraic structures, and Lean provides substantial infrastructure to
-support working with them. These will be described in a later chapter.
+above. 
+
+If you do not name the constructor, Lean uses =mk= as a
+default. For example, the following defines a record to store a color
+as a triple of RGB values:
+#+BEGIN_SRC lean
+open nat
+
+-- BEGIN
+record color := (red : nat) (green : nat) (blue : nat)
+definition yellow := color.mk 255 255 0
+eval color.red yellow
+-- END
+#+END_SRC
+The definition of =yellow= forms the record with the three values
+shown, and the projection =color.red= returns the red component. The
+=structure= command is especially useful for defining algebraic
+structures, and Lean provides substantial infrastructure to support
+working with them. Here, for example, is the definition of a
+semigroup:
+#+BEGIN_SRC lean
+structure Semigroup : Type :=
+(carrier : Type)
+(mul : carrier → carrier → carrier)
+(mul_assoc : ∀a b c, mul (mul a b) c = mul a (mul b c))
+#+END_SRC
+We will see more examples in Chapter [[file:10_Structures_and_Records.org::#Structures_and_Records][Structures and Records]].
 
 Notice, by the way, that the product type depends on parameters =A B :
 Type= which are arguments to the constructors as well as =prod=.  Lean
@@ -577,7 +601,7 @@ some value =b : B=. Thus we can think of an element =f= of the type =A
 
 An element of =inhabited A= is simply a witness to the fact that there
 is an element of =A=. Later, we will see that =inhabited= is an
-instance of a =type class= in Lean: Lean can be instructed that
+instance of a /type class/ in Lean: Lean can be instructed that
 suitable base types are inhabited, and can automatically infer that
 other constructed types are inhabited on that basis.
 
@@ -630,7 +654,7 @@ namespace hide
 
 -- BEGIN
 inductive Exists {A : Type} (P : A → Prop) : Prop :=
-intro : ∀ (a : A), P a → Exists P
+intro : ∀(a : A), P a → Exists P
 
 definition exists.intro := @Exists.intro
 -- END
@@ -720,11 +744,12 @@ we find the following:
     C nat.zero → (Π (a : nat), C a → C (nat.succ a)) → C n
 #+END_SRC
 The implicit argument, =C=, is the codomain of the function being
-defined. In type theory, it is common to say =C= is the =motive= for the elimination/recursion.
-The next argument, =n : nat=, is the input to the function. It is also known as
-the =major premise=. Finally, the two arguments after specify how to compute the zero and
-successor cases, as described above. They are also known as the =minor premises=
-for the elimination/recursion.
+defined. In type theory it is common to say =C= is the =motive= for
+the elimination/recursion.  The next argument, =n : nat=, is the input
+to the function. It is also known as the =major premise=. Finally, the
+two arguments after specify how to compute the zero and successor
+cases, as described above. They are also known as the =minor
+premises=.
 
 Consider, for example, the addition function =add m n= on the natural
 numbers. Fixing =m=, we can define addition by recursion on =n=. In
@@ -741,7 +766,7 @@ inductive nat : Type :=
 namespace nat
 
 definition add (m n : nat) : nat :=
-nat.rec_on n m (fun n add_m_n, succ add_m_n)
+nat.rec_on n m (λn add_m_n, succ add_m_n)
 
 -- try it out
 eval add (succ zero) (succ (succ zero))
@@ -819,9 +844,9 @@ end nat
 end hide
 #+END_SRC
 
-In the example above, we encourage you to replace =induction_on= with =rec_on=
-and observe the theorem is still accepted by Lean. As we described before,
-=induction_on= is just a special case of =rec_on=.
+In the example above, we encourage you to replace =induction_on= with
+=rec_on= and observe the theorem is still accepted by Lean. As we have
+seen above, =induction_on= is just a special case of =rec_on=.
 
 For another example, let us prove the associativity of addition, =∀m n
 k, m + n + k = m + (n + k)=. (The notation =+=, as we have defined it,
@@ -1287,10 +1312,34 @@ inductive foo : ... → Type :=
 #+END_SRC
 In contrast to ordinary inductive definition, which construct an
 element of =Type=, the more general version constructs a function
-=... → Type=, where "=...=" denotes a sequence of argument types (also known as indices). Each
-constructor then constructs an element of some type in the family. An
-example is given by the definition of the equality type in the
-library:
+=... → Type=, where "=...=" denotes a sequence of argument types (also
+known as indices). Each constructor then constructs an element of some
+type in the family. One example is the definition of =vector A n=, the
+type of vectors of elements of =A= of length =n=:
+#+BEGIN_SRC lean
+open nat
+-- BEGIN
+inductive vector (A : Type) : nat → Type :=
+| nil {} : vector A zero
+| cons   : Π {n}, A → vector A n → vector A (succ n)
+-- END
+#+END_SRC
+Notice that the =cons= constructor takes an element of =vector A n=,
+and returns an element of =vector A (succ n)=, thereby using an
+element of one member of the family to build an element of another.
+
+Another example is given by the family of types =fin n=. For each =n=,
+=fin n= is supposed to denote a generic type of =n= elements:
+#+BEGIN_SRC lean
+inductive fin : nat → Type :=
+| fz : Π n, fin (nat.succ n)
+| fs : Π {n}, fin n → fin (nat.succ n)
+#+END_SRC
+This example may be hard to understand, so you should take the time to
+think about how it works.
+
+Yet another example is given by the definition of the equality type in
+the library:
 #+BEGIN_SRC lean
 namespace hide
 
@@ -1313,15 +1362,16 @@ reflexive relation on =A=. The eliminator/recursor for =eq= is of the form
 #+BEGIN_SRC text
 eq.rec_on : Π {A : Type} {a : A} {C : A → Type} {b : A}, a = b → C a → C b
 #+END_SRC
-It is a remarkable
-fact that all the basic axioms for equality follow from this recursor/eliminator.
+It is a remarkable fact that all the basic axioms for equality follow
+from the constructor, =refl=, and the eliminator, =eq.rec_on=.
 
-This eliminator also illustrates an important exception to the fact that inductive
-definitions living in =Prop= can only eliminate to =Prop=. Because
-there is only one constructor to =eq=, it carries no information,
-other than the type is inhabited, and Lean's internal logic allows us
-to eliminate to an arbitrary =Type=. This is how we define a /cast/ operation
-that casts an element from type =A= into =B= when a proof =p : eq A B= is provided:
+This eliminator also illustrates an important exception to the fact
+that inductive definitions living in =Prop= can only eliminate to
+=Prop=. Because there is only one constructor to =eq=, it carries no
+information, other than the type is inhabited, and Lean's internal
+logic allows us to eliminate to an arbitrary =Type=. This is how we
+define a /cast/ operation that casts an element from type =A= into =B=
+when a proof =p : eq A B= is provided:
 #+BEGIN_SRC lean
 namespace hide
 
@@ -1337,7 +1387,6 @@ end hide
 #+END_SRC
 
 The recursor =eq.rec_on= is also used to define substitution:
-
 #+BEGIN_SRC lean
 namespace hide
 
@@ -1352,7 +1401,6 @@ eq.rec H₂ H₁
 
 end hide
 #+END_SRC
-
 Using the recursor with =H₁ : a = b=, we may assume =a= and =b= are
 the same, in which case, =P b= and =P a= are the same.
 
@@ -1388,14 +1436,14 @@ end hide
 
 Given =A : Type= and =B : A → Type=, suppose we want to generalize the
 congruence theorem =congr= in the previous example to dependent
-functions =f : Π x : A, B x=. The first obstacle is how to state the theorem,
-the term =eq (f a) (f b)= is not type correct since =f a= has type =B a=, and
-=f b= has type =B b=, and the equality predicate =eq= expects both arguments
-to have the same type. One standard solution is to use =eq.rec_on= (or =eq.rec=) to
-"cast" the type of =f a= from =B a= to =B b=.
-That is, we write =eq (eq.rec_on H (f a)) (f b)= instead of =eq (f a) (f b)=.
-Here is a possible proof for the generalized congruence theorem:
-
+functions =f : Π x : A, B x=. The first obstacle is stating the
+theorem: the term =eq (f a) (f b)= is not type correct since =f a= has
+type =B a=, =f b= has type =B b=, and the equality predicate =eq=
+expects both arguments to have the same type. One standard solution is
+to use =eq.rec_on= (or =eq.rec=) to "cast" the type of =f a= from =B
+a= to =B b=.  That is, we write =eq (eq.rec_on H (f a)) (f b)= instead
+of =eq (f a) (f b)=. Here is a proof of the generalized congruence
+theorem, with this approach:
 #+BEGIN_SRC lean
 namespace hide
 
@@ -1405,9 +1453,9 @@ refl : eq a a
 -- BEGIN
 theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
                (H : eq a b) : eq (eq.rec_on H (f a)) (f b) :=
-have h₁ : ∀ h : eq a a, eq (eq.rec_on h (f a)) (f a), from
+have h₁ : ∀h : eq a a, eq (eq.rec_on h (f a)) (f a), from
   assume h : eq a a, eq.refl (eq.rec_on h (f a)),
-have h₂ : ∀ h : eq a b, eq (eq.rec_on h (f a)) (f b), from
+have h₂ : ∀h : eq a b, eq (eq.rec_on h (f a)) (f b), from
   eq.rec_on H h₁,
 show eq (eq.rec_on H (f a)) (f b), from
   h₂ H
@@ -1416,29 +1464,25 @@ show eq (eq.rec_on H (f a)) (f b), from
 end hide
 #+END_SRC
 
-Another option is to define a heterogeneous equality =heq= that can equate terms
-of different types. Thus, we would be able to write =heq (f a) (f b)= instead of
-=eq (eq.rec_on H (f a)) (f b)=. It is straightforward to define heterogeneous equality
-in Lean:
-
+Another option is to define a /heterogeneous equality/ =heq= that can
+equate terms of different types, so that we can write =heq (f a) (f
+b)= instead of =eq (eq.rec_on H (f a)) (f b)=. It is straightforward
+to define such an equality in Lean:
 #+BEGIN_SRC lean
 namespace hide
 
 -- BEGIN
-inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
+inductive heq {A : Type} (a : A) : Π{B : Type}, B → Prop :=
 refl : heq a a
 -- END
 
 end hide
 #+END_SRC
-
-Moreover, given =a b : A=, we can prove =heq a b → eq a b= using proof irrelevance.
-This theorem is called =heq.to_eq= in the Lean standard library.
-
-We conclude this section by defining =hcongr= using heterogeneous equality. Note the
-proof is also more compact and easier to understand.
-
-
+Moreover, given =a b : A=, we can prove =heq a b → eq a b= using proof
+irrelevance.  This theorem is called =heq.to_eq= in the Lean standard
+library. We can now state and prove =hcongr= using heterogeneous
+equality. Note the proof is also more compact and easier to
+understand.
 #+BEGIN_SRC lean
 namespace hide
 
@@ -1456,23 +1500,30 @@ eq.rec_on H (heq.refl (f a))
 
 end hide
 #+END_SRC
+Heterogeneous equality, which gives elements of different types the
+illusion that they can be considered equal, is sometimes called /John
+Major equality/. (The name is a bit of political humor, due to Conor
+McBride.)
 
-
-** Automatically generated constructions
+** Automatically Generated Constructions
+:PROPERTIES:
+  :CUSTOM_ID: Automatically_Generated_Constructions
+:END:
 
 In the previous sections, we have seen that whenever we declare an
 inductive datatype =I=, the Lean kernel automatically declares its
 constructors (aka introduction rules), and generates and declares the
 eliminator/recursor =I.rec=. The eliminator expresses a principle of
-definition by recursion (*and* proof by induction). The kernel also
-associates a /computational rule/ which expresses how these
-definitions are eliminated (*and* proofs are normalized).
+definition by recursion, as well as the principle of proof by
+induction. The kernel also associates a /computational rule/ which
+determines how these definitions are eliminated when terms and proofs
+are normalized.
 
-Consider, for example, the natural numbers. Given the /motive/ =C : nat → Type=,
-and minor premises =fz : C zero= and =fs : Π (n : nat), C n → C (succ n)=,
-we have the following two computational rules: =nat.rec fz fs zero= reduces to =fz=;
-and =nat.rec fz fs (succ a)=  reduces to =fs a (nat.rec fz fs a)=
-
+Consider, for example, the natural numbers. Given the motive =C : nat
+→ Type=, and minor premises =fz : C zero= and =fs : Π(n : nat), C n →
+C (succ n)=, we have the following two computational rules: =nat.rec
+fz fs zero= reduces to =fz=, and =nat.rec fz fs (succ a)= reduces to
+=fs a (nat.rec fz fs a)=.
 #+BEGIN_SRC lean
 open nat
 
@@ -1495,42 +1546,41 @@ eval nat.rec_on (succ a) fz fs
 example (a : nat) : nat.rec fz fs (succ a) = fs a (nat.rec fz fs a) :=
 rfl
 #+END_SRC
+The source code that validates an inductive declaration and generates
+the eliminator/recursor and computational rules is part of the Lean
+kernel. The kernel is also known as the /trusted code base/, because a
+bug in the kernel may compromise the soundness of the whole system.
 
-The source code that validates an inductive declaration, generates the
-eliminator/recursor and computational rules is part of the Lean
-kernel (i.e., the /trusted code base/).  We say it is trusted because
-a bug in the kernel may compromise the soundness of the whole system.
+When you define an inductive datatype, Lean automatically generates a
+number of useful definitions. We have already seen some of them:
+=rec_on=, =induction_on=, and =cases_on=. The module =M= that
+generates these definitions is /not/ part of the trusted code base. A
+bug in =M= does not compromise the soundness of the whole system,
+since the kernel will catch such errors when type checking any
+incorrectly generated definition produced by =M=.
 
-When we define an inductive datatype, Lean automatically generates
-many useful definitions. We have already seen some of them: =rec_on=,
-=induction_on=, and =cases_on=. The module =M= that generates these
-definitions is *not* part of the trusted code base.  A bug in =M= does
-not compromise the soundness of the whole system, since the kernel
-will catch such errors when type checking any incorrectly generated
-definition produced by =M=.
-
-As described before, =rec_on= just uses its arguments in a more convenient
-order than =rec=. In =rec_on=, the major premise is provided before the minor
-premises. In our opinion, constructions using =rec_on= are easier to
-read and understand than the equivalent ones using =rec=.
-
+As described before, =rec_on= just uses its arguments in a more
+convenient order than =rec=. In =rec_on=, the major premise is
+provided before the minor premises. Constructions using =rec_on= are
+often easier to read and understand than the equivalent ones using
+=rec=.
 #+BEGIN_SRC lean
 open nat
 
 print definition nat.rec_on
 
--- Possible definition for rec_on
+-- a possible definition of rec_on
 definition rec_on {C : nat → Type} (n : nat)
-                  (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
+                  (fz : C zero) (fs : Πa, C a → C (succ a)) : C n :=
 nat.rec fz fs n
 #+END_SRC
-
 Moreover, =induction_on= is just a special case of =rec_on= where the
 motive =C= is a proposition. Finally, =cases_on= is a special case of
 =rec_on= where the inductive/recursive hypotheses are omitted in the
 minor premises. For example, in =nat.cases_on= the minor premise =fs=
-has type =Π (n : nat), C (succ n)= instead of =Π (n : nat), C n → C (succ n)=.
-Note that, the inductive/recursive hypothesis =C n= has been omitted.
+has type =Π (n : nat), C (succ n)= instead of =Π (n : nat), C n → C
+(succ n)=. Note that the inductive/recursive hypothesis =C n= has
+been omitted.
 
 #+BEGIN_SRC lean
 open nat
@@ -1549,23 +1599,24 @@ definition cases_on {C : nat → Prop} (n : nat)
 nat.rec_on n fz (fun (a : nat) (r : C a), fs a)
 #+END_SRC
 
-For any inductive datatype, which is not a proposition, we can show
-that its constructors are injective and disjoint. For =nat=, we can
-show that =succ a = succ b → a = b= (injectivity), and =succ a ≠ zero=
-(disjointness). Both proofs can be performed using the automatically
-generated definition =nat.no_confusion=. For any inductive datatype
-=I= (which is not a proposition), Lean automatically generates
-=I.no_confusion=. Given a motive =C= and an equality =h : c₁ t = c₂
-s=, where =c₁= and =c₂= are two distinct =I= constructors,
-=I.no_confusion= constructs an inhabitant of =C=.  This is essentially
-the /principle of explosion/: anything follows from a contradiction.
-Given =h : c t = c s= (same constructor on both sides) and =t = s →
-C=, =I.no_confusion= also constructs an inhabitant of =C=.
+For any inductive datatype that is not a proposition, we can show that
+its constructors are injective and disjoint. For example, on =nat=, we
+can show that =succ a = succ b → a = b= (injectivity), and =succ a ≠
+zero= (disjointness). Both proofs can be performed using the
+automatically generated definition =nat.no_confusion=. For any
+inductive datatype =I= (which is not a proposition), Lean
+automatically generates =I.no_confusion=. Given a motive =C= and an
+equality =h : c₁ t = c₂ s=, where =c₁= and =c₂= are two distinct =I=
+constructors, =I.no_confusion= constructs an inhabitant of =C=.  This
+is essentially the /principle of explosion/: anything follows from a
+contradiction.  Given =h : c t = c s= (same constructor on both sides)
+and =t = s → C=, =I.no_confusion= also constructs an inhabitant of
+=C=.
 
-The type of =no_confusion= is based on the auxiliary definition =no_confusion_type=.
-Note also that the motive is an implicit argument in =no_confusion=.
-In the following example, we illustrate these constructions using the type =nat=.
-
+The type of =no_confusion= is based on the auxiliary definition
+=no_confusion_type=.  Note also that the motive is an implicit
+argument in =no_confusion=.  In the following example, we illustrate
+these constructions using the type =nat=.
 #+BEGIN_SRC lean
 open nat
 
@@ -1587,10 +1638,10 @@ eval nat.no_confusion_type C (succ a) (succ b)
 -- (a = b → C) → C
 #+END_SRC
 
-It is not hard to prove that constructors are injective and disjoint using =no_confusion=.
-In the following example, we prove these two properties for =nat= and leave as exercise the equivalent
-proofs for trees.
-
+It is not hard to prove that constructors are injective and disjoint
+using =no_confusion=.  In the following example, we prove these two
+properties for =nat= and leave as exercise the equivalent proofs for
+trees.
 #+BEGIN_SRC lean
 open nat
 
@@ -1624,10 +1675,9 @@ theorem node_inj_right {l1 r1 l2 r2 : tree A}
 sorry
 #+END_SRC
 
-If a constructor contains dependent arguments (such as =sigma.mk=), the
-generated =no_confusion= uses heterogeneous equality to equate arguments
-of different types:
-
+If a constructor contains dependent arguments (such as =sigma.mk=),
+the generated =no_confusion= uses heterogeneous equality to equate
+arguments of different types:
 #+BEGIN_SRC lean
 variables (A : Type) (B : A → Type)
 variables (a1 a2 : A) (b1 : B a1) (b2 : B a2)
@@ -1640,7 +1690,7 @@ eval sigma.no_confusion_type C (sigma.mk a1 b1) (sigma.mk a2 b2)
 #+END_SRC
 
 Lean also generates the predicate transformer =below= and the recursor
-=brec_on=.  These constructions are rarely (never) used directly by
-users. They are auxiliary definitions used by the recursive equation
-compiler we will describe in the next chapter, and we will not discuss
-them further here.
+=brec_on=. It is unlikely that you will ever need to use these
+constructions directly; they are auxiliary definitions used by the
+recursive equation compiler we will describe in the next chapter, and
+we will not discuss them further here.
