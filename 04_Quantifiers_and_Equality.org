@@ -56,26 +56,6 @@ not depend on =x=. Similarly, we can think of an implication =p → q=
 between propositions as the special case of =∀x : p, q= in which the
 expression =q= does not depend on =x=.
 
-It is the typing rule for Pi types that distinguishes =Prop= from
-other types. Suppose we have =A : Type.{i}= and =B : Type.{j}=, where
-the expression =B= may depend on a variable =x : A=. Then the type of
-=Πx : A, B= is an element of =Type.{imax i j}=, where =imax i j= is
-the maximum of =i= and =j= if =j= is not 0, and 0 otherwise. 
-
-The idea is as follows. If =j= is not =0=, then =Πx : A, B= is an
-element of =Type.{max i j}=. In other words, the type of dependent
-functions from =A= to =B= "lives" in the universe with smallest index
-greater-than or equal to the indices of the universes of =A= and
-=B=. Suppose, however, that =B= is of =Type.{0}=, that is, an element
-of =Prop=. In that case, =Πx : A, B= is an element of =Type.{0}= as
-well, no matter which type universe =A= lives in. In other words, if
-=B= is a proposition depending on =A=, then =∀x : A, B= is again a
-proposition. This reflects the interpretation of =Prop= as the type of
-propositions rather than data, and it is what makes =Prop=
-/impredicative/. The key feature distinguishing Lean's library for
-homotopy type theory from the standard library is the absence of
-=Prop=, making that theory /predicative/.
-
 Here is an example of how the propositions-as-types correspondence
 gets put into practice.
 #+BEGIN_SRC lean
@@ -213,6 +193,38 @@ section
   example (H : ∀x : men, shaves barber x ↔ ¬shaves x x) : false := sorry
 end
 #+END_SRC
+
+It is the typing rule for Pi types, and the universal quantifier in
+particular, that distinguishes =Prop= from other types. Suppose we
+have =A : Type.{i}= and =B : Type.{j}=, where the expression =B= may
+depend on a variable =x : A=. Then the type of =Πx : A, B= is an
+element of =Type.{imax i j}=, where =imax i j= is the maximum of =i=
+and =j= if =j= is not 0, and 0 otherwise.
+
+The idea is as follows. If =j= is not =0=, then =Πx : A, B= is an
+element of =Type.{max i j}=. In other words, the type of dependent
+functions from =A= to =B= "lives" in the universe with smallest index
+greater-than or equal to the indices of the universes of =A= and
+=B=. Suppose, however, that =B= is of =Type.{0}=, that is, an element
+of =Prop=. In that case, =Πx : A, B= is an element of =Type.{0}= as
+well, no matter which type universe =A= lives in. In other words, if
+=B= is a proposition depending on =A=, then =∀x : A, B= is again a
+proposition. This reflects the interpretation of =Prop= as the type of
+propositions rather than data, and it is what makes =Prop=
+/impredicative/. In contrast to the standard kernel, such a =Prop= is
+absent from Lean's kernel for homotopy type theory.
+
+The term "predicative" stems from foundational developments around the
+turn of the twentieth century, when logicians such as Poincaré and
+Russell blamed set-theoretic paradoxes on the "vicious circles" that
+arise when we define a property by quantifying over a collection that
+includes the very property being defined. Notice that if =A= is any
+type, we can form the type =A → Prop= of all predicates on =A= (the
+"power type of =A="). The impredicativity of Prop means that we can
+form propositions that quantify over =A → Prop=. In particular, we can
+define predicates on =A= by quantifying over all predicates on =A=,
+which is exactly the type of circularity that was once considered
+problematic.
 
 ** Equality
 
