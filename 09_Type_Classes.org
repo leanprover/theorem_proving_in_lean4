@@ -832,9 +832,13 @@ foo.mk 3 3
 
 example : foo.a = 3 := rfl
 
-attribute i3 [instance] [priority 500]
+attribute i3 [priority 500]
 
 example : foo.a = 1 := rfl
+
+attribute i1 [priority default-10]
+
+example : foo.a = 2 := rfl
 #+END_SRC
 
 ** Instances in Sections
