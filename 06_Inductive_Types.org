@@ -1149,10 +1149,10 @@ end nat
 end hide
 #+END_SRC
 
-** Other Inductive Structures
+** Other Inductive Types
 
 Let us consider some more examples of inductively defined
-structures. For any type, =A=, the type =list A= of lists of elements
+types. For any type, =A=, the type =list A= of lists of elements
 of =A= is defined in the library.
 #+BEGIN_SRC lean
 namespace hide
@@ -1697,3 +1697,59 @@ Lean also generates the predicate transformer =below= and the recursor
 constructions directly; they are auxiliary definitions used by the
 recursive equation compiler we will describe in the next chapter, and
 we will not discuss them further here.
+
+** Universe Levels
+
+Since an inductive type lives in =Type.{i}= for some =i=, it is
+reasonable to ask /which/ universe levels =i= can be instantiated
+to. The goal of this section is to explain the relevant constraints. 
+
+In the standard library, there are two cases, depending on whether the
+inductive type is specified to land in =Prop=. Let us first consider
+the case where the inductive type is not specified to land in =Prop=,
+which is the only case that arises in the homotopy type theory
+instantiation of the kernel. Recall that each constructor =c= in the
+definition of a family =C= of inductive types is of the form
+#+BEGIN_SRC text
+c : Π (a : A) (b : B[a]), C a p[a,b]
+#+END_SRC
+where =a= is a sequence of datatype parameters, =b= is the sequence of
+arguments to the constructors, and =p[a, b]= are the indices, which
+determine which element of the inductive family the construction
+inhabits. Then the universe level =i= of =C= is constrained to satsify
+the following:
+#+BEGIN_QUOTE
+For each constructor =c= as above, and each =B_k[a]= in the sequence
+=B[a]=, if =B_k[a] : Type.{l}=, we have =i= ≥ =l=.
+#+END_QUOTE
+In other words, the universe level =i= is required to be at least as
+large as the universe level of each type that represents an argument
+to a constructor.
+
+When the inductive type =C= is specified to land in =Prop=, there are
+no constraints on the universe levels of the constructor
+arguments. But these universe levels do have a bearing on the
+elimination rule. Generally speaking, for an inductive type in =Prop=,
+the motive of the elimination rule is required to be in =Prop=. The
+exception we alluded to in the discussion of equality above is this:
+we are allowed to eliminate to an arbitrary =Type= when there is only
+one constructor, and each constructor argument is either in =Prop= or
+an index. This exception, which makes it possible to treat ordinary
+equality and heterogeneous equality as inductive types, can be
+justified by the fact that the elimination rule cannot take advantage
+of any "hidden" information.
+
+Because inductive types can be polymorphic over universe levels,
+whether an inductive definition lands in =Prop= could, in principle,
+depend on how the universe levels are instantiated. To simplify the
+generation of the recursors, Lean adopts a convention that rules out
+this ambiguity: if you do not specify that the inductive type is an
+element of =Prop=, Lean requires the universe level to be at least
+one. Hence, a type specified by single inductive definition is either
+always in =Prop= or never in =Prop=. For example, if =A= and =B= are
+elements of =Prop=, =A × B= is assumed to have universe level at least
+one, representing a datatype rather than a proposition. The analogous
+definition of =A × B=, where =A= and =B= are restricted to =Prop= and
+the resulting type is declared to be an element of =Prop= instead of
+=Type=, is exactly the definition of =A ∧ B=.
+
