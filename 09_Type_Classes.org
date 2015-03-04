@@ -900,11 +900,12 @@ end
 -- END
 #+END_SRC
 
-** Bounded quantification
+** Bounded Quantification
 
-We say a proposition is a "bounded universal quantifier" if it is of the form
-=∀ x : nat, x < n → P x=. In the following example, we demonstrate that
-propositions of this form are decidable.
+A "bounded universal quantifier" is one that is of the form =∀ x :
+nat, x < n → P x=. As a final illustration of the power of type class
+inference, we show that a proposition of this form is decidable
+assuming =P= is, and that type class inference can make use of that fact.
 
 #+BEGIN_SRC lean
 import data.nat
