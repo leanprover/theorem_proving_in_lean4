@@ -196,7 +196,7 @@ is really a form of induction in Lean.
 
 A more example is the Fibonacci function =fib=, together with a
 theorem, =fib_pos=, which combines pattern matching, recursive
-equations, and calculational proofs. 
+equations, and calculational proofs.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -280,7 +280,7 @@ end hide
 #+END_SRC
 But what value should we return in the =nil= case? Something funny is
 going on: if =v= has type =vector A (succ n)=, it /can't/ be nil, but
-it is not clear how to tell that to =cases_on=. 
+it is not clear how to tell that to =cases_on=.
 
 A standard solution is to define an auxiliary function:
 #+BEGIN_SRC lean
@@ -314,7 +314,7 @@ In the =nil= case, =m= is instantiated to =0=, and =no_confusion=
 (discussed in Section [[file:06_Inductive_Types.org::#Automatically_Generated_Constructions][Automatically Generated Constructions]]) makes use
 of the fact that =0 = succ n= cannot occur. Otherwise, =v= is of the
 form =a :: w=, and we can simply return =w=, after casting it from a
-vector of length =m= to a vector of length =n=. 
+vector of length =m= to a vector of length =n=.
 
 The difficulty in defining =tail= is to maintain the relationships
 between the indices.  The hypothesis =e : m = succ n= in =tail_aux= is
@@ -594,9 +594,43 @@ rfl
 end hide
 #+END_SRC
 
-Next, we define the function =diag= which extracts the diagonal of a square matrix =vector (vector A n) n=.
-Note that, this function is defined by structural induction. However, the term =map tail v= is not a subterm
-of =((a :: va) :: v)=. Could you explain what is going on?
+The name of the function being defined can be omitted in the
+left-hand-side of pattern matching equations. This feature is
+particularly useful when the function name is long and/or there are
+multiple cases. When the name is omitted, Lean will silently include
+=@f= in the left-hand-side of every pattern matching equation, where
+=f= is not the name of the function being defined. Here is a small example:
+#+BEGIN_SRC lean
+namespace hide
+open nat
+
+inductive vector (A : Type) : nat → Type :=
+| nil {} : vector A zero
+| cons   : Π {n}, A → vector A n → vector A (succ n)
+
+open vector prod
+notation h :: t := cons h t
+
+-- BEGIN
+variables {A B : Type}
+definition unzip : Π {n : nat}, vector (A × B) n → vector A n × vector B n
+| zero     nil         := (nil, nil)
+| (succ n) ((a, b)::v) :=
+  match unzip v with
+    (va, vb) := (a :: va, b :: vb)
+  end
+
+example : unzip ((1, 10) :: (2, 20) :: nil) = (1 :: 2 :: nil, 10 :: 20 :: nil) :=
+rfl
+-- END
+
+end hide
+#+END_SRC
+
+Next, we define the function =diag= which extracts the diagonal of a
+square matrix =vector (vector A n) n=.  Note that, this function is
+defined by structural induction. However, the term =map tail v= is not
+a subterm of =((a :: va) :: v)=. Could you explain what is going on?
 
 #+BEGIN_SRC lean
 namespace hide
