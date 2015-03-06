@@ -709,7 +709,7 @@ block.
 
 The =have=, =show= and =assert= terms have a variant which provide
 even more control over which hypotheses are available in =from s=.
-#+BEGIN_SRC
+#+BEGIN_SRC lean
 have   H : p, using H_1 ... H_n, from s, t
 assert H : p, using H_1 ... H_n, from s, t
 show   H : p, using H_1 ... H_n, from s
