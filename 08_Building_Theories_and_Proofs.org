@@ -591,7 +591,6 @@ the complexity.
 
 To start with, Lean provides a mechanism to break large elaboration
 problems down into simpler ones, with a =proof ... qed= block.
-# Leo: Should we say here that proof...qed is implemented using tactic framework?
 Here is
 the sample proof from Section [[Examples of Propositional Validities]],
 with additional =proof ... qed= annotations:
@@ -666,6 +665,69 @@ implicit argument, you can always use =@= to provide that argument
 explicitly. Doing so will either help the elaborator solve the
 elaboration problem, or help you find an error in the term that is
 blocking the intended solution.
+
+In Lean, tactics not only allow us to invoke arbitrary automated
+procedures, but also provide an alternative approach to construct
+proofs and terms. For many users, this is one of the most effective
+mechanisms to help the elaborator.
+A tactic can be viewed as a "recipe", a sequence of
+commands or instructions, that describes how to build a proof. This
+recipe may be as detailed as we want.  A tactic =T= can be embedded
+into proof terms by writing =by T= or =begin T end=.  These
+annotations instruct Lean that tactic =T= should be invoked to
+construct the term in the given location. Similarly to =proof
+... qed=, the elaborator tries to elaborate the surrounding terms
+before executing =T=.  Actually, =proof t qed= is just syntax sugar
+for =by exact t=. Later, we explain in detail the semantics of the
+tactic =exact t=.
+
+We have seen that the =have= construct introduces an auxiliary subgoal
+in a proof, and is useful for structuring and documenting proofs.
+Given the term =have H : p, from s, t=, by default,
+the hypothesis =H= is not "visible" by all automated procedures and
+tactics used to construct =t=. This is important because
+"too much information" may negatively affect the performance and
+effectiveness of automated procedures.
+To make =H= available to automated procedures and tactics, we should
+use =assert H : p, from s, t=. Here is a small example:
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ q ∧ r → q ∧ p :=
+assume Hpqr : p ∧ q ∧ r,
+assert Hp   : p,     from and.elim_left Hpqr,
+have   Hqr  : q ∧ r, from and.elim_right Hpqr,
+assert Hq   : q,     from and.elim_left Hqr,
+proof
+  -- Hp and Hq are visible here,
+  -- Hqr is not because we used "have".
+  and.intro Hq Hp
+qed
+#+END_SRC
+Recall that =proof ... qed= block is implemented using tactics,
+so any hypothesis introduced using =have= is invisible inside it.
+In the example above, =Hqr= is not visible in the =proof ... qed=
+block.
+
+The =have=, =show= and =assert= terms have a variant which provide
+even more control over which hypotheses are available in =from s=.
+#+BEGIN_SRC
+have   H : p, using H_1 ... H_n, from s, t
+assert H : p, using H_1 ... H_n, from s, t
+show   H : p, using H_1 ... H_n, from s
+#+END_SRC
+In all three terms, the hypotheses =H_1= ... =H_n= are available for
+automated procedures and tactics used in =s=.
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ q ∧ r → q ∧ p :=
+assume Hpqr : p ∧ q ∧ r,
+have   Hp   : p,      from and.elim_left Hpqr,
+have   Hqr  : q ∧ r,  from and.elim_right Hpqr,
+assert Hq   : q,      from and.elim_left Hqr,
+show q ∧ p, using Hp, from
+proof
+  -- Hp is visible here because of =using Hp=
+  and.intro Hq Hp
+qed
+#+END_SRC
 
 ** Sections and Contexts
 
