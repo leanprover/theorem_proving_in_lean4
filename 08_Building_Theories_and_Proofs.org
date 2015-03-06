@@ -590,16 +590,18 @@ complex. In the latter case, there are steps you can take to cut down
 the complexity.
 
 To start with, Lean provides a mechanism to break large elaboration
-problems down into simpler ones, with a =proof ... qed= block. Here is
+problems down into simpler ones, with a =proof ... qed= block.
+# Leo: Should we say here that proof...qed is implemented using tactic framework?
+Here is
 the sample proof from Section [[Examples of Propositional Validities]],
 with additional =proof ... qed= annotations:
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 iff.intro
   (assume H : p ∧ (q ∨ r),
-    have Hp : p, from and.elim_left H,
     show (p ∧ q) ∨ (p ∧ r), from
     proof
+      have Hp : p, from and.elim_left H,
       or.elim (and.elim_right H)
         (assume Hq : q,
           show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro Hp Hq))
