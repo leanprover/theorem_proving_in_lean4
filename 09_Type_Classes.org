@@ -355,9 +355,45 @@ theorem exists_eq_of_inhabited (A : Type) [H : inhabited A] :
 exists.intro (arbitrary A) rfl
 
 example : ∃x : nat, x = x := exists_eq_of_inhabited nat
+-- END
+end hide
+#+END_SRC
 
+Recall that =opaque= constants are treated as transparent when type
+checking other =opaque= constants and theorems in the module where
+they are defined. The idea is to allow us to prove things about
+=opaque= constants in the module where they are defined,
+and then hide their "implementation" from other modules.
+The =arbitrary= constant is defined in the standard library,
+and nothing is proved about it. Thus, we cannot prove the following
+theorem.
+#+BEGIN_SRC lean
+definition nat_is_inhabited [instance] : inhabited nat :=
+inhabited.mk nat.zero
+
+-- "default" is transparent
+example : default nat = nat.zero := rfl
+
+-- "arbitrary" is opaque
 -- cannot prove this
 example : arbitrary nat = nat.zero := sorry
+#+END_SRC
+In constrast, =arbitrary nat = nat.zero= is provable in the module where
+=arbitrary= is defined.
+#+BEGIN_SRC lean
+namespace hide
+-- BEGIN
+definition nat_is_inhabited [instance] : inhabited nat :=
+inhabited.mk nat.zero
+
+-- "default" is transparent
+example : default nat = nat.zero := rfl
+
+-- "arbitrary" is transparent in the current module
+opaque definition arbitrary (A : Type) [H : inhabited A] : A :=
+inhabited.rec (λa, a) H
+
+example : arbitrary nat = nat.zero := rfl
 -- END
 end hide
 #+END_SRC
