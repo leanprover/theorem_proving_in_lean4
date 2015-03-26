@@ -666,16 +666,16 @@ section
 
 -- BEGIN
   check 123
-  check typeof 123 : nat
-  check typeof 123 : int
+  check (123 : nat)
+  check (123 : int)
   check a + n
   check n + a
   check a + 123
 
   set_option pp.coercions true
   check 123
-  check typeof 123 : nat
-  check typeof 123 : int
+  check (123 : nat)
+  check (123 : int)
   check a + n
   check n + a
   check a + 123
@@ -684,12 +684,14 @@ end
 #+END_SRC
 Setting the option =pp.coercions= to =true= makes the coercions
 explicit. Coercions that are declared in a namespace are only
-available to the system when the namespace is opened. The token
-=typeof= is nothing more than fancy notation for the identity
-function that makes it possible to specify the intended type of an
-expression. In the first =check= command, Lean decides that =123= is a
-numeral. The two commands after than indicate that it is intended to
-be viewed as a =nat= and as an =int=, respectively.
+available to the system when the namespace is opened. The notation
+=(t : T)= is an abbreviation for the expression =is_typeof T t=, where
+=is_typeof= is nothing more than fancy notation for the identity
+function. The point is that =T= is given explicitly, so that when you
+write =(t : T)=, you are specifying that =t= should be interpreted as
+an expression of type =T=. In the first =check= command, Lean decides
+that =123= is a numeral. The two commands after than indicate that it
+is intended to be viewed as a =nat= and as an =int=, respectively.
 
 Here is an example of how we can define a coercion from the booleans
 to the natural numbers.
@@ -766,7 +768,7 @@ problems. There are various ways to manually disambiguate an
 expression when necessary. One is to precede the expression with the
 notation =#<namespace>=, to specify the namespace in which notation is
 to be interpreted. Another is to replace the notation with an explicit
-function name. Yet a third is to use the =typeof= notation to indicate
+function name. Yet a third is to use the the =(t : T)= notation to indicate
 the intended type.
 #+BEGIN_SRC lean
 import data.nat data.int
@@ -787,16 +789,16 @@ eval nat.add 2 2
 check int.add 2 2
 eval int.add 2 2
 
-check typeof 2 + 2 : nat
-eval typeof 2 + 2 : nat
+check (2 + 2 : nat)
+eval (2 + 2 : nat)
 
-check typeof 2 + 2 : int
-eval typeof 2 + 2 : int
+check (2 + 2 : int)
+eval (2 + 2 : int)
 
 check 0
 
 check nat.zero
 
-check typeof 0 : nat
-check typeof 0 : int
+check (0 : nat)
+check (0 : int)
 #+END_SRC
