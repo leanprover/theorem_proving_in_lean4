@@ -118,7 +118,29 @@ value."
       (message "=================")
       (message "Internal Link -- filename + anchor: %s" text)
       (replace-match "<a href=\"#\" onclick=\"myModule.loadTutorial('\\1', '\\2')\"" t nil text))
-     ;; 2.2. (matched with "<a href="#anchor">
+     ;; 2.2.1 (matched with "<a href="#sec-?.*">
+     ((string-match
+       (rx "<a href=\"#sec-" (one-or-more digit)
+           (group (zero-or-more "-" (one-or-more digit))))
+       text)
+      (message "=================")
+      (message "Internal Link -- only anchor (sec): %s" text)
+      (let* ((chapter-num-from-file
+              (int-to-string
+               (string-to-int
+                (s-left 2 (f-filename (buffer-file-name))))))
+             (rest-org (match-string 1 text))
+             (rest (s-replace-all '(("-" . ".")) rest-org)))
+        (s-concat
+         "<a href=\"#\" onclick=\"myModule.scrollTutorialTo('"
+         chapter-num-from-file
+         rest
+         "')\">"
+         chapter-num-from-file
+         rest
+         "</a>"
+         )))
+     ;; 2.2.2 (matched with "<a href="#anchor">
      ((string-match
        (rx "<a href=\"#" (group (+ (not (any "\"")))) "\"") text)
       (message "=================")
