@@ -1,4 +1,3 @@
-language: emacs-lisp
 os:
   - linux
 cache: apt
@@ -25,12 +24,13 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
   - sudo add-apt-repository --yes ppa:kalakris/cmake
   - sudo apt-get update
-  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended latexmk bibtex2html || true
+  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended latexmk bibtex2html moreutils || true
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
 install:
   # Install Lean dependencies
   - sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev libgmp-dev libmpfr-dev lua5.2-dev cmake
+  - npm -g i cssmin minify
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
   - if [[ "${REPO}" == "BLESSED" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
@@ -39,9 +39,11 @@ script:
       git checkout --orphan gh-pages &&
       rm -f .git/index &&
       git add -f *.html tutorial.pdf &&
+      for CSS in css/*.css; do cssmin ${CSS} | sponge ${CSS} ; done &&
       git add css &&
       git add images &&
       git add fonts &&
+      for JS in js/*.js; do minify ${JS} | sponge ${JS} ; done &&
       git add -f js/* &&
       sudo rm -rf pygments-main &&
       git clean -fxd &&
