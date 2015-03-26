@@ -566,7 +566,6 @@ end hide
 
 Lean also provides a compiler for /match-with/ expressions found in many functional languages.
 It uses essentially the same infrastructure used to compile recursive equations.
-
 #+BEGIN_SRC lean
 import data.list
 open nat bool list
@@ -593,6 +592,21 @@ definition filter : list A → list A
 example : filter is_not_zero [1, 0, 0, 3, 0] = [1, 3] :=
 rfl
 -- END
+#+END_SRC
+
+You can also use pattern matching in a local =have= expression:
+#+BEGIN_SRC lean
+import data.nat logic
+open bool nat
+
+definition mult : nat → nat → nat :=
+have plus : nat → nat → nat
+| 0        b := b
+| (succ a) b := succ (plus a b),
+have mult : nat → nat → nat
+| 0        b := 0
+| (succ a) b := plus (mult a b) b,
+mult
 #+END_SRC
 
 ** Other Examples
