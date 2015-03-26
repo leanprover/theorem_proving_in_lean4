@@ -32,8 +32,29 @@
       '(("frame" "lines")
         ("fontsize" "\\scriptsize")))
 (setq-default indent-tabs-mode nil)
+
+(defun lean-filter-latex-link (text backend info)
+  (when (eq backend 'latex)
+    (cond ((string-match
+            (rx "\\hyperref"
+                "\["
+                "sec-"
+                (group (one-or-more (in digit "-")))
+                "\]"
+                "\{" (group (one-or-more (in alnum " "))) "\}" ) text)
+           (let* ((sec-number-org (match-string 1 text))
+                  (sec-number (s-replace-all
+                               '(("-" . "."))
+                               sec-number-org)))
+             (s-concat "\\hyperref[sec-"
+                       sec-number-org
+                       "]{"
+                       sec-number
+                       "}"))))))
+
 (eval-after-load "ox-latex"
   '(progn
+     (add-to-list 'org-export-filter-link-functions 'lean-filter-latex-link)
      (defun lean-extract-core-code (code-info)
        "Given a code-info which is a cons cell whose car element is source code,
 Extract the core code between -- BEGIN and -- END lines"
