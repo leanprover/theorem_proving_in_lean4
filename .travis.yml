@@ -31,8 +31,23 @@ install:
   # Install Lean dependencies
   - sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev libgmp-dev libmpfr-dev lua5.2-dev cmake
   - npm -g i cssmin minify
+  # Build Lean
+  - git clone https://github.com/leanprover/lean
+  - cd lean
+  - mkdir build
+  - cd build
+  - cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 ../src
+  - make
+  - sudo make install
+  - cd ../../
+
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
+  # Build completion.js
+  - echo "var completions = [" > js/completion.js
+  - lean --server < js/completion_input.in | grep "|" | grep -v "^private\." | sort | uniq | sed -e "s/\([^|]\+\)|\(.\+\)/{name:\"\1\", value:\"\1\", meta:\"\2\"},/" >> js/completion.js
+  - echo "]" >> js/completion.js
+  # Push to gh-pages
   - if [[ "${REPO}" == "BLESSED" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
       git config --global user.email "notifications@travis-ci.org" &&
       git config --global user.name "Travis CI" &&
@@ -51,15 +66,6 @@ script:
       git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages &&
       git checkout -f master;
     fi
-  # Build Lean
-  - git clone https://github.com/leanprover/lean
-  - cd lean
-  - mkdir build
-  - cd build
-  - cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 ../src
-  - make
-  - sudo make install
-  - cd ../../
   # Test
   - make test
 

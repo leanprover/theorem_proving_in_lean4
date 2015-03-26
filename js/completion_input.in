@@ -1,0 +1,54 @@
+VISIT ./js/completion_input.lean
+WAIT
+FINDP 2
+a
+FINDP 2
+b
+FINDP 2
+c
+FINDP 2
+d
+FINDP 2
+e
+FINDP 2
+f
+FINDP 2
+g
+FINDP 2
+h
+FINDP 2
+i
+FINDP 2
+j
+FINDP 2
+k
+FINDP 2
+l
+FINDP 2
+m
+FINDP 2
+n
+FINDP 2
+o
+FINDP 2
+p
+FINDP 2
+q
+FINDP 2
+r
+FINDP 2
+s
+FINDP 2
+t
+FINDP 2
+u
+FINDP 2
+v
+FINDP 2
+w
+FINDP 2
+x
+FINDP 2
+y
+FINDP 2
+z
