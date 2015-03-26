@@ -195,11 +195,140 @@ open nat
 example : ∃a : ℕ, a = a :=
 begin
   fapply exists.intro,
-  exact (typeof 0 : ℕ),
+  exact (0 : ℕ),
   apply rfl
 end
 -- END
 #+END_SRC
+
+Another sometimes useful tactic is the =generalize= tactic, which is,
+in a sense, an inverse to =intro=. 
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables x y z : ℕ
+
+example : x = x :=
+begin
+  generalize x, -- goal is x : ℕ ⊢ ∀ (x : ℕ), x = x
+  intro y,      -- goal is x y : ℕ ⊢ y = y
+  apply rfl
+end
+
+example (H : x = y) : y = x :=
+begin
+  generalize H, -- goal is x y : ℕ, H : x = y ⊢ y = x
+  intro H1,     -- goal is x y : ℕ, H H1 : x = y ⊢ y = x
+  apply (eq.symm H1)
+end
+#+END_SRC
+In the first example, the =generalize= tactic generalizes the
+conclusion over the variable =x=, turning the goal into a =∀=. In the
+second, it generalizes the goal over the hypothesis =H=, putting the
+antecedent explicitly into the goal. We generalize any term, not just
+variables:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables x y z : ℕ
+
+-- BEGIN
+example : x + y + z = x + y + z :=
+begin
+  generalize (x + y + z), -- goal is x y z : ℕ ⊢ ∀ (x : ℕ), x = x
+  intro w,                -- goal is x y z w : ℕ ⊢ w = w
+  apply rfl
+end
+-- END
+#+END_SRC
+Notice that once we generalize over =x + y + z=, the variables =x y
+z : ℕ= in the context become irrelevant. (The same is true of the
+hypothesis =H= in the previous example.) The =clear= tactic throw away
+elements of the context, when it is safe to do so:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables x y z : ℕ
+
+-- BEGIN
+example : x + y + z = x + y + z :=
+begin
+  generalize (x + y + z), -- goal is x y z : ℕ ⊢ ∀ (x : ℕ), x = x
+  clear x, clear y, clear z,
+  intro w,                -- goal is w : ℕ ⊢ w = w
+  apply rfl
+end
+-- END
+#+END_SRC
+The =revert= tactic is a combination of =generalize= and =clear=:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables x y z w : ℕ
+
+-- BEGIN
+example : x = x :=
+begin
+  revert x,     -- goal is ⊢ ∀ (x : ℕ), x = x
+  intro y,      -- goal is y : ℕ ⊢ y = y
+  apply rfl
+end
+
+example (H : x = y) : y = x :=
+begin
+  revert H,     -- goal is x y : ℕ ⊢ x = y → y = x
+  intro H1,     -- goal is x y : ℕ, H1 : x = y ⊢ y = x
+  apply (eq.symm H1)
+end
+-- END
+#+END_SRC
+The =generalize= and =revert= tactics are often useful when carrying
+out proofs by induction, when it is often needed to obtain
+the right induction hypothesis.
+
+The =assumption= tactic looks through the assumptions in context of the
+current goal, and if there is one matching the conclusion, it applies
+it.
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables x y z w : ℕ
+
+-- BEGIN
+example (H1 : x = y) (H2 : y = z) (H3 : z = w) : x = w :=
+begin
+  apply (eq.trans H1),
+  apply (eq.trans H2),
+  assumption   -- applied H3
+end
+-- END
+#+END_SRC
+The =eassumption= tactic is slightly more aggressive; for example, it
+will unify metavariables in the conclusion if necessary.
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables x y z w : ℕ
+
+-- BEGIN
+example (H1 : x = y) (H2 : y = z) (H3 : z = w) : x = w :=
+begin
+  apply eq.trans,
+  eassumption,    -- solves x = ?b with H1
+  apply eq.trans,
+  eassumption,    -- solves ?b = w with H2
+  eassumption     -- solves z = w with H3  
+end
+-- END
+#+END_SRC
+
+** Structuring tactic proofs
 
 One thing that is nice about Lean's proof-writing syntax is that it is
 possible to mix "declarative" and "tactic-style" proofs, and pass
@@ -273,10 +402,131 @@ begin
 end
 -- END
 #+END_SRC
-
-# TODO: add a longer list of tactics, including generalize.
+Notice that you still need to use a comma after a =begin= / =end=
+block when there are remaining goals to be discharged. Within a
+=begin= / =end= block, you can abbreviate nested occurrences of
+=begin= and =end= with curly braces:
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+  { intro H,
+    apply (or.elim (and.elim_right H)),
+    { intro Hq,
+      apply or.intro_left,
+      apply and.intro,
+      { exact (and.elim_left H) },
+      { exact Hq }},
+    { intro Hr,
+      apply or.intro_right,
+      apply and.intro,
+      { exact (and.elim_left H)},
+      { exact Hr }}},
+  { intro H,
+    apply (or.elim H),
+    { intro Hpq,
+      apply and.intro,
+      { exact (and.elim_left Hpq) },
+      { apply or.intro_left,
+        exact (and.elim_right Hpq) }},
+    { intro Hpr,
+      apply and.intro,
+      { exact (and.elim_left Hpr)},
+      { apply or.intro_right,
+          exact (and.elim_right Hpr) }}}
+end
+#+END_SRC
+Here we have adopted the convention that whenever a tactic increases
+the number of goals to be solved, the tactics that solve each
+subsequent goal are enclosed in braces. This may not increase
+readability much, but it does help clarify the structure of the proof.
 
 # TODO: need an example of how [visible] is used.
+
+** Cases and pattern matching
+
+[This section under construction.]
+
+The =cases= works on elements of an inductively defined type. Note
+that the following example also uses the =revert= tactic to move the 
+hypothesis into the conclusion of the goal.
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variable {x : ℕ}
+
+example (H : x ≠ 0) : succ (pred x) = x :=
+begin
+  revert H,
+  cases x,
+  -- first goal: ⊢ 0 ≠ 0 → succ (pred 0) = 0
+  { intro H1,
+    apply (absurd rfl H1)},
+  -- second goal: ⊢ succ a ≠ 0 → succ (pred (succ a)) = succ a
+  { intro H1,
+    apply rfl}
+end
+#+END_SRC
+
+You can also use pattern matching in a tactic block:
+#+BEGIN_SRC lean
+example (a b c : Prop) : a ∧ b ↔ b ∧ a :=
+begin
+  apply iff.intro,
+  {intro H,
+   match H with
+   |  and.intro H₁ H₂ := by apply and.intro; assumption
+   end},
+  {intro H,
+   match H with
+   | and.intro H₁ H₂ := by apply and.intro; assumption
+   end},
+end
+#+END_SRC
+Here is another example:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+theorem tst (a b : nat) (H : a = 0) : a + b = b :=
+begin
+  revert H,
+  match a with
+  | zero  := λ H, by rewrite zero_add
+  | (n+1) := λ H, nat.no_confusion H
+  end
+end
+#+END_SRC
+
+And another:
+#+BEGIN_SRC lean
+notation `⟪`:max t:(foldr `,` (e r, and.intro e r)) `⟫`:0 := t
+
+check ⟪ trivial, trivial, trivial ⟫
+
+theorem tst (a b c d : Prop) : a ∧ b ∧ c ∧ d ↔ d ∧ c ∧ b ∧ a :=
+begin
+  apply iff.intro,
+  begin
+    intro H,
+    match H with
+    | ⟪ H₁, H₂, H₃, H₄ ⟫ := ⟪ H₄, H₃, H₂, H₁ ⟫
+    end
+  end,
+  begin
+    intro H,
+    match H with
+    | ⟪ H₁, H₂, H₃, H₄ ⟫ :=
+      begin
+        repeat [apply and.intro | assumption]
+      end
+    end
+  end
+end
+
+print definition tst
+#+END_SRC
 
 ** The Rewrite Tactic
 
@@ -609,4 +859,56 @@ example {A : Type} [s : comm_ring A] (a b c : A) : a * 0 + 0 * b + c * 0 + 0 * a
 begin
   rewrite [+mul_zero, +zero_mul, +add_zero]
 end
+#+END_SRC
+
+
+** Tactics as a programming language
+
+[This section still under construction]
+
+#+BEGIN_SRC lean
+example (a b c d : Prop) : a ∧ b ∧ c ∧ d ↔ d ∧ c ∧ b ∧ a :=
+begin
+  apply iff.intro,
+  repeat (intro H;  repeat [cases H with (H', H) | apply and.intro | assumption])
+end
+#+END_SRC
+
+#+BEGIN_SRC lean
+open tactic
+
+definition my_tac := repeat ([ apply @and.intro
+                             | apply @eq.refl
+                             ])
+tactic_hint my_tac
+
+theorem T1 {A : Type} {B : Type} (a : A) (b c : B) : a = a ∧ b = b ∧ c = c
+#+END_SRC
+
+#+BEGIN_SRC lean
+open tactic
+
+theorem T (a b c d : Prop) (Ha : a) (Hb : b) (Hc : c) (Hd : d) : a ∧ b ∧ c ∧ d := 
+by fixpoint (λ f, [apply @and.intro; f | assumption; f | id])
+#+END_SRC
+
+#+BEGIN_SRC lean
+open tactic 
+
+definition my_tac3 := fixpoint (λ f, [apply @or.intro_left; f  |
+                                      apply @or.intro_right; f |
+                                      assumption])
+
+tactic_hint my_tac3
+
+theorem T3 {a b c : Prop} (Hb : b) : a ∨ b ∨ c := _
+#+END_SRC
+
+#+BEGIN_SRC lean
+open tactic 
+
+theorem tst {A B : Prop} (H1 : A) (H2 : B) : A := 
+by [trace "first";  state; now  |
+       trace "second"; state; fail |
+       trace "third";  assumption]
 #+END_SRC
