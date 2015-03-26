@@ -41,16 +41,20 @@
                 "sec-"
                 (group (one-or-more (in digit "-")))
                 "\]"
-                "\{" (group (one-or-more (in alnum " "))) "\}" ) text)
+                "\{" (one-or-more (in alnum " ")) "\}"
+                (group (zero-or-more " "))
+                ) text)
            (let* ((sec-number-org (match-string 1 text))
                   (sec-number (s-replace-all
                                '(("-" . "."))
-                               sec-number-org)))
+                               sec-number-org))
+                  (spaces (match-string 2 text)))
              (s-concat "\\hyperref[sec-"
                        sec-number-org
                        "]{"
                        sec-number
-                       "}"))))))
+                       "}"
+                       spaces))))))
 
 (eval-after-load "ox-latex"
   '(progn
