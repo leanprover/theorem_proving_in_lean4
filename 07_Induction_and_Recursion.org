@@ -116,7 +116,7 @@ theorem neg_neg : ∀ (b : bool), neg (neg b) = b
 | neg_neg ff := rfl    -- proof for neg (neg ff) = ff
 #+END_SRC
 
-As described in Chapter [[file:06_Inductive_Types.org#Inductive_Types][Inductive Types]], Lean inductive datatypes can
+As described in Chapter [[file:06_Inductive_Types.org::#Inductive_Types][Inductive Types]], Lean inductive datatypes can
 be parametric. The following example defines the =tail= function
 using pattern matching.  The argument =A : Type= is a parameter and
 occurs before =:= to indicate it does not participate in the pattern
@@ -460,7 +460,7 @@ languages, the interpreter produces an exception or returns an
 arbitrary value for incomplete cases. We can simulate the arbitrary
 value approach using inhabited types.  An element of =inhabited A= is
 simply a witness to the fact that there is an element of =A=. In
-Chapter [[file:09_Type_Classes.org#Type_Classes][Type Classes]], we will see that =inhabited= is an instance of a
+Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]], we will see that =inhabited= is an instance of a
 =type class=: Lean can be instructed that suitable base types are
 inhabited, and can automatically infer that other constructed types
 are inhabited on that basis. The standard library provides the opaque
