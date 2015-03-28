@@ -554,6 +554,8 @@ What follows are some common identities involving the existential
 quantifier. We encourage you to prove as many as you can. Be careful:
 many of them are nonconstructive, and require the use of the law of
 the excluded middle.
+# Remark from Leo: I used (a : A) instead of (H : inhabited A), because
+# 'inhabited' is only defined in Chapter 6.
 #+BEGIN_SRC lean
 section
   variables (A : Type) (p q : A → Prop)
@@ -561,7 +563,8 @@ section
 
   example : (∃x, p x ∨ q x) ↔ (∃x, p x) ∨ (∃x, q x) := sorry
 
-  example : (∃x : A, r) ↔ r := sorry
+  example : (∃x : A, r) → r := sorry
+  example (a : A) : r → (∃x : A, r) := sorry
   example : (∃x, p x ∧ r) ↔ (∃x, p x) ∧ r := sorry
   example : (∀x, p x → r) ↔ (∃x, p x) → r := sorry
   example : (∃x, p x → r) ↔ (∀x, p x → r) := sorry
