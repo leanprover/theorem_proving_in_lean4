@@ -202,7 +202,7 @@ end
 #+END_SRC
 
 Another sometimes useful tactic is the =generalize= tactic, which is,
-in a sense, an inverse to =intro=. 
+in a sense, an inverse to =intro=.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -323,7 +323,7 @@ begin
   eassumption,    -- solves x = ?b with H1
   apply eq.trans,
   eassumption,    -- solves ?b = w with H2
-  eassumption     -- solves z = w with H3  
+  eassumption     -- solves z = w with H3
 end
 -- END
 #+END_SRC
@@ -448,7 +448,7 @@ readability much, but it does help clarify the structure of the proof.
 [This section under construction.]
 
 The =cases= works on elements of an inductively defined type. Note
-that the following example also uses the =revert= tactic to move the 
+that the following example also uses the =revert= tactic to move the
 hypothesis into the conclusion of the goal.
 #+BEGIN_SRC lean
 import data.nat
@@ -554,9 +554,8 @@ in the goal =f k = 0=.  Then, the second =rewrite= replace =f 0= with
 the form =t = t=.
 
 Multiple rewrites can be combined using the notations =rewrite [t_1,
-..., t_n]= or =rewrite ⟨t_1, ..., t_n⟩=. Both notations are just
-shorthands for =rewrite t_1, ..., rewrite t_n=.  The previous example
-can be written as:
+..., t_n]=. This notation is just shorthand for =rewrite t_1, ..., rewrite t_n=.
+The previous example can be written as:
 #+BEGIN_SRC lean
 open nat
 variables (f : nat → nat) (k : nat)
@@ -588,7 +587,7 @@ import data.nat
 open nat
 
 example (x y : nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-by rewrite ⟨*mul.left_distrib, *mul.right_distrib, -add.assoc⟩
+by rewrite [*mul.left_distrib, *mul.right_distrib, -add.assoc]
 #+END_SRC
 
 To avoid non-termination, the =rewriter= tactic has a limit on the
@@ -710,7 +709,7 @@ open nat
 variables (f : nat → nat → nat → nat) (a b : nat)
 
 example (H₁ : a = b) (H₂ : f b a b = 0) : f a a a = 0 :=
-by rewrite ⟨H₁ at {1, 3}, H₂⟩
+by rewrite [H₁ at {1, 3}, H₂]
 -- END
 #+END_SRC
 
@@ -727,7 +726,7 @@ open nat
 variables (f : nat → nat → nat → nat) (a b : nat)
 -- BEGIN
 example (H₁ : a = b) (H₂ : f b a b = 0) : f a a a = 0 :=
-by rewrite ⟨H₁ at -{2}, H₂⟩
+by rewrite [H₁ at -{2}, H₂]
 -- END
 #+END_SRC
 
@@ -743,7 +742,7 @@ variables {A : Type} [s : group A]
 include s
 
 theorem inv_eq_of_mul_eq_one {a b : A} (H : a * b = 1) : a⁻¹ = b :=
-by rewrite ⟨-(mul_one a⁻¹), -H, inv_mul_cancel_left⟩
+by rewrite [-(mul_one a⁻¹), -H, inv_mul_cancel_left]
 #+END_SRC
 In the example above, the term =mul_one a⁻¹= has type =a⁻¹ * 1 = a⁻¹=.
 Thus, the rewrite step =-(mul_one a⁻¹)= replaces =a⁻¹= with =a⁻¹ * 1=.
@@ -755,7 +754,7 @@ open nat
 -- BEGIN
 example (a b c : nat) (H1 : a = b) (H2 : b = c + 1) : a ≠ 0 :=
 calc
-  a     = succ c : by rewrite ⟨H1, H2, add_one⟩
+  a     = succ c : by rewrite [H1, H2, add_one]
     ... ≠ 0      : succ_ne_zero c
 -- END
 #+END_SRC
@@ -778,11 +777,11 @@ definition double (x : nat) := x + x
 variable f : nat → nat
 
 example (x y : nat) (H1 : double x = 0) (H3 : f 0 = 0) : f (x + x) = 0 :=
-by rewrite ⟨↑double at H1, H1, H3⟩
+by rewrite [↑double at H1, H1, H3]
 -- END
 #+END_SRC
 The step =↑double at H1= unfolds =double= in the hypothesis =H1=.
-The notation =rewrite ↑{f_1, ..., f_n}= is shorthand for
+The notation =rewrite ↑[f_1, ..., f_n]= is shorthand for
 =rewrite [↑f_1, ..., ↑f_n]=
 
 The tactic =esimp= is a shorthand for =rewrite ▸*=. Here are two simple examples:
@@ -870,7 +869,7 @@ end
 example (a b c d : Prop) : a ∧ b ∧ c ∧ d ↔ d ∧ c ∧ b ∧ a :=
 begin
   apply iff.intro,
-  repeat (intro H;  repeat [cases H with (H', H) | apply and.intro | assumption])
+  repeat (intro H;  repeat [cases H with [H', H] | apply and.intro | assumption])
 end
 #+END_SRC
 
@@ -888,12 +887,12 @@ theorem T1 {A : Type} {B : Type} (a : A) (b c : B) : a = a ∧ b = b ∧ c = c
 #+BEGIN_SRC lean
 open tactic
 
-theorem T (a b c d : Prop) (Ha : a) (Hb : b) (Hc : c) (Hd : d) : a ∧ b ∧ c ∧ d := 
+theorem T (a b c d : Prop) (Ha : a) (Hb : b) (Hc : c) (Hd : d) : a ∧ b ∧ c ∧ d :=
 by fixpoint (λ f, [apply @and.intro; f | assumption; f | id])
 #+END_SRC
 
 #+BEGIN_SRC lean
-open tactic 
+open tactic
 
 definition my_tac3 := fixpoint (λ f, [apply @or.intro_left; f  |
                                       apply @or.intro_right; f |
@@ -905,9 +904,9 @@ theorem T3 {a b c : Prop} (Hb : b) : a ∨ b ∨ c := _
 #+END_SRC
 
 #+BEGIN_SRC lean
-open tactic 
+open tactic
 
-theorem tst {A B : Prop} (H1 : A) (H2 : B) : A := 
+theorem tst {A B : Prop} (H1 : A) (H2 : B) : A :=
 by [trace "first";  state; now  |
        trace "second"; state; fail |
        trace "third";  assumption]
