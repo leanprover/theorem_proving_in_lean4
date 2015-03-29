@@ -462,7 +462,7 @@ print definition g_comp_f
 
 The general form of a definition is ~definition foo : T := bar~. Lean
 can usually infer the type =T=, but it is often a good idea to write
-it explicity. This clarifies your intention, and Lean will flag an
+it explicitly. This clarifies your intention, and Lean will flag an
 error if the right-hand side of the definition does not have the right
 type.
 
