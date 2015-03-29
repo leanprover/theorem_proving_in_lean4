@@ -511,7 +511,7 @@ An inaccessible subterm can be declared using one of the following two
 notations: =⌞t⌟= or =?(t)=. The unicode version is input by entering
 =\cll= (corner-lower-left) and =\clr= (corner-lower-right).
 
-In the following example can be find in \cite{goguen:et:al:06}. We
+The following example can be find in \cite{goguen:et:al:06}. We
 declare an inductive type that defines the property of "being in the
 image of =f=".  Then, we equip =f= with an "inverse" which takes
 anything in the image of =f= to an element that is mapped to it. The

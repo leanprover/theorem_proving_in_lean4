@@ -426,7 +426,7 @@ definition pr1 {A B : Type} (p : A × B) : A :=
 prod.rec_on p (λa b, a)
 
 definition pr2 {A B : Type} (p : A × B) : A :=
-prod.rec_on p (λa b, a)
+prod.rec_on p (λa b, b)
 -- END
 
 end hide
@@ -512,7 +512,7 @@ end hide
 The =structure= command simultaneously introduces the inductive type,
 =prod=, its constructor, =mk=, the usual eliminators (=rec=,
 =rec_on=), as well as the projections, =pr1= and =pr2=, as defined
-above. 
+above.
 
 If you do not name the constructor, Lean uses =mk= as a
 default. For example, the following defines a record to store a color
@@ -756,7 +756,7 @@ premises=.
 
 Consider, for example, the addition function =add m n= on the natural
 numbers. Fixing =m=, we can define addition by recursion on =n=. In
-the base case, we set =add m zero= to =n=. In the successor step,
+the base case, we set =add m zero= to =m=. In the successor step,
 assuming the value =add m n= is already determined, we define =add m
 (succ n)= to be =succ (add m n)=.
 #+BEGIN_SRC lean
@@ -1702,7 +1702,7 @@ we will not discuss them further here.
 
 Since an inductive type lives in =Type.{i}= for some =i=, it is
 reasonable to ask /which/ universe levels =i= can be instantiated
-to. The goal of this section is to explain the relevant constraints. 
+to. The goal of this section is to explain the relevant constraints.
 
 In the standard library, there are two cases, depending on whether the
 inductive type is specified to land in =Prop=. Let us first consider
@@ -1752,4 +1752,3 @@ one, representing a datatype rather than a proposition. The analogous
 definition of =A × B=, where =A= and =B= are restricted to =Prop= and
 the resulting type is declared to be an element of =Prop= instead of
 =Type=, is exactly the definition of =A ∧ B=.
-

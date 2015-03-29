@@ -265,7 +265,7 @@ leave the "universe management" to Lean.
 We have seen that if we have =m n : nat=, then we have =pair m n : nat
 × nat=. This gives us a way of creating pairs of natural numbers.
 Conversely, if we have =p : nat × nat=, then we have =pr1 p : nat= and
-=pr2 : nat=. This gives us a way of "using" a pair, by extracting its
+=pr2 p : nat=. This gives us a way of "using" a pair, by extracting its
 two components.
 
 We already know how to "use" a function =f : A → B=: given =a : A=, we
@@ -545,7 +545,7 @@ definition uncurry (A B C : Type) (f : A → B → C) : A × B → C := sorry
 
 Lean also allows you to introduce "local" definitions using the =let=
 construct. The expression ~let a := t1 in t2~ is definitionally equal to
-the result of replacing every occurrence of =a= in =t1= by =t2=.
+the result of replacing every occurrence of =a= in =t2= by =t1=.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -573,13 +573,13 @@ end
 #+END_SRC
 
 Notice that the meaning of the expression ~let a := t1 in t2~ is very
-similar to the meaning of =(λa, t1) t2=, but the two are not the
+similar to the meaning of =(λa, t2) t1=, but the two are not the
 same. In the first expression, you should think of every instance of
 =a= in =t2= as a syntactic abbreviation for =t1=. In the second
-expression, =a= is a variable, and the expression =λa, t1= has to make
+expression, =a= is a variable, and the expression =λa, t2= has to make
 sense independent of the value of =a=. The =let= construct is a
 stronger means of abbreviation, and there are expressions of the form
-~let a := t1 in t2~ that cannot be expressed as =(λa, t1) t2=. As an
+~let a := t1 in t2~ that cannot be expressed as =(λa, t2) t1=. As an
 exercise, try to understand why the definition of =foo= below type
 checks, but the definition of =bar= does not.
 #+BEGIN_SRC lean
