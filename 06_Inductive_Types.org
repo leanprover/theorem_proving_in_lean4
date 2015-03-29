@@ -425,7 +425,7 @@ namespace hide
 definition pr1 {A B : Type} (p : A × B) : A :=
 prod.rec_on p (λa b, a)
 
-definition pr2 {A B : Type} (p : A × B) : A :=
+definition pr2 {A B : Type} (p : A × B) : B :=
 prod.rec_on p (λa b, b)
 -- END
 
