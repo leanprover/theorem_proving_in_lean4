@@ -373,7 +373,7 @@ in the search, so, once again, Lean's elaborator relies on an
 incomplete strategy.
 
 The interaction of computation with higher-order unification is
-particularly knotty. For the most part, Lean avoids peforming
+particularly knotty. For the most part, Lean avoids performing
 computational reduction when trying to solve higher-order
 constraints. You can override this, however, by marking some symbols
 with the =reducible= attribute, as decribed in Section [[Reducible
@@ -416,7 +416,7 @@ Because elaboration and unification are so complex, Lean provides
 various mechanism that control the process. To start with, a defined
 symbol can be /transparent/ or /opaque/. This is a very strong,
 irrevocable decision: when a symbol is opaque, its definition
-definition is /never/ unfolded, not even by the type checker in the
+is /never/ unfolded, not even by the type checker in the
 kernel of Lean, whose job it is to determine whether or not a term is
 type correct.
 
@@ -832,7 +832,7 @@ as needed. But there is a difference: within the section, =t1= is an
 abbreviation for =@t1 A R transR=, which is to say, these arguments
 are fixed until the section is closed. This means that you do not have
 to specify the explicit arguments =R= and =transR= when you write =t1
-H2 H3 H4=, in constrast to the previous example. But it also means
+H2 H3 H4=, in contrast to the previous example. But it also means
 that you cannot specify other arguments in their place. In this
 example, making =R= a parameter is appropriate if =R= is the only
 binary relation you want to reason about in the section. If you want
