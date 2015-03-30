@@ -449,7 +449,7 @@ Lean provides us with an option, however, to declare a definition to
 be opaque as well. Opaque definitions are similar to regular
 definitions, but they are only transparent in the module (file) in
 which they are defined. The idea is that we can prove theorems about
-an opaque constant in the module in which it is defiend, but in other
+an opaque constant in the module in which it is defined, but in other
 modules, we can only rely on these theorems. The actual definition is
 hidden/encapsulated, and the module designer is free to change it
 without affecting its "customers".
@@ -839,7 +839,7 @@ binary relation you want to reason about in the section. If you want
 to apply your theorems to arbitrary binary relations within the
 section, make =R= a variable.
 
-Notice the Lean is consistent when it comes to providing alternative
+Notice that Lean is consistent when it comes to providing alternative
 syntax for =Prop=-valued variants of declarations:
 
 | Type      | Prop       |
@@ -857,7 +857,7 @@ way that meta-theoretic data is handled. In a =section=, you can
 declare notation, classes, instances, rewrite rules, and so on, and
 they persist when the section is closed. Their scope is the entire
 namespace in which the section resides, and when another module
-imports the once containing the section and opens the relevant
+imports the one containing the section and opens the relevant
 namespace, all these objects are available. There is a catch: in a
 section, a piece of notation cannot depend on a parameter. After all,
 a notation that is defined with respect to a fixed parameter, like =R=
