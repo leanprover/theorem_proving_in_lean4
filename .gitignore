@@ -29,3 +29,4 @@ tutorial.org
 _minted-*/
 .DS_Store
 gitHeadInfo.gin
+*.org.*.lean
