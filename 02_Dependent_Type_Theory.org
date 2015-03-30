@@ -121,7 +121,8 @@ There are a couple of things to notice here. First, the application of
 a function =f= to a value =x= is denoted =f x=. Second, when writing
 type expressions, arrows associate to the /right/; for example, the
 type of =g= is =nat → (nat → nat)=. Thus we can view =g= as a function
-that takes natural numbers and returns a natural number. In type
+that takes natural numbers and returns another function that takes a
+natural number and returns a natural number. In type
 theory, this is generally more convenient than writing =g= as a
 function that takes a pair of natural numbers as input, and returns a
 natural number as output. For example, it allows us to "partially
