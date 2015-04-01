@@ -665,29 +665,39 @@ long terms internal to a proof using auxiliary =have= statements can
 help locate the source of an error.
 
 The second strategy, providing additional information, can be achieved
-by using =have=, =show=, =typeof= and =#<namespace>= (see Section
-[[Notation, Overloads, and Coercions]]) to indicate expected types. More
-directly, it often help to specify the implicit arguments. When Lean
-cannot solve for the value of a metavariable corresponding to an
-implicit argument, you can always use =@= to provide that argument
-explicitly. Doing so will either help the elaborator solve the
-elaboration problem, or help you find an error in the term that is
-blocking the intended solution.
+by using =have=, =show=, =(t : T)= notation, and =#<namespace>= (see
+Section [[Notation, Overloads, and Coercions]]) to indicate expected
+types. More directly, it often help to specify the implicit
+arguments. When Lean cannot solve for the value of a metavariable
+corresponding to an implicit argument, you can always use =@= to
+provide that argument explicitly. Doing so will either help the
+elaborator solve the elaboration problem, or help you find an error in
+the term that is blocking the intended solution.
 
 In Lean, tactics not only allow us to invoke arbitrary automated
 procedures, but also provide an alternative approach to construct
 proofs and terms. For many users, this is one of the most effective
-mechanisms to help the elaborator.
-A tactic can be viewed as a "recipe", a sequence of
-commands or instructions, that describes how to build a proof. This
-recipe may be as detailed as we want.  A tactic =T= can be embedded
-into proof terms by writing =by T= or =begin T end=.  These
-annotations instruct Lean that tactic =T= should be invoked to
-construct the term in the given location. Similarly to =proof
-... qed=, the elaborator tries to elaborate the surrounding terms
-before executing =T=.  Actually, =proof t qed= is just syntax sugar
-for =by exact t=. Later, we explain in detail the semantics of the
-tactic =exact t=.
+mechanisms to help the elaborator.  A tactic can be viewed as a
+"recipe", a sequence of commands or instructions, that describes how
+to build a proof. This recipe may be as detailed as we want.  A tactic
+=T= can be embedded into proof terms by writing =by T= or =begin T
+end=.  These annotations instruct Lean that tactic =T= should be
+invoked to construct the term in the given location. Similarly to
+=proof ... qed=, the elaborator tries to elaborate the surrounding
+terms before executing =T=.  The expression =proof t qed= is just
+syntactic sugar for =by exact t=. Later, we will explain the
+semantics of the tactic =exact t= in detail.
+
+If you are running Lean using Emacs, you can "profile" the elaborator
+and type checker, to find out where they are spending all their
+time. Simply type =M-x lean-execute= to run an independent Lean
+process manually and add the option =--profile==. The output buffer
+will then report the times required by the elaborator and type
+checker, for each definition and theorem processed. If you ever find
+the system slowing down while processing a file, this can help you
+locate the source of the problem.
+
+** Making auxiliary subgoals visible
 
 We have seen that the =have= construct introduces an auxiliary subgoal
 in a proof, and is useful for structuring and documenting proofs.
