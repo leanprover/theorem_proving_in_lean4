@@ -792,6 +792,11 @@ trace of the search:
 #+BEGIN_SRC lean
 set_option class.trace_instances true
 #+END_SRC
+If you add this to your file in Emacs mode and use =C-c C-x= to run an
+independent Lean process on your file, the output buffer will show a
+trace every time the type class resolution procedure is subsequently
+triggered.
+
 You can also limit the search depth (the default is 32):
 #+BEGIN_SRC lean
 set_option class.instance_max_depth 5
