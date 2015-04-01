@@ -1,7 +1,7 @@
 #+Title: Theorem Proving in Lean
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
 
-* Using Tactics
+* Tactics
 
 In this chapter, we describe an alterantive approach to constructing
 proofs, using /tactics/. A proof term is a representation of a
