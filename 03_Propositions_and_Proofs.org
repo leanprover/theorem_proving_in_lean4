@@ -157,8 +157,8 @@ inhabitant of =p= as being the "fact that =p= is true." A proof of =p
 is true."
 
 Indeed, if =p : Prop= is any proposition, Lean's /standard kernel/
-treats any two elements =t1 t2 : Prop= as being "definitionally
-equal," much the same way as it treats =(λx, t)s= and =t[s/x]= as
+treats any two elements =t1 t2 : p= as being "definitionally equal,"
+much the same way as it treats =(λx, t)s= and =t[s/x]= as
 definitionally equal. This is known as "proof irrelevance," and is
 consistent with the interpretation in the last paragraph. It means
 that even though we can treat proofs =t : p= as ordinary objects in
