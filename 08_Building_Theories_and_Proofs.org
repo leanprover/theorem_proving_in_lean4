@@ -697,17 +697,19 @@ checker, for each definition and theorem processed. If you ever find
 the system slowing down while processing a file, this can help you
 locate the source of the problem.
 
-** Making auxiliary subgoals visible
+** Making Auxiliary Facts Visible
+:PROPERTIES:
+  :CUSTOM_ID: Making_Auxiliary_Facts_Visible
+:END:
 
 We have seen that the =have= construct introduces an auxiliary subgoal
 in a proof, and is useful for structuring and documenting proofs.
-Given the term =have H : p, from s, t=, by default,
-the hypothesis =H= is not "visible" by all automated procedures and
-tactics used to construct =t=. This is important because
-"too much information" may negatively affect the performance and
-effectiveness of automated procedures.
-To make =H= available to automated procedures and tactics, we should
-use =assert H : p, from s, t=. Here is a small example:
+Given the term =have H : p, from s, t=, by default, the hypothesis =H=
+is not "visible" by automated procedures and tactics used to construct
+=t=. This is important because too much information may negatively
+affect the performance and effectiveness of automated procedures. Tou
+can make =H= available to automated procedures and tactics by using
+the idiom =assert H : p, from s, t=. Here is a small example:
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ q ∧ r → q ∧ p :=
 assume Hpqr : p ∧ q ∧ r,
@@ -746,6 +748,15 @@ proof
   and.intro Hq Hp
 qed
 #+END_SRC
+See Chapter [[file:11_Tactics.org::#Tactics][Tactics]] for a discussion of Lean's tactics.
+
+There are even situations where an auxiliary fact needs to be visible
+to the elaborator, so that it can solve unification problems that
+arise. This can arise when the expression to be synthesized depends on
+an auxiliary fact, =H=. We will see an example of this in a later
+chapter, when we discuss the Hilbert choice operator.
+
+# TODO: add a reference here when the chapter is written.
 
 ** Sections and Contexts
 
