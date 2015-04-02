@@ -992,7 +992,7 @@ end
 #+END_SRC
 
 
-** Tactics as a programming language
+** Tactics as a Programming Language
 
 [This section still under construction]
 
