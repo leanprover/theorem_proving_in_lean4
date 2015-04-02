@@ -788,8 +788,8 @@ namespace is closed.
 If you use the =open= command at the "top level" of a file to import
 information from a namespace, that information remains in the context
 until the end of the file. But if you use the =open= command within a
-section or namespace, the information remains in the context until
-that section or namespace is closed.
+namespace, the information remains in the context until
+that namespace is closed.
 
 ** Dependent Types
 
