@@ -1,0 +1,562 @@
+#+Title: Theorem Proving in Lean
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
+
+* Axioms
+:PROPERTIES:
+  :CUSTOM_ID: Axioms
+:END:
+
+We have seen that the version of the Calculus of Inductive
+Constructions that has been implemented in Lean includes a nested
+hierarchy of universes with an impredicative, proof-irrelevant =Prop=
+at the bottom, Pi types, and inductive types. In this chapter, we
+consider extensions of the CIC with additional axioms and
+rules. Extending a foundational system in such a way is often
+convenient; it can make it possible to prove more theorems, as well as
+easier to prove theorems that could have been proved otherwise. But
+often there are also negative consequences of adding additional axioms
+that go beyond questions of soundness and correctness.
+
+Lean's standard library makes available a number of "classical"
+axioms, which are justified on a set-theoretic interpretation of type
+theory. But these axioms are at odds with a constructive
+interpretation of the system, as well as its computational
+behavior. When you import the standard library, most of these axioms
+are therefore not imported by default.
+
+The standard library does, however, make use of two mildly classical
+axioms, namely, propositional extensionality and quotients. Their use
+in core parts of the standard library is still provisional, and may be
+curtailed if it proves to have sufficiently bad computational
+effects. The next section aims to clarify some of the issues and
+concerns.
+
+[Note: parts of this chapter are still under construction.]
+
+** Computation and Axioms
+
+For most of its history, mathematics was essentially computational:
+geometry dealt with constructions of geometric objects, algebra was
+concerned with algorithmic solutions to systems of equations, and
+analysis provided to means to compute the future behavior of systems
+evolving over time. From the proof of a theorem to the effect that
+"for every =x=, there is a =y= such that ..." is was generally
+straightforward to extract an algorithm to compute such a =y= given
+=x=.
+
+In the nineteenth century, however, increases in the complexity of
+mathematical arguments pushed mathematicians to develop new styles of
+reasoning that suppress algorithmic information, and invoke
+descriptions of mathematical objects that abstract away the details of
+how those objects are represented. The goal was to obtain a powerful
+"conceptual" understanding without getting bogged down in
+computational details, but this had the effect of admitting
+mathematical theorems that are simply /false/ on a direct
+computational reading.
+
+There is still fairly uniform agreement today that computation is
+important to mathematics. But there are different views as to how best
+to address computational concerns. From a /constructive/ point of
+view, it is a mistake to separate mathematics from its computational
+roots; every meaningful mathematical theorem should have a direct
+computational interpretation. From a /classical/ point of view, it is
+more fruitful to maintain a separation of concerns: we can use one
+language and body of methods to write computer programs, while
+maintaining the freedom to use a nonconstructive theories and methods
+to reason about them.
+
+Lean is designed to support both of these approaches. Core parts of
+the library are developed constructively, but the system also provides
+support for carrying out classical mathematical reasoning.
+
+Computationally, the "purest" part of dependent type theory avoids the
+use of =Prop= entirely. Inductive types and Pi types can be viewed as
+data types, and terms of these types can be "evaluated" by applying
+reduction rules until no more rules can be applied. In principle, any
+closed term (that is, term with no free variables) of type =ℕ= should
+evaluate to a numeral, =succ (succ (succ ... 0))=.
+
+Introducing a proof-irrelevant =Prop= and marking theorems opaque
+represents a first step towards separation of concerns. The intention
+is that elements of a type =P : Prop= should play no role in
+computation, and so the particular construction of a term =t : P= is
+"irrelevant" in that sense. One can still define computational objects
+the incorporate elements of type =Prop=; the point is that these
+elements can help us reason about the effects of the computation, but
+can be ignored when we extract "code" from the term. Elements of type
+=Prop= are not entirely innocuous, however. They include equations =s
+= t : A= for any type =A=, and such equations can be used as casts, to
+type check terms.
+
+Having adopted a proof-irrelevant =Prop=, one might consider it
+legitimate to add arbitrary classical axioms, such as the law of the
+excluded middle, governing propositions. From a constructive point of
+view, the most objectionable classical axioms are "choice axioms" that
+allow us to extract "data" from any existential proposition,
+completely erasing the distinction between the proof-irrelevant and
+data-relevant parts of the theory. These are discussed in Section
+[[#Choice_Axioms][Choice Axioms]] below.
+
+** Propositional Extensionality
+
+Propositional extensionality is the following axiom:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+axiom propext {a b : Prop} : a ↔ b → a = b
+-- END
+
+end hide
+#+END_SRC
+It asserts that when two propositions imply one another, they are
+actually equal. This is consistent with set-theoretic
+interpretations in which any element =a : Prop= is either empty or the
+singleton set ={*}=, for some distinguished element =*=. The axiom has
+the the effect that equivalent propositions can be substituted for one
+another in any context:
+#+BEGIN_SRC lean
+namespace hide
+
+axiom propext {a b : Prop} : a ↔ b → a = b
+
+-- BEGIN
+section
+  open eq.ops
+  variables a b c d e : Prop
+  variable P : Prop → Prop
+
+  example (H : a ↔ b) : (c ∧ a ∧ d → e) ↔ (c ∧ b ∧ d → e) :=
+  propext H ▸ !iff.refl
+
+  example (H : a ↔ b) (H1 : P a) : P b :=
+  propext H ▸ H1
+end
+-- END
+
+end hide
+#+END_SRC
+The first example could be proved more laboriously without =propext=
+using the fact that the propositional connectives respect
+propositional equivalence. The second example represents a more
+essential use of =propext=. In fact, it is equivalent to =propext=
+itself, a fact which we encourage you to prove.
+
+** Function Extensionality
+
+Similar to propositional extensionality, function extensionality is
+the following axiom:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+axiom funext {A : Type} {B : A → Type} {f₁ f₂ : Πx : A, B x} : 
+(∀x, f₁ x = f₂ x) → f₁ = f₂
+--END
+end hide
+#+END_SRC
+It asserts that any two functions of type =Πx : A, B x= that agree on
+all their inputs are equal. From a classical, set-theoretic
+perspective, this is exactly what it means for two functions to be
+equal. This is known as an "extensional" view of functions. From a
+constructive perspective, however, it is sometimes more natural to
+think of functions as algorithms, or computer programs, that are
+presented in some explicit way. It is certainly the case that two
+computer programs can compute the same answer for every input despite
+the fact that they are syntactically quite different. In much the same
+way, you might want to maintain a view of functions that does not
+force you to identify two functions that have the same intput / output
+behavior. This is known as an "intensional" view of
+functions. Adopting =funext= commits us to an extensional view of
+functions.
+
+Suppose that for =X : Type= we define the ~set X := X → Prop~ to
+denote the type of subsets of =X=, essentially identifying subsets
+with predicates. By combining =funext= and =propext=, we obtain an
+extensional theory of such sets:
+#+BEGIN_SRC lean
+import logic
+open eq.ops
+
+namespace hide
+
+-- BEGIN
+definition set (X : Type) := X → Prop
+
+namespace set
+
+variable {X : Type}
+
+definition mem [reducible] (x : X) (a : set X) := a x
+notation e ∈ a := mem e a
+
+theorem setext {a b : set X} (H : ∀x, x ∈ a ↔ x ∈ b) : a = b :=
+funext (take x, propext (H x))
+
+end set
+-- END
+end hide
+#+END_SRC
+We can then proceed to define the empty set and set intersection, for
+example, and prove set identities:
+#+BEGIN_SRC lean
+import standard
+import logic
+open eq.ops
+
+namespace hide
+
+definition set (X : Type) := X → Prop
+
+namespace set
+
+variable {X : Type}
+
+definition mem [reducible] (x : X) (a : set X) := a x
+notation e ∈ a := mem e a
+
+theorem setext {a b : set X} (H : ∀x, x ∈ a ↔ x ∈ b) : a = b :=
+funext (take x, propext (H x))
+
+-- BEGIN
+definition empty [reducible] : set X := λx, false
+notation `∅` := empty
+
+definition inter [reducible] (a b : set X) : set X := λx, x ∈ a ∧ x ∈ b
+notation a ∩ b := inter a b
+
+theorem inter_self (a : set X) : a ∩ a = a :=
+setext (take x, !and_self)
+
+theorem inter_empty (a : set X) : a ∩ ∅ = ∅ :=
+setext (take x, !and_false)
+
+theorem empty_inter (a : set X) : ∅ ∩ a = ∅ :=
+setext (take x, !false_and)
+
+theorem inter.comm (a b : set X) : a ∩ b = b ∩ a :=
+setext (take x, !and.comm)
+-- END
+
+end set
+end hide
+#+END_SRC
+
+
+In fact, function extensionality follows from the existence of
+quotients, which we describe in the next section. In the Lean standard
+library, therefore, =funext= is thus proved from the quotient
+construction.
+
+** Quotients
+
+Let =A= be any type, and let =R= be an equivalence relation on =A=. It
+is mathematically common to form the "quotient" =A / R=, that is, the
+type of elements of =A= "modulo" =R=. Set theoretically, one can view
+=A / R= as the set of equivalence classes of =A= modulo =R=. If =f : A
+→ B= is any function that respects the equivalence relation in the
+sense that for every =x y : A=, =R x y= implies =f x = f y=, then =f=
+"lifts" to a function =f' : A / R → B= defined on each equivalence
+class =[x]= by =f' [x] = f x=. Lean's standard library extends the CIC
+with additional contants that perform exactly these constructions, and
+installs this last equation as a definitional reduction rule.
+
+First, it is useful to define the notion of a /setoid/, which is
+simply a type with an associated equivalence relation:
+#+BEGIN_SRC lean
+namespace hide
+
+--BEGIN
+structure setoid [class] (A : Type) :=
+(r : A → A → Prop) (iseqv : equivalence r)
+
+namespace setoid
+  infix `≈` := setoid.r
+
+  variable {A : Type}
+  variable [s : setoid A]
+  include s
+
+  theorem refl (a : A) : a ≈ a :=
+  and.elim_left (@setoid.iseqv A s) a
+
+  theorem symm {a b : A} : a ≈ b → b ≈ a :=
+  λ H, and.elim_left (and.elim_right (@setoid.iseqv A s)) a b H
+
+  theorem trans {a b c : A} : a ≈ b → b ≈ c → a ≈ c :=
+  λ H₁ H₂, and.elim_right (and.elim_right (@setoid.iseqv A s)) a b c H₁ H₂
+end setoid
+-- END
+
+end hide
+#+END_SRC
+Given a type =A=, a relation =R= on =A=, and a proof =p= that =R= is
+an equivalence relation, we can define =setoid.mk p= as an instance of
+the setoid class. Lean's type class inference mechanism then allows us
+to use the generic notation =≈= for =R=, and to use the generic theorems
+=setoid.refl=, =setoid.symm=, =setoid.trans= to reason about =R=.
+
+The quotient package consists of the following constructors:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+open setoid
+constant quot.{l}   : Π {A : Type.{l}}, setoid A → Type.{l}
+
+namespace quot
+  constant mk        : Π {A : Type}   [s : setoid A], A → quot s
+  notation `⟦`:max a `⟧`:0 := mk a
+
+  constant sound     : Π {A : Type}   [s : setoid A] {a b : A}, a ≈ b → ⟦a⟧ = ⟦b⟧
+  constant exact     : Π {A : Type}   [s : setoid A] {a b : A}, ⟦a⟧ = ⟦b⟧ → a ≈ b
+  constant lift      : Π {A B : Type} [s : setoid A] (f : A → B), (∀ a b, a ≈ b → f a = f b) → quot s → B
+  constant ind       : ∀ {A : Type}   [s : setoid A] {B : quot s → Prop}, (∀ a, B ⟦a⟧) → ∀ q, B q
+end quot
+-- END
+
+end hide
+#+END_SRC
+For any type =A= with associated equivalence relation =R=, first we
+declare a setoid instance =s= to associate =R= as "the" equivalence
+relation on =A=. Once we do that, =quot s= denotes the quotient type
+=A / R=, and given =a : A=, =⟦a⟧= denotes the "equivalence class" of
+=a=. The meaning of constants =sound=, =exact=, =lift=, and =ind= are
+given by their types. In particular, =lift= is the function which
+lifts a function =f : A → B= that respects the equivalence relation to
+the function =lift f : quot s → B= which lifts =f= to =A / R=. After
+declaring the constants associated with the quotient type, the library
+file then calls an internal function, =init_quotient=, which installs
+the reduction that simplifies =lift f ⟦a⟧= to =f a=.
+
+# TODO: give an example
+
+** Excluded Middle
+
+The law of the excluded middle is the following:
+#+BEGIN_SRC lean
+namespace hide
+-- BEGIN
+axiom em (a : Prop) : a ∨ ¬a
+-- END
+end hide
+#+END_SRC
+You can import this axiom with =import logic.axioms.em=. It is
+automatically imported by =import logic.axioms.classical=, or,
+more simply, =import classical=.
+
+The law of the excluded middle implies propositional completeness:
+#+BEGIN_SRC lean
+import logic.axioms.em
+
+namespace hide
+
+-- BEGIN
+theorem prop_complete (a : Prop) : a = true ∨ a = false :=
+or.elim (em a)
+  (λ t, or.inl (propext (iff.intro (λ h, trivial) (λ h, t))))
+  (λ f, or.inr (propext (iff.intro (λ h, absurd h f) (λ h, false.elim h))))
+-- END
+
+end hide
+#+END_SRC
+
+** Choice Axioms
+:PROPERTIES:
+  :CUSTOM_ID: Choice_Axioms
+:END:
+
+The last of the classical axioms we consider is the following choice
+axiom:
+#+BEGIN_SRC lean
+import data.subtype 
+open subtype nonempty
+
+namespace hide
+-- BEGIN
+axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A) :
+  { x | (∃y : A, P y) → P x}
+-- END
+end hide
+#+END_SRC
+This asserts that given any predicate =P= on a nonempty type =A=, we
+can (magically) produce an element =x= with the property that if any
+element of =A= satisfies =P=, then =x= does. In the presence of
+classical logic, we could prove this from the slighly weaker axiom:
+#+BEGIN_SRC lean
+import data.subtype 
+open subtype nonempty
+
+namespace hide
+-- BEGIN
+axiom indefinite_description {A : Type} {P : A → Prop} (H : ∃x, P x) : 
+  {x : A | P x}
+-- END
+end hide
+#+END_SRC
+This says that knowing that there is an element of =A= satisfying =P=
+is enough to produce one. This axiom essentially undoes the separation
+of data from propositions, because it allows us to extract a piece of
+data --- an element of =A= satisfying =P= --- from the proposition
+that such an element exists. 
+
+The axiom =strong_indefinite_description= is imported when you import
+the classical axioms. Separating the =x= asserted to exist by the
+axiom from the property it satisfies allows us to define the Hilbert
+epsilon function:
+#+BEGIN_SRC lean
+import data.subtype 
+open subtype nonempty
+
+namespace hide
+
+axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A) :
+  { x | (∃y : A, P y) → P x}
+
+-- BEGIN
+opaque definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
+let u : {x | (∃y, P y) → P x} :=
+  strong_indefinite_description P H in
+elt_of u
+
+theorem epsilon_spec_aux {A : Type} (H : nonempty A) (P : A → Prop) (Hex : ∃y, P y) :
+    P (@epsilon A H P) :=
+let u : {x | (∃y, P y) → P x} :=
+  strong_indefinite_description P H in
+has_property u Hex
+
+theorem epsilon_spec {A : Type} {P : A → Prop} (Hex : ∃y, P y) :
+    P (@epsilon A (nonempty_of_exists Hex) P) :=
+epsilon_spec_aux (nonempty_of_exists Hex) P Hex
+-- END
+
+end hide
+#+END_SRC
+Assuming the type =A= is nonempty, =epsilon P= returns an element of
+=A=, with the property that if any element of =A= satisfies =P=,
+=epsilon P= does.
+
+Just as =indefinite_description= is a weaker version of
+=strong_indefinite_description=, the =some= operator is a weaker
+version of the =epsilon= operator. It is sometimes easier to
+use. Assuming =H : ∃x, P x= is a proof that some element of =A=
+satisfies =P=, =some H= denotes such an element.
+#+BEGIN_SRC lean
+import data.subtype 
+open subtype nonempty
+
+namespace hide
+
+axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A) :
+  { x | (∃y : A, P y) → P x}
+
+opaque definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
+let u : {x | (∃y, P y) → P x} :=
+  strong_indefinite_description P H in
+elt_of u
+
+theorem epsilon_spec_aux {A : Type} (H : nonempty A) (P : A → Prop) (Hex : ∃y, P y) :
+    P (@epsilon A H P) :=
+let u : {x | (∃y, P y) → P x} :=
+  strong_indefinite_description P H in
+has_property u Hex
+
+theorem epsilon_spec {A : Type} {P : A → Prop} (Hex : ∃y, P y) :
+    P (@epsilon A (nonempty_of_exists Hex) P) :=
+epsilon_spec_aux (nonempty_of_exists Hex) P Hex
+
+-- BEGIN
+definition some {A : Type} {P : A → Prop} (H : ∃x, P x) : A :=
+@epsilon A (nonempty_of_exists H) P
+
+theorem some_spec {A : Type} {P : A → Prop} (H : ∃x, P x) : P (some H) :=
+epsilon_spec H
+-- END
+
+end hide
+#+END_SRC
+
+In Section [[file:08_Building_Theories_and_Proofs.org::#Making_Auxiliary_Facts_Visible][Making Auxiliary Facts Visible]], we explained that, on some
+occasions, it is necessary to use =assert= instead of =have= to put
+auxiliary goals into the context so that the elaborator can find
+them. This often comes up in connection to =epsilon= and =some=,
+because these induce dependencies on elements of =Prop=. The following
+examples illustrate some of the places where =assert= is needed. A
+good rule of thumb is that if you are using =some= or =epsilon=, and
+you are presented with a strange error message, trying changing =have=
+to =assert=.
+
+#+BEGIN_SRC lean
+import logic.axioms.hilbert
+
+section
+  variable A : Type
+  variable a : A
+
+  -- o.k.
+  example : ∃x : A, x = x :=
+  have H1 : ∃y, y = y, from exists.intro a rfl,
+  have H2 : some H1 = some H1, from some_spec H1,
+  exists.intro (some H1) H2
+
+  /-
+  -- invalid local context
+  example : ∃x : A, x = x :=
+  have H1 : ∃y, y = y, from exists.intro a rfl,
+  have H2 : some H1 = some H1, from some_spec H1,
+  exists.intro _ H2
+  -/
+
+  -- o.k.
+  example : ∃x : A, x = x :=
+  assert H1 : ∃y, y = y, from exists.intro a rfl,
+  have H2 : some H1 = some H1, from some_spec H1,
+  exists.intro _ H2
+
+  /-
+  -- invalid local context
+  example : ∃x : A, x = x :=
+  have H1 : ∃y, y = y, from exists.intro a rfl,
+  have H2 : some H1 = some H1, from some_spec H1,
+  exists.intro (some H1) (eq.trans H2 H2)
+  -/
+
+  -- o.k.
+  example : ∃x : A, x = x :=
+  assert H1 : ∃y, y = y, from exists.intro a rfl,
+  have H2 : some H1 = some H1, from some_spec H1,
+  exists.intro (some H1) (eq.trans H2 H2)
+end
+#+END_SRC
+
+** Propositional Decidability
+
+Taken together, the law of the excluded middle and the axiom of indefinite description
+imply that every proposition is decidable. The following is the
+contained in =logic.axioms.prop_decidable=:
+#+BEGIN_SRC lean
+import logic.axioms.prop_complete logic.axioms.hilbert
+open decidable inhabited nonempty
+
+namespace hide
+
+-- BEGIN
+theorem decidable_inhabited [instance] (a : Prop) : inhabited (decidable a) :=
+inhabited_of_nonempty
+  (or.elim (em a)
+    (assume Ha, nonempty.intro (inl Ha))
+    (assume Hna, nonempty.intro (inr Hna)))
+
+theorem prop_decidable [instance] (a : Prop) : decidable a :=
+arbitrary (decidable a)
+-- END
+
+end hide
+#+END_SRC
+The theorem =decidable_inhabited= uses the law of the excluded middle
+to show that =decidable a= is inhabited for any =a=. It is marked as
+an instance, and is silently used for for synthesizing the implicit
+argument in =arbitrary (decidable a)=.
+
+# TODO: Discuss dependent if. Example: definition of inverse.
+
