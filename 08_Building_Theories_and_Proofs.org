@@ -907,18 +907,18 @@ context mod_m
   parameter (m : ℤ)
   variables (a b c : ℤ)
 
-  definition mod_equiv := (m | b - a)
+  definition mod_equiv := (m ∣ b - a)
 
   notation a `≡`:50 b := mod_equiv a b
 
   theorem mod_refl : a ≡ a := !sub_self⁻¹ ▸ !dvd_zero
 
   theorem mod_sym (H : a ≡ b) : b ≡ a :=
-  have H1 : (m | -(b - a)), from iff.mp' !dvd_neg_iff_dvd H,
+  have H1 : (m ∣ -(b - a)), from iff.mp' !dvd_neg_iff_dvd H,
   int.neg_sub b a ▸ H1
 
   theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
-  have H1 : (m | (c - b) + (b - a)), from !dvd_add H2 H1,
+  have H1 : (m ∣ (c - b) + (b - a)), from !dvd_add H2 H1,
   eq.subst
     (calc
       (c - b) + (b - a) = c - b + b - a  : add.assoc
