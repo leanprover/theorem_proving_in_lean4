@@ -150,9 +150,9 @@ the following axiom:
 namespace hide
 
 -- BEGIN
-axiom funext {A : Type} {B : A → Type} {f₁ f₂ : Πx : A, B x} : 
+axiom funext {A : Type} {B : A → Type} {f₁ f₂ : Πx : A, B x} :
 (∀x, f₁ x = f₂ x) → f₁ = f₂
---END
+-- END
 end hide
 #+END_SRC
 It asserts that any two functions of type =Πx : A, B x= that agree on
@@ -266,7 +266,7 @@ simply a type with an associated equivalence relation:
 #+BEGIN_SRC lean
 namespace hide
 
---BEGIN
+-- BEGIN
 structure setoid [class] (A : Type) :=
 (r : A → A → Prop) (iseqv : equivalence r)
 
@@ -369,7 +369,7 @@ end hide
 The last of the classical axioms we consider is the following choice
 axiom:
 #+BEGIN_SRC lean
-import data.subtype 
+import data.subtype
 open subtype nonempty
 
 namespace hide
@@ -384,12 +384,12 @@ can (magically) produce an element =x= with the property that if any
 element of =A= satisfies =P=, then =x= does. In the presence of
 classical logic, we could prove this from the slighly weaker axiom:
 #+BEGIN_SRC lean
-import data.subtype 
+import data.subtype
 open subtype nonempty
 
 namespace hide
 -- BEGIN
-axiom indefinite_description {A : Type} {P : A → Prop} (H : ∃x, P x) : 
+axiom indefinite_description {A : Type} {P : A → Prop} (H : ∃x, P x) :
   {x : A | P x}
 -- END
 end hide
@@ -398,14 +398,14 @@ This says that knowing that there is an element of =A= satisfying =P=
 is enough to produce one. This axiom essentially undoes the separation
 of data from propositions, because it allows us to extract a piece of
 data --- an element of =A= satisfying =P= --- from the proposition
-that such an element exists. 
+that such an element exists.
 
 The axiom =strong_indefinite_description= is imported when you import
 the classical axioms. Separating the =x= asserted to exist by the
 axiom from the property it satisfies allows us to define the Hilbert
 epsilon function:
 #+BEGIN_SRC lean
-import data.subtype 
+import data.subtype
 open subtype nonempty
 
 namespace hide
@@ -442,7 +442,7 @@ version of the =epsilon= operator. It is sometimes easier to
 use. Assuming =H : ∃x, P x= is a proof that some element of =A=
 satisfies =P=, =some H= denotes such an element.
 #+BEGIN_SRC lean
-import data.subtype 
+import data.subtype
 open subtype nonempty
 
 namespace hide
@@ -559,4 +559,3 @@ an instance, and is silently used for for synthesizing the implicit
 argument in =arbitrary (decidable a)=.
 
 # TODO: Discuss dependent if. Example: definition of inverse.
-
