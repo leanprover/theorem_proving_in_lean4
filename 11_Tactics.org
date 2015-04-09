@@ -636,11 +636,12 @@ inductive foo : Type :=
 -- BEGIN
 example (x : ℕ) (H : x ≠ 0) : succ (pred x) = x :=
 begin
-  revert H,
-  match x with
-  | 0      := by intro H1; exact (absurd rfl H1)
-  | succ y := by intro H1; apply rfl
-  end
+revert H,
+match x with
+| 0      := assume H1 : 0 ≠ 0, show succ (pred 0) = 0,
+            from absurd rfl H1
+| succ y := assume H1 : succ y ≠ 0, rfl
+end
 end
 
 definition silly (x : foo) : ℕ :=
@@ -652,6 +653,19 @@ begin
 end
 -- END
 #+END_SRC
+
+# TODO: this version works when only data.nat is loaded, but not when the whole
+# standard library is loaded. What is going on?
+#
+# 
+# example (x : ℕ) (H : x ≠ 0) : succ (pred x) = x :=
+# begin
+#   revert H,
+#   match x with
+#  | 0      := by intro H1; exact (absurd rfl H1)
+#  | succ y := by intro H1; apply rfl
+#   end
+# end
 
 ** The Rewrite Tactic
 
@@ -1004,16 +1018,16 @@ end
 example (a b c d : Prop) : a ∧ b ∧ c ∧ d ↔ d ∧ c ∧ b ∧ a :=
 begin
   apply iff.intro,
-  repeat (intro H;  repeat [cases H with [H', H] | apply and.intro | assumption])
+  repeat (intro H;  repeat (cases H with [H', H] | apply and.intro | assumption))
 end
 #+END_SRC
 
 #+BEGIN_SRC lean
 open tactic
 
-definition my_tac := repeat ([ apply @and.intro
+definition my_tac := repeat ( apply @and.intro
                              | apply @eq.refl
-                             ])
+                             )
 tactic_hint my_tac
 
 theorem T1 {A : Type} {B : Type} (a : A) (b c : B) : a = a ∧ b = b ∧ c = c
@@ -1023,15 +1037,15 @@ theorem T1 {A : Type} {B : Type} (a : A) (b c : B) : a = a ∧ b = b ∧ c = c
 open tactic
 
 theorem T (a b c d : Prop) (Ha : a) (Hb : b) (Hc : c) (Hd : d) : a ∧ b ∧ c ∧ d :=
-by fixpoint (λ f, [apply @and.intro; f | assumption; f | id])
+by fixpoint (λ f, (apply @and.intro; f | assumption; f | id))
 #+END_SRC
 
 #+BEGIN_SRC lean
 open tactic
 
-definition my_tac3 := fixpoint (λ f, [apply @or.intro_left; f  |
+definition my_tac3 := fixpoint (λ f, (apply @or.intro_left; f  |
                                       apply @or.intro_right; f |
-                                      assumption])
+                                      assumption))
 
 tactic_hint my_tac3
 
@@ -1042,7 +1056,7 @@ theorem T3 {a b c : Prop} (Hb : b) : a ∨ b ∨ c := _
 open tactic
 
 theorem tst {A B : Prop} (H1 : A) (H2 : B) : A :=
-by [trace "first";  state; now  |
+by (trace "first";  state; now  |
        trace "second"; state; fail |
-       trace "third";  assumption]
+       trace "third";  assumption)
 #+END_SRC
