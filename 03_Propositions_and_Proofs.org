@@ -719,11 +719,9 @@ above.
 
 The following is a long list of assertions in propositional
 logic. Prove as many as you can, using the rules introduced above to
-replace the =sorry= placeholders by actual proofs. Most of the
-assertions are constructively valid, but not all. For example, the
-last three require classical reasoning, as does =(p → r ∨ s) → ((p →
-r) ∨ (p → s))=, the forward direction of =¬ (p ∧ q) ↔ ¬ p ∨ ¬ q= and
-the reverse direction of =(¬ p ∨ q) ↔ (p → q)=.
+replace the =sorry= placeholders by actual proofs. The ones that
+require classical reasoning are grouped together at the end, while
+the rest are constructively valid.
 
 #+BEGIN_SRC lean
 import logic.axioms.classical
@@ -745,19 +743,25 @@ section
 
   -- other properties
   example : (p → (q → r)) ↔ (p ∧ q → r) := sorry
-  example : (p → q) → ((q → r) → (p → r)) := sorry
   example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
   example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
   example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
-  example : ¬(p ∧ q) ↔ ¬p ∨ ¬q := sorry
+  example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
   example : ¬(p ∧ ¬ p) := sorry
-  example : ¬(p → q) ↔ p ∧ ¬q := sorry
+  example : p ∧ ¬q → ¬(p → q) := sorry
   example : ¬p → (p → q) := sorry
-  example : (¬p ∨ q) ↔ (p → q) := sorry
+  example : (¬p ∨ q) → (p → q) := sorry
   example : p ∨ false ↔ p := sorry
   example : p ∧ false ↔ false := sorry
   example : ¬(p ↔ ¬p) := sorry
-  example : (p → q) ↔ (¬q → ¬p) := sorry
+  example : (p → q) → (¬q → ¬p) := sorry
+
+  -- these require classical reasoning
+  example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
+  example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
+  example : ¬(p → q) → p ∧ ¬q := sorry
+  example : (p → q) → (¬p ∨ q) := sorry
+  example : (¬q → ¬p) → (p → q) := sorry
   example : p ∨ ¬p := sorry
   example : (((p → q) → p) → p) := sorry
 end
