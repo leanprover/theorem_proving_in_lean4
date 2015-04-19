@@ -189,7 +189,7 @@ need, but studying the contents of the library directly is often
 unavoidable.
 
 Lean has two libraries. Here we will focus on the standard
-library, which offers a conventional mathematical farmework. We will
+library, which offers a conventional mathematical framework. We will
 discuss the library for homotopy type theory in a later chapter.
 
 There are a number of ways to explore the contents of the standard
@@ -373,7 +373,7 @@ left margin. As you continue to type and eliminate errors, these
 annotations magically disappear.
 
 If you put the cursor on a highlighted error, Emacs displays the error
-message in at the bottom of the frame. Alteratively, if you type =C-c
+message in at the bottom of the frame. Alternatively, if you type =C-c
 ! l= while in Lean mode, Emacs opens a new window with a list of
 compilation errors. Lean relies on an Emacs mode, /Flycheck/, for this
 functionality, as evidenced by the letters "FlyC" that appear in the
