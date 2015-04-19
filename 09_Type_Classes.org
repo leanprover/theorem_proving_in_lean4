@@ -966,7 +966,7 @@ definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable 
   | inr niH := inr (not_ball_succ_of_not_ball niH)
   end
 
--- Now, we can use dec_trivial to solve prove simple theorems by "evaluation"
+-- Now, we can use dec_trivial to prove simple theorems by "evaluation"
 example : ∀ x : nat, x ≤ 4 → x ≠ 6 :=
 dec_trivial
 
