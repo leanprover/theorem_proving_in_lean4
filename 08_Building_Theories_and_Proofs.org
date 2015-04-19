@@ -44,7 +44,7 @@ first kind is of the form
 #+BEGIN_SRC text
 c : Πx1 : A1, ..., xn : An, y : F x1 ... xn, G b1 ... bm
 #+END_SRC
-where =G= is another famly of types, and the terms =b1 ... bn= depend
+where =G= is another family of types, and the terms =b1 ... bn= depend
 on =x1, ..., xn, y=. This allows us to write =f t= where =t= is of
 type =F a1 ... an= but =f= expects an argument of type =G y1 ... ym=,
 for some =y1 ... ym=. For example, if =F= is =list : ΠA : Type, Type=,
@@ -313,7 +313,7 @@ t~ generates the constraint that the inferred type of =t= should be
 
 The elaborator now has a straightforward task: find expressions to
 substitute for all the metavariables so that all of the constraints
-are simultaneously satisifed. An assignment of terms to metavariables
+are simultaneously satisfied. An assignment of terms to metavariables
 is known as a /substitution/, and the general task of finding a
 substitution that makes two expressions coincide is known as a
 /unification/ problem. (If only one of the expressions contains
@@ -376,7 +376,7 @@ The interaction of computation with higher-order unification is
 particularly knotty. For the most part, Lean avoids performing
 computational reduction when trying to solve higher-order
 constraints. You can override this, however, by marking some symbols
-with the =reducible= attribute, as decribed in Section [[Reducible
+with the =reducible= attribute, as described in Section [[Reducible
 Definitions]].
 
 The elaborator relies on additional tricks and gadgets to solve a list
