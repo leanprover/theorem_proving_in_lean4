@@ -226,7 +226,7 @@ of =n=, first add =n=, and then take the successor." The mechanism
 for adding parameters to the local context is what makes it possible
 to process match expressions within terms, as described below.
 
-A more interesting example of strutural recursion is given by the
+A more interesting example of structural recursion is given by the
 Fibonacci function =fib=. The subsequent theorem, =fib_pos=, which
 combines pattern matching, recursive equations, and calculational
 proof.
@@ -532,7 +532,7 @@ definition inv {f : A → B} : Π b, image_of f b → A
 #+END_SRC
 
 Inaccessible terms can also be used to reduce the complexity of the
-generated definition. Depedent pattern matching is compiled using the
+generated definition. Dependent pattern matching is compiled using the
 =cases_on= and =no_confusion= constructions. The number of instances
 of =cases_on= introduced by the compiler can be reduced by marking
 parts that only report specialization.  In the next example, we define
