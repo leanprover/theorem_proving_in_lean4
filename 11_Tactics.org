@@ -6,7 +6,7 @@
   :CUSTOM_ID: Tactics
 :END:
 
-In this chapter, we describe an alterantive approach to constructing
+In this chapter, we describe an alternative approach to constructing
 proofs, using /tactics/. A proof term is a representation of a
 mathematical proof; tactics are commands, or instructions, that
 describe how to build such a proof. Informally, we might begin a
@@ -16,7 +16,7 @@ are instructions that tell the reader how to find the relevant proof,
 tactics are instructions that tell Lean how to construct a proof term.
 
 We will describe proofs that consist of sequences of tactics as
-"tactic-style" proofs, to constrast with the ways of writing proof
+"tactic-style" proofs, to contrast with the ways of writing proof
 terms we have seen so far, which we will call "term-style"
 proofs. Each style has its own advantages and disadvantage. One
 important difference that that term-style proofs are elaborated
@@ -123,7 +123,7 @@ begin
 end
 -- END
 #+END_SRC
-Unsuprisingly, it produces exactly the same proof term.
+Unsurprisingly, it produces exactly the same proof term.
 #+BEGIN_SRC lean
 theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
 begin
@@ -408,7 +408,7 @@ One thing that is nice about Lean's proof-writing syntax is that it is
 possible to mix term-style and tactic-style proofs, and pass
 between the two freely. For example, the tactics =apply= and =exact=
 expect arbitrary terms, which you can write using =have=, =show=,
-=obtains=, and so on. Conversely, when writing an aribtrary Lean term,
+=obtains=, and so on. Conversely, when writing an arbitrary Lean term,
 you can always invoke the tactic mode by inserting a =begin ... end=
 block. In the next example, we use =show= within a tactic block to
 fulfill a goal by providing an explicit term.
@@ -670,7 +670,7 @@ end
 ** The Rewrite Tactic
 
 The =rewrite= tactic provide a basic mechanism for applying
-substitutions to goals and hypotheses, provigding a convenient and
+substitutions to goals and hypotheses, providing a convenient and
 efficient way of working with equality. This tactic is loosely based
 on rewrite tactic available in the proof language SSReflect.
 
