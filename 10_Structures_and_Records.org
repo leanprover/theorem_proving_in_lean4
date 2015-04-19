@@ -372,7 +372,7 @@ also has the effect that the structure argument in each projection is
 tagged as an implicit argument to be inferred by type class
 resolution. 
 
-For exmaple, in the definition of the =has_mul= structure below, the
+For example, in the definition of the =has_mul= structure below, the
 projection =has_mul.mul= has an implicit argument =[s : has_mul
 A]=. This means that when we write =has_mul.mul a b= with =a b : A=,
 type class resolution will search for a suitable instance of =has_mul
