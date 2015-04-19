@@ -165,7 +165,7 @@ presented in some explicit way. It is certainly the case that two
 computer programs can compute the same answer for every input despite
 the fact that they are syntactically quite different. In much the same
 way, you might want to maintain a view of functions that does not
-force you to identify two functions that have the same intput / output
+force you to identify two functions that have the same input / output
 behavior. This is known as an "intensional" view of
 functions. Adopting =funext= commits us to an extensional view of
 functions.
@@ -258,7 +258,7 @@ type of elements of =A= "modulo" =R=. Set theoretically, one can view
 sense that for every =x y : A=, =R x y= implies =f x = f y=, then =f=
 "lifts" to a function =f' : A / R → B= defined on each equivalence
 class =[x]= by =f' [x] = f x=. Lean's standard library extends the CIC
-with additional contants that perform exactly these constructions, and
+with additional constants that perform exactly these constructions, and
 installs this last equation as a definitional reduction rule.
 
 First, it is useful to define the notion of a /setoid/, which is
@@ -382,7 +382,7 @@ end hide
 This asserts that given any predicate =P= on a nonempty type =A=, we
 can (magically) produce an element =x= with the property that if any
 element of =A= satisfies =P=, then =x= does. In the presence of
-classical logic, we could prove this from the slighly weaker axiom:
+classical logic, we could prove this from the slightly weaker axiom:
 #+BEGIN_SRC lean
 import data.subtype
 open subtype nonempty
