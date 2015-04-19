@@ -115,9 +115,9 @@ Think about what is going on here. When we instantiate =trans_r= at
 the values =a b c=, we end up with a proof of =r a b → r b c → r a
 c=. Applying this to the "hypothesis" =Hab : r a b=, we get a proof of
 the implication =r b c → r a c=. Finally, applying it to the
-hypothesis =Hbc= yields a proof of the conlusion =r a c=.
+hypothesis =Hbc= yields a proof of the conclusion =r a c=.
 
-In situtations like this, it can be tedious to supply the arguments =a
+In situations like this, it can be tedious to supply the arguments =a
 b c=, when they can be inferred from =Hab Hbc=. For that reason, it is
 common to make these arguments implicit:
 #+BEGIN_SRC lean
