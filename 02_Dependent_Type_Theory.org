@@ -764,7 +764,7 @@ The =variable= and =variables= commands look like the =constant= and
 difference: rather than creating permanent entities, the declarations
 tell the Lean to insert the variables as bound variables in
 definitions that refer to them. Lean is smart enough to figure out
-which variables are used explictly or implicity in a definition, so
+which variables are used explicitly or implicitly in a definition, so
 the later definitions of =compose=, =do_twice=, and =do_thrice= have
 exactly the same effect as the earlier ones. When the section is
 closed, the variables go out of scope, and become nothing more than a
@@ -923,7 +923,7 @@ check pr2 ⟨a, b⟩
 eval pr1 ⟨a, b⟩
 eval pr2 ⟨a, b⟩
 #+END_SRC
-Note, by the way, that the identitifiers =pr1= and =pr2= are also used
+Note, by the way, that the identifiers =pr1= and =pr2= are also used
 for the cartesian product type. The notations are made available when you open
 the namespaces =prod= and =sigma= respectively; if you open both, the
 identifier is simply overloaded. Without opening the namespaces, you
