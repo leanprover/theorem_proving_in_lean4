@@ -557,22 +557,39 @@ the excluded middle.
 # Remark from Leo: I used (a : A) instead of (H : inhabited A), because
 # 'inhabited' is only defined in Chapter 6.
 #+BEGIN_SRC lean
+import classical
 section
   variables (A : Type) (p q : A → Prop)
   variable r : Prop
 
-  example : (∃x, p x ∨ q x) ↔ (∃x, p x) ∨ (∃x, q x) := sorry
-
   example : (∃x : A, r) → r := sorry
   example (a : A) : r → (∃x : A, r) := sorry
   example : (∃x, p x ∧ r) ↔ (∃x, p x) ∧ r := sorry
-  example : (∀x, p x → r) ↔ (∃x, p x) → r := sorry
-  example : (∃x, p x → r) ↔ (∀x, p x → r) := sorry
-  example : (∃x, r → p x) ↔ (r → ∃x, p x) := sorry
+  example : (∃x, p x ∨ q x) ↔ (∃x, p x) ∨ (∃x, q x) := sorry
 
-  example : (∃x, p x) ↔ (∀x, ¬p x) := sorry
-  example : (∀x, p x) ↔ (∃x, ¬p x) := sorry
+  example : (∀x, p x) ↔ ¬(∃x, ¬p x) := sorry
+  example : (∃x, p x) ↔ ¬(∀x, ¬p x) := sorry
   example : (¬∃x, p x) ↔ (∀x, ¬p x) := sorry
   example : (¬∀x, p x) ↔ (∃x, ¬p x) := sorry
+
+  example : (∀x, p x → r) ↔ (∃x, p x) → r := sorry
+  example (a : A) : (∃x, p x → r) ↔ (∀x, p x) → r := sorry
+  example (a : A) : (∃x, r → p x) ↔ (r → ∃x, p x) := sorry
+
 end
 #+END_SRC
+  # (unreadable) solutions to some of these examples:
+  # example : (∃x, p x ∨ q x) ↔ (∃x, p x) ∨ (∃x, q x) :=
+  # iff.intro (λL, obtain a H, from L, or.elim H (λLL, or.inl (exists.intro a LL))
+  #                                              (λLR, or.inr (exists.intro a LR)))
+  #           (λR, or.elim R (λRL, obtain a H, from RL, exists.intro a (or.inl H))
+  #                          (λRR, obtain a H, from RR, exists.intro a (or.inr 
+  # example : (¬∀x, p x) ↔ (∃x, ¬p x) :=
+  # iff.intro (λL, by_contradiction (λNR, L (λa, by_contradiction (λH, NR (exists.intro a H)))))
+  #           (λR LH, obtain a np, from R, np (LH a))
+  # example (a : A) : (∃x, p x → r) ↔ (∀x, p x) → r :=
+  # iff.intro (λL RH, obtain a H, from L, H (RH a))
+  #           (λR, or.elim (em r)
+  #             (λrt, exists.intro a (λx, rt))
+  #             (λrf, by_contradiction (λNL, rf (R (λb, by_contradiction
+  #               (λnp, NL (exists.intro b (λpt, absurd pt np))))))))
