@@ -758,7 +758,7 @@ chapter, when we discuss the Hilbert choice operator.
 
 # TODO: add a reference here when the chapter is written.
 
-** Sections and Contexts
+** Sections
 
 Lean provides various sectioning mechanisms that help structure
 a theory. We saw in Section [[Namespaces and Sections]] that the =section=
@@ -766,9 +766,7 @@ command makes it possible not only to group together elements of a
 theory that go together, but also to declare variables that are
 inserted as arguments to theorems and definitions, as necessary.
 In fact, Lean has two ways of introducing local elements into the
-contexts, namely, as =variables= or as =parameters=. And it has two
-slightly different sectioning notions, namely, =section= and
-=context=. The goal of this section is to explain these variations.
+sections, namely, as =variables= or as =parameters=.
 
 Remember that the point of the variable command is to declare
 variables for use in theorems, as in the following example:
@@ -872,65 +870,65 @@ syntax for =Prop=-valued variants of declarations:
 
 Lean also allows you to use =conjecture= in place of =hypothesis=.
 
-Lean has another sectioning construct, the =context= command, which is
-similar to the =section= command. The difference has to do with the
-way that meta-theoretic data is handled. In a =section=, you can
-declare notation, classes, instances, rewrite rules, and so on, and
-they persist when the section is closed. Their scope is the entire
-namespace in which the section resides, and when another module
-imports the one containing the section and opens the relevant
-namespace, all these objects are available. There is a catch: in a
-section, a piece of notation cannot depend on a parameter. After all,
-a notation that is defined with respect to a fixed parameter, like =R=
-above, no longer makes sense when =R= is no longer fixed. As a result,
-in a section, if you try to define notation that depends on a
-parameter, Lean will flag an error.
+# Lean has another sectioning construct, the =context= command, which is
+# similar to the =section= command. The difference has to do with the
+# way that meta-theoretic data is handled. In a =section=, you can
+# declare notation, classes, instances, rewrite rules, and so on, and
+# they persist when the section is closed. Their scope is the entire
+# namespace in which the section resides, and when another module
+# imports the one containing the section and opens the relevant
+# namespace, all these objects are available. There is a catch: in a
+# section, a piece of notation cannot depend on a parameter. After all,
+# a notation that is defined with respect to a fixed parameter, like =R=
+# above, no longer makes sense when =R= is no longer fixed. As a result,
+# in a section, if you try to define notation that depends on a
+# parameter, Lean will flag an error.
 
-In a context, however, all meta-theoretic data is /transient/; it
-disappears when the section is closed. This is useful when you want to
-define notation, rewrite rules, or class instances that are used only
-temporarily and not exported to the outside world. There is therefore
-no problem making notation depend on a parameter in a context; when
-the context is closed, the notation goes with it.
+# In a context, however, all meta-theoretic data is /transient/; it
+# disappears when the section is closed. This is useful when you want to
+# define notation, rewrite rules, or class instances that are used only
+# temporarily and not exported to the outside world. There is therefore
+# no problem making notation depend on a parameter in a context; when
+# the context is closed, the notation goes with it.
 
-Here is an example of how you might use a context to define
-the notion of equivalence modulo an integer =m=. Throughout the
-context, =m= is fixed, and we can write =a ≡ b= for equivalence modulo
-=m=. As soon as the context is closed, however, the dependence on =m=
-becomes explicit, and the notation =a ≡ b= is no longer valid.
+# Here is an example of how you might use a context to define
+# the notion of equivalence modulo an integer =m=. Throughout the
+# context, =m= is fixed, and we can write =a ≡ b= for equivalence modulo
+# =m=. As soon as the context is closed, however, the dependence on =m=
+# becomes explicit, and the notation =a ≡ b= is no longer valid.
 
-#+BEGIN_SRC lean
-import data.int
-open int eq.ops
+# #+BEGIN_SRC lean
+# import data.int
+# open int eq.ops
 
-context mod_m
-  parameter (m : ℤ)
-  variables (a b c : ℤ)
+# section mod_m
+#   parameter (m : ℤ)
+#   variables (a b c : ℤ)
 
-  definition mod_equiv := (m ∣ b - a)
+#   definition mod_equiv := (m ∣ b - a)
 
-  notation a `≡`:50 b := mod_equiv a b
+#   notation a `≡`:50 b := mod_equiv a b
 
-  theorem mod_refl : a ≡ a := !sub_self⁻¹ ▸ !dvd_zero
+#   theorem mod_refl : a ≡ a := !sub_self⁻¹ ▸ !dvd_zero
 
-  theorem mod_sym (H : a ≡ b) : b ≡ a :=
-  have H1 : (m ∣ -(b - a)), from iff.mp' !dvd_neg_iff_dvd H,
-  int.neg_sub b a ▸ H1
+#   theorem mod_sym (H : a ≡ b) : b ≡ a :=
+#   have H1 : (m ∣ -(b - a)), from iff.mp' !dvd_neg_iff_dvd H,
+#   int.neg_sub b a ▸ H1
 
-  theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
-  have H1 : (m ∣ (c - b) + (b - a)), from !dvd_add H2 H1,
-  eq.subst
-    (calc
-      (c - b) + (b - a) = c - b + b - a  : add.assoc
-                    ... = c + -b + b - a : rfl
-                    ... = c - a          : neg_add_cancel_right)
-    H1
-end mod_m
+#   theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
+#   have H1 : (m ∣ (c - b) + (b - a)), from !dvd_add H2 H1,
+#   eq.subst
+#     (calc
+#       (c - b) + (b - a) = c - b + b - a  : add.assoc
+#                     ... = c + -b + b - a : rfl
+#                     ... = c - a          : neg_add_cancel_right)
+#     H1
+# end mod_m
 
-check mod_refl
-check mod_sym
-check mod_trans
-#+END_SRC
+# check mod_refl
+# check mod_sym
+# check mod_trans
+# #+END_SRC
 
 ** More on Namespaces
 
@@ -970,18 +968,18 @@ import data.nat
 open - [notations] [coercions] nat
 #+END_SRC
 imports all metaclasses but =[notations]= and =[coercions]=. You can
-limit the scope of an =open= command by putting it in a context. For
+limit the scope of an =open= command by putting it in a section. For
 example,
 #+BEGIN_SRC lean
 import data.nat
 
-context
+section
   open [notations] nat
 
   /- ... -/
 end
 #+END_SRC
-imports notation from nat only within the context.
+imports notation from nat only within the section.
 
 You can also import only certain theorems by providing an explicit
 list in parentheses:
