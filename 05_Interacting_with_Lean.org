@@ -226,7 +226,6 @@ check and.comm
 check mul.comm
 check and.assoc
 check mul.assoc
-check succ.inj -- successor is injective
 check @mul.left_cancel -- multiplication is left cancelative
 #+END_SRC
 In particular, this includes =intro= and =elim= operations for logical
