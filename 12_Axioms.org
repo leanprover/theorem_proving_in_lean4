@@ -104,7 +104,7 @@ Propositional extensionality is the following axiom:
 namespace hide
 
 -- BEGIN
-axiom propext {a b : Prop} : a ↔ b → a = b
+axiom propext {a b : Prop} : (a ↔ b) → a = b
 -- END
 
 end hide
@@ -118,7 +118,7 @@ another in any context:
 #+BEGIN_SRC lean
 namespace hide
 
-axiom propext {a b : Prop} : a ↔ b → a = b
+axiom propext {a b : Prop} : (a ↔ b) → a = b
 
 -- BEGIN
 section
