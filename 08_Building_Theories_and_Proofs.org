@@ -205,7 +205,7 @@ With the coercion in place, we can write =f (a * a * a)= instead of
 a function is expected, Lean inserts the coercion.
 
 Remember that you can create a coercion whose scope is limited to the
-current module using the =local= modifier:
+current namespace or section using the =local= modifier:
 
 #+BEGIN_SRC lean
 structure Semigroup : Type :=
@@ -544,7 +544,7 @@ attribute pr2 [irreducible]
 #+END_SRC
 
 The =local= modifier can be used to instruct Lean to limit the scope
-to the current module.
+to the current namespace or section.
 #+BEGIN_SRC lean
 definition pr2 (A : Type) (a b : A) : A := b
 
