@@ -16,7 +16,7 @@ We use [cask][cask] to install emacs dependencies ([org-mode][org-mode], [lean-m
 sudo apt-get install mercurial python2.7 texlive-latex-recommended \
                      texlive-humanities texlive-xetex texlive-science \
                      texlive-latex-extra texlive-fonts-recommended \
-                     bibtex2html git make mercurial autoconf automake gcc
+                     bibtex2html git make mercurial autoconf automake gcc curl
 git clone https://github.com/leanprover/tutorial
 cd tutorial
 tar xvfz header/l3kernel.tar.gz -C ~/
