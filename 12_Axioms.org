@@ -560,6 +560,13 @@ argument in =arbitrary (decidable a)=.
 
 # TODO: Discuss dependent if. Example: definition of inverse.
 
+** Diaconescu's theorem
+
+[[http://en.wikipedia.org/wiki/Diaconescu%27s_theorem][Diaconescu's theorem]] states that the axiom of choice is sufficient to derive the law of excluded middle.
+The standard library contains a [[https://github.com/leanprover/lean/blob/master/library/logic/axioms/examples/diaconescu.lean][formalization of this result]].
+To be more precise, it shows that the law excluded middle follows from =strong_indefinite_description= (Hilbert's choice),
+=propext= (propositional extensionality) and =funext= (function extensionality).
+
 ** Constructive Choice
 
 In the standard library, we say a type =A= is =encodable= if there are functions =f : A → nat= and =g : nat → option A=
