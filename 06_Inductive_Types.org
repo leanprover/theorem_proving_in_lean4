@@ -1435,6 +1435,9 @@ sorry
 end hide
 #+END_SRC
 
+Further generalizations such as =induction-recursion= 
+or =induction-induction= are not supported by Lean.
+
 ** Heterogeneous Equality
 
 Given =A : Type= and =B : A → Type=, suppose we want to generalize the
