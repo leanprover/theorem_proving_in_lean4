@@ -559,3 +559,38 @@ an instance, and is silently used for for synthesizing the implicit
 argument in =arbitrary (decidable a)=.
 
 # TODO: Discuss dependent if. Example: definition of inverse.
+
+** Constructive Choice
+
+In the standard library, we say a type =A= is =encodable= if there are functions =f : A → nat= and =g : nat → option A=
+such that for all =a : A=, =g (f a) = some a=. Here is the actual definition
+
+#+BEGIN_SRC lean
+namespace hide
+open option
+-- BEGIN
+structure encodable [class] (A : Type) :=
+(encode : A → nat) (decode : nat → option A) (encodek : ∀ a, decode (encode a) = some a)
+-- END
+
+end hide
+#+END_SRC
+
+The standard library shows that =indefinite_description= axiom is actually a theorem
+for any encodable type =A= and decidable predicate =p : A → Prop=, and provides the following definition and theorem
+that realizes the =some= and =some_spec=.
+
+#+BEGIN_SRC lean
+import data.encodable
+open encodable subtype
+-- BEGIN
+check @choose
+-- choose : Π {A : Type} {p : A → Prop} [c : encodable A] [d : decidable_pred p], (∃ (x : A), p x) → A
+check @choose_spec
+-- choose_spec : ∀ {A : Type} {p : A → Prop} [c : encodable A] [d : decidable_pred p] (ex : ∃ (x : A), p x), p (choose ex)
+-- END
+#+END_SRC
+
+The construction is straightforward, it finds =a : A= satisfying =p= by enumerating the elements of =A= and
+testing whether they satisfy =p= or not.
+We can show that this search always terminates because we have the assumption =∃ (x : A), p x=.
