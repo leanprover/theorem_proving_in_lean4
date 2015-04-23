@@ -344,7 +344,7 @@ You can import this axiom with =import logic.axioms.em=. It is
 automatically imported by =import logic.axioms.classical=, or,
 more simply, =import classical=.
 
-The law of the excluded middle and propositional extensionality implies propositional completeness:
+The law of the excluded middle and propositional extensionality imply propositional completeness:
 #+BEGIN_SRC lean
 import logic.axioms.em
 
