@@ -75,7 +75,8 @@
             editor.renderer.setScrollMargin(0, 0, 0, 0);
             editor.renderer.$cursorLayer.element.style.opacity=0
             editor.setReadOnly(true);
-            var session = editor.getSession();
+            editor.getSession().setUseWrapMode(true);
+        var session = editor.getSession();
             session.setMode( this.getAttribute("mode") );
             session.setUseSoftTabs( this.getAttribute("softtabs") );
             session.on('changeScrollTop', function(scroll) { });
