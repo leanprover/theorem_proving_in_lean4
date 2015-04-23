@@ -245,8 +245,7 @@ end hide
 
 In fact, function extensionality follows from the existence of
 quotients, which we describe in the next section. In the Lean standard
-library, therefore, =funext= is thus proved from the quotient
-construction.
+library, therefore, =funext= is thus [[https://github.com/leanprover/lean/blob/master/library/init/funext.lean][proved from the quotient construction]].
 
 ** Quotients
 
