@@ -952,6 +952,10 @@ eval ⟨c, d⟩.2
 #+END_SRC
 
 ** Implicit Arguments
+:PROPERTIES:
+  :CUSTOM_ID: Implicit_Arguments
+:END:
+
 
 Suppose we have an implementation of lists as described above.
 #+BEGIN_SRC lean

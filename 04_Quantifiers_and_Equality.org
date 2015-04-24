@@ -331,8 +331,9 @@ have H2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y),
 !add.assoc⁻¹ ▸ H2
 #+END_SRC
 
-Remember that the exclamation mark adds implicit arguments as
-necessary. In the statement of the example, remember that addition
+The exclamation mark infers explicit arguments to a theorem from the context.
+For more information, see Section [[file:08_Building_Theories_and_Proofs.org::#More_on_Implicit_Arguments][More on Implicit Arguments]].
+In the statement of the example, remember that addition
 implicitly associates to the left, so the last step of the proof
 puts the right-hand side of =H2= in the required form.
 
@@ -583,7 +584,7 @@ end
   # iff.intro (λL, obtain a H, from L, or.elim H (λLL, or.inl (exists.intro a LL))
   #                                              (λLR, or.inr (exists.intro a LR)))
   #           (λR, or.elim R (λRL, obtain a H, from RL, exists.intro a (or.inl H))
-  #                          (λRR, obtain a H, from RR, exists.intro a (or.inr 
+  #                          (λRR, obtain a H, from RR, exists.intro a (or.inr
   # example : (¬∀x, p x) ↔ (∃x, ¬p x) :=
   # iff.intro (λL, by_contradiction (λNR, L (λa, by_contradiction (λH, NR (exists.intro a H)))))
   #           (λR LH, obtain a np, from R, np (LH a))

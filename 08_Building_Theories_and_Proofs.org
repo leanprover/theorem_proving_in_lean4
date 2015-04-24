@@ -273,6 +273,191 @@ sorts, of the class of function types. The latter two are sinks in the
 graph. Internally, Lean automatically computes the transitive closure
 of this graph, in which the "paths" correspond to chains of coercions.
 
+
+** More on Implicit Arguments
+:PROPERTIES:
+  :CUSTOM_ID: More_on_Implicit_Arguments
+:END:
+
+In Section [[file:02_Dependent_Type_Theory.org::#Implicit_Arguments][Implicit Arguments]], we discussed implicit arguments in
+Lean.  For example if a term =t= has type =Π{x : A}, P x=, the
+variable =x= is /implicit/ in =t=. This means that whenever you write
+=t=, a "hole" is inserted, so =t= is replaced by =@t _=. If you don't
+want that a hole is inserted, you can write =@t=.
+
+Dual to =@t= is the exclamation mark =!t=. This will insert
+underscores for explicit arguments of a term. Look at the resulting
+terms of the following definitions to see this in action:
+
+#+BEGIN_SRC lean
+import data.nat
+open nat eq.ops
+-- BEGIN
+definition foo (n m k l : ℕ) : (n - m) * (k + l) = (k + l) * (n - m) := !mul.comm
+print definition foo
+
+definition foo2 (n m k l : ℕ) : (n + k) + l = (k + l) + n := !add.assoc ⬝ !add.comm
+print definition foo2
+
+definition foo3 (l : ℕ) (H : ∀(n : ℕ), l + 2 ≠ 2 * (n + 1)) (n : ℕ) : l ≠ 2 * n :=
+assume K : l = 2 * n,
+absurd (show l + 2 = 2 * n + 2, from K ▸ rfl) !H
+print definition foo3
+-- END
+#+END_SRC
+In the last example we use a neat trick. To show that =l + 2 = 2 * n +
+2= we take the reflexivity proof =rfl : l + 2 = l + 2= and then
+substitute =2 * n= for the second =l= to show that =l + 2 = 2 * n + 2=.
+
+However, =!t= doesn't insert all explicit arguments of =t=. It only
+inserts the arguments which can either be inferred from later
+arguments, or from the type of the codomain.
+#+BEGIN_SRC lean
+import data.vector
+open vector nat
+set_option pp.metavar_args false
+-- BEGIN
+variables (P : Π(n m : ℕ) (v : vector bool n) (w : vector bool m), Type)
+          (p : Π(n m : ℕ) (v : vector bool n) (w : vector bool m), P n m v w)
+          (n m : ℕ) (v : vector bool n) (w : vector bool m)
+eval (!p : P n m v w)
+eval (!p : P n n v v)
+check !p
+
+eval (!P v w : Type)
+eval (!p : !P w v)
+-- END
+#+END_SRC
+In this example we declare =P= and =p= without implicit
+arguments. However, we can use an exclamation mark to insert some of
+the implicit arguments.  If we write =!p= this will insert underscores
+for all explicit arguments of =p=. This is the case because all holes
+in =p _ _ _ _= can be inferred from its type =P n m v w=. Hence in the
+first =eval=, =!p= means =p n m v w=. This works the same way in the
+second example.  In the third line, the arguments of =p= are inserted,
+but cannot be inferred. Hence there are still metavariables in the
+output.
+
+For =P= this works differently: if we know that the type of =P _ _ _
+_= is =Type=, we don't have enough information to fill any of the
+holes.  However, we can fill the first two holes if we are given the
+last two arguments. That is why in =!P= only the first two arguments
+are filled in. Then =!P v w= is interpreted as =P _ _ v w=, and from
+this we can infer that the holes must be =n= and =m=, respectively.
+
+Here are some examples to see this behavior in practice.
+#+BEGIN_SRC lean
+import data.nat.order
+open nat
+-- BEGIN
+check @add_lt_add_right
+
+definition foo (n m k : ℕ) (H : n < m) : n + k < m + k := !(add_lt_add_right H)
+
+example {n m k l : ℕ} (H : n < m) (K : m + l < k + l) : n < k + l :=
+calc
+    n ≤ n + l : !le_add_right
+  ... < m + l : !foo H
+  ... < k + l : K
+-- END
+#+END_SRC
+
+In the following example we show that a reflexive euclidean relation
+is both symmetric and transitive. Notice that we set the variable =R=
+to be an explicit argument of =reflexive=, =symmetric=, =transitive=
+and =euclidean=.  However, for the theorems it is more convenient to
+make =R= implicit. We can do this with the command =variable {R}=,
+which makes =R= implicit from that point on.
+#+BEGIN_SRC lean
+namespace hide
+-- BEGIN
+variables {A : Type} (R : A → A → Prop)
+
+definition reflexive  : Prop := ∀ (a : A), R a a
+definition symmetric  : Prop := ∀ {a b : A}, R a b → R b a
+definition transitive : Prop := ∀ {a b c : A}, R a b → R b c → R a c
+definition euclidean  : Prop := ∀ {a b c : A}, R a b → R a c → R b c
+
+variable {R}
+
+theorem th1 (refl : reflexive R) (eucl : euclidean R) : symmetric R :=
+take a b : A, assume (H : R a b),
+show R b a, from eucl H !refl
+
+
+theorem th2 (symm : symmetric R) (eucl : euclidean R) : transitive R :=
+take (a b c : A), assume (H : R a b) (K : R b c),
+have H' : R b a, from symm H,
+show R a c, from eucl H' K
+
+-- ERROR:
+/-
+  theorem th3 (refl : reflexive R) (eucl : euclidean R) : transitive R :=
+  th2 (th1 refl eucl) eucl
+-/
+
+theorem th3 (refl : reflexive R) (eucl : euclidean R) : transitive R :=
+@th2 _ _ (@th1 _ _ @refl @eucl) @eucl
+-- END
+end hide
+#+END_SRC
+However, when we want to combine =th1= and =th2= into =th3= we notice
+something funny.  If we just write the proof =th2 (th1 refl eucl)
+eucl= we get an error. The reason is that =eucl= has type =∀ {a b c :
+A}, R a b → R a c → R b c=, hence =eucl= is interpreted as =@eucl _ _
+_=. Similarly, the types of =th1= and =th2= start with a
+quantification over implicit arguments, hence they are interpreted as
+=th1 _ _= and =th2 _ _ _=, respectively.  We can solve this by writing
+=@eucl=, =@th1= and =@th2=, but this is very inconvenient.
+
+We can solve this by using the binders =⦃⦄= instead of ={}=.
+#+BEGIN_SRC lean
+namespace hide
+variables {A : Type} (R : A → A → Prop)
+-- BEGIN
+definition symmetric  : Prop := ∀ ⦃a b : A⦄, R a b → R b a
+definition transitive : Prop := ∀ ⦃a b c : A⦄, R a b → R b c → R a c
+definition euclidean  : Prop := ∀ ⦃a b c : A⦄, R a b → R a c → R b c
+-- END
+end hide
+#+END_SRC
+They are inserted by typing =\{{= and =\}}=. Alternatively you can use
+the equivalent notation ={{}}=. The arguments in these binders are
+still implicit, however, they are not inserted to a term =t= if =t= is
+not applied to anything.  So if =H : symmetric R=, i.e. =H : ∀ ⦃a b :
+A⦄, R a b → R b a=, then =H= is interpreted as =@H=, but =H p= is
+interpreted as =@H _ _ p=. This allows us to prove =th3= in the
+expected way.
+
+#+BEGIN_SRC lean
+namespace hide
+variables {A : Type} (R : A → A → Prop)
+
+definition reflexive  : Prop := ∀ (a : A), R a a
+definition symmetric  : Prop := ∀ ⦃a b : A⦄, R a b → R b a
+definition transitive : Prop := ∀ ⦃a b c : A⦄, R a b → R b c → R a c
+definition euclidean  : Prop := ∀ ⦃a b c : A⦄, R a b → R a c → R b c
+
+variable {R}
+
+theorem th1 (refl : reflexive R) (eucl : euclidean R) : symmetric R :=
+take a b : A, assume (H : R a b),
+show R b a, from eucl H !refl
+
+theorem th2 (symm : symmetric R) (eucl : euclidean R) : transitive R :=
+take (a b c : A), assume (H : R a b) (K : R b c),
+have H' : R b a, from symm H,
+show R a c, from eucl H' K
+-- BEGIN
+theorem th3 (refl : reflexive R) (eucl : euclidean R) : transitive R :=
+th2 (th1 refl eucl) eucl
+-- END
+end hide
+#+END_SRC
+
+There is a third kind of implicit argument, used for type classes:
+=[]=. We will explain these in [[file:09_Type_Classes.org][Chapter 9]].
+
 ** Elaboration and Unification
 
 When you enter an expression like =λx y z, f (x + y) z= for Lean to
@@ -291,7 +476,10 @@ elaborator fails. To that end, it is helpful to have a general idea of
 how Lean's elaborator works.
 
 When Lean is parsing an expression, it first enters a preprocessing
-phase. First, the "holes" in a term --- the unspecified values --- are
+phase. First, Lean inserts "holes" for implicit arguments. If term =t=
+has type =Π{x : A}, P x=, then =t= is replaced by =@t _= everywhere.
+Then, the holes --- either the ones inserted in the previous step or
+the ones explicitly written by the user --- in a term are
 instantiated by /metavariables/ =?M1, ?M2, ?M3, ...=. Each overloaded
 notation is associated with a list of choices, that is, the possible
 interpretations. Similarly, Lean tries to detect the points where a
