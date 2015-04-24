@@ -822,7 +822,37 @@ to show that =decidable a= is inhabited for any =a=. It is marked as
 an instance, and is silently used for for synthesizing the implicit
 argument in =arbitrary (decidable a)=.
 
-# TODO: Discuss dependent if. Example: definition of inverse.
+Now, as an example, we use =some= to prove that if =f : A → B= is injective,
+and =A= is inhabited, then =f= has a left inverse. To define the
+left inverse =linv=, we use the "dependent if-then-else" expression.
+Recall that =if h : c then t else e= is notation for
+=dite c (λ h : c, t) (λ h : ¬ c, e)=.
+In the definition of =linv=, the =strong_indefinite_description= is used twice.
+First, to show that =(∃ a : A, f a = b)= is "decidable", and then to
+choose an =a= such that =f a = b=. From a classical point of view,
+=linv= is a function. From a constructive point of view, it is totally
+unacceptable, there is no way to "implement" such a function in general.
+Some may claim it is a "non-informative" construction.
+
+#+BEGIN_SRC lean
+import algebra.function logic.axioms.classical
+open function
+
+definition linv {A B : Type} [h : inhabited A] (f : A → B) : B → A :=
+λ b : B, if ex : (∃ a : A, f a = b) then some ex else arbitrary A
+
+theorem has_left_inverse_of_injective {A B : Type} {f : A → B}
+        : inhabited A → injective f → ∃ g, g ∘ f = id :=
+assume h   : inhabited A,
+assume inj : ∀ a₁ a₂, f a₁ = f a₂ → a₁ = a₂,
+have is_linv  : (linv f) ∘ f = id, from
+  funext (λ a,
+    assert ex  : ∃ a₁ : A, f a₁ = f a,   from exists.intro a rfl,
+    have   feq : f (some ex) = f a,      from !some_spec,
+    calc linv f (f a) = some ex   :  dif_pos ex
+               ...    = a         :  inj _ _ feq),
+exists.intro (linv f) is_linv
+#+END_SRC
 
 ** Diaconescu's theorem
 
