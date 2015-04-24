@@ -70,7 +70,7 @@ It requires a webserver to preview generated HTML files. We can use Python's `Si
 tutorial $ python -m SimpleHTTPServer
 ```
 
-The above command starts a HTTP server at `tutorial` directory (default port: `8000`). For example, `example.html` is available at `http://localhost:8000/example.html`.
+The above command starts a HTTP server at `tutorial` directory (default port: `8000`). For example, `01_Introduction.html` is available at `http://localhost:8000/01_Introduction.html`.
 
 
 Auto-reload HTML page
