@@ -680,7 +680,7 @@ because that requires unfolding the definition of =id=.
 ** Reducible Definitions
 
 Transparent identifiers can be declared to be /reducible/ or
-/irreducible/ or /none/.  By default, a definition is none. Whereas
+/irreducible/ or /semireducible/.  By default, a definition is /semireducible/. Whereas
 being transparent or opaque is a fixed, irrevocable feature of an
 identifier, being reducible or irreducible is an attribute that can be
 altered. This status provides hints that govern the way the elaborator
@@ -701,7 +701,7 @@ whether a definition =C= should be unfolded or not.
 + An /irreducible/ definition will never be unfolded during higher-order unification
   (but can still be unfolded in other situations, for example during type checking)
 + A /reducible/ definition will be always eligible for unfolding
-+ A definition which is /none/ can be unfolded during /simple/ decisions
++ A definition which is /semireducible/ can be unfolded during /simple/ decisions
   and won't be unfolded during /complex/ decisions.
   An unfolding decision is /simple/ if the unfolding does not require
   the procedure to consider an extra case split. It is /complex/ if the
@@ -748,7 +748,17 @@ Namespaces]] below for more information on how to import only the
 reducibility attributes, without exposing other aspects of the
 namespace.
 
-# TODO: add command to remove reducible/irreducible attribute (i.e. go back to "none")
+Finally, we can go back to /semireducible/ using the =attribute= command:
+#+BEGIN_SRC lean
+-- pr2 is semireducible
+definition pr2 (A : Type) (a b : A) : A := b
+
+-- mark pr2 as reducible
+attribute pr2 [reducible]
+-- ...
+-- make it semireducible again
+attribute pr2 [semireducible]
+#+END_SRC
 
 ** Helping the Elaborator
 
