@@ -579,6 +579,23 @@ decidable.rec_on H (λ Hc, t) (λ Hnc, e)
 -- END
 end hide
 #+END_SRC
+
+The standard library also contains a variant of =ite= called =dite=.
+We say it is the dependent if-then-else expression. It is defined as follows:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+definition dite (c : Prop) [H : decidable c] {A : Type} (t : c → A) (e : ¬ c → A) : A :=
+decidable.rec_on H (λ Hc : c, t Hc) (λ Hnc : ¬ c, e Hnc)
+-- END
+end hide
+#+END_SRC
+That is, in =dite c t e=, we can assume =Hc : c= in the "then" branch, and
+=Hnc : ¬ c= in the "else" branch.
+To make =dite= more convenient ot use, Lean provides the
+syntactic sugar =if h : c then t else e= for =dite c (λ h : c, t) (λ h : ¬ c, e)=.
+
 In the standard library, we cannot prove that every proposition is
 decidable. But we can prove that /certain/ propositions are
 decidable. For example, we can prove that basic operations like
@@ -679,7 +696,7 @@ open [coercions] nat int
 open bool
 
 set_option pp.notation false
-check (2 : nat) + 2    -- nat 
+check (2 : nat) + 2    -- nat
 check (2 : int) + 2    -- int
 check tt + ff          -- bool
 -- END
@@ -729,7 +746,7 @@ has_add.mk (take p q, (add (prod.pr1 p) (prod.pr1 q), add (prod.pr2 p) (prod.pr2
 
 open nat
 
-check (1, 2) + (3, 4)    -- ℕ × ℕ 
+check (1, 2) + (3, 4)    -- ℕ × ℕ
 eval (1, 2) + (3, 4)     -- (4, 6)
 -- END
 #+END_SRC
