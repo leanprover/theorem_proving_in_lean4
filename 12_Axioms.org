@@ -830,7 +830,7 @@ Recall that =if h : c then t else e= is notation for
 In the definition of =linv=, the =strong_indefinite_description= is used twice.
 First, to show that =(∃ a : A, f a = b)= is "decidable", and then to
 choose an =a= such that =f a = b=. From a classical point of view,
-=linv= is a function. From a constructive point of view, it is totally
+=linv= is a function. From a constructive point of view, it is
 unacceptable, there is no way to "implement" such a function in general.
 Some may claim it is a "non-informative" construction.
 
@@ -895,3 +895,63 @@ check @choose_spec
 The construction is straightforward, it finds =a : A= satisfying =p= by enumerating the elements of =A= and
 testing whether they satisfy =p= or not.
 We can show that this search always terminates because we have the assumption =∃ (x : A), p x=.
+
+Now, we provide a constructive version of the theorem =has_left_inverse_of_injective=.
+We remark this is not the only possible version. The constructive version contains
+more hypotheses (parameters). Using Bishop's terminology, it avoids /pseudo-generality/.
+From the previous construction, it is clear that we can construct the left inverse
+whenever we can decide whether =b= is in the image of a function =f : A → B=, and we can /choose/.
+
+#+BEGIN_SRC lean
+import data.encodable algebra.function
+open encodable function
+
+section
+  parameters {A B : Type}
+  parameter  (f : A → B)
+  parameter  [inhA : inhabited A]
+  parameter  [dex  : ∀ b, decidable (∃ a, f a = b)]
+  parameter  [encB : encodable A]
+  parameter  [deqB : decidable_eq B]
+  include inhA dex encB deqB
+
+  definition finv : B → A :=
+  λ b : B, if ex : (∃ a, f a = b) then choose ex else arbitrary A
+
+  theorem has_left_inverse_of_injective : injective f → has_left_inverse f :=
+  assume inj : ∀ a₁ a₂, f a₁ = f a₂ → a₁ = a₂,
+  have is_linv : finv ∘ f = id, from
+    funext (λ a,
+      assert ex  : ∃ a₁, f a₁ = f a, from exists.intro a rfl,
+      have   feq : f (choose ex) = f a, from !choose_spec,
+      calc finv (f a) = choose ex :  dif_pos ex
+               ...    = a         :  inj _ _ feq),
+  exists.intro finv is_linv
+end
+#+END_SRC
+
+It is essentially the same proof, we just replaced =some= with the constructive choice function =choose=,
+and added three extra hypotheses: =dex=, =encB= and =deqB=. The first one makes sure we can decide
+whether a value =b= is in the image of =f= or not, and the last two are needed for the constructive choice
+function =choose=. The standard library contains many =encodable= types and shows that many types have decidable equality.
+The hypothesis =dex= can be satisfied in many cases. For example, it is trivially satisfied if =f= is surjective.
+We can also satisfy it whenever =A= is finite.
+
+#+BEGIN_SRC lean
+import data.encodable algebra.function
+open encodable function
+
+-- BEGIN
+section
+  parameters {A B : Type} (f : A → B)
+
+  definition decidable_in_image_of_surjective : surjective f → ∀ b, decidable (∃ a, f a = b) :=
+  assume s : surjective f, take b,
+  decidable.inl (s b)
+
+  definition decidable_in_image_of_fintype_of_deceq [instance]
+             [finA : fintype A] [deqB : decidable_eq B] : ∀ b, decidable (∃ a, f a = b) :=
+  take b, decidable_exists_finite
+end
+-- END
+#+END_SRC
