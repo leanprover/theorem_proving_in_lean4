@@ -705,7 +705,7 @@ var Module = { };
 if (gup("mem") != "") {
     Module.TOTAL_MEMORY=gup("mem") * 1024 * 1024;
 } else {
-    Module.TOTAL_MEMORY=16 * 1024 * 1024;
+    Module.TOTAL_MEMORY=64 * 1024 * 1024;
 }
 
 // timestamp before loading lean.js
