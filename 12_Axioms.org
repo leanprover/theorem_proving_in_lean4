@@ -7,15 +7,15 @@
 :END:
 
 We have seen that the version of the Calculus of Inductive
-Constructions that has been implemented in Lean includes a nested
-hierarchy of universes with an impredicative, proof-irrelevant =Prop=
-at the bottom, Pi types, and inductive types. In this chapter, we
-consider extensions of the CIC with additional axioms and
+Constructions that has been implemented in Lean includes Pi types, and
+inductive types, and a nested hierarchy of universes with an
+impredicative, proof-irrelevant =Prop= at the bottom. In this chapter,
+we consider extensions of the CIC with additional axioms and
 rules. Extending a foundational system in such a way is often
 convenient; it can make it possible to prove more theorems, as well as
 easier to prove theorems that could have been proved otherwise. But
-often there are also negative consequences of adding additional axioms
-that go beyond questions of soundness and correctness.
+there can negative consequences of adding additional axioms,
+consequences which may go beyond concerns about their correctness.
 
 Lean's standard library makes available a number of "classical"
 axioms, which are justified on a set-theoretic interpretation of type
@@ -25,7 +25,7 @@ behavior. When you import the standard library, most of these axioms
 are therefore not imported by default.
 
 The standard library does, however, make use of two mildly classical
-axioms, namely, propositional extensionality and quotients. Their use
+extensions, namely, propositional extensionality and quotients. Their use
 in core parts of the standard library is still provisional, and may be
 curtailed if it proves to have sufficiently bad computational
 effects. The next section aims to clarify some of the issues and
@@ -38,7 +38,7 @@ concerns.
 For most of its history, mathematics was essentially computational:
 geometry dealt with constructions of geometric objects, algebra was
 concerned with algorithmic solutions to systems of equations, and
-analysis provided to means to compute the future behavior of systems
+analysis provided means to compute the future behavior of systems
 evolving over time. From the proof of a theorem to the effect that
 "for every =x=, there is a =y= such that ..." is was generally
 straightforward to extract an algorithm to compute such a =y= given
@@ -864,7 +864,7 @@ To be more precise, it shows that the law excluded middle follows from =strong_i
 ** Constructive Choice
 
 In the standard library, we say a type =A= is =encodable= if there are functions =f : A → nat= and =g : nat → option A=
-such that for all =a : A=, =g (f a) = some a=. Here is the actual definition
+such that for all =a : A=, =g (f a) = some a=. Here is the actual definition:
 
 #+BEGIN_SRC lean
 namespace hide
