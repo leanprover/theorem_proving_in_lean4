@@ -1022,34 +1022,34 @@ begin
 end
 #+END_SRC
 
-#+BEGIN_SRC lean
-open tactic
+# +BEGIN_SRC lean
+# open tactic
+#
+# definition my_tac := repeat ( apply @and.intro
+#                            | apply @eq.refl
+#                             )
+# tactic_hint my_tac
+#
+# theorem T1 {A : Type} {B : Type} (a : A) (b c : B) : a = a ∧ b = b ∧ c = c
+# +END_SRC
 
-definition my_tac := repeat ( apply @and.intro
-                             | apply @eq.refl
-                             )
-tactic_hint my_tac
-
-theorem T1 {A : Type} {B : Type} (a : A) (b c : B) : a = a ∧ b = b ∧ c = c
+# +BEGIN_SRC lean
+# open tactic
+# 
+# theorem T (a b c d : Prop) (Ha : a) (Hb : b) (Hc : c) (Hd : d) : a ∧ b ∧ c ∧ d :=
+# by fixpoint (λ f, (apply @and.intro; f | assumption; f | id))
 #+END_SRC
 
-#+BEGIN_SRC lean
-open tactic
-
-theorem T (a b c d : Prop) (Ha : a) (Hb : b) (Hc : c) (Hd : d) : a ∧ b ∧ c ∧ d :=
-by fixpoint (λ f, (apply @and.intro; f | assumption; f | id))
-#+END_SRC
-
-#+BEGIN_SRC lean
-open tactic
-
-definition my_tac3 := fixpoint (λ f, (apply @or.intro_left; f  |
-                                      apply @or.intro_right; f |
-                                      assumption))
-
-tactic_hint my_tac3
-
-theorem T3 {a b c : Prop} (Hb : b) : a ∨ b ∨ c := _
+# +BEGIN_SRC lean
+# open tactic
+# 
+# definition my_tac3 := fixpoint (λ f, (apply @or.intro_left; f  |
+#                                      apply @or.intro_right; f |
+#                                      assumption))
+#
+# tactic_hint my_tac3
+#
+# theorem T3 {a b c : Prop} (Hb : b) : a ∨ b ∨ c := _
 #+END_SRC
 
 #+BEGIN_SRC lean
