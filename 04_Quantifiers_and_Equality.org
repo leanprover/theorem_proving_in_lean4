@@ -551,10 +551,32 @@ exists.intro (w1 + w2)
       ... = 2*(w1 + w2)   : mul.left_distrib)
 #+END_SRC
 
+Just as the constructive "or" is stronger than the classical "or," so,
+too, is the constructive "exists" stronger than the classical
+"exists". For example, the following implication requires classical
+reasoning because, from a constructive standpoint, knowing that it is
+not the case that every =x= satisfies =p= is not the same as having a
+particular =x= that satisfies =¬ p=.
+#+BEGIN_SRC lean
+import classical
+
+variables (A : Type) (p : A → Prop)
+
+example (H : ¬ ∀x, ¬ p x) : ∃x, p x :=
+by_contradiction
+  (assume H1 : ¬ ∃ x, p x,
+    have H2 : ∀x, ¬ p x, from
+      take x, 
+      assume H3 : p x,
+      have H4 : ∃x, p x, from exists.intro x H3,
+      show false, from H1 H4,
+    show false, from H H2)
+#+END_SRC
+
 What follows are some common identities involving the existential
-quantifier. We encourage you to prove as many as you can. Be careful:
-many of them are nonconstructive, and require the use of the law of
-the excluded middle.
+quantifier. We encourage you to prove as many as you can. We are also
+leaving it to you to determine which are nonconstructive, and hence
+require some form of classical reasoning.
 # Remark from Leo: I used (a : A) instead of (H : inhabited A), because
 # 'inhabited' is only defined in Chapter 6.
 #+BEGIN_SRC lean

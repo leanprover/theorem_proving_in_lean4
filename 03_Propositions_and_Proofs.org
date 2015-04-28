@@ -699,6 +699,27 @@ end
 -- END
 #+END_SRC
 
+If you are not used to thinking constructively, it make take some time
+for you to get a sense of where classical reasoning is used. It is
+needed in the following example because, from a constructive
+standpoint, knowing that =p= and =q= are not both true does not
+necessarily tell you which one is false:
+#+BEGIN_SRC lean
+import classical
+
+variables p q : Prop
+
+example (H : ¬ (p ∧ q)) : ¬ p ∨ ¬ q :=
+or.elim (em p)
+  (assume Hp : p,
+    or.inr
+      (show ¬q, from
+        assume Hq : q,
+        H (and.intro Hp Hq)))
+  (assume Hp : ¬p,
+    or.inl Hp)
+#+END_SRC
+
 We will see later that there /are/ situations in constructive logic
 where principles like excluded middle and double-negation elimination
 are permissible, and Lean supports the use of classical reasoning in
