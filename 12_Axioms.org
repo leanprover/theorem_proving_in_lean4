@@ -76,7 +76,7 @@ reduction rules until no more rules can be applied. In principle, any
 closed term (that is, term with no free variables) of type =ℕ= should
 evaluate to a numeral, =succ (succ (succ ... 0))=.
 
-Introducing a proof-irrelevant =Prop= and marking theorems opaque
+Introducing a proof-irrelevant =Prop= and marking theorems irreducible
 represents a first step towards separation of concerns. The intention
 is that elements of a type =P : Prop= should play no role in
 computation, and so the particular construction of a term =t : P= is
@@ -678,7 +678,7 @@ axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A)
   { x | (∃y : A, P y) → P x}
 
 -- BEGIN
-opaque definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
+definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
 let u : {x | (∃y, P y) → P x} :=
   strong_indefinite_description P H in
 elt_of u
@@ -714,7 +714,7 @@ namespace hide
 axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A) :
   { x | (∃y : A, P y) → P x}
 
-opaque definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
+definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
 let u : {x | (∃y, P y) → P x} :=
   strong_indefinite_description P H in
 elt_of u

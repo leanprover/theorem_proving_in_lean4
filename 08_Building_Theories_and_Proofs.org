@@ -597,93 +597,12 @@ of the remaining metavariables as "placeholders" or "goals" that could
 not be filled.
 
 # TODO: does anything distinguish "placeholders" from "goals"?
-
-** Opaque Definitions
-
-Because elaboration and unification are so complex, Lean provides
-various mechanism that control the process. To start with, a defined
-symbol can be /transparent/ or /opaque/. This is a very strong,
-irrevocable decision: when a symbol is opaque, its definition
-is /never/ unfolded, not even by the type checker in the
-kernel of Lean, whose job it is to determine whether or not a term is
-type correct.
-
-Any identifier created by the =theorem= command is automatically
-marked as opaque, as consistent with the understanding is that all we
-care about is the fact that the theorem is true, which is to say, the
-proposition is asserts, viewed as a type, is inhabited. (If other
-theorems and definitions need to "see" the contents of a proof, you
-must declare it to be a =definition= instead.)
-
-In contrast, an identifier created by the =definition= command is
-marked as transparent, by default. For example, if addition on the
-natural numbers were not transparent, the type checker would reject
-the equation in the check below as a type error:
-#+BEGIN_SRC lean
-import data.vector data.nat
-open nat
-check λ (v : vector nat (2+3)) (w : vector nat 5), v = w
-#+END_SRC
-Similarly, the following definition only type checks because =id= is
-transparent, and the type checker can establish that =nat= and =id
-nat= are definitionally equal.
-#+BEGIN_SRC lean
-import data.nat
-definition id {A : Type} (a : A) : A := a
-check λ (x : nat) (y : id nat), x = y
-#+END_SRC
-
-Lean provides us with an option, however, to declare a definition to
-be opaque as well. Opaque definitions are similar to regular
-definitions, but they are only transparent in the module (file) in
-which they are defined. The idea is that we can prove theorems about
-an opaque constant in the module in which it is defined, but in other
-modules, we can only rely on these theorems. The actual definition is
-hidden/encapsulated, and the module designer is free to change it
-without affecting its "customers".
-
-Using opaque definitions is subtle. It would be problematic if the
-type checker could determine that the statement of a theorem which
-involves an opaque constant is correct within the module it is
-defined, but not outside the module. For that reason, an opaque
-definition is only treated as transparent inside of other opaque
-definitions/theorems in the same module. Here is an example:
-#+BEGIN_SRC lean
-import data.nat
-opaque definition id {A : Type} (a : A) : A := a
-
--- these are o.k.
-
-check λ (x : nat) (y : id nat), x = y
-
-theorem id_eq {A : Type} (a : A) : id a = a :=
-eq.refl a
-
-definition id2 {A : Type} (a : A) : A :=
-id a
-
--- this is rejected
-
-/-
-definition buggy_def {A : Type} (a : A) : Prop :=
-∀ (b : id A), a = b
--/
-#+END_SRC
-The check command is type correct because it is executed in the same
-module as the =opaque= definition. The proof of =id_eq= is type
-correct, because =id= only needs to be transparent within the
-proof. Similarly, =id2= is type correct because the type checker does
-not need to unfold =id= to ensure correctness. But Lean rejects
-=buggy_def=: the definition would not type check outside the module,
-because that requires unfolding the definition of =id=.
-
+g
 ** Reducible Definitions
 
 Transparent identifiers can be declared to be /reducible/ or
-/irreducible/ or /semireducible/.  By default, a definition is /semireducible/. Whereas
-being transparent or opaque is a fixed, irrevocable feature of an
-identifier, being reducible or irreducible is an attribute that can be
-altered. This status provides hints that govern the way the elaborator
+/irreducible/ or /semireducible/.  By default, a definition is /semireducible/.
+This status provides hints that govern the way the elaborator
 tries to solve higher-order unification problems. As with other
 attributes, the status of an identifier with respect to reducibility
 has no bearing on type checking at all, which is to say, once a fully
@@ -707,12 +626,7 @@ whether a definition =C= should be unfolded or not.
   the procedure to consider an extra case split. It is /complex/ if the
   unfolding produces at least one extra case, and consequently increases
   the search space.
-
-Identifiers which are opaque (theorems and opaque definitions declared
-in a different module) will never be unfolded. Opaque definitions declared
-in the current module can be marked to be reducible and irreducible as normal,
-since they are transparent in the current module.
-
+g
 You can assign the =reducible= attribute when a symbol is defined:
 #+BEGIN_SRC lean
 definition pr1 [reducible] (A : Type) (a b : A) : A := a
@@ -1278,8 +1192,8 @@ configurations for those who will use your theories later on.
 
 Sometimes it is useful to hide auxiliary definitions and theorems from
 the outside world, for example, so that they do not clutter up the
-namespace. The =private= keyword allows you to do this. A private
-definition is always opaque, and the name of a =private= definition is
+namespace. The =private= keyword allows you to do this.
+The name of a =private= definition is
 only visible in the module/file where it was declared.
 #+BEGIN_SRC lean
 import data.nat

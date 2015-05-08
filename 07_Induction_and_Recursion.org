@@ -463,10 +463,10 @@ simply a witness to the fact that there is an element of =A=. In
 Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]], we will see that =inhabited= is an instance of a
 =type class=: Lean can be instructed that suitable base types are
 inhabited, and can automatically infer that other constructed types
-are inhabited on that basis. The standard library provides the opaque
+are inhabited on that basis. The standard library provides the irreducible
 definition =arbitrary A= for inhabited types. The function =arbitrary
 A= returns a witness for =A=, but since the definition of =arbitrary=
-is opaque, we cannot infer anything about the witness chosen.
+is irreducible, we cannot infer anything about the witness chosen.
 
 We can also use the type =option A= to simulate incomplete patterns.
 The idea is to return =some a= for the provided patterns, and use
