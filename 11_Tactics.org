@@ -384,7 +384,7 @@ begin
   apply and.intro,
   assumption,
   apply and.intro,
-  assumption
+  repeat assumption
 end
 #+END_SRC
 Alternatively, we can explicitly put a =have= statement in to the
@@ -398,7 +398,7 @@ begin
   apply and.intro,
   assumption,
   apply and.intro,
-  assumption
+  repeat assumption
 end
 #+END_SRC
 
@@ -535,7 +535,7 @@ begin
     have Hp : p, from and.left H,
     have Hq : q, from and.right H,
     apply and.intro,
-    assumption
+    repeat assumption
   end,
   begin
     intro H,
@@ -608,18 +608,18 @@ begin
 end
 #+END_SRC
 
-You can also use pattern matching in a tactic block. With 
+You can also use pattern matching in a tactic block. With
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ q ↔ q ∧ p :=
 begin
   apply iff.intro,
   { intro H,
     match H with
-    |  and.intro H₁ H₂ := by apply and.intro; assumption
+    |  and.intro H₁ H₂ := by apply and.intro; repeat assumption
     end },
   { intro H,
     match H with
-    | and.intro H₁ H₂ := by apply and.intro; assumption
+    | and.intro H₁ H₂ := by apply and.intro; repeat assumption
     end },
 end
 #+END_SRC
@@ -657,7 +657,7 @@ end
 # TODO: this version works when only data.nat is loaded, but not when the whole
 # standard library is loaded. What is going on?
 #
-# 
+#
 # example (x : ℕ) (H : x ≠ 0) : succ (pred x) = x :=
 # begin
 #   revert H,
@@ -1035,14 +1035,14 @@ end
 
 # +BEGIN_SRC lean
 # open tactic
-# 
+#
 # theorem T (a b c d : Prop) (Ha : a) (Hb : b) (Hc : c) (Hd : d) : a ∧ b ∧ c ∧ d :=
 # by fixpoint (λ f, (apply @and.intro; f | assumption; f | id))
 #+END_SRC
 
 # +BEGIN_SRC lean
 # open tactic
-# 
+#
 # definition my_tac3 := fixpoint (λ f, (apply @or.intro_left; f  |
 #                                      apply @or.intro_right; f |
 #                                      assumption))
