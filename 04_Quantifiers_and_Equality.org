@@ -11,7 +11,7 @@ universal and existential quantifiers, and the equality relation.
 ** The Universal Quantifier
 
 Notice that if =A= is any type, we can represent a unary predicate =p=
-on =A= as on object of type =A → Prop=. In that case, given =x : A=,
+on =A= as an object of type =A → Prop=. In that case, given =x : A=,
 =p x= denotes the assertion that =p= holds of =x=. Similarly, an
 object =r : A → A → Prop= denotes a binary relation on =A=: given =x
 y : A=, =r x y= denotes the assertion that =x= is related to =y=.
