@@ -3,6 +3,10 @@
 \bibliography{lean}
 
 %\setglossarystyle{altlisthypergroup}
-\glsaddall
-\printglossaries
+%\glsaddall
+%\printglossaries
+
+\clearpage
+\addcontentsline{toc}{chapter}{Index}
+\printindex
 #+END_LATEX
