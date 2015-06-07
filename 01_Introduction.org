@@ -44,18 +44,17 @@ mathematical claims.
 
 Automated reasoning systems strive for power and efficiency, often at
 the expense of guaranteed soundness. Such systems can have bugs, and
-typically there is little more than the author's good intentions to
-guarantee that the results they deliver are correct. In contrast,
-/interactive theorem proving/ focuses on the "verification" aspect of
-theorem proving, requiring that every claim is supporting by a proof
-in a suitable axiomatic foundation. This sets a very high standard:
-every rule of inference and every step of a calculation has to be
-justified by appealing to prior definitions and theorems, all the way
-down to basic axioms and rules. In fact, most such systems provide
-fully elaborated "proof objects" that can be communicated to other
-systems and checked independently. Constructing such proofs typically
-requires much more input and interaction from users, but it allows us
-to obtain deeper and more complex proofs.
+it can be difficult to ensure that the results they deliver are
+correct. In contrast, /interactive theorem proving/ focuses on the
+"verification" aspect of theorem proving, requiring that every claim
+is supporting by a proof in a suitable axiomatic foundation. This sets
+a very high standard: every rule of inference and every step of a
+calculation has to be justified by appealing to prior definitions and
+theorems, all the way down to basic axioms and rules. In fact, most
+such systems provide fully elaborated "proof objects" that can be
+communicated to other systems and checked independently. Constructing
+such proofs typically requires much more input and interaction from
+users, but it allows us to obtain deeper and more complex proofs.
 
 The /Lean Theorem Prover/ aims to bridge the gap between interactive
 and automated theorem proving, by situating automated tools and
@@ -88,17 +87,22 @@ better suited for serious use.
 ** About this Book
 
 This book is designed to teach you to develop and verify proofs in
-Lean. There are many aspects to this, some of which are not specific
-to Lean at all. To start with, we will explain the logical system that
-underlies Lean's standard library, a system known as the /Calculus of
-Inductive Constructions/\cite{Coquand1988,pfenning:paulin:mohring:89},
-or /CIC/. The CIC is a version of /dependent type theory/ that is
-powerful enough to prove almost any conventional mathematical theorem,
-and expressive enough to do it in a natural way. We will explain not
-only how to define mathematical objects and express mathematical
-assertions in the CIC, but also how to use CIC as a language for
-writing proofs. (Lean also supports work in an axiomatic framework for
-[[http://homotopytypetheory.org/][homotopy type theory]], which we will discuss in a later chapter.)
+Lean. Much of the background information you will need in order to do
+this is not specific to Lean at all. To start with, we will explain
+the logical system that Lean is based on, a version of /dependent type
+theory/ that is powerful enough to prove almost any conventional
+mathematical theorem, and expressive enough to do it in a natural
+way. We will explain not only how to define mathematical objects and
+express mathematical assertions in dependent type theory, but also how
+to use it as a language for writing proofs. 
+
+In fact, Lean supports two versions on dependent type theory. The
+first is a variant of a system known as the /Calculus of Inductive
+Constructions/\cite{Coquand1988,pfenning:paulin:mohring:89}, or
+/CIC/. This is the system used by Lean's standard library, and is the
+focus of this tutorial. The second version of dependent type theory
+implements an axiomatic framework for [[http://homotopytypetheory.org/][homotopy type theory]],
+which we will discuss in a later chapter.
 
 Because fully detailed axiomatic proofs are so complicated, the
 challenge of theorem proving is to have the computer fill in as many
