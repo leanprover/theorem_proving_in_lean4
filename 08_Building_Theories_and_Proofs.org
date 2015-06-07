@@ -36,19 +36,19 @@ element of a member of the source family as a type. The third kind of
 coercion allows us to view any element of the source family as a function.
 Let us consider each of these in turn.
 
-In type theory terminology, an element =F : Πx1 : A1, ..., xn : An,
+In type theory terminology, an element =F : Π x1 : A1, ..., xn : An,
 Type= is called a /family of types/. For every sequence of arguments
 =a1 : A1, ..., an : An=, =F a1 ... an= is a type, so we think of =F=
 as being a family parameterized by these arguments. A coercion of the
 first kind is of the form
 #+BEGIN_SRC text
-c : Πx1 : A1, ..., xn : An, y : F x1 ... xn, G b1 ... bm
+c : Π x1 : A1, ..., xn : An, y : F x1 ... xn, G b1 ... bm
 #+END_SRC
 where =G= is another family of types, and the terms =b1 ... bn= depend
 on =x1, ..., xn, y=. This allows us to write =f t= where =t= is of
 type =F a1 ... an= but =f= expects an argument of type =G y1 ... ym=,
-for some =y1 ... ym=. For example, if =F= is =list : ΠA : Type, Type=,
-=G= is =set ΠA : Type, Type=, then a coercion =c : ΠA : Type, list A →
+for some =y1 ... ym=. For example, if =F= is =list : Π A : Type, Type=,
+=G= is =set Π A : Type, Type=, then a coercion =c : Π A : Type, list A →
 set A= allows us to pass an argument of type =list T= for some =T= any
 time an element of type =set T= is expected. These are the types of
 coercions we considered in Section [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]].
@@ -70,7 +70,7 @@ Let us now consider the second kind of coercion. By the /class of
 sorts/, we mean the collection of universes =Type.{i}=. A coercion of
 the second kind is of the form
 #+BEGIN_SRC text
-c : Πx1 : A1, ..., xn : An, F x1 ... xn → Type
+c : Π x1 : A1, ..., xn : An, F x1 ... xn → Type
 #+END_SRC
 where =F= is a family of types as above. This allows
 us to write =s : t= whenever =t= is of type =F a1 ... an=. In other
@@ -83,7 +83,7 @@ follows:
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
 
 notation a `*` b := Semigroup.mul _ a b
 #+END_SRC
@@ -98,7 +98,7 @@ sort =Type=:
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
 
 notation a `*` b := Semigroup.mul _ a b
 
@@ -113,7 +113,7 @@ Semigroup.carrier S=:
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
 
 notation a `*` b := Semigroup.mul _ a b
 
@@ -127,9 +127,9 @@ example (S : Semigroup) (a b : S) : a * b * a = a * (b * a) :=
 It is the coercion that makes it possible to write =(a b : S)=.
 
 By the /class of function types/, we mean the collection of Pi types
-=Πz : B, C=. The third kind of coercion has the form
+=Π z : B, C=. The third kind of coercion has the form
 #+BEGIN_SRC text
-c : Πx1 : A1, ..., xn : An, y : F x1 ... xn, Πz : B, C
+c : Π x1 : A1, ..., xn : An, y : F x1 ... xn, Π z : B, C
 #+END_SRC
 where =F= is again a family of types and =B= and =C= can depend on
 =x1, ..., xn, y=. This makes it possible to write =t s= whenever =t=
@@ -141,7 +141,7 @@ semigroups:
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
 
 notation a `*` b := Semigroup.mul _ a b
 
@@ -150,7 +150,7 @@ attribute Semigroup.carrier [coercion]
 -- BEGIN
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
-(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+(resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 -- END
 #+END_SRC
 In other words, a morphism from =S1= to =S2= is a function from the
@@ -161,7 +161,7 @@ a morphism to the underlying function:
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
 
 notation a `*` b := Semigroup.mul _ a b
 
@@ -169,7 +169,7 @@ attribute Semigroup.carrier [coercion]
 
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
-(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+(resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
 -- BEGIN
 check morphism.mor
@@ -180,7 +180,7 @@ As a result, it is a prime candidate for the third type of coercion.
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
 
 notation a `*` b := Semigroup.mul _ a b
 
@@ -188,7 +188,7 @@ attribute Semigroup.carrier [coercion]
 
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
-(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+(resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
 -- BEGIN
 attribute morphism.mor [coercion]
@@ -211,7 +211,7 @@ current namespace or section using the =local= modifier:
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
 
 notation a `*` b := Semigroup.mul _ a b
 
@@ -219,7 +219,7 @@ attribute Semigroup.carrier [coercion]
 
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
-(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+(resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
 -- BEGIN
 local attribute morphism.mor [coercion]
@@ -239,7 +239,7 @@ the environment using =print coercions=:
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c : carrier, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
 
 notation a `*` b := Semigroup.mul _ a b
 
@@ -247,7 +247,7 @@ attribute Semigroup.carrier [coercion]
 
 structure morphism (S1 S2 : Semigroup) : Type :=
 (mor : S1 → S2)
-(resp_mul : ∀a b : S1, mor (a * b) = (mor a) * (mor b))
+(resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
 attribute morphism.mor [coercion]
 
@@ -280,7 +280,7 @@ of this graph, in which the "paths" correspond to chains of coercions.
 :END:
 
 In Section [[file:02_Dependent_Type_Theory.org::#Implicit_Arguments][Implicit Arguments]], we discussed implicit arguments in
-Lean.  For example if a term =t= has type =Π{x : A}, P x=, the
+Lean.  For example if a term =t= has type =Π {x : A}, P x=, the
 variable =x= is /implicit/ in =t=. This means that whenever you write
 =t=, a "hole" is inserted, so =t= is replaced by =@t _=. If you don't
 want that a hole is inserted, you can write =@t=.
@@ -299,7 +299,7 @@ print definition foo
 definition foo2 (n m k l : ℕ) : (n + k) + l = (k + l) + n := !add.assoc ⬝ !add.comm
 print definition foo2
 
-definition foo3 (l : ℕ) (H : ∀(n : ℕ), l + 2 ≠ 2 * (n + 1)) (n : ℕ) : l ≠ 2 * n :=
+definition foo3 (l : ℕ) (H : ∀ (n : ℕ), l + 2 ≠ 2 * (n + 1)) (n : ℕ) : l ≠ 2 * n :=
 assume K : l = 2 * n,
 absurd (show l + 2 = 2 * n + 2, from K ▸ rfl) !H
 print definition foo3
@@ -317,8 +317,8 @@ import data.vector
 open vector nat
 set_option pp.metavar_args false
 -- BEGIN
-variables (P : Π(n m : ℕ) (v : vector bool n) (w : vector bool m), Type)
-          (p : Π(n m : ℕ) (v : vector bool n) (w : vector bool m), P n m v w)
+variables (P : Π (n m : ℕ) (v : vector bool n) (w : vector bool m), Type)
+          (p : Π (n m : ℕ) (v : vector bool n) (w : vector bool m), P n m v w)
           (n m : ℕ) (v : vector bool n) (w : vector bool m)
 eval (!p : P n m v w)
 eval (!p : P n n v v)
@@ -460,7 +460,7 @@ There is a third kind of implicit argument, used for type classes:
 
 ** Elaboration and Unification
 
-When you enter an expression like =λx y z, f (x + y) z= for Lean to
+When you enter an expression like =λ x y z, f (x + y) z= for Lean to
 process, you are leaving information implicit. For example, the types
 of =x=, =y=, and =z= have to be inferred from the context, the
 notation =+= may be overloaded, and there may be implicit arguments to
@@ -477,7 +477,7 @@ how Lean's elaborator works.
 
 When Lean is parsing an expression, it first enters a preprocessing
 phase. First, Lean inserts "holes" for implicit arguments. If term =t=
-has type =Π{x : A}, P x=, then =t= is replaced by =@t _= everywhere.
+has type =Π {x : A}, P x=, then =t= is replaced by =@t _= everywhere.
 Then, the holes --- either the ones inserted in the previous step or
 the ones explicitly written by the user --- in a term are
 instantiated by /metavariables/ =?M1, ?M2, ?M3, ...=. Each overloaded
@@ -492,7 +492,7 @@ the list is the identity.
 After preprocessing, Lean extracts a list of constraints that need to
 be solved in order for the term to have a valid type. Each application
 term =s t= gives rise to a constraint =T1 = T2=, where =t= has type
-=T1= and =s= has type =Πx : T2, T3=. Notice that the expressions =T1=
+=T1= and =s= has type =Π x : T2, T3=. Notice that the expressions =T1=
 and =T2= will often contain metavariables; they may even be
 metavariables themselves. Moreover, a definition of the form
 ~definition foo : T := t~ or a theorem of the form ~theorem bar : T :=
@@ -521,20 +521,20 @@ In contrast, /higher-order/ unification is much more
 tricky. Consider, for example, the expressions =?M a b= and =f (g a) b
 b=. All of the following assignments to =?M= are among the possible
 solutions:
-- =λx y, f (g x) y y=
-- =λx y, f (g x) y b=
-- =λx y, f (g a) b y=
-- =λx y, f (g a) b b=
+- =λ x y, f (g x) y y=
+- =λ x y, f (g x) y b=
+- =λ x y, f (g a) b y=
+- =λ x y, f (g a) b b=
 Such problems arise in many ways. For example:
 - When you use =induction_on x= for an inductively defined type, Lean
   has to infer the relevant induction predicate.
 - When you write =eq.subst e p= with an equation =e : a = b= to
   convert a proposition =P a= to a proposition =P b=, Lean has to
   infer the relevant predicate.
-- When you write =sigma.mk a b= to build an element of =Σx : A, B x=
+- When you write =sigma.mk a b= to build an element of =Σ x : A, B x=
   from an element =a : A= and an element =B : B a=, Lean has to infer
   the relevant =B=. (And notice that there is an ambiguity; =sigma.mk
-  a b= could also denote an element of =Σx : A, B a=, which is
+  a b= could also denote an element of =Σ x : A, B a=, which is
   essentially the same as =A × B a=.)
 In cases like this, Lean has to perform a backtracking search to find
 a suitable value of a higher-order metavariable. It is known that even
@@ -553,7 +553,7 @@ viable choice to try.
 
 To complicate matters even further, sometimes the elaborator has to
 reduce terms using the CIC's internal computation rules. For example,
-if it happens to be the case that =f= is defined to be =λx, g x x=, we
+if it happens to be the case that =f= is defined to be =λ x, g x x=, we
 can unify expressions =f ?M= and =g a a= by assigning =?M= to =a=. In
 general, any number of computation steps may be needed to unify
 terms. It is computationally infeasible to try all possible reductions
@@ -938,7 +938,7 @@ import standard
 
 section
   parameters {A : Type} (R : A → A → Type)
-  hypothesis transR : ∀{x y z}, R x y → R y z → R x z
+  hypothesis transR : ∀ {x y z}, R x y → R y z → R x z
 
   variables {a b c d e : A}
 

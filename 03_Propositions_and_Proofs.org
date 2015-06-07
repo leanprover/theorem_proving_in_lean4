@@ -56,7 +56,7 @@ constant implies : Prop → Prop → Prop
 -- BEGIN
 constant Proof : Prop → Type
 
-constant and_comm : Πp q : Prop, Proof (implies (and p q) (and q p))
+constant and_comm : Π p q : Prop, Proof (implies (and p q) (and q p))
 
 section
   variables p q : Prop
@@ -158,7 +158,7 @@ is true."
 
 Indeed, if =p : Prop= is any proposition, Lean's /standard kernel/
 treats any two elements =t1 t2 : p= as being "definitionally equal,"
-much the same way as it treats =(λx, t)s= and =t[s/x]= as
+much the same way as it treats =(λ x, t)s= and =t[s/x]= as
 definitionally equal. This is known as "proof irrelevance," and is
 consistent with the interpretation in the last paragraph. It means
 that even though we can treat proofs =t : p= as ordinary objects in
@@ -177,7 +177,7 @@ be proved using only lambda abstraction and application. In Lean, the
 #+BEGIN_SRC lean
 constants p q : Prop
 
-theorem t1 : p → q → p := λHp : p, λHq : q, Hp
+theorem t1 : p → q → p := λ Hp : p, λ Hq : q, Hp
 #+END_SRC
 
 This looks exactly like the definition of the constant function in the
@@ -279,7 +279,7 @@ theorem t1 (p q : Prop) (Hp : p) (Hq : q) : p := Hp
 check t1
 -- END
 #+END_SRC
-The type of =t1= is now =Πp q : Prop, p → q → p=. We can read this as
+The type of =t1= is now =Π p q : Prop, p → q → p=. We can read this as
 the assertion "for every pair of propositions =p q=, we have =p → q →
 p=". Later we will see how Pi types let us model universal quantifiers
 more generally. For the moment, however, we will focus on theorems
@@ -487,7 +487,7 @@ concisely:
 -- BEGIN
 section
   variables p q r: Prop
-  example (H : p ∨ q) : q ∨ p := or.elim H (λHp, or.inr Hp) (λHq, or.inl Hq)
+  example (H : p ∨ q) : q ∨ p := or.elim H (λ Hp, or.inr Hp) (λ Hq, or.inl Hq)
 end
 -- END
 #+END_SRC
@@ -613,7 +613,7 @@ end
 -- END
 #+END_SRC
 Internally, the expression =have H : p, from s, t= produces the term
-=(λ(H : p), t) s=. In other words, =s= is a proof of =p=, =t= is a
+=(λ (H : p), t) s=. In other words, =s= is a proof of =p=, =t= is a
 proof of the desired conclusion assuming =H : p=, and the two are
 combined by a lambda abstraction and application. This simple device
 is extremely useful when it comes to structuring long

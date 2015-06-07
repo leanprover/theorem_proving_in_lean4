@@ -113,7 +113,7 @@ depends on these parameters.
 
 Let us work through a simple example. Many theorems hold under the
 additional assumption that a type is inhabited, which is to say, it
-has at least one element. For example, if =A= is a type, =∃x : A, x =
+has at least one element. For example, if =A= is a type, =∃ x : A, x =
 x= is true only if =A= is inhabited. Similarly, it often happens that
 we would like a definition to return a default element in a "corner
 case." For example, we would like the expression =head l= to be of
@@ -194,7 +194,7 @@ inhabited.mk unit.star
 
 -- BEGIN
 definition default (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 -- END
 end hide
 #+END_SRC
@@ -222,7 +222,7 @@ definition unit.is_inhabited [instance] : inhabited unit :=
 inhabited.mk unit.star
 
 definition default (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 -- BEGIN
 check default Prop    -- Prop
@@ -255,7 +255,7 @@ definition unit.is_inhabited [instance] : inhabited unit :=
 inhabited.mk unit.star
 
 definition default (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 -- BEGIN
 eval default Prop    -- true
@@ -285,7 +285,7 @@ definition unit.is_inhabited [instance] : inhabited unit :=
 inhabited.mk unit.star
 
 definition default (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 -- BEGIN
 example : default Prop = true := rfl
@@ -323,7 +323,7 @@ inhabited.mk unit.star
 
 -- BEGIN
 definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 -- END
 end hide
 #+END_SRC
@@ -349,14 +349,14 @@ definition unit.is_inhabited [instance] : inhabited unit :=
 inhabited.mk unit.star
 
 definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 -- BEGIN
 theorem exists_eq_of_inhabited (A : Type) [H : inhabited A] :
-  ∃x : A, x = x :=
+  ∃ x : A, x = x :=
 exists.intro (arbitrary A) rfl
 
-example : ∃x : nat, x = x := exists_eq_of_inhabited nat
+example : ∃ x : nat, x = x := exists_eq_of_inhabited nat
 -- END
 end hide
 #+END_SRC
@@ -395,10 +395,10 @@ definition unit.is_inhabited [instance] : inhabited unit :=
 inhabited.mk unit.star
 
 definition default (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 -- BEGIN
 definition prod.is_inhabited [instance] {A B : Type} [H1 : inhabited A]
@@ -430,10 +430,10 @@ definition unit.is_inhabited [instance] : inhabited unit :=
 inhabited.mk unit.star
 
 definition default (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 definition prod.is_inhabited [instance] {A B : Type} [H1 : inhabited A]
   [H2 : inhabited B] : inhabited (prod A B) :=
@@ -478,10 +478,10 @@ definition unit.is_inhabited [instance] : inhabited unit :=
 inhabited.mk unit.star
 
 definition default (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λa, a) H
+inhabited.rec (λ a, a) H
 
 definition prod.is_inhabited [instance] {A B : Type} [H1 : inhabited A]
   [H2 : inhabited B] : inhabited (prod A B) :=
@@ -490,7 +490,7 @@ inhabited.mk ((default A, default B))
 -- BEGIN
 definition inhabited_fun [instance] (A : Type) {B : Type} [H : inhabited B] :
   inhabited (A → B) :=
-inhabited.rec_on H (λb, inhabited.mk (λa, b))
+inhabited.rec_on H (λ b, inhabited.mk (λ a, b))
 
 check default (nat → nat × bool × unit)
 eval default (nat → nat × bool × unit)
@@ -621,7 +621,7 @@ inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
 definition add {A : Type} [s : has_add A] :=
-has_add.rec (λx, x) s
+has_add.rec (λ x, x) s
 
 notation a `+` b := add a b
 #+END_SRC
@@ -639,7 +639,7 @@ inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
 definition add {A : Type} [s : has_add A] :=
-has_add.rec (λx, x) s
+has_add.rec (λ x, x) s
 
 notation a `+` b := add a b
 
@@ -687,7 +687,7 @@ inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
 definition add {A : Type} [s : has_add A] :=
-has_add.rec (λx, x) s
+has_add.rec (λ x, x) s
 
 notation a `+` b := add a b
 
@@ -719,7 +719,7 @@ inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
 definition add {A : Type} [s : has_add A] :=
-has_add.rec (λx, x) s
+has_add.rec (λ x, x) s
 
 notation a `+` b := add a b
 
@@ -739,12 +739,12 @@ has_add.mk (take p q, (add (prod.pr1 p) (prod.pr1 q), add (prod.pr2 p) (prod.pr2
 -- BEGIN
 definition has_add_fun [instance] {A B : Type} [sB : has_add B] :
   has_add (A → B) :=
-has_add.mk (λf g, λx, f x + g x)
+has_add.mk (λ f g, λ x, f x + g x)
 
 open nat
 
-check (λx : nat, (1 : nat)) + (λx, (2 : nat))   -- ℕ → ℕ
-eval (λx : nat, (1 : nat)) + (λx, (2 : nat))    -- λ (x : ℕ), 3
+check (λ x : nat, (1 : nat)) + (λ x, (2 : nat))   -- ℕ → ℕ
+eval (λ x : nat, (1 : nat)) + (λ x, (2 : nat))    -- λ (x : ℕ), 3
 -- END
 #+END_SRC
 As an exercise, try defining instances of =has_add= for lists and
@@ -841,7 +841,7 @@ inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
 definition add {A : Type} [s : has_add A] :=
-has_add.rec (λx, x) s
+has_add.rec (λ x, x) s
 
 notation a `+` b := add a b
 
@@ -864,7 +864,7 @@ inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
 definition add {A : Type} [s : has_add A] :=
-has_add.rec (λx, x) s
+has_add.rec (λ x, x) s
 
 notation a `+` b := add a b
 

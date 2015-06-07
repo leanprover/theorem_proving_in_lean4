@@ -8,7 +8,7 @@
 
 We have seen that the Calculus of Constructions includes basic types,
 =Prop, Type.{1}, Type.{2}, ...=, and allows for the formation of
-dependent function types, =Πx : A. B=. In the examples, we have also
+dependent function types, =Π x : A. B=. In the examples, we have also
 made use of additional types like =bool=, =nat=, and =int=, and type
 constructors, like =list=, and product, =×=. In fact, every concrete
 type other than the universes in Lean's library, and every type
@@ -423,10 +423,10 @@ namespace hide
 
 -- BEGIN
 definition pr1 {A B : Type} (p : A × B) : A :=
-prod.rec_on p (λa b, a)
+prod.rec_on p (λ a b, a)
 
 definition pr2 {A B : Type} (p : A × B) : B :=
-prod.rec_on p (λa b, b)
+prod.rec_on p (λ a b, b)
 -- END
 
 end hide
@@ -442,7 +442,7 @@ import data.bool data.prod data.nat data.prod data.sum
 open prod sum nat bool
 -- BEGIN
 definition prod_example (p : bool × ℕ) : ℕ :=
-prod.rec_on p (λb n, cond b (2 * n) (2 * n + 1))
+prod.rec_on p (λ b n, cond b (2 * n) (2 * n + 1))
 
 eval prod_example (tt, 3)
 eval prod_example (ff, 3)
@@ -467,7 +467,7 @@ open prod sum nat bool
 
 -- BEGIN
 definition sum_example (s : ℕ + ℕ) : ℕ :=
-sum.cases_on s (λn, 2 * n) (λn, 2 * n + 1)
+sum.cases_on s (λ n, 2 * n) (λ n, 2 * n + 1)
 
 eval sum_example (inl 3)
 eval sum_example (inr 3)
@@ -536,7 +536,7 @@ semigroup:
 structure Semigroup : Type :=
 (carrier : Type)
 (mul : carrier → carrier → carrier)
-(mul_assoc : ∀a b c, mul (mul a b) c = mul a (mul b c))
+(mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c))
 #+END_SRC
 We will see more examples in Chapter [[file:10_Structures_and_Records.org::#Structures_and_Records][Structures and Records]].
 
@@ -571,7 +571,7 @@ namespace hide
 
 -- BEGIN
 inductive sigma {A : Type} (B : A → Type) :=
-dpair : Πa : A, B a → sigma B
+dpair : Π a : A, B a → sigma B
 -- END
 
 end hide
@@ -594,7 +594,7 @@ end hide
 #+END_SRC
 In the semantics of dependent type theory, there is no built-in notion
 of a partial function. Every element of a function type =A → B= or a
-Pi type =Πx : A, B= is assumed to have a value at every input. The
+Pi type =Π x : A, B= is assumed to have a value at every input. The
 =option= type provides a way of representing partial functions. An
 element of =option B= is either =none= or of the form =some b=, for
 some value =b : B=. Thus we can think of an element =f= of the type =A
@@ -657,36 +657,36 @@ namespace hide
 
 -- BEGIN
 inductive Exists {A : Type} (P : A → Prop) : Prop :=
-intro : ∀(a : A), P a → Exists P
+intro : ∀ (a : A), P a → Exists P
 
 definition exists.intro := @Exists.intro
 -- END
 
 end hide
 #+END_SRC
-Keep in mind that the notation =∃x : A, P= is syntactic sugar for
-=Exists (λx : A, P)=.
+Keep in mind that the notation =∃ x : A, P= is syntactic sugar for
+=Exists (λ x : A, P)=.
 
 The definitions of =false=, =true=, =and=, and =or= are perfectly
 analogous to the definitions of =empty=, =unit=, =prod=, and
 =sum=. The difference is that the first group yields elements of
 =Prop=, and the second yields elements of =Type.{i}= for =i= greater
-than 0. In a similar way, =∃x : A, P= is a =Prop=-valued variant of
-=Σx : A, P=.
+than 0. In a similar way, =∃ x : A, P= is a =Prop=-valued variant of
+=Σ x : A, P=.
 
 This is a good place to mention another inductive type, denoted ={x :
-A | P}=, which is sort of a hybrid between =∃x : A, P= and =Σx : A, P=.
+A | P}=, which is sort of a hybrid between =∃ x : A, P= and =Σ x : A, P=.
 #+BEGIN_SRC lean
 namespace hide
 
 -- BEGIN
 inductive subtype {A : Type} (P : A → Prop) : Type :=
-tag : Πx : A, P x → subtype P
+tag : Π x : A, P x → subtype P
 -- END
 
 end hide
 #+END_SRC
-The notation ={x : A | P}= is syntactic sugar for =subtype (λx : A,
+The notation ={x : A | P}= is syntactic sugar for =subtype (λ x : A,
 P)=. It is modeled after subset notation in set theory: the idea is
 that ={x : A | P}= denotes the collection of elements of =A= that have
 property =P=.
@@ -721,7 +721,7 @@ repeatedly.
 
 As before, the recursor for =nat= is designed to define a dependent
 function =f= from =nat= to any domain, that is, an element =f= of
-=Πn : nat, C n= for some =C : nat → Type=. It has to handle two cases:
+=Π n : nat, C n= for some =C : nat → Type=. It has to handle two cases:
 the case where the input is =zero=, and the case where the input is
 of the form =succ n= for some =n : nat=. In the first case, we simply
 specify a target value with the appropriate type, as before. In the
@@ -769,7 +769,7 @@ inductive nat : Type :=
 namespace nat
 
 definition add (m n : nat) : nat :=
-nat.rec_on n m (λn add_m_n, succ add_m_n)
+nat.rec_on n m (λ n add_m_n, succ add_m_n)
 
 -- try it out
 eval add (succ zero) (succ (succ zero))
@@ -810,7 +810,7 @@ Proving a fact like =0 + m = m=, however, requires a proof by
 induction. As observed above, the induction principle is just a
 special case of the recursion principle, when the codomain =C n= is an
 element of =Prop=. It represents the familiar pattern of an inductive
-proof: to prove =∀n, C n=, first prove =C 0=, and then, for arbitrary
+proof: to prove =∀ n, C n=, first prove =C 0=, and then, for arbitrary
 =n=, assume =IH : C n= and prove =C (succ n)=.
 #+BEGIN_SRC lean
 namespace hide
@@ -851,7 +851,7 @@ In the example above, we encourage you to replace =induction_on= with
 =rec_on= and observe the theorem is still accepted by Lean. As we have
 seen above, =induction_on= is just a special case of =rec_on=.
 
-For another example, let us prove the associativity of addition, =∀m n
+For another example, let us prove the associativity of addition, =∀ m n
 k, m + n + k = m + (n + k)=. (The notation =+=, as we have defined it,
 associates to the left, so =m + n + k= is really =(m + n) + k=.) The
 hardest part is figuring out which variable to do the induction
@@ -1168,7 +1168,7 @@ variable {A : Type}
 notation h :: t  := cons h t
 
 definition append (s t : list A) : list A :=
-list.rec t (λx l u, x::u) s
+list.rec t (λ x l u, x::u) s
 
 notation s ++ t := append s t
 
@@ -1234,7 +1234,7 @@ variable {A : Type}
 notation h :: t  := cons h t
 
 definition append (s t : list A) : list A :=
-list.rec_on s t (λx l u, x::u)
+list.rec_on s t (λ x l u, x::u)
 
 notation s ++ t := append s t
 
@@ -1252,7 +1252,7 @@ end list
 
 end hide
 #+END_SRC
-Try also defining the function =length : ΠA : Type, list A → nat=
+Try also defining the function =length : Π A : Type, list A → nat=
 which returns the length of a list, and prove that it behaves as
 expected (for example, =length (s ++ t) = length s + length t=).
 
@@ -1274,10 +1274,10 @@ inductive cbtree :=
 namespace cbtree
 
 definition succ (t : cbtree) : cbtree :=
-sup (λn, t)
+sup (λ n, t)
 
 definition omega : cbtree :=
-sup (nat.rec leaf (λn t, succ t))
+sup (nat.rec leaf (λ n t, succ t))
 
 end cbtree
 #+END_SRC
@@ -1469,9 +1469,9 @@ refl : eq a a
 -- BEGIN
 theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
                (H : eq a b) : eq (eq.rec_on H (f a)) (f b) :=
-have h₁ : ∀h : eq a a, eq (eq.rec_on h (f a)) (f a), from
+have h₁ : ∀ h : eq a a, eq (eq.rec_on h (f a)) (f a), from
   assume h : eq a a, eq.refl (eq.rec_on h (f a)),
-have h₂ : ∀h : eq a b, eq (eq.rec_on h (f a)) (f b), from
+have h₂ : ∀ h : eq a b, eq (eq.rec_on h (f a)) (f b), from
   eq.rec_on H h₁,
 show eq (eq.rec_on H (f a)) (f b), from
   h₂ H
@@ -1488,7 +1488,7 @@ to define such an equality in Lean:
 namespace hide
 
 -- BEGIN
-inductive heq {A : Type} (a : A) : Π{B : Type}, B → Prop :=
+inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
 refl : heq a a
 -- END
 
@@ -1536,7 +1536,7 @@ determines how these definitions are eliminated when terms and proofs
 are normalized.
 
 Consider, for example, the natural numbers. Given the motive =C : nat
-→ Type=, and minor premises =fz : C zero= and =fs : Π(n : nat), C n →
+→ Type=, and minor premises =fz : C zero= and =fs : Π (n : nat), C n →
 C (succ n)=, we have the following two computational rules: =nat.rec
 fz fs zero= reduces to =fz=, and =nat.rec fz fs (succ a)= reduces to
 =fs a (nat.rec fz fs a)=.
@@ -1587,7 +1587,7 @@ print definition nat.rec_on
 
 -- a possible definition of rec_on
 definition rec_on {C : nat → Type} (n : nat)
-                  (fz : C zero) (fs : Πa, C a → C (succ a)) : C n :=
+                  (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
 nat.rec fz fs n
 #+END_SRC
 Moreover, =induction_on= is just a special case of =rec_on= where the

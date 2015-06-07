@@ -179,7 +179,7 @@ infix `+` := add
 theorem add_zero (m : nat) : m + 0 = m := rfl
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
 
-theorem zero_add : ∀n, 0 + n = n
+theorem zero_add : ∀ n, 0 + n = n
 | zero_add 0        := rfl
 | zero_add (succ n) := eq.subst (zero_add n) rfl
 
@@ -532,12 +532,12 @@ generated definition using =print definition to_nat=.
 open nat
 
 inductive finord : nat → Type :=
-| fz : Πn, finord (succ n)
-| fs : Π{n}, finord n → finord (succ n)
+| fz : Π n, finord (succ n)
+| fs : Π {n}, finord n → finord (succ n)
 
 open finord
 
-definition to_nat : Π{n : nat}, finord n → nat
+definition to_nat : Π {n : nat}, finord n → nat
 | @to_nat ⌞n+1⌟ (fz n) := zero
 | @to_nat ⌞n+1⌟ (fs f) := succ (to_nat f)
 #+END_SRC

@@ -150,12 +150,12 @@ the following axiom:
 namespace hide
 
 -- BEGIN
-axiom funext {A : Type} {B : A → Type} {f₁ f₂ : Πx : A, B x} :
-(∀x, f₁ x = f₂ x) → f₁ = f₂
+axiom funext {A : Type} {B : A → Type} {f₁ f₂ : Π x : A, B x} :
+(∀ x, f₁ x = f₂ x) → f₁ = f₂
 -- END
 end hide
 #+END_SRC
-It asserts that any two functions of type =Πx : A, B x= that agree on
+It asserts that any two functions of type =Π x : A, B x= that agree on
 all their inputs are equal. From a classical, set-theoretic
 perspective, this is exactly what it means for two functions to be
 equal. This is known as an "extensional" view of functions. From a
@@ -190,7 +190,7 @@ variable {X : Type}
 definition mem [reducible] (x : X) (a : set X) := a x
 notation e ∈ a := mem e a
 
-theorem setext {a b : set X} (H : ∀x, x ∈ a ↔ x ∈ b) : a = b :=
+theorem setext {a b : set X} (H : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
 funext (take x, propext (H x))
 
 end set
@@ -215,14 +215,14 @@ variable {X : Type}
 definition mem [reducible] (x : X) (a : set X) := a x
 notation e ∈ a := mem e a
 
-theorem setext {a b : set X} (H : ∀x, x ∈ a ↔ x ∈ b) : a = b :=
+theorem setext {a b : set X} (H : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
 funext (take x, propext (H x))
 
 -- BEGIN
-definition empty [reducible] : set X := λx, false
+definition empty [reducible] : set X := λ x, false
 notation `∅` := empty
 
-definition inter [reducible] (a b : set X) : set X := λx, x ∈ a ∧ x ∈ b
+definition inter [reducible] (a b : set X) : set X := λ x, x ∈ a ∧ x ∈ b
 notation a ∩ b := inter a b
 
 theorem inter_self (a : set X) : a ∩ a = a :=
@@ -639,7 +639,7 @@ open subtype nonempty
 namespace hide
 -- BEGIN
 axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A) :
-  { x | (∃y : A, P y) → P x}
+  { x | (∃ y : A, P y) → P x}
 -- END
 end hide
 #+END_SRC
@@ -653,7 +653,7 @@ open subtype nonempty
 
 namespace hide
 -- BEGIN
-axiom indefinite_description {A : Type} {P : A → Prop} (H : ∃x, P x) :
+axiom indefinite_description {A : Type} {P : A → Prop} (H : ∃ x, P x) :
   {x : A | P x}
 -- END
 end hide
@@ -675,21 +675,21 @@ open subtype nonempty
 namespace hide
 
 axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A) :
-  { x | (∃y : A, P y) → P x}
+  { x | (∃ y : A, P y) → P x}
 
 -- BEGIN
 definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
-let u : {x | (∃y, P y) → P x} :=
+let u : {x | (∃ y, P y) → P x} :=
   strong_indefinite_description P H in
 elt_of u
 
-theorem epsilon_spec_aux {A : Type} (H : nonempty A) (P : A → Prop) (Hex : ∃y, P y) :
+theorem epsilon_spec_aux {A : Type} (H : nonempty A) (P : A → Prop) (Hex : ∃ y, P y) :
     P (@epsilon A H P) :=
-let u : {x | (∃y, P y) → P x} :=
+let u : {x | (∃ y, P y) → P x} :=
   strong_indefinite_description P H in
 has_property u Hex
 
-theorem epsilon_spec {A : Type} {P : A → Prop} (Hex : ∃y, P y) :
+theorem epsilon_spec {A : Type} {P : A → Prop} (Hex : ∃ y, P y) :
     P (@epsilon A (nonempty_of_exists Hex) P) :=
 epsilon_spec_aux (nonempty_of_exists Hex) P Hex
 -- END
@@ -703,7 +703,7 @@ Assuming the type =A= is nonempty, =epsilon P= returns an element of
 Just as =indefinite_description= is a weaker version of
 =strong_indefinite_description=, the =some= operator is a weaker
 version of the =epsilon= operator. It is sometimes easier to
-use. Assuming =H : ∃x, P x= is a proof that some element of =A=
+use. Assuming =H : ∃ x, P x= is a proof that some element of =A=
 satisfies =P=, =some H= denotes such an element.
 #+BEGIN_SRC lean
 import data.subtype
@@ -712,28 +712,28 @@ open subtype nonempty
 namespace hide
 
 axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A) :
-  { x | (∃y : A, P y) → P x}
+  { x | (∃ y : A, P y) → P x}
 
 definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
-let u : {x | (∃y, P y) → P x} :=
+let u : {x | (∃ y, P y) → P x} :=
   strong_indefinite_description P H in
 elt_of u
 
-theorem epsilon_spec_aux {A : Type} (H : nonempty A) (P : A → Prop) (Hex : ∃y, P y) :
+theorem epsilon_spec_aux {A : Type} (H : nonempty A) (P : A → Prop) (Hex : ∃ y, P y) :
     P (@epsilon A H P) :=
-let u : {x | (∃y, P y) → P x} :=
+let u : {x | (∃ y, P y) → P x} :=
   strong_indefinite_description P H in
 has_property u Hex
 
-theorem epsilon_spec {A : Type} {P : A → Prop} (Hex : ∃y, P y) :
+theorem epsilon_spec {A : Type} {P : A → Prop} (Hex : ∃ y, P y) :
     P (@epsilon A (nonempty_of_exists Hex) P) :=
 epsilon_spec_aux (nonempty_of_exists Hex) P Hex
 
 -- BEGIN
-definition some {A : Type} {P : A → Prop} (H : ∃x, P x) : A :=
+definition some {A : Type} {P : A → Prop} (H : ∃ x, P x) : A :=
 @epsilon A (nonempty_of_exists H) P
 
-theorem some_spec {A : Type} {P : A → Prop} (H : ∃x, P x) : P (some H) :=
+theorem some_spec {A : Type} {P : A → Prop} (H : ∃ x, P x) : P (some H) :=
 epsilon_spec H
 -- END
 
@@ -758,36 +758,36 @@ section
   variable a : A
 
   -- o.k.
-  example : ∃x : A, x = x :=
-  have H1 : ∃y, y = y, from exists.intro a rfl,
+  example : ∃ x : A, x = x :=
+  have H1 : ∃ y, y = y, from exists.intro a rfl,
   have H2 : some H1 = some H1, from some_spec H1,
   exists.intro (some H1) H2
 
   /-
   -- invalid local context
-  example : ∃x : A, x = x :=
-  have H1 : ∃y, y = y, from exists.intro a rfl,
+  example : ∃ x : A, x = x :=
+  have H1 : ∃ y, y = y, from exists.intro a rfl,
   have H2 : some H1 = some H1, from some_spec H1,
   exists.intro _ H2
   -/
 
   -- o.k.
-  example : ∃x : A, x = x :=
-  assert H1 : ∃y, y = y, from exists.intro a rfl,
+  example : ∃ x : A, x = x :=
+  assert H1 : ∃ y, y = y, from exists.intro a rfl,
   have H2 : some H1 = some H1, from some_spec H1,
   exists.intro _ H2
 
   /-
   -- invalid local context
-  example : ∃x : A, x = x :=
-  have H1 : ∃y, y = y, from exists.intro a rfl,
+  example : ∃ x : A, x = x :=
+  have H1 : ∃ y, y = y, from exists.intro a rfl,
   have H2 : some H1 = some H1, from some_spec H1,
   exists.intro (some H1) (eq.trans H2 H2)
   -/
 
   -- o.k.
-  example : ∃x : A, x = x :=
-  assert H1 : ∃y, y = y, from exists.intro a rfl,
+  example : ∃ x : A, x = x :=
+  assert H1 : ∃ y, y = y, from exists.intro a rfl,
   have H2 : some H1 = some H1, from some_spec H1,
   exists.intro (some H1) (eq.trans H2 H2)
 end

@@ -276,11 +276,11 @@ expression?
 The companion to application is a process known as "abstraction," or
 "lambda abstraction." Suppose that by temporarily postulating a
 variable =x : A= we can construct an expression =t : B=. Then the
-expression =fun x : A, t=, or, equivalently, =λx : A, t=, is an object
+expression =fun x : A, t=, or, equivalently, =λ x : A, t=, is an object
 of type =A → B=. Think of this as the function from =A= to =B= which
 maps any value =x= to the value =t=, which depends on =x=. For
 example, in mathematics it is common to say "let =f= be the function
-which maps any natural number =x= to =x + 5=." The expression =λx :
+which maps any natural number =x= to =x + 5=." The expression =λ x :
 nat, x + 5= is just a symbolic representation of the right-hand side
 of this assignment.
 #+BEGIN_SRC lean
@@ -288,7 +288,7 @@ import data.nat data.bool
 open nat bool
 
 check fun x : nat, x + 5
-check λx : nat, x + 5
+check λ x : nat, x + 5
 #+END_SRC
 Here are some more abstract examples:
 #+BEGIN_SRC lean
@@ -304,14 +304,14 @@ constant h : A → B → A
 constant p : A → A → bool
 
 check fun x : A, f x
-check λx : A, f x
-check λx : A, f (f x)
-check λx : A, h x b1
-check λy : B, h a1 y
-check λx : A, p (f (f x)) (h (f a1) b2)
-check λx : A, λy : B, h (f x) y
-check λ(x : A) (y : B), h (f x) y
-check λx y, h (f x) y
+check λ x : A, f x
+check λ x : A, f (f x)
+check λ x : A, h x b1
+check λ y : B, h a1 y
+check λ x : A, p (f (f x)) (h (f a1) b2)
+check λ x : A, λ y : B, h (f x) y
+check λ (x : A) (y : B), h (f x) y
+check λ x y, h (f x) y
 -- END
 #+END_SRC
 Lean interprets the final three examples as the same expression; in
@@ -327,32 +327,32 @@ constant f : A → B
 constant g : B → C
 constant b: B
 
-check λx : A, x        -- the identity function on A
-check λx : A, b        -- a constant function on A
-check λx : A, g (f x)  -- the composition of g and f
-check λx, g (f x)      -- (Lean can figure out the type of x)
+check λ x : A, x        -- the identity function on A
+check λ x : A, b        -- a constant function on A
+check λ x : A, g (f x)  -- the composition of g and f
+check λ x, g (f x)      -- (Lean can figure out the type of x)
 
 -- we can abstract any of the constants in the previous definitions
 
-check λb : B, λx : A, x
-check λ(b : B) (x : A), x    -- equivalent to the previous line
-check λ(g : B → C) (f : A → B) (x : A), g (f x)
+check λ b : B, λ x : A, x
+check λ (b : B) (x : A), x    -- equivalent to the previous line
+check λ (g : B → C) (f : A → B) (x : A), g (f x)
 
 -- we can even abstract over the type
 
-check λ(A B : Type) (b : B) (x : A), x
-check λ(A B C : Type) (g : B → C) (f : A → B) (x : A), g (f x)
+check λ (A B : Type) (b : B) (x : A), x
+check λ (A B C : Type) (g : B → C) (f : A → B) (x : A), g (f x)
 #+END_SRC
 
 Think about what these expressions mean. The last, for example,
 denotes the function that takes three types, =A=, =B=, and =C=, and
 two functions, =g : B → C= and =f : A → C=, and returns the
-composition of =g= and =f=. Within a lambda expression =λx : A, t=,
+composition of =g= and =f=. Within a lambda expression =λ x : A, t=,
 the variable =x= is a "bound variable": it is really a placeholder,
 whose "scope" does not extend beyond =t=. For example, the variable
-=b= in the expression =λ(b : B) (x : A), x= has nothing to do with the
+=b= in the expression =λ (b : B) (x : A), x= has nothing to do with the
 constant =b= declared earlier. In fact, the expression denotes the
-same function as =λ(u : B) (z : A), z=. Formally, the expressions that
+same function as =λ (u : B) (z : A), z=. Formally, the expressions that
 are the same up to a renaming of bound variables are called /alpha
 equivalent/, and are considered morally "the same". Lean recognizes
 this equivalence.
@@ -368,18 +368,18 @@ constant g : B → C
 constant h : A → A
 constants (a : A) (b : B)
 
-check (λx : A, x) a
-check (λx : A, b) a
-check (λx : A, b) (h a)
-check (λx : A, g (f x)) (h (h a))
+check (λ x : A, x) a
+check (λ x : A, b) a
+check (λ x : A, b) (h a)
+check (λ x : A, g (f x)) (h (h a))
 
-check (λv u x, v (u x)) g f a
+check (λ v u x, v (u x)) g f a
 
-check (λ(Q R S : Type) (v : R → S) (u : Q → R) (x : Q), v (u x)) A B C g f a
+check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q), v (u x)) A B C g f a
 #+END_SRC
 
-As expected, the expression =(λx : A, x) a= has type =A=. In fact,
-more should be true: applying the expression =(λx : A, x)= to =a=
+As expected, the expression =(λ x : A, x) a= has type =A=. In fact,
+more should be true: applying the expression =(λ x : A, x)= to =a=
 should "return" the value =a=. And, indeed, it does:
 #+BEGIN_SRC lean
 constants A B C : Type
@@ -388,18 +388,18 @@ constant g : B → C
 constant h : A → A
 constants (a : A) (b : B)
 
-eval (λx : A, x) a
-eval (λx : A, b) a
-eval (λx : A, b) (h a)
-eval (λx : A, g (f x)) (h (h a))
+eval (λ x : A, x) a
+eval (λ x : A, b) a
+eval (λ x : A, b) (h a)
+eval (λ x : A, g (f x)) (h (h a))
 
-eval (λv u x, v (u x)) g f a
+eval (λ v u x, v (u x)) g f a
 
-eval (λ(Q R S : Type) (v : R → S) (u : Q → R) (x : Q), v (u x)) A B C g f a
+eval (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q), v (u x)) A B C g f a
 #+END_SRC
 
 The command =eval= tells Lean to /evaluate/ an expression. The process
-of simplifying an expression =(λx, t)s= to =t[s/x]= -- that is, =t=
+of simplifying an expression =(λ x, t)s= to =t[s/x]= -- that is, =t=
 with =s= substituted for the variable =x= -- is known as /beta
 reduction/, and two terms that beta reduce to a common term are called
 /beta equivalent/. But the =eval= command carries out other forms of
@@ -456,7 +456,7 @@ definition gfha := g (f (h a))
 
 print definition gfha
 
-definition g_comp_f : A → C := λx, g (f x)
+definition g_comp_f : A → C := λ x, g (f x)
 
 print definition g_comp_f
 #+END_SRC
@@ -574,23 +574,23 @@ end
 #+END_SRC
 
 Notice that the meaning of the expression ~let a := t1 in t2~ is very
-similar to the meaning of =(λa, t2) t1=, but the two are not the
+similar to the meaning of =(λ a, t2) t1=, but the two are not the
 same. In the first expression, you should think of every instance of
 =a= in =t2= as a syntactic abbreviation for =t1=. In the second
-expression, =a= is a variable, and the expression =λa, t2= has to make
+expression, =a= is a variable, and the expression =λ a, t2= has to make
 sense independent of the value of =a=. The =let= construct is a
 stronger means of abbreviation, and there are expressions of the form
-~let a := t1 in t2~ that cannot be expressed as =(λa, t2) t1=. As an
+~let a := t1 in t2~ that cannot be expressed as =(λ a, t2) t1=. As an
 exercise, try to understand why the definition of =foo= below type
 checks, but the definition of =bar= does not.
 #+BEGIN_SRC lean
 import data.nat
 open nat
 
-definition foo := let a := nat in λx : a, x + 2
+definition foo := let a := nat in λ x : a, x + 2
 
 /-
-definition bar := (λa, λx : a, x + 2) nat
+definition bar := (λ a, λ x : a, x + 2) nat
 -/
 #+END_SRC
 
@@ -833,16 +833,16 @@ argument, =A=.
 This is an instance of a /Pi type/ in dependent type theory. Given
 =A : Type= and =B : A → Type=, think of =B= as a family of types over
 =A=, that is, a type =B a= for each =a : A=. In that case, the type
-=Πx : A, B x= denotes the type of functions =f= with the property
+=Π x : A, B x= denotes the type of functions =f= with the property
 that, for each =a : A=, =f a= is an element of =B a=. In other words,
 the type of the value returned by =f= depends on its input.
 
-Notice that =Πx : A, B= makes sense for any expression =B :
-Type=. When the value of =B= depends on =x=, =Πx : A, B= denotes a
+Notice that =Π x : A, B= makes sense for any expression =B :
+Type=. When the value of =B= depends on =x=, =Π x : A, B= denotes a
 dependent function type, as above. When =B= doesn't depend on =x=,
-=Πx : A, B= is no different from the type =A → B=. Indeed, in
+=Π x : A, B= is no different from the type =A → B=. Indeed, in
 dependent type theory (and in Lean), the Pi construction is
-fundamental, and =A → B= is nothing more than notation for =Πx : A, B=
+fundamental, and =A → B= is nothing more than notation for =Π x : A, B=
 when =B= does not depend on =A=.
 
 Returning to the example of lists, we can model some basic list
@@ -853,11 +853,11 @@ namespace hide
 constant list : Type → Type
 
 namespace list
-  constant cons : ΠA : Type, A → list A → list A -- type the product as "\Pi"
-  constant nil : ΠA : Type, list A            -- the empty list
-  constant head : ΠA : Type, list A → A       -- returns the first element
-  constant tail : ΠA : Type, list A → list A  -- returns the remainder
-  constant append : ΠA : Type, list A → list A → list A -- concatenates two lists
+  constant cons : Π A : Type, A → list A → list A -- type the product as "\Pi"
+  constant nil : Π A : Type, list A            -- the empty list
+  constant head : Π A : Type, list A → A       -- returns the first element
+  constant tail : Π A : Type, list A → list A  -- returns the remainder
+  constant append : Π A : Type, list A → list A → list A -- concatenates two lists
 end list
 end hide
 #+END_SRC
@@ -888,21 +888,21 @@ open nat
 constant vec : Type → nat → Type
 
 namespace vec
-  constant empty : ΠA : Type, vec A 0
-  constant cons : Π(A : Type) (n : nat), A → vec A n → vec A (n + 1)
-  constant append : Π(A : Type) (n m : nat), vec A m → vec A n → vec A (n + m)
+  constant empty : Π A : Type, vec A 0
+  constant cons : Π (A : Type) (n : nat), A → vec A n → vec A (n + 1)
+  constant append : Π (A : Type) (n m : nat), vec A m → vec A n → vec A (n + m)
 end vec
 #+END_SRC
 
 In the coming chapters, you will come across many instances of
 dependent types. Here we will mention just one more important and
-illustrative example, the /Sigma types/, =Σx : A, B x=, sometimes also
+illustrative example, the /Sigma types/, =Σ x : A, B x=, sometimes also
 known as /dependent pairs/. These are, in a sense, companions to the
-Pi types. The type =Σx : A, B x= denotes the type of pairs =sigma.mk a
+Pi types. The type =Σ x : A, B x= denotes the type of pairs =sigma.mk a
 b= where =a : A= and =b : B a=. You can also use angle brackets =<a,
 b>= as notation for =sigma a b=. (To type these brackets, use the
-shortcuts =\<= and =\>=.)  Just as Pi types =Πx : A, B x= generalize
-the notion of a function type =A → B=, Sigma types =Σx : A, B x=
+shortcuts =\<= and =\>=.)  Just as Pi types =Π x : A, B x= generalize
+the notion of a function type =A → B=, Sigma types =Σ x : A, B x=
 generalize the cartesian product =A × B=: in the expression =sigma.mk
 a b=, the type of the second element of the pair, =b : B a=, depends
 on the first element of the pair, =a : A=.
@@ -964,9 +964,9 @@ namespace hide
 constant list : Type → Type
 
 namespace list
-  constant cons : ΠA : Type, A → list A → list A
-  constant nil : ΠA : Type, list A
-  constant append : ΠA : Type, list A → list A → list A
+  constant cons : Π A : Type, A → list A → list A
+  constant nil : Π A : Type, list A
+  constant append : Π A : Type, list A → list A → list A
 end list
 end hide
 -- END
@@ -978,9 +978,9 @@ namespace hide
 constant list : Type → Type
 
 namespace list
-  constant cons : ΠA : Type, A → list A → list A
-  constant nil : ΠA : Type, list A
-  constant append : ΠA : Type, list A → list A → list A
+  constant cons : Π A : Type, A → list A → list A
+  constant nil : Π A : Type, list A
+  constant append : Π A : Type, list A → list A → list A
 end list
 
 -- BEGIN
@@ -1016,9 +1016,9 @@ namespace hide
 constant list : Type → Type
 
 namespace list
-  constant cons : ΠA : Type, A → list A → list A
-  constant nil : ΠA : Type, list A
-  constant append : ΠA : Type, list A → list A → list A
+  constant cons : Π A : Type, A → list A → list A
+  constant nil : Π A : Type, list A
+  constant append : Π A : Type, list A → list A → list A
 end list
 
 open hide.list
@@ -1046,9 +1046,9 @@ constant list : Type → Type
 
 -- BEGIN
 namespace list
-  constant cons : Π{A : Type}, A → list A → list A
-  constant nil : Π{A : Type}, list A
-  constant append : Π{A : Type}, list A → list A → list A
+  constant cons : Π {A : Type}, A → list A → list A
+  constant nil : Π {A : Type}, list A
+  constant append : Π {A : Type}, list A → list A → list A
 end list
 
 open hide.list

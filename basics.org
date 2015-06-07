@@ -481,7 +481,7 @@ end boolean
 -- END
 #+END_SRC
 
-We say =(fun x : A, e)= is a "lambda abstraction". We can also use the unicode character =λ= instead of =fun=.
+We say =(fun x : A, e)= is a "lambda abstraction". We can also use the unicode character =λ = instead of =fun=.
 We can input this character by typing =\fun=. In many cases, the type =A= can be inferred automatically by Lean, and
 be omitted.
 
@@ -1111,22 +1111,22 @@ num.cases_on n
     (fun (p₁ : pos_num) (r : nat), add r r))
 
 -- BEGIN
-theorem add_0_n : ∀n : nat, 0 + n = n :=
+theorem add_0_n : ∀ n : nat, 0 + n = n :=
 take n : nat, rfl
 -- END
 end nat
 end playground
 #+END_SRC
 
-The symbol =∀= can be inputed by typing =\all=. We can also
-use the token =forall= instead of the unicode character =∀=.
+The symbol =∀ = can be inputed by typing =\all=. We can also
+use the token =forall= instead of the unicode character =∀ =.
 The form of this theorem and proof are almost exactly the same as the examples above; there are just a few differences.
 First, we've used the keyword =theorem= instead of =example=. We provided a name to identify the theorem.
 The keywords =definition= and =theorem= are almost the same thing in Lean.
 Secondly, we've added the quantifier =∀ n:nat=, so that our theorem talks about all natural numbers =n=.
 In order to prove theorems of this form, we need to to be able to reason by assuming the existence of an arbitrary natural number =n=.
 This is achieved in the proof by =take n : nat, ...=. In effect, we start the proof by saying "OK, suppose =n= is some arbitrary number."
-Eventually, it will become clear that =take= is just another syntax sugar for lambda abstraction. We could also have used =fun= or =λ=
+Eventually, it will become clear that =take= is just another syntax sugar for lambda abstraction. We could also have used =fun= or =λ =
 in the proof above. In Lean, proof checking is type checking. The same procedure used to type check our definitions is used to
 proof/type check our theorems. Here are other simple theorems.
 
@@ -1161,10 +1161,10 @@ num.cases_on n
     (fun (p₁ : pos_num) (r : nat), add r r))
 
 -- BEGIN
-theorem add_1_left : ∀n : nat, 1 + n = S n :=
+theorem add_1_left : ∀ n : nat, 1 + n = S n :=
 take n : nat, rfl
 
-theorem mult_0_left : ∀n : nat, 0 * n = 0 :=
+theorem mult_0_left : ∀ n : nat, 0 * n = 0 :=
 take n : nat, rfl
 -- END
 end nat
@@ -1225,10 +1225,10 @@ num.cases_on n
     (fun (p₁ : pos_num) (r : nat), add r r))
 
 -- BEGIN
-theorem add_1_left : ∀n : nat, 1 + n = S n :=
+theorem add_1_left : ∀ n : nat, 1 + n = S n :=
 take n : nat, eq.refl (1 + n)
 
-theorem mult_0_left : ∀n : nat, 0 * n = 0 :=
+theorem mult_0_left : ∀ n : nat, 0 * n = 0 :=
 take n : nat, eq.refl (0 * n)
 -- END
 end nat
@@ -1256,7 +1256,7 @@ rec_on n
 notation a + b := add a b
 
 -- BEGIN
-theorem plus_id_example : ∀n m : nat, n = m → n + n = m + m :=
+theorem plus_id_example : ∀ n m : nat, n = m → n + n = m + m :=
 -- END
 take n m : nat, assume H : n = m,
   eq.subst H (eq.refl (n + n))
@@ -1295,28 +1295,28 @@ rec_on n
 notation a + b := add a b
 
 -- BEGIN
-theorem plus_id_example : ∀n m : nat, n = m → n + n = m + m :=
+theorem plus_id_example : ∀ n m : nat, n = m → n + n = m + m :=
 take n m : nat, assume H : n = m,
   eq.subst H (eq.refl (n + n))
 
 -- We can avoid the eq prefix by opening the namespace eq
 open eq
-theorem plus_id_example_2 : ∀n m : nat, n = m → n + n = m + m :=
+theorem plus_id_example_2 : ∀ n m : nat, n = m → n + n = m + m :=
 take n m : nat, assume H : n = m,
   subst H (refl (n + n))
 
 -- We can use rfl instead of refl
-theorem plus_id_example_3 : ∀n m : nat, n = m → n + n = m + m :=
+theorem plus_id_example_3 : ∀ n m : nat, n = m → n + n = m + m :=
 take n m : nat, assume H : n = m,
   subst H rfl
 
 -- We can use λ instead of take and assume
-theorem plus_id_example_4 : ∀n m : nat, n = m → n + n = m + m :=
+theorem plus_id_example_4 : ∀ n m : nat, n = m → n + n = m + m :=
 λ (n m : nat) (H : n = m),
   subst H rfl
 
 -- We can omit types
-theorem plus_id_example_5 : ∀n m : nat, n = m → n + n = m + m :=
+theorem plus_id_example_5 : ∀ n m : nat, n = m → n + n = m + m :=
 λ n m H, subst H rfl
 
 -- END
@@ -1347,7 +1347,7 @@ notation a + b := add a b
 
 -- BEGIN
 open eq.ops
-theorem plus_id_example : ∀n m : nat, n = m → n + n = m + m :=
+theorem plus_id_example : ∀ n m : nat, n = m → n + n = m + m :=
 λ n m H, H ▸ rfl
 -- END
 end nat
@@ -1376,7 +1376,7 @@ notation a + b := add a b
 
 open eq eq.ops
 -- BEGIN
-theorem plus_id_exercise : ∀n m o : nat, n = m → m = o → n + m = m + o :=
+theorem plus_id_exercise : ∀ n m o : nat, n = m → m = o → n + m = m + o :=
 /- FILL IN HERE -/ sorry
 -- END
 
@@ -1426,13 +1426,13 @@ num.cases_on n
     (fun (p₁ : pos_num) (r : nat), S (add r r))
     (fun (p₁ : pos_num) (r : nat), add r r))
 
-theorem add_0_n : ∀n : nat, 0 + n = n :=
+theorem add_0_n : ∀ n : nat, 0 + n = n :=
 take n : nat, rfl
 
 open eq eq.ops
 
 -- BEGIN
-theorem mult_0_plus : ∀n m : nat, (0 + n) * m = n * m :=
+theorem mult_0_plus : ∀ n m : nat, (0 + n) * m = n * m :=
 take n m,
   subst (add_0_n n) rfl
 -- END
@@ -1477,18 +1477,18 @@ num.cases_on n
     (fun (p₁ : pos_num) (r : nat), S (add r r))
     (fun (p₁ : pos_num) (r : nat), add r r))
 
-theorem add_0_n : ∀n : nat, 0 + n = n :=
+theorem add_0_n : ∀ n : nat, 0 + n = n :=
 take n : nat, rfl
 
 open eq eq.ops
 
 -- BEGIN
-theorem mult_0_plus : ∀n m : nat, (0 + n) * m = n * m :=
+theorem mult_0_plus : ∀ n m : nat, (0 + n) * m = n * m :=
 take n m,
   subst !add_0_n rfl
 
 -- Here is another proof using the notation ▸
-theorem mult_0_plus_2 : ∀n m : nat, (0 + n) * m = n * m :=
+theorem mult_0_plus_2 : ∀ n m : nat, (0 + n) * m = n * m :=
 take n m, !add_0_n ▸ rfl
 -- END
 end nat
@@ -1527,12 +1527,12 @@ num.cases_on n
     (fun (p₁ : pos_num) (r : nat), S (add r r))
     (fun (p₁ : pos_num) (r : nat), add r r))
 
-theorem add_1_left : ∀n : nat, 1 + n = S n :=
+theorem add_1_left : ∀ n : nat, 1 + n = S n :=
 take n : nat, rfl
 
 open eq eq.ops
 -- BEGIN
-theorem mult_S_1 : ∀n m : nat, m = S n → m * (1 + n) = m * m :=
+theorem mult_S_1 : ∀ n m : nat, m = S n → m * (1 + n) = m * m :=
 /- FILL IN HERE -/ sorry
 -- END
 end nat
@@ -1556,7 +1556,7 @@ definition neg (b : boolean) : boolean :=
 cases_on b false true
 
 -- BEGIN
-theorem neg_involutive : ∀b : boolean, neg (neg b) = b :=
+theorem neg_involutive : ∀ b : boolean, neg (neg b) = b :=
 /- rfl -/ -- fails
 sorry
 -- END
@@ -1582,7 +1582,7 @@ definition neg (b : boolean) : boolean :=
 cases_on b false true
 
 -- BEGIN
-theorem neg_involutive : ∀b : boolean, neg (neg b) = b :=
+theorem neg_involutive : ∀ b : boolean, neg (neg b) = b :=
 take b : boolean,
   cases_on b
     rfl   -- proof for the case b is true

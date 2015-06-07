@@ -203,7 +203,7 @@ new subgoals for arguments. Here is an example of how it is used:
 import data.nat
 open nat
 
-example : ∃a : ℕ, a = a :=
+example : ∃ a : ℕ, a = a :=
 begin
   fapply exists.intro,
   exact nat.zero,
@@ -227,7 +227,7 @@ import data.nat
 open nat
 
 -- BEGIN
-example : ∃a : ℕ, a = a :=
+example : ∃ a : ℕ, a = a :=
 begin
   fapply exists.intro,
   exact (0 : ℕ),
@@ -259,7 +259,7 @@ begin
 end
 #+END_SRC
 In the first example, the =generalize= tactic generalizes the
-conclusion over the variable =x=, turning the goal into a =∀=. In the
+conclusion over the variable =x=, turning the goal into a =∀ =. In the
 second, it generalizes the goal over the hypothesis =H=, putting the
 antecedent explicitly into the goal. We generalize any term, not just
 variables:

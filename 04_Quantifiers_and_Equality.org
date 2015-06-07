@@ -16,18 +16,18 @@ on =A= as an object of type =A → Prop=. In that case, given =x : A=,
 object =r : A → A → Prop= denotes a binary relation on =A=: given =x
 y : A=, =r x y= denotes the assertion that =x= is related to =y=.
 
-The universal quantifier, =∀x : A, p x= is supposed to denote the
+The universal quantifier, =∀ x : A, p x= is supposed to denote the
 assertion that "for every =x : A=, =p x=" holds. As with the
 propositional connectives, in systems of natural deduction, "forall"
 is governed by an introduction and elimination rule. Informally, the
 introduction rule states:
 #+BEGIN_QUOTE
 Given a proof of =p x=, in a context where =x : A= is arbitrary, we
-obtain a proof =∀x : A, p x=.
+obtain a proof =∀ x : A, p x=.
 #+END_QUOTE
 The elimination rule states:
 #+BEGIN_QUOTE
-Given a proof =∀x : A, p x= and any term =t : A=, we obtain a proof of
+Given a proof =∀ x : A, p x= and any term =t : A=, we obtain a proof of
 =p t=.
 #+END_QUOTE
 As was the case for implication, the propositions-as-types
@@ -35,25 +35,25 @@ interpretation now comes into play. Remember the introduction and
 elimination rules for Pi types:
 #+BEGIN_QUOTE
 Given a term =t= of type =B x=, in a context where =x : A= is
-arbitrary, we have =(λx : A, t) : Πx : A, B x=.
+arbitrary, we have =(λ x : A, t) : Π x : A, B x=.
 #+END_QUOTE
 The elimination rule states:
 #+BEGIN_QUOTE
-Given a term =s : Πx : A, B x= and any term =t : A=, we have =s t : B t=.
+Given a term =s : Π x : A, B x= and any term =t : A=, we have =s t : B t=.
 #+END_QUOTE
-In the case where =p x= has type =Prop=, if we replace =Πx : A, B x=
-with =∀x : A, p x=, we can read these as the correct rules for
+In the case where =p x= has type =Prop=, if we replace =Π x : A, B x=
+with =∀ x : A, p x=, we can read these as the correct rules for
 building proofs involving the universal quantifier.
 
-The Calculus of Inductive Constructions therefore identifies =Π= and
-=∀= in this way. If =p= is any expression, =∀x : A, p= is nothing more
-than alternative notation for =Πx : A, p=, with the idea is that the
+The Calculus of Inductive Constructions therefore identifies =Π = and
+=∀ = in this way. If =p= is any expression, =∀ x : A, p= is nothing more
+than alternative notation for =Π x : A, p=, with the idea is that the
 former is more natural in cases where where =p= is a
 proposition. Typically, the expression =p= will depend on =x :
 A=. Recall that, in the case of ordinary function spaces, we could
-interpret =A → B= as the special case of =Πx : A, B= in which =B= does
+interpret =A → B= as the special case of =Π x : A, B= in which =B= does
 not depend on =x=. Similarly, we can think of an implication =p → q=
-between propositions as the special case of =∀x : p, q= in which the
+between propositions as the special case of =∀ x : p, q= in which the
 expression =q= does not depend on =x=.
 
 Here is an example of how the propositions-as-types correspondence
@@ -62,8 +62,8 @@ gets put into practice.
 section
   variables (A : Type) (p q : A → Prop)
 
-  example : (∀x : A, p x ∧ q x) → ∀y : A, p y  :=
-  assume H : ∀x : A, p x ∧ q x,
+  example : (∀ x : A, p x ∧ q x) → ∀ y : A, p y  :=
+  assume H : ∀ x : A, p x ∧ q x,
   take y : A,
   show p y, from and.elim_left (H y)
 end
@@ -72,9 +72,9 @@ end
 As a notational convention, we give the universal quantifier the
 widest scope possible, so parentheses are needed to limit the
 quantifier over =x= to the hypothesis in the example above. The
-canonical way to prove =∀y : A, p y= is to take an arbitrary =y=, and
+canonical way to prove =∀ y : A, p y= is to take an arbitrary =y=, and
 prove =p y=. This is the introduction rule. Now, given that =H= has
-type =∀x : A, p x ∧ q x=, =H y= has type =p y ∧ q y=. This is the
+type =∀ x : A, p x ∧ q x=, =H y= has type =p y ∧ q y=. This is the
 elimination rule. Taking the left conjunct gives the desired
 conclusion, =p y=.
 
@@ -87,8 +87,8 @@ section
   variables (A : Type) (p q : A → Prop)
 
 -- BEGIN
-  example : (∀x : A, p x ∧ q x) → ∀y : A, p y  :=
-  assume H : ∀x : A, p x ∧ q x,
+  example : (∀ x : A, p x ∧ q x) → ∀ y : A, p y  :=
+  assume H : ∀ x : A, p x ∧ q x,
   take z : A,
   show p z, from and.elim_left (H z)
 -- END
@@ -100,7 +100,7 @@ relation, =r=, is transitive:
 #+BEGIN_SRC lean
 section
   variables (A : Type) (r : A → A → Prop)
-  variable trans_r : ∀x y z, r x y → r y z → r x z
+  variable trans_r : ∀ x y z, r x y → r y z → r x z
 
   variables (a b c : A)
   variables (Hab : r a b) (Hbc : r b c)
@@ -123,7 +123,7 @@ common to make these arguments implicit:
 #+BEGIN_SRC lean
 section
   variables (A : Type) (r : A → A → Prop)
-  variable (trans_r : ∀{x y z}, r x y → r y z → r x z)
+  variable (trans_r : ∀ {x y z}, r x y → r y z → r x z)
 
   variables (a b c : A)
   variables (Hab : r a b) (Hbc : r b c)
@@ -147,9 +147,9 @@ an equivalence relation:
 section
   variables (A : Type) (r : A → A → Prop)
 
-  variable refl_r : ∀x, r x x
-  variable symm_r : ∀{x y}, r x y → r y x
-  variable trans_r : ∀{x y z}, r x y → r y z → r x z
+  variable refl_r : ∀ x, r x x
+  variable symm_r : ∀ {x y}, r x y → r y x
+  variable trans_r : ∀ {x y z}, r x y → r y z → r x z
 
   example (a b c d : A) (Hab : r a b) (Hcb : r c b) (Hcd : r c d) : r a d :=
   trans_r (trans_r Hab (symm_r Hcb)) Hcd
@@ -160,9 +160,9 @@ You might want to try to prove some of these equivalences:
 section
   variables (A : Type) (p q : A → Prop)
 
-  example : (∀x, p x ∧ q x) ↔ (∀x, p x) ∧ (∀x, q x) := sorry
-  example : (∀x, p x → q x) → (∀x, p x) → (∀x, q x) := sorry
-  example : (∀x, p x) ∨ (∀x, q x) → ∀x, p x ∨ q x := sorry
+  example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
+  example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
+  example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := sorry
 end
 #+END_SRC
 You should also try to understand why the reverse implication is not
@@ -176,9 +176,9 @@ section
   variables (A : Type) (p q : A → Prop)
   variable r : Prop
 
-  example : A → (∀x : A, r) ↔ r := sorry
-  example : (∀x, p x ∨ r) ↔ (∀x, p x) ∨ r := sorry
-  example : (∀x, r → p x) ↔ (r → ∀x, p x) := sorry
+  example : A → (∀ x : A, r) ↔ r := sorry
+  example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
+  example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
 end
 #+END_SRC
 
@@ -190,25 +190,25 @@ contradiction:
 section
   variables (men : Type) (barber : men) (shaves : men → men → Prop)
 
-  example (H : ∀x : men, shaves barber x ↔ ¬shaves x x) : false := sorry
+  example (H : ∀ x : men, shaves barber x ↔ ¬shaves x x) : false := sorry
 end
 #+END_SRC
 
 It is the typing rule for Pi types, and the universal quantifier in
 particular, that distinguishes =Prop= from other types. Suppose we
 have =A : Type.{i}= and =B : Type.{j}=, where the expression =B= may
-depend on a variable =x : A=. Then the type of =Πx : A, B= is an
+depend on a variable =x : A=. Then the type of =Π x : A, B= is an
 element of =Type.{imax i j}=, where =imax i j= is the maximum of =i=
 and =j= if =j= is not 0, and 0 otherwise.
 
-The idea is as follows. If =j= is not =0=, then =Πx : A, B= is an
+The idea is as follows. If =j= is not =0=, then =Π x : A, B= is an
 element of =Type.{max i j}=. In other words, the type of dependent
 functions from =A= to =B= "lives" in the universe with smallest index
 greater-than or equal to the indices of the universes of =A= and
 =B=. Suppose, however, that =B= is of =Type.{0}=, that is, an element
-of =Prop=. In that case, =Πx : A, B= is an element of =Type.{0}= as
+of =Prop=. In that case, =Π x : A, B= is an element of =Type.{0}= as
 well, no matter which type universe =A= lives in. In other words, if
-=B= is a proposition depending on =A=, then =∀x : A, B= is again a
+=B= is a proposition depending on =A=, then =∀ x : A, B= is again a
 proposition. This reflects the interpretation of =Prop= as the type of
 propositions rather than data, and it is what makes =Prop=
 /impredicative/. In contrast to the standard kernel, such a =Prop= is
@@ -276,7 +276,7 @@ be proved by reflexivity:
 import data.nat data.prod
 open nat prod
 
-example (A B : Type) (f : A → B) (a : A) : (λx, f x) a = f a := eq.refl _
+example (A B : Type) (f : A → B) (a : A) : (λ x, f x) a = f a := eq.refl _
 example (A B : Type) (a : A) (b : A) : pr1 (a, b) = a := eq.refl _
 example : 2 + 3 = 5 := eq.refl _
 #+END_SRC
@@ -286,7 +286,7 @@ a notation =rfl= for =eq.refl _=:
 import data.nat data.prod
 open nat prod
 -- BEGIN
-example (A B : Type) (f : A → B) (a : A) : (λx, f x) a = f a := rfl
+example (A B : Type) (f : A → B) (a : A) : (λ x, f x) a = f a := rfl
 example (A B : Type) (a : A) (b : A) : pr1 (a, b) = a := rfl
 example : 2 + 3 = 5 := rfl
 -- END
@@ -436,36 +436,36 @@ simplifier can be used in conjunction with calc.]
 ** The Existential Quantifier
 
 Finally, consider the existential quantifier, which can be written as
-either =exists x : A, p x= or =∃x : A, p x=. Both versions are
+either =exists x : A, p x= or =∃ x : A, p x=. Both versions are
 actually notationally convenient abbreviations for a more long-winded
-expression, =Exists (λx : A, p x)=, defined in Lean's library.
+expression, =Exists (λ x : A, p x)=, defined in Lean's library.
 
 As you should by now expect, the library includes both an introduction
 rule and an elimination rule. The introduction rule is
-straightforward: to prove =∃x : A, p x=, it suffices to provide a
+straightforward: to prove =∃ x : A, p x=, it suffices to provide a
 suitable term =t= and a proof of =p t=. Here are some examples:
 #+BEGIN_SRC lean
 import data.nat
 open nat
 
-example : ∃x, x > 0 :=
+example : ∃ x, x > 0 :=
 have H : 1 > 0, from succ_pos 0,
 exists.intro 1 H
 
-example (x : ℕ) (H : x > 0) : ∃y, y < x :=
+example (x : ℕ) (H : x > 0) : ∃ y, y < x :=
 exists.intro 0 H
 
-example (x y z : ℕ) (Hxy : x < y) (Hyz : y < z) : ∃w, x < w ∧ w < z :=
+example (x y z : ℕ) (Hxy : x < y) (Hyz : y < z) : ∃ w, x < w ∧ w < z :=
 exists.intro y (and.intro Hxy Hyz)
 
 check @exists.intro
 #+END_SRC
 Note that =exists.intro= has implicit arguments: Lean has to infer the
-predicate =p : A → Prop= in the conclusion =∃x, p x=. This is not a
+predicate =p : A → Prop= in the conclusion =∃ x, p x=. This is not a
 trivial affair. For example, if we have have =Hg : g 0 0 = 0= and
 write =exists.intro 0 Hg=, there are many possible values for the
-predicate =p=, corresponding to the theorems =∃x, g x x = x=, =∃x, g
-x x = 0=, =∃x, g x 0 = x=, etc. Lean uses the context to infer which
+predicate =p=, corresponding to the theorems =∃ x, g x x = x=, =∃ x, g
+x x = 0=, =∃ x, g x 0 = x=, etc. Lean uses the context to infer which
 one is appropriate. This is illustrated in the following example, in
 which we set the option =pp.implicit= to true to ask Lean's
 pretty-printer to show the implicit arguments.
@@ -494,7 +494,7 @@ end
 We can view =exists.intro= as an information-hiding operation: we are
 "hiding" the witness to the body of the assertion. The existential
 elimination rule, =exists.elim=, performs the opposite operation. It
-allows us to prove a proposition =q= from =∃x : A, p x=, by showing
+allows us to prove a proposition =q= from =∃ x : A, p x=, by showing
 that =q= follows from =p w= for an arbitrary value =w=. Roughly
 speaking, since we know there is an =x= satisfying =p x=, we can give
 it a name, say, =w=. Showing that =q= follows from =p w=, where =q=
@@ -502,24 +502,24 @@ does not mention =w=, is tantamount to showing the =q= follows from
 the existence of any such =x=.
 
 (It may be helpful to compare the exists-elimination rule to the
-or-elimination rule. The assertion =∃x : A, p x= can be thought of as
+or-elimination rule. The assertion =∃ x : A, p x= can be thought of as
 a big disjunction of the propositions =p a=, as =a= ranges over all
 the elements of =A=.)
 
 Notice that exists introduction and elimination are very similar to the
 sigma introduction =sigma.mk= and elimination.
 The difference is that given =a : A= and =h : p a=, =exists.intro a h=
-has type =(∃x : A, p x) : Prop= and =sigma.mk a h= has type
-=(Σx : A, p x) : Type=. The similarity
-between =∃= and =Σ= is another instance of the Curry-Howard isomorphism.
+has type =(∃ x : A, p x) : Prop= and =sigma.mk a h= has type
+=(Σ x : A, p x) : Type=. The similarity
+between =∃ = and =Σ = is another instance of the Curry-Howard isomorphism.
 
-In the following example, we define =even a= as =∃b, a = 2*b=, and
+In the following example, we define =even a= as =∃ b, a = 2*b=, and
 then we show that the sum of two even numbers is an even number.
 #+BEGIN_SRC lean
 import data.nat
 open nat
 
-definition even (a : nat) := ∃b, a = 2*b
+definition even (a : nat) := ∃ b, a = 2*b
 
 theorem even_plus_even {a b : nat} (H1 : even a) (H2 : even b) : even (a + b) :=
 exists.elim H1 (fun (w1 : nat) (Hw1 : a = 2*w1),
@@ -538,7 +538,7 @@ can be presented in a more natural way:           :
 import data.nat
 open nat
 
-definition even (a : nat) := ∃b, a = 2*b
+definition even (a : nat) := ∃ b, a = 2*b
 
 theorem even_plus_even {a b : nat} (H1 : even a) (H2 : even b) :
   even (a + b) :=
@@ -562,13 +562,13 @@ import classical
 
 variables (A : Type) (p : A → Prop)
 
-example (H : ¬ ∀x, ¬ p x) : ∃x, p x :=
+example (H : ¬ ∀ x, ¬ p x) : ∃ x, p x :=
 by_contradiction
   (assume H1 : ¬ ∃ x, p x,
-    have H2 : ∀x, ¬ p x, from
+    have H2 : ∀ x, ¬ p x, from
       take x, 
       assume H3 : p x,
-      have H4 : ∃x, p x, from exists.intro x H3,
+      have H4 : ∃ x, p x, from exists.intro x H3,
       show false, from H1 H4,
     show false, from H H2)
 #+END_SRC
@@ -585,34 +585,34 @@ section
   variables (A : Type) (p q : A → Prop)
   variable r : Prop
 
-  example : (∃x : A, r) → r := sorry
-  example (a : A) : r → (∃x : A, r) := sorry
-  example : (∃x, p x ∧ r) ↔ (∃x, p x) ∧ r := sorry
-  example : (∃x, p x ∨ q x) ↔ (∃x, p x) ∨ (∃x, q x) := sorry
+  example : (∃ x : A, r) → r := sorry
+  example (a : A) : r → (∃ x : A, r) := sorry
+  example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r := sorry
+  example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := sorry
 
-  example : (∀x, p x) ↔ ¬(∃x, ¬p x) := sorry
-  example : (∃x, p x) ↔ ¬(∀x, ¬p x) := sorry
-  example : (¬∃x, p x) ↔ (∀x, ¬p x) := sorry
-  example : (¬∀x, p x) ↔ (∃x, ¬p x) := sorry
+  example : (∀ x, p x) ↔ ¬(∃ x, ¬p x) := sorry
+  example : (∃ x, p x) ↔ ¬(∀ x, ¬p x) := sorry
+  example : (¬∃ x, p x) ↔ (∀ x, ¬p x) := sorry
+  example : (¬∀ x, p x) ↔ (∃ x, ¬p x) := sorry
 
-  example : (∀x, p x → r) ↔ (∃x, p x) → r := sorry
-  example (a : A) : (∃x, p x → r) ↔ (∀x, p x) → r := sorry
-  example (a : A) : (∃x, r → p x) ↔ (r → ∃x, p x) := sorry
+  example : (∀ x, p x → r) ↔ (∃ x, p x) → r := sorry
+  example (a : A) : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
+  example (a : A) : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
 
 end
 #+END_SRC
   # (unreadable) solutions to some of these examples:
-  # example : (∃x, p x ∨ q x) ↔ (∃x, p x) ∨ (∃x, q x) :=
-  # iff.intro (λL, obtain a H, from L, or.elim H (λLL, or.inl (exists.intro a LL))
-  #                                              (λLR, or.inr (exists.intro a LR)))
-  #           (λR, or.elim R (λRL, obtain a H, from RL, exists.intro a (or.inl H))
-  #                          (λRR, obtain a H, from RR, exists.intro a (or.inr
-  # example : (¬∀x, p x) ↔ (∃x, ¬p x) :=
-  # iff.intro (λL, by_contradiction (λNR, L (λa, by_contradiction (λH, NR (exists.intro a H)))))
-  #           (λR LH, obtain a np, from R, np (LH a))
-  # example (a : A) : (∃x, p x → r) ↔ (∀x, p x) → r :=
-  # iff.intro (λL RH, obtain a H, from L, H (RH a))
-  #           (λR, or.elim (em r)
-  #             (λrt, exists.intro a (λx, rt))
-  #             (λrf, by_contradiction (λNL, rf (R (λb, by_contradiction
-  #               (λnp, NL (exists.intro b (λpt, absurd pt np))))))))
+  # example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) :=
+  # iff.intro (λ L, obtain a H, from L, or.elim H (λ LL, or.inl (exists.intro a LL))
+  #                                              (λ LR, or.inr (exists.intro a LR)))
+  #           (λ R, or.elim R (λ RL, obtain a H, from RL, exists.intro a (or.inl H))
+  #                          (λ RR, obtain a H, from RR, exists.intro a (or.inr
+  # example : (¬∀ x, p x) ↔ (∃ x, ¬p x) :=
+  # iff.intro (λ L, by_contradiction (λ NR, L (λ a, by_contradiction (λ H, NR (exists.intro a H)))))
+  #           (λ R LH, obtain a np, from R, np (LH a))
+  # example (a : A) : (∃ x, p x → r) ↔ (∀ x, p x) → r :=
+  # iff.intro (λ L RH, obtain a H, from L, H (RH a))
+  #           (λ R, or.elim (em r)
+  #             (λ rt, exists.intro a (λ x, rt))
+  #             (λ rf, by_contradiction (λ NL, rf (R (λ b, by_contradiction
+  #               (λ np, NL (exists.intro b (λ pt, absurd pt np))))))))

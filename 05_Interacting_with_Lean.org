@@ -158,7 +158,7 @@ set_option pp.notation false
 set_option pp.numerals false
 
 check 2 + 2 = 4
-eval (λx, x + 2) = (λx, x + 3)
+eval (λ x, x + 2) = (λ x, x + 3)
 
 set_option pp.beta true
 check (λ x, x + 1) 1
@@ -526,7 +526,7 @@ a number of places online, such as here:
 [[http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing][Top down operator precedence parsing]]
 #+END_QUOTE
 Identifiers can include any alphanumeric characters, including Greek
-characters (other than Π, Σ, and λ, which, as we have seen, have a
+characters (other than Π , Σ , and λ , which, as we have seen, have a
 special meaning in the dependent type theory). They can also include
 subscripts, which can be entered by typing "\_" followed
 by the desired subscripted character.
@@ -564,7 +564,7 @@ open nat
 
 -- BEGIN
 local notation `[` a `**` b `]` := a * b + 1
-local infix `<*>`:50 := λa b : ℕ, a * a * b * b
+local infix `<*>`:50 := λ a b : ℕ, a * a * b * b
 -- END
 #+END_SRC
 

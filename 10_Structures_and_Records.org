@@ -470,10 +470,10 @@ structure semigroup [class] (A : Type) extends has_mul A :=
 mk :: (assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c))
 
 structure comm_semigroup [class] (A : Type) extends semigroup A :=
-mk :: (comm : ∀a b, mul a b = mul b a)
+mk :: (comm : ∀ a b, mul a b = mul b a)
 
 structure monoid [class] (A : Type) extends semigroup A, has_one A :=
-mk :: (right_id : ∀a, mul a one = a) (left_id : ∀a, mul one a = a)
+mk :: (right_id : ∀ a, mul a one = a) (left_id : ∀ a, mul one a = a)
 
 -- We can suppress := and :: when we are not declaring any new field.
 structure comm_monoid [class] (A : Type) extends monoid A, comm_semigroup A
@@ -503,12 +503,12 @@ structure semigroup [class] (A : Type) extends has_mul A :=
 (assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c))
 
 structure comm_semigroup [class] (A : Type) extends semigroup A renaming mul→add:=
-(comm : ∀a b, add a b = add b a)
+(comm : ∀ a b, add a b = add b a)
 
 infixl `+` := comm_semigroup.add
 
 structure monoid [class] (A : Type) extends semigroup A, has_one A :=
-(right_id : ∀a, mul a one = a) (left_id : ∀a, mul one a = a)
+(right_id : ∀ a, mul a one = a) (left_id : ∀ a, mul one a = a)
 
 -- We can suppress := and :: when we are not declaring any new field.
 structure comm_monoid [class] (A : Type) extends monoid A renaming mul→add, comm_semigroup A
