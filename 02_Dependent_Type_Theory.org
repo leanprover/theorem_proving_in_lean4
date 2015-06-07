@@ -40,32 +40,32 @@ open bool nat
 
 constant m : nat        -- m is a natural number
 constant n : nat
-constants b1 b2 : bool  -- here we declare two constants at once
+constants b1 b2 : bool  -- declare two constants at once
 
 /- check their types -/
 
-check m
+check m            -- output: nat
 check n
-check 0
-check n + 0
-check m * (n + 0)
-check b1
-check b1 && b2  -- bolean and
-check b1 || b2  -- boolean or
-check tt        -- boolean "true"
+check n + 0        -- nat    
+check m * (n + 0)  -- nat
+check b1           -- bool
+check b1 && b2     -- "&&" is bolean and
+check b1 || b2     -- boolean or
+check tt           -- boolean "true"
 -- END
 
 -- Try some examples of your own.
 
 #+END_SRC
 
-The first command, =import standard=, tells Lean that we intend to
-use the standard library. The next command tells Lean that we
-will use constants, facts, and notations from the theory of the
-booleans and the theory of natural numbers. In technical terms, =bool=
-and =nat= are /namespaces/; you will learn more about them later. To
-shorten the examples, we will usually hide the relevant imports, when
-they have already been made explicit in a previous example.
+The first command, =import standard=, tells Lean that we intend to use
+the standard library. The next command, =open bool nat=, tells Lean
+that we will use constants, facts, and notations from the theory of
+the booleans and the theory of natural numbers. In technical terms,
+=bool= and =nat= are /namespaces/; you will learn more about them
+later. To shorten the examples, we will usually hide the relevant
+imports when they have already been made explicit in a previous
+example.
 
 The =/-= and =-/= annotations indicate that the next line is a comment
 block that is ignored by Lean. Similarly, two dashes indicate that the
@@ -87,12 +87,13 @@ of =A= paired with an element of =B=.
 import standard
 open bool nat
 -- BEGIN
-open prod   -- notation for the product
+open prod   -- makes notation for the product available
 
 constants m n : nat
 
 constant f : nat → nat           -- type the arrow as "\to" or "\r"
 constant f' : nat -> nat         -- alternative ASCII notation
+constant f'' : ℕ → ℕ             -- \nat is alternative notation for nat
 constant p : nat × nat           -- type the product as "\times"
 constant q : prod nat nat        -- alternative notation
 constant g : nat → nat → nat
@@ -101,28 +102,29 @@ constant h : nat × nat → nat
 
 constant F : (nat → nat) → nat   -- a "functional"
 
-check f
-check f n
-check g m n
-check g m
-check pair m n
-check pr1 p
-check pr2 p
-check pr1 (pair m n)
-check pair (pr1 p) n
-check F f
+check f               -- ℕ → ℕ
+check f n             -- ℕ
+check g m n           -- ℕ → ℕ
+check g m             -- ℕ
+check pair m n        -- ℕ × ℕ
+check pr1 p           -- ℕ
+check pr2 p           -- ℕ
+check pr1 (pair m n)  -- ℕ
+check pair (pr1 p) n  -- ℕ × ℕ
+check F f             -- ℕ
 -- END
 
 -- Write down some types, declare some constants, and check some expressions.
 
 #+END_SRC
 
-There are a couple of things to notice here. First, the application of
-a function =f= to a value =x= is denoted =f x=. Second, when writing
-type expressions, arrows associate to the /right/; for example, the
-type of =g= is =nat → (nat → nat)=. Thus we can view =g= as a function
-that takes natural numbers and returns another function that takes a
-natural number and returns a natural number. In type
+The symbol =ℕ= is notation for =nat=; you can enter it by typing
+=\nat=. There are a few more things to notice here. First, the
+application of a function =f= to a value =x= is denoted =f x=. Second,
+when writing type expressions, arrows associate to the /right/; for
+example, the type of =g= is =nat → (nat → nat)=. Thus we can view =g=
+as a function that takes natural numbers and returns another function
+that takes a natural number and returns a natural number. In type
 theory, this is generally more convenient than writing =g= as a
 function that takes a pair of natural numbers as input, and returns a
 natural number as output. For example, it allows us to "partially
@@ -148,11 +150,11 @@ import standard
 open bool nat prod
 
 -- BEGIN
-check nat
-check bool
-check nat → bool
-check nat × bool
-check nat → nat
+check nat               -- Type₁
+check bool              -- Type₁
+check nat → bool        -- Type₁
+check nat × bool        -- Type₁
+check nat → nat         -- ...
 check nat × nat → nat
 check nat → nat → nat
 check nat → (nat → nat)
@@ -162,7 +164,8 @@ check (nat → nat) → nat
 #+END_SRC
 
 We see that each one of the expressions above is an object of type
-=Type=. We can also declare new constants and constructors for types:
+=Type₁=. We will explain the subscripted =1= in a moment.  We can also
+declare new constants and constructors for types:
 #+BEGIN_SRC lean
 import standard
 open bool nat
@@ -172,12 +175,12 @@ constants A B : Type
 constant F : Type → Type
 constant G : Type → Type → Type
 
-check A
-check F A
-check F nat
-check G A
-check G A B
-check G A nat
+check A        -- Type
+check F A      -- Type
+check F nat    -- Type
+check G A      -- Type → Type
+check G A B    -- Type
+check G A nat  -- Type
 -- END
 #+END_SRC
 Indeed, we have already seen an example of a function of type =Type →
@@ -189,10 +192,10 @@ open nat prod
 -- BEGIN
 constants A B : Type
 
-check prod
-check prod A
-check prod A B
-check prod nat nat
+check prod           -- Type → Type → Type
+check prod A         -- Type → Type
+check prod A B       -- Type
+check prod nat nat   -- Type₁
 -- END
 #+END_SRC
 Here is another example: given any type =A=, the type =list A= denotes
@@ -203,9 +206,9 @@ open list
 
 constant A : Type
 
-check list
-check list A
-check list nat
+check list      -- Type → Type
+check list A    -- Type
+check list nat  -- Type₁
 #+END_SRC
 
 We will see that the ability to treat type constructors as instances
@@ -218,7 +221,7 @@ the elements of the type are just the elements of the set. But there
 is a circularity lurking nearby. =Type= itself is an expression like
 =nat=; if =nat= has a type, shouldn't =Type= have a type as well?
 #+BEGIN_SRC lean
-check Type
+check Type      -- Type
 #+END_SRC
 Lean's output seems to indicates that =Type= is an element of
 itself. But this is misleading. Russell's paradox shows that it is
@@ -227,39 +230,56 @@ existence of a set of all sets, and one can derive a similar paradox in
 dependent type theory. So, is Lean inconsistent?
 
 What is going on is that Lean's foundational fragment actually has a
-hierarchy of types, =Type.{1} : Type.{2} : Type.{3} : ....= Think of
+hierarchy of types, 
+#+BEGIN_SRC text
+Type.{1} : Type.{2} : Type.{3} : ....
+#+END_SRC
+Think of
 =Type.{1}= as a universe of "small" or "ordinary" types. =Type.{2}= is
 then a larger universe of types, which contains =Type.{1}= as an
 element. When we declare a constant =A : Type=, Lean implicitly
-creates a variable =l=, and declares =A : Type.{l}=. In other words,
-=A= is a type in some unspecified universe. Lean silently keeps track
-of implicit universe levels, but you can ask Lean's pretty printer to
-make this information explicit. You can even specify universe levels
-explicitly.
+creates a variable =u=, and declares =A : Type.{u}=. In other words,
+=A= is a type in some unspecified universe. The expression =A= is then
+/polymorphic/; whenever it appears, Lean silently tries to infer which
+universe =A= lives in, maintaining as much generality as possible.
+
+You can ask Lean's pretty printer to make this informaiton explicit,
+and use additional annotations to specify universe  levals explicitly.
 #+BEGIN_SRC lean
 constants A B : Type
-check A
-check B
-check Type
-check Type → Type
+check A              -- A : Type
+check B              -- B : Type
+check Type           -- Type : Type
+check Type → Type    -- Type → Type : Type
 
 set_option pp.universes true    -- display universe information
 
-check A
-check B
-check Type
-check Type → Type
+check A              -- A.{l_1} : Type.{l_1}
+check B              -- B.{l_1} : Type.{l_1}
+check Type           -- Type.{l_1} : Type.{l_1 + 1}
+check Type → Type    -- Type.{l_1} → Type.{l_2} : Type.{imax (l_1+1) (l_2+1)}
 
-universe variable u
+universe u
 constant C : Type.{u}
-check C
-check A → C
-check Type → C
+check C              -- C : Type.{u}
+check A → C          -- A.{l_1} → C : Type.{imax l_1 u}
+ 
+universe variable v
+constants D E : Type
+check D → E          -- D.{l_1} → E.{l_2} : Type.{imax l_1 l_2}
+check D.{v} → E.{v}  -- D.{v} → E.{v} : Type.{v}
 #+END_SRC
+The command =universe u= creates a fixed universe parameter. In
+contrast, in the last example, the universe variable =v= is only used
+to put =D= and =V= in the same type universe. When =D.{v} → E.{v}=
+occurs in a more elaborate context, Lean is constrained to assign the
+same universe parameter to both.
 
-In ordinary situations, however, you can ignore the universe
-parameters and simply write =Type=. For most purposes, it suffices to
-leave the "universe management" to Lean.
+You should not worry about the meaning of =imax= right now. Universe
+contraints are subtle, but the good news is that Lean handles them
+pretty well. As a result, in ordinary situations you can ignore the
+universe parameters and simply write =Type=, leaving the "universe
+management" to Lean.
 
 ** Function Abstraction and Evaluation
 
@@ -269,9 +289,9 @@ Conversely, if we have =p : nat × nat=, then we have =pr1 p : nat= and
 =pr2 p : nat=. This gives us a way of "using" a pair, by extracting its
 two components.
 
-We already know how to "use" a function =f : A → B=: given =a : A=, we
-have =f a : B=. But how do we create a function from another
-expression?
+We already know how to "use" a function =f : A → B=, namely, we can
+apply it to an element =a : A= to obtain =f a : B=. But how do we
+create a function from another expression?
 
 The companion to application is a process known as "abstraction," or
 "lambda abstraction." Suppose that by temporarily postulating a
@@ -303,15 +323,15 @@ constant g : A → B
 constant h : A → B → A
 constant p : A → A → bool
 
-check fun x : A, f x
-check λ x : A, f x
-check λ x : A, f (f x)
-check λ x : A, h x b1
-check λ y : B, h a1 y
-check λ x : A, p (f (f x)) (h (f a1) b2)
-check λ x : A, λ y : B, h (f x) y
-check λ (x : A) (y : B), h (f x) y
-check λ x y, h (f x) y
+check fun x : A, f x                      -- A → A
+check λ x : A, f x                        -- A → A
+check λ x : A, f (f x)                    -- A → A
+check λ x : A, h x b1                     -- A → A
+check λ y : B, h a1 y                     -- B → A
+check λ x : A, p (f (f x)) (h (f a1) b2)  -- A → bool
+check λ x : A, λ y : B, h (f x) y         -- A → B → A
+check λ (x : A) (y : B), h (f x) y        -- A → B → A
+check λ x y, h (f x) y                    -- A → B → A
 -- END
 #+END_SRC
 Lean interprets the final three examples as the same expression; in
@@ -334,10 +354,10 @@ check λ x, g (f x)      -- (Lean can figure out the type of x)
 
 -- we can abstract any of the constants in the previous definitions
 
-check λ b : B, λ x : A, x
+check λ b : B, λ x : A, x     -- B → A → A
 check λ (b : B) (x : A), x    -- equivalent to the previous line
 check λ (g : B → C) (f : A → B) (x : A), g (f x)
-
+                              -- (B → C) → (A → B) → A → C                           
 -- we can even abstract over the type
 
 check λ (A B : Type) (b : B) (x : A), x
@@ -347,15 +367,16 @@ check λ (A B C : Type) (g : B → C) (f : A → B) (x : A), g (f x)
 Think about what these expressions mean. The last, for example,
 denotes the function that takes three types, =A=, =B=, and =C=, and
 two functions, =g : B → C= and =f : A → C=, and returns the
-composition of =g= and =f=. Within a lambda expression =λ x : A, t=,
-the variable =x= is a "bound variable": it is really a placeholder,
-whose "scope" does not extend beyond =t=. For example, the variable
-=b= in the expression =λ (b : B) (x : A), x= has nothing to do with the
-constant =b= declared earlier. In fact, the expression denotes the
-same function as =λ (u : B) (z : A), z=. Formally, the expressions that
-are the same up to a renaming of bound variables are called /alpha
-equivalent/, and are considered morally "the same". Lean recognizes
-this equivalence.
+composition of =g= and =f=. (Making sense of the type of this function
+requires an understanding of dependent products, which we will explain
+below.) Within a lambda expression =λ x : A, t=, the variable =x= is a
+"bound variable": it is really a placeholder, whose "scope" does not
+extend beyond =t=. For example, the variable =b= in the expression =λ
+(b : B) (x : A), x= has nothing to do with the constant =b= declared
+earlier. In fact, the expression denotes the same function as =λ (u :
+B) (z : A), z=. Formally, the expressions that are the same up to a
+renaming of bound variables are called /alpha equivalent/, and are
+considered morally "the same". Lean recognizes this equivalence.
 
 Notice that applying a term =t : A → B= to a term =s : A= yields an
 expression =t s : B=. Returning to the previous example and renaming
@@ -368,16 +389,16 @@ constant g : B → C
 constant h : A → A
 constants (a : A) (b : B)
 
-check (λ x : A, x) a
-check (λ x : A, b) a
-check (λ x : A, b) (h a)
-check (λ x : A, g (f x)) (h (h a))
+check (λ x : A, x) a                -- A
+check (λ x : A, b) a                -- B
+check (λ x : A, b) (h a)            -- B
+check (λ x : A, g (f x)) (h (h a))  -- C
 
-check (λ v u x, v (u x)) g f a
+check (λ v u x, v (u x)) g f a      -- C
 
-check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q), v (u x)) A B C g f a
+check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q), 
+        v (u x)) A B C g f a        -- C
 #+END_SRC
-
 As expected, the expression =(λ x : A, x) a= has type =A=. In fact,
 more should be true: applying the expression =(λ x : A, x)= to =a=
 should "return" the value =a=. And, indeed, it does:
@@ -388,16 +409,16 @@ constant g : B → C
 constant h : A → A
 constants (a : A) (b : B)
 
-eval (λ x : A, x) a
-eval (λ x : A, b) a
-eval (λ x : A, b) (h a)
-eval (λ x : A, g (f x)) (h (h a))
+eval (λ x : A, x) a                -- a
+eval (λ x : A, b) a                -- b
+eval (λ x : A, b) (h a)            -- b 
+eval (λ x : A, g (f x)) (h (h a))  -- g (f a)
 
-eval (λ v u x, v (u x)) g f a
+eval (λ v u x, v (u x)) g f a      -- g (f a)
 
-eval (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q), v (u x)) A B C g f a
+eval (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q), 
+       v (u x)) A B C g f a        -- g (f a)
 #+END_SRC
-
 The command =eval= tells Lean to /evaluate/ an expression. The process
 of simplifying an expression =(λ x, t)s= to =t[s/x]= -- that is, =t=
 with =s= substituted for the variable =x= -- is known as /beta
@@ -412,25 +433,26 @@ constants m n : nat
 constant b : bool
 
 print "reducing pairs"
-eval pr1 (pair m n)
-eval pr2 (pair m n)
+eval pr1 (pair m n)  -- m
+eval pr2 (pair m n)  -- n
 
 print "reducing boolean expressions"
-eval tt && ff
-eval b && ff
+eval tt && ff        -- ff
+eval b && ff         -- ff
 
 print "reducing arithmetic expressions"
-eval n + 0
-eval n + 2
-eval 2 + 3
+eval n + 0           -- n
+eval n + 2           -- succ (succ n)
+eval 2 + 3           -- 5
 #+END_SRC
 In a later chapter, we will explain how these terms are evaluated. For
 now, we only wish to emphasize that this is an important feature of
-the Calculus of Inductive Constructions: every term has a
-computational behavior, and supports a notion of reduction, or
-/normalization/. In principle, two terms that reduce to the same value
-are considered morally "the same" by the underlying logical framework, and
-Lean does its best to recognize and support these identifications.
+dependent type theory: every term has a computational behavior, and
+supports a notion of reduction, or /normalization/. In principle, two
+terms that reduce to the same value are called /definitionally
+equal/. They are considered "the same" by the underlying logical
+framework, and Lean does its best to recognize and support these
+identifications.
 
 ** Introducing Definitions
 
@@ -444,23 +466,19 @@ constants (a : A) (f : A → B) (g : B → C) (h : A → A)
 
 definition gfa : C := g (f a)
 
-check gfa
-print definition gfa
+check gfa             -- C
+print gfa  -- g (f a)
 
 -- We can omit the type when Lean can figure it out.
 definition gfa' := g (f a)
-
-print definition gfa'
+print gfa'
 
 definition gfha := g (f (h a))
-
-print definition gfha
+print gfha
 
 definition g_comp_f : A → C := λ x, g (f x)
-
-print definition g_comp_f
+print g_comp_f
 #+END_SRC
-
 The general form of a definition is ~definition foo : T := bar~. Lean
 can usually infer the type =T=, but it is often a good idea to write
 it explicitly. This clarifies your intention, and Lean will flag an
@@ -476,10 +494,11 @@ constants (g : B → C) (f : A → B)
 
 -- BEGIN
 definition g_comp_f (x : A) : C := g (f x)
-
-print definition g_comp_f
+print g_comp_f
 -- END
 #+END_SRC
+The net effect is the same as the previous definition.
+
 Here are some more examples of definitions, this time in the context
 of arithmetic:
 #+BEGIN_SRC lean
@@ -489,32 +508,26 @@ open nat
 constants (m n : nat) (p q : bool)
 
 definition m_plus_n : nat := m + n
-
 check m_plus_n
-print definition m_plus_n
+print m_plus_n
 
--- Again, Lean can infer the type
+-- again, Lean can infer the type
 definition m_plus_n' := m + n
-
-print definition m_plus_n'
+print m_plus_n'
 
 definition double (x : nat) : nat := x + x
-
-print definition double
-check double m
+print double
 check double 3
-eval double m
-eval double 3
+eval double 3    -- 6
 
 definition square (x : nat) := x * x
-
-print definition square
-eval square m
-eval square 3
+print square
+check square 3
+eval square 3    -- 9
 
 definition do_twice (f : nat → nat) (x : nat) : nat := f (f x)
 
-eval do_twice double 2
+eval do_twice double 2    -- 8
 #+END_SRC
 As an exercise, we encourage you to use =do_twice= and =double= to
 define functions that quadruple their input, and multiply the input
@@ -525,11 +538,9 @@ which iterates /its/ argument twice, so that =Do_Twice do_twice= a
 function which iterates /its/ input four times, and evaluate
 =Do_Twice do_twice double 2=.
 
-
-
 Above, we discussed the process of "currying" a function, that is,
 taking a function =f (a, b)= that takes an ordered pair as an
-argument, and recasting it as a function =f' a b= which takes two
+argument, and recasting it as a function =f' a b= that takes two
 arguments successively. As another exercise, we encourage you to
 complete the following definitions, which "curry" and "uncurry" a
 function.
@@ -551,10 +562,8 @@ the result of replacing every occurrence of =a= in =t2= by =t1=.
 import data.nat
 open nat
 
-section
-  variable x : ℕ
-  check let y := x + x in y * y
-end
+constant n : ℕ
+check let y := n + n in y * y
 
 definition t (x : ℕ) : ℕ :=
 let y := x + x in y * y
@@ -562,14 +571,12 @@ let y := x + x in y * y
 Here, =t= is definitionally equal to the term =(x + x) * (x + x)=.
 You can combine multiple assignments in a single =let= statement:
 #+BEGIN_SRC lean
-import standard
+import data.nat
 open nat
 
 -- BEGIN
-section
-  variable x : ℕ
-  check let y := x + x, z := y + y in z * z
-end
+constant n : ℕ
+check let y := n + n, z := y + y in z * z
 -- END
 #+END_SRC
 
@@ -594,11 +601,108 @@ definition bar := (λ a, λ x : a, x + 2) nat
 -/
 #+END_SRC
 
-** Namespaces and Sections
+** Variables and Sections
 
 This is a good place to introduce some organizational features of Lean
 that are not a part of the axiomatic framework /per se/, but make it
 possible to work in the framework more efficiently.
+
+We have seen that the =constant= command allows us to declare new
+objects, which then become part of the global context. Declaring new
+objects in this way is somewhat crass. Lean is designed as a
+foundational system, which is to say, it enables us to /define/ all of
+the mathematical objects we need. /Declaring/ new objects willy-nilly
+is therefore somewhat lazy. In the words of Bertand Russell, it has
+all the advantages of theft over honest toil. We will see in the next
+chapter that it is also somewhat dangerous: declaring a new constant
+is tantamount to declaring an axiomatic extension of our foundational
+system, and may not even be consistent.
+
+So far, in this tutorial, we have used the =constant= command to
+create "arbitrary" objects to work with in our examples. For example,
+we have declared types =A=, =B=, and =C= to populate our context. This
+can be avoided, using implicit or explicit lambda abstraction in our
+definitions to declare such objects "locally":
+#+BEGIN_SRC lean
+definition compose (A B C : Type) (g : B → C) (f : A → B) (x : A) :
+  C := g (f x)
+
+definition do_twice (A : Type) (h : A → A) (x : A) : A := h (h x)
+
+definition do_thrice (A : Type) (h : A → A) (x : A) : A := h (h (h x))
+#+END_SRC
+Repeating declarations in this way can be tedious, however. Lean
+provides us with the =variable= and =variables= commands to make such
+declarations look global:
+#+BEGIN_SRC lean
+variables (A B C : Type)
+
+definition compose (g : B → C) (f : A → B) (x : A) : C := g (f x)
+definition do_twice (h : A → A) (x : A) : A := h (h x)
+definition do_thrice (h : A → A) (x : A) : A := h (h (h x))
+#+END_SRC
+We can declare variables of any type, not just =Type= itself:
+#+BEGIN_SRC lean
+variables (A B C : Type)
+variables (g : B → C) (f : A → B) (h : A → A)
+variable x : A
+
+definition compose := g (f x)
+definition do_twice := h (h x)
+definition do_thrice := h (h (h x))
+
+print compose
+print do_twice
+print do_thrice
+#+END_SRC
+Printing them out shows that all three groups of definitions have
+exactly the same effect.
+
+The =variable= and =variables= commands look like the =constant= and
+=constants= commands we have used above, but there is an important
+difference: rather than creating permanent entities, the declarations
+simply tell Lean to insert the variables as bound variables in
+definitions that refer to them. Lean is smart enough to figure out
+which variables are used explicitly or implicitly in a definition. We
+can therefore proceed as though =A=, =B=, =C=, =g=, =f=, =h=, and =x=
+are fixed objects when we write our definitions, and let Lean abstract
+the definitions for us automatically.
+
+When declared in this way, a variable stays in scope until the end of
+the file we are working on, and we cannot declare another variable
+with the same name. Sometimes, however, it is useful to limit the
+scope of a variable. For that purpose, Lean provides the notion of a
+=section=:
+#+BEGIN_SRC lean
+section useful
+  variables (A B C : Type)
+  variables (g : B → C) (f : A → B) (h : A → A)
+  variable x : A
+
+  definition compose := g (f x)
+  definition do_twice := h (h x)
+  definition do_thrice := h (h (h x))
+end useful
+#+END_SRC
+When the section is closed, the variables go out of scope, and become
+nothing more than a distant memory.
+
+You do not have to indent the lines within a section, since Lean
+treats any blocks of returns, spaces, and tabs equivalently as
+whitespace. Nor do you have to name a section, which is to say, you
+can use an anonymous =section= / =end= pair. If you do name a section,
+however, you have to close it using the same name. Sections can also
+be nested, which allows you to declare new variables incrementally.
+
+Sections provide us with a general scoping mechanism that governs more
+than the insertion of variables. For example, recall that the =open=
+command allows us to invoke identifiers and notation, using
+/namespaces/, which will be discussed below. The effects of an =open=
+command are also limited to the section in which it occurs, which
+provides useful ways of managing the background context while we work
+with Lean.
+
+** Namespaces
 
 Lean provides us with the ability to group definitions, notations, and
 other information into nested, hierarchical /namespaces/:
@@ -641,7 +745,6 @@ check a
 check fa
 check foo.fa
 #+END_SRC
-
 When we declare that we are working in the namespace =foo=, every
 identifier we declare has a full name with prefix "=foo.=" Within the
 namespace, we can refer to identifiers by their shorter names, but
@@ -676,7 +779,7 @@ check 0
 check m + 0
 #+END_SRC
 
-Namespaces can be nested:
+Like sections, namespaces can be nested:
 #+BEGIN_SRC lean
 namespace foo
   constant A : Type
@@ -704,8 +807,8 @@ open foo
 check fa
 check bar.ffa
 #+END_SRC
-Namespaces that have been closed can later be reopened (even in
-another "module," that is, another file):
+Namespaces that have been closed can later be reopened, even in
+another file:
 #+BEGIN_SRC lean
 namespace foo
   constant A : Type
@@ -722,74 +825,17 @@ namespace foo
   definition ffa : A := f (f a)
 end foo
 #+END_SRC
-
-The notion of a /section/ provides another way of managing
-information. When we develop a theory, we will often reuse variables
-in successive definitions:
-#+BEGIN_SRC lean
-definition compose (A B C : Type) (g : B → C) (f : A → B) (x : A) :
-  C := g (f x)
-
-definition do_twice (A : Type) (h : A → A) (x : A) : A := h (h x)
-
-definition do_thrice (A : Type) (h : A → A) (x : A) : A := h (h (h x))
-
-check compose
-check do_twice
-check do_thrice
-#+END_SRC
-With a section, you can declare the variables once and for all:
-#+BEGIN_SRC lean
-section useful
-  variables (A B C : Type)
-  variables (g : B → C) (f : A → B) (h : A → A)
-  variable x : A
-
-  definition compose := g (f x)
-  definition do_twice := h (h x)
-  definition do_thrice := h (h (h x))
-
-  check compose
-  check do_twice
-  check do_thrice
-end useful
-
-print definition compose
-print definition do_twice
-print definition do_thrice
-#+END_SRC
-
-The =variable= and =variables= commands look like the =constant= and
-=constants= commands we used above, but there is an important
-difference: rather than creating permanent entities, the declarations
-tell the Lean to insert the variables as bound variables in
-definitions that refer to them. Lean is smart enough to figure out
-which variables are used explicitly or implicitly in a definition, so
-the later definitions of =compose=, =do_twice=, and =do_thrice= have
-exactly the same effect as the earlier ones. When the section is
-closed, the variables go out of scope, and become nothing more than a
-distant memory.
-
-You do not have to name a section, which is to say, you can use an
-anonymous =section= / =end= pair. But if you do name a section, you
-have to close it using the same name.
-
-Like namespaces, nested sections have to be closed in the order they
+Like sections, nested namespaces have to be closed in the order they
 are opened. Also, a namespace cannot be opened within a section;
 namespaces have to live on the outer levels.
 
 Namespaces and sections serve different purposes: namespaces organize
 data and sections declare variables for insertion in theorems. A
 namespace can be viewed as a special kind of section, however. In
-particular, you can use the =variable= command in a namespace, in
-which case the variables you declare remain in scope until the
-namespace is closed.
-
-If you use the =open= command at the "top level" of a file to import
-information from a namespace, that information remains in the context
-until the end of the file. But if you use the =open= command within a
-namespace, the information remains in the context until
-that namespace is closed.
+particular, if you use the =variable= command within a namespace, its
+scope is limited to the namespace. Similarly, if you use an =open=
+command within a namespace, its effects disappear when the namespace
+is closed.
 
 ** Dependent Types
 
@@ -802,14 +848,14 @@ defining objects in dependent type theory for just a moment longer,
 in order to explain what makes dependent type theory /dependent/, and
 why that is useful.
 
-The short answer is that what makes dependent type theory dependent is
-that types can depend on parameters. You have already seen a nice
-example of this: the type =list A= depends on the argument =A=, and
-this dependence is what distinguishes =list nat= and =list bool=. For
-another example, consider the type =vec A n=, the type of vectors of
-elements of =A= of length =n=. This type depends on /two/ parameters:
-the type =A : Type= of the elements in the vector and the length =n :
-nat=.
+The short explanation is that what makes dependent type theory
+dependent is that types can depend on parameters. You have already
+seen a nice example of this: the type =list A= depends on the argument
+=A=, and this dependence is what distinguishes =list nat= and =list
+bool=. For another example, consider the type =vec A n=, the type of
+vectors of elements of =A= of length =n=. This type depends on /two/
+parameters: the type =A : Type= of the elements in the vector and the
+length =n : nat=.
 
 Suppose we wish to write a function =cons= which inserts a new element
 at the head of a list. What type should =cons= have? Such a function
@@ -838,12 +884,13 @@ that, for each =a : A=, =f a= is an element of =B a=. In other words,
 the type of the value returned by =f= depends on its input.
 
 Notice that =Π x : A, B= makes sense for any expression =B :
-Type=. When the value of =B= depends on =x=, =Π x : A, B= denotes a
-dependent function type, as above. When =B= doesn't depend on =x=,
-=Π x : A, B= is no different from the type =A → B=. Indeed, in
-dependent type theory (and in Lean), the Pi construction is
-fundamental, and =A → B= is nothing more than notation for =Π x : A, B=
-when =B= does not depend on =A=.
+Type=. When the value of =B= depends on =x= (as does, for example, the
+expression =B x= in the previous paragraph), =Π x : A, B= denotes a
+dependent function type. When =B= doesn't depend on =x=, =Π
+x : A, B= is no different from the type =A → B=. Indeed, in dependent
+type theory (and in Lean), the Pi construction is fundamental, and =A
+→ B= is nothing more than notation for =Π x : A, B= when =B= does not
+depend on =A=.
 
 Returning to the example of lists, we can model some basic list
 operations as follows. We use =namespace hide= to avoid a conflict
@@ -868,17 +915,17 @@ between the round and curly brackets momentarily).
 import data.list
 open list
 
-check list
+check list     -- Type → Type
 
-check @cons
-check @nil
-check @head
-check @tail
-check @append
+check @cons    -- Π {T : Type}, T → list T → list T
+check @nil     -- Π {T : Type}, list T
+check @head    -- Π {T : Type} [h : inhabited T], list T → T
+check @tail    -- Π {T : Type}, list T → list T
+check @append  -- Π {T : Type}, list T → list T → list T
 #+END_SRC
-There is a small subtlety in the definition of =head=: when passed the
+There is a subtlety in the definition of =head=: when passed the
 empty list, the function must determine a default element of the
-relevant type. We will explain how this is done in Chapter  [[file:09_Type_Classes.org::#Type_Classes][Type Classes]].
+relevant type. We will explain how this is done in Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]].
 
 Vector operations are handled similarly:
 #+BEGIN_SRC lean
@@ -896,32 +943,35 @@ end vec
 
 In the coming chapters, you will come across many instances of
 dependent types. Here we will mention just one more important and
-illustrative example, the /Sigma types/, =Σ x : A, B x=, sometimes also
-known as /dependent pairs/. These are, in a sense, companions to the
-Pi types. The type =Σ x : A, B x= denotes the type of pairs =sigma.mk a
-b= where =a : A= and =b : B a=. You can also use angle brackets =<a,
-b>= as notation for =sigma a b=. (To type these brackets, use the
-shortcuts =\<= and =\>=.)  Just as Pi types =Π x : A, B x= generalize
-the notion of a function type =A → B=, Sigma types =Σ x : A, B x=
-generalize the cartesian product =A × B=: in the expression =sigma.mk
+illustrative example, the /Sigma types/, =Σ x : A, B x=, sometimes
+also known as /dependent pairs/. These are, in a sense, companions to
+the Pi types. The type =Σ x : A, B x= denotes the type of pairs
+=sigma.mk a b= where =a : A= and =b : B a=. You can also use angle
+brackets =<a, b>= as notation for =sigma a b=. (To type these
+brackets, use the shortcuts =\<= and =\>=.)  Just as Pi types =Π x :
+A, B x= generalize the notion of a function type =A → B= by allowing
+=B= to depend on =A=, Sigma types =Σ x : A, B x= generalize the
+cartesian product =A × B= in the same way: in the expression =sigma.mk
 a b=, the type of the second element of the pair, =b : B a=, depends
 on the first element of the pair, =a : A=.
 #+BEGIN_SRC lean
 import data.sigma
 open sigma
 
-constant A : Type
-constant B : A → Type
-constant a : A
-constant b : B a
+variable A : Type
+variable B : A → Type
+variable a : A
+variable b : B a
 
-check sigma.mk a b
-check ⟨a, b⟩
-check pr1 ⟨a, b⟩
-check pr2 ⟨a, b⟩
+check sigma.mk a b  -- Σ (a : A), B a
+check ⟨a, b⟩         -- Σ (a : A), B a
+check pr1 ⟨a, b⟩     -- A
+check pr₁ ⟨a, b⟩     -- alternative notation; use \_1 for the subscript
+check pr2 ⟨a, b⟩     -- B (pr₁ ⟨a, b⟩)
+check pr₂ ⟨a, b⟩     -- alternative notation
 
-eval pr1 ⟨a, b⟩
-eval pr2 ⟨a, b⟩
+eval pr1 ⟨a, b⟩      -- a
+eval pr2 ⟨a, b⟩      -- b
 #+END_SRC
 Note, by the way, that the identifiers =pr1= and =pr2= are also used
 for the cartesian product type. The notations are made available when you open
@@ -930,17 +980,17 @@ identifier is simply overloaded. Without opening the namespaces, you
 can refer to them as =prod.pr1=, =prod.pr2=, =sigma.pr1=, and
 =sigma.pr2=.
 
-Moreover, if you open the namespaces =prod.ops= and =sigma.ops=, you
-can use additional convenient notation for the projections:
+If you open the namespaces =prod.ops= and =sigma.ops=, you can,
+moreover, use additional convenient notation for the projections:
 #+BEGIN_SRC lean
 import data.sigma data.prod
 
-constant A : Type
-constant B : A → Type
-constant a : A
-constant b : B a
-constants C D : Type
-constants (c : C) (d : D)
+variable A : Type
+variable B : A → Type
+variable a : A
+variable b : B a
+variables C D : Type
+variables (c : C) (d : D)
 
 open sigma.ops
 open prod.ops
@@ -986,9 +1036,9 @@ end list
 -- BEGIN
 open hide.list
 
-constant  A : Type
-constant  a : A
-constants l1 l2 : list A
+variable  A : Type
+variable  a : A
+variables l1 l2 : list A
 
 check cons A a (nil A)
 check append A (cons A a (nil A)) l1
@@ -1010,7 +1060,7 @@ This is a central feature of dependent type theory: terms carry a lot
 of information, and often some of that information can be inferred
 from the context. In Lean, one uses an underscore, =_=, to specify
 that the system should fill in the information automatically. This is
-known as an "implicit argument".
+known as an "implicit argument."
 #+BEGIN_SRC lean
 namespace hide
 constant list : Type → Type
@@ -1023,9 +1073,9 @@ end list
 
 open hide.list
 
-constant  A : Type
-constant  a : A
-constants l1 l2 : list A
+variable  A : Type
+variable  a : A
+variables l1 l2 : list A
 
 -- BEGIN
 check cons _ a (nil _)
@@ -1038,8 +1088,8 @@ end hide
 It is still tedious, however, to type all these underscores.  When a
 function takes an argument that can generally be inferred from
 context, Lean allows us to specify that this argument should, by
-default, be left implicit.
-
+default, be left implicit. This is done by putting the arguments in
+curly braces, as folows:
 #+BEGIN_SRC lean
 namespace hide
 constant list : Type → Type
@@ -1053,9 +1103,9 @@ end list
 
 open hide.list
 
-constant  A : Type
-constant  a : A
-constants l1 l2 : list A
+variable  A : Type
+variable  a : A
+variables l1 l2 : list A
 
 check cons a nil
 check append (cons a nil) l1
@@ -1063,16 +1113,14 @@ check append (append (cons a nil) l1) l2
 -- END
 end hide
 #+END_SRC
-
-All that has changed are the curly braces around =A : Type= in the
-declaration of the constants. We can also use this device in function
+All that has changed are the braces around =A : Type= in the
+declaration of the variables. We can also use this device in function
 definitions:
 #+BEGIN_SRC lean
--- the polymorphic identity function
 definition id {A : Type} (x : A) := x
 
-constants A B : Type
-constants (a : A) (b : B)
+variables A B : Type
+variables (a : A) (b : B)
 
 check id
 check id a
@@ -1082,7 +1130,7 @@ This makes the first argument to =id= implicit. Notationally, this
 hides the specification of the type, making it look as though =id=
 simply takes an argument of any type.
 
-Implicit arguments can also be declared as section variables:
+Variables can also be declared implicit:
 #+BEGIN_SRC lean
 section
   variable {A : Type}
@@ -1090,8 +1138,8 @@ section
   definition id := x
 end
 
-constants A B : Type
-constants (a : A) (b : B)
+variables A B : Type
+variables (a : A) (b : B)
 
 check id
 check id a
@@ -1101,10 +1149,12 @@ This definition of =id= has the same effect as the one above.
 
 Lean has very complex mechanisms for instantiating implicit arguments,
 and we will see that they can be used to infer function types,
-predicates, and even proofs. The process of instantiating "holes" in a
-term is often known as /elaboration/. As this tutorial progresses, we
-will gradually learn more of what Lean's powerful elaborator can do.
-
+predicates, and even proofs. The process of instantiating "holes," or
+"placeholder," in a term is often known as /elaboration/. As this
+tutorial progresses, we will gradually learn more about what Lean's
+powerful elaborator can do, and we will discuss the elaborator in
+depth in Chapter [[file:08_Building_Theories_and_Proofs.org::#Elaboration_and_Unification][Elaboration and Unification]].
+ 
 Sometimes, however, we may find ourselves in a situation where we have
 declared an argument to a function to be implicit, but now want to
 provide the argument explicitly. If =foo= is such a function, the
@@ -1114,8 +1164,8 @@ explicit.
 -- the polymorphic identity function
 definition id {A : Type} (x : A) := x
 
-constants A B : Type
-constants (a : A) (b : B)
+variables A B : Type
+variables (a : A) (b : B)
 -- BEGIN
 check @id
 check @id A

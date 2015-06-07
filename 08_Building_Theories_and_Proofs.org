@@ -456,9 +456,12 @@ end hide
 #+END_SRC
 
 There is a third kind of implicit argument, used for type classes:
-=[]=. We will explain these in [[file:09_Type_Classes.org][Chapter 9]].
+=[]=. We will explain these in Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]].
 
 ** Elaboration and Unification
+:PROPERTIES:
+  :CUSTOM_ID: Elaboration_and_Unification
+:END:
 
 When you enter an expression like =λ x y z, f (x + y) z= for Lean to
 process, you are leaving information implicit. For example, the types
