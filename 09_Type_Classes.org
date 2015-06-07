@@ -918,7 +918,7 @@ check eq_or_lt_of_le
 
 -- Prove: (∀ x : nat, x < n → P x) and (P n) implies (∀ x : nat, x < succ n → P x)
 definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
-λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le Hlt)
+λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
   (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
   (λ hlt : x < n, H₁ x hlt)
 

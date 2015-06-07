@@ -85,7 +85,7 @@ exactly. It is good form to use it in a tactic proof, since its
 failure signals that something has gone wrong; but otherwise =apply=
 would work just as well.
 
-You can see the resulting proof term with =print definition=:
+You can see the resulting proof term with =print=:
 #+BEGIN_SRC lean
 theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
 begin
@@ -97,7 +97,8 @@ begin
 end
 
 -- BEGIN
-print definition test
+reveal test
+print test
 -- END
 #+END_SRC
 
@@ -132,7 +133,8 @@ begin
 end
 
 -- BEGIN
-print definition test
+reveal test
+print test
 -- END
 #+END_SRC
 

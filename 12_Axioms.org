@@ -920,8 +920,8 @@ section
 
   theorem has_left_inverse_of_injective : injective f → has_left_inverse f :=
   assume inj : ∀ a₁ a₂, f a₁ = f a₂ → a₁ = a₂,
-  have is_linv : finv ∘ f = id, from
-    funext (λ a,
+  have is_linv : ∀ a, finv (f a) = a, from
+    (take a,
       assert ex  : ∃ a₁, f a₁ = f a, from exists.intro a rfl,
       have   feq : f (choose ex) = f a, from !choose_spec,
       calc finv (f a) = choose ex :  dif_pos ex

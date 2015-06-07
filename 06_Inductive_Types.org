@@ -1321,11 +1321,15 @@ type in the family. One example is the definition of =vector A n=, the
 type of vectors of elements of =A= of length =n=:
 #+BEGIN_SRC lean
 open nat
+namespace hide
+
 -- BEGIN
 inductive vector (A : Type) : nat → Type :=
 | nil {} : vector A zero
 | cons   : Π {n}, A → vector A n → vector A (succ n)
 -- END
+
+end hide
 #+END_SRC
 Notice that the =cons= constructor takes an element of =vector A n=,
 and returns an element of =vector A (succ n)=, thereby using an
@@ -1334,9 +1338,15 @@ element of one member of the family to build an element of another.
 Another example is given by the family of types =fin n=. For each =n=,
 =fin n= is supposed to denote a generic type of =n= elements:
 #+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
 inductive fin : nat → Type :=
 | fz : Π n, fin (nat.succ n)
 | fs : Π {n}, fin n → fin (nat.succ n)
+-- END
+
+end hide
 #+END_SRC
 This example may be hard to understand, so you should take the time to
 think about how it works.

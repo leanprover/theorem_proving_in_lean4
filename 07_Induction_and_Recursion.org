@@ -318,15 +318,8 @@ it is not clear how to tell that to =cases_on=.
 
 A standard solution is to define an auxiliary function:
 #+BEGIN_SRC lean
-namespace hide
-open nat
-
-inductive vector (A : Type) : nat → Type :=
-| nil {} : vector A zero
-| cons   : Π {n}, A → vector A n → vector A (succ n)
-
-open vector
-notation h :: t := cons h t
+import data.vector
+open nat vector
 
 -- BEGIN
 definition tail_aux {A : Type} {n m : nat} (v : vector A m) :
@@ -341,8 +334,6 @@ vector.cases_on v
 definition tail {A : Type} {n : nat} (v : vector A (succ n)) : vector A n :=
 tail_aux v rfl
 -- END
-
-end hide
 #+END_SRC
 In the =nil= case, =m= is instantiated to =0=, and =no_confusion=
 (discussed in Section [[file:06_Inductive_Types.org::#Automatically_Generated_Constructions][Automatically Generated Constructions]]) makes use
@@ -359,17 +350,13 @@ use =no_confusion=.
 
 The =tail= function is, however, easy to define using recursive
 equations, and the function definition package generates all the
-boilerplate code automatically for us. Here are a number of examples:
+boilerplate code automatically for us. 
+
+
+Here are a number of examples:
 #+BEGIN_SRC lean
-namespace hide
-open nat
-
-inductive vector (A : Type) : nat → Type :=
-| nil {} : vector A zero
-| cons   : Π {n}, A → vector A n → vector A (succ n)
-
-open vector prod
-notation h :: t := cons h t
+import data.vector
+open nat vector prod
 
 -- BEGIN
 definition head {A : Type} : Π {n}, vector A (succ n) → A
@@ -393,8 +380,6 @@ definition zip {A B : Type} : Π {n}, vector A n → vector B n → vector (A ×
 | zip nil nil         := nil
 | zip (a::va) (b::vb) := (a, b) :: zip va vb
 -- END
-
-end hide
 #+END_SRC
 Note that we can omit recursive equations for "unreachable" cases such
 as =head nil=.
@@ -544,23 +529,21 @@ replace =⌞n+1⌟= with =(n+1)= in the next example and inspect the
 generated definition using =print definition to_nat=.
 
 #+BEGIN_SRC lean
-namespace hide
--- BEGIN
 open nat
 
-inductive fin : nat → Type :=
-| fz : Πn, fin (succ n)
-| fs : Π{n}, fin n → fin (succ n)
+inductive finord : nat → Type :=
+| fz : Πn, finord (succ n)
+| fs : Π{n}, finord n → finord (succ n)
 
-open fin
+open finord
 
-definition to_nat : Π{n : nat}, fin n → nat
+definition to_nat : Π{n : nat}, finord n → nat
 | @to_nat ⌞n+1⌟ (fz n) := zero
 | @to_nat ⌞n+1⌟ (fs f) := succ (to_nat f)
--- END
-
-end hide
 #+END_SRC
+
+# TODO: note, in the library, we got rid of this encoding of finite ordinals. 
+# Do we want to change this example?
 
 ** Match Expressions
 
@@ -616,15 +599,7 @@ left-hand-side of recursive equations. If we don't provide the implicit argument
 to solve some placeholders (aka meta-variables) in the nested match expression.
 
 #+BEGIN_SRC lean
-namespace hide
-open nat
-
-inductive vector (A : Type) : nat → Type :=
-| nil {} : vector A zero
-| cons   : Π {n}, A → vector A n → vector A (succ n)
-
-open vector prod
-notation h :: t := cons h t
+open nat vector prod
 
 -- BEGIN
 variables {A B : Type}
@@ -638,8 +613,6 @@ definition unzip : Π {n : nat}, vector (A × B) n → vector A n × vector B n
 example : unzip ((1, 10) :: (2, 20) :: nil) = (1 :: 2 :: nil, 10 :: 20 :: nil) :=
 rfl
 -- END
-
-end hide
 #+END_SRC
 
 The name of the function being defined can be omitted in the
@@ -649,15 +622,7 @@ multiple cases. When the name is omitted, Lean will silently include
 =@f= in the left-hand-side of every pattern matching equation, where
 =f= is not the name of the function being defined. Here is a small example:
 #+BEGIN_SRC lean
-namespace hide
-open nat
-
-inductive vector (A : Type) : nat → Type :=
-| nil {} : vector A zero
-| cons   : Π {n}, A → vector A n → vector A (succ n)
-
-open vector prod
-notation h :: t := cons h t
+open nat vector prod
 
 -- BEGIN
 variables {A B : Type}
@@ -671,8 +636,6 @@ definition unzip : Π {n : nat}, vector (A × B) n → vector A n × vector B n
 example : unzip ((1, 10) :: (2, 20) :: nil) = (1 :: 2 :: nil, 10 :: 20 :: nil) :=
 rfl
 -- END
-
-end hide
 #+END_SRC
 
 Next, we define the function =diag= which extracts the diagonal of a
@@ -681,15 +644,7 @@ defined by structural induction. However, the term =map tail v= is not
 a subterm of =((a :: va) :: v)=. Could you explain what is going on?
 
 #+BEGIN_SRC lean
-namespace hide
-open nat
-
-inductive vector (A : Type) : nat → Type :=
-| nil {} : vector A zero
-| cons   : Π {n}, A → vector A n → vector A (succ n)
-
-open vector
-notation h :: t := cons h t
+open nat vector
 
 -- BEGIN
 variables {A B : Type}
@@ -706,8 +661,6 @@ definition diag : Π {n : nat}, vector (vector A n) n → vector A n
 | diag nil              := nil
 | diag ((a :: va) :: v) := a :: diag (map tail v)
 -- END
-
-end hide
 #+END_SRC
 
 ** Well-Founded Recursion
