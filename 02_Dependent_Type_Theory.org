@@ -1006,7 +1006,6 @@ eval ⟨c, d⟩.2
   :CUSTOM_ID: Implicit_Arguments
 :END:
 
-
 Suppose we have an implementation of lists as described above.
 #+BEGIN_SRC lean
 -- BEGIN
@@ -1175,6 +1174,7 @@ check @id B b
 -- END
 #+END_SRC
 
-Below we will see that Lean has another useful annotation, =!=, which,
-in a sense, does the opposite of =@=. This is most useful in the
-context of theorem proving, which we will turn to next.
+Section [[file:08_Building_Theories_and_Proof::#More_on_Implicit_Arguments][More on Implicit Arguments]] explains another useful annotation,
+=!=, which makes explicit arguments implicit. In a sense, it is the
+opposite of =@=, and is most useful in the context of theorem proving,
+which we will turn to next.
