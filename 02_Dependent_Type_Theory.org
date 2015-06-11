@@ -376,7 +376,7 @@ extend beyond =t=. For example, the variable =b= in the expression =λ
 earlier. In fact, the expression denotes the same function as =λ (u :
 B) (z : A), z=. Formally, the expressions that are the same up to a
 renaming of bound variables are called /alpha equivalent/, and are
-considered morally "the same". Lean recognizes this equivalence.
+considered "the same." Lean recognizes this equivalence.
 
 Notice that applying a term =t : A → B= to a term =s : A= yields an
 expression =t s : B=. Returning to the previous example and renaming

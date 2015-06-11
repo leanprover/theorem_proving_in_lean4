@@ -5,7 +5,7 @@
 
 By now, you have seen how to define some elementary notions in
 dependent type theory. You have also seen that it is possible to
-import notions that are defined in Lean's library. In this chapter, we
+import objects that are defined in Lean's library. In this chapter, we
 will explain how mathematical propositions and proofs are expressed in
 the language of dependent type theory, so that you can start proving
 assertions about the objects and notations that have been defined. The
@@ -32,12 +32,10 @@ constant or : Prop → Prop → Prop
 constant not : Prop → Prop
 constant implies : Prop → Prop → Prop
 
-section
-  variables p q r : Prop
-  check and p q
-  check or (and p q) r
-  check implies (and p q) (and q p)
-end
+variables p q r : Prop
+check and p q                      -- Prop
+check or (and p q) r               -- Prop
+check implies (and p q) (and q p)  -- Prop
 -- END
 
 end hide
@@ -58,10 +56,8 @@ constant Proof : Prop → Type
 
 constant and_comm : Π p q : Prop, Proof (implies (and p q) (and q p))
 
-section
-  variables p q : Prop
-  check and_comm p q
-end
+variables p q : Prop
+check and_comm p q      -- Proof (implies (and p q) (and q p))
 -- END
 
 end hide
@@ -157,7 +153,7 @@ inhabitant of =p= as being the "fact that =p= is true." A proof of =p
 is true."
 
 Indeed, if =p : Prop= is any proposition, Lean's /standard kernel/
-treats any two elements =t1 t2 : p= as being "definitionally equal,"
+treats any two elements =t1 t2 : p= as being definitionally equal,
 much the same way as it treats =(λ x, t)s= and =t[s/x]= as
 definitionally equal. This is known as "proof irrelevance," and is
 consistent with the interpretation in the last paragraph. It means
@@ -172,7 +168,7 @@ later chapter.
 ** Working with Propositions as Types
 
 In the propositions-as-types paradigm, theorems involving only =→= can
-be proved using only lambda abstraction and application. In Lean, the
+be proved using lambda abstraction and application. In Lean, the
 =theorem= command introduces a new theorem:
 #+BEGIN_SRC lean
 constants p q : Prop
@@ -195,6 +191,12 @@ tries to "unfold" the definition and "see" the proof. The point is
 that later definitions and theorems should not care what the proof is;
 by the assumption of proof irrelevance, they are all treated the
 same.
+
+Note that the =theorem= command is really a version of the
+=definition= command: under the propositions and types correspondence,
+proving the theorem =p → q → p= is really the same as defining an
+element of the associated type. To the kernel type checker,
+definitions and theorems are the same.
 
 Notice that the lambda abstractions =Hp : p= and =Hq : q= can be
 viewed as temporary assumptions in the proof of =t1=. Lean provides
@@ -247,7 +249,8 @@ constants p q : Prop
 
 -- BEGIN
 theorem t1 (Hp : p) (Hq : q) : p := Hp
-check t1
+
+check t1 -- p → q → p
 -- END
 #+END_SRC
 Now we can apply the theorem =t1= just as a function application.
@@ -260,7 +263,6 @@ theorem t1 (Hp : p) (Hq : q) : p := Hp
 axiom Hp : p
 
 theorem t2 : q → p := t1 Hp
-check t2
 -- END
 #+END_SRC
 Here, the =axiom= command is alternative syntax for
@@ -274,52 +276,56 @@ propositions =p= and =q=, not just the particular constants
 declared. So it would be more natural to define the theorem so that it
 quantifies over those, too:
 #+BEGIN_SRC lean
--- BEGIN
 theorem t1 (p q : Prop) (Hp : p) (Hq : q) : p := Hp
 check t1
--- END
 #+END_SRC
-The type of =t1= is now =Π p q : Prop, p → q → p=. We can read this as
+The type of =t1= is now =∀ p q : Prop, p → q → p=. We can read this as
 the assertion "for every pair of propositions =p q=, we have =p → q →
-p=". Later we will see how Pi types let us model universal quantifiers
-more generally. For the moment, however, we will focus on theorems
-in propositional logic, generalized over the propositions. We will
-tend to work in sections with variables over the propositions, so that
-they are generalized for us automatically.
+p=". The symbol =∀= is alternate syntax for =Π=, and later we will see
+how Pi types let us model universal quantifiers more generally. For
+the moment, however, we will focus on theorems in propositional logic,
+generalized over the propositions. We will tend to work in sections
+with variables over the propositions, so that they are generalized for
+us automatically.
 
 When we generalize =t1= in that way, we can then apply it to different
 pairs of propositions, to obtain different instances of the general
 theorem.
 #+BEGIN_SRC lean
--- BEGIN
-section
-  theorem t1 (p q : Prop) (Hp : p) (Hq : q) : p := Hp
+theorem t1 (p q : Prop) (Hp : p) (Hq : q) : p := Hp
 
-  variables p q r s : Prop
+variables p q r s : Prop
 
-  check t1 p q
-  check t1 r s
-  check t1 (r → s) (s → r)
+check t1 p q                -- p → q → p
+check t1 r s                -- r → s → r
+check t1 (r → s) (s → r)    -- (r → s) → (s → r) → r → s
 
-  variable H : r → s
-  check t1 (r → s) (s → r) H
-end
--- END
+variable H : r → s
+check t1 (r → s) (s → r) H  -- (s → r) → r → s
 #+END_SRC
 Remember that under the propositions-as-types correspondence, a
-variable =H= of type =r → s= can be viewed as the hypothesis that =r →
-s= holds.
+variable =H= of type =r → s= can be viewed as the hypothesis, or
+premise, that =r → s= holds. For that reason, Lean offers the
+alternative syntax, =premise=, for =variable=.
+#+BEGIN_SRC lean
+theorem t1 (p q : Prop) (Hp : p) (Hq : q) : p := Hp
+
+variables p q r s : Prop
+
+-- BEGIN
+premise H : r → s
+check t1 (r → s) (s → r) H
+-- END
+#+END_SRC
 
 As another example, let us consider the composition function discussed
 in the last chapter, now with propositions instead of types.
 #+BEGIN_SRC lean
-section
-  variables p q r s : Prop
+variables p q r s : Prop
 
-  theorem t2 (H1 : q → r) (H2 : p → q) : p → r :=
-  assume H3 : p,
-  show r, from H1 (H2 H3)
-end
+theorem t2 (H1 : q → r) (H2 : p → q) : p → r :=
+assume H3 : p,
+show r, from H1 (H2 H3)
 #+END_SRC
 As a theorem of propositional logic, what does =t2= say?
 
@@ -328,14 +334,12 @@ for =variable= and =variables=. This makes sense, of course, for
 variables whose type is an element of =Prop=. The following definition
 of =t2= has the same net effect as the preceding one.
 #+BEGIN_SRC lean
-section
-  variables p q r s : Prop
-  premises (H1 : q → r) (H2 : p → q)
+variables p q r s : Prop
+premises (H1 : q → r) (H2 : p → q)
 
-  theorem t2 : p → r :=
-  assume H3 : p,
-  show r, from H1 (H2 H3)
-end
+theorem t2 : p → r :=
+assume H3 : p,
+show r, from H1 (H2 H3)
 #+END_SRC
 
 ** Propositional Logic
@@ -355,7 +359,7 @@ propositional connectives come with the following notation:
 
 They all take values in =Prop=.
 #+BEGIN_SRC lean
-constants p q : Prop
+variables p q : Prop
 
 check p → q → p ∧ q
 check ¬p → p ↔ false
@@ -367,16 +371,16 @@ most strongly, then =∧= and =∨=, and finally =→= and =↔=. For example,
 =a ∧ b → c ∨ d ∧ e= means =(a ∧ b) → (c ∨ (d ∧ e))=. Remember that =→=
 associates to the right (nothing changes now that the arguments are
 elements of =Prop=, instead of some other =Type=), as do the other
-binary connectives. So if we have =p q r : Prop=, =p → q → r= reads
-"if =p=, then if =q=, then =r=." This is just the "curried" form of
-=p ∧ q → r=.
+binary connectives. So if we have =p q r : Prop=, the expression =p →
+q → r= reads "if =p=, then if =q=, then =r=." This is just the
+"curried" form of =p ∧ q → r=.
 
 In the last chapter we observed that lambda abstraction can be viewed
 as an "introduction rule" for =→=. In the current setting, it shows
 how to "introduce" or establish an implication. Application can be
 viewed as an "elimination rule," showing how to "eliminate" or use an
 implication in a proof. The other propositional connectives are
-defined in the standard library in the module =init.datatypes=, and
+defined in the standard library in the file =init.datatypes=, and
 each comes with its canonical introduction and elimination rules.
 
 *** Conjunction
@@ -386,13 +390,12 @@ proofs =H1 : p= and =H2 : q=. It is common to describe =and.intro= as
 the /and-introduction/ rule. In the next example we use =and.intro=
 to create a proof of =p → q → p ∧ q=.
 #+BEGIN_SRC lean
+variables p q : Prop
 -- BEGIN
-section
-  variables p q : Prop
-  example (Hp : p) (Hq : q) : p ∧ q := and.intro Hp Hq
 
-  check assume (Hp : p) (Hq : q), and.intro Hp Hq
-end
+example (Hp : p) (Hq : q) : p ∧ q := and.intro Hp Hq
+
+check assume (Hp : p) (Hq : q), and.intro Hp Hq
 -- END
 #+END_SRC
 The =example= command states a theorem without naming it or storing it
@@ -404,33 +407,26 @@ The expression =and.elim_left H= creates a proof of =p= from a proof
 =H : p ∧ q=.  Similarly, =and.elim_right H= is a proof of =q=. They
 are commonly known as the right and left /and-elimination/ rules.
 #+BEGIN_SRC lean
+variables p q : Prop
 -- BEGIN
-section
-  variables p q : Prop
-  -- Proof of p ∧ q → p
-  example (H : p ∧ q) : p := and.elim_left H
-  -- Proof of p ∧ q → q
-  example (H : p ∧ q) : q := and.elim_right H
-end
+example (H : p ∧ q) : p := and.elim_left H
+example (H : p ∧ q) : q := and.elim_right H
 -- END
 #+END_SRC
-
-We can now prove =p ∧ q → q ∧ p= with the following proof term.
-#+BEGIN_SRC lean
--- BEGIN
-section
-  variables p q : Prop
-
-  example (H : p ∧ q) : q ∧ p :=
-  and.intro (and.elim_right H) (and.elim_left H)
-end
--- END
-#+END_SRC
-Because they are so commonly use, the standard library provides the
+Because they are so commonly used, the standard library provides the
 abbreviations =and.left= and =and.right= for =and.elim_left= and
 =and.elim_right=, respectively.
 
-Notice that and introduction and and elimination are similar to the
+We can now prove =p ∧ q → q ∧ p= with the following proof term.
+#+BEGIN_SRC lean
+variables p q : Prop
+-- BEGIN
+example (H : p ∧ q) : q ∧ p :=
+and.intro (and.right H) (and.left H)
+-- END
+#+END_SRC
+
+Notice that and-introduction and and-elimination are similar to the
 pairing and projection operations for the cartesian product. The
 difference is that given =Hp : p= and =Hq : q=, =and.intro Hp Hq= has
 type =p ∧ q : Prop=, while =pair Hp Hq= has type =p × q : Type=. The
@@ -447,13 +443,10 @@ proof =Hp : p=.  Similarly, =or.intro_right p Hq= creates a proof for
 =p ∨ q= using a proof =Hq : q=. These are the left and right
 /or-introduction/ rules.
 #+BEGIN_SRC lean
+variables p q : Prop
 -- BEGIN
-section
-  variables p q : Prop
-
-  example (Hp : p) : p ∨ q := or.intro_left q Hp
-  example (Hq : q) : p ∨ q := or.intro_right p Hq
-end
+example (Hp : p) : p ∨ q := or.intro_left q Hp
+example (Hq : q) : p ∨ q := or.intro_right p Hq
 -- END
 #+END_SRC
 
@@ -465,16 +458,14 @@ arguments, =Hpq : p ∨ q=, =Hpr : p → r= and =Hqr : q → r=, and
 produces a proof of =r=. In the following example, we use =or.elim= to
 prove =p ∨ q → q ∨ p=.
 #+BEGIN_SRC lean
+variables p q r: Prop
 -- BEGIN
-section
-  variables p q r: Prop
-  example (H : p ∨ q) : q ∨ p :=
-  or.elim H
-    (assume Hp : p,
-      show q ∨ p, from or.intro_right q Hp)
-    (assume Hq : q,
-      show q ∨ p, from or.intro_left p Hq)
-end
+example (H : p ∨ q) : q ∨ p :=
+or.elim H
+  (assume Hp : p,
+    show q ∨ p, from or.intro_right q Hp)
+  (assume Hq : q,
+    show q ∨ p, from or.intro_left p Hq)
 -- END
 #+END_SRC
 
@@ -484,11 +475,9 @@ provides =or.inr= and =or.inl= as shorthands for =or.intro_right _=
 and =or.intro_left _=. Thus the proof term above could be written more
 concisely:
 #+BEGIN_SRC lean
+variables p q r: Prop
 -- BEGIN
-section
-  variables p q r: Prop
-  example (H : p ∨ q) : q ∨ p := or.elim H (λ Hp, or.inr Hp) (λ Hq, or.inl Hq)
-end
+example (H : p ∨ q) : q ∨ p := or.elim H (λ Hp, or.inr Hp) (λ Hq, or.inl Hq)
 -- END
 #+END_SRC
 Notice that there is enough information in the full expression for
@@ -504,45 +493,40 @@ false=. That is, we obtain =¬p= if we can derive a contradiction from
 =Hp : p= and =Hnp : ¬p=. The next example uses these rules to produce
 a proof of =(p → q) → ¬q → ¬p=.
 #+BEGIN_SRC lean
+variables p q : Prop
 -- BEGIN
-section
-  variables p q : Prop
-  example (Hpq : p → q) (Hnq : ¬q) : ¬p :=
-  not.intro
-    (assume Hp : p,
-      show false, from not.elim Hnq (Hpq Hp))
-end
+example (Hpq : p → q) (Hnq : ¬q) : ¬p :=
+not.intro
+  (assume Hp : p,
+    show false, from not.elim Hnq (Hpq Hp))
 -- END
 #+END_SRC
 
 In the standard library, =¬p= is actually an /abbreviation/ for =p →
 false=, that is, the fact that =p= implies a contradiction. You can
 check that =not.intro= then amounts to the introduction rule for
-implication. The rule =not.elim=, that is, the principle =¬p → p →
-false=, can be derived from function application as the term =assume
-Hnp, assume Hp, Hnp Hp=. We can thus avoid the use of =not.intro= and
-=not.elim= entirely, in favor of abstraction and elimination:
+implication. Similarly, the rule =not.elim=, that is, the principle
+=¬p → p → false=, corresponds to function application. In other words,
+=¬p → p → false= is derived by applying the first argument to the
+second, with the term =assume Hnp, assume Hp, Hnp Hp=. We can thus
+avoid the use of =not.intro= and =not.elim= entirely, in favor of
+abstraction and elimination:
 #+BEGIN_SRC lean
+variables p q : Prop
 -- BEGIN
-section
-  variables p q : Prop
-  example (Hpq : p → q) (Hnq : ¬q) : ¬p :=
-  assume Hp : p, Hnq (Hpq Hp)
-end
+example (Hpq : p → q) (Hnq : ¬q) : ¬p :=
+assume Hp : p, Hnq (Hpq Hp)
 -- END
 #+END_SRC
 
 The connective =false= has a single elimination rule, =false.elim=,
 which expresses the fact that anything follows from a contradiction.
-This rule is sometimes called the /principle of explosion/, or /ex
-falso/ (short for /ex falso sequitur quodlibet/).
-
+This rule is sometimes called /ex falso/ (short for /ex falso sequitur
+quodlibet/), or the /principle of explosion/.
 #+BEGIN_SRC lean
+variables p q : Prop
 -- BEGIN
-section
-  variables p q : Prop
-  example (Hp : p) (Hnp : ¬p) : q := false.elim (Hnp Hp)
-end
+example (Hp : p) (Hnp : ¬p) : q := false.elim (Hnp Hp)
 -- END
 #+END_SRC
 The arbitrary fact, =q=, that follows from falsity is an implicit
@@ -550,21 +534,17 @@ argument in =false.elim= and is inferred automatically. This pattern,
 deriving an arbitrary fact from contradictory hypotheses, is quite
 common, and is represented by =absurd=.
 #+BEGIN_SRC lean
+variables p q : Prop
 -- BEGIN
-section
-  variables p q : Prop
-  example (Hp : p) (Hnp : ¬p) : q := absurd Hp Hnp
-end
+example (Hp : p) (Hnp : ¬p) : q := absurd Hp Hnp
 -- END
 #+END_SRC
 Here, for example, is a proof of =¬p → q → (q → p) → r=:
 #+BEGIN_SRC lean
--- BEGIN
-section
-  variables p q r : Prop
-  example (Hnp : ¬p) (Hq : q) (Hqp : q → p) : r :=
-  absurd (Hqp Hq) Hnp
-end
+variables p q r : Prop
+-- BEGIN  
+example (Hnp : ¬p) (Hq : q) (Hqp : q → p) : r :=
+absurd (Hqp Hq) Hnp
 -- END
 #+END_SRC
 
@@ -581,16 +561,35 @@ produces a proof of =p → q= from =H : p ↔ q=. Similarly,
 =iff.elim_right H= produces a proof of =q → p= from =H : p ↔ q=.  Here
 is a proof of =p ∧ q ↔ q ∧ p=:
 #+BEGIN_SRC lean
+variables p q : Prop
 -- BEGIN
-section
-  variables p q : Prop
-  example : p ∧ q ↔ q ∧ p :=
-  iff.intro
-    (assume H : p ∧ q,
-      show q ∧ p, from and.intro (and.right H) (and.left H))
-    (assume H : q ∧ p,
-      show p ∧ q, from and.intro (and.right H) (and.left H))
-end
+theorem and_swap : p ∧ q ↔ q ∧ p :=
+iff.intro
+  (assume H : p ∧ q,
+    show q ∧ p, from and.intro (and.right H) (and.left H))
+  (assume H : q ∧ p,
+    show p ∧ q, from and.intro (and.right H) (and.left H))
+
+check and_swap p q    -- p ∧ q ↔ q ∧ p
+-- END
+#+END_SRC
+Because they represent a form of /modus ponens/, =iff.elim_left= and
+=iff.elim_right= can be abbreviated =iff.mp= and =iff.mp'=,
+respectively.  In the next example, we use that theorem to derive =q ∧
+p= from =p ∧ q=:
+#+BEGIN_SRC lean
+variables p q : Prop
+
+theorem and_swap : p ∧ q ↔ q ∧ p :=
+iff.intro
+  (assume H : p ∧ q,
+    show q ∧ p, from and.intro (and.right H) (and.left H))
+  (assume H : q ∧ p,
+    show p ∧ q, from and.intro (and.right H) (and.left H))
+
+-- BEGIN   
+premise H : p ∧ q
+example : q ∧ p := iff.mp (and_swap p q) H
 -- END
 #+END_SRC
 
@@ -631,7 +630,7 @@ you have to load the appropriate classical axioms.
 #+BEGIN_SRC lean
 import logic.axioms.classical
 
-constant p : Prop
+variable p : Prop
 check em p
 #+END_SRC
 Alternatively, you can simply write =import classical= to import the
@@ -655,47 +654,40 @@ or.elim (em p)
 -- END
 #+END_SRC
 Double-negation elimination allows one to prove any proposition, =p=,
-by assuming =¬p= and deriving =false=, because the latter amounts to
-proving =¬¬p=. In other words, double-negation elimination allows one
-to carry out a proof by contradiction, something which is not
-generally possible in constructive logic. As an exercise, you might
-try proving the converse, that is, showing that =em= can be proved
-from =dne=.
+by assuming =¬p= and deriving =false=, because that amounts to proving
+=¬¬p=. In other words, double-negation elimination allows one to carry
+out a proof by contradiction, something which is not generally
+possible in constructive logic. As an exercise, you might try proving
+the converse, that is, showing that =em= can be proved from =dne=.
 
 Loading the classical axioms also gives you access to additional
-patterns of proof, what can be justified by appeal to =em=. For
+patterns of proof that can be justified by appeal to =em=. For
 example, one can carry out a proof by cases:
 #+BEGIN_SRC lean
 import logic.axioms.classical
 
+variable p : Prop
 -- BEGIN
-section
-  variable p : Prop
-
-  example (H : ¬¬p) : p :=
-  by_cases
-    (assume H1 : p, H1)
-    (assume H1 : ¬p, absurd H1 H)
-end
+example (H : ¬¬p) : p :=
+by_cases
+  (assume H1 : p, H1)
+  (assume H1 : ¬p, absurd H1 H)
 -- END
 #+END_SRC
 Or you can carry out a proof by contradiction:
 #+BEGIN_SRC lean
 import logic.axioms.classical
 
+variable p : Prop
 -- BEGIN
-section
-  variable p : Prop
-
-  example (H : ¬¬p) : p :=
-  by_contradiction
-    (assume H1 : ¬p,
-      show false, from H H1)
-end
+example (H : ¬¬p) : p :=
+by_contradiction
+  (assume H1 : ¬p,
+    show false, from H H1)
 -- END
 #+END_SRC
 
-If you are not used to thinking constructively, it make take some time
+If you are not used to thinking constructively, it may take some time
 for you to get a sense of where classical reasoning is used. It is
 needed in the following example because, from a constructive
 standpoint, knowing that =p= and =q= are not both true does not
@@ -704,7 +696,7 @@ necessarily tell you which one is false:
 import classical
 
 variables p q : Prop
-
+-- BEGIN
 example (H : ¬ (p ∧ q)) : ¬ p ∨ ¬ q :=
 or.elim (em p)
   (assume Hp : p,
@@ -714,17 +706,18 @@ or.elim (em p)
         H (and.intro Hp Hq)))
   (assume Hp : ¬p,
     or.inl Hp)
+-- END
 #+END_SRC
 
 We will see later that there /are/ situations in constructive logic
 where principles like excluded middle and double-negation elimination
 are permissible, and Lean supports the use of classical reasoning in
 such contexts. Importing =logic.axioms.classical= allows one to use
-such reasoning freely.
+such reasoning freely, without any extra justification.
 
 There are additional classical axioms that are not included by default
-in the standard library. We will discuss these in detail in a later
-chapter.
+in the standard library. We will discuss these in detail in Chapter
+[[file:10_Axioms.org::#Axioms][Axioms]].
 
 ** Examples of Propositional Validities
 
@@ -743,45 +736,43 @@ the rest are constructively valid.
 #+BEGIN_SRC lean
 import logic.axioms.classical
 
-section
-  variables p q r s : Prop
+variables p q r s : Prop
 
-  -- commutativity of ∧ and ∨
-  example : p ∧ q ↔ q ∧ p := sorry
-  example : p ∨ q ↔ q ∨ p := sorry
+-- commutativity of ∧ and ∨
+example : p ∧ q ↔ q ∧ p := sorry
+example : p ∨ q ↔ q ∨ p := sorry
 
-  -- associativity of ∧ and ∨
-  example : (p ∧ q) ∧ r ↔ p ∧ (q ∧ r) := sorry
-  example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) := sorry
+-- associativity of ∧ and ∨
+example : (p ∧ q) ∧ r ↔ p ∧ (q ∧ r) := sorry
+example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) := sorry
 
-  -- distributivity
-  example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := sorry
-  example : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) := sorry
+-- distributivity
+example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := sorry
+example : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) := sorry
 
-  -- other properties
-  example : (p → (q → r)) ↔ (p ∧ q → r) := sorry
-  example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
-  example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
-  example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
-  example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
-  example : ¬(p ∧ ¬ p) := sorry
-  example : p ∧ ¬q → ¬(p → q) := sorry
-  example : ¬p → (p → q) := sorry
-  example : (¬p ∨ q) → (p → q) := sorry
-  example : p ∨ false ↔ p := sorry
-  example : p ∧ false ↔ false := sorry
-  example : ¬(p ↔ ¬p) := sorry
-  example : (p → q) → (¬q → ¬p) := sorry
+-- other properties
+example : (p → (q → r)) ↔ (p ∧ q → r) := sorry
+example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
+example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
+example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
+example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
+example : ¬(p ∧ ¬ p) := sorry
+example : p ∧ ¬q → ¬(p → q) := sorry
+example : ¬p → (p → q) := sorry
+example : (¬p ∨ q) → (p → q) := sorry
+example : p ∨ false ↔ p := sorry
+example : p ∧ false ↔ false := sorry
+example : ¬(p ↔ ¬p) := sorry
+example : (p → q) → (¬q → ¬p) := sorry
 
-  -- these require classical reasoning
-  example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
-  example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
-  example : ¬(p → q) → p ∧ ¬q := sorry
-  example : (p → q) → (¬p ∨ q) := sorry
-  example : (¬q → ¬p) → (p → q) := sorry
-  example : p ∨ ¬p := sorry
-  example : (((p → q) → p) → p) := sorry
-end
+-- these require classical reasoning
+example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
+example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
+example : ¬(p → q) → p ∧ ¬q := sorry
+example : (p → q) → (¬p ∨ q) := sorry
+example : (¬q → ¬p) → (p → q) := sorry
+example : p ∨ ¬p := sorry
+example : (((p → q) → p) → p) := sorry
 #+END_SRC
 
 The =sorry= identifier magically produces a proof of anything, or
@@ -805,42 +796,40 @@ the context. In other words, for each unresolved placeholder, Lean
 reports the subgoal that needs to be filled at that point. You can
 then construct a proof by incrementally filling in these placeholders.
 
-For reference, below are two sample proofs of validities taken from the
+For reference, here are two sample proofs of validities taken from the
 list above.
 #+BEGIN_SRC lean
 import logic.axioms.classical
 
-section
-  variables p q r : Prop
+variables p q r : Prop
 
-  -- distributivity
-  example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
-  iff.intro
-    (assume H : p ∧ (q ∨ r),
-      have Hp : p, from and.left H,
-      or.elim (and.right H)
-        (assume Hq : q,
-          show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro Hp Hq))
-        (assume Hr : r,
-          show (p ∧ q) ∨ (p ∧ r), from or.inr (and.intro Hp Hr)))
-    (assume H : (p ∧ q) ∨ (p ∧ r),
-      or.elim H
-        (assume Hpq : p ∧ q,
-          have Hp : p, from and.left Hpq,
-          have Hq : q, from and.right Hpq,
-          show p ∧ (q ∨ r), from and.intro Hp (or.inl Hq))
-        (assume Hpr : p ∧ r,
-          have Hp : p, from and.left Hpr,
-          have Hr : r, from and.right Hpr,
-          show p ∧ (q ∨ r), from and.intro Hp (or.inr Hr)))
+-- distributivity
+example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+iff.intro
+  (assume H : p ∧ (q ∨ r),
+    have Hp : p, from and.left H,
+    or.elim (and.right H)
+      (assume Hq : q,
+	show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro Hp Hq))
+      (assume Hr : r,
+	show (p ∧ q) ∨ (p ∧ r), from or.inr (and.intro Hp Hr)))
+  (assume H : (p ∧ q) ∨ (p ∧ r),
+    or.elim H
+      (assume Hpq : p ∧ q,
+	have Hp : p, from and.left Hpq,
+	have Hq : q, from and.right Hpq,
+	show p ∧ (q ∨ r), from and.intro Hp (or.inl Hq))
+      (assume Hpr : p ∧ r,
+	have Hp : p, from and.left Hpr,
+	have Hr : r, from and.right Hpr,
+	show p ∧ (q ∨ r), from and.intro Hp (or.inr Hr)))
 
-  -- an example that requires classical reasoning
-  example : ¬(p ∧ ¬q) → (p → q) :=
-  assume H : ¬(p ∧ ¬q),
-  assume Hp : p,
-  show q, from
-    or.elim (em q)
-      (assume Hq : q, Hq)
-      (assume Hnq : ¬q, absurd (and.intro Hp Hnq) H)
-end
+-- an example that requires classical reasoning
+example : ¬(p ∧ ¬q) → (p → q) :=
+assume H : ¬(p ∧ ¬q),
+assume Hp : p,
+show q, from
+  or.elim (em q)
+    (assume Hq : q, Hq)
+    (assume Hnq : ¬q, absurd (and.intro Hp Hnq) H)
 #+END_SRC
