@@ -21,9 +21,11 @@ about its current state and the objects and theorems that are
 available in the current context. You have already seen two of the
 most common ones, =check= and =eval=. Remember that =eval= is often
 used in conjunction with the =@= operator, which makes all of the
-arguments to a theorem or definition explicit. In addition, Lean
-offers a =print definition= command, that shows the value of a defined
-symbol.
+arguments to a theorem or definition explicit. In addition, you can
+use the =print= command to get information about any identifier. If
+the identifier denotes a definition or theorem, Lean prints the type
+of the symbol, and its definition; if it is a constant or axiom, Lean
+indicates that fact, and shows the type.
 #+BEGIN_SRC lean
 import data.nat
 
@@ -33,7 +35,7 @@ check @eq
 check eq.symm
 check @eq.symm
 
-print definition eq.symm
+print eq.symm
 
 -- examples with and
 check and
@@ -54,14 +56,8 @@ check foo
 check @foo
 eval foo
 eval (foo @nat.zero)
-print definition foo
+print foo
 #+END_SRC
-Note that =print definition= only works with objects introduced with
-=definition=, =theorem=, and the like. For example, entering =print
-definition eq= or =print definition and.intro= yields an error. This
-is because =eq= and =and.intro= are not defined symbols, but, rather,
-symbols introduced by the Lean's inductive definition
-package, which we will describe in the next chapter.
 
 There are other useful =print= commands:
 #+BEGIN_SRC text
@@ -76,11 +72,10 @@ print classes                : display all classes
 print instances <class name> : display all instances of the given class
 print fields <structure>     : display all "fields" of a structure
 #+END_SRC
-We will discuss classes, instances, and structures in a later
-chapter. Here are examples of how the =print= commands are used:
+We will discuss classes, instances, and structures in Chapter [[file:09.Type_Classes.org::#Type_Classes][Type
+Classes]]. Here are examples of how the =print= commands are used:
 #+BEGIN_SRC lean
 import standard algebra.ring
-
 open prod sum int nat algebra
 
 print notation
@@ -113,8 +108,8 @@ and a filter is of the form
 For example:
 #+BEGIN_SRC lean
 import data.nat
-
 open nat
+
 find_decl ((_ * _) = (_ * _))
 find_decl (_ * _) = _, +assoc
 find_decl (_ * _) = _, -assoc
@@ -142,10 +137,10 @@ pp.beta      : beta reduce terms before displaying them
 #+END_SRC
 In Lean, /coercions/ can be inserted automatically to cast an element
 of one data type to another, for example, to cast an element of =nat=
-to an element of =int=. We will discuss coercions in a later
+to an element of =int=. We will say more about them later in this
 chapter. This list is not exhaustive; you can see a complete list by
 typing =set_option pp.= and then using tab-completion in the Emacs
-mode for Lean, discussed below.
+mode for Lean, also discussed below.
 
 As an example, the following settings yield much longer output:
 #+BEGIN_SRC lean
@@ -180,13 +175,16 @@ from other files, and that importing is transitive; if you import
 --- does not carry over. In each file, you need to open the namespaces
 you wish to use.
 
-For many purposes, =import standard= and =open standard= will give you
-a good set of defaults. Even so, it is important for you to be
-familiar with the library and its contents, so you know what theorems,
-definitions, notations, and resources are available to you. Below we
-will see that Lean's Emacs mode can also help you find things you
-need, but studying the contents of the library directly is often
-unavoidable.
+The command =import standard= imports the essential parts of the
+standard library, and by now you have seen many of the namespaces you
+will need. For exmaple, you should =open nat= for notation when you
+are working with the natural numbers, and =open int= when you are
+working with the integers. In general, however, it is important for
+you to be familiar with the library and its contents, so you know what
+theorems, definitions, notations, and resources are available to
+you. Below we will see that Lean's Emacs mode can also help you find
+things you need, but studying the contents of the library directly is
+often unavoidable.
 
 Lean has two libraries. Here we will focus on the standard
 library, which offers a conventional mathematical framework. We will
@@ -326,13 +324,13 @@ Emacs interface.
 If you have never used the Emacs text editor before, you should spend
 some time experimenting with it. Emacs is an extremely powerful text
 editor, but it can also be overwhelming. There are a number of
-introductory tutorials on the web, including these:
+introductory tutorials on the web (see , including these:
 #+BEGIN_QUOTE
-[[http://www.gnu.org/software/emacs/tour/][Emacs tour]]
-
-[[http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/][Emacs beginners guide]]
-
-[[http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf][Emacs course]]
+[[http://www.gnu.org/software/emacs/tour/][Emacs tour: http://www.gnu.org/software/emacs/tour/]]
+[[http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/][Emacs beginners guide:
+http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/]]
+[[http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf][Emacs course:
+http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf]]
 #+END_QUOTE
 You can get pretty far simply using the menus at the top of the
 screen for basic editing and file management. Those menus list
@@ -385,12 +383,10 @@ cursor to the previous error. You can get to a help menu that lists
 these key bindings by clicking on the "FlyC" tag.
 
 It may be disconcerting to see a perfectly good proof suddenly "break"
-when you change a single character. If this proof is in the middle of
-a file you are working on, the Lean interface will moreover raise an
-error at every subsequent reference to the theorem. But these
-complaints vanish as soon as the correctness of the theorem is
-restored. Lean is quite fast and caches previous work to speed up
-compilation, and changes you make are registered almost
+when you change a single character. Moreover, changes can introduce
+errors downstream. But the error messages vanish quickly when
+correctness is restored. Lean is quite fast and caches previous work
+to speed up compilation, and changes you make are registered almost
 instantaneously.
 
 The Emacs Lean mode also maintains a continuous dialog with a
@@ -436,9 +432,9 @@ There are other useful tricks. If you see some notation in a Lean file
 and you want to know how to enter it from the keyboard, put the cursor
 on the symbol and type "C-c C-k". You can set common Lean options with
 "C-c C-o", and you can execute a Lean command using "C-c C-e". These
-commands and others are summarized here:
+commands and others are summarized in the online documentation:
 #+BEGIN_QUOTE
-[[https://github.com/leanprover/lean/blob/master/src/emacs/README.md][Lean Emacs mode README]]
+[[https://github.com/leanprover/lean/blob/master/src/emacs/README.md]]
 #+END_QUOTE
 If for some reason the Lean background process does not seem to be
 responding (for example, the information line no longer shows you type
@@ -451,7 +447,7 @@ when editing long files. In Lean, the "exit" command halts processing
 of the file abruptly. If you are making changes at the top of a
 long file and want to defer checking of the remainder of the file
 until you are done making those changes, you can temporarily insert an
-"exit".
+"exit."
 
 ** Projects
 
@@ -468,18 +464,18 @@ code that is then compiled down to machine representations of the
 desired formal objects. Lean stores the output of the compilation
 process in files with the extension ".olean", for "object Lean".
 
-It is these files, which we also refer to as "modules", that are
-loaded by the =import= command. When Lean processes an =import=
-command, it looks for the relevant .olean files in standard places. By
-default, the search path consists of the root of the standard library
-(or the hott library, if the file is a .hlean file) and the current
-directory. You can specify subdirectories using periods in the module
-name: for example, =import foo.bar.baz= looks for the file
-"foo/bar/baz.olean" relative to any of the locations listed in the
-search path. A leading period, as in =import .foo.bar=, indicates that
-the .olean file in question is specified relative to the current
-directory. Two leading periods, as in =import ..foo.bar=, indicates
-that the address is relative to the parent directory, and so on.
+It is these files that are loaded by the =import= command. When Lean
+processes an =import= command, it looks for the relevant .olean files
+in standard places. By default, the search path consists of the root
+of the standard library (or the hott library, if the file is a .hlean
+file) and the current directory. You can specify subdirectories using
+periods in the module name: for example, =import foo.bar.baz= looks
+for the file "foo/bar/baz.olean" relative to any of the locations
+listed in the search path. A leading period, as in =import .foo.bar=,
+indicates that the .olean file in question is specified relative to
+the current directory. Two leading periods, as in =import ..foo.bar=,
+indicates that the address is relative to the parent directory, and so
+on.
 
 If you enter the command =lean -o foo.olean foo.lean= from the command
 line, Lean processes =foo.lean= and, if it compiles successfully, it
@@ -489,9 +485,9 @@ then =import foo=.
 When you are editing a single file with either the web interface or
 the Emacs Lean mode, however, Lean only checks the file internally,
 without saving the .olean output. Suppose, then, you wish to build a
-project that has multiple files. What you really want is for Lean's
-Emacs mode to build all the relevant .olean files in the background,
-so that you can import other modules freely. 
+project that has multiple files. What you really want is that Lean's
+Emacs mode will build all the relevant .olean files in the background,
+so that you can import those files freely. 
 
 The Emacs mode makes this easy. To start a project that may
 potentially involve more than one file, choose the folder where you
@@ -521,14 +517,13 @@ Lean's parser is an instance of a Pratt parser, a non-backtracking
 parser that is fast and flexible. You can read about Pratt parsers in
 a number of places online, such as here:
 #+BEGIN_QUOTE
-[[http://en.wikipedia.org/wiki/Pratt_parser][Pratt's parser at Wikipedia]]
-
-[[http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing][Top down operator precedence parsing]]
+[[http://en.wikipedia.org/wiki/Pratt_parser]]
+[[http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing]]
 #+END_QUOTE
 Identifiers can include any alphanumeric characters, including Greek
 characters (other than Π , Σ , and λ , which, as we have seen, have a
 special meaning in the dependent type theory). They can also include
-subscripts, which can be entered by typing "\_" followed
+subscripts, which can be entered by typing =\_= followed
 by the desired subscripted character.
 
 Lean's parser is moreover extensible, which is to say, we can define
@@ -555,9 +550,9 @@ instead.
 
 If you declare these notations in a namespace, the notation is only
 operant when the namespace is open. You can declare temporary notation
-using the keyword =local=, in which case the notation is operant
-only in the current namespace or section (or in the current file 
-when not in a namespace or section).
+using the keyword =local=, in which case the notation is operant only
+in the current file, and moreover, within the scope of the current
+=namespace= or =section=, if you are in one.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -587,10 +582,8 @@ open nat
 
 notation [parsing-only] `[` a `**` b `]` := a * b + 1
 
-section
-  variables a b : ℕ
-  check [a ** b]
-end
+variables a b : ℕ
+check [a ** b]
 #+END_SRC
 The output of the =check= command displays the expression as =a * b +
 1=. 
@@ -606,13 +599,12 @@ elaborator will try to disambiguate based on context.
 import data.nat data.int
 open nat int
 
-section
-  variables a b : int
-  variables m n : nat
-  check a + b
-  check m + n
-  print notation +
-end
+variables a b : int
+variables m n : nat
+
+check a + b
+check m + n
+print notation +
 #+END_SRC
 
 Lean provides an =abbreviation= mechanism that is similar to the
@@ -633,7 +625,7 @@ pretty-printer re-constitutes the expression and prints the type of
 an abbreviation to be =[parsing-only]=, and you can direct the
 pretty-printer to suppress their use with the command =set_option
 pp.notation false=. Finally, again as with notation, you can limit
-the scope of an abbreviations by prefixing the declarations with the
+the scope of an abbreviation by prefixing the declarations with the
 =local= modifier.
 
 As the name suggests, abbreviations are intended to be used as
@@ -660,27 +652,26 @@ and =n= is a natural number, =n= is coerced to an integer.
 import data.nat data.int
 open nat int
 
-section
-  variables a b : int
-  variables m n : nat
+variables a b : int
+variables m n : nat
 
 -- BEGIN
-  check 123
-  check (123 : nat)
-  check (123 : int)
-  check a + n
-  check n + a
-  check a + 123
+check 123            -- 123 : num
+check (123 : nat)    -- 123 : ℕ 
+check (123 : int)    -- 123 : ℤ
+check a + n          -- a + n : ℤ
+check n + a          -- n + a : ℤ
+check a + 123        -- a + 123 : ℤ
 
-  set_option pp.coercions true
-  check 123
-  check (123 : nat)
-  check (123 : int)
-  check a + n
-  check n + a
-  check a + 123
+set_option pp.coercions true
+
+check 123            -- 123 : num           
+check (123 : nat)    -- of_num 123 : ℕ
+check (123 : int)    -- of_nat (of_num 123) : ℤ
+check a + n          -- a + of_nat n : ℤ
+check n + a          -- of_nat n + a : ℤ
+check a + 123        -- a + of_nat (of_num 123) : ℤ
 -- END
-end
 #+END_SRC
 Setting the option =pp.coercions= to =true= makes the coercions
 explicit. Coercions that are declared in a namespace are only
@@ -733,7 +724,8 @@ In both cases, the scope of the coercion is the current namespace, so
 the coercion will be in place whenever the module is imported and the
 namespace is open. Sometimes it is useful to assign an attribute only
 temporarily. The =local= modifier ensures that the declaration is only
-operant in the current namespace or section:
+operant in the current file, and within the current namespace or
+section:
 #+BEGIN_SRC lean
 import data.bool data.nat
 open bool nat
@@ -756,12 +748,13 @@ naturally of this form, and in any case it is always possible to
 Overloads and coercions introduce "choice points" in the elaboration
 process, forcing the elaborator to consider multiple options and
 backtrack appropriately. This can slow down the elaboration
-process. More seriously, it can make error messages less informative:
-Lean only reports the result of the last backtracking path, which
-means the failure that is reported to the user may be due to the wrong
-interpretation of an overload or coercion. This is why Lean provides
-mechanism for namespace management: parsing and elaboration go more
-smoothly when we only import the notation that we need.
+process. What is more problematic is that it can make error messages
+less informative: Lean only reports the result of the last
+backtracking path, which means the failure that is reported to the
+user may be due to the wrong interpretation of an overload or
+coercion. This is why Lean provides mechanism for namespace
+management: parsing and elaboration go more smoothly when we only
+import the notation that we need.
 
 Nonetheless, overloading is quite convenient, and often causes no
 problems. There are various ways to manually disambiguate an
