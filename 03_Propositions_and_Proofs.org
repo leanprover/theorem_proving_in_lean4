@@ -185,18 +185,39 @@ q → p= assumes =p= and =q= are true, and uses the first hypothesis
 Note that the =theorem= command is really a version of the
 =definition= command: under the propositions and types correspondence,
 proving the theorem =p → q → p= is really the same as defining an
-element of the associated type. The only difference is that a
-=theorem= is usually treated as an /opaque/ definition, and Lean never
-tries to "unfold" the definition and "see" the proof. The point is
-that later definitions and theorems should not care what the proof is;
-by the assumption of proof irrelevance, they are all treated the
-same.
+element of the associated type. To the kernel type checker, there is no
+difference between the two.
 
-Note that the =theorem= command is really a version of the
-=definition= command: under the propositions and types correspondence,
-proving the theorem =p → q → p= is really the same as defining an
-element of the associated type. To the kernel type checker,
-definitions and theorems are the same.
+There are a few pragmatic differences between definitions and
+theorems, however, that you will learn more about in [Chapter 8]. In
+normal circumstances, it is never necessary to unfold the "definition"
+of a theorem; by proof irrelevance, any two proofs of that theorem are
+definitionally equal. Once the proof of a theorem is complete,
+typically we only need to know that the proof exists; it doesn't
+matter what the proof is. In light of that fact, Lean tags proofs as
+/irreducible/, which serves as a hint to the parser (more precisely,
+the /elaborator/) that there is generally no need to unfold it when
+processing a file. Moreover, for efficiency purposes,
+Lean treats theorems as axiomatic constants within the file that they
+are defined. This makes it possible to process and check theorems in
+parallel, since theorems later in a file do not make use of the
+contents of earlier proofs.
+
+As with definitions, the =print= command will show you the proof of a
+theorem, with a slight twist: if you want to print a theorem in the
+same file in which it is defined, you need to use the =reveal= command
+to for Lean to use the theorem itself, rather than its axiomatic
+surrogate.
+#+BEGIN_SRC lean
+constants p q : Prop
+
+-- BEGIN
+theorem t1 : p → q → p := λ Hp : p, λ Hq : q, Hp
+
+reveal t1
+print t1
+-- END
+#+END_SRC
 
 Notice that the lambda abstractions =Hp : p= and =Hq : q= can be
 viewed as temporary assumptions in the proof of =t1=. Lean provides
