@@ -1118,16 +1118,26 @@ definitions:
 #+BEGIN_SRC lean
 definition id {A : Type} (x : A) := x
 
+check id      -- ?A → ?A
+
 variables A B : Type
 variables (a : A) (b : B)
 
-check id
-check id a
-check id b
+check id      -- ?A A B a b → ?A A B a b
+check id a    -- A 
+check id b    -- B
 #+END_SRC
 This makes the first argument to =id= implicit. Notationally, this
 hides the specification of the type, making it look as though =id=
-simply takes an argument of any type.
+simply takes an argument of any type. 
+
+In the first =check= command, the inscription =?A= indicates that the
+type of =id= depends on a "placeholder," or "metavariable," that
+should, in general, be inferred from the context. The output of the
+second =check= command is somewhat verbose: it indicates that the
+placeholder, =?A=, can itself depend on any of the variables =A=, =B=,
+=a=, and =b= that are in the context. If this additional information
+is annoying, you can suppress it by writing =@id=, as described below.
 
 Variables can also be declared implicit:
 #+BEGIN_SRC lean
@@ -1160,19 +1170,21 @@ provide the argument explicitly. If =foo= is such a function, the
 notation =@foo= denotes the same function with all the arguments made
 explicit.
 #+BEGIN_SRC lean
--- the polymorphic identity function
 definition id {A : Type} (x : A) := x
 
 variables A B : Type
 variables (a : A) (b : B)
 -- BEGIN
-check @id
-check @id A
-check @id B
-check @id A a
-check @id B b
+check @id        -- Π {A : Type}, A → A
+check @id A      -- A → A
+check @id B      -- B → B
+check @id A a    -- A
+check @id B b    -- B
 -- END
 #+END_SRC
+Notice that now the first =check= command gives the type of the
+identifier, =id=, without inserting any placeholders. Moreover, the
+output indicates that the first argument is implicit.
 
 Section [[file:08_Building_Theories_and_Proof::#More_on_Implicit_Arguments][More on Implicit Arguments]] explains another useful annotation,
 =!=, which makes explicit arguments implicit. In a sense, it is the
