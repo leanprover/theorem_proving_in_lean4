@@ -159,7 +159,7 @@ structure morphism (S1 S2 : Semigroup) : Type :=
 (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
 -- BEGIN
-check morphism.mor
+check morphism.mor    -- morphism ?S1 ?S2 → ?S1 → ?S2
 -- END
 #+END_SRC
 As a result, it is a prime candidate for the third type of coercion.
@@ -217,7 +217,7 @@ when you define the function initially, as described in Section
 [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]]. Coercions that are defined in a namespace "live" in that
 namespace, and are made active when the namespace is opened. If you
 want a coercion to be active as soon as a module is imported, be sure
-to declare it at the "top level", i.e. outside any namespace.
+to declare it at the "top level," i.e. outside any namespace.
 
 Remember also that you can instruct Lean's pretty-printer to show
 coercions with =set_option=, and you can print all the coercions in
@@ -260,36 +260,49 @@ sorts, of the class of function types. The latter two are sinks in the
 graph. Internally, Lean automatically computes the transitive closure
 of this graph, in which the "paths" correspond to chains of coercions.
 
-
 ** More on Implicit Arguments
 :PROPERTIES:
   :CUSTOM_ID: More_on_Implicit_Arguments
 :END:
 
-In Section [[file:02_Dependent_Type_Theory.org::#Implicit_Arguments][Implicit Arguments]], we discussed implicit arguments in
-Lean.  For example if a term =t= has type =Π {x : A}, P x=, the
-variable =x= is /implicit/ in =t=. This means that whenever you write
-=t=, a "hole" is inserted, so =t= is replaced by =@t _=. If you don't
-want that a hole is inserted, you can write =@t=.
+In Section [[file:02_Dependent_Type_Theory.org::#Implicit_Arguments][Implicit Arguments]], we discussed implicit arguments.  For
+example, if a term =t= has type =Π {x : A}, P x=, the variable =x= is
+/implicit/ in =t=, which means that whenever you write =t=, a
+/placeholder/ is inserted, so that =t= is replaced by =@t _=. If you
+don't want that to happen, you have to write =@t= instead.
 
-Dual to =@t= is the exclamation mark =!t=. This will insert
-underscores for explicit arguments of a term. Look at the resulting
-terms of the following definitions to see this in action:
+Dual to the =@= symbol is the exclamation mark, =!=, which essentially
+makes explicit arguments implicit, by inserting underscores for such
+explicit arguments. Look at the resulting terms of the
+following definitions to see this in action:
 
 #+BEGIN_SRC lean
 import data.nat
 open nat eq.ops
 -- BEGIN
 definition foo (n m k l : ℕ) : (n - m) * (k + l) = (k + l) * (n - m) := !mul.comm
-print definition foo
+print foo
+
+-- definition foo : ∀ (n m k l : ℕ), (n - m) * (k + l) = (k + l) * (n - m)
+-- λ (n m k l : ℕ), mul.comm (n - m) (k + l)
 
 definition foo2 (n m k l : ℕ) : (n + k) + l = (k + l) + n := !add.assoc ⬝ !add.comm
-print definition foo2
+print foo2
+
+-- definition foo2 : ∀ (n : ℕ), ℕ → (∀ (k l : ℕ), n + k + l = k + l + n)
+-- λ (n m k l : ℕ), add.assoc n k l ⬝ add.comm n (k + l)
 
 definition foo3 (l : ℕ) (H : ∀ (n : ℕ), l + 2 ≠ 2 * (n + 1)) (n : ℕ) : l ≠ 2 * n :=
 assume K : l = 2 * n,
 absurd (show l + 2 = 2 * n + 2, from K ▸ rfl) !H
-print definition foo3
+print foo3
+
+-- definition foo3 : ∀ (l : ℕ),
+--   (∀ (n : ℕ), l + 2 ≠ 2 * (n + 1)) → (∀ (n : ℕ), l ≠ 2 * n)
+-- λ (l : ℕ) (H : ∀ (n : ℕ), l + 2 ≠ 2 * (n + 1)) (n : ℕ)
+-- (K : l = 2 * n),
+--   absurd (show l + 2 = 2 * n + 2, from K ▸ rfl) (H n)
+
 -- END
 #+END_SRC
 In the last example we use a neat trick. To show that =l + 2 = 2 * n +
@@ -809,9 +822,9 @@ in a proof, and is useful for structuring and documenting proofs.
 Given the term =have H : p, from s, t=, by default, the hypothesis =H=
 is not "visible" by automated procedures and tactics used to construct
 =t=. This is important because too much information may negatively
-affect the performance and effectiveness of automated procedures. Tou
+affect the performance and effectiveness of automated procedures. You
 can make =H= available to automated procedures and tactics by using
-the idiom =assert H : p, from s, t=. Here is a small example:
+the idiom =assert H : p, from s, t=. Here is an example:
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ q ∧ r → q ∧ p :=
 assume Hpqr : p ∧ q ∧ r,
