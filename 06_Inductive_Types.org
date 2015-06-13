@@ -1204,7 +1204,7 @@ notation `[` l:(foldr `,` (h t, cons h t) nil) `]` := l
 section
   open nat
   check [1, 2, 3, 4, 5]
-  check typeof [1, 2, 3, 4, 5] : list ℕ
+  check ([1, 2, 3, 4, 5] : list ℕ)
 end
 
 end list
@@ -1213,7 +1213,7 @@ end list
 end hide
 #+END_SRC
 In the first =check=, Lean assumes that =[1, 2, 3, 4, 5]= is merely a
-list of numerals. The =typeof= command forces Lean to interpret it as
+list of numerals. The =(t : list ℕ)= expression forces Lean to interpret =t= as
 a list of natural numbers.
 
 As an exercise, prove the following:
