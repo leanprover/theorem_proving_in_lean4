@@ -738,13 +738,6 @@ local attribute bool.to_nat [coercion]
 -- END
 #+END_SRC
 
-For the elaborator to handle coercions effectively, restrictions are
-imposed on the types one can serve as the source and target: roughly,
-they have to be inductively defined types, as discussed in Section
-[[More on Coercions]]. As we will see, most defined datatypes are
-naturally of this form, and in any case it is always possible to
-"wrap" a definition as an inductively defined datatype.
-
 Overloads and coercions introduce "choice points" in the elaboration
 process, forcing the elaborator to consider multiple options and
 backtrack appropriately. This can slow down the elaboration

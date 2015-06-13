@@ -12,10 +12,8 @@ and proofs.
   :CUSTOM_ID: More_on_Coercions
 :END:
 
-In Section [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]], we discussed coercions briefly, and noted that
-there are restrictions on the types that one can coerce from and
-to. Now that we have discussed inductive types, we can be more
-precise.
+In Section [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]], we discussed coercions briefly. The goal of this
+section is to provide a more precise account.
 
 The most basic type of coercion maps elements of one type to
 another. For example, a coercion from =nat= to =int= allows us to view
@@ -52,17 +50,6 @@ for some =y1 ... ym=. For example, if =F= is =list : Π A : Type, Type=,
 set A= allows us to pass an argument of type =list T= for some =T= any
 time an element of type =set T= is expected. These are the types of
 coercions we considered in Section [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]].
-
-Lean imposes the restriction that the source and target families have
-to be families of inductive types, as defined in Chapter [[file:06_Inductive_Types.org::#Inductive_Types][Inductive
-Types]]. Note that these include parameterized structures, as discussed
-in the next chapter. Because inductive types are atomic --- they do
-not unfold, definitionally, to other expressions --- this reduces
-ambiguity and makes it easier for Lean's elaborator to determine when
-to consider a coercion. This restriction turns out to be mild in
-practice: most natural sources and targets for coercions are defined
-as inductive types, and any type =T= can be "wrapped" as an inductive
-type, by writing ~inductive foo (T : Type) := mk : T → foo~.
 
 # TODO: give Lean source for these examples.
 
