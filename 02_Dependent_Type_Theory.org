@@ -466,8 +466,8 @@ constants (a : A) (f : A → B) (g : B → C) (h : A → A)
 
 definition gfa : C := g (f a)
 
-check gfa             -- C
-print gfa  -- g (f a)
+check gfa    -- C
+print gfa    -- g (f a)
 
 -- We can omit the type when Lean can figure it out.
 definition gfa' := g (f a)
