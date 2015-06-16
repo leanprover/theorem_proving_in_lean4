@@ -165,7 +165,7 @@ The two ways we have suggested thinking about the
 propositions-as-types paradigm differ in a fundamental way. From the
 constructive point of view, proofs are abstract mathematical objects
 that are /denoted/ by suitable expressions in dependent type
-theory. In constrast, if we think in terms of the coding trick
+theory. In contrast, if we think in terms of the coding trick
 described above, then the expressions themselves do not denote
 anything interesting. Rather, it is the fact that we can write them
 down and check that they are well-typed that ensures that the
