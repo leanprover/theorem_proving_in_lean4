@@ -133,7 +133,7 @@ described in the last chapter. =Prop= has some special features, but
 like the other type universes, it is closed under the arrow
 constructor: if we have =p q : Prop=, then =p → q : Prop=.
 
-There are a number of ways of thinking about propositions as types. To
+There are at least two ways of thinking about propositions as types. To
 some who take a constructive view of logic and mathematics, this is a
 faithful rendering of what it means to be a proposition: a proposition
 =p= represents a sort of data type, namely, a specification of the type
@@ -142,17 +142,17 @@ an object =t : p= of the right type.
 
 Those not inclined to this ideology can view it, rather, as a simple
 coding trick. To each proposition =p= we associate a type, which is
-either empty if =p= is false, and has a single element, say =*=, if
-=p= is true. In the latter case, let us say that (the type associated
-with) =p= is /inhabited/. It just so happens that the rules for
-function application and abstraction can conveniently help us keep
-track of which elements of /Prop/ are inhabited. So constructing an
-element =t : p= tells us that =p= is indeed true. You can think of the
+empty if =p= is false and has a single element, say =*=, if =p= is
+true. In the latter case, let us say that (the type associated with)
+=p= is /inhabited/. It just so happens that the rules for function
+application and abstraction can conveniently help us keep track of
+which elements of /Prop/ are inhabited. So constructing an element
+=t : p= tells us that =p= is indeed true. You can think of the
 inhabitant of =p= as being the "fact that =p= is true." A proof of =p
-→ q= uses "the fact that =p= is true" to obtain "the fact that =q=
-is true."
+→ q= uses "the fact that =p= is true" to obtain "the fact that =q= is
+true."
 
-Indeed, if =p : Prop= is any proposition, Lean's /standard kernel/
+Indeed, if =p : Prop= is any proposition, Lean's standard kernel
 treats any two elements =t1 t2 : p= as being definitionally equal,
 much the same way as it treats =(λ x, t)s= and =t[s/x]= as
 definitionally equal. This is known as "proof irrelevance," and is
@@ -160,6 +160,33 @@ consistent with the interpretation in the last paragraph. It means
 that even though we can treat proofs =t : p= as ordinary objects in
 the language of dependent type theory, they carry no information
 beyond the fact that =p= is true.
+
+The two ways we have suggested thinking about the
+propositions-as-types paradigm differ in a fundamental way. From the
+constructive point of view, proofs are abstract mathematical objects
+that are /denoted/ by suitable expressions in dependent type
+theory. In constrast, if we think in terms of the coding trick
+described above, then the expressions themselves do not denote
+anything interesting. Rather, it is the fact that we can write them
+down and check that they are well-typed that ensures that the
+proposition in question is true. In other words, the expressions
+/themselves/ are the proofs.
+
+In the exposition below, we will slip back and forth between these two
+ways of talking, at times saying that an expression "constructs" or
+"produces" or "returns" a proof of a proposition, and at other times
+simply saying that it "is" such a proof. This is similar to the way
+that computer scientists occasionally blur the distinction between
+syntax and semantics by saying, at times, that a program "computes" a
+certain function, and at other times speaking as though the program
+"is" the function in question.
+
+In any case, all that matters in the end is that the bottom line is
+clear. To formally express a mathematical assertion in the language of
+dependent type theory, we need to exhibit a term =p : Prop=. To
+/prove/ that assertion, we need to exhibit a term =t : p=. Lean's
+task, as a proof assistant, is to help us to construct such a term,
+=t=, and to verify that it is well-formed and has the correct type.
 
 Lean also supports an alternative /proof relevant kernel/, which forms
 the basis for [[http://homotopytypetheory.org/][homotopy type theory]]. We will return to this topic in a
@@ -197,16 +224,16 @@ typically we only need to know that the proof exists; it doesn't
 matter what the proof is. In light of that fact, Lean tags proofs as
 /irreducible/, which serves as a hint to the parser (more precisely,
 the /elaborator/) that there is generally no need to unfold it when
-processing a file. Moreover, for efficiency purposes,
-Lean treats theorems as axiomatic constants within the file that they
-are defined. This makes it possible to process and check theorems in
+processing a file. Moreover, for efficiency purposes, Lean treats
+theorems as axiomatic constants within the file in which they are
+defined. This makes it possible to process and check theorems in
 parallel, since theorems later in a file do not make use of the
 contents of earlier proofs.
 
 As with definitions, the =print= command will show you the proof of a
 theorem, with a slight twist: if you want to print a theorem in the
 same file in which it is defined, you need to use the =reveal= command
-to for Lean to use the theorem itself, rather than its axiomatic
+to force Lean to use the theorem itself, rather than its axiomatic
 surrogate.
 #+BEGIN_SRC lean
 constants p q : Prop
@@ -508,9 +535,9 @@ can help catch and debug errors.
 
 *** Negation and Falsity
 
-The expression =not_intro H= produces a proof of =¬p= from =H : p →
+The expression =not.intro H= produces a proof of =¬p= from =H : p →
 false=. That is, we obtain =¬p= if we can derive a contradiction from
-=p=. The expression =not_elim Hnp Hp= produces a proof of =false= from
+=p=. The expression =not.elim Hnp Hp= produces a proof of =false= from
 =Hp : p= and =Hnp : ¬p=. The next example uses these rules to produce
 a proof of =(p → q) → ¬q → ¬p=.
 #+BEGIN_SRC lean
