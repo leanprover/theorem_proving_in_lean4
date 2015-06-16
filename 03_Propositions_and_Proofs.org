@@ -741,6 +741,10 @@ in the standard library. We will discuss these in detail in Chapter
 [[file:10_Axioms.org::#Axioms][Axioms]].
 
 ** Examples of Propositional Validities
+:PROPERTIES:
+  :CUSTOM_ID: Examples_of_Propositional_Validities
+:END:
+
 
 Lean's standard library contains proofs of many valid statements of
 propositional logic, all of which you are free to use in proofs of

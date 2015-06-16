@@ -118,6 +118,9 @@ find_decl _ < succ _, +imp, -le
 #+END_SRC
 
 ** Setting Options
+:PROPERTIES:
+  :CUSTOM_ID: Setting_Options
+:END:
 
 Lean maintains a number of internal variables that can be set by users
 to control its behavior. The syntax for doing so is as follows:

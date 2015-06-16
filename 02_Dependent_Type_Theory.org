@@ -1137,9 +1137,23 @@ should, in general, be inferred from the context. The output of the
 second =check= command is somewhat verbose: it indicates that the
 placeholder, =?A=, can itself depend on any of the variables =A=, =B=,
 =a=, and =b= that are in the context. If this additional information
-is annoying, you can suppress it by writing =@id=, as described below.
+is annoying, you can suppress it by writing =@id=, as described
+below. Alternatively, you can set an option to avoid pointing these
+arguments:
+#+BEGIN_SRC lean
+definition id {A : Type} (x : A) := x
 
-Variables can also be declared implicit:
+-- BEGIN
+variables A B : Type
+variables (a : A) (b : B)
+
+set_option pp.metavar_args false
+check id      -- ?A → ?A
+-- END
+#+END_SRC
+
+Variables can also be declared implicit when they are declared with
+the =variables= command:
 #+BEGIN_SRC lean
 section
   variable {A : Type}

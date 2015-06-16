@@ -268,84 +268,92 @@ of this graph, in which the "paths" correspond to chains of coercions.
 In Section [[file:02_Dependent_Type_Theory.org::#Implicit_Arguments][Implicit Arguments]], we discussed implicit arguments.  For
 example, if a term =t= has type =Π {x : A}, P x=, the variable =x= is
 /implicit/ in =t=, which means that whenever you write =t=, a
-/placeholder/ is inserted, so that =t= is replaced by =@t _=. If you
-don't want that to happen, you have to write =@t= instead.
+placeholder, or "hole," is inserted, so that =t= is replaced by =@t
+_=. If you don't want that to happen, you have to write =@t= instead.
 
 Dual to the =@= symbol is the exclamation mark, =!=, which essentially
-makes explicit arguments implicit, by inserting underscores for such
-explicit arguments. Look at the resulting terms of the
-following definitions to see this in action:
-
+makes explicit arguments implicit by inserting underscores for
+them. Look at the terms that result from the following definitions to
+see this in action:
 #+BEGIN_SRC lean
 import data.nat
 open nat eq.ops
 -- BEGIN
 definition foo (n m k l : ℕ) : (n - m) * (k + l) = (k + l) * (n - m) := !mul.comm
-print foo
 
+print foo
 -- definition foo : ∀ (n m k l : ℕ), (n - m) * (k + l) = (k + l) * (n - m)
 -- λ (n m k l : ℕ), mul.comm (n - m) (k + l)
 
 definition foo2 (n m k l : ℕ) : (n + k) + l = (k + l) + n := !add.assoc ⬝ !add.comm
-print foo2
 
+print foo2
 -- definition foo2 : ∀ (n : ℕ), ℕ → (∀ (k l : ℕ), n + k + l = k + l + n)
 -- λ (n m k l : ℕ), add.assoc n k l ⬝ add.comm n (k + l)
 
 definition foo3 (l : ℕ) (H : ∀ (n : ℕ), l + 2 ≠ 2 * (n + 1)) (n : ℕ) : l ≠ 2 * n :=
 assume K : l = 2 * n,
 absurd (show l + 2 = 2 * n + 2, from K ▸ rfl) !H
-print foo3
 
+print foo3
 -- definition foo3 : ∀ (l : ℕ),
 --   (∀ (n : ℕ), l + 2 ≠ 2 * (n + 1)) → (∀ (n : ℕ), l ≠ 2 * n)
 -- λ (l : ℕ) (H : ∀ (n : ℕ), l + 2 ≠ 2 * (n + 1)) (n : ℕ)
 -- (K : l = 2 * n),
 --   absurd (show l + 2 = 2 * n + 2, from K ▸ rfl) (H n)
-
 -- END
 #+END_SRC
-In the last example we use a neat trick. To show that =l + 2 = 2 * n +
-2= we take the reflexivity proof =rfl : l + 2 = l + 2= and then
-substitute =2 * n= for the second =l= to show that =l + 2 = 2 * n + 2=.
+In the first two examples, the exclamation mark indicates that the
+arguments to =mul.comm=, =add.assoc=, and =add.comm= should be made
+implicit, saving us the trouble of having to write lots of
+underscores. Note, by the way, that in the last example we use a neat
+trick: to show =l + 2 = 2 * n + 2= we take the reflexivity proof
+=rfl : l + 2 = l + 2= and then substitute =2 * n= for the second =l=.
 
-However, =!t= doesn't insert all explicit arguments of =t=. It only
-inserts the arguments which can either be inferred from later
-arguments, or from the type of the codomain.
+More precisely, if =t= is of a function type, the expression =!t=
+makes all the arguments explicit up until the first argument that
+cannot be inferred from later arguments or the return type. This is
+usually what you want; for example, when applying a theorem, the
+arguments can often be inferred from context, but the hypothesis need
+to be provided explicitly.
+
+In the following example, we declare =P= and =p= without implicit
+arguments, and then use the exclamation mark to make them implicit
+after the fact.
 #+BEGIN_SRC lean
 import data.vector
 open vector nat
-set_option pp.metavar_args false
+
 -- BEGIN
 variables (P : Π (n m : ℕ) (v : vector bool n) (w : vector bool m), Type)
           (p : Π (n m : ℕ) (v : vector bool n) (w : vector bool m), P n m v w)
           (n m : ℕ) (v : vector bool n) (w : vector bool m)
-eval (!p : P n m v w)
-eval (!p : P n n v v)
-check !p
 
-eval (!P v w : Type)
-eval (!p : !P w v)
+set_option pp.metavar_args false
+eval (!p : P n m v w)    -- p n m v w
+eval (!p : P n n v v)    -- p n n v v
+check !p                 -- p ?n ?m ?v ?w : P ?n ?m ?v ?w
+
+eval (!P v w : Type)     -- P n m v w
+eval (!p : !P w v)       -- p m n w v
 -- END
 #+END_SRC
-In this example we declare =P= and =p= without implicit
-arguments. However, we can use an exclamation mark to insert some of
-the implicit arguments.  If we write =!p= this will insert underscores
-for all explicit arguments of =p=. This is the case because all holes
-in =p _ _ _ _= can be inferred from its type =P n m v w=. Hence in the
-first =eval=, =!p= means =p n m v w=. This works the same way in the
-second example.  In the third line, the arguments of =p= are inserted,
-but cannot be inferred. Hence there are still metavariables in the
-output.
+Notice that we set =pp.metavar_args= to simplify the output.  In the
+first =eval=, the expression =!p= inserts underscores for all explicit
+arguments of =p=, because the values of all of the placeholders in =p
+_ _ _ _= can be inferred from its type =P n m v w=. The same is true
+in the second example. In the subsequent =check= statement, the
+arguments of =p= are inserted, but cannot be inferred. Hence there are
+still metavariables in the output.
 
-For =P= this works differently: if we know that the type of =P _ _ _
-_= is =Type=, we don't have enough information to fill any of the
-holes.  However, we can fill the first two holes if we are given the
-last two arguments. That is why in =!P= only the first two arguments
-are filled in. Then =!P v w= is interpreted as =P _ _ v w=, and from
-this we can infer that the holes must be =n= and =m=, respectively.
+For =P= things are different: if we know that the type of =P _ _ _ _=
+is =Type=, we don't have enough information to assign values to the
+holes. However, we can fill the first two holes if we are given the
+last two arguments. Thus =!P v w= is interpreted as =P _ _ v w=, and
+from this we can infer that the holes must be =n= and =m=,
+respectively.
 
-Here are some examples to see this behavior in practice.
+Here are some more examples of this behavior.
 #+BEGIN_SRC lean
 import data.nat.order
 open nat
@@ -410,7 +418,9 @@ quantification over implicit arguments, hence they are interpreted as
 =th1 _ _= and =th2 _ _ _=, respectively.  We can solve this by writing
 =@eucl=, =@th1= and =@th2=, but this is very inconvenient.
 
-We can solve this by using the binders =⦃⦄= instead of ={}=.
+A better solution is to use a weaker form of implicit argument, marked
+with the binders =⦃= and =⦄=, or, equivalently, ={{= and =}}=. The
+first two can be inserted by typing =\{{= and =\}}=, respectively.
 #+BEGIN_SRC lean
 namespace hide
 variables {A : Type} (R : A → A → Prop)
@@ -421,14 +431,17 @@ definition euclidean  : Prop := ∀ ⦃a b c : A⦄, R a b → R a c → R b c
 -- END
 end hide
 #+END_SRC
-They are inserted by typing =\{{= and =\}}=. Alternatively you can use
-the equivalent notation ={{}}=. The arguments in these binders are
-still implicit, however, they are not inserted to a term =t= if =t= is
-not applied to anything.  So if =H : symmetric R=, i.e. =H : ∀ ⦃a b :
-A⦄, R a b → R b a=, then =H= is interpreted as =@H=, but =H p= is
-interpreted as =@H _ _ p=. This allows us to prove =th3= in the
-expected way.
-
+Arguments in these binders are still implicit, but they are not added
+to a term =t= until =t= is applied to something. In other words, given
+an expression =t= of function type, if the next argument to =t= is a
+strong implicit argument, marked with ={= and =}=, that implicit
+argument is asserted aggressively; if the next argument to =t= is a
+weaker implicit argument, marked with =⦃= and =⦄=, the implicit
+argument is not inserted unless the term is applied to something
+else. With =H : symmetric R=, this is what we want. Because we now
+have=H : ∀ ⦃a b : A⦄, R a b → R b a=, the expression =H= is
+interpreted as =@H=, but =H p= is interpreted as =@H _ _ p=. This
+allows us to prove =th3= in the expected way.
 #+BEGIN_SRC lean
 namespace hide
 variables {A : Type} (R : A → A → Prop)
@@ -455,8 +468,9 @@ th2 (th1 refl eucl) eucl
 end hide
 #+END_SRC
 
-There is a third kind of implicit argument, used for type classes:
-=[]=. We will explain these in Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]].
+There is a third kind of implicit argument, used for type classes, and
+denoted with square brackets, =[= amd =]=. We will explain these kinds
+of arguments in Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]].
 
 ** Elaboration and Unification
 :PROPERTIES:
@@ -507,9 +521,9 @@ substitute for all the metavariables so that all of the constraints
 are simultaneously satisfied. An assignment of terms to metavariables
 is known as a /substitution/, and the general task of finding a
 substitution that makes two expressions coincide is known as a
-/unification/ problem. (If only one of the expressions contains
-metavariables, the task is a special case known as a /matching/
-problem.)
+/unification problem/. (If only one of the expressions contains
+metavariables, the task is a special case known as a /matching
+problem/.)
 
 Some constraints are straightforwardly handled. If =f= and =g= are
 distinct constants, it is clear that there is no way to unify the
@@ -555,13 +569,13 @@ procedure fails, it analyzes the failure, and determines the next
 viable choice to try.
 
 To complicate matters even further, sometimes the elaborator has to
-reduce terms using the CIC's internal computation rules. For example,
-if it happens to be the case that =f= is defined to be =λ x, g x x=, we
-can unify expressions =f ?M= and =g a a= by assigning =?M= to =a=. In
-general, any number of computation steps may be needed to unify
-terms. It is computationally infeasible to try all possible reductions
-in the search, so, once again, Lean's elaborator relies on an
-incomplete strategy.
+reduce terms using the internal computation rules of the formal
+system. For example, if it happens to be the case that =f= is
+defined to be =λ x, g x x=, we can unify expressions =f ?M= and =g a
+a= by assigning =?M= to =a=. In general, any number of computation
+steps may be needed to unify terms. It is computationally infeasible
+to try all possible reductions in the search, so, once again, Lean's
+elaborator relies on an incomplete strategy.
 
 The interaction of computation with higher-order unification is
 particularly knotty. For the most part, Lean avoids performing
@@ -600,7 +614,7 @@ of the remaining metavariables as "placeholders" or "goals" that could
 not be filled.
 
 # TODO: does anything distinguish "placeholders" from "goals"?
-g
+
 ** Reducible Definitions
 
 Transparent identifiers can be declared to be /reducible/ or
@@ -621,15 +635,15 @@ unification procedure has to perform case analysis, implementing a
 backtracking search. At various stages, the procedure has to decide
 whether a definition =C= should be unfolded or not.
 + An /irreducible/ definition will never be unfolded during higher-order unification
-  (but can still be unfolded in other situations, for example during type checking)
-+ A /reducible/ definition will be always eligible for unfolding
+  (but can still be unfolded in other situations, for example during type checking).
++ A /reducible/ definition will be always eligible for unfolding.
 + A definition which is /semireducible/ can be unfolded during /simple/ decisions
   and won't be unfolded during /complex/ decisions.
   An unfolding decision is /simple/ if the unfolding does not require
   the procedure to consider an extra case split. It is /complex/ if the
   unfolding produces at least one extra case, and consequently increases
   the search space.
-g
+
 You can assign the =reducible= attribute when a symbol is defined:
 #+BEGIN_SRC lean
 definition pr1 [reducible] (A : Type) (a b : A) : A := a
@@ -692,8 +706,8 @@ information. This section provides some guidance in both situations.
 
 If the error message is not sufficient to allow you to identify the
 problem, a first strategy is to ask Lean's pretty printer to show more
-information, as discussed in Section [[Setting Options]],
-using some or all of the following options:
+information, as discussed in Section [[file:05_Interacting_with_Lean::#Setting_Options][Setting Options]], using some or
+all of the following options:
 #+BEGIN_SRC lean
 set_option pp.implicit true
 set_option pp.universes true
@@ -701,6 +715,10 @@ set_option pp.notation false
 set_option pp.coercions true
 set_option pp.numerals false
 set_option pp.full_names true
+#+END_SRC
+The following option subsumes all of those settings:
+#+BEGIN_SRC lean
+set_option pp.all true
 #+END_SRC
 Sometimes, the elaborator will fail with the message that the unifier
 has exceeded its maximum number of steps. As we noted in the last
@@ -716,9 +734,8 @@ complex. In the latter case, there are steps you can take to cut down
 the complexity.
 
 To start with, Lean provides a mechanism to break large elaboration
-problems down into simpler ones, with a =proof ... qed= block.
-Here is
-the sample proof from Section [[Examples of Propositional Validities]],
+problems down into simpler ones, with a =proof ... qed= block.  Here
+is the sample proof from Section [[file:03_Propositions_and_Proof.org::#Examples_of_Propositional_Validities][Examples of Propositional Validities]],
 with additional =proof ... qed= annotations:
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
@@ -781,13 +798,12 @@ help locate the source of an error.
 
 The second strategy, providing additional information, can be achieved
 by using =have=, =show=, =(t : T)= notation, and =#<namespace>= (see
-Section [[Notation, Overloads, and Coercions]]) to indicate expected
-types. More directly, it often help to specify the implicit
-arguments. When Lean cannot solve for the value of a metavariable
-corresponding to an implicit argument, you can always use =@= to
-provide that argument explicitly. Doing so will either help the
-elaborator solve the elaboration problem, or help you find an error in
-the term that is blocking the intended solution.
+Section [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]]) to indicate expected types. More directly, it often
+help to specify the implicit arguments. When Lean cannot solve for the
+value of a metavariable corresponding to an implicit argument, you can
+always use =@= to provide that argument explicitly. Doing so will
+either help the elaborator solve the elaboration problem, or help you
+find an error in the term that is blocking the intended solution.
 
 In Lean, tactics not only allow us to invoke arbitrary automated
 procedures, but also provide an alternative approach to construct
@@ -797,16 +813,16 @@ mechanisms to help the elaborator.  A tactic can be viewed as a
 to build a proof. This recipe may be as detailed as we want.  A tactic
 =T= can be embedded into proof terms by writing =by T= or =begin T
 end=.  These annotations instruct Lean that tactic =T= should be
-invoked to construct the term in the given location. Similarly to
-=proof ... qed=, the elaborator tries to elaborate the surrounding
-terms before executing =T=.  The expression =proof t qed= is just
-syntactic sugar for =by exact t=. Later, we will explain the
-semantics of the tactic =exact t= in detail.
+invoked to construct the term in the given location. As with =proof
+... qed=, the elaborator tries to elaborate the surrounding terms
+before executing =T=. In fact, the expression =proof t qed= is just
+syntactic sugar for =by exact t=, which invokes the =exact= tactic. We
+will discuss tactics in Chapter [[file:11_Tactics.org::#Tactics][Tactics]].
 
 If you are running Lean using Emacs, you can "profile" the elaborator
 and type checker, to find out where they are spending all their
-time. Simply type =M-x lean-execute= to run an independent Lean
-process manually and add the option =--profile==. The output buffer
+time. Type =M-x lean-execute= to run an independent Lean
+process manually and add the option =--profile=. The output buffer
 will then report the times required by the elaborator and type
 checker, for each definition and theorem processed. If you ever find
 the system slowing down while processing a file, this can help you
@@ -868,10 +884,8 @@ See Chapter [[file:11_Tactics.org::#Tactics][Tactics]] for a discussion of Lean'
 There are even situations where an auxiliary fact needs to be visible
 to the elaborator, so that it can solve unification problems that
 arise. This can arise when the expression to be synthesized depends on
-an auxiliary fact, =H=. We will see an example of this in a later
-chapter, when we discuss the Hilbert choice operator.
-
-# TODO: add a reference here when the chapter is written.
+an auxiliary fact, =H=. We will see an example of this in Section
+[[file:11_Axioms.org::#Choice_Axioms][Choice Axioms]], when we discuss the Hilbert choice operator.
 
 ** Sections
 
@@ -920,9 +934,10 @@ argument; Lean detects the dependence and inserts it
 automatically. Similarly, Lean detects the occurrence of =x= in =t1=
 and =t2=, and inserts it automatically there, too.
 Note that double does /not/ have =y= as argument. Variables are only
-included in declarations where they are actually mentioned.
-To force that a variable is included in every definition in a section, use
-the =include= command. This is useful for type classes, see next chapter.
+included in declarations where they are actually mentioned. To ask
+Lean to include a variable in every definition in a section, use the
+=include= command. This is often useful with type classes, and is
+discussed in Section [[file:09_Type_Classes::#Instances_in_Sections][Instances_in_Sections]] in the next chapter.
 
 Notice that the variable =x= is generalized immediately, so that
 even within the section =double= is a function of =x=, and =t1= and
@@ -975,75 +990,58 @@ section, make =R= a variable.
 
 Notice that Lean is consistent when it comes to providing alternative
 syntax for =Prop=-valued variants of declarations:
-
 | Type      | Prop       |
 |-----------+------------+
 | constant  | axiom      |
 | variable  | premise    |
 | parameter | hypothesis |
 | take      | assume     |
-
 Lean also allows you to use =conjecture= in place of =hypothesis=.
 
-# Lean has another sectioning construct, the =context= command, which is
-# similar to the =section= command. The difference has to do with the
-# way that meta-theoretic data is handled. In a =section=, you can
-# declare notation, classes, instances, rewrite rules, and so on, and
-# they persist when the section is closed. Their scope is the entire
-# namespace in which the section resides, and when another module
-# imports the one containing the section and opens the relevant
-# namespace, all these objects are available. There is a catch: in a
-# section, a piece of notation cannot depend on a parameter. After all,
-# a notation that is defined with respect to a fixed parameter, like =R=
-# above, no longer makes sense when =R= is no longer fixed. As a result,
-# in a section, if you try to define notation that depends on a
-# parameter, Lean will flag an error.
+The possibility of declaring parameters in a section also makes it
+possible to define "local notation" that depends on those
+parameters. In the example below, as long as the parameter =m= is
+fixed, we can write =a ≡ b= for equivalence modulo =m=. As soon as the
+section is closed, however, the dependence on =m= becomes explicit,
+and the notation =a ≡ b= is no longer valid.
+#+BEGIN_SRC lean
+import data.int
+open int eq.ops
 
-# In a context, however, all meta-theoretic data is /transient/; it
-# disappears when the section is closed. This is useful when you want to
-# define notation, rewrite rules, or class instances that are used only
-# temporarily and not exported to the outside world. There is therefore
-# no problem making notation depend on a parameter in a context; when
-# the context is closed, the notation goes with it.
+section mod_m
+  parameter (m : ℤ)
+  variables (a b c : ℤ)
 
-# Here is an example of how you might use a context to define
-# the notion of equivalence modulo an integer =m=. Throughout the
-# context, =m= is fixed, and we can write =a ≡ b= for equivalence modulo
-# =m=. As soon as the context is closed, however, the dependence on =m=
-# becomes explicit, and the notation =a ≡ b= is no longer valid.
+  definition mod_equiv := (m ∣ b - a)
 
-# #+BEGIN_SRC lean
-# import data.int
-# open int eq.ops
+  local infix ≡ := mod_equiv
 
-# section mod_m
-#   parameter (m : ℤ)
-#   variables (a b c : ℤ)
+  theorem mod_refl : a ≡ a :=
+  show m ∣ a - a, from (sub_self a)⁻¹ ▸ !dvd_zero
 
-#   definition mod_equiv := (m ∣ b - a)
+  theorem mod_symm (H : a ≡ b) : b ≡ a :=
+  have H1 : (m ∣ -(b - a)), from iff.mp' !dvd_neg_iff_dvd H,
+  int.neg_sub b a ▸ H1
 
-#   notation a `≡`:50 b := mod_equiv a b
+  theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
+  have H1 : (m ∣ (c - b) + (b - a)), from !dvd_add H2 H1,
+  eq.subst
+    (calc
+      (c - b) + (b - a) = c - b + b - a  : add.assoc
+                    ... = c + -b + b - a : rfl
+                    ... = c - a          : neg_add_cancel_right)
+    H1
+end mod_m
 
-#   theorem mod_refl : a ≡ a := !sub_self⁻¹ ▸ !dvd_zero
+check mod_refl     
+-- ∀ (m a : ℤ), mod_equiv m a a
 
-#   theorem mod_sym (H : a ≡ b) : b ≡ a :=
-#   have H1 : (m ∣ -(b - a)), from iff.mp' !dvd_neg_iff_dvd H,
-#   int.neg_sub b a ▸ H1
+check mod_symm     
+-- ∀ (m a b : ℤ), mod_equiv m a b → mod_equiv m b a    
 
-#   theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
-#   have H1 : (m ∣ (c - b) + (b - a)), from !dvd_add H2 H1,
-#   eq.subst
-#     (calc
-#       (c - b) + (b - a) = c - b + b - a  : add.assoc
-#                     ... = c + -b + b - a : rfl
-#                     ... = c - a          : neg_add_cancel_right)
-#     H1
-# end mod_m
-
-# check mod_refl
-# check mod_sym
-# check mod_trans
-# #+END_SRC
+check mod_trans    
+-- ∀ (m a b c : ℤ), mod_equiv m a b → mod_equiv m b c → mod_equiv m a c
+#+END_SRC
 
 ** More on Namespaces
 
@@ -1075,7 +1073,7 @@ import data.nat
 
 open [declarations] [notations] [coercions] nat
 #+END_SRC
-You can also open a namespace while /excluding certain
+You can also open a namespace while /excluding/ certain
 metaclasses. For example,
 #+BEGIN_SRC lean
 import data.nat
@@ -1084,7 +1082,7 @@ open - [notations] [coercions] nat
 #+END_SRC
 imports all metaclasses but =[notations]= and =[coercions]=. You can
 limit the scope of an =open= command by putting it in a section. For
-example,
+example, here we temporarily import notation from nat:
 #+BEGIN_SRC lean
 import data.nat
 
@@ -1094,7 +1092,6 @@ section
   /- ... -/
 end
 #+END_SRC
-imports notation from nat only within the section.
 
 You can also import only certain theorems by providing an explicit
 list in parentheses:
@@ -1137,11 +1134,11 @@ end foo
 open foo
 check foo.bar  -- "check bar" yields an error
 #+END_SRC
-In the Lean library, this is used for common names. For example, we
-want to write =nat.rec_on=, =int.rec_on=, and =list.rec_on=, even when
-all of these namespaces are open, to avoid ambiguity and
-overloading. You can always define a local abbreviation to use the
-shorter name:
+In the Lean library, common names are protected to avoid clashes.  For
+example, we want to write =nat.rec_on=, =int.rec_on=, and
+=list.rec_on=, even when all of these namespaces are open, to avoid
+ambiguity and overloading. You can always define a local abbreviation
+to use the shorter name:
 #+BEGIN_SRC lean
 import data.list
 open list
@@ -1195,9 +1192,9 @@ configurations for those who will use your theories later on.
 
 Sometimes it is useful to hide auxiliary definitions and theorems from
 the outside world, for example, so that they do not clutter up the
-namespace. The =private= keyword allows you to do this.
-The name of a =private= definition is
-only visible in the module/file where it was declared.
+namespace. The =private= keyword allows you to do this.  The name of a
+=private= definition is only visible in the module/file where it was
+declared.
 #+BEGIN_SRC lean
 import data.nat
 open nat
