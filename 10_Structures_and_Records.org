@@ -6,41 +6,42 @@
   :CUSTOM_ID: Structures_and_Records
 :END:
 
-We have seen that the Calculus of Inductive Constructions includes
-inductive types, and the remarkable fact that it is possible to
-construct a substantial edifice of mathematics based on nothing more
-than the type universes, Pi types, and inductive types; everything
-else follows from those. The Lean standard library contains many
-instances of inductive types (e.g., =nat=, =prod=, =list=), and even
-the logical connectives are defined using inductive types.
+We have seen that Lean's foundational system includes inductive types.
+We have, moreover, noted that it is a remarkable fact that it is
+possible to construct a substantial edifice of mathematics based on
+nothing more than the type universes, Pi types, and inductive types;
+everything else follows from those. The Lean standard library contains
+many instances of inductive types (e.g., =nat=, =prod=, =list=), and
+even the logical connectives are defined using inductive types.
 
 Remember that a non-recursive inductive type that contains only one
 constructor is called a /structure/ or /record/. The product type is a
-structure, as is the dependent product type (=sigma=). Whenever we
-defined a structure =S=, we usually define /projection/ functions that
-allow us to "destruct" and object =S= and retrieve a values that are
-stored in its fields. The functions =prod.pr1= and =prod.pr2=, which
-return the first and second elements of a pair are examples of
-projections.
+structure, as is the dependent product type, that is, the Sigma
+type. In general, whenever we define a structure =S=, we usually
+define /projection/ functions that allow us to "destruct" each
+instance of =S= and retrieve the values that are stored in its
+fields. The functions =prod.pr1= and =prod.pr2=, which return the
+first and second elements of a pair, are examples of such projections.
 
 When writing programs or formalizing mathematics, it is not uncommon
 to define structures containing many fields.  The =structure= command,
-available in Lean, provides automation to support the process. It
-generates all the projection functions, and allow us to define new
-structures based on previously defined ones. Lean also provides
-convenient notation for defining objects of a given structure.
+available in Lean, provides infrastructure to support this
+process. When we define a structure using this command, Lean
+automatically generates all the projection functions. The =structure=
+command also allows us to define new structures based on previously
+defined ones. Moreover, Lean provides convenient notation for defining
+instances of a given structure.
 
 ** Declaring Structures
 
-The structure command is essentially a "macro" built on top of the
-inductive datatype provided by the Lean kernel. Every =structure=
-declaration introduces a namespace with the same name. The general
-form of a structure declaration is as follows:
+The structure command is essentially a "front end" for defining
+inductive data types. Every =structure= declaration introduces a
+namespace with the same name. The general form is as follows:
 #+BEGIN_SRC text
   structure <name> <parameters> <parent-structures> : Type :=
     <constructor> :: <fields>
 #+END_SRC
-Most parts are optional. Here is a small example:
+Most parts are optional. Here is an example:
 #+BEGIN_SRC lean
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
@@ -64,8 +65,7 @@ check point.x            -- a projection / field accessor
 check point.y            -- a projection / field accessor
 -- END
 #+END_SRC
-
-You can obtain the complete list of generated construction using the
+You can obtain the complete list of generated constructions using the
 command =print prefix=.
 #+BEGIN_SRC lean
 structure point (A : Type) :=
@@ -76,7 +76,7 @@ print prefix point
 -- END
 #+END_SRC
 
-Here is some simple theorems and expressions using the generated
+Here are some simple theorems and expressions that use the generated
 constructions. As usual, you can avoid the prefix =point= by using
 the command =open point=.
 #+BEGIN_SRC lean
@@ -116,21 +116,24 @@ record point (A : Type) :=
 mk :: (x : A) (y : A)
 #+END_SRC
 
-You can provide universe levels explicitly.
+You can provide universe levels explicitly. The annotations in the
+next example force the parameters =A= and =B= to be types from the
+same universe, and set the return type to also be in the same
+universe.
+
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
--- Force A and B to be types from the same universe, 
--- and return a type also in the same universe.
-structure prod.{l} (A : Type.{l}) (B : Type.{l}) : Type.{max 1 l} :=
+structure prod.{u} (A : Type.{u}) (B : Type.{u}) : Type.{max 1 u} :=
 (pr1 : A) (pr2 : B)
 
--- Ask Lean to pretty print universe levels
 set_option pp.universes true
 check prod.mk
 -- END
 end hide
 #+END_SRC
+The =set_option= command above instructs Lean to display the universe
+levels.
 
 We use =max 1 l= as the resultant universe level to ensure the
 universe level is never =0= even when the parameter =A= and =B= are
@@ -139,35 +142,37 @@ impredicative and proof irrelevant.
 
 ** Objects
 
-We have been using constructors to create objects of structure /
-record types. For structures containing many fields, this is often
+We have been using constructors to create elements of a structure (or
+record) type. For structures containing many fields, this is often
 inconvenient, because we have to remember the order in which the
-fields were defined. Therefore, Lean provides the following
-alternative notations for defining elements of a structure type.
+fields were defined. Lean therefore provides the following alternative
+notations for defining elements of a structure type.
 #+BEGIN_SRC text
   {| <structure-type> (, <field-name> := <expr>)* |}
   or
   ⦃ <structure-type> (, <field-name> := <expr>)* ⦄
 #+END_SRC
-For example, let us define objects of the point record.
+For example, we use this notation to define "points." The
+order that the fields are specified does not matter, so all the
+expressions below define the same point.
 #+BEGIN_SRC lean
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
-check {| point, x := 10, y := 20 |}
+check {| point, x := 10, y := 20 |}   -- point num 
 check {| point, y := 20, x := 10 |}
 check ⦃ point, x := 10, y := 20 ⦄
 
--- the order of the fields does not matter
 example : {| point, x := 10, y := 20 |} = {| point, y := 20, x := 10 |} :=
 rfl
 #+END_SRC
 
 Note that =point= is a parametric type, but we did not provide its
 parameters, since Lean can infer them automatically for us. Of course,
-the parameters can be explicitly provided if needed.
+the parameters can be explicitly provided with the type if needed.
 #+BEGIN_SRC lean
 open nat
+
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
 -- BEGIN
@@ -189,6 +194,7 @@ The notation for defining record objects can also be used in
 pattern-matching expressions.
 #+BEGIN_SRC lean
 open nat
+
 structure big :=
 (field1 : nat) (field2 : nat)
 (field3 : nat) (field4 : nat)
@@ -238,9 +244,8 @@ rfl
 ** Inheritance
 
 We can /extend/ existing structures by adding new fields.
-This feature allow us to simulate a form of "inheritance".
+This feature allow us to simulate a form of /inheritance/.
 #+BEGIN_SRC lean
--- BEGIN
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
@@ -249,16 +254,14 @@ red | green | blue
 
 structure color_point (A : Type) extends point A :=
 mk :: (c : color)
--- END
 #+END_SRC
 
 The type =color_point= inherits all the fields from =point= and
 declares a new one =c : color=.  Lean automatically generates a
-/coercion/ from =color_point= to =point=.
+coercion from =color_point= to =point=, so that a =color_point= can be
+provided wherever a =point= is expected.
 #+BEGIN_SRC lean
-open num
-
-structure point (A : Type) :=
+open num structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
 inductive color :=
@@ -275,39 +278,32 @@ definition green_point : color_point num :=
 
 eval x_plus_y green_point    -- 30
 
--- Force lean to display implicit coercions
+-- display implicit coercions
 set_option pp.coercions true
 
-check x_plus_y green_point    -- not
+check x_plus_y green_point    -- num
 
 example : green_point = point.mk 10 20 :=
 rfl
 
-check color_point.to_point
+check color_point.to_point    -- color_point ?A → point ?A
 -- END
 #+END_SRC
 
-The coercions are named =to_<parent structure>=.  Lean always declare
-functions that map the child structure to its parents.  We can ask
+The coercions are named =to_<parent structure>=.  Lean always defines
+functions that map the child structure to its parents, but we can ask
 Lean not to mark these functions as coercions by using the =private=
 keyword.
 #+BEGIN_SRC lean
-open num
-
--- BEGIN
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
 inductive color :=
 red | green | blue
 
+-- BEGIN
 structure color_point (A : Type) extends private point A :=
 mk :: (c : color)
-
-example : color_point.to_point 
-          {| color_point, x := 10, y := 20, c := color.blue |} =
-          {| point, x := 10, y := 20 |} :=
-rfl
 -- END
 #+END_SRC
 For private parent structures we have to use the coercions explicitly.
@@ -337,36 +333,34 @@ rfl
 end hide
 #+END_SRC
 
-For another example, we define a structure using "multiple
-inheritance," and then define an object using objects of the parent
+In the next example, we define a structure using multiple
+inheritance, and then define an object using objects of the parent
 structures.
 #+BEGIN_SRC lean
-import data.nat.basic
+import data.nat
 open nat
 
-structure s1 (A : Type) :=
+structure point (A : Type) :=
 (x : A) (y : A) (z : A)
 
-structure s2 (A : Type) :=
-(mul : A → A → A) (one : A)
+structure rgb_val :=
+(red : nat) (green : nat) (blue : nat)
 
-structure s3 (A : Type) extends s1 A, s2 A :=
-(mul_one : ∀ a : A, mul a one = a)
+structure red_green_point (A : Type) extends point A, rgb_val :=
+(no_blue : blue = 0)
 
-definition v1 : s1 nat := {| s1, x := 10, y := 10, z := 20 |}
-definition v2 : s2 nat := {| s2, mul := nat.add, one := zero |}
-definition v3 : s3 nat := {| s3, v1, v2, mul_one := add_zero |}
+definition p : point nat := {| point, x := 10, y := 10, z := 20 |}
+definition r : rgb_val := {| rgb_val, red := 200, green := 50, blue := 0 |}
+definition rgp : red_green_point nat := {| red_green_point, p, r, no_blue := rfl |}
 
-example : s3.x v3 = 10 := rfl
-example : s3.y v3 = 10 := rfl
-example : s3.mul v3 = nat.add  := rfl
-example : s3.one v3 = nat.zero := rfl
+example : point.x rgp = 10 := rfl
+example : rgb_val.red rgp = 200 := rfl
 #+END_SRC
 
 ** Structures as Classes
 
-Any structure can be tagged as a /class/. The makes them suitable
-targets for the class-instance resolution procedures, which was
+Any structure can be tagged as a /class/. This makes it a suitable
+target for the class-instance resolution procedures that were
 described in the previous chapter. Declaring a structure as a class
 also has the effect that the structure argument in each projection is
 tagged as an implicit argument to be inferred by type class
@@ -384,7 +378,7 @@ implicit.
 structure has_mul [class] (A : Type) :=
 mk :: (mul : A → A → A)
 
-check @has_mul.mul
+check @has_mul.mul    -- Π {A : Type} [c : has_mul A], A → A → A
 
 infixl `*`   := has_mul.mul
 
@@ -401,8 +395,8 @@ structure to its parents are also marked as instances unless the
 =private= modifier is used.  As a result, whenever an instance of the
 parent structure is required, and instance of the child structure can
 be provided. In the following example, we use this mechanism to
-"reuse" the notation defined for the parent structure with the child
-structure.
+"reuse" the notation defined for the parent structure, =has_mul=, with the child
+structure, =semigroup=.
 
 #+BEGIN_SRC lean
 structure has_mul [class] (A : Type) :=
@@ -432,14 +426,12 @@ infixl `*`   := has_mul.mul
 structure semigroup [class] (A : Type) extends has_mul A :=
 mk :: (assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c))
 
-
 -- BEGIN
 section
   variables (A : Type) (s : semigroup A) (a b : A)
 
   set_option pp.implicit true
   set_option pp.notation false
-  set_option pp.coercions true
 
   check a * b -- @has_mul.mul A (@semigroup.to_has_mul A s) a b : A
 end
@@ -475,16 +467,17 @@ mk :: (comm : ∀ a b, mul a b = mul b a)
 structure monoid [class] (A : Type) extends semigroup A, has_one A :=
 mk :: (right_id : ∀ a, mul a one = a) (left_id : ∀ a, mul one a = a)
 
--- We can suppress := and :: when we are not declaring any new field.
 structure comm_monoid [class] (A : Type) extends monoid A, comm_semigroup A
 
--- The common fields of monoid and comm_semigroup have been merged
 print prefix comm_monoid
 #+END_SRC
+Notice that we can suppress =:== and =::= when we are not declaring
+any new fields, as is the case for the structure =comm_monoid=. The
+=print prefix= command shows that the common fields of monoid and
+comm_semigroup have been merged.
 
-The =renaming= clause allow us to perform non-trivial merge operations such as combining an abelian group with a monoid to
-obtain a ring.
-
+The =renaming= clause allow us to perform non-trivial merge operations
+such as combining an abelian group with a monoid to obtain a ring.
 #+BEGIN_SRC lean
 structure has_mul [class] (A : Type) :=
 (mul : A → A → A)
@@ -505,14 +498,12 @@ structure semigroup [class] (A : Type) extends has_mul A :=
 structure comm_semigroup [class] (A : Type) extends semigroup A renaming mul→add:=
 (comm : ∀ a b, add a b = add b a)
 
-infixl `+` := comm_semigroup.add
-
 structure monoid [class] (A : Type) extends semigroup A, has_one A :=
 (right_id : ∀ a, mul a one = a) (left_id : ∀ a, mul one a = a)
 
--- We can suppress := and :: when we are not declaring any new field.
 structure comm_monoid [class] (A : Type) extends monoid A renaming mul→add, comm_semigroup A
 
+-- BEGIN
 structure group [class] (A : Type) extends monoid A, has_inv A :=
 (is_inv : ∀ a, mul a (inv a) = one)
 
@@ -534,4 +525,5 @@ structure ring [class] (A : Type)
 :=
 (dist_left  : ∀ a b c, mul a (add b c) = add (mul a b) (mul a c))
 (dist_right : ∀ a b c, mul (add a b) c = add (mul a c) (mul b c))
+-- END
 #+END_SRC
