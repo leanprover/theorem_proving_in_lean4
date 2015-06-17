@@ -10,7 +10,7 @@ We have seen that Lean's elaborator provides helpful automation,
 filling in information that is tedious to enter by hand. In this
 section we will explore a simple but powerful technical device known
 as /type class inference/, which provides yet another mechanism for
-elaborator to supply missing information.
+the elaborator to supply missing information.
 
 The notion of a /type class/ originated with the /Haskell/ programming
 language. Many of the original uses carry over, but, as we will see,
@@ -20,12 +20,14 @@ possibilities for their use.
 ** Type Classes and Instances
 
 The basic idea is simple. In Section [[file:08_Building_Theories_and_Proofs.org::#More_on_Coercions][More on Coercions]], we saw that
-any family of inductive types can serve as the source or target of a
-coercion. In much the same way, any family of inductive types can be
-marked as a /type class/. Then we can declare particular elements of a
-type class to be /instances/. These provide hints to the elaborator:
-any time the elaborator is looking for an element of a type class, it
-can consult a table of declared instances to find a suitable element.
+any family types can serve as the source or target of a coercion. In
+much the same way, any family of types can be marked as a /type
+class/. (Currently, Lean imposes the added restriction that the family
+has to be a family of /inductive types/.) Then we can declare
+particular elements of a type class to be /instances/. These provide
+hints to the elaborator: any time the elaborator is looking for an
+element of a type class, it can consult a table of declared instances
+to find a suitable element.
 
 More precisely, there are three steps involved:
 + First, we declare a family of inductive types to be a type class.
@@ -133,8 +135,10 @@ appropriate class:
 #+BEGIN_SRC lean
 namespace hide
 
+-- BEGIN
 inductive inhabited [class] (A : Type) : Type :=
 mk : A → inhabited A
+-- END
 
 end hide
 #+END_SRC
@@ -296,70 +300,79 @@ example : default unit = unit.star := rfl
 end hide
 #+END_SRC
 
-For some applications, we may want type class inference to infer an
-/arbitrary/ element of a type, in such a way that our theorems and
-definitions can make use of the fact that it is an element of that
-type but cannot assume anything about the specific element that has
-been inferred. To that end, the standard library defines a function
-=arbitrary=. It has exactly the same definition as =default=, but it
-is marked irreducible.
- #+BEGIN_SRC lean
-namespace hide
+Sometimes we want to think of the default element of a type as being
+an /arbitrary/ element, whose specific value should not play a role in
+our proofs. For that purpose, we can write =arbitrary A= instead of
+=default A=. The definition of =arbitrary= is the same as that of
+default, but is marked =irreducible= to discourage the elaborator from
+unfolding it. This does not preclude proofs from making use of the
+value, however, so the use of =arbitrary= rather than =default=
+functions primarily to signal intent.
 
-inductive inhabited [class] (A : Type) : Type :=
-mk : A → inhabited A
+# For some applications, we may want type class inference to infer an
+# /arbitrary/ element of a type, in such a way that our theorems and
+# definitions can make use of the fact that it is an element of that
+# type but cannot assume anything about the specific element that has
+# been inferred. To that end, the standard library defines a function
+# =arbitrary=. It has exactly the same definition as =default=, but it
+# is marked irreducible.
+#  #+BEGIN_SRC lean
+# namespace hide
 
-definition Prop.is_inhabited [instance] : inhabited Prop :=
-inhabited.mk true
+# inductive inhabited [class] (A : Type) : Type :=
+# mk : A → inhabited A
 
-definition bool.is_inhabited [instance] : inhabited bool :=
-inhabited.mk bool.tt
+# definition Prop.is_inhabited [instance] : inhabited Prop :=
+# inhabited.mk true
 
-definition nat.is_inhabited [instance] : inhabited nat :=
-inhabited.mk nat.zero
+# definition bool.is_inhabited [instance] : inhabited bool :=
+# inhabited.mk bool.tt
 
-definition unit.is_inhabited [instance] : inhabited unit :=
-inhabited.mk unit.star
+# definition nat.is_inhabited [instance] : inhabited nat :=
+# inhabited.mk nat.zero
 
--- BEGIN
-definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λ a, a) H
--- END
-end hide
-#+END_SRC
-As a result, you can now write proofs that assume the existence of an
-element of some type. The "arbitrary" element is really arbitrary;
-from your point of view, it acts as an uninterpreted constant.
-#+BEGIN_SRC lean
-namespace hide
+# definition unit.is_inhabited [instance] : inhabited unit :=
+# inhabited.mk unit.star
 
-inductive inhabited [class] (A : Type) : Type :=
-mk : A → inhabited A
+# -- BEGIN
+# definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
+# inhabited.rec (λ a, a) H
+# -- END
+# end hide
+# #+END_SRC
+# As a result, you can now write proofs that assume the existence of an
+# element of some type. The "arbitrary" element is really arbitrary;
+# from your point of view, it acts as an uninterpreted constant.
+# #+BEGIN_SRC lean
+# namespace hide
 
-definition Prop.is_inhabited [instance] : inhabited Prop :=
-inhabited.mk true
+# inductive inhabited [class] (A : Type) : Type :=
+# mk : A → inhabited A
 
-definition bool.is_inhabited [instance] : inhabited bool :=
-inhabited.mk bool.tt
+# definition Prop.is_inhabited [instance] : inhabited Prop :=
+# inhabited.mk true
 
-definition nat.is_inhabited [instance] : inhabited nat :=
-inhabited.mk nat.zero
+# definition bool.is_inhabited [instance] : inhabited bool :=
+# inhabited.mk bool.tt
 
-definition unit.is_inhabited [instance] : inhabited unit :=
-inhabited.mk unit.star
+# definition nat.is_inhabited [instance] : inhabited nat :=
+# inhabited.mk nat.zero
 
-definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
-inhabited.rec (λ a, a) H
+# definition unit.is_inhabited [instance] : inhabited unit :=
+# inhabited.mk unit.star
 
--- BEGIN
-theorem exists_eq_of_inhabited (A : Type) [H : inhabited A] :
-  ∃ x : A, x = x :=
-exists.intro (arbitrary A) rfl
+# definition arbitrary [irreducible] (A : Type) [H : inhabited A] : A :=
+# inhabited.rec (λ a, a) H
 
-example : ∃ x : nat, x = x := exists_eq_of_inhabited nat
--- END
-end hide
-#+END_SRC
+# -- BEGIN
+# theorem exists_eq_of_inhabited (A : Type) [H : inhabited A] :
+#   ∃ x : A, x = x :=
+# exists.intro (arbitrary A) rfl
+
+# example : ∃ x : nat, x = x := exists_eq_of_inhabited nat
+# -- END
+# end hide
+# #+END_SRC
 
 ** Chaining Instances
 
@@ -541,8 +554,8 @@ decidable.rec_on H (λ Hc, t) (λ Hnc, e)
 end hide
 #+END_SRC
 
-The standard library also contains a variant of =ite= called =dite=.
-We say it is the dependent if-then-else expression. It is defined as follows:
+The standard library also contains a variant of =ite= called =dite=,
+the dependent if-then-else expression. It is defined as follows:
 #+BEGIN_SRC lean
 namespace hide
 
@@ -552,10 +565,10 @@ decidable.rec_on H (λ Hc : c, t Hc) (λ Hnc : ¬ c, e Hnc)
 -- END
 end hide
 #+END_SRC
-That is, in =dite c t e=, we can assume =Hc : c= in the "then" branch, and
-=Hnc : ¬ c= in the "else" branch.
-To make =dite= more convenient ot use, Lean provides the
-syntactic sugar =if h : c then t else e= for =dite c (λ h : c, t) (λ h : ¬ c, e)=.
+That is, in =dite c t e=, we can assume =Hc : c= in the "then" branch,
+and =Hnc : ¬ c= in the "else" branch.  To make =dite= more convenient
+to use, Lean allows us to write =if h : c then t else e= instead of
+=dite c (λ h : c, t) (λ h : ¬ c, e)=.
 
 In the standard library, we cannot prove that every proposition is
 decidable. But we can prove that /certain/ propositions are
@@ -564,7 +577,9 @@ equality and comparisons on the natural numbers and the integers are
 decidable. Moreover, decidability is preserved under propositional
 connectives:
 #+BEGIN_SRC lean
-check @decidable_and
+check @decidable_and 
+-- Π {p q : Prop} [Hp : decidable p] [Hq : decidable q], decidable (p ∧ q)
+
 check @decidable_or
 check @decidable_not
 check @decidable_implies
@@ -791,8 +806,8 @@ declared in other modules, the order in which they are tried depends
 on the order in which namespaces are opened.  Instances declared in
 namespaces which are opened later are tried earlier.
 
-You can modify change the order that type classes instances are tried
-by assigning them a /priority/. When an instance is declared, it is
+You can change the order that type classes instances are tried by
+assigning them a /priority/. When an instance is declared, it is
 assigned a priority value =std.priority.default=, defined to be 1000
 in module =init.priority= in both the standard and hott libraries. You
 can assign other priorities when defining an instance, and you can
@@ -801,8 +816,10 @@ example illustrates how this is done:
 #+BEGIN_SRC lean
 open nat
 
-structure foo [class] :=
-(a : nat) (b : nat)
+inductive foo [class] :=
+mk : nat → nat → foo
+
+definition foo.a [p : foo] : nat := foo.rec_on p (λ a b, a)
 
 definition i1 [instance] [priority default+10] : foo :=
 foo.mk 1 1
@@ -893,48 +910,119 @@ end
 A "bounded universal quantifier" is one that is of the form =∀ x :
 nat, x < n → P x=. As a final illustration of the power of type class
 inference, we show that a proposition of this form is decidable
-assuming =P= is, and that type class inference can make use of that fact.
+assuming =P= is, and that type class inference can make use of that
+fact.
 
+First, we define =ball n P= as shorthand for ∀ x : nat, x < n → P x.
 #+BEGIN_SRC lean
 import data.nat
 open nat decidable
 
--- define (ball n P) as a shorthand for ∀ x : nat, x < n → P x
+definition ball (n : nat) (P : nat → Prop) : Prop :=
+∀ x, x < n → P x
+#+END_SRC lean
+Next, we prove some auxiliary facts that are needed for the
+decidability proof.
+#+BEGIN_SRC lean
+import data.nat
+open nat decidable
+
 definition ball (n : nat) (P : nat → Prop) : Prop :=
 ∀ x, x < n → P x
 
--- We now prove some auxiliary constructions for the decidability proof
-
--- Prove: ∀ x : nat, x < 0 → P x
+-- BEGIN
+-- ∀ x : nat, x < 0 → P x
 definition ball_zero (P : nat → Prop) : ball zero P :=
 λ x Hlt, absurd Hlt !not_lt_zero
 
 variables {n : nat} {P : nat → Prop}
 
--- Prove: (∀ x : nat, x < succ n → P x) implies (∀ x : nat, x < n → P x)
+-- (∀ x : nat, x < succ n → P x) implies (∀ x : nat, x < n → P x)
 definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
 λ x Hlt, H x (lt.step Hlt)
 
--- We use the following theorem from the standard library
-check eq_or_lt_of_le
--- ?a ≤ ?b → ?a = ?b ∨ ?a < ?b
-
--- Prove: (∀ x : nat, x < n → P x) and (P n) implies (∀ x : nat, x < succ n → P x)
+-- (∀ x : nat, x < n → P x) and (P n) implies (∀ x : nat, x < succ n → P x)
 definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
 λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
   (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
   (λ hlt : x < n, H₁ x hlt)
 
--- Prove: (¬ P n) implies ¬ (∀ x : nat, x < succ n → P x)
+-- (¬ P n) implies ¬ (∀ x : nat, x < succ n → P x)
 definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
 λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
 
--- Prove: ¬ (∀ x : nat, x < n → P x) implies ¬ (∀ x : nat, x < succ n → P x)
+-- ¬ (∀ x : nat, x < n → P x) implies ¬ (∀ x : nat, x < succ n → P x)
+definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
+λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
+-- END
+#+END_SRC
+Finally, assuming =P= is a decidable predicate, we prove =∀ x : nat, x
+< n → P x= by induction on =n=.
+#+BEGIN_SRC lean
+import data.nat
+open nat decidable
+
+definition ball (n : nat) (P : nat → Prop) : Prop :=
+∀ x, x < n → P x
+definition ball_zero (P : nat → Prop) : ball zero P :=
+λ x Hlt, absurd Hlt !not_lt_zero
+
+variables {n : nat} {P : nat → Prop}
+
+definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
+λ x Hlt, H x (lt.step Hlt)
+
+definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
+λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
+  (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
+  (λ hlt : x < n, H₁ x hlt)
+
+definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
+λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
+
 definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
 λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
 
--- Prove by induction/recursion that if P is a decidable predicate, then so is
--- (∀ x : nat, x < n → P x)
+-- BEGIN
+definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P)
+| dec_ball 0     := inl (ball_zero P)
+| dec_ball (a+1) :=
+  match dec_ball a with
+  | inl iH  :=
+      match H a with
+      | inl Pa  := inl (ball_succ_of_ball iH Pa)
+      | inr nPa := inr (not_ball_of_not nPa)
+      end
+  | inr niH := inr (not_ball_succ_of_not_ball niH)
+  end
+-- END
+#+END_SRC
+Now we can use =dec_trivial= to prove simple theorems by "evaluation."
+#+BEGIN_SRC lean
+import data.nat
+open nat decidable
+
+definition ball (n : nat) (P : nat → Prop) : Prop :=
+∀ x, x < n → P x
+definition ball_zero (P : nat → Prop) : ball zero P :=
+λ x Hlt, absurd Hlt !not_lt_zero
+
+variables {n : nat} {P : nat → Prop}
+
+definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
+λ x Hlt, H x (lt.step Hlt)
+
+definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
+λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
+  (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
+  (λ hlt : x < n, H₁ x hlt)
+
+definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
+λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
+
+definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
+λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
+
 definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P)
 | dec_ball 0     := inl (ball_zero P)
 | dec_ball (a+1) :=
@@ -947,27 +1035,68 @@ definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable 
   | inr niH := inr (not_ball_succ_of_not_ball niH)
   end
 
--- Now, we can use dec_trivial to prove simple theorems by "evaluation"
+-- BEGIN
 example : ∀ x : nat, x ≤ 4 → x ≠ 6 :=
 dec_trivial
 
 example : ¬ ∀ x, x ≤ 5 → ∀ y, y < x → y * y ≠ x :=
 dec_trivial
+-- END
+#+END_SRC
+We can also use the bounded quantifier to define a computable
+function. In this example, the expression =is_constant_range f n=
+returns =tt= if and only if the function =f= has the same value for
+every =i= such that =0 ≤ i < n=.
+#+BEGIN_SRC lean
+import data.nat
+open nat decidable
 
--- We can use bounded quantifiers to implement computable functions.
--- The function (is_constant_range f n) returns tt iff the function f evaluates
--- to the same value for all 0 <= i < n
+definition ball (n : nat) (P : nat → Prop) : Prop :=
+∀ x, x < n → P x
+definition ball_zero (P : nat → Prop) : ball zero P :=
+λ x Hlt, absurd Hlt !not_lt_zero
+
+variables {n : nat} {P : nat → Prop}
+
+definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
+λ x Hlt, H x (lt.step Hlt)
+
+definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
+λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
+  (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
+  (λ hlt : x < n, H₁ x hlt)
+
+definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
+λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
+
+definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
+λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
+
+definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P)
+| dec_ball 0     := inl (ball_zero P)
+| dec_ball (a+1) :=
+  match dec_ball a with
+  | inl iH  :=
+      match H a with
+      | inl Pa  := inl (ball_succ_of_ball iH Pa)
+      | inr nPa := inr (not_ball_of_not nPa)
+      end
+  | inr niH := inr (not_ball_succ_of_not_ball niH)
+  end
+
+-- BEGIN
 open bool
 definition is_constant_range (f : nat → nat) (n : nat) : bool :=
 if ∀ i, i < n → f i = f 0 then tt else ff
 
 example : is_constant_range (λ i, zero) 10 = tt :=
 rfl
+-- END
 #+END_SRC
 
-As exercise, we encourage you to show that =∃ x : nat, x < n ∧ P x= is also
-decidable.
 
+As an exercise, we encourage you to show that =∃ x : nat, x < n ∧ P x= is also
+decidable.
 #+BEGIN_SRC lean
 import data.nat
 open nat decidable
