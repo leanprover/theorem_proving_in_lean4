@@ -76,7 +76,12 @@ code, just as in many programming languages.
 The =constant= and =constants= commands introduce new constant symbols
 into the working environment, and the =check= command asks Lean to
 report their types. You should test this, and try typing some examples
-of your own.
+of your own. Declaring new objects in this way is a good way to
+experiment with the system, but it is ultimately undesirable: Lean is
+a foundational system, which is to say, it provides us with powerful
+mechanisms to /define/ all the mathematical objects we need, rather
+than simply postulating them to the system. We will explore these
+mechanisms in the chapters to come. 
 
 What makes simple type theory powerful is that one can build new types
 out of others. For example, if =A= and =B= are types, =A → B= denotes
@@ -456,10 +461,11 @@ identifications.
 
 ** Introducing Definitions
 
-Declaring constants in the Lean environment is a good way to postulate
-new objects to experiment with, but most of the time what we really
-want to do is /define/ new objects in Lean, and prove things about
-them. The =definition= command provides the means to do so:
+As we have noted above, declaring constants in the Lean environment is
+a good way to postulate new objects to experiment with, but most of
+the time what we really want to do is /define/ objects in Lean
+and prove things about them. The =definition= command provides one
+important way of defining new objects.
 #+BEGIN_SRC lean
 constants A B C : Type
 constants (a : A) (f : A → B) (g : B → C) (h : A → A)
@@ -609,14 +615,13 @@ possible to work in the framework more efficiently.
 
 We have seen that the =constant= command allows us to declare new
 objects, which then become part of the global context. Declaring new
-objects in this way is somewhat crass. Lean is designed as a
-foundational system, which is to say, it enables us to /define/ all of
-the mathematical objects we need. /Declaring/ new objects willy-nilly
-is therefore somewhat lazy. In the words of Bertand Russell, it has
-all the advantages of theft over honest toil. We will see in the next
-chapter that it is also somewhat dangerous: declaring a new constant
-is tantamount to declaring an axiomatic extension of our foundational
-system, and may not even be consistent.
+objects in this way is somewhat crass. Lean enables us to /define/ all
+of the mathematical objects we need, and /declaring/ new objects
+willy-nilly is therefore somewhat lazy. In the words of Bertand
+Russell, it has all the advantages of theft over honest toil. We will
+see in the next chapter that it is also somewhat dangerous: declaring
+a new constant is tantamount to declaring an axiomatic extension of
+our foundational system, and may result in inconsistency.
 
 So far, in this tutorial, we have used the =constant= command to
 create "arbitrary" objects to work with in our examples. For example,
@@ -908,9 +913,13 @@ namespace list
 end list
 end hide
 #+END_SRC
-In fact, these are essentially the types of the defined objects in the
-list library (we will explain the =@= symbol and the difference
-between the round and curly brackets momentarily).
+We emphasize that these constant declarations are only for the
+purposes of illustration. The =list= type and all these operations
+are, in fact, /defined/ in Lean's standard library, and are proved to
+have the expected properties. In fact, as the next example shows, the
+types indicated above are essentially the types of the objects that
+are defined in the library. (We will explain the =@= symbol and the
+difference between the round and curly brackets momentarily.)
 #+BEGIN_SRC lean
 import data.list
 open list
