@@ -245,6 +245,9 @@ reveal t1
 print t1
 -- END
 #+END_SRC
+(To save space, the online version of Lean does not store proofs of
+theorems in the library, so you cannot print them in the browser
+interface.)
 
 Notice that the lambda abstractions =Hp : p= and =Hq : q= can be
 viewed as temporary assumptions in the proof of =t1=. Lean provides
