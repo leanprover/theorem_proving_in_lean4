@@ -1,9 +1,9 @@
 #+Title: Theorem Proving in Lean
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
 
-* Tactics
+* Tactic-Style Proofs
 :PROPERTIES:
-  :CUSTOM_ID: Tactics
+  :CUSTOM_ID: Tactic_Style_Proofs
 :END:
 
 In this chapter, we describe an alternative approach to constructing
@@ -14,18 +14,18 @@ mathematical proof by saying "to prove the forward direction, unfold
 the definition, apply the previous lemma, and simplify." Just as these
 are instructions that tell the reader how to find the relevant proof,
 tactics are instructions that tell Lean how to construct a proof term.
+They naturally support an incremental style of writing proofs, in
+which users decompose a proof and work on goals one step at a time.
 
 We will describe proofs that consist of sequences of tactics as
 "tactic-style" proofs, to contrast with the ways of writing proof
 terms we have seen so far, which we will call "term-style"
-proofs. Each style has its own advantages and disadvantage. One
-important difference that that term-style proofs are elaborated
+proofs. Each style has its own advantages and disadvantages. One
+important difference is that term-style proofs are elaborated
 globally, and information gathered from one part of a term can be used
 to fill in implicit information in another part of the term. In
-contrast, we will see that tactics apply locally, and are narrowly
-focused on a single subgoal in the proof. Tactics naturally support an
-incremental style of writing proofs, in which users decompose a proof
-and work on goals one step at a time.
+contrast, tactics apply locally, and are narrowly focused on a single
+subgoal in the proof.
 
 ** Entering the Tactic Mode
 
@@ -148,7 +148,7 @@ begin
 end
 #+END_SRC
 
-Whenever a proof term is expected, instead of using a =begin= / =end=
+Whenever a proof term is expected, instead of using a =begin...end=
 block, you can write the =by= keyword followed by a single tactic:
 #+BEGIN_SRC lean
 theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
@@ -197,8 +197,94 @@ begin
 end
 #+END_SRC
 
-A variant of =apply= called =fapply= is more aggressive in creating
-new subgoals for arguments. Here is an example of how it is used:
+The =intro= command can more generally be used to introduce a variable of any type:
+#+BEGIN_SRC lean
+example (A : Type) : A → A :=
+begin
+  intro a,
+  exact a
+end
+
+example (A : Type) : ∀ x : A, x = x :=
+begin
+  intro x,
+  exact eq.refl x
+end
+#+END_SRC
+It has a plural form, =intros=, which takes a list of names.
+#+BEGIN_SRC lean
+example : ∀ a b c : nat, a = b → a = c → c = b :=
+begin
+  intros [a, b, c, H1, H2],
+  exact eq.trans (eq.symm H2) H1
+end
+#+END_SRC
+The =intros= command can also be used without any arguments, in which
+case, it chooses names and introduces as many variables as it can. We
+will see an example of this in a moment.
+
+The =assumption= tactic looks through the assumptions in context of the
+current goal, and if there is one matching the conclusion, it applies
+it.
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables x y z w : ℕ
+
+-- BEGIN
+example (H1 : x = y) (H2 : y = z) (H3 : z = w) : x = w :=
+begin
+  apply (eq.trans H1),
+  apply (eq.trans H2),
+  assumption   -- applied H3
+end
+-- END
+#+END_SRC
+It will unify metavariables in the conclusion if necessary:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+variables x y z w : ℕ
+
+-- BEGIN
+example (H1 : x = y) (H2 : y = z) (H3 : z = w) : x = w :=
+begin
+  apply eq.trans,
+  assumption,     -- solves x = ?b with H1
+  apply eq.trans,
+  assumption,     -- solves ?b = w with H2
+  assumption      -- solves z = w with H3
+end
+-- END
+#+END_SRC
+The following example uses the =intros= command to introduce the three
+variables and two hypotheses automatically:
+#+BEGIN_SRC lean
+example : ∀ a b c : nat, a = b → a = c → c = b :=
+begin
+  intros,
+  apply eq.trans,
+  apply eq.symm,
+  assumption,
+  assumption
+end
+#+END_SRC
+The =repeat= combinator can be used to simplify the last two lines:
+#+BEGIN_SRC lean
+example : ∀ a b c : nat, a = b → a = c → c = b :=
+begin
+  intros,
+  apply eq.trans,
+  apply eq.symm,
+  repeat assumption
+end
+#+END_SRC
+
+There is variant of =apply= called =fapply= that is more aggressive in
+creating new subgoals for arguments. Here is an example of how it is
+used:
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -258,7 +344,7 @@ begin
   apply (eq.symm H1)
 end
 #+END_SRC
-In the first example, the =generalize= tactic generalizes the
+In the first example above, the =generalize= tactic generalizes the
 conclusion over the variable =x=, turning the goal into a =∀ =. In the
 second, it generalizes the goal over the hypothesis =H=, putting the
 antecedent explicitly into the goal. We generalize any term, not just
@@ -321,47 +407,30 @@ begin
 end
 -- END
 #+END_SRC
-The =generalize= and =revert= tactics are often useful when carrying
-out proofs by induction, when it is often needed to obtain
-the right induction hypothesis.
-
-The =assumption= tactic looks through the assumptions in context of the
-current goal, and if there is one matching the conclusion, it applies
-it.
+Like =intro=, the tactics =generalize=, =clear=, and =revert= have
+plural forms. For example, we could have written above:
 #+BEGIN_SRC lean
 import data.nat
 open nat
 
-variables x y z w : ℕ
+variables x y z : ℕ
 
 -- BEGIN
-example (H1 : x = y) (H2 : y = z) (H3 : z = w) : x = w :=
+example : x + y + z = x + y + z :=
 begin
-  apply (eq.trans H1),
-  apply (eq.trans H2),
-  assumption   -- applied H3
+  generalize (x + y + z), -- goal is x y z : ℕ ⊢ ∀ (x : ℕ), x = x
+  clears x y z,
+  intro w,                -- goal is w : ℕ ⊢ w = w
+  apply rfl
 end
 -- END
 #+END_SRC
-The =eassumption= tactic is more aggressive; for example, it
-will unify metavariables in the conclusion if necessary.
-#+BEGIN_SRC lean
-import data.nat
-open nat
 
-variables x y z w : ℕ
-
--- BEGIN
-example (H1 : x = y) (H2 : y = z) (H3 : z = w) : x = w :=
-begin
-  apply eq.trans,
-  eassumption,    -- solves x = ?b with H1
-  apply eq.trans,
-  eassumption,    -- solves ?b = w with H2
-  eassumption     -- solves z = w with H3
-end
--- END
-#+END_SRC
+# Probably unnecessary, when we describe the induction tactic:
+#
+# The =generalize= and =revert= tactics are often useful when carrying
+# out proofs by induction, when it is often needed to obtain
+# the right induction hypothesis.
 
 ** Managing Auxiliary Facts
 
@@ -389,8 +458,8 @@ begin
   repeat assumption
 end
 #+END_SRC
-Alternatively, we can explicitly put a =have= statement in to the
-context, with =using=:
+Alternatively, we can explicitly put a =have= statement into the
+context with the keyword =using=:
 #+BEGIN_SRC lean
 example (p q : Prop) (H : p ∧ q) : p ∧ q ∧ p :=
 have Hp : p, from and.left H,
@@ -411,7 +480,7 @@ possible to mix term-style and tactic-style proofs, and pass
 between the two freely. For example, the tactics =apply= and =exact=
 expect arbitrary terms, which you can write using =have=, =show=,
 =obtains=, and so on. Conversely, when writing an arbitrary Lean term,
-you can always invoke the tactic mode by inserting a =begin ... end=
+you can always invoke the tactic mode by inserting a =begin...end=
 block. In the next example, we use =show= within a tactic block to
 fulfill a goal by providing an explicit term.
 #+BEGIN_SRC lean
@@ -441,7 +510,7 @@ begin
 end
 #+END_SRC
 
-You can also use nested =begin= / =end= pairs within a =begin= / =end=
+You can also use nested =begin= / =end= pairs within a =begin...end=
 block.  In the nested block, Lean focuses on the first goal, and
 generates an error if it has not been fully solved at the end of the
 block. This can be helpful in making the number of subgoals introduced
@@ -480,9 +549,9 @@ begin
   end
 end
 #+END_SRC
-Notice that you still need to use a comma after a =begin= / =end=
+Notice that you still need to use a comma after a =begin...end=
 block when there are remaining goals to be discharged. Within a
-=begin= / =end= block, you can abbreviate nested occurrences of
+=begin...end= block, you can abbreviate nested occurrences of
 =begin= and =end= with curly braces:
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
@@ -523,7 +592,7 @@ There is a =have= construct for tactic-style proofs that is similar to
 the one for term-style proofs. In the proof below, the first =have=
 creates the subgoal =Hp : p=. The =from= clause solves it, and after
 that =Hp= is available to subsequent tactics. The example illustrates
-that you can also use another =begin= / =end= block, or a =by= clause,
+that you can also use another =begin...end= block, or a =by= clause,
 to prove a subgoal introduced by =have=.
 #+BEGIN_SRC lean
 -- BEGIN
@@ -575,6 +644,32 @@ begin
   -- second goal: ⊢ succ a ≠ 0 → succ (pred (succ a)) = succ a
   { intro H1,
     apply rfl}
+end
+#+END_SRC
+The name of the =cases= tactic is particularly well suited to use with disjunctions:
+#+BEGIN_SRC lean
+example (a b : Prop) : a ∨ b → b ∨ a :=
+begin
+  intro H,
+  cases H with [Ha, Hb],
+  { exact or.inr Ha },
+  { exact or.inl Hb }
+end
+#+END_SRC
+In the next example, we rely on the decidability of equality for the
+natural numbers to carry out another proof by cases:
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+check nat.sub_self
+
+example (m n : nat) : m - n = 0 ∨ m ≠ n :=
+begin
+  cases (decidable.em (m = n)) with [Heq, Hne],
+  { apply eq.subst Heq,
+    exact or.inl (sub_self m)},
+  { apply or.inr Hne }
 end
 #+END_SRC
 The =cases= tactic can also be used to extract the arguments of a
@@ -638,12 +733,11 @@ inductive foo : Type :=
 -- BEGIN
 example (x : ℕ) (H : x ≠ 0) : succ (pred x) = x :=
 begin
-revert H,
-match x with
-| 0      := assume H1 : 0 ≠ 0, show succ (pred 0) = 0,
-            from absurd rfl H1
-| succ y := assume H1 : succ y ≠ 0, rfl
-end
+  revert H,
+  match x with
+  | 0      := by intro H1; exact (absurd rfl H1)
+  | succ y := by intro H1; apply rfl
+  end
 end
 
 definition silly (x : foo) : ℕ :=
@@ -656,25 +750,12 @@ end
 -- END
 #+END_SRC
 
-# TODO: this version works when only data.nat is loaded, but not when the whole
-# standard library is loaded. What is going on?
-#
-#
-# example (x : ℕ) (H : x ≠ 0) : succ (pred x) = x :=
-# begin
-#   revert H,
-#   match x with
-#  | 0      := by intro H1; exact (absurd rfl H1)
-#  | succ y := by intro H1; apply rfl
-#   end
-# end
-
 ** The Rewrite Tactic
 
 The =rewrite= tactic provide a basic mechanism for applying
 substitutions to goals and hypotheses, providing a convenient and
 efficient way of working with equality. This tactic is loosely based
-on rewrite tactic available in the proof language SSReflect.
+on the rewrite tactic available in the proof language SSReflect.
 
 # TODO: add a citation
 
@@ -860,13 +941,11 @@ example (H₁ : a = b) (H₂ : f b a b = 0) : f a a a = 0 :=
 by rewrite [H₁ at {1, 3}, H₂]
 -- END
 #+END_SRC
-
 Similarly, =rewrite t at H {1, 3}= specifies that =t= must be applied
-to hypothesis =H= and only the first and third occurrences must be replaced.
-
-You can also specify which occurrences should not be replaced using
-the notation =rewrite t at -{i_1, ..., i_k}=. Here is the previous
-example using this feature.
+to hypothesis =H= and only the first and third occurrences must be
+replaced. You can also specify which occurrences should not be
+replaced using the notation =rewrite t at -{i_1, ..., i_k}=. Here is
+the previous example using this feature.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -907,15 +986,19 @@ calc
 -- END
 #+END_SRC
 
-The =rewrite= tactic also supports reduction steps: =↑f=, =▸*=, =↓t=, and =▸t=.
-The step =↑f= unfolds =f= and performs beta/iota reduction and simplify projections.
-This step fails if there is no =f= to be unfolded. The step =▸*= is similar to
-=↑f=, but does not take a constant to unfold as argument, therefore it never fails.
-The fold step =↓t= unfolds the head symbol of =t=, then search for the result in the goal
-(or a given hypothesis), and replaces any match with =t=. Finally, =▸t= tries to reduce
-the goal (or a given hypothesis) to =t=, and fails if it is not convertible to =t=.
-The following alternative ASCII notation is also supported =^f=, =>*=,
-=<D t=, and => t=.
+The =rewrite= tactic also supports reduction steps: =↑f=, =▸*=, =↓t=,
+and =▸t=.  The step =↑f= unfolds =f= and performs beta/iota reduction
+and simplify projections.  This step fails if there is no =f= to be
+unfolded. The step =▸*= is similar to =↑f=, but does not take a
+constant to unfold as argument, therefore it never fails.  The fold
+step =↓t= unfolds the head symbol of =t=, then search for the result
+in the goal (or a given hypothesis), and replaces any match with
+=t=. Finally, =▸t= tries to reduce the goal (or a given hypothesis) to
+=t=, and fails if it is not convertible to =t=.  (The up arrow is
+entered with =\u=, the down arrow is entered with =\d=, and the right
+triangle is entered with =\t=. You can also use the ASCII alternatives
+=^f=, =>*=, =<D t=, and => t= for =↑f=, =▸*=, =↓t=, and =▸t=,
+respectively.)
 
 #+BEGIN_SRC lean
 import data.nat
@@ -964,19 +1047,7 @@ end
 #+END_SRC
 
 Here is another example: given any type =A=, we show that the =list A=
-append operation =s ++ t= is associative. We discharge the inductive
-cases using the =rewrite= tactic. The base case is solved by applying
-reflexivity, because =nil ++ t ++ u= and =nil ++ (t ++ u)= are
-definitionally equal. In the inductive step, we first reduce the goal
-=a :: s ++ t ++ u = a :: s ++ (t ++ u)= to =a :: (s ++ t ++ u) = a ::
-s ++ (t ++ u)= by applying the reduction step =▸ a :: (l ++ t ++ u) =
-_=.  The idea is to expose the term =l ++ t ++ u= that can be
-rewritten using the inductive hypothesis =append_assoc (s t u : list
-A) : s ++ t ++ u = s ++ (t ++ u)=. Notice that we used a placeholder
-=_= in the right-hand-side of this reduction step. This placeholder is
-unified with the right-hand-side of the main goal. Using this
-placeholder, we do not have to "copy" the goal's right-hand-side.
-
+append operation =s ++ t= is associative. 
 #+BEGIN_SRC lean
 import data.list
 open list
@@ -990,6 +1061,18 @@ theorem append_assoc : ∀ (s t u : list A), s ++ t ++ u = s ++ (t ++ u)
     rewrite append_assoc
   end
 #+END_SRC
+We discharge the inductive cases using the =rewrite= tactic. The base
+case is solved by applying reflexivity, because =nil ++ t ++ u= and
+=nil ++ (t ++ u)= are definitionally equal. In the inductive step, we
+first reduce the goal =a :: s ++ t ++ u = a :: s ++ (t ++ u)= to =a ::
+(s ++ t ++ u) = a :: s ++ (t ++ u)= by applying the reduction step =▸
+a :: (l ++ t ++ u) = _=.  The idea is to expose the term =l ++ t ++
+u=, which can be rewritten using the inductive hypothesis
+=append_assoc (s t u : list A) : s ++ t ++ u = s ++ (t ++ u)=. Notice
+that we used a placeholder =_= in the right-hand-side of this
+reduction step; this placeholder is unified with the right-hand-side
+of the main goal. As a result, we do not have the copy the right-hand
+side of the goal.
 
 The =rewrite= tactic supports type classes. In the following example
 we use theorems from the =mul_zero_class= and =add_monoid= classes in
@@ -1007,58 +1090,3 @@ begin
 end
 #+END_SRC
 
-
-** Tactics as a Programming Language
-
-[This section still under construction]
-
-# TODO: describe repeat, and_then, or_else, try
-
-# TODO: explain backtracking, and the difference between a, b and a; b
-
-#+BEGIN_SRC lean
-example (a b c d : Prop) : a ∧ b ∧ c ∧ d ↔ d ∧ c ∧ b ∧ a :=
-begin
-  apply iff.intro,
-  repeat (intro H;  repeat (cases H with [H', H] | apply and.intro | assumption))
-end
-#+END_SRC
-
-# +BEGIN_SRC lean
-# open tactic
-#
-# definition my_tac := repeat ( apply @and.intro
-#                            | apply @eq.refl
-#                             )
-# tactic_hint my_tac
-#
-# theorem T1 {A : Type} {B : Type} (a : A) (b c : B) : a = a ∧ b = b ∧ c = c
-# +END_SRC
-
-# +BEGIN_SRC lean
-# open tactic
-#
-# theorem T (a b c d : Prop) (Ha : a) (Hb : b) (Hc : c) (Hd : d) : a ∧ b ∧ c ∧ d :=
-# by fixpoint (λ f, (apply @and.intro; f | assumption; f | id))
-#+END_SRC
-
-# +BEGIN_SRC lean
-# open tactic
-#
-# definition my_tac3 := fixpoint (λ f, (apply @or.intro_left; f  |
-#                                      apply @or.intro_right; f |
-#                                      assumption))
-#
-# tactic_hint my_tac3
-#
-# theorem T3 {a b c : Prop} (Hb : b) : a ∨ b ∨ c := _
-#+END_SRC
-
-#+BEGIN_SRC lean
-open tactic
-
-theorem tst {A B : Prop} (H1 : A) (H2 : B) : A :=
-by (trace "first";  state; now  |
-       trace "second"; state; fail |
-       trace "third";  assumption)
-#+END_SRC

@@ -817,7 +817,7 @@ invoked to construct the term in the given location. As with =proof
 ... qed=, the elaborator tries to elaborate the surrounding terms
 before executing =T=. In fact, the expression =proof t qed= is just
 syntactic sugar for =by exact t=, which invokes the =exact= tactic. We
-will discuss tactics in Chapter [[file:11_Tactics.org::#Tactics][Tactics]].
+will discuss tactics in Chapter [[file:11_Tactics.org::#Tactic-Style_Proofs][Tactic_Style_Proofs]].
 
 If you are running Lean using Emacs, you can "profile" the elaborator
 and type checker, to find out where they are spending all their
