@@ -22,12 +22,10 @@ possibilities for their use.
 The basic idea is simple. In Section [[file:08_Building_Theories_and_Proofs.org::#More_on_Coercions][More on Coercions]], we saw that
 any family types can serve as the source or target of a coercion. In
 much the same way, any family of types can be marked as a /type
-class/. (Currently, Lean imposes the added restriction that the family
-has to be a family of /inductive types/.) Then we can declare
-particular elements of a type class to be /instances/. These provide
-hints to the elaborator: any time the elaborator is looking for an
-element of a type class, it can consult a table of declared instances
-to find a suitable element.
+class/. Then we can declare particular elements of a type class to be
+/instances/. These provide hints to the elaborator: any time the
+elaborator is looking for an element of a type class, it can consult a
+table of declared instances to find a suitable element.
 
 More precisely, there are three steps involved:
 + First, we declare a family of inductive types to be a type class.
