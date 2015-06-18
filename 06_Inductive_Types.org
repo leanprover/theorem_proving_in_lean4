@@ -1676,7 +1676,7 @@ open nat
 theorem succ_ne_zero (a : nat) (h : succ a = zero) : false :=
 nat.no_confusion h
 
-theorem succ_inj (a b : nat) (h : succ a = succ b) : a = b :=
+theorem succ.inj (a b : nat) (h : succ a = succ b) : a = b :=
 nat.no_confusion h (fun e : a = b, e)
 
 inductive tree (A : Type) : Type :=
