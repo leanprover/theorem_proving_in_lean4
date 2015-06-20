@@ -671,6 +671,9 @@ proofs, since we can use intermediate =have='s as stepping stones
 leading to the final goal.
 
 ** Classical Logic
+:PROPERTIES:
+  :CUSTOM_ID: Classical_Logic
+:END:
 
 The introduction and elimination rules we have seen so far are all
 constructive, which is to say, they reflect a computational
@@ -774,7 +777,6 @@ in the standard library. We will discuss these in detail in Chapter
 :PROPERTIES:
   :CUSTOM_ID: Examples_of_Propositional_Validities
 :END:
-
 
 Lean's standard library contains proofs of many valid statements of
 propositional logic, all of which you are free to use in proofs of

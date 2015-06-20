@@ -13,16 +13,17 @@ impredicative, proof-irrelevant =Prop= at the bottom. In this chapter,
 we consider extensions of the CIC with additional axioms and
 rules. Extending a foundational system in such a way is often
 convenient; it can make it possible to prove more theorems, as well as
-easier to prove theorems that could have been proved otherwise. But
-there can negative consequences of adding additional axioms,
-consequences which may go beyond concerns about their correctness.
+make it easier to prove theorems that could have been proved
+otherwise. But there can negative consequences of adding additional
+axioms, consequences which may go beyond concerns about their
+correctness.
 
 Lean's standard library makes available a number of "classical"
 axioms, which are justified on a set-theoretic interpretation of type
-theory. But these axioms are at odds with a constructive
-interpretation of the system, as well as its computational
-behavior. When you import the standard library, most of these axioms
-are therefore not imported by default.
+theory. These axioms are at odds with a constructive interpretation of
+the system, as well as its computational behavior. When you import the
+standard library, most of these axioms are therefore not imported by
+default.
 
 The standard library does, however, make use of two mildly classical
 extensions, namely, propositional extensionality and quotients. Their use
@@ -30,8 +31,6 @@ in core parts of the standard library is still provisional, and may be
 curtailed if it proves to have sufficiently bad computational
 effects. The next section aims to clarify some of the issues and
 concerns.
-
-[Note: parts of this chapter are still under construction.]
 
 ** Computation and Axioms
 
@@ -46,7 +45,7 @@ straightforward to extract an algorithm to compute such a =y= given
 
 In the nineteenth century, however, increases in the complexity of
 mathematical arguments pushed mathematicians to develop new styles of
-reasoning that suppress algorithmic information, and invoke
+reasoning that suppress algorithmic information and invoke
 descriptions of mathematical objects that abstract away the details of
 how those objects are represented. The goal was to obtain a powerful
 "conceptual" understanding without getting bogged down in
@@ -63,11 +62,10 @@ computational interpretation. From a /classical/ point of view, it is
 more fruitful to maintain a separation of concerns: we can use one
 language and body of methods to write computer programs, while
 maintaining the freedom to use a nonconstructive theories and methods
-to reason about them.
-
-Lean is designed to support both of these approaches. Core parts of
-the library are developed constructively, but the system also provides
-support for carrying out classical mathematical reasoning.
+to reason about them. Lean is designed to support both of these
+approaches. Core parts of the library are developed constructively,
+but the system also provides support for carrying out classical
+mathematical reasoning.
 
 Computationally, the "purest" part of dependent type theory avoids the
 use of =Prop= entirely. Inductive types and Pi types can be viewed as
@@ -256,9 +254,10 @@ type of elements of =A= "modulo" =R=. Set theoretically, one can view
 → B= is any function that respects the equivalence relation in the
 sense that for every =x y : A=, =R x y= implies =f x = f y=, then =f=
 "lifts" to a function =f' : A / R → B= defined on each equivalence
-class =[x]= by =f' [x] = f x=. Lean's standard library extends the CIC
-with additional constants that perform exactly these constructions, and
-installs this last equation as a definitional reduction rule.
+class =[x]= by =f' [x] = f x=. Lean's standard library extends the
+Calculus of Inductive Constructions with additional constants that
+perform exactly these constructions, and installs this last equation
+as a definitional reduction rule.
 
 First, it is useful to define the notion of a /setoid/, which is
 simply a type with an associated equivalence relation:
@@ -328,13 +327,15 @@ declaring the constants associated with the quotient type, the library
 file then calls an internal function, =init_quotient=, which installs
 the reduction that simplifies =lift f ⟦a⟧= to =f a=.
 
-In the standard library, =A × B= represents the Cartesian product of
-the types =A= and =B=. We can view it as the type of pairs =(a, b)=
-where =a : A= and =b : B=. We can use quotient types to define
-the type of unordered pairs of type =A=. We can use the notation
-={a₁, a₂}= to represent the unordered pair containing =a₁= and =a₂=.
-Moreover, we want to be able to prove the equality ={a₁, a₂} = {a₂, a₁}=.
-We start this construction by defining a relation =p ~ q= on =A × A=.
+To illustrate the use of quotients, let us define the type of ordered
+pairs. In the standard library, =A × B= represents the Cartesian
+product of the types =A= and =B=. We can view it as the type of pairs
+=(a, b)= where =a : A= and =b : B=. We can use quotient types to
+define the type of unordered pairs of type =A=. We can use the
+notation ={a₁, a₂}= to represent the unordered pair containing =a₁=
+and =a₂=.  Moreover, we want to be able to prove the equality ={a₁,
+a₂} = {a₂, a₁}=.  We start this construction by defining a relation =p
+~ q= on =A × A=.
 
 #+BEGIN_SRC lean
 import data.prod
@@ -357,12 +358,11 @@ open eq or
 local notation `⟨` H₁ `,` H₂ `⟩` := and.intro H₁ H₂
 #+END_SRC
 
-The next step is to prove that =eqv= is an equivalence relation.
-That is, it is reflexive, symmetric and transitive. We can prove these
-three facts in a convenient and readable way using dependent pattern
-matching. The idea is to use dependent pattern matching to perform
-case-analysis and "break" the hypotheses into pieces that are then
-reassembled to produce the conclusion.
+The next step is to prove that =eqv= is an equivalence relation, which
+is to say, it is reflexive, symmetric and transitive. We can prove
+these three facts in a convenient and readable way by using dependent
+pattern matching to perform case-analysis and break the hypotheses
+into pieces that are then reassembled to produce the conclusion.
 
 #+BEGIN_SRC lean
 import data.prod
@@ -400,9 +400,10 @@ mk_equivalence (@eqv A) (@eqv.refl A) (@eqv.symm A) (@eqv.trans A)
 -- END
 #+END_SRC
 
-Now, that we have proved that =eqv= is an equivalence relation, we can
+Now that we have proved that =eqv= is an equivalence relation, we can
 construct a =setoid (A × A)=, and use it to define the type =uprod A=
-of unordered pairs. Moreover, we define the unordered pair ={a₁, a₂}= as =⟦(a₁, a₂)⟧=.
+of unordered pairs. Moreover, we define the unordered pair ={a₁, a₂}=
+as =⟦(a₁, a₂)⟧=.
 
 #+BEGIN_SRC lean
 import data.prod
@@ -508,11 +509,13 @@ namespace uprod
 end uprod
 #+END_SRC
 
-To complete the example, given =a : A= and =u : uprod A=, we define the proposition =a ∈ u=
-which should hold if =a= is one of the elements of the unordered pair =u=.
-First, we define a similar proposition =mem_fn a u= on (ordered) pairs,
-then we show that =mem_fn= respects the equivalence relation =eqv= in the lemma =mem_respects=.
-This is an idiom extensively used in the Lean standard library.
+To complete the example, given =a : A= and =u : uprod A=, we define
+the proposition =a ∈ u= which should hold if =a= is one of the
+elements of the unordered pair =u=.  First, we define a similar
+proposition =mem_fn a u= on (ordered) pairs, then we show that
+=mem_fn= respects the equivalence relation =eqv=, in the lemma
+=mem_respects=.  This is an idiom that is used extensively in the Lean
+standard library.
 
 #+BEGIN_SRC lean
 import data.prod
@@ -566,7 +569,7 @@ namespace uprod
   private definition mem_fn {A : Type} (a : A) : A × A → Prop
   | (a₁, a₂) := a = a₁ ∨ a = a₂
 
-  -- Auxiliary lemma for proving mem_respects
+  -- auxiliary lemma for proving mem_respects
   private lemma mem_swap {A : Type} {a : A} : ∀ {p : A × A}, mem_fn a p = mem_fn a (swap p)
   | (a₁, a₂) := propext (iff.intro
       (λ l : a = a₁ ∨ a = a₂, or.elim l (λ h₁, inr h₁) (λ h₂, inl h₂))
@@ -606,10 +609,13 @@ axiom em (a : Prop) : a ∨ ¬a
 end hide
 #+END_SRC
 You can import this axiom with =import logic.axioms.em=. It is
-automatically imported by =import logic.axioms.classical=, or,
-more simply, =import classical=.
+automatically imported by =import logic.axioms.classical=, or, more
+simply, =import classical=. Consequences of excluded middle include
+double-negation elimination, proof by cases, and proof by
+contradiction, all of which are described in Section [[file:03_Propositions_and_Proofs::#Classical_Logic][Classical_Logic]].
 
-The law of the excluded middle and propositional extensionality imply propositional completeness:
+The law of the excluded middle and propositional extensionality imply
+propositional completeness:
 #+BEGIN_SRC lean
 import logic.axioms.em
 
@@ -822,17 +828,17 @@ to show that =decidable a= is inhabited for any =a=. It is marked as
 an instance, and is silently used for for synthesizing the implicit
 argument in =arbitrary (decidable a)=.
 
-Now, as an example, we use =some= to prove that if =f : A → B= is injective,
-and =A= is inhabited, then =f= has a left inverse. To define the
-left inverse =linv=, we use the "dependent if-then-else" expression.
-Recall that =if h : c then t else e= is notation for
-=dite c (λ h : c, t) (λ h : ¬ c, e)=.
-In the definition of =linv=, the =strong_indefinite_description= is used twice.
-First, to show that =(∃ a : A, f a = b)= is "decidable", and then to
-choose an =a= such that =f a = b=. From a classical point of view,
-=linv= is a function. From a constructive point of view, it is
-unacceptable, there is no way to "implement" such a function in general.
-Some may claim it is a "non-informative" construction.
+As an example, we use =some= to prove that if =f : A → B= is injective
+and =A= is inhabited, then =f= has a left inverse. To define the left
+inverse =linv=, we use the "dependent if-then-else" expression.
+Recall that =if h : c then t else e= is notation for =dite c (λ h : c,
+t) (λ h : ¬ c, e)=.  In the definition of =linv=, the
+=strong_indefinite_description= is used twice: first, to show that =(∃
+a : A, f a = b)= is "decidable", and then to choose an =a= such that
+=f a = b=. From a classical point of view, =linv= is a function. From
+a constructive point of view, it is unacceptable; since there is no
+way to implement such a function in general, the construction is not
+informative.
 
 #+BEGIN_SRC lean
 import algebra.function logic.axioms.classical
@@ -856,10 +862,197 @@ exists.intro (linv f) is_linv
 
 ** Diaconescu's theorem
 
-[[http://en.wikipedia.org/wiki/Diaconescu%27s_theorem][Diaconescu's theorem]] states that the axiom of choice is sufficient to derive the law of excluded middle.
-The standard library contains a [[https://github.com/leanprover/lean/blob/master/library/logic/axioms/examples/diaconescu.lean][formalization of this result]].
-To be more precise, it shows that the law excluded middle follows from =strong_indefinite_description= (Hilbert's choice),
-=propext= (propositional extensionality) and =funext= (function extensionality).
+[[http://en.wikipedia.org/wiki/Diaconescu%27s_theorem][Diaconescu's theorem]] states that the axiom of choice is sufficient to
+derive the law of excluded middle. More precisely, it shows that the
+law excluded middle follows from =strong_indefinite_description=
+(Hilbert's choice), =propext= (propositional extensionality) and
+=funext= (function extensionality). The standard library contains a
+[[https://github.com/leanprover/lean/blob/master/library/logic/axioms/examples/diaconescu.lean][formalization of this result]], which we reproduce here.
+
+First, we import the necessary axioms, fix a parameter, =p=, and
+define two predicates =U= and =V=:
+#+BEGIN_SRC lean
+-- BEGIN
+import logic.axioms.hilbert logic.eq
+open eq.ops
+
+section
+parameter  p : Prop
+
+definition U (x : Prop) : Prop := x = true ∨ p
+definition V (x : Prop) : Prop := x = false ∨ p
+-- END
+
+end
+#+END_SRC
+If =p= is true, then every element of =Prop= is in both =U= and
+=V=. If =p= is false, then =U= is the singleton =true=, and =V= is the
+singleton =false=. 
+
+Next, we use =epsilon= to choose an element from each of =U= and =V=: 
+#+BEGIN_SRC lean
+import logic.axioms.hilbert logic.eq
+open eq.ops
+
+section
+parameter  p : Prop
+
+definition U (x : Prop) : Prop := x = true ∨ p
+definition V (x : Prop) : Prop := x = false ∨ p
+
+-- BEGIN
+definition u := epsilon U
+definition v := epsilon V
+
+lemma u_def : U u :=
+epsilon_spec (exists.intro true (or.inl rfl))
+
+lemma v_def : V v :=
+epsilon_spec (exists.intro false (or.inl rfl))
+-- END
+
+end
+#+END_SRC
+Each of =U= and =V= is a disjunction, so =u_def= and =v_def= represent
+four cases. In one of these cases, =u = true= and =v = false=, and in
+all the other cases, =p= is true. Thus we have:
+#+BEGIN_SRC lean
+import logic.axioms.hilbert logic.eq
+open eq.ops
+
+section
+parameter  p : Prop
+
+definition U (x : Prop) : Prop := x = true ∨ p
+definition V (x : Prop) : Prop := x = false ∨ p
+
+definition u := epsilon U
+definition v := epsilon V
+
+lemma u_def : U u :=
+epsilon_spec (exists.intro true (or.inl rfl))
+
+lemma v_def : V v :=
+epsilon_spec (exists.intro false (or.inl rfl))
+
+-- BEGIN
+lemma not_uv_or_p : ¬(u = v) ∨ p :=
+or.elim u_def
+  (assume Hut : u = true,
+    or.elim v_def
+      (assume Hvf : v = false,
+        have Hne : ¬(u = v), from Hvf⁻¹ ▸ Hut⁻¹ ▸ true_ne_false,
+        or.inl Hne)
+      (assume Hp : p, or.inr Hp))
+  (assume Hp : p, or.inr Hp)
+-- END
+
+end
+#+END_SRC
+On the other hand, if =p= is true, then, by function extensionality
+and propositional extensionality, =U= and =V= are equal. By the
+definition of =u= and =v=, this implies that they are equal as well.
+#+BEGIN_SRC lean
+import logic.axioms.hilbert logic.eq
+open eq.ops
+
+section
+parameter  p : Prop
+
+definition U (x : Prop) : Prop := x = true ∨ p
+definition V (x : Prop) : Prop := x = false ∨ p
+
+definition u := epsilon U
+definition v := epsilon V
+
+lemma u_def : U u :=
+epsilon_spec (exists.intro true (or.inl rfl))
+
+lemma v_def : V v :=
+epsilon_spec (exists.intro false (or.inl rfl))
+
+lemma not_uv_or_p : ¬(u = v) ∨ p :=
+or.elim u_def
+  (assume Hut : u = true,
+    or.elim v_def
+      (assume Hvf : v = false,
+        have Hne : ¬(u = v), from Hvf⁻¹ ▸ Hut⁻¹ ▸ true_ne_false,
+        or.inl Hne)
+      (assume Hp : p, or.inr Hp))
+  (assume Hp : p, or.inr Hp)
+
+-- BEGIN
+lemma p_implies_uv : p → u = v :=
+assume Hp : p,
+have Hpred : U = V, from
+  funext (take x : Prop,
+    have Hl : (x = true ∨ p) → (x = false ∨ p), from
+      assume A, or.inr Hp,
+    have Hr : (x = false ∨ p) → (x = true ∨ p), from
+      assume A, or.inr Hp,
+    show (x = true ∨ p) = (x = false ∨ p), from
+      propext (iff.intro Hl Hr)),
+have H' : epsilon U = epsilon V, from Hpred ▸ rfl,
+show u = v, from H'
+-- END
+
+end
+#+END_SRC
+Putting these last two facts together yields the desired conclusion:
+#+BEGIN_SRC lean
+import logic.axioms.hilbert logic.eq
+open eq.ops
+
+section
+parameter  p : Prop
+
+definition U (x : Prop) : Prop := x = true ∨ p
+definition V (x : Prop) : Prop := x = false ∨ p
+
+definition u := epsilon U
+definition v := epsilon V
+
+lemma u_def : U u :=
+epsilon_spec (exists.intro true (or.inl rfl))
+
+lemma v_def : V v :=
+epsilon_spec (exists.intro false (or.inl rfl))
+
+lemma not_uv_or_p : ¬(u = v) ∨ p :=
+or.elim u_def
+  (assume Hut : u = true,
+    or.elim v_def
+      (assume Hvf : v = false,
+        have Hne : ¬(u = v), from Hvf⁻¹ ▸ Hut⁻¹ ▸ true_ne_false,
+        or.inl Hne)
+      (assume Hp : p, or.inr Hp))
+  (assume Hp : p, or.inr Hp)
+
+lemma p_implies_uv : p → u = v :=
+assume Hp : p,
+have Hpred : U = V, from
+  funext (take x : Prop,
+    have Hl : (x = true ∨ p) → (x = false ∨ p), from
+      assume A, or.inr Hp,
+    have Hr : (x = false ∨ p) → (x = true ∨ p), from
+      assume A, or.inr Hp,
+    show (x = true ∨ p) = (x = false ∨ p), from
+      propext (iff.intro Hl Hr)),
+have H' : epsilon U = epsilon V, from Hpred ▸ rfl,
+show u = v, from H'
+
+-- BEGIN
+theorem em : p ∨ ¬p :=
+have H : ¬(u = v) → ¬p, from mt p_implies_uv,
+or.elim not_uv_or_p
+  (assume Hne : ¬(u = v), or.inr (H Hne))
+  (assume Hp : p, or.inl Hp)
+-- END
+
+end
+#+END_SRC
+
+
 
 ** Constructive Choice
 
@@ -877,9 +1070,11 @@ structure encodable [class] (A : Type) :=
 end hide
 #+END_SRC
 
-The standard library shows that =indefinite_description= axiom is actually a theorem
-for any encodable type =A= and decidable predicate =p : A → Prop=, and provides the following definition and theorem
-that realizes the =some= and =some_spec=.
+The standard library shows that =indefinite_description= axiom is
+actually a theorem for any encodable type =A= and decidable predicate
+=p : A → Prop=. It provides the following definition and theorem,
+which are concrete realizations of =some= and =some_spec=,
+respectively.
 
 #+BEGIN_SRC lean
 import data.encodable
@@ -892,15 +1087,19 @@ check @choose_spec
 -- END
 #+END_SRC
 
-The construction is straightforward, it finds =a : A= satisfying =p= by enumerating the elements of =A= and
-testing whether they satisfy =p= or not.
-We can show that this search always terminates because we have the assumption =∃ (x : A), p x=.
+The construction is straightforward: it finds =a : A= satisfying =p=
+by enumerating the elements of =A= and testing whether they satisfy
+=p= or not.  We can show that this search always terminates because we
+have the assumption =∃ (x : A), p x=.
 
-Now, we provide a constructive version of the theorem =has_left_inverse_of_injective=.
-We remark this is not the only possible version. The constructive version contains
-more hypotheses (parameters). Using Bishop's terminology, it avoids /pseudo-generality/.
-From the previous construction, it is clear that we can construct the left inverse
-whenever we can decide whether =b= is in the image of a function =f : A → B=, and we can /choose/.
+We can use this to provide a constructive version of the theorem
+=has_left_inverse_of_injective=.  We remark this is not the only
+possible version. The constructive version contains more hypotheses
+than the constructive version. In Bishop's terminology, it avoids
+"pseudo-generality."  Considering the classical construction, it is
+clear that once we have =choose=, we can construct the left inverse as
+long as we can decide whether =b= is in the image of a function =f : A
+→ B=.
 
 #+BEGIN_SRC lean
 import data.encodable algebra.function
@@ -929,14 +1128,17 @@ section
   exists.intro finv is_linv
 end
 #+END_SRC
+The argument is essentially the same as the classical one; we have
+simply replaced the classical =some= with the constructive choice
+function =choose=, and added three extra hypotheses: =dex=, =encB= and
+=deqB=. The first one makes sure we can decide whether a value =b= is
+in the image of =f= or not, and the last two are needed to use
+=choose=. 
 
-It is essentially the same proof, we just replaced =some= with the constructive choice function =choose=,
-and added three extra hypotheses: =dex=, =encB= and =deqB=. The first one makes sure we can decide
-whether a value =b= is in the image of =f= or not, and the last two are needed for the constructive choice
-function =choose=. The standard library contains many =encodable= types and shows that many types have decidable equality.
-The hypothesis =dex= can be satisfied in many cases. For example, it is trivially satisfied if =f= is surjective.
-We can also satisfy it whenever =A= is finite.
-
+The standard library contains many =encodable= types and shows that
+many types have decidable equality.  The hypothesis =dex= can be
+satisfied in many cases. For example, it is trivially satisfied if =f=
+is surjective. It is also satisfied whenever =A= is finite.
 #+BEGIN_SRC lean
 import data.encodable algebra.function
 open encodable function
