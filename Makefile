@@ -86,6 +86,8 @@ gitinfo:
 
 test:
 	for ORG in $(ORGS); do ./test.sh $(LEAN_BIN) $$ORG || exit 1; done
+test_js:
+	for ORG in $(ORGS); do ./test_js.sh $$ORG || exit 1; done
 
 build_nav_data: $(HTMLS)
 	echo "var lean_nav_data = [" > $(NAV_DATA)
