@@ -3,7 +3,7 @@ os:
 cache: apt
 env:
   global:
-   # GH_TOKEN=[secure]             (to push to osx/windows repo under soonhokong)
+   # GH_TOKEN=[secure]              (to push to leanprover org)
    - secure: "LAgBomK36BzF2mN/lOwua+gDzLgF6RyuMYBjMlP5KY3knUZT8m/9wff2GlWGm87anb6aIJH69ERjVyFU4sWi9qcD+26vs1m9agMFxuqTfpibeDoz/rd9D/9LA3mNeO6v5kR2FTQ/OTTC6nMC4olRxdzz22Jg9ly7cNzfFPuSGFA="
    # REPOn=BLESSED                  (to perform extra stuff only for pushes to the blessed repo)
    - secure: "Du/ZXFXdhRZL6AU6t6G8A3BNr3oPpHK4h2UCK00b+bgonHy7kDgTE0YxRVOf8VpXqfJwekzT4hWJhnKXasTp5avNEVEbdWC4nyM4tZbl6a8g8iI3Oo+JB6seSO6fIhrv6sZ7BCa6iuKDwzWJ0sQnXL+kx/zUqcle5eVUu5ic/24="
@@ -33,17 +33,19 @@ before_install:
 
 install:
   # Install Lean dependencies
-  - sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev libgmp-dev libmpfr-dev lua5.2-dev cmake
   - npm -g i cssmin minify
   # Build Lean
-  - git clone https://github.com/leanprover/lean
-  - cd lean
-  - mkdir build
-  - cd build
-  - cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 ../src
-  - make
-  - sudo make install
-  - cd ../../
+  - if [[ $TEST == TRUE ]] ; then
+      sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev libgmp-dev libmpfr-dev lua5.2-dev cmake &&
+      git clone https://github.com/leanprover/lean &&
+      cd lean &&
+      mkdir build &&
+      cd build &&
+      cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 ../src &&
+      make &&
+      sudo make install &&
+      cd ../../;
+    fi
 
 script:
   - EMACS_BIN=$(evm bin $EVM_EMACS) make
