@@ -34,10 +34,10 @@ before_install:
 install:
   # Install Lean dependencies
   - npm -g i cssmin minify
+  - git clone https://github.com/leanprover/lean
   # Build Lean
   - if [[ $TEST == TRUE ]] ; then
       sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev libgmp-dev libmpfr-dev lua5.2-dev cmake &&
-      git clone https://github.com/leanprover/lean &&
       cd lean &&
       mkdir build &&
       cd build &&
