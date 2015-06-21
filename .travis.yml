@@ -5,7 +5,7 @@ env:
   global:
    # GH_TOKEN=[secure]             (to push to osx/windows repo under soonhokong)
    - secure: "LAgBomK36BzF2mN/lOwua+gDzLgF6RyuMYBjMlP5KY3knUZT8m/9wff2GlWGm87anb6aIJH69ERjVyFU4sWi9qcD+26vs1m9agMFxuqTfpibeDoz/rd9D/9LA3mNeO6v5kR2FTQ/OTTC6nMC4olRxdzz22Jg9ly7cNzfFPuSGFA="
-   # REPO=BLESSED                  (to perform extra stuff only for pushes to the blessed repo)
+   # REPOn=BLESSED                  (to perform extra stuff only for pushes to the blessed repo)
    - secure: "Du/ZXFXdhRZL6AU6t6G8A3BNr3oPpHK4h2UCK00b+bgonHy7kDgTE0YxRVOf8VpXqfJwekzT4hWJhnKXasTp5avNEVEbdWC4nyM4tZbl6a8g8iI3Oo+JB6seSO6fIhrv6sZ7BCa6iuKDwzWJ0sQnXL+kx/zUqcle5eVUu5ic/24="
   matrix:
    - EVM_EMACS=emacs-24.3-bin TEST=TRUE
@@ -28,7 +28,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
   - sudo add-apt-repository --yes ppa:kalakris/cmake
   - sudo apt-get update
-  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended latexmk bibtex2html moreutils nodejs nodejs-legacy || true
+  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended latexmk bibtex2html moreutils nodejs || true
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
 install:
