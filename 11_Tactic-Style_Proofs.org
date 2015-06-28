@@ -997,7 +997,7 @@ in the goal (or a given hypothesis), and replaces any match with
 =t=, and fails if it is not convertible to =t=.  (The up arrow is
 entered with =\u=, the down arrow is entered with =\d=, and the right
 triangle is entered with =\t=. You can also use the ASCII alternatives
-=^f=, =>*=, =<D t=, and => t= for =↑f=, =▸*=, =↓t=, and =▸t=,
+=^f=, =>*=, =<d t=, and => t= for =↑f=, =▸*=, =↓t=, and =▸t=,
 respectively.)
 
 #+BEGIN_SRC lean
@@ -1047,7 +1047,7 @@ end
 #+END_SRC
 
 Here is another example: given any type =A=, we show that the =list A=
-append operation =s ++ t= is associative. 
+append operation =s ++ t= is associative.
 #+BEGIN_SRC lean
 import data.list
 open list
@@ -1089,4 +1089,3 @@ begin
   rewrite [+mul_zero, +zero_mul, +add_zero]
 end
 #+END_SRC
-
