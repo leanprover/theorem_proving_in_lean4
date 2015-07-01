@@ -1,7 +1,7 @@
 CASK_BIN ?= cask
 EMACS_BIN ?= emacs
 LEAN_BIN ?= lean
-ORGS  := $(wildcard [0-9][0-9]_*.org)
+ORGS  := $(wildcard [0-9A][0-9]_*.org)
 HTMLS := $(ORGS:.org=.html)
 TEXS  := $(ORGS:.org=.tex)
 PDFS  := $(ORGS:.org=.pdf)
