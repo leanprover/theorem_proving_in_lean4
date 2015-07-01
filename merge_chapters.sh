@@ -10,6 +10,8 @@
 TUTORIAL_ORG_FILE=tutorial.org
 
 rm -f ${TUTORIAL_ORG_FILE}
+
+# Collect Main Chapters
 for CHAPTER in [0-9][0-9]*.org
 do
     if [ ! -f ${TUTORIAL_ORG_FILE} ] ; then
@@ -21,6 +23,19 @@ do
         tail -n +${START_LINE} -- ${CHAPTER} >> ${TUTORIAL_ORG_FILE}
     fi
 done
+
+# Collect Appendices
+echo "#+BEGIN_LATEX" >> ${TUTORIAL_ORG_FILE}
+echo "\appendix"     >> ${TUTORIAL_ORG_FILE}
+echo "#+END_LATEX"   >> ${TUTORIAL_ORG_FILE}
+
+for APPENDIX in A[0-9]*.org
+do
+    START_LINE=`grep -n '^\* ' ${APPENDIX} | cut -d ':' -f 1`
+    echo "$APPENDIX : +${START_LINE} -> ${TUTORIAL_ORG_FILE}"
+    tail -n +${START_LINE} -- ${APPENDIX} >> ${TUTORIAL_ORG_FILE}
+done
+
 
 # Replace inter-file links to inner-file links
 #

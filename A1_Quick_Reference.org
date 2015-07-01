@@ -2,7 +2,6 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
 
 * Quick Reference
-
 ** Displaying Information
 
 #+BEGIN_SRC text
