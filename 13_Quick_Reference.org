@@ -219,9 +219,6 @@ C-c C-k    : show how to enter unicode symbol
 C-c C-o    : set Lean options
 C-c C-e    : execute Lean command
 C-c C-r    : restart Lean process
-C-c ! n    : show next error
-C-c ! p    : show previous error
-C-c ! l    : show list of errors
 #+END_SRC
 
 ** Unicode Symbols
