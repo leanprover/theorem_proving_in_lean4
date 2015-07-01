@@ -126,7 +126,7 @@ eassumption       : a more aggressive ("expensive") form of assumption
 
 Equational reasoning:
 #+BEGIN_SRC text
-esimp                : simplify expressions in goal (TODO: 'e' here is supposed to mean "evaluator" :-(, I wanted to use 'simp' for the simplifier)
+esimp                : simplify expressions (by evaluation/normalization) in goal (TODO: 'e' here is supposed to mean "evaluator" :-(, I wanted to use 'simp' for the simplifier)
 esimp at <id>        : simplify hypothesis in context
 esimp at *           : simplify everything
 esimp [<id>]         : unfold definition and simplify expressions in goal
