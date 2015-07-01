@@ -1,0 +1,331 @@
+#+Title: Theorem Proving in Lean
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
+
+* Quick Reference
+
+** Displaying Information
+
+#+BEGIN_SRC text
+check <expr>                 : check the type of an expression
+eval <expr>                  : evaluate and expression
+print <id>                   : print information about <id>
+print notation               : display all notation
+print notation <tokens>      : display notation using any of the tokens
+print axioms                 : display assumed axioms
+print options                : display options set by user or emacs mode
+print prefix <namespace>     : display all declarations in the namespace
+print coercions              : display all coercions
+print coercions <source>     : display only the coercions from <source>
+print classes                : display all classes
+print instances <class name> : display all instances of the given class
+print fields <structure>     : display all "fields" of a structure
+print metaclasses            : show kinds of data stored in a namespace
+#+END_SRC
+
+** Setting Options
+
+#+BEGIN_SRC text
+pp.implicit        : display implicit arguments
+pp.universes       : display hidden universe parameters
+pp.coercions       : show coercions
+pp.notation        : display output using defined notations
+pp.beta            : beta reduce terms before displaying them
+pp.all             : show all the information above and don't beta reduce
+
+pp.max_depth       : maximum expression depth
+pp.max_steps       : maximum steps for printing expression
+pp.full_names      : use full names for identifiers
+pp.private_names
+pp.metavar_args    : show arguments to metavariables 
+pp.purify_metavars
+pp.purify_locals  
+pp.numerals        : print output as numerals
+pp.abbreviations   : show abbreviations
+pp.preterm
+pp.compact_goals
+#+END_SRC
+
+** Attributes
+
+These can generally be declared with a =definition= or =theorem=, or
+using the =attribute= or =local attribute= commands.
+#+BEGIN_SRC text
+reducible       : unfold during elaboration if necessary
+irreducible     : avoid unfolding during elaboration
+semireducible   : unfold when not performance critical
+coercion        : use as a coercion between types
+class           : type class declaration
+instance        : type class instance
+parsing-only    : use notation only for input
+unfold_c         
+recursor
+#+END_SRC
+
+** Proof Elements
+
+Term Mode:
+#+BEGIN_SRC text
+take, assume    : syntactic sugar for lambda
+let             : introduce local definitions
+have            : introduce auxiliary fact (opaque, in the body)
+assert          : like "have", but visible to tactics
+show            : make result type explicit
+match ... with  : introduce proof or definition by cases
+proof ... qed   : introduce a proof or definition block, elaborated separately
+#+END_SRC
+
+Tactic Mode:
+#+BEGIN_SRC text
+begin ... end   : enter tactic mode, and blocking mechanism within tactic mode
+have            : as in term mode (enters term mode)
+show            : as in term mode (enters term mode)
+match ... with  : as in term mode (enters term mode)
+let             : introduce local fact (opaque, in the body)
+#+END_SRC
+
+** Sectioning Mechanisms
+
+#+BEGIN_SRC text
+namespace <id> ... end <id>  : begin / end namespace
+section ... end              : begin / end section
+section <id> .... end <id>   : begin / end section
+
+variable (var : type)        : introduce variable where needed
+variable {var : type)        : introduce implicit variable where needed
+variable [var : type]        : introduce class inference variable where needed
+parameter                    : introduce variable, fixed within the section
+include                      : include variable in subsequence definitions
+omit                         : undoes "include"
+#+END_SRC
+
+** Tactics
+
+General tactics:
+#+BEGIN_SRC text
+apply <expr>      : apply a theorem to the goal
+eapply <expr>
+fapply <expr>     : like apply, but leaves subgoals instead of metavariables
+refine <expr>     :
+exact <expr>      : apply and close goal, or fail
+rexact <expr>     : relaxed version of exact
+
+intro <id>        : introduce a quantified variable or hypothesis
+intro             : let Lean choose a name
+intros <ids>      : introduce multiple variables or hypotheses
+intros            : let Lean choose the names
+
+rename <id>       : rename a variable or hypothesis
+generalize <expr> <id> : generalize an expression
+generalizes
+clear <ids>       : clear variables or hypotheses
+clears
+revert <ids>      : move variables or hypotheses into the goal
+reverts
+
+assumption        : try to close a goal with something in the context
+eassumption       : a more aggress ("expensive") form of assumption
+#+END_SRC
+
+Equational reasoning:
+#+BEGIN_SRC text
+esimp             : simplify expressions in goal
+esimp at <id>     : simplify hypothesis in context
+esimp at *        : simplify everything
+beta              : beta reduce goal
+
+rewrite <expr>    : apply a rewrite rule
+rewrite <expr-list> : apply a sequence of rewrites
+krewrite          : a more aggressive form of rewrite, using keyed rewriting
+xrewrite          : a more aggressive form of rewrite
+
+subst <id>        : substitute a variable defined in the context
+subst_vars        : substitute all variables in the context
+#+END_SRC
+
+Induction and cases:
+#+BEGIN_SRC text
+cases <expr> {ids}             : decompose an element of an inductive type
+induction <expr> {using} {ids} : use induction
+constructor                    : construct an element of an inductive type
+fconstructor
+injectivity                    : use injectivity of constructors
+#+END_SRC
+
+Special-purpose tactics:
+#+BEGIN_SRC text
+contradiction     : initiates a proof by contradiction
+exfalso
+congruence
+split             : and introduction
+left              : left or introduction
+right             : right or introduction
+existsi           : exists introduction
+reflexivity       : reflexivity of equality
+symmetry          : symmetry of equality
+transitivity      : transitivity of equality
+trivial           : apply true introduction
+#+END_SRC
+
+Combinators:
+#+BEGIN_SRC text
+and_then <tac1> <tac2> (notation: <tac1> ; <tac2>)
+or_else <tac1> <tac2> (notation: <tac1> || <tac2>)
+append
+interleave
+par
+fixpoint
+try
+repeat
+repeat1
+at_most
+do <num> <tac>
+deter
+#+END_SRC
+
+Goal management:
+#+BEGIN_SRC text
+focus_at
+rotate_left  : rotate goals
+rorate_right
+rotate <num>
+discard
+fail
+id
+info
+whnf
+change
+#+END_SRC
+
+Information and debugging:
+#+BEGIN_SRC text
+state
+check_expr
+trace
+#+END_SRC
+
+** Emacs Lean-mode commands
+
+Flycheck commands:
+#+BEGIN_SRC text
+C-c ! n    : next error
+C-c ! p    : previous error
+C-c ! l    : list errors
+C-c C-x    : execute Lean (in stand-alone mode)
+#+END_SRC
+
+Lean-specific commands:
+#+BEGIN_SRC text
+C-c C-k    : show how to enter unicode symbol
+C-c C-o    : set Lean options
+C-c C-e    : execute Lean command
+C-c C-r    : restart Lean process
+C-c ! n    : show next error
+C-c ! p    : show previous error
+C-c ! l    : show list of errors
+#+END_SRC
+
+** Unicode Symbols
+
+This section lists some of the Unicode symbols that are used in the
+Lean library, their ASCII equivalents, and the keystrokes that can be
+used to enter them in the Emacs Lean mode.
+
+Logical symbols:
+
+| Unicode | Ascii  | Emacs                   |
+|---------+--------+-------------------------|
+| true    |        |                         |
+| false   |        |                         |
+| ¬       | not    | =\not=, =\neg=          |
+| ∧       | /\     | =\and=                  |
+| ‌∨       | \/     | =\or=                   |
+| →       | ->     | =\to=, =\r=, =\implies= |
+| ↔       | <->    | =\iff=, =\lr=           |
+| ∀       | forall | =\all=                  |
+| ∃       | exists | =\ex=                   |
+| λ       | fun    | =\lam=, =\fun=          |
+| ≠       | ~=     | =\ne=                   |
+
+Types:
+
+| Π | Pi    | =\Pi=                     |
+| → | ->    | =\to=, =\r=, =\implies=   |
+| Σ | Sigma | =\S=, =\Sigma=            |
+| × | prod  | =\times=                  |
+| ⊎ | sum   | =\union=, =\u+=, =\uplus= |
+| ℕ | nat   | =\nat=                    |
+| ℤ | int   | =\int=                    |
+| ℚ | rat   | =\rat=                    |
+| ℝ | real  | =\real=                   |
+
+When you open the namespaces =prod= and =sum=, you can use =*= and =+=
+for the types =prod= and =sum= respectively. To avoid overwriting
+notation, these have to have the same precedence as the arithmetic
+operations. If you don't need to use notation for the arithmetic
+operations, you can obtain lower-precedence versions by opening the
+namespaces =low_precedence_times= and =low_precedence_plus=
+respectively.
+
+Greek letters:
+
+| Unicode | Emacs    |
+|---------+----------|
+| α       | =\alpha= |
+| β       | =\beta=  |
+| γ       | =\gamma= |
+| ...     | ...      |
+
+Equality proofs (=open eq.ops=):
+
+| Unicode | Ascii | Emacs         |
+|---------+-------+---------------|
+| ⁻¹      | eq.symm  | =\sy=, =\inv= |
+| ⬝       | eq.trans | =\tr=         |
+| ▸       | eq.subst | =\t=          |
+
+Symbols for the rewrite tactic:
+
+| Unicode | Ascii | Emacs |
+|---------+-------+-------|
+| ↑       | ^     | =\u=  |
+| ↓       | <d    | =\d=  |
+
+Brackets:
+
+| Unicode | Ascii | Emacs         |
+|---------+-------+---------------|
+| ⌞t⌟     | ?(t)  | =\cll t \clr= |
+| ⦃ t ⦄   | {{t}} | =\{{ t \}}    |
+| ⟨ t ⟩   |       | =\< t \>=     |
+| ⟪ t ⟫   |       | =\<< t \>>=   |
+
+
+Set theory:
+
+| Unicode | Ascii    | Emacs    |
+|---------+----------+----------|
+| ∈       | mem      | =\in=    |
+| ∉       |          | =\nin=   |
+| ∩       | inter    | =\i=     |
+| ∪       | union    | =\un=    |
+| ⊆       | subseteq | =\subeq= |
+
+Binary relations:
+
+| Unicode | Ascii | Emacs    |   |
+|---------+-------+----------+---|
+| ≤       | <=    | =\le=    |   |
+| ≥       | >=    | =\ge=    |   |
+| ∣       | dvd   | =\∣=     |   |
+| ≡       |       | =\equiv= |   |
+| ≈       |       | =\eq=    |   |
+
+
+Binary operations:
+
+| Unicode | Ascii | Emacs   |
+|---------+-------+---------|
+| ∘       | comp  | =\comp= |
+
+
+
