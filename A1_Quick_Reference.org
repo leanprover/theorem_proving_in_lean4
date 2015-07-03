@@ -1,7 +1,19 @@
 #+Title: Theorem Proving in Lean
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
 
+# Note: the PDF version and the Github org can fit about 100 characters on a line. To be safe,
+# here, we break at 95
+
+# TODO: should we rename xrewrite to erewrite? JA: I vote "yes"
+# TODO: better name for unfold_c: JA: how about rec-arg? 
+# TODO: the 'e' prefix in eapply is misleading since we usually use it for the "expensive" 
+#       version, what about 'rapply'; JA: o.k. with me
+# TODO: should "rexact" be called 'eexact', for expensive-exact? JA : o.k. with me.
+# TODO: in esimp, 'e' is supposed to mean "evaluator" :-(, I wanted to use 'simp' for the 
+#       simplifier); JA : I think that is o.k.
+
 * Quick Reference
+
 ** Displaying Information
 
 #+BEGIN_SRC text
@@ -31,7 +43,8 @@ pp.universes       : display hidden universe parameters
 pp.coercions       : show coercions
 pp.notation        : display output using defined notations
 pp.beta            : beta reduce terms before displaying them
-pp.all             : disable notations, display implicit arguments, hidden universe parameters and coercions
+pp.all             : disable notations, display implicit arguments, hidden universe parameters 
+                     and coercions
 pp.max_depth       : maximum expression depth
 pp.max_steps       : maximum steps for printing expression
 pp.full_names      : use full names for identifiers
@@ -53,7 +66,7 @@ coercion        : use as a coercion between types
 class           : type class declaration
 instance        : type class instance
 parsing-only    : use notation only for input
-unfold_c        : (TODO: find better name for attribute)
+unfold_c        : unfold argument for iota reduction
 recursor        : user-defined recursor/eliminator
 refl            : reflexivity lemma, used for calc-expressions, tactics and simplifier
 symm            : symmetry lemma, used for calc-expressions, tactics and simplifier
@@ -62,7 +75,8 @@ trans           : transitivity lemma, used for calc-expressions, tactics and sim
 
 ** Proof Elements
 
-Term Mode:
+*** Term Mode
+
 #+BEGIN_SRC text
 take, assume    : syntactic sugar for lambda
 let             : introduce local definitions
@@ -73,7 +87,8 @@ match ... with  : introduce proof or definition by cases
 proof ... qed   : introduce a proof or definition block, elaborated separately
 #+END_SRC
 
-Tactic Mode:
+*** Tactic Mode
+
 #+BEGIN_SRC text
 begin ... end   : enter tactic mode, and blocking mechanism within tactic mode
 have            : as in term mode (enters term mode), but visible to tactics
@@ -98,16 +113,19 @@ omit                         : undoes "include"
 #+END_SRC
 
 ** Tactics
-We say a tactic is more "aggressive" when it uses a more expensive (and complete) unification algorithm,
-and/or unfolds more aggressively definitions.
 
-General tactics:
+We say a tactic is more "aggressive" when it uses a more expensive (and complete) unification 
+algorithm, and/or unfolds more aggressively definitions.
+
+*** General tactics
+
 #+BEGIN_SRC text
 apply <expr>      : apply a theorem to the goal, create subgoals for non-dependent premises
-fapply <expr>     : like apply, but create subgoals also for dependent premises that were not assigned by unification procedure
-eapply <expr>     : like apply, but used for applying recursor-like definitions (TODO: the 'e' prefix is misleading since we usually use it for the "expensive" version, what about 'rapply')
+fapply <expr>     : like apply, but create subgoals also for dependent premises that were not 
+                    assigned by unification procedure
+eapply <expr>     : like apply, but used for applying recursor-like definitions
 exact <expr>      : apply and close goal, or fail
-rexact <expr>     : relaxed (and more expensive) version of exact (TODO: should it be called 'eexact'? the expensive-exact)
+rexact <expr>     : relaxed (and more expensive) version of exact
 refine <expr>     : like exact, but creates subgoals for unresolved subgoals
 
 intro <id>        : introduce a quantified variable or hypothesis
@@ -123,45 +141,58 @@ assumption        : try to close a goal with something in the context
 eassumption       : a more aggressive ("expensive") form of assumption
 #+END_SRC
 
-Equational reasoning:
+*** Equational reasoning
+
 #+BEGIN_SRC text
-esimp                : simplify expressions (by evaluation/normalization) in goal (TODO: 'e' here is supposed to mean "evaluator" :-(, I wanted to use 'simp' for the simplifier)
+esimp                : simplify expressions (by evaluation/normalization) in goal
 esimp at <id>        : simplify hypothesis in context
 esimp at *           : simplify everything
 esimp [<id>]         : unfold definition and simplify expressions in goal
 esimp [<id>] at <id> : unfold definition and simplify hypothesis in context
 esimp [<id>] at *    : unfold definition and simplify everything
 unfold <id>          : similar to (esimp <id>)
-fold <expr>          : unfold given function application, search for convertible term in the goal, and replace it with <expr>
+fold <expr>          : unfold given function application, search for convertible term in the 
+                       goal, and replace it with <expr>
 
-beta                : beta reduce goal
+beta                 : beta reduce goal
 
-rewrite <expr>      : apply a rewrite rule
-rewrite <expr-list> : apply a sequence of rewrites
-krewrite            : a more aggressive form of rewrite, using keyed rewriting
-xrewrite            : a more aggressive form of rewrite (TODO: should we rename it to 'erewrite'?)
+rewrite <expr>       : apply a rewrite rule
+rewrite <expr-list>  : apply a sequence of rewrites
+krewrite             : a more aggressive form of rewrite, using keyed rewriting
+xrewrite             : a more aggressive form of rewrite
 
-subst <id>        : substitute a variable defined in the context, and clear hypothesis and variable
-subst_vars        : substitute all variables in the context
+subst <id>           : substitute a variable defined in the context, and clear hypothesis and 
+                       variable
+subst_vars           : substitute all variables in the context
 #+END_SRC
 
-Induction and cases:
+*** Induction and cases
+
 #+BEGIN_SRC text
 cases <expr> (using {ids})?     : decompose an element of an inductive type
 induction <expr> (using {ids})? : use induction
-constructor                     : construct an element of an inductive type by applying the first constructor that succeeds
-constructor <i>                 : construct an element of an inductive type by applying the ith-constructor
-fconstructor                    : construct an element of an inductive type by (fapply)ing the first constructor that succeeds
-fconstructor <i>                : construct an element of an inductive type by (fapply)ing the ith-constructor
+constructor                     : construct an element of an inductive type by applying the 
+                                  first constructor that succeeds
+constructor <i>                 : construct an element of an inductive type by applying the 
+                                  ith-constructor
+fconstructor                    : construct an element of an inductive type by (fapply)ing the 
+                                  first constructor that succeeds
+fconstructor <i>                : construct an element of an inductive type by (fapply)ing the 
+                                  ith-constructor
 injectivity                     : use injectivity of constructors
-split                           : equivalent to (constructor 0), and is only applicable to inductive datatypes with a single constructor (aka and introduction)
-left                            : equivalent to (constructor 0), and is only applicable to inductive datatypes with two constructor (aka left or introduction)
-right                           : equivalent to (constructor 1), and is only applicable to inductive datatypes with two constructor (aka right or introduction)
-existsi <expr>                  : similar to (constructor 0) but we can provide an argument to the constructor, useful for performing exists/sigma introduction
+split                           : equivalent to (constructor 0), only applicable to inductive 
+                                  datatypes with a single constructor (e.g. and introduction)
+left                            : equivalent to (constructor 0), only applicable to inductive 
+                                  datatypes with two constructors (e.g. left or introduction)
+right                           : equivalent to (constructor 1), only applicable to inductive 
+                                  datatypes with two constructors (e.g. right or introduction)
+existsi <expr>                  : similar to (constructor 0) but we can provide an argument, 
+                                  useful for performing exists/sigma introduction
 
 #+END_SRC
 
-Special-purpose tactics:
+*** Special-purpose tactics
+
 #+BEGIN_SRC text
 contradiction       : close contradictory goal
 exfalso             : implements the “ex falso quodlibet” logical principle
@@ -172,24 +203,30 @@ transitivity <expr> : transitivity of equality (or any relation marked with attr
 trivial             : apply true introduction
 #+END_SRC
 
-Combinators:
+*** Combinators
+
 #+BEGIN_SRC text
-and_then <tac1> <tac2> (notation: <tac1> ; <tac2>)  : execute <tac1> and then execute <tac2> (aka sequential composition)
-or_else <tac1> <tac2> (notation: (<tac1> | <tac2>)) : execute <tac1> if it fails, execute <tac2>
+and_then <tac1> <tac2> (notation: <tac1> ; <tac2>)  
+                         : execute <tac1> and then execute <tac2> (aka sequential composition)
+or_else <tac1> <tac2> (notation: (<tac1> | <tac2>)) 
+                         : execute <tac1> if it fails, execute <tac2>
 append  <tac1> <tac2>    : execute <tac1> and <tac2> and append their proof state streams
-interleave <tac1> <tac2> : execute <tac1> and <tac2> and interleave the proof state streams produced by them
+interleave <tac1> <tac2> : execute <tac1> and <tac2> and interleave the proof state streams 
+                           they produce
 par <tac1> <tac2>        : execute <tac1> and <tac2> in parallel
 fixpoint (fun t, <tac>)  : fixpoint tactic, <tac> may refer to t
 try <tac>                : execute <tac>, if it fails do nothing
 repeat <tac>             : repeat <tac> zero or more times (until it fails)
-repeat1 <tac>            : like (repeat <tac>), but fails if <tac> does not succeed at least once
+repeat1 <tac>            : like (repeat <tac>), but fails if <tac> does not succeed at least 
+                           once
 at_most <num> <tac>      : like (repeat <tac>), but execute <tac> at most <num> times
 do <num> <tac>           : execute <tac> exactly <num> times
 determ <tac>             : discard all but the first proof state produced by <tac>
 discard <tac> <num>      : discard the first <num> proof-states produced by <tac>
 #+END_SRC
 
-Goal management:
+*** Goal management
+
 #+BEGIN_SRC text
 focus_at <tac> <i>  : execute <tac> to the ith-goal, and fail if it is not solved
 focus  <tac>        : equivalent to (focus_at <tac> 0)
@@ -204,7 +241,8 @@ whnf                : put goal in weak head normal form
 change <expr>       : change the goal to <expr> if it is convertible to <expr>
 #+END_SRC
 
-Information and debugging tactics:
+*** Information and debugging
+
 #+BEGIN_SRC text
 state               : display the current proof state
 check_expr <expr>   : display the type of the given expression in the current goal
@@ -213,7 +251,8 @@ trace <string>      : display the current string
 
 ** Emacs Lean-mode commands
 
-Flycheck commands:
+*** Flycheck commands
+
 #+BEGIN_SRC text
 C-c ! n    : next error
 C-c ! p    : previous error
@@ -221,7 +260,8 @@ C-c ! l    : list errors
 C-c C-x    : execute Lean (in stand-alone mode)
 #+END_SRC
 
-Lean-specific commands:
+*** Lean-specific commands
+
 #+BEGIN_SRC text
 C-c C-k    : show how to enter unicode symbol
 C-c C-o    : set Lean options
@@ -235,7 +275,7 @@ This section lists some of the Unicode symbols that are used in the
 Lean library, their ASCII equivalents, and the keystrokes that can be
 used to enter them in the Emacs Lean mode.
 
-Logical symbols:
+*** Logical symbols
 
 | Unicode | Ascii  | Emacs                   |
 |---------+--------+-------------------------|
@@ -251,7 +291,7 @@ Logical symbols:
 | λ       | fun    | =\lam=, =\fun=          |
 | ≠       | ~=     | =\ne=                   |
 
-Types:
+*** Types
 
 | Π | Pi    | =\Pi=                     |
 | → | ->    | =\to=, =\r=, =\implies=   |
@@ -271,7 +311,7 @@ operations, you can obtain lower-precedence versions by opening the
 namespaces =low_precedence_times= and =low_precedence_plus=
 respectively.
 
-Greek letters:
+*** Greek letters
 
 | Unicode | Emacs    |
 |---------+----------|
@@ -280,7 +320,7 @@ Greek letters:
 | γ       | =\gamma= |
 | ...     | ...      |
 
-Equality proofs (=open eq.ops=):
+*** Equality proofs (=open eq.ops=)
 
 | Unicode | Ascii | Emacs         |
 |---------+-------+---------------|
@@ -288,14 +328,14 @@ Equality proofs (=open eq.ops=):
 | ⬝       | eq.trans | =\tr=         |
 | ▸       | eq.subst | =\t=          |
 
-Symbols for the rewrite tactic:
+*** Symbols for the rewrite tactic
 
 | Unicode | Ascii | Emacs |
 |---------+-------+-------|
 | ↑       | ^     | =\u=  |
 | ↓       | <d    | =\d=  |
 
-Brackets:
+*** Brackets
 
 | Unicode | Ascii | Emacs         |
 |---------+-------+---------------|
@@ -304,8 +344,7 @@ Brackets:
 | ⟨ t ⟩   |       | =\< t \>=     |
 | ⟪ t ⟫   |       | =\<< t \>>=   |
 
-
-Set theory:
+*** Set theory
 
 | Unicode | Ascii    | Emacs    |
 |---------+----------+----------|
@@ -315,7 +354,7 @@ Set theory:
 | ∪       | union    | =\un=    |
 | ⊆       | subseteq | =\subeq= |
 
-Binary relations:
+*** Binary relations
 
 | Unicode | Ascii | Emacs    |   |
 |---------+-------+----------+---|
@@ -325,8 +364,7 @@ Binary relations:
 | ≡       |       | =\equiv= |   |
 | ≈       |       | =\eq=    |   |
 
-
-Binary operations:
+*** Binary operations
 
 | Unicode | Ascii | Emacs   |
 |---------+-------+---------|
