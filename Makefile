@@ -91,7 +91,7 @@ test_js:
 
 build_nav_data: $(HTMLS)
 	echo "var lean_nav_data = [" > $(NAV_DATA)
-	ls -1 [0-9][0-9]_*.html | sed 's/\(.*\)/"\1",/' >> $(NAV_DATA)
+	ls -1 [A0-9][0-9]_*.html | sed 's/\(.*\)/"\1",/' >> $(NAV_DATA)
 	echo "];" >> $(NAV_DATA)
 
 .PHONY: all clean install-cask install-watchman watch-on watch-off gitinfo
