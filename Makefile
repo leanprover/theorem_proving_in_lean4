@@ -10,7 +10,7 @@ WATCHMAN_BIN ?= $(CWD)/watchman/bin/watchman
 TMPDIR := $(shell mktemp -d /tmp/lean-tutorial.XXXX)
 NAV_DATA := js/nav_data.js
 
-all: $(HTMLS) tutorial.pdf build_nav_data
+all: $(HTMLS) tutorial.pdf quickref.pdf build_nav_data
 
 htmls: $(HTMLS)
 
@@ -24,6 +24,13 @@ tutorial.org: $(ORGS)
 	cp *.bib $(TMPDIR)
 	$(EMACS_BIN) --no-site-file --no-site-lisp -q --batch -l elisp/org-html-export.el --visit $(TMPDIR)/$<.temp.org -f org-html-export-to-html
 	mv $(TMPDIR)/$<.temp.html $@
+	rm $(TMPDIR)/$<.temp.org
+
+quickref.tex: A1_Quick_Reference.org .cask elisp/org-pdf-export.el header/latex_quickref.org header/latex_quickref.tex
+	make gitinfo
+	cat header/latex_quickref.org $< > $(TMPDIR)/$<.temp.org
+	$(EMACS_BIN) --no-site-file --no-site-lisp -q --batch -l elisp/org-pdf-export.el --visit $(TMPDIR)/$<.temp.org -f org-latex-export-to-latex
+	mv $(TMPDIR)/$<.temp.tex $@
 	rm $(TMPDIR)/$<.temp.org
 
 tutorial.tex: tutorial.org .cask elisp/org-pdf-export.el header/latex.org header/latex.tex footer/latex.org lean.bib

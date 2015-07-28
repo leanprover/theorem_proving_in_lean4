@@ -1,6 +1,6 @@
-#+Title: Theorem Proving in Lean
+#+Title: Lean Quick Reference
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
-
+#+DATE: \href{https://github.com/leanprover/tutorial/commit/\gitHash}{Version \gitAbbrevHash}, updated at \gitAuthorIsoDate
 # Note: the PDF version and the Github org can fit about 100 characters on a line. To be safe,
 # here, we break at 95
 
