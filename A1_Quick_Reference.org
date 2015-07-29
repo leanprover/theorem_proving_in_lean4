@@ -1,16 +1,6 @@
 #+Title: Lean Quick Reference
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
 #+DATE: \href{https://github.com/leanprover/tutorial/commit/\gitHash}{Version \gitAbbrevHash}, updated at \gitAuthorIsoDate
-# Note: the PDF version and the Github org can fit about 100 characters on a line. To be safe,
-# here, we break at 95
-
-# TODO: should we rename xrewrite to erewrite? JA: I vote "yes"
-# TODO: better name for unfold_c: JA: how about rec-arg? 
-# TODO: the 'e' prefix in eapply is misleading since we usually use it for the "expensive" 
-#       version, what about 'rapply'; JA: o.k. with me
-# TODO: should "rexact" be called 'eexact', for expensive-exact? JA : o.k. with me.
-# TODO: in esimp, 'e' is supposed to mean "evaluator" :-(, I wanted to use 'simp' for the 
-#       simplifier); JA : I think that is o.k.
 
 * Quick Reference
 
@@ -86,6 +76,16 @@ show            : make result type explicit
 match ... with  : introduce proof or definition by cases
 proof ... qed   : introduce a proof or definition block, elaborated separately
 #+END_SRC
+
+The keywords =have= and =assert= can be anonymous, which is to say, they can be used without
+giving a label to the hypothesis. The corresponding element of the context can then be
+referred to using the keyword =this= until another anonymous element is introduced, or by
+enclosing the assertion in backticks. To avoid a syntactic ambiguity, the keyword =suppose= 
+is used instead of =assume= to introduce an anonymous assumption.
+
+One can also use anonymous binders (like =lambda=, =take=, =obtain=, etc.) by enclosing
+the type in backticks, as in =λ `nat`, `nat` + 1=. This introduces a variable of the given
+type in the context with a hidden name.
 
 *** Tactic Mode
 
