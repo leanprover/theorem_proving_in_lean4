@@ -77,6 +77,11 @@ contextual information."
               (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label code))))))))
 (setq org-confirm-babel-evaluate nil)
 
+(defun lean-extract-chapter-name (str)
+  (let ((num (string-to-number str)))
+    (cond ((= num 0) str)
+          (t (format "%d" num)))))
+
 (defun lean-filter-headline (text backend info)
   "Adjust the chapter number based on the filename. For example,
 when the filename is '07_Induction_and_Recursion.org', it uses
@@ -87,8 +92,6 @@ value."
       (save-match-data
         (when (and
                (>= (length file-name) 2)
-               (not (= (string-to-int (s-left 2 file-name))
-                       0))
                (let ((case-fold-search t))
                  (string-match (rx
                                 (group "<span class=\"section-number-"
@@ -98,7 +101,8 @@ value."
                                 (group (* (char digit ".")))
                                 (group "</span>"))
                                text)))
-          (replace-match (format "\\1 %d\\3\\4" (string-to-int (s-left 2 file-name)))
+          (replace-match (format "\\1 %s\\3\\4"
+                                 (lean-extract-chapter-name (s-left 2 file-name)))
                          t nil text))))))
 
 (defun lean-filter-html-link (text backend info)
