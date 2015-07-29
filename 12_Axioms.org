@@ -24,27 +24,29 @@ Lean is designed to support both computational and classical
 reasoning. Users that are so inclined can stick to a "computationally
 pure" fragment, which guarantees that closed expressions in the system
 evaluate to canonical normal forms. In particular, any closed
-computationally pure expression of type =ℕ=  for example, any closed expression
-denoting a natural number will reduce to a numeral. 
+computationally pure expression of type =ℕ=,  for example,
+denoting a natural number will reduce to a numeral.
 
-To support classical reasoning, Lean's standard library defines a
-number of "classical" axioms, which are justified on a set-theoretic
-interpretation of type theory. The library imports two mildly
-classical axioms, propositional extensionality and quotients. These
+To support classical reasoning, Lean's standard library defines
+one choice axiom, which is justified on a set-theoretic
+interpretation of type theory. In the standard library, the law of the
+excluded middle is a consequence of this axiom.
+The library also imports two semi-constructive (or mildly classical) axioms,
+propositional extensionality and quotients. These
 are used, for example, to develop a theories of sets and finite sets.
 Even some computationally inclined users may also wish to use the law
 of the excluded middle to reason about computation. Below we will
 describe the effects that these axioms have on computation aspects of
 the system.
 
-There is one classical construction, however, that is entirely
-inimical to a computational interpretation of the system, namely, the
-Hilbert operator, which magically produces "data" from a proposition
+However, the classical choice axion (also known as the Hilbert operator) is entirely
+inimical to a computational interpretation of the system,
+which magically produces "data" from a proposition
 asserting its existence. Its use is essential to some classical
 constructions, and users can import it when needed. But expressions
 that depend on this construction lose their computational content, and
 in Lean we are required to mark such definitions as =noncomputable= to
-flag that fact. 
+flag that fact.
 
 ** Historical and Philosophical Context
 
@@ -106,7 +108,7 @@ reach a normal form. Current plans for Lean include the development of
 a fast evaluator along these lines.
 
 Having adopted a proof-irrelevant =Prop=, one might consider it
-legitimate to add arbitrary classical axioms, such as the law of the
+legitimate to use, for example, the law of the
 excluded middle, governing propositions. Of course, this, too, can
 block computation, but it does not block fast evaluation as described
 above.  From a constructive point of view, the most objectionable
@@ -162,20 +164,20 @@ itself, a fact which we encourage you to prove.
 
 ** Function Extensionality
 
-Similar to propositional extensionality, function extensionality is
-the following axiom:
+Similar to propositional extensionality, function extensionality
+asserts that any two functions of type =Π x : A, B x= that agree on
+all their inputs are equal.
 #+BEGIN_SRC lean
 namespace hide
 
 -- BEGIN
-axiom funext {A : Type} {B : A → Type} {f₁ f₂ : Π x : A, B x} :
-(∀ x, f₁ x = f₂ x) → f₁ = f₂
+check @funext
+-- ∀ {A : Type} {B : A → Type} {f₁ f₂ : Π x : A, B x}, (∀ x, f₁ x = f₂ x) → f₁ = f₂
 -- END
 end hide
 #+END_SRC
-It asserts that any two functions of type =Π x : A, B x= that agree on
-all their inputs are equal. From a classical, set-theoretic
-perspective, this is exactly what it means for two functions to be
+From a classical, set-theoretic perspective,
+this is exactly what it means for two functions to be
 equal. This is known as an "extensional" view of functions. From a
 constructive perspective, however, it is sometimes more natural to
 think of functions as algorithms, or computer programs, that are
@@ -185,8 +187,12 @@ the fact that they are syntactically quite different. In much the same
 way, you might want to maintain a view of functions that does not
 force you to identify two functions that have the same input / output
 behavior. This is known as an "intensional" view of
-functions. Adopting =funext= commits us to an extensional view of
 functions.
+
+In fact, function extensionality follows from the existence of
+quotients, which we describe in the next section. In the Lean standard
+library, therefore, =funext= is thus [[https://github.com/leanprover/lean/blob/master/library/init/funext.lean][proved from the quotient
+construction]].
 
 Suppose that for =X : Type= we define the ~set X := X → Prop~ to
 denote the type of subsets of =X=, essentially identifying subsets
@@ -260,13 +266,8 @@ end set
 end hide
 #+END_SRC
 
-In fact, function extensionality follows from the existence of
-quotients, which we describe in the next section. In the Lean standard
-library, therefore, =funext= is thus [[https://github.com/leanprover/lean/blob/master/library/init/funext.lean][proved from the quotient
-construction]].
-
 The following is an example of how function extensionality blocks
-computation. 
+computation inside the Lean kernel.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -286,14 +287,14 @@ damage: under the computational rules of the system, we now have a
 closed term of =ℕ= that does not reduce to a numeral. In this case, we
 may be tempted to "reduce" the expression to =0=. But in nontrivial
 examples, eliminating cast changes the type of the term, which might
-make an ambient expression type incorrect. 
+make an ambient expression type incorrect.
 
 In the next section, we will exhibit a similar example with the
 quotient construction.  Current research programs, including work on
 /observational type theory/ and /cubical type theory/ aim to extend
 type theory in ways that permit reductions for casts involving
 function extensionality, quotients, and more. But the solutions are
-not so clear cut, and the rules of Lean's underlying calculus to not
+not so clear cut, and the rules of Lean's underlying calculus do not
 sanction such reductions.
 
 In a sense, however, a cast does not change the "meaning" of an
@@ -367,7 +368,6 @@ namespace quot
   notation `⟦`:max a `⟧`:0 := mk a
 
   constant sound     : Π {A : Type}   [s : setoid A] {a b : A}, a ≈ b → ⟦a⟧ = ⟦b⟧
-  constant exact     : Π {A : Type}   [s : setoid A] {a b : A}, ⟦a⟧ = ⟦b⟧ → a ≈ b
   constant lift      : Π {A B : Type} [s : setoid A] (f : A → B), (∀ a b, a ≈ b → f a = f b) → quot s → B
   constant ind       : ∀ {A : Type}   [s : setoid A] {B : quot s → Prop}, (∀ a, B ⟦a⟧) → ∀ q, B q
 end quot
@@ -379,7 +379,7 @@ For any type =A= with associated equivalence relation =R=, first we
 declare a setoid instance =s= to associate =R= as "the" equivalence
 relation on =A=. Once we do that, =quot s= denotes the quotient type
 =A / R=, and given =a : A=, =⟦a⟧= denotes the "equivalence class" of
-=a=. The meaning of constants =sound=, =exact=, =lift=, and =ind= are
+=a=. The meaning of constants =sound=, =lift=, and =ind= are
 given by their types. In particular, =lift= is the function which
 lifts a function =f : A → B= that respects the equivalence relation to
 the function =lift f : quot s → B= which lifts =f= to =A / R=. After
@@ -661,7 +661,7 @@ end uprod
 The quotient construction can be used to derive function
 extensionality, and we have seen that the latter blocks
 computation. The following provides another example of the same
-phenomenon, similar to the one we discussed in the last section. 
+phenomenon, similar to the one we discussed in the last section.
 #+BEGIN_SRC lean
 import data.finset
 open finset quot list nat
@@ -674,46 +674,12 @@ check eq.rec (0 : ℕ) seq
 eval eq.rec (0 : ℕ) seq
 #+END_SRC
 
-** Excluded Middle
-
-The law of the excluded middle is the following:
-#+BEGIN_SRC lean
-namespace hide
--- BEGIN
-axiom em (a : Prop) : a ∨ ¬a
--- END
-end hide
-#+END_SRC
-You can import this axiom with =import logic.axioms.em=. It is
-automatically imported by =import logic.axioms.classical=, or, more
-simply, =import classical=. Consequences of excluded middle include
-double-negation elimination, proof by cases, and proof by
-contradiction, all of which are described in Section [[file:03_Propositions_and_Proofs::#Classical_Logic][Classical_Logic]].
-
-The law of the excluded middle and propositional extensionality imply
-propositional completeness:
-#+BEGIN_SRC lean
-import logic.axioms.em
-
-namespace hide
-
--- BEGIN
-theorem prop_complete (a : Prop) : a = true ∨ a = false :=
-or.elim (em a)
-  (λ t, or.inl (propext (iff.intro (λ h, trivial) (λ h, t))))
-  (λ f, or.inr (propext (iff.intro (λ h, absurd h f) (λ h, false.elim h))))
--- END
-
-end hide
-#+END_SRC
-
 ** Choice Axioms
 :PROPERTIES:
   :CUSTOM_ID: Choice_Axioms
 :END:
 
-The last of the classical axioms we consider is the following choice
-axiom:
+The following axiom is used to support classical reasoning in Lean:
 #+BEGIN_SRC lean
 import data.subtype
 open subtype nonempty
@@ -747,7 +713,7 @@ data --- an element of =A= satisfying =P= --- from the proposition
 that such an element exists.
 
 The axiom =strong_indefinite_description= is imported when you import
-the classical axioms. Separating the =x= asserted to exist by the
+=logic.choice=. Separating the =x= asserted to exist by the
 axiom from the property it satisfies allows us to define the Hilbert
 epsilon function:
 #+BEGIN_SRC lean
@@ -836,7 +802,7 @@ you are presented with a strange error message, trying changing =have=
 to =assert=.
 
 #+BEGIN_SRC lean
-import logic.axioms.hilbert
+import logic.choice
 
 section
   variable A : Type
@@ -878,81 +844,33 @@ section
 end
 #+END_SRC
 
-** Propositional Decidability
+** Excluded Middle
 
-Taken together, the law of the excluded middle and the axiom of indefinite description
-imply that every proposition is decidable. The following is the
-contained in =logic.axioms.prop_decidable=:
+The law of the excluded middle is the following
 #+BEGIN_SRC lean
-import logic.axioms.prop_complete logic.axioms.hilbert
-open decidable inhabited nonempty
-
+import logic.choice
 namespace hide
-
 -- BEGIN
-theorem decidable_inhabited [instance] (a : Prop) : inhabited (decidable a) :=
-inhabited_of_nonempty
-  (or.elim (em a)
-    (assume Ha, nonempty.intro (inl Ha))
-    (assume Hna, nonempty.intro (inr Hna)))
-
-theorem prop_decidable [instance] (a : Prop) : decidable a :=
-arbitrary (decidable a)
+check @em
+-- ∀ (a : Prop), a ∨ ¬a
 -- END
-
 end hide
 #+END_SRC
-The theorem =decidable_inhabited= uses the law of the excluded middle
-to show that =decidable a= is inhabited for any =a=. It is marked as
-an instance, and is silently used for for synthesizing the implicit
-argument in =arbitrary (decidable a)=.
-
-As an example, we use =some= to prove that if =f : A → B= is injective
-and =A= is inhabited, then =f= has a left inverse. To define the left
-inverse =linv=, we use the "dependent if-then-else" expression.
-Recall that =if h : c then t else e= is notation for =dite c (λ h : c,
-t) (λ h : ¬ c, e)=.  In the definition of =linv=, the
-=strong_indefinite_description= is used twice: first, to show that =(∃
-a : A, f a = b)= is "decidable", and then to choose an =a= such that
-=f a = b=. From a classical point of view, =linv= is a function. From
-a constructive point of view, it is unacceptable; since there is no
-way to implement such a function in general, the construction is not
-informative.
-
-#+BEGIN_SRC lean
-import logic.axioms.classical
-open function
-
-noncomputable definition linv {A B : Type} [h : inhabited A] (f : A → B) : B → A :=
-λ b : B, if ex : (∃ a : A, f a = b) then some ex else arbitrary A
-
-theorem has_left_inverse_of_injective {A B : Type} {f : A → B}
-        : inhabited A → injective f → ∃ g, g ∘ f = id :=
-assume h   : inhabited A,
-assume inj : ∀ a₁ a₂, f a₁ = f a₂ → a₁ = a₂,
-have is_linv  : (linv f) ∘ f = id, from
-  funext (λ a,
-    assert ex  : ∃ a₁ : A, f a₁ = f a,   from exists.intro a rfl,
-    have   feq : f (some ex) = f a,      from !some_spec,
-    calc linv f (f a) = some ex   :  dif_pos ex
-               ...    = a         :  inj _ _ feq),
-exists.intro (linv f) is_linv
-#+END_SRC
-
-** Diaconescu's theorem
-
-[[http://en.wikipedia.org/wiki/Diaconescu%27s_theorem][Diaconescu's theorem]] states that the axiom of choice is sufficient to
+We can prove it using the choice axiom described in the previous section.
+This is a consequence of [[http://en.wikipedia.org/wiki/Diaconescu%27s_theorem][Diaconescu's theorem]]
+which states that the axiom of choice is sufficient to
 derive the law of excluded middle. More precisely, it shows that the
 law excluded middle follows from =strong_indefinite_description=
 (Hilbert's choice), =propext= (propositional extensionality) and
-=funext= (function extensionality). The standard library contains a
-[[https://github.com/leanprover/lean/blob/master/library/logic/axioms/examples/diaconescu.lean][formalization of this result]], which we reproduce here.
+=funext= (function extensionality).
+The standard library contains
+[[https://github.com/leanprover/lean/blob/master/library/logic/choice.lean][this proof]], which we reproduce here.
 
 First, we import the necessary axioms, fix a parameter, =p=, and
 define two predicates =U= and =V=:
 #+BEGIN_SRC lean
 -- BEGIN
-import logic.axioms.hilbert logic.eq
+import logic.choice logic.eq
 open eq.ops
 
 section
@@ -966,11 +884,11 @@ end
 #+END_SRC
 If =p= is true, then every element of =Prop= is in both =U= and
 =V=. If =p= is false, then =U= is the singleton =true=, and =V= is the
-singleton =false=. 
+singleton =false=.
 
-Next, we use =epsilon= to choose an element from each of =U= and =V=: 
+Next, we use =epsilon= to choose an element from each of =U= and =V=:
 #+BEGIN_SRC lean
-import logic.axioms.hilbert logic.eq
+import logic.choice logic.eq
 open eq.ops
 
 section
@@ -996,7 +914,7 @@ Each of =U= and =V= is a disjunction, so =u_def= and =v_def= represent
 four cases. In one of these cases, =u = true= and =v = false=, and in
 all the other cases, =p= is true. Thus we have:
 #+BEGIN_SRC lean
-import logic.axioms.hilbert logic.eq
+import logic.choice logic.eq
 open eq.ops
 
 section
@@ -1032,7 +950,7 @@ On the other hand, if =p= is true, then, by function extensionality
 and propositional extensionality, =U= and =V= are equal. By the
 definition of =u= and =v=, this implies that they are equal as well.
 #+BEGIN_SRC lean
-import logic.axioms.hilbert logic.eq
+import logic.choice logic.eq
 open eq.ops
 
 section
@@ -1079,7 +997,7 @@ end
 #+END_SRC
 Putting these last two facts together yields the desired conclusion:
 #+BEGIN_SRC lean
-import logic.axioms.hilbert logic.eq
+import logic.choice logic.eq
 open eq.ops
 
 section
@@ -1121,7 +1039,7 @@ have H' : epsilon U = epsilon V, from Hpred ▸ rfl,
 show u = v, from H'
 
 -- BEGIN
-theorem em : p ∨ ¬p :=
+theorem EM : p ∨ ¬p :=
 have H : ¬(u = v) → ¬p, from mt p_implies_uv,
 or.elim not_uv_or_p
   (assume Hne : ¬(u = v), or.inr (H Hne))
@@ -1129,6 +1047,89 @@ or.elim not_uv_or_p
 -- END
 
 end
+#+END_SRC
+
+Consequences of excluded middle include
+double-negation elimination, proof by cases, and proof by
+contradiction, all of which are described in Section [[file:03_Propositions_and_Proofs::#Classical_Logic][Classical_Logic]].
+
+The law of the excluded middle and propositional extensionality imply
+propositional completeness:
+#+BEGIN_SRC lean
+import logic.choice
+
+namespace hide
+
+-- BEGIN
+theorem prop_complete (a : Prop) : a = true ∨ a = false :=
+or.elim (em a)
+  (λ t, or.inl (propext (iff.intro (λ h, trivial) (λ h, t))))
+  (λ f, or.inr (propext (iff.intro (λ h, absurd h f) (λ h, false.elim h))))
+-- END
+
+end hide
+#+END_SRC
+
+
+** Propositional Decidability
+
+Taken together, the law of the excluded middle and the axiom of indefinite description
+imply that every proposition is decidable. The following is the
+contained in =logic.choice=:
+#+BEGIN_SRC lean
+import logic.choice
+open decidable inhabited nonempty
+
+namespace hide
+
+-- BEGIN
+noncomputable definition decidable_inhabited [instance] (a : Prop) : inhabited (decidable a) :=
+inhabited_of_nonempty
+  (or.elim (em a)
+    (assume Ha, nonempty.intro (inl Ha))
+    (assume Hna, nonempty.intro (inr Hna)))
+
+noncomputable definition prop_decidable [instance] (a : Prop) : decidable a :=
+arbitrary (decidable a)
+-- END
+
+end hide
+#+END_SRC
+The definition =decidable_inhabited= uses the law of the excluded middle
+to show that =decidable a= is inhabited for any =a=. It is marked as
+an instance, and is silently used for for synthesizing the implicit
+argument in =arbitrary (decidable a)=.
+
+As an example, we use =some= to prove that if =f : A → B= is injective
+and =A= is inhabited, then =f= has a left inverse. To define the left
+inverse =linv=, we use the "dependent if-then-else" expression.
+Recall that =if h : c then t else e= is notation for =dite c (λ h : c,
+t) (λ h : ¬ c, e)=.  In the definition of =linv=, the
+=strong_indefinite_description= is used twice: first, to show that =(∃
+a : A, f a = b)= is "decidable", and then to choose an =a= such that
+=f a = b=. From a classical point of view, =linv= is a function. From
+a constructive point of view, it is unacceptable; since there is no
+way to implement such a function in general, the construction is not
+informative.
+
+#+BEGIN_SRC lean
+import logic.choice
+open function
+
+noncomputable definition linv {A B : Type} [h : inhabited A] (f : A → B) : B → A :=
+λ b : B, if ex : (∃ a : A, f a = b) then some ex else arbitrary A
+
+theorem has_left_inverse_of_injective {A B : Type} {f : A → B}
+        : inhabited A → injective f → ∃ g, g ∘ f = id :=
+assume h   : inhabited A,
+assume inj : ∀ a₁ a₂, f a₁ = f a₂ → a₁ = a₂,
+have is_linv  : (linv f) ∘ f = id, from
+  funext (λ a,
+    assert ex  : ∃ a₁ : A, f a₁ = f a,   from exists.intro a rfl,
+    have   feq : f (some ex) = f a,      from !some_spec,
+    calc linv f (f a) = some ex   :  dif_pos ex
+               ...    = a         :  inj _ _ feq),
+exists.intro (linv f) is_linv
 #+END_SRC
 
 ** Constructive Choice
@@ -1211,7 +1212,7 @@ simply replaced the classical =some= with the constructive choice
 function =choose=, and added three extra hypotheses: =dex=, =encB= and
 =deqB=. The first one makes sure we can decide whether a value =b= is
 in the image of =f= or not, and the last two are needed to use
-=choose=. 
+=choose=.
 
 The standard library contains many =encodable= types and shows that
 many types have decidable equality.  The hypothesis =dex= can be
@@ -1233,5 +1234,23 @@ section
              [finA : fintype A] [deqB : decidable_eq B] : ∀ b, decidable (∃ a, f a = b) :=
   take b, decidable_exists_finite
 end
+-- END
+#+END_SRC
+
+** Tracking used axioms
+
+The Lean standard library contains only 3 axioms: =quot.sound=, =propext= and =strong_indefinite_description=.
+Most of the library depends only on the first two.
+The command =print axioms= displays all axioms that have been asserted/imported into the current logical context.
+Similarly, the command =print axioms decl_name= prints all axioms the declaration =decl_name= depends on.
+
+#+BEGIN_SRC lean
+import logic.choice data.finset data.set
+-- BEGIN
+print axioms
+print axioms nat.add
+print axioms finset.union
+print axioms set.empty_union
+print axioms some
 -- END
 #+END_SRC
