@@ -625,7 +625,7 @@ check and_swap p q    -- p ∧ q ↔ q ∧ p
 -- END
 #+END_SRC
 Because they represent a form of /modus ponens/, =iff.elim_left= and
-=iff.elim_right= can be abbreviated =iff.mp= and =iff.mp'=,
+=iff.elim_right= can be abbreviated =iff.mp= and =iff.mpr=,
 respectively.  In the next example, we use that theorem to derive =q ∧
 p= from =p ∧ q=:
 #+BEGIN_SRC lean
@@ -771,7 +771,7 @@ such reasoning freely, without any extra justification.
 
 There are additional classical axioms that are not included by default
 in the standard library. We will discuss these in detail in Chapter
-[[file:10_Axioms.org::#Axioms][Axioms]].
+[[file:10_Axioms.org::#Axioms_and_Computation][Axioms and Computation].
 
 ** Examples of Propositional Validities
 :PROPERTIES:

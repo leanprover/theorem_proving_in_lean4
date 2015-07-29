@@ -1,9 +1,9 @@
 #+Title: Theorem Proving in Lean
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]]
 
-* Axioms
+* Axioms and Computation
 :PROPERTIES:
-  :CUSTOM_ID: Axioms
+  :CUSTOM_ID: Axioms_and_Computation
 :END:
 
 We have seen that the version of the Calculus of Inductive
@@ -16,23 +16,37 @@ convenient; it can make it possible to prove more theorems, as well as
 make it easier to prove theorems that could have been proved
 otherwise. But there can negative consequences of adding additional
 axioms, consequences which may go beyond concerns about their
-correctness.
+correctness. In particular, the use of axioms bears on the
+computational content of definitions and theorems, in ways we will
+explore here.
 
-Lean's standard library makes available a number of "classical"
-axioms, which are justified on a set-theoretic interpretation of type
-theory. These axioms are at odds with a constructive interpretation of
-the system, as well as its computational behavior. When you import the
-standard library, most of these axioms are therefore not imported by
-default.
+Lean is designed to support both computational and classical
+reasoning. Users that are so inclined can stick to a "computationally
+pure" fragment, which guarantees that closed expressions in the system
+evaluate to canonical normal forms. In particular, any closed
+computationally pure expression of type =ℕ=  for example, any closed expression
+denoting a natural number will reduce to a numeral. 
 
-The standard library does, however, make use of two mildly classical
-extensions, namely, propositional extensionality and quotients. Their use
-in core parts of the standard library is still provisional, and may be
-curtailed if it proves to have sufficiently bad computational
-effects. The next section aims to clarify some of the issues and
-concerns.
+To support classical reasoning, Lean's standard library defines a
+number of "classical" axioms, which are justified on a set-theoretic
+interpretation of type theory. The library imports two mildly
+classical axioms, propositional extensionality and quotients. These
+are used, for example, to develop a theories of sets and finite sets.
+Even some computationally inclined users may also wish to use the law
+of the excluded middle to reason about computation. Below we will
+describe the effects that these axioms have on computation aspects of
+the system.
 
-** Computation and Axioms
+There is one classical construction, however, that is entirely
+inimical to a computational interpretation of the system, namely, the
+Hilbert operator, which magically produces "data" from a proposition
+asserting its existence. Its use is essential to some classical
+constructions, and users can import it when needed. But expressions
+that depend on this construction lose their computational content, and
+in Lean we are required to mark such definitions as =noncomputable= to
+flag that fact. 
+
+** Historical and Philosophical Context
 
 For most of its history, mathematics was essentially computational:
 geometry dealt with constructions of geometric objects, algebra was
@@ -84,16 +98,22 @@ elements can help us reason about the effects of the computation, but
 can be ignored when we extract "code" from the term. Elements of type
 =Prop= are not entirely innocuous, however. They include equations =s
 = t : A= for any type =A=, and such equations can be used as casts, to
-type check terms.
+type check terms. Below, we will see examples of how such casts can
+block computation in the system. However, computation is still
+possible under an evaluation scheme that erases propositional content,
+ignore intermediate typing constraints, and reduces terms until they
+reach a normal form. Current plans for Lean include the development of
+a fast evaluator along these lines.
 
 Having adopted a proof-irrelevant =Prop=, one might consider it
 legitimate to add arbitrary classical axioms, such as the law of the
-excluded middle, governing propositions. From a constructive point of
-view, the most objectionable classical axioms are "choice axioms" that
-allow us to extract "data" from any existential proposition,
-completely erasing the distinction between the proof-irrelevant and
-data-relevant parts of the theory. These are discussed in Section
-[[#Choice_Axioms][Choice Axioms]] below.
+excluded middle, governing propositions. Of course, this, too, can
+block computation, but it does not block fast evaluation as described
+above.  From a constructive point of view, the most objectionable
+classical axioms are "choice axioms" that allow us to extract "data"
+from any existential proposition, completely erasing the distinction
+between the proof-irrelevant and data-relevant parts of the
+theory. These are discussed in Section [[#Choice_Axioms][Choice Axioms]] below.
 
 ** Propositional Extensionality
 
@@ -240,10 +260,50 @@ end set
 end hide
 #+END_SRC
 
-
 In fact, function extensionality follows from the existence of
 quotients, which we describe in the next section. In the Lean standard
-library, therefore, =funext= is thus [[https://github.com/leanprover/lean/blob/master/library/init/funext.lean][proved from the quotient construction]].
+library, therefore, =funext= is thus [[https://github.com/leanprover/lean/blob/master/library/init/funext.lean][proved from the quotient
+construction]].
+
+The following is an example of how function extensionality blocks
+computation. 
+#+BEGIN_SRC lean
+import data.nat
+open nat
+
+definition f₁ (x : ℕ) := x
+definition f₂ (x : ℕ) := 0 + x
+
+theorem feq : f₁ = f₂ := funext (take x, eq.subst !zero_add rfl)
+check eq.rec (0 : ℕ) feq    -- ℕ
+eval eq.rec (0 : ℕ) feq     -- eq.rec 0 feq
+#+END_SRC
+First, we show that the two functions =f₁= and =f₂= are equal using
+function extensionality, and then we "cast" =0= of type =ℕ= by
+replacing =f₁= by =f₂= in the type. Of course, the cast is vacuous,
+because =ℕ= does not depend on =f₁=. But that is enough to do the
+damage: under the computational rules of the system, we now have a
+closed term of =ℕ= that does not reduce to a numeral. In this case, we
+may be tempted to "reduce" the expression to =0=. But in nontrivial
+examples, eliminating cast changes the type of the term, which might
+make an ambient expression type incorrect. 
+
+In the next section, we will exhibit a similar example with the
+quotient construction.  Current research programs, including work on
+/observational type theory/ and /cubical type theory/ aim to extend
+type theory in ways that permit reductions for casts involving
+function extensionality, quotients, and more. But the solutions are
+not so clear cut, and the rules of Lean's underlying calculus to not
+sanction such reductions.
+
+In a sense, however, a cast does not change the "meaning" of an
+expression. Rather, it is a mechanism to reason about the expression's
+type. Given an appropriate semantics, it then makes sense to reduce
+terms in ways that preserve their meaning, ignoring the intermediate
+bookkeeping needed to make the reductions type correct. In that case,
+adding new axioms in =Prop= does not matter; by proof irrelevance, an
+expression in =Prop= carries no information, and can be safely ignored
+by the reduction procedures.
 
 ** Quotients
 
@@ -598,6 +658,22 @@ namespace uprod
 end uprod
 #+END_SRC
 
+The quotient construction can be used to derive function
+extensionality, and we have seen that the latter blocks
+computation. The following provides another example of the same
+phenomenon, similar to the one we discussed in the last section. 
+#+BEGIN_SRC lean
+import data.finset
+open finset quot list nat
+
+definition s₁ : finset nat := to_finset [1, 2]
+definition s₂ : finset nat := to_finset [2, 1]
+
+theorem seq : s₁ = s₂ := dec_trivial
+check eq.rec (0 : ℕ) seq
+eval eq.rec (0 : ℕ) seq
+#+END_SRC
+
 ** Excluded Middle
 
 The law of the excluded middle is the following:
@@ -675,7 +751,7 @@ the classical axioms. Separating the =x= asserted to exist by the
 axiom from the property it satisfies allows us to define the Hilbert
 epsilon function:
 #+BEGIN_SRC lean
-import data.subtype
+import logic.quantifiers data.subtype
 open subtype nonempty
 
 namespace hide
@@ -684,7 +760,7 @@ axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A)
   { x | (∃ y : A, P y) → P x}
 
 -- BEGIN
-definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
+noncomputable definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
 let u : {x | (∃ y, P y) → P x} :=
   strong_indefinite_description P H in
 elt_of u
@@ -704,7 +780,10 @@ end hide
 #+END_SRC
 Assuming the type =A= is nonempty, =epsilon P= returns an element of
 =A=, with the property that if any element of =A= satisfies =P=,
-=epsilon P= does.
+=epsilon P= does. Notice that the definition is preceded by the
+keyword =noncomputable=, to signal the fact that expressions depending
+on this definition will not compute to canonical normal forms, even
+under the more liberal evaluation scheme described above.
 
 Just as =indefinite_description= is a weaker version of
 =strong_indefinite_description=, the =some= operator is a weaker
@@ -712,7 +791,7 @@ version of the =epsilon= operator. It is sometimes easier to
 use. Assuming =H : ∃ x, P x= is a proof that some element of =A=
 satisfies =P=, =some H= denotes such an element.
 #+BEGIN_SRC lean
-import data.subtype
+import logic.quantifiers data.subtype
 open subtype nonempty
 
 namespace hide
@@ -720,7 +799,7 @@ namespace hide
 axiom strong_indefinite_description {A : Type} (P : A → Prop) (H : nonempty A) :
   { x | (∃ y : A, P y) → P x}
 
-definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
+noncomputable definition epsilon {A : Type} [H : nonempty A] (P : A → Prop) : A :=
 let u : {x | (∃ y, P y) → P x} :=
   strong_indefinite_description P H in
 elt_of u
@@ -736,7 +815,7 @@ theorem epsilon_spec {A : Type} {P : A → Prop} (Hex : ∃ y, P y) :
 epsilon_spec_aux (nonempty_of_exists Hex) P Hex
 
 -- BEGIN
-definition some {A : Type} {P : A → Prop} (H : ∃ x, P x) : A :=
+noncomputable definition some {A : Type} {P : A → Prop} (H : ∃ x, P x) : A :=
 @epsilon A (nonempty_of_exists H) P
 
 theorem some_spec {A : Type} {P : A → Prop} (H : ∃ x, P x) : P (some H) :=
@@ -841,10 +920,10 @@ way to implement such a function in general, the construction is not
 informative.
 
 #+BEGIN_SRC lean
-import algebra.function logic.axioms.classical
+import logic.axioms.classical
 open function
 
-definition linv {A B : Type} [h : inhabited A] (f : A → B) : B → A :=
+noncomputable definition linv {A B : Type} [h : inhabited A] (f : A → B) : B → A :=
 λ b : B, if ex : (∃ a : A, f a = b) then some ex else arbitrary A
 
 theorem has_left_inverse_of_injective {A B : Type} {f : A → B}
@@ -901,8 +980,8 @@ definition U (x : Prop) : Prop := x = true ∨ p
 definition V (x : Prop) : Prop := x = false ∨ p
 
 -- BEGIN
-definition u := epsilon U
-definition v := epsilon V
+noncomputable definition u := epsilon U
+noncomputable definition v := epsilon V
 
 lemma u_def : U u :=
 epsilon_spec (exists.intro true (or.inl rfl))
@@ -926,8 +1005,8 @@ parameter  p : Prop
 definition U (x : Prop) : Prop := x = true ∨ p
 definition V (x : Prop) : Prop := x = false ∨ p
 
-definition u := epsilon U
-definition v := epsilon V
+noncomputable definition u := epsilon U
+noncomputable definition v := epsilon V
 
 lemma u_def : U u :=
 epsilon_spec (exists.intro true (or.inl rfl))
@@ -962,8 +1041,8 @@ parameter  p : Prop
 definition U (x : Prop) : Prop := x = true ∨ p
 definition V (x : Prop) : Prop := x = false ∨ p
 
-definition u := epsilon U
-definition v := epsilon V
+noncomputable definition u := epsilon U
+noncomputable definition v := epsilon V
 
 lemma u_def : U u :=
 epsilon_spec (exists.intro true (or.inl rfl))
@@ -1009,8 +1088,8 @@ parameter  p : Prop
 definition U (x : Prop) : Prop := x = true ∨ p
 definition V (x : Prop) : Prop := x = false ∨ p
 
-definition u := epsilon U
-definition v := epsilon V
+noncomputable definition u := epsilon U
+noncomputable definition v := epsilon V
 
 lemma u_def : U u :=
 epsilon_spec (exists.intro true (or.inl rfl))
@@ -1052,12 +1131,11 @@ or.elim not_uv_or_p
 end
 #+END_SRC
 
-
-
 ** Constructive Choice
 
-In the standard library, we say a type =A= is =encodable= if there are functions =f : A → nat= and =g : nat → option A=
-such that for all =a : A=, =g (f a) = some a=. Here is the actual definition:
+In the standard library, we say a type =A= is =encodable= if there are
+functions =f : A → nat= and =g : nat → option A= such that for all
+=a : A=, =g (f a) = some a=. Here is the precise definition:
 
 #+BEGIN_SRC lean
 namespace hide
@@ -1102,7 +1180,7 @@ long as we can decide whether =b= is in the image of a function =f : A
 → B=.
 
 #+BEGIN_SRC lean
-import data.encodable algebra.function
+import data.encodable
 open encodable function
 
 section
@@ -1140,7 +1218,7 @@ many types have decidable equality.  The hypothesis =dex= can be
 satisfied in many cases. For example, it is trivially satisfied if =f=
 is surjective. It is also satisfied whenever =A= is finite.
 #+BEGIN_SRC lean
-import data.encodable algebra.function
+import data.encodable
 open encodable function
 
 -- BEGIN

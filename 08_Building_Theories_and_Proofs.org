@@ -1020,7 +1020,7 @@ section mod_m
   show m ∣ a - a, from (sub_self a)⁻¹ ▸ !dvd_zero
 
   theorem mod_symm (H : a ≡ b) : b ≡ a :=
-  have H1 : (m ∣ -(b - a)), from iff.mp' !dvd_neg_iff_dvd H,
+  have H1 : (m ∣ -(b - a)), from iff.mpr !dvd_neg_iff_dvd H,
   int.neg_sub b a ▸ H1
 
   theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
