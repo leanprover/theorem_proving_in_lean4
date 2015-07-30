@@ -816,3 +816,29 @@ exists.intro x
   (show f (x + 1) = f x, from le.antisymm `f (x + 1) ≤ f x` (H x))
 -- END
 #+END_SRC
+
+The following proof that there are infinitely many primes is a slight
+variant of the proof in the standard library. It provides a nice
+example of the way that proof terms can be structured and made
+readable using the various devices we have discussed here.
+#+BEGIN_SRC lean
+import theories.number_theory.primes
+open nat decidable eq.ops
+
+theorem primes_infinite (n : nat) : ∃ p, p ≥ n ∧ prime p :=
+let m := fact (n + 1) in
+have m ≥ 1,     from le_of_lt_succ (succ_lt_succ (fact_pos _)),
+have m + 1 ≥ 2, from succ_le_succ this,
+obtain p `prime p` `p ∣ m + 1`, from sub_prime_and_dvd this,
+have p ≥ 2, from ge_two_of_prime `prime p`,
+have p > 0, from pos_of_prime `prime p`,
+have p ≥ n, from by_contradiction
+  (suppose ¬ p ≥ n,
+    have p < n,     from lt_of_not_ge this,
+    have p ≤ n + 1, from le_of_lt (lt.step this),
+    have p ∣ m,      from dvd_fact `p > 0` this,
+    have p ∣ 1,      from dvd_of_dvd_add_right (!add.comm ▸ `p ∣ m + 1`) this,
+    have p ≤ 1,     from le_of_dvd zero_lt_one this,
+    absurd (le.trans `2 ≤ p` `p ≤ 1`) dec_trivial),
+exists.intro p (and.intro this `prime p`)
+#+END_SRC
