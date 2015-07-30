@@ -109,7 +109,7 @@ proof of assertion =p= would then simply be a matter of checking that
 
 Some simplifications are possible, however. To start with, we can
 avoid writing the term =Proof= repeatedly by conflating =Proof p= with
-=p= itself. In other, whenever we have =p : Prop=, we can interpret
+=p= itself. In other words, whenever we have =p : Prop=, we can interpret
 =p= as a type, namely, the type of its proofs. We can then read =t :
 p= as the assertion that =t= is a proof of =p=.
 
