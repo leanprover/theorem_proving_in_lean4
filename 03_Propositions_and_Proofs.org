@@ -593,7 +593,7 @@ example (Hp : p) (Hnp : ¬p) : q := absurd Hp Hnp
 Here, for example, is a proof of =¬p → q → (q → p) → r=:
 #+BEGIN_SRC lean
 variables p q r : Prop
--- BEGIN  
+-- BEGIN
 example (Hnp : ¬p) (Hq : q) (Hqp : q → p) : r :=
 absurd (Hqp Hq) Hnp
 -- END
@@ -638,7 +638,7 @@ iff.intro
   (assume H : q ∧ p,
     show p ∧ q, from and.intro (and.right H) (and.left H))
 
--- BEGIN   
+-- BEGIN
 premise H : p ∧ q
 example : q ∧ p := iff.mp (and_swap p q) H
 -- END
@@ -682,7 +682,7 @@ propositions-as-types correspondence. Ordinary classical logic adds to
 this the law of the excluded middle, =p ∨ ¬p=. To use this principle,
 you have to load the appropriate classical axioms.
 #+BEGIN_SRC lean
-import logic.axioms.classical
+import logic.choice
 
 variable p : Prop
 check em p
@@ -698,7 +698,7 @@ even though we cannot yet assert either disjunct.
 One consequence of the law of the excluded middle is the principle of
 double-negation elimination:
 #+BEGIN_SRC lean
-import logic.axioms.classical
+import classical
 
 -- BEGIN
 theorem dne {p : Prop} (H : ¬¬p) : p :=
@@ -718,7 +718,7 @@ Loading the classical axioms also gives you access to additional
 patterns of proof that can be justified by appeal to =em=. For
 example, one can carry out a proof by cases:
 #+BEGIN_SRC lean
-import logic.axioms.classical
+import classical
 
 variable p : Prop
 -- BEGIN
@@ -730,7 +730,7 @@ by_cases
 #+END_SRC
 Or you can carry out a proof by contradiction:
 #+BEGIN_SRC lean
-import logic.axioms.classical
+import classical
 
 variable p : Prop
 -- BEGIN
@@ -791,7 +791,7 @@ require classical reasoning are grouped together at the end, while
 the rest are constructively valid.
 
 #+BEGIN_SRC lean
-import logic.axioms.classical
+import classical
 
 variables p q r s : Prop
 
@@ -856,7 +856,7 @@ then construct a proof by incrementally filling in these placeholders.
 For reference, here are two sample proofs of validities taken from the
 list above.
 #+BEGIN_SRC lean
-import logic.axioms.classical
+import classical
 
 variables p q r : Prop
 
@@ -867,19 +867,19 @@ iff.intro
     have Hp : p, from and.left H,
     or.elim (and.right H)
       (assume Hq : q,
-	show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro Hp Hq))
+        show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro Hp Hq))
       (assume Hr : r,
-	show (p ∧ q) ∨ (p ∧ r), from or.inr (and.intro Hp Hr)))
+        show (p ∧ q) ∨ (p ∧ r), from or.inr (and.intro Hp Hr)))
   (assume H : (p ∧ q) ∨ (p ∧ r),
     or.elim H
       (assume Hpq : p ∧ q,
-	have Hp : p, from and.left Hpq,
-	have Hq : q, from and.right Hpq,
-	show p ∧ (q ∨ r), from and.intro Hp (or.inl Hq))
+        have Hp : p, from and.left Hpq,
+        have Hq : q, from and.right Hpq,
+        show p ∧ (q ∨ r), from and.intro Hp (or.inl Hq))
       (assume Hpr : p ∧ r,
-	have Hp : p, from and.left Hpr,
-	have Hr : r, from and.right Hpr,
-	show p ∧ (q ∨ r), from and.intro Hp (or.inr Hr)))
+        have Hp : p, from and.left Hpr,
+        have Hr : r, from and.right Hpr,
+        show p ∧ (q ∨ r), from and.intro Hp (or.inr Hr)))
 
 -- an example that requires classical reasoning
 example : ¬(p ∧ ¬q) → (p → q) :=
