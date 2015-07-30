@@ -216,8 +216,9 @@ element of the associated type. To the kernel type checker, there is no
 difference between the two.
 
 There are a few pragmatic differences between definitions and
-theorems, however, that you will learn more about in [Chapter 8]. In
-normal circumstances, it is never necessary to unfold the "definition"
+theorems, however, that you will learn more about in Chapter
+[[file:08_Building_Theories_and_Proofs.org::#Building_Theories_and_Proofs][Building Theories and Proofs]].
+In normal circumstances, it is never necessary to unfold the "definition"
 of a theorem; by proof irrelevance, any two proofs of that theorem are
 definitionally equal. Once the proof of a theorem is complete,
 typically we only need to know that the proof exists; it doesn't
@@ -771,7 +772,7 @@ such reasoning freely, without any extra justification.
 
 There are additional classical axioms that are not included by default
 in the standard library. We will discuss these in detail in Chapter
-[[file:10_Axioms.org::#Axioms_and_Computation][Axioms and Computation].
+[[file:12_Axioms.org::#Axioms_and_Computation][Axioms and Computation].
 
 ** Examples of Propositional Validities
 :PROPERTIES:
