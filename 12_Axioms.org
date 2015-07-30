@@ -1051,7 +1051,7 @@ end
 
 Consequences of excluded middle include
 double-negation elimination, proof by cases, and proof by
-contradiction, all of which are described in Section [[file:03_Propositions_and_Proofs::#Classical_Logic][Classical_Logic]].
+contradiction, all of which are described in Section [[file:03_Propositions_and_Proofs::#Classical_Logic][Classical Logic]].
 
 The law of the excluded middle and propositional extensionality imply
 propositional completeness:
