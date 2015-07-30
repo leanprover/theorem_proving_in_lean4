@@ -772,7 +772,7 @@ such reasoning freely, without any extra justification.
 
 There are additional classical axioms that are not included by default
 in the standard library. We will discuss these in detail in Chapter
-[[file:12_Axioms.org::#Axioms_and_Computation][Axioms and Computation].
+[[file:12_Axioms.org::#Axioms_and_Computation][Axioms and Computation]].
 
 ** Examples of Propositional Validities
 :PROPERTIES:
