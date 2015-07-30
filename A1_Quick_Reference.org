@@ -27,14 +27,16 @@ help options                 : display all available options
 
 ** Setting Options
 
+You can also see a list of all options by typing =set_option= with a space at the end and pressing =TAB=.
+
 #+BEGIN_SRC text
 pp.implicit        : display implicit arguments
 pp.universes       : display hidden universe parameters
 pp.coercions       : show coercions
 pp.notation        : display output using defined notations
 pp.beta            : beta reduce terms before displaying them
-pp.all             : disable notations, display implicit arguments, hidden universe parameters 
-                     and coercions
+pp.all             : disable notations, display implicit arguments, 
+                     hidden universe parameters and coercions
 pp.max_depth       : maximum expression depth
 pp.max_steps       : maximum steps for printing expression
 pp.full_names      : use full names for identifiers
@@ -47,20 +49,30 @@ pp.abbreviations   : show abbreviations
 ** Attributes
 
 These can generally be declared with a =definition= or =theorem=, or
-using the =attribute= or =local attribute= commands.
+using the =attribute= or =local attribute= commands. 
+
+Example: =local attribute nat.add nat.mul [reducible]=.
 #+BEGIN_SRC text
 reducible       : unfold during elaboration if necessary
+quasireducible  : unfold during higher order unification, 
+                  but not during type class resolution
+semireducible   : unfold when performance is not critical
 irreducible     : avoid unfolding during elaboration
-semireducible   : unfold when not performance critical
 coercion        : use as a coercion between types
 class           : type class declaration
 instance        : type class instance
 parsing-only    : use notation only for input
-unfold_c        : unfold argument for iota reduction
-recursor        : user-defined recursor/eliminator
+unfold <num>    : if the argument at position <num> is marked with [constructor] 
+                  unfold this and that argument (for iota reduction)
+constructor     : see unfold <num>
+unfold-full     : unfold definition when fully applied
+recursor        : user-defined recursor/eliminator, used for the induction tactic
+recursor <num>  : user-defined non-dependent recursor/eliminator 
+                  where <num> is the position of the major premise
 refl            : reflexivity lemma, used for calc-expressions, tactics and simplifier
 symm            : symmetry lemma, used for calc-expressions, tactics and simplifier
 trans           : transitivity lemma, used for calc-expressions, tactics and simplifier
+subst           : substitution lemma, used for calc-expressions and simplifier
 #+END_SRC
 
 ** Proof Elements
@@ -68,13 +80,14 @@ trans           : transitivity lemma, used for calc-expressions, tactics and sim
 *** Term Mode
 
 #+BEGIN_SRC text
-take, assume    : syntactic sugar for lambda
-let             : introduce local definitions
-have            : introduce auxiliary fact (opaque, in the body)
-assert          : like "have", but visible to tactics
-show            : make result type explicit
-match ... with  : introduce proof or definition by cases
-proof ... qed   : introduce a proof or definition block, elaborated separately
+take, assume     : syntactic sugar for lambda
+let              : introduce local definitions
+have             : introduce auxiliary fact (opaque, in the body)
+assert           : like "have", but visible to tactics
+show             : make result type explicit
+obtain ..., from : destruct structures such as exists, sigma, ...
+match ... with   : introduce proof or definition by cases
+proof ... qed    : introduce a proof or definition block, elaborated separately
 #+END_SRC
 
 The keywords =have= and =assert= can be anonymous, which is to say, they can be used without
@@ -91,6 +104,7 @@ type in the context with a hidden name.
 
 #+BEGIN_SRC text
 begin ... end   : enter tactic mode, and blocking mechanism within tactic mode
+{ ... }         : blocking mechanism within tactic mode
 have            : as in term mode (enters term mode), but visible to tactics
 show            : as in term mode (enters term mode)
 match ... with  : as in term mode (enters term mode)
@@ -107,6 +121,7 @@ section <id> .... end <id>   : begin / end section
 variable (var : type)        : introduce variable where needed
 variable {var : type)        : introduce implicit variable where needed
 variable [var : type]        : introduce class inference variable where needed
+variable {var} (var) [var]   : change the bracket of an existing variable 
 parameter                    : introduce variable, fixed within the section
 include                      : include variable in subsequence definitions
 omit                         : undoes "include"
@@ -128,13 +143,14 @@ exact <expr>      : apply and close goal, or fail
 rexact <expr>     : relaxed (and more expensive) version of exact
 refine <expr>     : like exact, but creates subgoals for unresolved subgoals
 
-intro <id>        : introduce a quantified variable or hypothesis
+intro <ids>       : introduce multiple variables or hypotheses
+intros <ids>      : same as intro <ids>
 intro             : let Lean choose a name
-intros <ids>      : introduce multiple variables or hypotheses
-intros            : let Lean choose the names
+intros            : introduce variables as long as the goal reduces to a function type
+                    and let Lean choose the names
 
 rename <id> <id>  : rename a variable or hypothesis
-generalize <expr> (<id>)? : generalize an expression
+generalize <expr> : generalize an expression
 clear <ids>       : clear variables or hypotheses
 revert <ids>      : move variables or hypotheses into the goal
 assumption        : try to close a goal with something in the context
@@ -144,33 +160,38 @@ eassumption       : a more aggressive ("expensive") form of assumption
 *** Equational reasoning
 
 #+BEGIN_SRC text
-esimp                : simplify expressions (by evaluation/normalization) in goal
-esimp at <id>        : simplify hypothesis in context
-esimp at *           : simplify everything
-esimp [<id>]         : unfold definition and simplify expressions in goal
-esimp [<id>] at <id> : unfold definition and simplify hypothesis in context
-esimp [<id>] at *    : unfold definition and simplify everything
-unfold <id>          : similar to (esimp <id>)
-fold <expr>          : unfold given function application, search for convertible term in the 
-                       goal, and replace it with <expr>
+esimp                 : simplify expressions (by evaluation/normalization) in goal
+esimp at <id>         : simplify hypothesis in context
+esimp at *            : simplify everything
+esimp [<ids>]         : unfold definitions and simplify expressions in goal
+esimp [<ids>] at <id> : unfold definitions and simplify hypothesis in context
+esimp [<ids>] at *    : unfold definitions and simplify everything
+unfold <id>           : similar to (esimp <id>)
+fold <expr>           : unfolds <expr>, search for convertible term in the 
+                        goal, and replace it with <expr>
 
-beta                 : beta reduce goal
+beta                  : beta reduce goal
+whnf                  : put goal in weak head normal form
+change <expr>         : change the goal to <expr> if it is convertible to <expr>
 
-rewrite <expr>       : apply a rewrite rule
-rewrite <expr-list>  : apply a sequence of rewrites
-krewrite             : a more aggressive form of rewrite, using keyed rewriting
-xrewrite             : a more aggressive form of rewrite
+rewrite <expr>        : apply a rewrite rule
+rewrite <expr-list>   : apply a sequence of rewrites
+krewrite              : using keyed rewriting, matches any subterm 
+                        with the same head as the rewrite rule
+xrewrite              : a more aggressive form of rewrite
 
-subst <id>           : substitute a variable defined in the context, and clear hypothesis and 
-                       variable
-subst_vars           : substitute all variables in the context
+subst <id>            : substitute a variable defined in the context, and clear hypothesis and 
+                        variable
+subst_vars            : substitute all variables in the context
 #+END_SRC
 
 *** Induction and cases
 
 #+BEGIN_SRC text
-cases <expr> (using {ids})?     : decompose an element of an inductive type
-induction <expr> (using {ids})? : use induction
+cases <expr>                    : decompose an element of an inductive type
+cases <expr> with <ids>         : names newly introduces variables as specified by <ids>
+induction <expr> (with <ids>)   : use induction
+induction <expr> using <def>    : uses the definition <def> to apply induction
 constructor                     : construct an element of an inductive type by applying the 
                                   first constructor that succeeds
 constructor <i>                 : construct an element of an inductive type by applying the 
@@ -188,7 +209,6 @@ right                           : equivalent to (constructor 1), only applicable
                                   datatypes with two constructors (e.g. right or introduction)
 existsi <expr>                  : similar to (constructor 0) but we can provide an argument, 
                                   useful for performing exists/sigma introduction
-
 #+END_SRC
 
 *** Special-purpose tactics
@@ -207,7 +227,8 @@ trivial             : apply true introduction
 
 #+BEGIN_SRC text
 and_then <tac1> <tac2> (notation: <tac1> ; <tac2>)  
-                         : execute <tac1> and then execute <tac2> (aka sequential composition)
+                         : execute <tac1> and then execute <tac2>, backtracking when needed 
+                           (aka sequential composition)
 or_else <tac1> <tac2> (notation: (<tac1> | <tac2>)) 
                          : execute <tac1> if it fails, execute <tac2>
 append  <tac1> <tac2>    : execute <tac1> and <tac2> and append their proof state streams
@@ -235,10 +256,8 @@ rorate_right <num>  : rotate goals to the right <num> times
 rotate <num>        : equivalent to (rotate_left <num>)
 all_goals <tac>     : execute <tac> to all goals in the current proof state
 fail                : tactic that always fails
-id                  : tactic that always succeeds
+id                  : tactic that does nothing and always succeeds
 now                 : fail if there are unsolved goals
-whnf                : put goal in weak head normal form
-change <expr>       : change the goal to <expr> if it is convertible to <expr>
 #+END_SRC
 
 *** Information and debugging
@@ -267,6 +286,10 @@ C-c C-k    : show how to enter unicode symbol
 C-c C-o    : set Lean options
 C-c C-e    : execute Lean command
 C-c C-r    : restart Lean process
+C-c C-g    : display the current goal in a tactic proof
+C-c C-f    : experimental feature to fill a placeholder by the printed term 
+             in the minibuffer. Note: the elaborator might need more information 
+             to correctly infer the implicit arguments of this term
 #+END_SRC
 
 ** Unicode Symbols
@@ -322,11 +345,11 @@ respectively.
 
 *** Equality proofs (=open eq.ops=)
 
-| Unicode | Ascii | Emacs         |
-|---------+-------+---------------|
-| ⁻¹      | eq.symm  | =\sy=, =\inv= |
-| ⬝       | eq.trans | =\tr=         |
-| ▸       | eq.subst | =\t=          |
+| Unicode | Ascii | Emacs                   |
+|---------+-------+-------------------------|
+| ⁻¹      | eq.symm  | =\sy=, =\inv=, =\-1= |
+| ⬝       | eq.trans | =\tr=                |
+| ▸       | eq.subst | =\t=                 |
 
 *** Symbols for the rewrite tactic
 
@@ -340,7 +363,7 @@ respectively.
 | Unicode | Ascii | Emacs         |
 |---------+-------+---------------|
 | ⌞t⌟     | ?(t)  | =\cll t \clr= |
-| ⦃ t ⦄   | {{t}} | =\{{ t \}}    |
+| ⦃ t ⦄   | {{t}} | =\{{ t \}}=   |
 | ⟨ t ⟩   |       | =\< t \>=     |
 | ⟪ t ⟫   |       | =\<< t \>>=   |
 
