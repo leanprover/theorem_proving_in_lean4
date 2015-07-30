@@ -1,6 +1,28 @@
 os:
   - linux
+language: c++
+sudo: false
 cache: apt
+addons:
+  apt:
+    sources:
+    - kalakris/cmake
+    - ubuntu-toolchain-r/test
+    packages:
+    - mercurial
+    - python2.7
+    - texlive-latex-recommended
+    - texlive-humanities
+    - texlive-xetex
+    - texlive-science
+    - texlive-latex-extra
+    - texlive-fonts-recommended
+    - latexmk
+    - bibtex2html
+    - moreutils
+    - nodejs
+    - g++-4.8 libstdc++-4.8-dev libgmp-dev libmpfr-dev lua5.2-dev cmake
+
 env:
   global:
    # GH_TOKEN=[secure]              (to push to leanprover org)
@@ -11,24 +33,17 @@ env:
    - EVM_EMACS=emacs-24.3-bin TEST=TRUE
    - EVM_EMACS=emacs-24.4-bin TEST=TRUE
    - EVM_EMACS=emacs-24.5-bin TEST=TRUE
-   - EVM_EMACS=emacs-24.3-bin TEST_JS=TRUE
-   - EVM_EMACS=emacs-24.4-bin TEST_JS=TRUE
-   - EVM_EMACS=emacs-24.5-bin TEST_JS=TRUE
 
 before_install:
-  - sudo mkdir /usr/local/evm
-  - sudo chown travis:travis /usr/local/evm
-  - export PATH="/home/travis/.cask/bin:$PATH"
-  - export PATH="/home/travis/.evm/bin:$PATH"
+  - mkdir /usr/local/evm
+  - chown travis:travis /usr/local/evm
+  - mkdir ~/bin
+  - export PATH="/home/travis/.evm/bin:/home/travis/.cask/bin:~/bin:$PATH"
   - curl -fsSkL https://raw.github.com/rejeep/evm/master/go | bash
   - evm install $EVM_EMACS --use
   - curl -fsSkL https://raw.github.com/cask/cask/master/go | python
   - cask
   - evm list
-  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-  - sudo add-apt-repository --yes ppa:kalakris/cmake
-  - sudo apt-get update
-  - sudo apt-get install mercurial python2.7 texlive-latex-recommended texlive-humanities texlive-xetex texlive-science texlive-latex-extra texlive-fonts-recommended latexmk bibtex2html moreutils nodejs || true
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
 install:
@@ -37,14 +52,13 @@ install:
   - git clone https://github.com/leanprover/lean
   # Build Lean
   - if [[ $TEST == TRUE ]] ; then
-      sudo apt-get -qq install g++-4.8 libstdc++-4.8-dev libgmp-dev libmpfr-dev lua5.2-dev cmake &&
       cd lean &&
       mkdir build &&
       cd build &&
       cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 ../src &&
       make &&
-      sudo make install &&
       cd ../../;
+      cd ~/bin && ln -s ~/lean/bin/lean && cd -
     fi
 
 script:
@@ -68,7 +82,7 @@ script:
       git add fonts &&
       for JS in js/*.js; do minify ${JS} | sponge ${JS} ; done &&
       git add -f js/* &&
-      sudo rm -rf pygments-main &&
+      rm -rf pygments-main &&
       git clean -fxd &&
       git commit -m "Update `date -R`" &&
       git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages &&
