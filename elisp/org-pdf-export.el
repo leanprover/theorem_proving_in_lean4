@@ -89,7 +89,8 @@ Extract the core code between -- BEGIN and -- END lines"
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
        (when (org-string-nw-p (org-element-property :value src-block))
-         (let* ((lang (org-element-property :language src-block))
+         (let* ((org-lang (org-element-property :language src-block))
+                (lang (if (string= org-lang "lean_text") "lean" org-lang))
                 (caption (org-element-property :caption src-block))
                 (label (org-element-property :name src-block))
                 (custom-env (and lang

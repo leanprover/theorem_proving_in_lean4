@@ -62,19 +62,24 @@ contextual information."
             (if (not caption) ""
               (format "<label class=\"org-src-name\">%s</label>"
                       (org-export-data caption info)))
-            (if (string= lang "lean")
-                (let ((juicy-ace-editor-html
+            (cond ((or (string= lang "lean")
+                       (string= lang "lean_text"))
+                   (let ((juicy-ace-editor-html
                        (format "<juicy-ace-editor id='lean-juicy-ace-editor-%d' mode=\"ace/mode/%s\" readonly=\"true\">%s</juicy-ace-editor>"
                                lean-src-block-counter
-                               lang
+                               "lean"
                                (lean-example-main-part code)))
                       (full-code-html (format "<div id='lean-full-code-%d' style='display:none'>%s</div>"
                                              lean-src-block-counter
                                              (lean-example-full code)))
-                      (button-html (format "<div class='no-print' align=\"left\"><button type=\"button\" onclick=\"invoke_leanjs($('#lean-full-code-%d').text());\">Try it yourself &raquo;</button></div>"
-                                          lean-src-block-counter)))
-                  (concat juicy-ace-editor-html full-code-html button-html))
-              (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label code))))))))
+                      (button-html
+                       (if (string= lang "lean")
+                           (format "<div class='no-print' align=\"left\"><button type=\"button\" onclick=\"invoke_leanjs($('#lean-full-code-%d').text());\">Try it yourself &raquo;</button></div>"
+                                   lean-src-block-counter)
+                         "")))
+                     (concat juicy-ace-editor-html full-code-html button-html)))
+                  (t
+                   (format "\n<pre class=\"src src-%s\"%s>%s</pre>" lang label code)))))))))
 (setq org-confirm-babel-evaluate nil)
 
 (defun lean-extract-chapter-name (str)
