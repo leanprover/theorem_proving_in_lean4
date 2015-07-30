@@ -956,7 +956,7 @@ illustrative example, the /Sigma types/, =Σ x : A, B x=, sometimes
 also known as /dependent pairs/. These are, in a sense, companions to
 the Pi types. The type =Σ x : A, B x= denotes the type of pairs
 =sigma.mk a b= where =a : A= and =b : B a=. You can also use angle
-brackets =<a, b>= as notation for =sigma a b=. (To type these
+brackets =<a, b>= as notation for =sigma.mk a b=. (To type these
 brackets, use the shortcuts =\<= and =\>=.)  Just as Pi types =Π x :
 A, B x= generalize the notion of a function type =A → B= by allowing
 =B= to depend on =A=, Sigma types =Σ x : A, B x= generalize the
