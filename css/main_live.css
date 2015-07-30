@@ -74,3 +74,11 @@ body, html {
     margin-left:5px;
     margin-right:13px;
 }
+div#tutorial_contents th {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+div#tutorial_contents td {
+    padding-left: 15px;
+    padding-right: 15px;
+}
