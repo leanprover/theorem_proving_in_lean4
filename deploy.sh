@@ -4,8 +4,7 @@
 make
 make build_nav_data
 
-# 2. Check sponge, cssmin, minify
-hash sponge 2>/dev/null || { echo >&2 "sponge is not installed. Install 'moreutils'."; exit 1; }
+# 2. Check cssmin, minify
 hash cssmin 2>/dev/null || { echo >&2 "cssmin is not installed. Run 'npm -g i minify'."; exit 1; }
 hash minify 2>/dev/null || { echo >&2 "minify is not installed. Run 'npm -g i minify'."; exit 1; }
 
@@ -16,8 +15,16 @@ rm -rf *
 git init
 cp ../*.html ../tutorial.pdf ../quickref.pdf .
 cp -r ../css ../images ../fonts ../js .
-for CSS in css/*.css; do cssmin ${CSS} | sponge ${CSS} ; done
-for JS in js/*.js; do minify ${JS} | sponge ${JS} ; done
+for CSS in css/*.css
+do
+    cssmin ${CSS} > ${CSS}.min
+    mv ${CSS}.min ${CSS}
+done
+for JS in js/*.js
+do
+    minify ${JS} > ${JS}.min
+    mv ${JS}.min ${JS}
+done
 git add -f *.html tutorial.pdf quickref.pdf
 git add -f css/*
 git add -f images/*
