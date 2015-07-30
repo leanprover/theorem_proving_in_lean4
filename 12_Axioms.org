@@ -1244,6 +1244,13 @@ Most of the library depends only on the first two.
 The command =print axioms= displays all axioms that have been asserted/imported into the current logical context.
 Similarly, the command =print axioms decl_name= prints all axioms the declaration =decl_name= depends on.
 
+/IMPORTANT/: in the Lean web version, we erase the proof of most
+theorems. The idea is to reduce the size of the file that must be
+downloaded to run Lean on your web browser. So, the result of the
+=print axioms= commands is not precise on the web version. Please use
+the Lean native application if you are interested in using these
+commands.
+
 #+BEGIN_SRC lean
 import logic.choice data.finset data.set
 -- BEGIN
