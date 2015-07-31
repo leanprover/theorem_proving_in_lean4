@@ -35,7 +35,8 @@
         <div id="run-button" class="button"><img class="menu_icon" src="./images/run.svg" title="run (shift + enter)"/></div>
         <div id="layout-button" class="button"><img class="menu_icon" src="./images/square.svg" title="rotate layout"/></div>
         <div id="book-button" class="button"><a href="tutorial.pdf"><img class="menu_icon" src="./images/book.svg" title="Download tutorial.pdf"/></a></div>
-        <select id='tutorialNav'></select>
+        <div id="setting-button" class="button"><img class="menu_icon" src="./images/gear.svg" title="setting"/></div>
+        <select id='tutorialNav' style="display:none"></select>
       </div>
     </div>
     <div id="main_window">
@@ -45,6 +46,16 @@
         <div id="editor_main"></div>
         <div id="resizable_handle_sub" class="resizable_handle"></div>
         <div id="editor_console"></div>
+      </div>
+    </div>
+    <div id="setting_window" style="display:none; z-index:9999;">
+      <div id="setting_contents">
+        <h1>Settings</h1>
+        <label for="print_output_to_console">Print output to the console</label>
+        <select name="print_output_to_console" id="print_output_to_console">
+          <option>true</option>
+          <option selected="selected" >false</option>
+        </select>
       </div>
     </div>
     <script src="//cdn.jsdelivr.net/polymer.platform/0.4.2/platform.js"></script>

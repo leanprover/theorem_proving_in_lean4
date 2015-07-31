@@ -49,6 +49,7 @@ var myModule = (function() {
     var codeText = gup("code");
     var url = gup("url");
     return {
+        print_output_to_console: $.cookie("leanjs_print_output_to_console") || false,
         editor_main: editor_main,
         editor_console: editor_console,
         push_output_buffer: function(text) {
@@ -247,6 +248,7 @@ var myModule = (function() {
             editor_main.resize();
             editor_console.resize();
             $("#tutorial_contents").css({position: "absolute", top: tutorial_top, left:tutorial_left, width: tutorial_width, height: tutorial_height});
+            $("#setting_window").css({position: "absolute", top:tutorial_top, left:tutorial_left, width: tutorial_width, height: tutorial_height});
         },
         init_editor_keybindings: function() {
             var process_main_buffer_command = {
@@ -413,7 +415,9 @@ var myModule = (function() {
                                  endColumn: endColumn,
                                  text: text,
                                  type: type});
-                    // this.append_console_nl("line " + (row + 1) + ", column " + column + ":" + text);
+                    if (myModule.print_output_to_console) {
+                        this.append_console_nl("line " + (row + 1) + ", column " + column + ": " + text);
+                    }
                     mode = "outside";
                 } else if (mode === "outside") {
                     this.append_console_nl(line);
@@ -464,15 +468,15 @@ var myModule = (function() {
             });
             // Set the right value for tutorialNav
             $('#tutorialNav').val(myModule.file2title(filename));
+            // Hide Setting
+            $("#setting_window").hide();
         },
         init_nav: function() {
             // Setup Navigation: note that the variable lean_nav_data
             // is loaded from 'js/nav_data.js' which is built by
             // 'build_nav_data' build target.
-            if (livemode) {
-                // Hide tutorial navigation if '?live=' used.
-                $('#tutorialNav').hide();
-            } else {
+            $('#tutorialNav').hide();
+            if (!livemode) {
                 $.getScript("js/nav_data.js", function(){
                     $.each(lean_nav_data, function(key, value) {
                         // e.g. "02_Dependent_Type_Theory.html" => "02 Dependent Type Theory"
@@ -494,8 +498,26 @@ var myModule = (function() {
                 });
             }
         },
+        init_settings: function() {
+            // Setting Window & Button
+            $("#setting_window").hide();
+            $("#setting_window").css({background: "white", opacity: 0.98});
+            $("#setting_contents").css({ padding: 40});
+            $('#print_output_to_console').val(myModule.print_output_to_console.toString());
+            $('#print_output_to_console').on('change', function (e) {
+                myModule.print_output_to_console = (this.value == "true");
+                $.cookie("leanjs_print_output_to_console", myModule.print_output_to_console);
+            });
+            $(function () {
+                var settingButton = document.querySelector("#setting-button");
+                settingButton.addEventListener("click", function() {
+                    $("#setting_window").toggle();
+                });
+            });
+        },
         init: function() {
             myModule.init_nav();
+            myModule.init_settings();
             this.append_console_nl("Lean.JS: running Lean Theorem Prover on your browser");
             this.append_console("-- Initializing Ace Editor...     ");
             var start_time = new Date().getTime();
