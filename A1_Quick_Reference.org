@@ -130,15 +130,15 @@ omit                         : undoes "include"
 
 ** Tactics
 
-We say a tactic is more "aggressive" when it uses a more expensive (and complete) unification 
-algorithm, and/or unfolds more aggressively definitions.
+We say a tactic is more "aggressive" when it uses a more expensive (and complete) 
+unification algorithm, and/or unfolds more aggressively definitions.
 
 *** General tactics
 
 #+BEGIN_SRC text
 apply <expr>      : apply a theorem to the goal, create subgoals for non-dependent premises
-fapply <expr>     : like apply, but create subgoals also for dependent premises that were not 
-                    assigned by unification procedure
+fapply <expr>     : like apply, but create subgoals also for dependent premises that were 
+                    not assigned by unification procedure
 eapply <expr>     : like apply, but used for applying recursor-like definitions
 exact <expr>      : apply and close goal, or fail
 rexact <expr>     : relaxed (and more expensive) version of exact
@@ -287,7 +287,10 @@ C-c C-k    : show how to enter unicode symbol
 C-c C-o    : set Lean options
 C-c C-e    : execute Lean command
 C-c C-r    : restart Lean process
-C-c C-g    : display the current goal in a tactic proof
+C-c C-p    : print the definition of the identifier under the cursor
+             in a new buffer
+C-c C-g    : show the current goal at a line of a tactic proof, in a 
+             new buffer
 C-c C-f    : experimental feature to fill a placeholder by the printed term 
              in the minibuffer. Note: the elaborator might need more information 
              to correctly infer the implicit arguments of this term

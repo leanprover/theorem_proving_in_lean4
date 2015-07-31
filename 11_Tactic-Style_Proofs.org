@@ -107,10 +107,9 @@ incomplete tactic proof bracketed by =begin= and =end=, the system
 reports all the unsolved goals that remain. If you are running Lean
 with its Emacs interface, you can see this information by putting your
 cursor on the =end= symbol, which should be underlined. In the Emacs
-interface, there is another useful trick: if you open up the
-=*lean-info*= buffer in a separate window and put your cursor on the
-comma after a tactic command, Lean shows you the goals that remain
-open at that stage in the proof.
+interface, there is another extremely useful trick: if you put your
+cursor on a line of a tactic proof and press "C-c C-g", Lean will show
+you the goal that remains at the end of the line.
 
 Tactic commands can take compound expressions, not just single
 identifiers. The following is a shorter version of the preceding
@@ -154,7 +153,9 @@ block, you can write the =by= keyword followed by a single tactic:
 theorem test (p q : Prop) (Hp : p) (Hq : q) : p ∧ q ∧ p :=
 by apply (and.intro Hp); exact (and.intro Hq Hp)
 #+END_SRC
-
+In the Lean Emacs mode, if you put your cursor on the "b" in "by" and
+press "C-c C-g", Lean shows you the goal that the tactic is supposed
+to meet.
 
 ** Basic Tactics
 

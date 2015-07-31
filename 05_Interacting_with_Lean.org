@@ -423,13 +423,15 @@ library. You can also press tab after an =import= command, to see a
 list of possible imports, or after the =set_option= command, to see a
 list of options.
 
-If you put your cursor on an identifier that is defined in Lean's
-library and hit "M-.", Emacs will take you to the identifier's
-definition in the library file itself. This works even in an
-autocompletion popup window: if you start typing an identifier, press
-the tab key, choose a completion from the list of options, and press
-"M-.", you are taken to the symbol's definition. When you are done,
-pressing "M-*" takes you back to your original position.
+If you put your curson on an identifier and type "C-c C-p", Lean
+prints the definition of that identifier in a separate buffer.  If you
+put your cursor on an identifier that is defined in Lean's library and
+hit "M-.", Emacs will take you to the identifier's definition in the
+library file itself. This works even in an autocompletion popup
+window: if you start typing an identifier, press the tab key, choose a
+completion from the list of options, and press "M-.", you are taken to
+the symbol's definition. When you are done, pressing "M-*" takes you
+back to your original position.
 
 There are other useful tricks. If you see some notation in a Lean file
 and you want to know how to enter it from the keyboard, put the cursor
