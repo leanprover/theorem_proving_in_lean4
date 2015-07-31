@@ -502,7 +502,7 @@ sigma introduction =sigma.mk= and elimination.
 The difference is that given =a : A= and =h : p a=, =exists.intro a h=
 has type =(∃ x : A, p x) : Prop= and =sigma.mk a h= has type
 =(Σ x : A, p x) : Type=. The similarity
-between =∃ = and =Σ = is another instance of the Curry-Howard isomorphism.
+between =∃= and =Σ= is another instance of the Curry-Howard isomorphism.
 
 In the following example, we define =even a= as =∃ b, a = 2*b=, and
 then we show that the sum of two even numbers is an even number.
