@@ -27,7 +27,8 @@ help options                 : display all available options
 
 ** Setting Options
 
-You can also see a list of all options by typing =set_option= with a space at the end and pressing =TAB=.
+You can also see a list of all options by typing =set_option= with a space at the end and 
+pressing =TAB=.
 
 #+BEGIN_SRC text
 pp.implicit        : display implicit arguments
@@ -182,7 +183,7 @@ xrewrite              : a more aggressive form of rewrite
 
 subst <id>            : substitute a variable defined in the context, and clear hypothesis and 
                         variable
-subst_vars            : substitute all variables in the context
+substvars             : substitute all variables in the context
 #+END_SRC
 
 *** Induction and cases
@@ -201,13 +202,13 @@ fconstructor                    : construct an element of an inductive type by (
 fconstructor <i>                : construct an element of an inductive type by (fapply)ing the 
                                   ith-constructor
 injectivity                     : use injectivity of constructors
-split                           : equivalent to (constructor 0), only applicable to inductive 
+split                           : equivalent to (constructor 1), only applicable to inductive 
                                   datatypes with a single constructor (e.g. and introduction)
-left                            : equivalent to (constructor 0), only applicable to inductive 
+left                            : equivalent to (constructor 1), only applicable to inductive 
                                   datatypes with two constructors (e.g. left or introduction)
-right                           : equivalent to (constructor 1), only applicable to inductive 
+right                           : equivalent to (constructor 2), only applicable to inductive 
                                   datatypes with two constructors (e.g. right or introduction)
-existsi <expr>                  : similar to (constructor 0) but we can provide an argument, 
+existsi <expr>                  : similar to (constructor 1) but we can provide an argument, 
                                   useful for performing exists/sigma introduction
 #+END_SRC
 
@@ -215,7 +216,7 @@ existsi <expr>                  : similar to (constructor 0) but we can provide 
 
 #+BEGIN_SRC text
 contradiction       : close contradictory goal
-exfalso             : implements the “ex falso quodlibet” logical principle
+exfalso             : implements the "ex falso quodlibet" logical principle
 congruence          : solve goals of the form (f a_1 ... a_n = f' b_1 ... b_n) by congruence
 reflexivity         : reflexivity of equality (or any relation marked with attribute refl)
 symmetry            : symmetry of equality (or any relation marked with attribute symm)
