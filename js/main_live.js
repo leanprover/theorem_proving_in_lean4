@@ -31,9 +31,6 @@ function elapsed_time_string(startTime) {
 }
 
 var myModule = (function() {
-    var dropbox_lean_js_app_key = "kl2l16uaul9rwpe";
-    var dropbox_lean_js_app_prefix = "Dropbox/Apps/Lean.JS/";
-    var dropbox_client = new Dropbox.Client({ key: dropbox_lean_js_app_key });
     var util = ace.require("ace/autocomplete/util")
     var langTools = ace.require("ace/ext/language_tools");
     var editor_main = ace.edit("editor_main");
@@ -89,9 +86,6 @@ var myModule = (function() {
             editor_console.getSession().setUseWrapMode(false);
             editor_console.renderer.setShowGutter(false);
             editor_console.resize();
-        },
-        get_dropbox_client: function() {
-          return dropbox_client;
         },
         get_main_console_ratio: function() {
           return main_console_ratio;
@@ -421,69 +415,9 @@ var myModule = (function() {
             }
             return errors;
         },
-        dropbox_show_username: function() {
-            dropbox_client.getAccountInfo(function(error, accountInfo) {
-                if (error) {
-                    console.log("Dropbox GetAccountInfo", error);
-                } else {
-                    $("#signin-button").text("");
-                    $("#username").text("Welcome " + accountInfo.name + "!");
-                }
-            });
-        },
-        dropbox_connect: function() {
-            dropbox_client.authenticate(function(error, dropbox_client) {
-                if (error) {
-                    console.log("Dropbox Connect Error", error);
-                } else {
-                    this.dropbox_show_username();
-                }
-            });
-        },
-        dropbox_setup_button: function() {
-            dropbox_client.authenticate({interactive: false}, function(error, dropbox_client) {
-                if (!dropbox_client.isAuthenticated()) {
-                    var button = document.querySelector("#signin-button");
-                    button.addEventListener("click", function() {
-                        myModule.dropbox_connect()
-                    });
-                    $("#signin-button").prepend("<img class=\"menu_icon\" src=\"./images/dropbox.svg\" title=\"signin\"/>");
-                } else {
-                    myModule.dropbox_show_username();
-                }
-            });
-        },
-        dropbox_load_file: function(filename) {
-            var fullpath = dropbox_lean_js_app_prefix + filename;
-            if (dropbox_client.isAuthenticated()) {
-                dropbox_client.readFile(filename, function(error, data) {
-                    if (error) {
-                        myModule.append_console_nl("-- Could not read from '" +
-                                          fullpath + "'.");
-                        console.log("Dropbox Load File Error: ", error);
-                    } else {
-                        editor_main.setValue(data, 1);
-                        editor_main.focus();
-                        myModule.append_console_nl("-- '" + fullpath + "' loaded.");
-                    }
-                });
-            }
-        },
         save_file: function(filename, text) {
-            var fullpath = dropbox_lean_js_app_prefix + filename;
-            if (dropbox_client.isAuthenticated()) {
-                dropbox_client.writeFile(filename, text, function(error, stat) {
-                    if (error) {
-                        myModule.append_console_nl("-- Failed to write to '" +
-                                          fullpath + "'.");
-                    } else {
-                        myModule.append_console_nl("-- Saved at '" + fullpath + "'.");
-                    }
-                });
-            } else {
-                $.cookie("leanjs", myModule.editor_main.getValue());
-                myModule.append_console_nl("-- Saved at cookie.");
-            }
+            $.cookie("leanjs", myModule.editor_main.getValue());
+            myModule.append_console_nl("-- Saved at cookie.");
         },
         init_ace: function() {
             myModule.init_editor_main();
@@ -558,13 +492,10 @@ var myModule = (function() {
             myModule.init_ace();
             myModule.append_console("Done");
             myModule.append_console_nl("(" + elapsed_time_string(start_time) + ")");
-            myModule.dropbox_setup_button();
             if (codeText != "") {
                 myModule.load_from_code();
             } else if (url != "") {
                 myModule.load_from_url();
-            }else if(myModule.get_dropbox_client().isAuthenticated()) {
-                myModule.dropbox_load_file(default_filename);
             } else {
                 var cookie_contents = $.cookie("leanjs");
                 if (cookie_contents && cookie_contents != "") {
@@ -633,43 +564,11 @@ $(function () {
         myModule.editor_main.setValue("", 1);
     });
 });
-// Load Button
-$(function () {
-    var loadButton = document.querySelector("#load-button");
-    loadButton.addEventListener("click", function() {
-        if (myModule.get_dropbox_client().isAuthenticated()) {
-            var options = {
-                success: function(files) {
-                    $.get(files[0].link, function(data) {
-                        myModule.editor_main.setValue(data, 1);
-                    });
-                    myModule.append_console_nl("-- " + files[0].name +
-                                               " is loaded from Dropbox.");
-                },
-                cancel: function() {
-                },
-                linkType: "direct", // or "preview"
-                multiselect: false,
-                extensions: ['.lean', '.lua', '.docx'],
-            };
-            Dropbox.choose(options);
-        }
-
-    });
-});
 // Run Button
 $(function () {
     var runButton = document.querySelector("#run-button");
     runButton.addEventListener("click", function() {
         myModule.process_main_buffer();
-    });
-});
-// Save Button
-$(function () {
-    var saveButton = document.querySelector("#save-button");
-    saveButton.addEventListener("click", function() {
-        myModule.save_file("input.lean", myModule.editor_main.getValue());
-        // Dropbox.save("URL", "FILE.txt");
     });
 });
 // Console Button
@@ -682,19 +581,6 @@ $(function () {
             myModule.set_main_console_ratio(0.5);
         }
         myModule.resize_editors();
-    });
-});
-// Share Button
-$(function () {
-    var shareButton = document.querySelector("#share-button");
-    shareButton.addEventListener("click", function() {
-        var base = window.location.href.split('?')[0];
-        var text = myModule.editor_main.getValue();
-        if (text != "") {
-            var encodedText = btoa(unescape(encodeURIComponent(text)));
-            var sharedURL = base + "?code=" + encodedText;
-            window.prompt("Copy to clipboard: Ctrl+C, Enter", sharedURL);
-        }
     });
 });
 
