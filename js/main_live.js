@@ -501,6 +501,7 @@ var myModule = (function() {
         init_settings: function() {
             // Setting Window & Button
             $("#setting_window").hide();
+            $("#close_setting_window").click(function(e) { $("#setting_window").hide(); });
             $("#setting_window").css({background: "white", opacity: 0.98});
             $("#setting_contents").css({ padding: 40});
             $('#print_output_to_console').val(myModule.print_output_to_console.toString());

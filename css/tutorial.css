@@ -335,3 +335,6 @@ button::-moz-focus-inner {
 pre.src.src-text {
     margin-left: 24px;
 }
+fieldset {
+    border:0;
+}
