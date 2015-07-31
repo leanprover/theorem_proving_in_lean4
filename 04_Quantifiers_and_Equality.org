@@ -213,7 +213,8 @@ problematic.
 ** Equality
 
 Let us now turn to one of the most fundamental relations defined in
-Lean's library, namely, the equality relation. In the next chapter, we
+Lean's library, namely, the equality relation. In Chapter
+[[file:06_Inductive_Types.org::#Inductive_Types][Inductive Types]], we
 will explain /how/ equality is defined, from the primitives of Lean's
 logical framework. In the meanwhile, here we explain how to use it.
 
