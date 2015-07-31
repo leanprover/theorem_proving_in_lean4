@@ -6,9 +6,13 @@ cache: apt
 addons:
   apt:
     sources:
-    - kalakris/cmake
-    - ubuntu-toolchain-r/test
+    - kalakris-cmake
+    - ubuntu-toolchain-r-test
+    - cassou-emacs
     packages:
+    - emacs24
+    - emacs24-el
+    - emacs24-common-non-dfsg
     - mercurial
     - python2.7
     - texlive-latex-recommended
@@ -21,8 +25,12 @@ addons:
     - bibtex2html
     - moreutils
     - nodejs
-    - g++-4.8 libstdc++-4.8-dev libgmp-dev libmpfr-dev lua5.2-dev cmake
-
+    - g++-4.8
+    - libstdc++-4.8-dev
+    - libgmp-dev
+    - libmpfr-dev
+    - lua5.2-dev
+    - cmake
 env:
   global:
    # GH_TOKEN=[secure]              (to push to leanprover org)
@@ -30,20 +38,13 @@ env:
    # REPOn=BLESSED                  (to perform extra stuff only for pushes to the blessed repo)
    - secure: "Du/ZXFXdhRZL6AU6t6G8A3BNr3oPpHK4h2UCK00b+bgonHy7kDgTE0YxRVOf8VpXqfJwekzT4hWJhnKXasTp5avNEVEbdWC4nyM4tZbl6a8g8iI3Oo+JB6seSO6fIhrv6sZ7BCa6iuKDwzWJ0sQnXL+kx/zUqcle5eVUu5ic/24="
   matrix:
-   - EVM_EMACS=emacs-24.3-bin TEST=TRUE
-   - EVM_EMACS=emacs-24.4-bin TEST=TRUE
-   - EVM_EMACS=emacs-24.5-bin TEST=TRUE
+   - TEST=TRUE
 
 before_install:
-  - mkdir /usr/local/evm
-  - chown travis:travis /usr/local/evm
   - mkdir ~/bin
-  - export PATH="/home/travis/.evm/bin:/home/travis/.cask/bin:~/bin:$PATH"
-  - curl -fsSkL https://raw.github.com/rejeep/evm/master/go | bash
-  - evm install $EVM_EMACS --use
+  - export PATH="/home/travis/.cask/bin:~/bin:$PATH"
   - curl -fsSkL https://raw.github.com/cask/cask/master/go | python
   - cask
-  - evm list
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
 install:
@@ -62,13 +63,13 @@ install:
     fi
 
 script:
-  - EMACS_BIN=$(evm bin $EVM_EMACS) make
+  - EMACS_BIN=emacs
   # Build completion.js
   - echo "var completions = [" > js/completion.js
   - lean --server < js/completion_input.in | grep "|" | grep -v "^private\." | sort | uniq | sed -e "s/\([^|]\+\)|\(.\+\)/{name:\"\1\", value:\"\1\", meta:\"\2\"},/" >> js/completion.js
   - echo "]" >> js/completion.js
   # Build input-method.js
-  - $(evm bin $EVM_EMACS) --no-site-file --no-site-lisp -q --batch -l ./elisp/org-html-export.el -l ./lean/src/emacs/lean-input.el -f lean-input-export-translations-to-stdout > js/input-method.js
+  - $(EMACS_BIN) --no-site-file --no-site-lisp -q --batch -l ./elisp/org-html-export.el -l ./lean/src/emacs/lean-input.el -f lean-input-export-translations-to-stdout > js/input-method.js
   # Push to gh-pages
   - if [[ "${REPO}" == "BLESSED" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
       git config --global user.email "notifications@travis-ci.org" &&
