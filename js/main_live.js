@@ -597,16 +597,21 @@ $(function () {
         var current_image_url = $("#layout-button>img")[0].src;
         var current_image = current_image_url.split("/").pop();
         var next_image = "";
-        console.log(current_image);
+        var livemode = location.search.match("(\\?|&)live") ? true : false;
         if (w >= h) {
             if (current_image == "square.svg") {
                 myModule.set_tutorial_main_ratio(1.0);
                 myModule.set_main_console_ratio(1.0);
                 next_image = "square-landscape-main-code.svg";
             } else if (current_image == "square-landscape-main-code.svg") {
-                myModule.set_tutorial_main_ratio(0.5);
-                myModule.set_main_console_ratio(1.0);
-                next_image = "square-landscape-main-code-console.svg";
+                if (livemode) {
+                    myModule.set_main_console_ratio(0.5);
+                    next_image = "square.svg";
+                } else {
+                    myModule.set_tutorial_main_ratio(0.5);
+                    myModule.set_main_console_ratio(1.0);
+                    next_image = "square-landscape-main-code-console.svg";
+                }
             } else if (current_image == "square-landscape-main-code-console.svg") {
                 myModule.set_tutorial_main_ratio(0.5);
                 myModule.set_main_console_ratio(0.8);
@@ -618,9 +623,14 @@ $(function () {
                 myModule.set_main_console_ratio(1.0);
                 next_image = "square-portrait-main-code.svg";
             } else if (current_image == "square-portrait-main-code.svg") {
-                myModule.set_tutorial_main_ratio(0.5);
-                myModule.set_main_console_ratio(1.0);
-                next_image = "square-portrait-main-code-console.svg";
+                if (livemode) {
+                    myModule.set_main_console_ratio(0.5);
+                    next_image = "square.svg";
+                } else {
+                    myModule.set_tutorial_main_ratio(0.5);
+                    myModule.set_main_console_ratio(1.0);
+                    next_image = "square-portrait-main-code-console.svg";
+                }
             } else if (current_image == "square-portrait-main-code-console.svg") {
                 myModule.set_tutorial_main_ratio(0.5);
                 myModule.set_main_console_ratio(0.8);
