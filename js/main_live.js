@@ -87,6 +87,12 @@ var myModule = (function() {
             editor_console.renderer.setShowGutter(false);
             editor_console.resize();
         },
+        get_tutorial_main_ratio: function() {
+          return tutorial_main_ratio;
+        },
+        set_tutorial_main_ratio: function(x) {
+          tutorial_main_ratio = x;
+        },
         get_main_console_ratio: function() {
           return main_console_ratio;
         },
@@ -534,7 +540,7 @@ var myModule = (function() {
                 Module.lean_import_module(mname);
                 myModule.append_console("Done");
                 myModule.append_console_nl("(" + elapsed_time_string(start_time) + ")");
-                myModule.append_console("-- Ready.\n\n");
+                myModule.append_console("-- Ready.\n");
                 myModule.append_console("-- Press [shift+enter] or click ▶ button to execute code.\n");
             }, 5);
         },
@@ -578,13 +584,44 @@ $(function () {
 });
 // Console Button
 $(function () {
-    var consoleButton = document.querySelector("#console-button");
+    var consoleButton = document.querySelector("#layout-button");
     consoleButton.addEventListener("click", function() {
-        if (myModule.get_main_console_ratio() < 0.80) {
-            myModule.set_main_console_ratio(1.0);
+        var h = window.innerHeight;
+        var w = window.innerWidth;
+        var current_image_url = $("#layout-button>img")[0].src;
+        var current_image = current_image_url.split("/").pop();
+        var next_image = "";
+        console.log(current_image);
+        if (w >= h) {
+            if (current_image == "square.svg") {
+                myModule.set_tutorial_main_ratio(1.0);
+                myModule.set_main_console_ratio(1.0);
+                next_image = "square-landscape-main-code.svg";
+            } else if (current_image == "square-landscape-main-code.svg") {
+                myModule.set_tutorial_main_ratio(0.5);
+                myModule.set_main_console_ratio(1.0);
+                next_image = "square-landscape-main-code-console.svg";
+            } else if (current_image == "square-landscape-main-code-console.svg") {
+                myModule.set_tutorial_main_ratio(0.5);
+                myModule.set_main_console_ratio(0.8);
+                next_image = "square.svg";
+            }
         } else {
-            myModule.set_main_console_ratio(0.5);
+            if (current_image == "square.svg") {
+                myModule.set_tutorial_main_ratio(1.0);
+                myModule.set_main_console_ratio(1.0);
+                next_image = "square-portrait-main-code.svg";
+            } else if (current_image == "square-portrait-main-code.svg") {
+                myModule.set_tutorial_main_ratio(0.5);
+                myModule.set_main_console_ratio(1.0);
+                next_image = "square-portrait-main-code-console.svg";
+            } else if (current_image == "square-portrait-main-code-console.svg") {
+                myModule.set_tutorial_main_ratio(0.5);
+                myModule.set_main_console_ratio(0.8);
+                next_image = "square.svg";
+            }
         }
+        $("#layout-button>img")[0].src = "./images/" + next_image;
         myModule.resize_editors();
     });
 });

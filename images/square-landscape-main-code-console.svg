@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><g>
+<path fill="#ffffff" d="M90,10v80H10V10H90 M100,0H90H10H0v10v80v10h10h80h10V90V10V0L100,0z"></path>
+<line x1="50" y1="0" x2="50" y2="100" style="stroke:rgb(255,255,255);stroke-width:10"></line>
+<line x1="50" y1="50" x2="100" y2="50" style="stroke:rgb(255,255,255);stroke-width:10"></line>
+</g></svg>
