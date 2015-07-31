@@ -256,6 +256,10 @@ var myModule = (function() {
             };
             editor_main.commands.addCommand(process_main_buffer_command);
             editor_console.commands.addCommand(process_main_buffer_command);
+            editor_main.commands.bindKey("cmd-l", null);
+            editor_main.commands.bindKey("ctrl-l", null);
+            editor_console.commands.bindKey("cmd-l", null);
+            editor_console.commands.bindKey("ctrl-l", null);
         },
         init_resizable: function() {
             $('#resizable_handle_main').mousedown(function(e){
