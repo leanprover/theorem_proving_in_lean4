@@ -548,11 +548,19 @@ var myModule = (function() {
             FS.writeFile(filename, text, {encoding: 'utf8'});
         },
         process_main_buffer: function() {
+            var need_to_resize = false
             if (myModule.get_main_console_ratio() == 1.0) {
                 myModule.set_main_console_ratio(0.8);
+                need_to_resize = true;
             }
             if (myModule.get_tutorial_main_ratio() == 1.0) {
                 myModule.set_tutorial_main_ratio(0.5);
+                need_to_resize = true;
+            }
+            if (need_to_resize) {
+                next_image = "square.svg";
+                $("#layout-button>img")[0].src = "./images/" + next_image;
+                myModule.resize_editors();
             }
             this.clear_console();
             myModule.append_console_nl("-- Processing...");
