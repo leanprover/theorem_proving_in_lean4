@@ -45,8 +45,8 @@ In the case where =p x= has type =Prop=, if we replace =Π x : A, B x=
 with =∀ x : A, p x=, we can read these as the correct rules for
 building proofs involving the universal quantifier.
 
-The Calculus of Inductive Constructions therefore identifies =Π = and
-=∀ = in this way. If =p= is any expression, =∀ x : A, p= is nothing more
+The Calculus of Inductive Constructions therefore identifies =Π= and
+=∀= in this way. If =p= is any expression, =∀ x : A, p= is nothing more
 than alternative notation for =Π x : A, p=, with the idea is that the
 former is more natural in cases where where =p= is a
 proposition. Typically, the expression =p= will depend on =x :
