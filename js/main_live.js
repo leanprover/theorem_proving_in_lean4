@@ -551,7 +551,7 @@ var myModule = (function() {
             if (myModule.get_main_console_ratio() == 1.0) {
                 myModule.set_main_console_ratio(0.8);
             }
-            if (myModule.get_tutorial_main_ratio_ratio() == 1.0) {
+            if (myModule.get_tutorial_main_ratio() == 1.0) {
                 myModule.set_tutorial_main_ratio(0.5);
             }
             this.clear_console();
