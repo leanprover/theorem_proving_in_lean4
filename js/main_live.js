@@ -534,7 +534,8 @@ var myModule = (function() {
                 Module.lean_import_module(mname);
                 myModule.append_console("Done");
                 myModule.append_console_nl("(" + elapsed_time_string(start_time) + ")");
-                myModule.append_console("-- Ready.\n");
+                myModule.append_console("-- Ready.\n\n");
+                myModule.append_console("-- Press [shift+enter] or click ▶ button to execute code.\n");
             }, 5);
         },
         save_to_filesystem: function(filename, text) {
