@@ -59,7 +59,6 @@ install:
       cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 ../src &&
       make &&
       cd ../../;
-      cd ~/bin && ln -s ~/lean/bin/lean && cd -
     fi
 
 script:
@@ -91,7 +90,7 @@ script:
     fi
   # Test
   - if [[ $TEST == TRUE ]] ; then
-        make -j2 test;
+        LEAN_BIN=lean/bin/lean make -j2 test;
     fi
   - if [[ $TEST_JS == TRUE ]] ; then
         make -j2 test_js;
