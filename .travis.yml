@@ -20,7 +20,6 @@ addons:
     - texlive-latex-extra
     - texlive-fonts-recommended
     - latexmk
-    - bibtex2html
     - moreutils
     - nodejs
     - g++-4.8
@@ -65,13 +64,13 @@ install:
   - rm -rf bibtex2html-1.98-linux bibtex2html-1.98-linux.tar.gz
 
 script:
-  - EMACS_BIN=emacs
+  - EMACS_BIN=emacs make
   # Build completion.js
   - echo "var completions = [" > js/completion.js
   - lean --server < js/completion_input.in | grep "|" | grep -v "^private\." | sort | uniq | sed -e "s/\([^|]\+\)|\(.\+\)/{name:\"\1\", value:\"\1\", meta:\"\2\"},/" >> js/completion.js
   - echo "]" >> js/completion.js
   # Build input-method.js
-  - $(EMACS_BIN) --no-site-file --no-site-lisp -q --batch -l ./elisp/org-html-export.el -l ./lean/src/emacs/lean-input.el -f lean-input-export-translations-to-stdout > js/input-method.js
+  - emacs --no-site-file --no-site-lisp -q --batch -l ./elisp/org-html-export.el -l ./lean/src/emacs/lean-input.el -f lean-input-export-translations-to-stdout > js/input-method.js
   # Push to gh-pages
   - if [[ "${REPO}" == "BLESSED" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
       git config --global user.email "notifications@travis-ci.org" &&
