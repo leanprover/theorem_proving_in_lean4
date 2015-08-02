@@ -21,6 +21,7 @@ addons:
     - texlive-luatex
     - texlive-fonts-recommended
     - latexmk
+    - latex-xcolor
     - lmodern
     - moreutils
     - nodejs
