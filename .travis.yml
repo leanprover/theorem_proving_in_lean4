@@ -23,6 +23,7 @@ addons:
     - latexmk
     - latex-xcolor
     - lmodern
+    - pgf
     - moreutils
     - nodejs
     - g++-4.8
@@ -38,7 +39,7 @@ env:
    # REPOn=BLESSED                  (to perform extra stuff only for pushes to the blessed repo)
    - secure: "Du/ZXFXdhRZL6AU6t6G8A3BNr3oPpHK4h2UCK00b+bgonHy7kDgTE0YxRVOf8VpXqfJwekzT4hWJhnKXasTp5avNEVEbdWC4nyM4tZbl6a8g8iI3Oo+JB6seSO6fIhrv6sZ7BCa6iuKDwzWJ0sQnXL+kx/zUqcle5eVUu5ic/24="
   matrix:
-   - TEST=TRUE
+   - TEST=FALSE
 
 before_install:
   - mkdir ~/bin
