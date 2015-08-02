@@ -18,6 +18,7 @@ addons:
     - texlive-xetex
     - texlive-science
     - texlive-latex-extra
+    - texlive-luatex
     - texlive-fonts-recommended
     - latexmk
     - moreutils
