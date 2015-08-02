@@ -21,6 +21,7 @@ addons:
     - texlive-luatex
     - texlive-fonts-recommended
     - latexmk
+    - lmodern
     - moreutils
     - nodejs
     - g++-4.8
