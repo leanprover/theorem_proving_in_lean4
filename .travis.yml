@@ -11,8 +11,6 @@ addons:
     - cassou-emacs
     packages:
     - emacs24
-    - emacs24-el
-    - emacs24-common-non-dfsg
     - mercurial
     - python2.7
     - texlive-latex-recommended
@@ -29,7 +27,7 @@ addons:
     - libstdc++-4.8-dev
     - libgmp-dev
     - libmpfr-dev
-    - lua5.2-dev
+    - liblua5.2-dev
     - cmake
 env:
   global:
@@ -60,6 +58,11 @@ install:
       make &&
       cd ../../;
     fi
+  # bibtex2html
+  - wget --no-check-certificate http://www.lri.fr/\~filliatr/ftp/bibtex2html/bibtex2html-1.98-linux.tar.gz
+  - tar xvfz bibtex2html-1.98-linux.tar.gz
+  - cp -v bibtex2html-1.98-linux/* ~/bin
+  - rm -rf bibtex2html-1.98-linux bibtex2html-1.98-linux.tar.gz
 
 script:
   - EMACS_BIN=emacs
