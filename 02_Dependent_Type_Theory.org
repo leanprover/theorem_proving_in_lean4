@@ -109,8 +109,8 @@ constant F : (nat → nat) → nat   -- a "functional"
 
 check f               -- ℕ → ℕ
 check f n             -- ℕ
-check g m n           -- ℕ → ℕ
-check g m             -- ℕ
+check g m n           -- ℕ
+check g m             -- ℕ → ℕ
 check pair m n        -- ℕ × ℕ
 check pr1 p           -- ℕ
 check pr2 p           -- ℕ
@@ -276,7 +276,7 @@ check D.{v} → E.{v}  -- D.{v} → E.{v} : Type.{v}
 #+END_SRC
 The command =universe u= creates a fixed universe parameter. In
 contrast, in the last example, the universe variable =v= is only used
-to put =D= and =V= in the same type universe. When =D.{v} → E.{v}=
+to put =D= and =E= in the same type universe. When =D.{v} → E.{v}=
 occurs in a more elaborate context, Lean is constrained to assign the
 same universe parameter to both.
 
@@ -417,7 +417,7 @@ constants (a : A) (b : B)
 eval (λ x : A, x) a                -- a
 eval (λ x : A, b) a                -- b
 eval (λ x : A, b) (h a)            -- b 
-eval (λ x : A, g (f x)) (h (h a))  -- g (f a)
+eval (λ x : A, g (f x)) a          -- g (f a)
 
 eval (λ v u x, v (u x)) g f a      -- g (f a)
 
