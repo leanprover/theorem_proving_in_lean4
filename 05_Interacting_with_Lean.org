@@ -709,7 +709,7 @@ The tag "coercion" is an /attribute/ that is associated with the
 symbol =bool.to_nat=. It does not change the meaning of
 =bool.to_nat=. Rather, it associates additional information to the
 symbol that informs Lean's elaboration algorithm, as discussed in
-Section [[Elaboration and Unification]]. We could also declare
+Section [[file:08_Building_Theories_and_Proofs.org::#Elaboration_and_Unification][Elaboration and Unification]]. We could also declare
 =bool.to_nat= to be a coercion after the fact as follows:
 #+BEGIN_SRC lean
 import data.bool data.nat

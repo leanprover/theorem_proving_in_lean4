@@ -2,6 +2,9 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
 
 * Building Theories and Proofs
+:PROPERTIES:
+  :CUSTOM_ID: Building_Theories_and_Proofs
+:END:
 
 In this chapter, we return to a discussion of some of the pragmatic
 features of Lean that support the development of structured theories
@@ -817,7 +820,7 @@ invoked to construct the term in the given location. As with =proof
 ... qed=, the elaborator tries to elaborate the surrounding terms
 before executing =T=. In fact, the expression =proof t qed= is just
 syntactic sugar for =by exact t=, which invokes the =exact= tactic. We
-will discuss tactics in Chapter [[file:11_Tactics.org::#Tactic-Style_Proofs][Tactic_Style_Proofs]].
+will discuss tactics in Chapter [[file:11_Tactics-Style_Proofs.org::#Tactic-Style_Proofs][Tactic-Style Proofs]].
 
 If you are running Lean using Emacs, you can "profile" the elaborator
 and type checker, to find out where they are spending all their
@@ -879,7 +882,7 @@ proof
   and.intro Hq Hp
 qed
 #+END_SRC
-See Chapter [[file:11_Tactics.org::#Tactics][Tactics]] for a discussion of Lean's tactics.
+See Chapter [[file:11_Tactics-Style_Proofs.org::#Tactic-Style_Proofs][Tactic-Style Proofs]] for a discussion of Lean's tactics.
 
 There are even situations where an auxiliary fact needs to be visible
 to the elaborator, so that it can solve unification problems that
@@ -889,8 +892,7 @@ an auxiliary fact, =H=. We will see an example of this in Section
 
 ** Sections
 
-Lean provides various sectioning mechanisms that help structure
-a theory. We saw in Section [[Namespaces and Sections]] that the =section=
+Lean provides various sectioning mechanisms that help structure a theory. We saw in Section [[file:02_Dependent_Type_Theory.org::#Variables_and_Sections][Variables and Sections]] that the =section=
 command makes it possible not only to group together elements of a
 theory that go together, but also to declare variables that are
 inserted as arguments to theorems and definitions, as necessary.
@@ -937,7 +939,7 @@ Note that double does /not/ have =y= as argument. Variables are only
 included in declarations where they are actually mentioned. To ask
 Lean to include a variable in every definition in a section, use the
 =include= command. This is often useful with type classes, and is
-discussed in Section [[file:09_Type_Classes::#Instances_in_Sections][Instances_in_Sections]] in the next chapter.
+discussed in Section [[file:09_Type_Classes::#Instances_in_Sections][Instances in Sections]] in the next chapter.
 
 Notice that the variable =x= is generalized immediately, so that
 even within the section =double= is a function of =x=, and =t1= and
@@ -1045,7 +1047,7 @@ check mod_trans
 
 ** More on Namespaces
 
-Recall from Section [[Namespaces and Sections]] that namespaces
+Recall from Section [[file:02_Dependent_Type_Theory.org::#Namespaces][Namespaces]] that namespaces
 not only package shorter names for theorems and identifiers, but also
 things like notation, coercions, classes, rewrite rules, and so
 on. You can ask Lean to display a list of these "metaclasses":

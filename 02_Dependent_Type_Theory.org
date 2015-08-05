@@ -608,6 +608,9 @@ definition bar := (λ a, λ x : a, x + 2) nat
 #+END_SRC
 
 ** Variables and Sections
+:PROPERTIES:
+  :CUSTOM_ID: Variables_and_Sections
+:END:
 
 This is a good place to introduce some organizational features of Lean
 that are not a part of the axiomatic framework /per se/, but make it
@@ -708,6 +711,9 @@ provides useful ways of managing the background context while we work
 with Lean.
 
 ** Namespaces
+:PROPERTIES:
+  :CUSTOM_ID: Namespaces
+:END:
 
 Lean provides us with the ability to group definitions, notations, and
 other information into nested, hierarchical /namespaces/:
