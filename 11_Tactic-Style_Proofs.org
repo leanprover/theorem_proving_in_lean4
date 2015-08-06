@@ -345,7 +345,7 @@ begin
 end
 #+END_SRC
 In the first example above, the =generalize= tactic generalizes the
-conclusion over the variable =x=, turning the goal into a =∀ =. In the
+conclusion over the variable =x=, turning the goal into a =∀=. In the
 second, it generalizes the goal over the hypothesis =H=, putting the
 antecedent explicitly into the goal. We generalize any term, not just
 variables:
@@ -366,7 +366,7 @@ end
 #+END_SRC
 Notice that once we generalize over =x + y + z=, the variables =x y
 z : ℕ= in the context become irrelevant. (The same is true of the
-hypothesis =H= in the previous example.) The =clear= tactic throw away
+hypothesis =H= in the previous example.) The =clear= tactic throws away
 elements of the context, when it is safe to do so:
 #+BEGIN_SRC lean
 import data.nat
