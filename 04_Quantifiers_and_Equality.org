@@ -717,7 +717,7 @@ premise H : ∀ x : ℕ, f x ≤ f (x + 1)
 example : f 0 ≥ f 1 → f 0 = f 1 :=
 suppose f 0 ≥ f 1,
 show f 0 = f 1, from le.antisymm (H 0) this
---END
+-- END
 #+END_SRC
 Using the keyword =assume= for this purpose would result in a
 syntactic ambiguity, since the expression =assume h k= could mean
