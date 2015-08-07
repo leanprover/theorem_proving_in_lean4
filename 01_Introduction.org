@@ -47,7 +47,7 @@ the expense of guaranteed soundness. Such systems can have bugs, and
 it can be difficult to ensure that the results they deliver are
 correct. In contrast, /interactive theorem proving/ focuses on the
 "verification" aspect of theorem proving, requiring that every claim
-is supporting by a proof in a suitable axiomatic foundation. This sets
+is supported by a proof in a suitable axiomatic foundation. This sets
 a very high standard: every rule of inference and every step of a
 calculation has to be justified by appealing to prior definitions and
 theorems, all the way down to basic axioms and rules. In fact, most
@@ -96,7 +96,7 @@ way. We will explain not only how to define mathematical objects and
 express mathematical assertions in dependent type theory, but also how
 to use it as a language for writing proofs. 
 
-In fact, Lean supports two versions on dependent type theory. The
+In fact, Lean supports two versions of dependent type theory. The
 first is a variant of a system known as the /Calculus of Inductive
 Constructions/\cite{Coquand1988,pfenning:paulin:mohring:89}, or
 /CIC/. This is the system used by Lean's standard library, and is the
