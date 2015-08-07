@@ -423,7 +423,7 @@ library. You can also press tab after an =import= command, to see a
 list of possible imports, or after the =set_option= command, to see a
 list of options.
 
-If you put your curson on an identifier and type "C-c C-p", Lean
+If you put your cursor on an identifier and type "C-c C-p", Lean
 prints the definition of that identifier in a separate buffer.  If you
 put your cursor on an identifier that is defined in Lean's library and
 hit "M-.", Emacs will take you to the identifier's definition in the
