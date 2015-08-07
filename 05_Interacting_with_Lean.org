@@ -462,7 +462,7 @@ working on homotopy type theory) consists of instructions that tell
 Lean how to construct formal terms in dependent type
 theory. "Processing" this file is a matter of filling in missing or
 implicit information, constructing the relevant terms, and sending
-them to the type checker to confirm that they are well-formed an have
+them to the type checker to confirm that they are well-formed and have
 the specified types. This is analogous to the compilation process for
 a programming language: the .lean or .hlean file contains the source
 code that is then compiled down to machine representations of the
