@@ -395,7 +395,7 @@ instantaneously.
 The Emacs Lean mode also maintains a continuous dialog with a
 background Lean process and uses it to present useful information to
 you. For example, if you put your cursor on any identifier --- a
-theorem name, a defined symbol, or a variable --- Emacs displays the
+theorem name, a defined symbol, or a variable --- Emacs displays
 its type in the information line at the bottom. If you put the cursor
 on the opening parenthesis of an expression, Emacs displays the type
 of the expression.
