@@ -141,3 +141,12 @@ into the Lean editor with enough surrounding context to make the
 example compile correctly, and then runs Lean. We recommend running
 the examples and experimenting with the code on your own as you work
 through the chapters that follow.
+
+** Acknowledgments
+
+This tutorial is an open access project maintained on Github. Many
+people have contributed to the effort, providing corrections,
+suggestions, examples, and even parts of the text. We are grateful to
+Ulrik Buchholz, Nathan Carter, Amine Chaieb, Floris van Doorn, Anthony
+Hart, Daniel Velleman, and Théo Zimmerman for their contributions, and
+we apologize for any names we have inadvertently omitted.
