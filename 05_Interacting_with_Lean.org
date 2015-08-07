@@ -759,7 +759,7 @@ problems. There are various ways to manually disambiguate an
 expression when necessary. One is to precede the expression with the
 notation =#<namespace>=, to specify the namespace in which notation is
 to be interpreted. Another is to replace the notation with an explicit
-function name. Yet a third is to use the the =(t : T)= notation to indicate
+function name. Yet a third is to use the =(t : T)= notation to indicate
 the intended type.
 #+BEGIN_SRC lean
 import data.nat data.int
