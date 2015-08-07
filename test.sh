@@ -14,7 +14,7 @@ linenum=0
 echo "-- testing $f"
 while read -r line; do
     linenum=$((linenum + 1))
-    if [[ $line =~ ^#\+BEGIN_SRC\ lean ]]; then
+    if [[ $line =~ ^#\+BEGIN_SRC\ lean[[:space:]]*$ ]]; then
         in_code_block=1
         i=$((i + 1))
         lastbegin=$linenum
