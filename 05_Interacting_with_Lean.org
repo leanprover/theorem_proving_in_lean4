@@ -19,7 +19,7 @@ explore some pragmatic aspects of interacting with Lean.
 There are a number of ways in which you can query Lean for information
 about its current state and the objects and theorems that are
 available in the current context. You have already seen two of the
-most common ones, =check= and =eval=. Remember that =eval= is often
+most common ones, =check= and =eval=. Remember that =check= is often
 used in conjunction with the =@= operator, which makes all of the
 arguments to a theorem or definition explicit. In addition, you can
 use the =print= command to get information about any identifier. If
