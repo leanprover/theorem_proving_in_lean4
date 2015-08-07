@@ -409,7 +409,7 @@ For the moment, ignore the annotation ={}= after the constructors
 =inl= and =inr=; we will explain that below. In the meanwhile, think
 about what is going on in these examples. The product type has one
 constructor, =prod.mk=, which takes two arguments. To define a
-function on =prod A B=, we can assume the input is of the form =pair a
+function on =prod A B=, we can assume the input is of the form =prod.mk a
 b=, and we have to specify the output, in terms of =a= and =b=. We can
 use this to define the two projections for prod; remember that the
 standard library defines notation =A × B= for =prod A B= and =(a, b)=
