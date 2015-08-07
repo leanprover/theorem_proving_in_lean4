@@ -603,7 +603,7 @@ some value =b : B=. Thus we can think of an element =f= of the type =A
 
 An element of =inhabited A= is simply a witness to the fact that there
 is an element of =A=. Later, we will see that =inhabited= is an
-instance of a /type class/ in Lean: Lean can be instructed that
+example of a /type class/ in Lean: Lean can be instructed that
 suitable base types are inhabited, and can automatically infer that
 other constructed types are inhabited on that basis.
 
