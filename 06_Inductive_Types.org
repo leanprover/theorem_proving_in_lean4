@@ -1458,8 +1458,8 @@ correct since =f a= has type =B a=, =f b= has type =B b=, and the
 equality predicate =eq= expects both arguments to have the same
 type. Notice that =f a= has type =B a=, so the term =eq.rec_on H (f
 a)= has type =B b=. You should think of =eq.rec_on H (f a)= as "=f a=,
-viewed as an element of =B b=." We can then write =eq eq.rec_on H (f a)
-=f b= to express that =f a= and =f b= are equal, modulo the
+viewed as an element of =B b=." We can then write =eq (eq.rec_on H (f a))
+(f b)= to express that =f a= and =f b= are equal, modulo the
 difference between their types. Here is a proof of the generalized
 congruence theorem, with this approach:
 #+BEGIN_SRC lean
