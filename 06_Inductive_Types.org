@@ -1600,6 +1600,8 @@ has type =Π (n : nat), C (succ n)= instead of =Π (n : nat), C n → C
 been omitted.
 
 #+BEGIN_SRC lean
+namespace hide
+-- BEGIN
 open nat
 
 print definition nat.induction_on
@@ -1612,6 +1614,8 @@ nat.rec_on n fz fs
 definition cases_on {C : nat → Prop} (n : nat)
                     (fz : C zero) (fs : Π a, C (succ a)) : C n :=
 nat.rec_on n fz (fun (a : nat) (r : C a), fs a)
+-- END
+end hide
 #+END_SRC
 
 For any inductive datatype that is not a proposition, we can show that
