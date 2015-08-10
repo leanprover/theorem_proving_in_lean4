@@ -97,13 +97,19 @@ Auto-reload HTML page
 Test Lean Code in .org files
 ----------------------------
 
-First, you need to install Lean. Please follow the instructions at the [download page](http://leanprover.github.io/download/). You can test all Lean code blocks in `*.org` files by executing the following command:
+ 1. Using Native Lean: First, you need to install Lean. Please follow the instructions at the [download page](http://leanprover.github.io/download/). You can test all Lean code blocks in `*.org` files by executing the following command:
 
-```bash
+    ```bash
 make test
-```
+    ```
 
-To use a specific binary of Lean in test, please do the following:
-```bash
+ To use a specific binary of Lean in test, please do the following:
+    ```bash
 LEAN_BIN=/path/to/your/lean make test
-```
+    ```
+
+ 2. Using Lean.JS:
+ 
+    ```bash
+make test_js    
+    ```
