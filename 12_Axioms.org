@@ -681,7 +681,6 @@ eval eq.rec (0 : ℕ) seq
 
 The following axiom is used to support classical reasoning in Lean:
 #+BEGIN_SRC lean
-import data.subtype
 open subtype nonempty
 
 namespace hide
@@ -696,7 +695,6 @@ can (magically) produce an element =x= with the property that if any
 element of =A= satisfies =P=, then =x= does. In the presence of
 classical logic, we could prove this from the slightly weaker axiom:
 #+BEGIN_SRC lean
-import data.subtype
 open subtype nonempty
 
 namespace hide
@@ -717,7 +715,7 @@ The axiom =strong_indefinite_description= is imported when you import
 axiom from the property it satisfies allows us to define the Hilbert
 epsilon function:
 #+BEGIN_SRC lean
-import logic.quantifiers data.subtype
+import logic.quantifiers
 open subtype nonempty
 
 namespace hide
@@ -757,7 +755,7 @@ version of the =epsilon= operator. It is sometimes easier to
 use. Assuming =H : ∃ x, P x= is a proof that some element of =A=
 satisfies =P=, =some H= denotes such an element.
 #+BEGIN_SRC lean
-import logic.quantifiers data.subtype
+import logic.quantifiers
 open subtype nonempty
 
 namespace hide
@@ -802,7 +800,7 @@ you are presented with a strange error message, trying changing =have=
 to =assert=.
 
 #+BEGIN_SRC lean
-import logic.choice
+open classical
 
 section
   variable A : Type
@@ -848,7 +846,7 @@ end
 
 The law of the excluded middle is the following
 #+BEGIN_SRC lean
-import logic.choice
+open classical
 namespace hide
 -- BEGIN
 check @em
@@ -870,8 +868,8 @@ First, we import the necessary axioms, fix a parameter, =p=, and
 define two predicates =U= and =V=:
 #+BEGIN_SRC lean
 -- BEGIN
-import logic.choice logic.eq
-open eq.ops
+import logic.eq
+open classical eq.ops
 
 section
 parameter  p : Prop
@@ -888,8 +886,8 @@ singleton =false=.
 
 Next, we use =epsilon= to choose an element from each of =U= and =V=:
 #+BEGIN_SRC lean
-import logic.choice logic.eq
-open eq.ops
+import logic.eq
+open classical eq.ops
 
 section
 parameter  p : Prop
@@ -914,8 +912,8 @@ Each of =U= and =V= is a disjunction, so =u_def= and =v_def= represent
 four cases. In one of these cases, =u = true= and =v = false=, and in
 all the other cases, =p= is true. Thus we have:
 #+BEGIN_SRC lean
-import logic.choice logic.eq
-open eq.ops
+import logic.eq
+open classical eq.ops
 
 section
 parameter  p : Prop
@@ -950,8 +948,8 @@ On the other hand, if =p= is true, then, by function extensionality
 and propositional extensionality, =U= and =V= are equal. By the
 definition of =u= and =v=, this implies that they are equal as well.
 #+BEGIN_SRC lean
-import logic.choice logic.eq
-open eq.ops
+import logic.eq
+open classical eq.ops
 
 section
 parameter  p : Prop
@@ -997,8 +995,8 @@ end
 #+END_SRC
 Putting these last two facts together yields the desired conclusion:
 #+BEGIN_SRC lean
-import logic.choice logic.eq
-open eq.ops
+import logic.eq
+open classical eq.ops
 
 section
 parameter  p : Prop
@@ -1056,7 +1054,7 @@ contradiction, all of which are described in Section [[file:03_Propositions_and_
 The law of the excluded middle and propositional extensionality imply
 propositional completeness:
 #+BEGIN_SRC lean
-import logic.choice
+open classical
 
 namespace hide
 
@@ -1077,8 +1075,7 @@ Taken together, the law of the excluded middle and the axiom of indefinite descr
 imply that every proposition is decidable. The following is the
 contained in =logic.choice=:
 #+BEGIN_SRC lean
-import logic.choice
-open decidable inhabited nonempty
+open classical decidable inhabited nonempty
 
 namespace hide
 
@@ -1113,8 +1110,7 @@ way to implement such a function in general, the construction is not
 informative.
 
 #+BEGIN_SRC lean
-import logic.choice
-open function
+open classical function
 
 noncomputable definition linv {A B : Type} [h : inhabited A] (f : A → B) : B → A :=
 λ b : B, if ex : (∃ a : A, f a = b) then some ex else arbitrary A
@@ -1252,12 +1248,12 @@ the Lean native application if you are interested in using these
 commands.
 
 #+BEGIN_SRC lean
-import logic.choice data.finset data.set
+import data.finset data.set
 -- BEGIN
 print axioms
 print axioms nat.add
 print axioms finset.union
 print axioms set.empty_union
-print axioms some
+print axioms classical.some
 -- END
 #+END_SRC
