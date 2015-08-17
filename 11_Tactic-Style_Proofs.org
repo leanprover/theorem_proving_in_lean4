@@ -913,7 +913,7 @@ The =rewrite= tactic is not restricted to propositions. In the
 following example, we use =rewrite H at v= to rewrite the hypothesis
 =v : vector A n= to =v : vector A 0=.
 #+BEGIN_SRC lean
-import data.vector
+import data.examples.vector
 open nat
 
 variables {A : Type} {n : nat}

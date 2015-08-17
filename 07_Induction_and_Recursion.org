@@ -303,7 +303,7 @@ it is not clear how to tell that to =cases_on=.
 
 One standard solution is to define an auxiliary function:
 #+BEGIN_SRC lean
-import data.vector
+import data.examples.vector
 open nat vector
 
 -- BEGIN
@@ -339,7 +339,7 @@ boilerplate code automatically for us.
 
 Here are a number of examples:
 #+BEGIN_SRC lean
-import data.vector
+import data.examples.vector
 open nat vector prod
 
 -- BEGIN
@@ -366,7 +366,7 @@ Note that we can omit recursive equations for "unreachable" cases such
 as =head nil=. The automatically generated definitions for indexed
 families are far from straightforward. For example:
 #+BEGIN_SRC lean
-import data.vector
+import data.examples.vector
 open nat vector prod
 
 definition map {A B C : Type} (f : A → B → C)
@@ -411,6 +411,7 @@ cases. When the name is omitted, Lean will silently include =@f= in
 the left-hand-side of every pattern matching equation, where =f= is
 the name of the function being defined. Here is an example:
 #+BEGIN_SRC lean
+import data.examples.vector
 open nat vector prod
 
 -- BEGIN
@@ -647,6 +648,7 @@ the elaborator is unable to solve some placeholders
 (i.e.~meta-variables) in the nested match expression.
 
 #+BEGIN_SRC lean
+import data.examples.vector
 open nat vector prod
 
 -- BEGIN
@@ -669,6 +671,7 @@ defined by structural induction. However, the term =map tail v= is not
 a subterm of =((a :: va) :: v)=. Could you explain what is going on?
 
 #+BEGIN_SRC lean
+import data.examples.vector
 open nat vector
 
 -- BEGIN

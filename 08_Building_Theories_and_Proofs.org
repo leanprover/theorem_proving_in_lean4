@@ -324,7 +324,7 @@ In the following example, we declare =P= and =p= without implicit
 arguments, and then use the exclamation mark to make them implicit
 after the fact.
 #+BEGIN_SRC lean
-import data.vector
+import data.examples.vector
 open vector nat
 
 -- BEGIN
