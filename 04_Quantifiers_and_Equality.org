@@ -555,7 +555,7 @@ reasoning because, from a constructive standpoint, knowing that it is
 not the case that every =x= satisfies =p= is not the same as having a
 particular =x= that satisfies =¬ p=.
 #+BEGIN_SRC lean
-import classical
+open classical
 
 variables (A : Type) (p : A → Prop)
 
@@ -575,7 +575,7 @@ quantifier. We encourage you to prove as many as you can. We are also
 leaving it to you to determine which are nonconstructive, and hence
 require some form of classical reasoning.
 #+BEGIN_SRC lean
-import classical
+open classical
 
 variables (A : Type) (p q : A → Prop)
 variable r : Prop
@@ -597,7 +597,7 @@ example (a : A) : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
 
 Here are solutions to two of the more difficult ones:
 #+BEGIN_SRC lean
-import classical
+open classical
 
 variables (A : Type) (p q : A → Prop)
 variable r : Prop
@@ -667,7 +667,7 @@ have f 0 ≤ f 2, from le.trans this (H 1),
 show f 0 ≤ f 3, from le.trans this (H 2)
 #+END_SRC
 Often proofs move from one fact to the next, so this can be effective
-in eliminating the clutter of lots of labels. 
+in eliminating the clutter of lots of labels.
 
 One can also refer to any element or hypothesis in the context,
 anonymous or not, by enclosing the type in backticks:
@@ -746,7 +746,7 @@ Notice that =le.antisymm= is the assertion that if =a ≤ b= and =b ≤ a=
 then =a = b=, and =a ≥ b= is definitionally equal to =b ≤ a=.
 
 One can also do an anonymous =assume= by enclosing the statement in
-backticks. 
+backticks.
 #+BEGIN_SRC lean
 import data.nat
 open nat
@@ -765,10 +765,10 @@ show f 0 = f 2, from le.antisymm this `f 0 ≥ f 2`
 #+END_SRC
 This is slightly weaker than using =suppose=, because we can no longer
 use the identifier =this=. But the mechanism is more general: it can
-be used with other binders, like =take= and =obtains=. 
+be used with other binders, like =take= and =obtains=.
 
 If more than one element of the context has the named type, the
-expression is ambiguous: 
+expression is ambiguous:
 #+BEGIN_SRC lean
 definition imp_self (p : Prop) : p → p :=
 assume `p`, `p`
