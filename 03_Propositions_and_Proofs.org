@@ -681,15 +681,13 @@ constructive, which is to say, they reflect a computational
 understanding of the logical connectives based on the
 propositions-as-types correspondence. Ordinary classical logic adds to
 this the law of the excluded middle, =p ∨ ¬p=. To use this principle,
-you have to load the appropriate classical axioms.
+you have to open the classical namespace.
 #+BEGIN_SRC lean
-import logic.choice
+open classical
 
 variable p : Prop
 check em p
 #+END_SRC
-Alternatively, you can simply write =import classical= to import the
-classical version of the standard library.
 
 Intuitively, the constructive "or" is very strong: asserting =p ∨ q=
 amounts to knowing which is the case. If =RH= represents the Riemann
@@ -699,7 +697,7 @@ even though we cannot yet assert either disjunct.
 One consequence of the law of the excluded middle is the principle of
 double-negation elimination:
 #+BEGIN_SRC lean
-import classical
+open classical
 
 -- BEGIN
 theorem dne {p : Prop} (H : ¬¬p) : p :=
@@ -715,11 +713,11 @@ out a proof by contradiction, something which is not generally
 possible in constructive logic. As an exercise, you might try proving
 the converse, that is, showing that =em= can be proved from =dne=.
 
-Loading the classical axioms also gives you access to additional
+The classical axioms also gives you access to additional
 patterns of proof that can be justified by appeal to =em=. For
 example, one can carry out a proof by cases:
 #+BEGIN_SRC lean
-import classical
+open classical
 
 variable p : Prop
 -- BEGIN
@@ -731,7 +729,7 @@ by_cases
 #+END_SRC
 Or you can carry out a proof by contradiction:
 #+BEGIN_SRC lean
-import classical
+open classical
 
 variable p : Prop
 -- BEGIN
@@ -748,7 +746,7 @@ needed in the following example because, from a constructive
 standpoint, knowing that =p= and =q= are not both true does not
 necessarily tell you which one is false:
 #+BEGIN_SRC lean
-import classical
+open classical
 
 variables p q : Prop
 -- BEGIN
@@ -767,8 +765,7 @@ or.elim (em p)
 We will see later that there /are/ situations in constructive logic
 where principles like excluded middle and double-negation elimination
 are permissible, and Lean supports the use of classical reasoning in
-such contexts. Importing =logic.axioms.classical= allows one to use
-such reasoning freely, without any extra justification.
+such contexts.
 
 There are additional classical axioms that are not included by default
 in the standard library. We will discuss these in detail in Chapter
@@ -792,7 +789,7 @@ require classical reasoning are grouped together at the end, while
 the rest are constructively valid.
 
 #+BEGIN_SRC lean
-import classical
+open classical
 
 variables p q r s : Prop
 
@@ -857,7 +854,7 @@ then construct a proof by incrementally filling in these placeholders.
 For reference, here are two sample proofs of validities taken from the
 list above.
 #+BEGIN_SRC lean
-import classical
+open classical
 
 variables p q r : Prop
 
