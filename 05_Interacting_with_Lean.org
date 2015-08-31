@@ -72,8 +72,9 @@ print classes                : display all classes
 print instances <class name> : display all instances of the given class
 print fields <structure>     : display all "fields" of a structure
 #+END_SRC
-We will discuss classes, instances, and structures in Chapter [[file:09.Type_Classes.org::#Type_Classes][Type
-Classes]]. Here are examples of how the =print= commands are used:
+We will discuss classes, instances, and structures in Chapter
+[[file:09_Type_Classes.org::#Type_Classes][Type Classes]]. Here are
+examples of how the =print= commands are used:
 #+BEGIN_SRC lean
 import standard algebra.ring
 open prod sum int nat algebra
