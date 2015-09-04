@@ -25,26 +25,27 @@ help commands                : display all available commands
 help options                 : display all available options
 #+END_SRC
 
-** Setting Options
+** Common Options
 
-You can also see a list of all options by typing =set_option= with a space at the end and 
-pressing =TAB=.
+You can change an option by typing =set_option <option> <value>=. 
+The =<option>= field supports TAB-completion. 
+You can see an explanation of all options using =help options=.
 
 #+BEGIN_SRC text
 pp.implicit        : display implicit arguments
-pp.universes       : display hidden universe parameters
+pp.universes       : display universe variables
 pp.coercions       : show coercions
 pp.notation        : display output using defined notations
+pp.abbreviations   : display output using defined abbreviations
+pp.full_names      : use full names for identifiers
+pp.all             : disable notations, implicit arguments, full names,
+                     universe parameters and coercions
 pp.beta            : beta reduce terms before displaying them
-pp.all             : disable notations, display implicit arguments, 
-                     hidden universe parameters and coercions
 pp.max_depth       : maximum expression depth
 pp.max_steps       : maximum steps for printing expression
-pp.full_names      : use full names for identifiers
 pp.private_names   : show internal name assigned to private definitions and theorems
 pp.metavar_args    : show arguments to metavariables
 pp.numerals        : print output as numerals
-pp.abbreviations   : show abbreviations
 #+END_SRC
 
 ** Attributes
@@ -54,7 +55,7 @@ using the =attribute= or =local attribute= commands.
 
 Example: =local attribute nat.add nat.mul [reducible]=.
 #+BEGIN_SRC text
-reducible       : unfold during elaboration if necessary
+reducible       : unfold at any time during elaboration if necessary
 quasireducible  : unfold during higher order unification, 
                   but not during type class resolution
 semireducible   : unfold when performance is not critical
@@ -62,6 +63,7 @@ irreducible     : avoid unfolding during elaboration
 coercion        : use as a coercion between types
 class           : type class declaration
 instance        : type class instance
+priority <num>  : add a priority to an instance or notation
 parsing-only    : use notation only for input
 unfold <num>    : if the argument at position <num> is marked with [constructor] 
                   unfold this and that argument (for iota reduction)
@@ -86,6 +88,7 @@ let              : introduce local definitions
 have             : introduce auxiliary fact (opaque, in the body)
 assert           : like "have", but visible to tactics
 show             : make result type explicit
+suffices         : show that the goal follows from this fact
 obtain ..., from : destruct structures such as exists, sigma, ...
 match ... with   : introduce proof or definition by cases
 proof ... qed    : introduce a proof or definition block, elaborated separately
@@ -103,10 +106,18 @@ type in the context with a hidden name.
 
 *** Tactic Mode
 
+At any point in a proof or definition you can switch to tactic mode and apply tactics to 
+finish that part of the proof or definition
+
 #+BEGIN_SRC text
 begin ... end   : enter tactic mode, and blocking mechanism within tactic mode
 { ... }         : blocking mechanism within tactic mode
+by ...          : enter tactic mode, can only execute a single tactic
+begin+; by+     : normally entering tactic mode will make declarations in the local context 
+                  given by "have"-expressions unavailable. Entering tactic mode with these
+                  will make all declarations available
 have            : as in term mode (enters term mode), but visible to tactics
+assert          : as in term mode (stays in tactic mode)
 show            : as in term mode (enters term mode)
 match ... with  : as in term mode (enters term mode)
 let             : introduce local fact (opaque, in the body)
@@ -121,6 +132,8 @@ section <id> .... end <id>   : begin / end section
 
 variable (var : type)        : introduce variable where needed
 variable {var : type)        : introduce implicit variable where needed
+variable {{var : type}}      : introduce implicit variable where needed, 
+                               which is not maximally inserted
 variable [var : type]        : introduce class inference variable where needed
 variable {var} (var) [var]   : change the bracket of an existing variable 
 parameter                    : introduce variable, fixed within the section
@@ -142,6 +155,7 @@ fapply <expr>     : like apply, but create subgoals also for dependent premises 
 eapply <expr>     : like apply, but used for applying recursor-like definitions
 exact <expr>      : apply and close goal, or fail
 rexact <expr>     : relaxed (and more expensive) version of exact
+                    (this will fully elaborate <expr> before trying to match it to the goal)
 refine <expr>     : like exact, but creates subgoals for unresolved subgoals
 
 intro <ids>       : introduce multiple variables or hypotheses
@@ -152,7 +166,7 @@ intros            : introduce variables as long as the goal reduces to a functio
 
 rename <id> <id>  : rename a variable or hypothesis
 generalize <expr> : generalize an expression
-clear <ids>       : clear variables or hypotheses
+clear <ids>       : remove variables or hypotheses
 revert <ids>      : move variables or hypotheses into the goal
 assumption        : try to close a goal with something in the context
 eassumption       : a more aggressive ("expensive") form of assumption
@@ -264,9 +278,11 @@ now                 : fail if there are unsolved goals
 *** Information and debugging
 
 #+BEGIN_SRC text
-state               : display the current proof state
-check_expr <expr>   : display the type of the given expression in the current goal
-trace <string>      : display the current string
+state                          : display the current proof state
+check_expr <expr>              : display the type of the given expression in the current goal
+trace <string>                 : display the current string
+with_options [<options>] <tac> : execute a single tactic with different options 
+                                 (<options> is a comma-separated list)
 #+END_SRC
 
 ** Emacs Lean-mode commands
@@ -291,8 +307,8 @@ C-c C-p    : print the definition of the identifier under the cursor
              in a new buffer
 C-c C-g    : show the current goal at a line of a tactic proof, in a 
              new buffer
-C-c C-f    : experimental feature to fill a placeholder by the printed term 
-             in the minibuffer. Note: the elaborator might need more information 
+C-c C-f    : fill a placeholder by the printed term in the minibuffer. 
+             Note: the elaborator might need more information 
              to correctly infer the implicit arguments of this term
 #+END_SRC
 
