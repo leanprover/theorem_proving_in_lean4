@@ -39,7 +39,7 @@ of the excluded middle to reason about computation. Below we will
 describe the effects that these axioms have on computation aspects of
 the system.
 
-However, the classical choice axion (also known as the Hilbert operator) is entirely
+However, the classical choice axiom (also known as the Hilbert operator) is entirely
 inimical to a computational interpretation of the system,
 which magically produces "data" from a proposition
 asserting its existence. Its use is essential to some classical
@@ -291,7 +291,7 @@ make an ambient expression type incorrect.
 
 In the next section, we will exhibit a similar example with the
 quotient construction.  Current research programs, including work on
-/observational type theory/ and /cubical type theory/ aim to extend
+/observational type theory/ and /cubical type theory/, aim to extend
 type theory in ways that permit reductions for casts involving
 function extensionality, quotients, and more. But the solutions are
 not so clear cut, and the rules of Lean's underlying calculus do not
