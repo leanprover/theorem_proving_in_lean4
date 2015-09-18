@@ -131,14 +131,14 @@ section ... end              : begin / end section
 section <id> .... end <id>   : begin / end section
 
 variable (var : type)        : introduce variable where needed
-variable {var : type)        : introduce implicit variable where needed
+variable {var : type}        : introduce implicit variable where needed
 variable {{var : type}}      : introduce implicit variable where needed, 
                                which is not maximally inserted
 variable [var : type]        : introduce class inference variable where needed
 variable {var} (var) [var]   : change the bracket of an existing variable 
 parameter                    : introduce variable, fixed within the section
-include                      : include variable in subsequence definitions
-omit                         : undoes "include"
+include                      : include variable in subsequent definitions
+omit                         : undo "include"
 #+END_SRC
 
 ** Tactics
@@ -204,9 +204,9 @@ substvars             : substitute all variables in the context
 
 #+BEGIN_SRC text
 cases <expr>                    : decompose an element of an inductive type
-cases <expr> with <ids>         : names newly introduces variables as specified by <ids>
+cases <expr> with <ids>         : name newly introduced variables as specified by <ids>
 induction <expr> (with <ids>)   : use induction
-induction <expr> using <def>    : uses the definition <def> to apply induction
+induction <expr> using <def>    : use the definition <def> to apply induction
 constructor                     : construct an element of an inductive type by applying the 
                                   first constructor that succeeds
 constructor <i>                 : construct an element of an inductive type by applying the 
