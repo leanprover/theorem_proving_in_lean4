@@ -808,7 +808,6 @@ example : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) := sorry
 -- other properties
 example : (p → (q → r)) ↔ (p ∧ q → r) := sorry
 example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
-example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
 example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
 example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
 example : ¬(p ∧ ¬ p) := sorry
