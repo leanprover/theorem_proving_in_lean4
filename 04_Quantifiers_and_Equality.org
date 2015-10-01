@@ -181,9 +181,9 @@ example (H : ∀ x : men, shaves barber x ↔ ¬shaves x x) : false := sorry
 It is the typing rule for Pi types, and the universal quantifier in
 particular, that distinguishes =Prop= from other types. Suppose we
 have =A : Type.{i}= and =B : Type.{j}=, where the expression =B= may
-depend on a variable =x : A=. Then the type of =Π x : A, B= is an
-element of =Type.{imax i j}=, where =imax i j= is the maximum of =i=
-and =j= if =j= is not 0, and 0 otherwise.
+depend on a variable =x : A=. Then =Π x : A, B= is an element of
+=Type.{imax i j}=, where =imax i j= is the maximum of =i= and =j= if
+=j= is not 0, and 0 otherwise.
 
 The idea is as follows. If =j= is not =0=, then =Π x : A, B= is an
 element of =Type.{max i j}=. In other words, the type of dependent
