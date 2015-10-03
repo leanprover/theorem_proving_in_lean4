@@ -552,8 +552,8 @@ Just as the constructive "or" is stronger than the classical "or," so,
 too, is the constructive "exists" stronger than the classical
 "exists". For example, the following implication requires classical
 reasoning because, from a constructive standpoint, knowing that it is
-not the case that every =x= satisfies =p= is not the same as having a
-particular =x= that satisfies =¬ p=.
+not the case that every =x= satisfies =¬ p= is not the same as having
+a particular =x= that satisfies =p=.
 #+BEGIN_SRC lean
 open classical
 
