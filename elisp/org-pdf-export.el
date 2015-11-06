@@ -35,12 +35,12 @@
 (setq org-latex-listings 'minted)
 (setq org-export-with-smart-quotes t)
 (add-to-list 'org-export-smart-quotes-alist
-             '("en"
-               (opening-double-quote :utf-8 "“" :html "&ldquo;" :latex "\\enquote{" :texinfo "``")
-               (closing-double-quote :utf-8 "”" :html "&rdquo;" :latex "}" :texinfo "''")
-               (opening-single-quote :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
-               (closing-single-quote :utf-8 "’" :html "&rsquo;" :latex "}" :texinfo "'")
-               (apostrophe :utf-8 "’" :html "&rsquo;")))
+'("en"
+  (primary-opening :utf-8 "“" :html "&ldquo;" :latex "``" :texinfo "``")
+  (primary-closing :utf-8 "”" :html "&rdquo;" :latex "''" :texinfo "''")
+  (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "`" :texinfo "`")
+  (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "'" :texinfo "'")
+  (apostrophe :utf-8 "’" :html "&rsquo;")))
 
 ;; Header.tex explicitly loads all necessary packages.
 (make-local-variable 'org-latex-default-packages-alist)
