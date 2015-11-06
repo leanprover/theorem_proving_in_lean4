@@ -280,7 +280,7 @@ them. Look at the terms that result from the following definitions to
 see this in action:
 #+BEGIN_SRC lean
 import data.nat
-open nat eq.ops
+open nat eq.ops algebra
 -- BEGIN
 definition foo (n m k l : ℕ) : (n - m) * (k + l) = (k + l) * (n - m) := !mul.comm
 
@@ -358,8 +358,8 @@ respectively.
 
 Here are some more examples of this behavior.
 #+BEGIN_SRC lean
-import data.nat.order
-open nat
+import data.nat
+open nat algebra
 -- BEGIN
 check @add_lt_add_right
 
@@ -394,7 +394,6 @@ variable {R}
 theorem th1 (refl : reflexive R) (eucl : euclidean R) : symmetric R :=
 take a b : A, assume (H : R a b),
 show R b a, from eucl H !refl
-
 
 theorem th2 (symm : symmetric R) (eucl : euclidean R) : transitive R :=
 take (a b c : A), assume (H : R a b) (K : R b c),
@@ -903,7 +902,7 @@ Remember that the point of the variable command is to declare
 variables for use in theorems, as in the following example:
 #+BEGIN_SRC lean
 import standard
-open nat
+open nat algebra
 
 section
   variables x y : ℕ
@@ -918,7 +917,7 @@ section
     double x = x + x         : rfl
          ... = 1 * x + x     : one_mul
          ... = 1 * x + 1 * x : one_mul
-         ... = (1 + 1) * x   : mul.right_distrib
+         ... = (1 + 1) * x   : right_distrib
          ... = 2 * x         : rfl
 
   check t1 y
@@ -1008,7 +1007,7 @@ section is closed, however, the dependence on =m= becomes explicit,
 and the notation =a ≡ b= is no longer valid.
 #+BEGIN_SRC lean
 import data.int
-open int eq.ops
+open int eq.ops algebra
 
 section mod_m
   parameter (m : ℤ)
@@ -1022,17 +1021,19 @@ section mod_m
   show m ∣ a - a, from (sub_self a)⁻¹ ▸ !dvd_zero
 
   theorem mod_symm (H : a ≡ b) : b ≡ a :=
-  have H1 : (m ∣ -(b - a)), from iff.mpr !dvd_neg_iff_dvd H,
-  int.neg_sub b a ▸ H1
+  have H1 : m ∣ -(b - a), from iff.mpr !dvd_neg_iff_dvd H,
+  have H2 : m ∣ a - b, from neg_sub b a ▸ H1,
+  H2
 
   theorem mod_trans (H1 : a ≡ b) (H2 : b ≡ c) : a ≡ c :=
-  have H1 : (m ∣ (c - b) + (b - a)), from !dvd_add H2 H1,
-  eq.subst
+  have H1 : m ∣ (c - b) + (b - a), from !dvd_add H2 H1,
+  have H2 : m ∣ c - a, from eq.subst
     (calc
       (c - b) + (b - a) = c - b + b - a  : add.assoc
                     ... = c + -b + b - a : rfl
                     ... = c - a          : neg_add_cancel_right)
-    H1
+    H1,
+  H2
 end mod_m
 
 check mod_refl     
@@ -1064,8 +1065,6 @@ open [notations] nat
 open [coercions] nat
 open [classes] nat
 open [abbreviations] nat
-open [tactic-hints] nat
-open [reduce-hints] nat
 #+END_SRC
 For example, =open [coercions] nat= makes the coercions in the
 namespace =nat= available (and nothing else). You can multiple
@@ -1099,18 +1098,19 @@ You can also import only certain theorems by providing an explicit
 list in parentheses:
 #+BEGIN_SRC lean
 import data.nat
-open nat (add add.assoc add.comm)
+
+open nat (add sub_sub zero_div)
 
 check add
-check add.assoc
-check add.comm
+check sub_sub
+check zero_div
 #+END_SRC
 The =open= command above imports all metaobjects from =nat=, but
 limits the shortened identifiers to the ones listed. If you want to
 import /only/ the shortened identifiers, use the following:
 #+BEGIN_SRC lean
 import data.nat
-open [declarations] nat (add add.assoc add.comm)
+open [declarations] nat (add sub_sub zero_div)
 #+END_SRC
 When you open a section, you can rename identifiers on the fly:
 #+BEGIN_SRC lean
@@ -1180,13 +1180,13 @@ namespace my_namespace
 end my_namespace
 
 check my_namespace.band
-check my_namespace.add
+check my_namespace.zero
 check my_namespace.append
 
 open my_namespace
 
 check band
-check add
+check zero
 check append
 #+END_SRC
 This makes it possible for you to define nicely prepackaged

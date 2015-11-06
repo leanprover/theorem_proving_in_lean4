@@ -96,17 +96,17 @@ written =2+a=, the definition would be rejected since =2+a= does not
 normalize into a constructor application.
 
 In the next example, we use pattern-matching to define Boolean
-negation n=neg=, and proving =neg (neg b) = b=.
+negation =bnot=, and proving =bnot (bnot b) = b=.
 #+BEGIN_SRC lean
 open bool
 
-definition neg : bool → bool
-| neg tt := ff
-| neg ff := tt
+definition bnot : bool → bool
+| bnot tt := ff
+| bnot ff := tt
 
-theorem neg_neg : ∀ (b : bool), neg (neg b) = b
-| neg_neg tt := rfl    -- proof that neg (neg tt) = tt 
-| neg_neg ff := rfl    -- proof that neg (neg ff) = ff
+theorem bnot_bnot : ∀ (b : bool), bnot (bnot b) = b
+| bnot_bnot tt := rfl    -- proof that bnot (bnot tt) = tt 
+| bnot_bnot ff := rfl    -- proof that bnot (bnot ff) = ff
 #+END_SRC
 
 As described in Chapter [[file:06_Inductive_Types.org::#Inductive_Types][Inductive Types]], Lean inductive datatypes can
@@ -160,24 +160,22 @@ inductive nat : Type :=
 
 namespace nat
 
-notation 0 := zero
-
 -- BEGIN
 definition add : nat → nat → nat
-| add m 0        := m
+| add m zero     := m
 | add m (succ n) := succ (add m n)
 
 infix `+` := add
 
-theorem add_zero (m : nat) : m + 0 = m := rfl
+theorem add_zero (m : nat) : m + zero = m := rfl
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
 
-theorem zero_add : ∀ n, 0 + n = n
-| zero_add 0        := rfl
+theorem zero_add : ∀ n, zero + n = n
+| zero_add zero     := rfl
 | zero_add (succ n) := eq.subst (zero_add n) rfl
 
 definition mul : nat → nat → nat
-| mul n 0        := 0
+| mul n zero     := zero
 | mul n (succ m) := mul n m + m
 -- END
 
@@ -201,11 +199,9 @@ inductive nat : Type :=
 
 namespace nat
 
-notation 0 := zero
-
 -- BEGIN
 definition add (m : nat) : nat → nat
-| add 0        := m
+| add zero     := m
 | add (succ n) := succ (add n)
 -- END
 
@@ -225,7 +221,7 @@ pattern matching, recursive equations, and calculational proof.
 
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 definition fib : nat → nat
 | fib 0     := 1
@@ -257,7 +253,7 @@ definition append {A : Type} : list A → list A → list A
 | append nil    l := l
 | append (h::t) l := h :: append t l
 
-example : append [1, 2, 3] [4, 5] = [1, 2, 3, 4, 5] := rfl
+example : append [(1 : ℕ), 2, 3] [4, 5] = [1, 2, 3, 4, 5] := rfl
 #+END_SRC
 
 ** Dependent Pattern-Matching
@@ -423,7 +419,8 @@ definition unzip : Π {n : nat}, vector (A × B) n → vector A n × vector B n
     (va, vb) := (a :: va, b :: vb)
   end
 
-example : unzip ((1, 10) :: (2, 20) :: nil) = (1 :: 2 :: nil, 10 :: 20 :: nil) :=
+example : unzip (((1 : ℕ), (10 : ℕ)) :: (2, 20) :: nil) = 
+            (1 :: 2 :: nil, 10 :: 20 :: nil) :=
 rfl
 -- END
 #+END_SRC
@@ -549,7 +546,7 @@ evidence that =b= is in the image of =f=, whereby the constructor
 element that is mapped to it. The typing rules forces us to write =f
 a= for the first argument, but this term is not a variable nor a
 constructor application, and plays no role in the pattern-matching
-definition. To define the function =inv= below, we /have to/ mark =f
+definition. To define the function =inverse= below, we /have to/ mark =f
 a= inaccessible.
 
 #+BEGIN_SRC lean
@@ -559,8 +556,8 @@ imf : Π a, image_of f (f a)
 
 open image_of
 
-definition inv {f : A → B} : Π b, image_of f b → A
-| inv ⌞f a⌟ (imf f a) := a
+definition inverse {f : A → B} : Π b, image_of f b → A
+| inverse ⌞f a⌟ (imf f a) := a
 #+END_SRC
 
 Inaccessible terms can also be used to reduce the complexity of the
@@ -660,7 +657,8 @@ definition unzip : Π {n : nat}, vector (A × B) n → vector A n × vector B n
     (va, vb) := (a :: va, b :: vb)
   end
 
-example : unzip ((1, 10) :: (2, 20) :: nil) = (1 :: 2 :: nil, 10 :: 20 :: nil) :=
+example : unzip (((1 : ℕ), (10 : ℕ)) :: (2, 20) :: nil) = 
+  (1 :: 2 :: nil, 10 :: 20 :: nil) :=
 rfl
 -- END
 #+END_SRC

@@ -41,7 +41,7 @@ open nat
 
 attribute nat [class]
 
-definition one [instance] : ℕ := 1
+definition nat_one [instance] : ℕ := 1
 
 definition foo [x : ℕ] : nat := x
 
@@ -73,7 +73,7 @@ open nat
 
 attribute nat [class]
 
-definition one [instance] : ℕ := 1
+definition nat_one [instance] : ℕ := 1
 
 definition foo [x : ℕ] : nat := x
 
@@ -82,7 +82,7 @@ eval foo
 example : foo = 1 := rfl
 
 -- BEGIN
-definition two [instance] : ℕ := 2
+definition nat_two [instance] : ℕ := 2
 
 eval foo
 
@@ -630,6 +630,8 @@ We can declare a type class =has_add A= as follows:
 #+BEGIN_SRC lean
 import standard
 
+namespace hide
+
 inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
@@ -637,6 +639,8 @@ definition add {A : Type} [s : has_add A] :=
 has_add.rec (λ x, x) s
 
 notation a `+` b := add a b
+
+end hide
 #+END_SRC
 The class =has_add A= is supposed to be inhabited exactly when there
 is an appropriate addition function for =A=. The =add= function is
@@ -647,6 +651,8 @@ and apply the corresponding binary addition function. The notation
 =bool=:
 #+BEGIN_SRC lean
 import standard
+
+namespace hide
 
 inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
@@ -674,6 +680,8 @@ check (2 : nat) + 2    -- nat
 check (2 : int) + 2    -- int
 check tt + ff          -- bool
 -- END
+
+end hide
 #+END_SRC
 In the example above, we expose the coercions in namespaces =nat=
 and =int=, so that we can use numerals. If we opened these namespace
@@ -695,6 +703,8 @@ assuming that there are appropriate addition functions for types =A=
 and =B=, we can define addition on =A × B= pointwise:
 #+BEGIN_SRC lean
 import standard
+
+namespace hide
 
 inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
@@ -723,10 +733,14 @@ open nat
 check (1, 2) + (3, 4)    -- ℕ × ℕ
 eval (1, 2) + (3, 4)     -- (4, 6)
 -- END
+
+end hide
 #+END_SRC
 We can similarly define pointwise addition of functions:
 #+BEGIN_SRC lean
 import standard
+
+namespace hide
 
 inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
@@ -759,6 +773,8 @@ open nat
 check (λ x : nat, (1 : nat)) + (λ x, (2 : nat))   -- ℕ → ℕ
 eval (λ x : nat, (1 : nat)) + (λ x, (2 : nat))    -- λ (x : ℕ), 3
 -- END
+
+end hide
 #+END_SRC
 As an exercise, try defining instances of =has_add= for lists and
 vectors, and show that they have the work as expected.
@@ -855,6 +871,8 @@ definition and theorem, we use the =include= command.
 #+BEGIN_SRC lean
 import standard
 
+namespace hide
+
 inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
@@ -872,12 +890,16 @@ section
   check @foo
 end
 -- END
+
+end hide
 #+END_SRC
 Note that the =include= command includes a variable in every
 definition and theorem in that section.  If we want to declare a
 definition of theorem which does not use the instance, we can use the
 =omit= command:
 #+BEGIN_SRC lean
+namespace hide
+
 inductive has_add [class] (A : Type) : Type :=
 mk : (A → A → A) → has_add A
 
@@ -901,6 +923,8 @@ section
   check @foo3
 end
 -- END
+
+end hide
 #+END_SRC
 
 ** Bounded Quantification
@@ -923,7 +947,7 @@ Next, we prove some auxiliary facts that are needed for the
 decidability proof.
 #+BEGIN_SRC lean
 import data.nat
-open nat decidable
+open nat decidable algebra
 
 definition ball (n : nat) (P : nat → Prop) : Prop :=
 ∀ x, x < n → P x
@@ -958,7 +982,7 @@ Finally, assuming =P= is a decidable predicate, we prove =∀ x : nat, x
 < n → P x= by induction on =n=.
 #+BEGIN_SRC lean
 import data.nat
-open nat decidable
+open nat decidable algebra
 
 definition ball (n : nat) (P : nat → Prop) : Prop :=
 ∀ x, x < n → P x
@@ -998,7 +1022,7 @@ definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable 
 Now we can use =dec_trivial= to prove simple theorems by "evaluation."
 #+BEGIN_SRC lean
 import data.nat
-open nat decidable
+open nat decidable algebra
 
 definition ball (n : nat) (P : nat → Prop) : Prop :=
 ∀ x, x < n → P x
@@ -1037,7 +1061,7 @@ definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable 
 example : ∀ x : nat, x ≤ 4 → x ≠ 6 :=
 dec_trivial
 
-example : ¬ ∀ x, x ≤ 5 → ∀ y, y < x → y * y ≠ x :=
+example : ¬ ∀ x : nat, x ≤ 5 → ∀ y, y < x → y * y ≠ x :=
 dec_trivial
 -- END
 #+END_SRC
@@ -1047,7 +1071,7 @@ returns =tt= if and only if the function =f= has the same value for
 every =i= such that =0 ≤ i < n=.
 #+BEGIN_SRC lean
 import data.nat
-open nat decidable
+open nat decidable algebra
 
 definition ball (n : nat) (P : nat → Prop) : Prop :=
 ∀ x, x < n → P x
@@ -1097,7 +1121,7 @@ As an exercise, we encourage you to show that =∃ x : nat, x < n ∧ P x= is al
 decidable.
 #+BEGIN_SRC lean
 import data.nat
-open nat decidable
+open nat decidable algebra
 
 definition bex (n : nat) (P : nat → Prop) : Prop :=
 ∃ x : nat, x < n ∧ P x

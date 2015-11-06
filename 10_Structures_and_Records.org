@@ -159,16 +159,18 @@ expressions below define the same point.
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
-check {| point, x := 10, y := 20 |}   -- point num 
-check {| point, y := 20, x := 10 |}
-check ⦃ point, x := 10, y := 20 ⦄
+check {| point, x := (10 : ℕ), y := 20 |}   -- point ℕ 
+check {| point, y := (20 : ℕ), x := 10 |}
+check ⦃ point, x := (10 : ℕ), y := 20 ⦄
 
-example : {| point, x := 10, y := 20 |} = {| point, y := 20, x := 10 |} :=
+example : {| point, x := (10 : ℕ), y := 20 |} = {| point, y := 20, x := 10 |} :=
 rfl
 #+END_SRC
 
 Note that =point= is a parametric type, but we did not provide its
-parameters, since Lean can infer them automatically for us. Of course,
+parameters. Here, in each case, Lean infers that we are constructing an
+object of type =point ℕ= from the fact that one of the components is specified
+to be of type =ℕ=. Alternatively, we can exOf course,
 the parameters can be explicitly provided with the type if needed.
 #+BEGIN_SRC lean
 open nat
@@ -176,7 +178,7 @@ open nat
 structure point (A : Type) :=
 mk :: (x : A) (y : A)
 -- BEGIN
-check ⦃ point nat, x := 10, y := 20 ⦄
+check ⦃ point ℕ, x := 10, y := 20 ⦄
 -- END
 #+END_SRC
 
@@ -326,7 +328,7 @@ check point3.x
 check point3.y
 check point3.z
 
-example : point3.mk 10 20 30 = prod.pair 10 20 :=
+example : point3.mk (10 : ℕ) 20 30 = prod.pair 10 20 :=
 rfl
 -- END
 
@@ -375,6 +377,8 @@ can define the binary notation =a * b=, leaving the structure
 implicit.
 
 #+BEGIN_SRC lean
+namespace hide
+
 structure has_mul [class] (A : Type) :=
 mk :: (mul : A → A → A)
 
@@ -386,6 +390,8 @@ section
   variables (A : Type) (s : has_mul A) (a b : A)
   check a * b
 end
+
+end hide
 #+END_SRC
 In the last =check= command, the structure =s= in the local context is
 used to synthesize the implicit argument in =a * b=.
@@ -399,6 +405,8 @@ be provided. In the following example, we use this mechanism to
 structure, =semigroup=.
 
 #+BEGIN_SRC lean
+namespace hide
+
 structure has_mul [class] (A : Type) :=
 mk :: (mul : A → A → A)
 
@@ -411,6 +419,8 @@ section
   variables (A : Type) (s : semigroup A) (a b : A)
   check a * b
 end
+
+end hide
 #+END_SRC
 Once again, the structure =s= in the local context is used to
 synthesize the implicit argument in =a * b=.  We can see what is going
@@ -418,6 +428,8 @@ by asking Lean to display implicit arguments, coercions, and disable
 notation.
 
 #+BEGIN_SRC lean
+namespace hide
+
 structure has_mul [class] (A : Type) :=
 mk :: (mul : A → A → A)
 
@@ -436,6 +448,8 @@ section
   check a * b -- @has_mul.mul A (@semigroup.to_has_mul A s) a b : A
 end
 -- END
+
+end hide
 #+END_SRC
 
 Here is a fragment of the algebraic hierarchy defined using this
@@ -445,6 +459,8 @@ types do not match an error is generated.  The "merge" can be avoided
 by using the =renaming= clause.
 
 #+BEGIN_SRC lean
+namespace hide
+
 structure has_mul [class] (A : Type) :=
 mk :: (mul : A → A → A)
 
@@ -470,6 +486,8 @@ mk :: (right_id : ∀ a, mul a one = a) (left_id : ∀ a, mul one a = a)
 structure comm_monoid [class] (A : Type) extends monoid A, comm_semigroup A
 
 print prefix comm_monoid
+
+end hide
 #+END_SRC
 Notice that we can suppress =:== and =::= when we are not declaring
 any new fields, as is the case for the structure =comm_monoid=. The
@@ -479,6 +497,8 @@ comm_semigroup have been merged.
 The =renaming= clause allow us to perform non-trivial merge operations
 such as combining an abelian group with a monoid to obtain a ring.
 #+BEGIN_SRC lean
+namespace hide
+
 structure has_mul [class] (A : Type) :=
 (mul : A → A → A)
 
@@ -526,4 +546,6 @@ structure ring [class] (A : Type)
 (dist_left  : ∀ a b c, mul a (add b c) = add (mul a b) (mul a c))
 (dist_right : ∀ a b c, mul (add a b) c = add (mul a c) (mul b c))
 -- END
+
+end hide
 #+END_SRC

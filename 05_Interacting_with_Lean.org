@@ -579,21 +579,21 @@ You are welcome to overload these symbols for your own use, but you
 cannot change their right-binding power.
 
 Remember that you can direct the pretty-printer to suppress notation
-with the command =set_option pp.notation false=. You can also declare
-notation to be used for input purposes only with the =[parsing-only]=
-attribute:
-#+BEGIN_SRC lean
-import data.nat
-open nat
+with the command =set_option pp.notation false=. 
+# You can also declare
+# notation to be used for input purposes only with the =[parsing-only]=
+# attribute:
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat
 
-notation [parsing-only] `[` a `**` b `]` := a * b + 1
+# notation [parsing-only] `[` a `**` b `]` := a * b + 1
 
-variables a b : ℕ
-check [a ** b]
-#+END_SRC
-The output of the =check= command displays the expression as =a * b +
-1=. 
-
+# variables a b : ℕ
+# check [a ** b]
+# #+END_SRC
+# The output of the =check= command displays the expression as =a * b +
+# 1=. 
 Lean also provides mechanisms for iterated notation, such as =[a, b,
 c, d, e]= to denote a list with the indicated elements. See the
 discussion of =list= in the next chapter for an example.
@@ -762,35 +762,35 @@ notation =#<namespace>=, to specify the namespace in which notation is
 to be interpreted. Another is to replace the notation with an explicit
 function name. Yet a third is to use the =(t : T)= notation to indicate
 the intended type.
-#+BEGIN_SRC lean
-import data.nat data.int
-open nat int
+# #+BEGIN_SRC lean
+# import data.nat data.int
+# open nat int
 
-check 2 + 2
-eval 2 + 2
+# check 2 + 2
+# eval 2 + 2
 
-check #nat 2 + 2
-eval #nat 2 + 2
+# check #nat 2 + 2
+# eval #nat 2 + 2
 
-check #int 2 + 2
-eval #int 2 + 2
+# check #int 2 + 2
+# eval #int 2 + 2
 
-check nat.add 2 2
-eval nat.add 2 2
+# check nat.add 2 2
+# eval nat.add 2 2
 
-check int.add 2 2
-eval int.add 2 2
+# check int.add 2 2
+# eval int.add 2 2
 
-check (2 + 2 : nat)
-eval (2 + 2 : nat)
+# check (2 + 2 : nat)
+# eval (2 + 2 : nat)
 
-check (2 + 2 : int)
-eval (2 + 2 : int)
+# check (2 + 2 : int)
+# eval (2 + 2 : int)
 
-check 0
+# check 0
 
-check nat.zero
+# check nat.zero
 
-check (0 : nat)
-check (0 : int)
-#+END_SRC
+# check (0 : nat)
+# check (0 : int)
+# #+END_SRC

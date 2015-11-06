@@ -272,7 +272,7 @@ variables (A B : Type)
 
 example (f : A → B) (a : A) : (λ x, f x) a = f a := eq.refl _
 example (a : A) (b : A) : pr1 (a, b) = a := eq.refl _
-example : 2 + 3 = 5 := eq.refl _
+example : 2 + 3 = (5 : ℕ) := eq.refl _
 #+END_SRC
 This feature of the framework is so important that the library defines
 a notation =rfl= for =eq.refl _=:
@@ -285,7 +285,7 @@ variables (A B : Type)
 -- BEGIN
 example (f : A → B) (a : A) : (λ x, f x) a = f a := rfl
 example (a : A) (b : A) : pr1 (a, b) = a := rfl
-example : 2 + 3 = 5 := rfl
+example : 2 + 3 = (5 : ℕ) := rfl
 -- END
 #+END_SRC
 
@@ -319,12 +319,12 @@ numbers in the associated library files, for example, in the module
 how to find theorems in Lean's library.
 #+BEGIN_SRC lean
 import data.nat
-open nat eq.ops
+open nat eq.ops algebra
 
 example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-have H1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, from !mul.left_distrib,
+have H1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, from !left_distrib,
 have H2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y),
-  from !mul.right_distrib ▸ !mul.right_distrib ▸ H1,
+  from !right_distrib ▸ !right_distrib ▸ H1,
 !add.assoc⁻¹ ▸ H2
 #+END_SRC
 
@@ -362,7 +362,7 @@ claiming we can obtain =<expr>_i= by replacing =a= with =b= in
 Here is an example:
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 variables (a b c d e : nat)
 variable H1 : a = b
@@ -383,7 +383,7 @@ The =calc= command can be configured for any relation that supports
 some form of transitivity. It can even combine different relations.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 theorem T2 (a b c : nat) (H1 : a = b) (H2 : b = c + 1) : a ≠ 0 :=
 calc
@@ -403,20 +403,20 @@ presentation of a =calc= proof considerably. Consider, for example,
 the following proof of the identity in the last section:
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 -- BEGIN
 example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
 calc
-  (x + y) * (x + y) = (x + y) * x + (x + y) * y  : mul.left_distrib
-    ... = x * x + y * x + (x + y) * y            : mul.right_distrib
-    ... = x * x + y * x + (x * y + y * y)        : mul.right_distrib
+  (x + y) * (x + y) = (x + y) * x + (x + y) * y  : left_distrib
+    ... = x * x + y * x + (x + y) * y            : right_distrib
+    ... = x * x + y * x + (x * y + y * y)        : right_distrib
     ... = x * x + y * x + x * y + y * y          : add.assoc
 -- END
 #+END_SRC
 As an exercise, we suggest carrying out a similar expansion of =(x -
 y) * (x + y)=, using in the appropriate order the theorems
-=mul.left_distrib=, =mul.comm= and =add.comm= and the theorems
+=left_distrib=, =mul.comm= and =add.comm= and the theorems
 =mul_sub_right_distrib= and =add_sub_add_left= in the file
 [[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]]. Note that this exercise is slightly more involved than
 the previous example, because the subtraction on natural numbers is
@@ -443,7 +443,7 @@ suitable term =t= and a proof of =p t=. Here are some examples:
 import data.nat
 open nat
 
-example : ∃ x, x > 0 :=
+example : ∃ x : ℕ, x > 0 :=
 have H : 1 > 0, from succ_pos 0,
 exists.intro 1 H
 
@@ -508,7 +508,7 @@ In the following example, we define =even a= as =∃ b, a = 2*b=, and
 then we show that the sum of two even numbers is an even number.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 definition is_even (a : nat) := ∃ b, a = 2*b
 
@@ -519,7 +519,7 @@ exists.elim H2 (fun (w2 : nat) (Hw2 : b = 2*w2),
     (calc
       a + b = 2*w1 + b      : Hw1
         ... = 2*w1 + 2*w2   : Hw2
-        ... = 2*(w1 + w2)   : mul.left_distrib)))
+        ... = 2*(w1 + w2)   : left_distrib)))
 #+END_SRC
 
 Lean provides syntactic sugar for =exists.elim=. The expression
@@ -531,7 +531,7 @@ translates to =exists.elim <expr1> (λ <var1> <var2>, <expr2>)=. With
 this syntax, the example above can be presented in a more natural way:
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 definition is_even (a : nat) := ∃ b, a = 2*b
 
@@ -544,7 +544,7 @@ exists.intro (w1 + w2)
   (calc
     a + b = 2*w1 + b      : Hw1
       ... = 2*w1 + 2*w2   : Hw2
-      ... = 2*(w1 + w2)   : mul.left_distrib)
+      ... = 2*(w1 + w2)   : left_distrib)
 -- END
 #+END_SRC
 
@@ -656,7 +656,7 @@ auxiliary goal without having to label it. We can refer to the last
 expression introduced in this way using the keyword =this=:
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 variable f : ℕ → ℕ
 premise H : ∀ x : ℕ, f x ≤ f (x + 1)
@@ -673,7 +673,7 @@ One can also refer to any element or hypothesis in the context,
 anonymous or not, by enclosing the type in backticks:
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 variable f : ℕ → ℕ
 premise H : ∀ x : ℕ, f x ≤ f (x + 1)
@@ -691,7 +691,7 @@ we state the assertion rather than name the variable that witnesses
 its truth. This can be done anywhere later in the proof:
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 variable f : ℕ → ℕ
 premise H : ∀ x : ℕ, f x ≤ f (x + 1)
@@ -708,7 +708,7 @@ show f 0 ≤ f 3, from le.trans `f 0 ≤ f 1` (le.trans `f 1 ≤ f 2` `f 2 ≤ f
 The =suppose= keyword acts as an anonymous assume:
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 variable f : ℕ → ℕ
 premise H : ∀ x : ℕ, f x ≤ f (x + 1)
@@ -728,7 +728,7 @@ label". Using =suppose= avoids the problem. As with the anonymous
 in backticks later in the proof.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 variable f : ℕ → ℕ
 premise H : ∀ x : ℕ, f x ≤ f (x + 1)
@@ -749,7 +749,7 @@ One can also do an anonymous =assume= by enclosing the statement in
 backticks.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 variable f : ℕ → ℕ
 premise H : ∀ x : ℕ, f x ≤ f (x + 1)
@@ -785,7 +785,7 @@ that is chosen. Using anonymous binders when data is involved looks
 somewhat odd:
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 -- BEGIN
 definition idnat : ℕ → ℕ :=
@@ -805,7 +805,7 @@ of an anonymous binder used with the =obtain= construction, continuing
 the examples above.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 -- BEGIN
 variable f : ℕ → ℕ

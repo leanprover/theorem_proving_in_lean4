@@ -270,7 +270,7 @@ The following is an example of how function extensionality blocks
 computation inside the Lean kernel.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 definition f₁ (x : ℕ) := x
 definition f₂ (x : ℕ) := 0 + x

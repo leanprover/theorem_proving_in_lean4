@@ -668,7 +668,7 @@ example (m n : nat) : m - n = 0 ∨ m ≠ n :=
 begin
   cases (decidable.em (m = n)) with [Heq, Hne],
   { apply eq.subst Heq,
-    exact or.inl (sub_self m)},
+    exact or.inl (nat.sub_self m)},
   { apply or.inr Hne }
 end
 #+END_SRC
@@ -813,10 +813,10 @@ or more times, while the notation =+t= instructs the rewriter to use
 it at least once. Note that rewriting with =*t= never fails.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 
 example (x y : nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-by rewrite [*mul.left_distrib, *mul.right_distrib, -add.assoc]
+by rewrite [*left_distrib, *right_distrib, -add.assoc]
 #+END_SRC
 
 To avoid non-termination, the =rewriter= tactic has a limit on the
@@ -841,7 +841,7 @@ to apply commutativity to the first term that matches =b + _=, where
 =_= can be matched with an arbitrary term.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 -- BEGIN
 example (a b c : nat) : a + b + c = a + c + b :=
 begin
@@ -860,7 +860,7 @@ By default, the tactic affects only the goal. The notation =t at H=
 applies the rewrite =t= at hypothesis =H=.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 -- BEGIN
 variables (f : nat → nat) (a : nat)
 
@@ -877,7 +877,7 @@ goal to =f 0 = f 0=.
 Multiple hypotheses can be specified in the same =at= clause.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 -- BEGIN
 variables (a b : nat)
 
@@ -894,7 +894,7 @@ The notation =t at * ⊢= applies =t= to all hypotheses. You can enter
 the symbol =⊢= by typing =\|-=.
 #+BEGIN_SRC lean
 import data.nat
-open nat
+open nat algebra
 -- BEGIN
 variables (a b : nat)
 
