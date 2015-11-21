@@ -331,7 +331,7 @@ used to enter them in the Emacs Lean mode.
 | ↔       | <->    | =\iff=, =\lr=           |
 | ∀       | forall | =\all=                  |
 | ∃       | exists | =\ex=                   |
-| λ       | fun    | =\lam=, =\fun=          |
+| λ       | fun    | =\l=, =\fun=          |
 | ≠       | ~=     | =\ne=                   |
 
 *** Types
