@@ -578,10 +578,11 @@ require some form of classical reasoning.
 open classical
 
 variables (A : Type) (p q : A → Prop)
+variable a : A
 variable r : Prop
 
 example : (∃ x : A, r) → r := sorry
-example (a : A) : r → (∃ x : A, r) := sorry
+example : r → (∃ x : A, r) := sorry
 example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r := sorry
 example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := sorry
 
@@ -591,15 +592,19 @@ example : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) := sorry
 example : (¬ ∀ x, p x) ↔ (∃ x, ¬ p x) := sorry
 
 example : (∀ x, p x → r) ↔ (∃ x, p x) → r := sorry
-example (a : A) : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
-example (a : A) : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
+example : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
+example : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
 #+END_SRC
+Notice that the declaration =variable a : A= amounts to the assumption
+that there is at least one element of type =A=. This assumption is
+needed in the second example, as well as in the last two.
 
 Here are solutions to two of the more difficult ones:
 #+BEGIN_SRC lean
 open classical
 
 variables (A : Type) (p q : A → Prop)
+variable a : A
 variable r : Prop
 
 -- BEGIN
@@ -619,12 +624,12 @@ iff.intro
         obtain a Hqa, from Hq,
         exists.intro a (or.inr Hqa)))
 
-example (a : A) : (∃ x, p x → r) ↔ (∀ x, p x) → r :=
+example : (∃ x, p x → r) ↔ (∀ x, p x) → r :=
 iff.intro
   (assume H1 : ∃ x, p x → r,
     assume H2 : ∀ x, p x,
-    obtain a (Ha : p a → r), from H1,
-    show r, from  Ha (H2 a))
+    obtain b (Hb : p b → r), from H1,
+    show r, from  Hb (H2 b))
   (assume H1 : (∀ x, p x) → r,
     show ∃ x, p x → r, from
       by_cases
