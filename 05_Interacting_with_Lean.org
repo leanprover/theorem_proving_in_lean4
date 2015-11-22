@@ -589,7 +589,7 @@ notation [parsing_only] `[` a `**` b `]` := a * b + 1
 
 variables a b : ℕ
 check [a ** b]
-#+END_SRC
++END_SRC
 The output of the =check= command displays the expression as =a * b +
 1=. Lean also provides mechanisms for iterated notation, such as =[a,
 b, c, d, e]= to denote a list with the indicated elements. See the
@@ -629,7 +629,7 @@ print notation +
 #+END_SRC
 Nonetheless, you might decide to overload the plus symbol and
 use it for the list "append" function as well:
-#+BEGIN_SRC list
+#+BEGIN_SRC lean
 import data.nat data.list
 open algebra nat list
 
