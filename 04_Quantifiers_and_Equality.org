@@ -818,8 +818,39 @@ exists.intro x
 -- END
 #+END_SRC
 
-# Soonho: The following paragraph and lean code block are commented out.
-#         Plase see the discussion at https://github.com/leanprover/tutorial/issues/138
+The following proof that the square root of two is irrational can be
+found in the standard library. It provides a nice example of the way that
+proof terms can be structured and made readable using the devices we have
+discussed here.
+#+BEGIN_SRC lean
+open nat algebra
+  
+theorem sqrt_two_irrational {a b : ℕ} (co : coprime a b) : a^2 ≠ 2 * b^2 :=
+assume H : a^2 = 2 * b^2,
+have even (a^2),
+  from even_of_exists (exists.intro _ H),
+have even a,
+  from even_of_even_pow this,
+obtain (c : nat) (aeq : a = 2 * c),
+  from exists_of_even this,
+have 2 * (2 * c^2) = 2 * b^2,
+  by rewrite [-H, aeq, *pow_two, mul.assoc, mul.left_comm c],
+have 2 * c^2 = b^2,
+  from eq_of_mul_eq_mul_left dec_trivial this,
+have even (b^2),
+  from even_of_exists (exists.intro _ (eq.symm this)),
+have even b,
+  from even_of_even_pow this,
+have 2 ∣ gcd a b,
+  from dvd_gcd (dvd_of_even `even a`) (dvd_of_even `even b`),
+have 2 ∣ 1,
+  begin+ rewrite [gcd_eq_one_of_coprime co at this], exact this end,
+show false, from absurd `2 ∣ 1` dec_trivial
+#+END_SRC
+
+# A previously used example is found below. We had to reject it because
+# we cannot currently include primes.lean in the web version of Lean. 
+# See the discussion at https://github.com/leanprover/tutorial/issues/138.
 #
 # The following proof that there are infinitely many primes is a slight
 # variant of the proof in the standard library. It provides a nice
