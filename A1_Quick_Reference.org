@@ -107,21 +107,23 @@ type in the context with a hidden name.
 *** Tactic Mode
 
 At any point in a proof or definition you can switch to tactic mode and apply tactics to 
-finish that part of the proof or definition
+finish that part of the proof or definition.
 
 #+BEGIN_SRC text
 begin ... end   : enter tactic mode, and blocking mechanism within tactic mode
 { ... }         : blocking mechanism within tactic mode
 by ...          : enter tactic mode, can only execute a single tactic
-begin+; by+     : normally entering tactic mode will make declarations in the local context 
-                  given by "have"-expressions unavailable. Entering tactic mode with these
-                  will make all declarations available
+begin+; by+     : same as =begin= and =by=, but make local results available
 have            : as in term mode (enters term mode), but visible to tactics
 assert          : as in term mode (stays in tactic mode)
 show            : as in term mode (enters term mode)
 match ... with  : as in term mode (enters term mode)
 let             : introduce local fact (opaque, in the body)
 #+END_SRC
+
+Normally, entering tactic mode will make declarations in the local
+context given by "have"-expressions unavailable. The annotations
+=begin+= and =by+= make all these declarations available.
 
 ** Sectioning Mechanisms
 
