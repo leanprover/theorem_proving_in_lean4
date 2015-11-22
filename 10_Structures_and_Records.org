@@ -84,8 +84,8 @@ structure point (A : Type) :=
 mk :: (x : A) (y : A)
 
 -- BEGIN
-eval point.x (point.mk 10 20)
-eval point.y (point.mk 10 20)
+eval point.x (point.mk (10 : ℕ) 20)
+eval point.y (point.mk (10 : ℕ) 20)
 
 open point
 
@@ -168,10 +168,10 @@ rfl
 #+END_SRC
 
 Note that =point= is a parametric type, but we did not provide its
-parameters. Here, in each case, Lean infers that we are constructing an
-object of type =point ℕ= from the fact that one of the components is specified
-to be of type =ℕ=. Alternatively, we can exOf course,
-the parameters can be explicitly provided with the type if needed.
+parameters. Here, in each case, Lean infers that we are constructing
+an object of type =point ℕ= from the fact that one of the components
+is specified to be of type =ℕ=. Of course, the parameters can be
+explicitly provided with the type if needed.
 #+BEGIN_SRC lean
 open nat
 

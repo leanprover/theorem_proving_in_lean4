@@ -448,7 +448,7 @@ eval b && ff         -- ff
 print "reducing arithmetic expressions"
 eval n + 0           -- n
 eval n + 2           -- succ (succ n)
-eval 2 + 3           -- 5
+eval (2 : nat) + 3   -- 5
 #+END_SRC
 In a later chapter, we will explain how these terms are evaluated. For
 now, we only wish to emphasize that this is an important feature of
