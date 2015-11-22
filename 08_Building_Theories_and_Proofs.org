@@ -653,14 +653,12 @@ definition pr1 [reducible] (A : Type) (a b : A) : A := a
 The assignment persists to other modules. You can achieve the same
 result with the =attribute= command:
 #+BEGIN_SRC lean
-definition id (A : Type) (a : A) : A := a
 definition pr2 (A : Type) (a b : A) : A := b
 
 -- mark pr2 as reducible
 attribute pr2 [reducible]
 
--- mark id and pr2 as irreducible
-attribute id [irreducible]
+-- mark pr2 as irreducible
 attribute pr2 [irreducible]
 #+END_SRC
 

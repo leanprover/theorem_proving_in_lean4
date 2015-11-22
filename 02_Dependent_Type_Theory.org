@@ -1131,39 +1131,41 @@ All that has changed are the braces around =A : Type= in the
 declaration of the variables. We can also use this device in function
 definitions:
 #+BEGIN_SRC lean
-definition id {A : Type} (x : A) := x
+definition ident {A : Type} (x : A) := x
 
-check id      -- ?A → ?A
+check ident      -- ?A → ?A
 
 variables A B : Type
 variables (a : A) (b : B)
 
-check id      -- ?A A B a b → ?A A B a b
-check id a    -- A 
-check id b    -- B
+check ident      -- ?A A B a b → ?A A B a b
+check ident a    -- A 
+check ident b    -- B
 #+END_SRC
-This makes the first argument to =id= implicit. Notationally, this
-hides the specification of the type, making it look as though =id=
-simply takes an argument of any type. 
+This makes the first argument to =ident= implicit. Notationally, this
+hides the specification of the type, making it look as though =ident=
+simply takes an argument of any type. In fact, the function =id= is
+defined in the standard library in exactly this way. We have chosen
+a nontraditional name here only to avoid a clash of names.
 
 In the first =check= command, the inscription =?A= indicates that the
-type of =id= depends on a "placeholder," or "metavariable," that
+type of =ident= depends on a "placeholder," or "metavariable," that
 should, in general, be inferred from the context. The output of the
 second =check= command is somewhat verbose: it indicates that the
 placeholder, =?A=, can itself depend on any of the variables =A=, =B=,
 =a=, and =b= that are in the context. If this additional information
-is annoying, you can suppress it by writing =@id=, as described
-below. Alternatively, you can set an option to avoid pointing these
+is annoying, you can suppress it by writing =@ident=, as described
+below. Alternatively, you can set an option to avoident pointing these
 arguments:
 #+BEGIN_SRC lean
-definition id {A : Type} (x : A) := x
+definition ident {A : Type} (x : A) := x
 
 -- BEGIN
 variables A B : Type
 variables (a : A) (b : B)
 
 set_option pp.metavar_args false
-check id      -- ?A → ?A
+check ident      -- ?A → ?A
 -- END
 #+END_SRC
 
@@ -1173,17 +1175,17 @@ the =variables= command:
 section
   variable {A : Type}
   variable x : A
-  definition id := x
+  definition ident := x
 end
 
 variables A B : Type
 variables (a : A) (b : B)
 
-check id
-check id a
-check id b
+check ident
+check ident a
+check ident b
 #+END_SRC
-This definition of =id= has the same effect as the one above.
+This definition of =ident= has the same effect as the one above.
 
 Lean has very complex mechanisms for instantiating implicit arguments,
 and we will see that they can be used to infer function types,
@@ -1199,20 +1201,20 @@ provide the argument explicitly. If =foo= is such a function, the
 notation =@foo= denotes the same function with all the arguments made
 explicit.
 #+BEGIN_SRC lean
-definition id {A : Type} (x : A) := x
+definition ident {A : Type} (x : A) := x
 
 variables A B : Type
 variables (a : A) (b : B)
 -- BEGIN
-check @id        -- Π {A : Type}, A → A
-check @id A      -- A → A
-check @id B      -- B → B
-check @id A a    -- A
-check @id B b    -- B
+check @ident        -- Π {A : Type}, A → A
+check @ident A      -- A → A
+check @ident B      -- B → B
+check @ident A a    -- A
+check @ident B b    -- B
 -- END
 #+END_SRC
 Notice that now the first =check= command gives the type of the
-identifier, =id=, without inserting any placeholders. Moreover, the
+identifier, =ident=, without inserting any placeholders. Moreover, the
 output indicates that the first argument is implicit.
 
 Section [[file:08_Building_Theories_and_Proof::#More_on_Implicit_Arguments][More on Implicit Arguments]] explains another useful annotation,
