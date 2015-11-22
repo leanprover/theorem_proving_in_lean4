@@ -72,9 +72,8 @@ print classes                : display all classes
 print instances <class name> : display all instances of the given class
 print fields <structure>     : display all "fields" of a structure
 #+END_SRC
-We will discuss classes, instances, and structures in Chapter
-[[file:09_Type_Classes.org::#Type_Classes][Type Classes]]. Here are
-examples of how the =print= commands are used:
+We will discuss classes, instances, and structures in Chapter [[file:09_Type_Classes.org::#Type_Classes][Type
+Classes]]. Here are examples of how the =print= commands are used:
 #+BEGIN_SRC lean
 import standard algebra.ring
 open prod sum int nat algebra
@@ -579,39 +578,91 @@ You are welcome to overload these symbols for your own use, but you
 cannot change their right-binding power.
 
 Remember that you can direct the pretty-printer to suppress notation
-with the command =set_option pp.notation false=. 
-# You can also declare
-# notation to be used for input purposes only with the =[parsing-only]=
-# attribute:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
+with the command =set_option pp.notation false=.  You can also declare
+notation to be used for input purposes only with the =[parsing_only]=
+attribute:
+#+BEGIN_SRC lean
+import data.nat
+open nat
 
-# notation [parsing-only] `[` a `**` b `]` := a * b + 1
+notation [parsing-only] `[` a `**` b `]` := a * b + 1
 
-# variables a b : ℕ
-# check [a ** b]
-# #+END_SRC
-# The output of the =check= command displays the expression as =a * b +
-# 1=. 
-Lean also provides mechanisms for iterated notation, such as =[a, b,
-c, d, e]= to denote a list with the indicated elements. See the
+variables a b : ℕ
+check [a ** b]
+#+END_SRC
+The output of the =check= command displays the expression as =a * b +
+1=. Lean also provides mechanisms for iterated notation, such as =[a,
+b, c, d, e]= to denote a list with the indicated elements. See the
 discussion of =list= in the next chapter for an example.
 
 Notation in Lean can be /overloaded/, which is to say, the same
 notation can be used for more than one purpose. In that case, Lean's
-elaborator will try to disambiguate based on context.
+elaborator will try to disambiguate based on context. For example, we
+have already seen that with the =eq.ops= namespace open, the inverse
+symbol can be used to denote the symmetric form of an equality. It can
+also be used to denote the multiplicative inverse:
+#+BEGIN_SRC lean
+import data.rat
+open rat eq.ops
+
+variable r : ℚ
+
+check r⁻¹             -- ℚ
+check (eq.refl r)⁻¹   -- r = r
+#+END_SRC
+Insofar as overloads produce ambiguity, they should be used
+sparingly. We avoid the use of overloads for arithmetic operations
+like =+=, =*=, =-=, and =/= using /type classes/, as described in
+Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]]. For example, in the following, the addition
+operation denotes a general algebraic operation, that can be
+instantiated to =nat= or =int= as required:
 #+BEGIN_SRC lean
 import data.nat data.int
-open nat int
+open algebra nat int
 
 variables a b : int
 variables m n : nat
 
-check a + b
-check m + n
+check a + b    -- ℕ 
+check m + n    -- ℤ
 print notation +
 #+END_SRC
+Nonetheless, you might decide to overload the plus symbol and
+use it for the list "append" function as well:
+#+BEGIN_SRC list
+import data.nat data.list
+open algebra nat list
+
+variables m n : ℕ
+variables s t : list ℕ
+
+infix + := list.append
+
+check m + n   -- ℕ
+check s + t   -- list ℕ
+#END_SRC
+Where it is necessary to disambiguate, Lean allows you to precede an
+expression with the notation =#<namespace>=, to specify the namespace 
+in which notation is to be interpreted. 
+#+BEGIN_SRC lean
+import data.nat data.list
+open algebra nat list
+
+variables m n : ℕ
+variables s t : list ℕ
+
+infix + := list.append
+
+check m + n   -- ℕ
+check s + t   -- list ℕ
+
+-- BEGIN
+check λ x y, (#algebra x + y)
+check λ x y, (#list x + y)
+-- END
+#+END_SRC
+In the first case, the addition symbol is polymorphic over structures
+which have an associated addition operation.
 
 Lean provides an =abbreviation= mechanism that is similar to the
 notation mechanism.
@@ -682,13 +733,13 @@ check a + 123        -- a + of_nat (of_num 123) : ℤ
 Setting the option =pp.coercions= to =true= makes the coercions
 explicit. Coercions that are declared in a namespace are only
 available to the system when the namespace is opened. The notation
-=(t : T)= is an abbreviation for the expression =is_typeof T t=, where
-=is_typeof= is nothing more than fancy notation for the identity
-function. The point is that =T= is given explicitly, so that when you
-write =(t : T)=, you are specifying that =t= should be interpreted as
-an expression of type =T=. In the first =check= command, Lean decides
-that =123= is a numeral. The two commands after than indicate that it
-is intended to be viewed as a =nat= and as an =int=, respectively.
+=(t : T)= constrains Lean to find an interpertation of =t= which gives
+it a type that is definitionally equal to =T=, thereby allowing you to
+specify the interpretation of =t= you have in mind. In the first
+=check= command, =123= is a generic numeral, which can be instantiated
+to any type that has a =0=, =1=, and addition. The two commands after
+that indicate that it is intended to be viewed as a =nat= and as an
+=int=, respectively.
 
 Here is an example of how we can define a coercion from the booleans
 to the natural numbers.
@@ -762,6 +813,8 @@ notation =#<namespace>=, to specify the namespace in which notation is
 to be interpreted. Another is to replace the notation with an explicit
 function name. Yet a third is to use the =(t : T)= notation to indicate
 the intended type.
+
+#
 # #+BEGIN_SRC lean
 # import data.nat data.int
 # open nat int
