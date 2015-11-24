@@ -49,7 +49,7 @@ var myModule = (function() {
     var codeText = gup("code");
     var url = gup("url");
     return {
-        print_output_to_console: $.cookie("leanjs_print_output_to_console") || false,
+        print_output_to_console: $.cookie("leanjs_print_output_to_console") || true,
         editor_main: editor_main,
         editor_console: editor_console,
         push_output_buffer: function(text) {
