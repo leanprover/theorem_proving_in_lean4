@@ -146,7 +146,8 @@ through the chapters that follow.
 
 This tutorial is an open access project maintained on Github. Many
 people have contributed to the effort, providing corrections,
-suggestions, examples, and even parts of the text. We are grateful to
-Ulrik Buchholz, Nathan Carter, Amine Chaieb, Floris van Doorn, Anthony
-Hart, Daniel Velleman, and Théo Zimmerman for their contributions, and
-we apologize for any names we have inadvertently omitted.
+suggestions, examples, and text. We are grateful to Ulrik Buchholz,
+Nathan Carter, Amine Chaieb, Floris van Doorn, Anthony Hart,
+Christopher John Mazey, Daniel Velleman, and Théo Zimmerman for their
+contributions, and we apologize to those whose names we have
+inadvertently omitted.
