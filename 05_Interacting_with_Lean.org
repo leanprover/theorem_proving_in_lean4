@@ -589,7 +589,7 @@ notation [parsing_only] `[` a `**` b `]` := a * b + 1
 
 variables a b : ℕ
 check [a ** b]
-+END_SRC
+#+END_SRC
 The output of the =check= command displays the expression as =a * b +
 1=. Lean also provides mechanisms for iterated notation, such as =[a,
 b, c, d, e]= to denote a list with the indicated elements. See the
@@ -612,10 +612,10 @@ check (eq.refl r)⁻¹   -- r = r
 #+END_SRC
 Insofar as overloads produce ambiguity, they should be used
 sparingly. We avoid the use of overloads for arithmetic operations
-like =+=, =*=, =-=, and =/= using /type classes/, as described in
-Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]]. For example, in the following, the addition
-operation denotes a general algebraic operation, that can be
-instantiated to =nat= or =int= as required:
+like =+=, =*=, =-=, and =/= by using /type classes/, as described in
+Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]]. In the following, the addition operation denotes
+a general algebraic operation that can be instantiated to =nat= or
+=int= as required:
 #+BEGIN_SRC lean
 import data.nat data.int
 open algebra nat int
@@ -627,42 +627,34 @@ check a + b    -- ℕ
 check m + n    -- ℤ
 print notation +
 #+END_SRC
-Nonetheless, you might decide to overload the plus symbol and
-use it for the list "append" function as well:
+This is sometimes called /parametric polymorphism/, in contrast to /ad
+hoc polymorphism/, which we are considering here. For example, the
+notation =++= is used to concatenate both lists and vectors:
 #+BEGIN_SRC lean
-import data.nat data.list
-open algebra nat list
+import data.list data.tuple
+open list tuple
 
-variables m n : ℕ
-variables s t : list ℕ
+variables (A : Type) (m n : ℕ)
+variables (v : tuple A m) (w : tuple A n) (s t : list A)
 
-infix + := list.append
-
-check m + n   -- ℕ
-check s + t   -- list ℕ
-#END_SRC
+check s ++ t
+check v ++ w
+#+END_SRC
 Where it is necessary to disambiguate, Lean allows you to precede an
-expression with the notation =#<namespace>=, to specify the namespace 
+expression with the notation =#<namespace>= to specify the namespace 
 in which notation is to be interpreted. 
 #+BEGIN_SRC lean
-import data.nat data.list
-open algebra nat list
+import data.list data.tuple
+open list tuple
 
-variables m n : ℕ
-variables s t : list ℕ
+variables (A : Type) (m n : ℕ)
+variables (v : tuple A m) (w : tuple A n) (s t : list A)
 
-infix + := list.append
-
-check m + n   -- ℕ
-check s + t   -- list ℕ
-
--- BEGIN
-check λ x y, (#algebra x + y)
-check λ x y, (#list x + y)
+-- BEGIN 
+check (#list λ x y, x ++ y)
+check (#tuple λ x y, x ++ y)
 -- END
 #+END_SRC
-In the first case, the addition symbol is polymorphic over structures
-which have an associated addition operation.
 
 Lean provides an =abbreviation= mechanism that is similar to the
 notation mechanism.
