@@ -797,7 +797,7 @@ expected instance, or, worse, falls into an infinite loop and times
 out. To help debug in these situations, Lean enables you to request a
 trace of the search:
 #+BEGIN_SRC lean
-set_option class.trace_instances true
+set_option trace.class_instances true
 #+END_SRC
 If you add this to your file in Emacs mode and use =C-c C-x= to run an
 independent Lean process on your file, the output buffer will show a
