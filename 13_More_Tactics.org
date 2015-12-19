@@ -30,6 +30,8 @@ addition (in particular, the property =add_succ=, which asserts that
 =x + succ y = succ (x + y)= for every =x= and =y=).
 #+BEGIN_SRC lean
 import data.nat
+namespace hide
+-- BEGIN
 open nat
 
 theorem zero_add (x : ℕ) : 0 + x = x :=
@@ -57,6 +59,8 @@ begin
       rewrite [succ_add, ih]
     end
 end
+-- END
+end hide
 #+END_SRC
 
 The induction tactic can be used not only with the induction
