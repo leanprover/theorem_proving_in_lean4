@@ -963,6 +963,8 @@ these cases, the term =t= is just an identifier.  The notation
 rewriting rule.
 #+BEGIN_SRC lean
 import algebra.group
+namespace hide
+-- BEGIN
 open algebra
 
 variables {A : Type} [s : group A]
@@ -970,6 +972,8 @@ include s
 
 theorem inv_eq_of_mul_eq_one {a b : A} (H : a * b = 1) : a⁻¹ = b :=
 by rewrite [-(mul_one a⁻¹), -H, inv_mul_cancel_left]
+-- END
+end hide
 #+END_SRC
 In the example above, the term =mul_one a⁻¹= has type =a⁻¹ * 1 = a⁻¹=.
 Thus, the rewrite step =-(mul_one a⁻¹)= replaces =a⁻¹= with =a⁻¹ * 1=.
