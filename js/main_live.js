@@ -373,7 +373,7 @@ var myModule = (function() {
             if (url.indexOf("://github.com/") > -1) {
                 url = url.replace("://github.com", "://raw.githubusercontent.com");
                 url = url.replace("/blob/", "/");
-            } else if (url.indexOf("://gist.github.com")) {
+            } else if (url.indexOf("://gist.github.com") > -1) {
                 url = url.replace("://gist.github.com", "://gist.githubusercontent.com");
                 url = url + "/raw";
             }
