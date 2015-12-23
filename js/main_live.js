@@ -49,6 +49,7 @@ var myModule = (function() {
     var codeText = gup("code");
     var url = gup("url");
     return {
+        useHoTT: gup("hott"),
         print_output_to_console: ($.cookie("leanjs_print_output_to_console") || "true") === "true",
         editor_main: editor_main,
         editor_console: editor_console,
@@ -370,6 +371,9 @@ var myModule = (function() {
             }
         },
         load_from_url: function() {
+            if (url.match(/\.hlean$/)) {
+                myModule.useHoTT = true;
+            }
             if (url.indexOf("://github.com/") > -1) {
                 url = url.replace("://github.com", "://raw.githubusercontent.com");
                 url = url.replace("/blob/", "/");
@@ -378,7 +382,9 @@ var myModule = (function() {
                 url = url + "/raw";
             }
             $.ajaxPrefilter(function(options) {
-                if(options.crossDomain && jQuery.support.cors) {
+                if (options.url.match(/\.js$/)) {
+                    return;
+                } else if (options.crossDomain && jQuery.support.cors) {
                     var http = (window.location.protocol === 'http:' ? 'http:' : 'https:');
                     options.url = http + '//cors-anywhere.herokuapp.com/' + options.url;
                     //options.url = "http://cors.corsproxy.io/url=" + options.url;
@@ -551,7 +557,11 @@ var myModule = (function() {
             var start_time = new Date().getTime();
             myModule.append_console("-- Initializing Lean...           ");
             setTimeout(function() {
-                Module.lean_init();
+                if (myModule.useHoTT) {
+                    Module.lean_init(true);
+                } else {
+                    Module.lean_init();
+                }
                 myModule.append_console("Done");
                 myModule.append_console_nl("(" + elapsed_time_string(start_time) + ")");
             }, 5);
@@ -692,13 +702,24 @@ Module['noExitRuntime'] = true;
 Module['postRun'] = function() {
     myModule.init_lean();
     setTimeout(function() {
-        myModule.import_module("standard");
+        if (myModule.useHoTT) {
+            myModule.import_module("core");
+        } else {
+            myModule.import_module("standard");
+        }
     }, 10);
 };
 Module['preRun'] = [];
 var lean_loading_start_time = new Date().getTime();
-myModule.append_console("-- Loading lean.js...             ");
 Module.preRun.push(function() {
     myModule.append_console("Done");
     myModule.append_console_nl("(" + elapsed_time_string(lean_loading_start_time) + ")");
 })
+$.ajaxPrefilter(undefined);
+if (myModule.useHoTT) {
+    myModule.append_console("-- Loading lean.hott.js...             ");
+    $.getScript("//leanprover.github.io/lean.js/lean.hott.js")
+} else {
+    myModule.append_console("-- Loading lean.js...             ");
+    $.getScript("//leanprover.github.io/lean.js/lean.js")
+}
