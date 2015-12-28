@@ -1058,35 +1058,35 @@ command:
 #+BEGIN_SRC lean
 import data.nat
 
-open [declarations] nat
-open [notations] nat
-open [coercions] nat
-open [classes] nat
-open [abbreviations] nat
+open [declaration] nat
+open [notation] nat
+open [coercion] nat
+open [class] nat
+open [abbreviation] nat
 #+END_SRC
-For example, =open [coercions] nat= makes the coercions in the
+For example, =open [coercion] nat= makes the coercions in the
 namespace =nat= available (and nothing else). You can multiple
 metaclasses on one line:
 #+BEGIN_SRC lean
 import data.nat
 
-open [declarations] [notations] [coercions] nat
+open [declaration] [notation] [coercion] nat
 #+END_SRC
 You can also open a namespace while /excluding/ certain
 metaclasses. For example,
 #+BEGIN_SRC lean
 import data.nat
 
-open - [notations] [coercions] nat
+open - [notation] [coercion] nat
 #+END_SRC
-imports all metaclasses but =[notations]= and =[coercions]=. You can
+imports all metaclasses but =[notation]= and =[coercion]=. You can
 limit the scope of an =open= command by putting it in a section. For
 example, here we temporarily import notation from nat:
 #+BEGIN_SRC lean
 import data.nat
 
 section
-  open [notations] nat
+  open [notation] nat
 
   /- ... -/
 end
@@ -1108,7 +1108,7 @@ limits the shortened identifiers to the ones listed. If you want to
 import /only/ the shortened identifiers, use the following:
 #+BEGIN_SRC lean
 import data.nat
-open [declarations] nat (add sub_sub zero_div)
+open [declaration] nat (add sub_sub zero_div)
 #+END_SRC
 When you open a section, you can rename identifiers on the fly:
 #+BEGIN_SRC lean

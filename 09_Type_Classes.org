@@ -672,7 +672,7 @@ has_add.mk int.add
 definition has_add_bool [instance] : has_add bool :=
 has_add.mk bool.bor
 
-open [coercions] nat int
+open [coercion] nat int
 open bool
 
 set_option pp.notation false
