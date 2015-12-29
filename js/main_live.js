@@ -568,7 +568,7 @@ var myModule = (function() {
                 if (myModule.useHoTT) {
                     Module.lean_init(true);
                 } else {
-                    Module.lean_init();
+                    Module.lean_init(false);
                 }
                 myModule.append_console("Done");
                 myModule.append_console_nl("(" + elapsed_time_string(start_time) + ")");
