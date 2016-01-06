@@ -249,7 +249,7 @@ creates a variable =u=, and declares =A : Type.{u}=. In other words,
 universe =A= lives in, maintaining as much generality as possible.
 
 You can ask Lean's pretty printer to make this information explicit,
-and use additional annotations to specify universe  levals explicitly.
+and use additional annotations to specify universe levels explicitly.
 #+BEGIN_SRC lean
 constants A B : Type
 check A              -- A : Type
@@ -371,7 +371,7 @@ check λ (A B C : Type) (g : B → C) (f : A → B) (x : A), g (f x)
 
 Think about what these expressions mean. The last, for example,
 denotes the function that takes three types, =A=, =B=, and =C=, and
-two functions, =g : B → C= and =f : A → C=, and returns the
+two functions, =g : B → C= and =f : A → B=, and returns the
 composition of =g= and =f=. (Making sense of the type of this function
 requires an understanding of dependent products, which we will explain
 below.) Within a lambda expression =λ x : A, t=, the variable =x= is a
@@ -1103,7 +1103,7 @@ It is still tedious, however, to type all these underscores.  When a
 function takes an argument that can generally be inferred from
 context, Lean allows us to specify that this argument should, by
 default, be left implicit. This is done by putting the arguments in
-curly braces, as folows:
+curly braces, as follows:
 #+BEGIN_SRC lean
 namespace hide
 constant list : Type → Type
