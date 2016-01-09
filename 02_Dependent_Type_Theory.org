@@ -876,7 +876,7 @@ take the type to be the first argument to =cons=, so that for any
 type, =A=, =cons A= is the insertion function for lists of type
 =A=. In other words, for every =A=, =cons A= is the function that
 takes an element =a : A= and a list =l : list A=, and returns a new
-list, so we have =cons a l : list A=.
+list, so we have =cons A a l : list A=.
 
 It is clear that =cons A= should have type =A → list A → list A=. But
 what type should =cons= have? A first guess might be =Type → A → list
@@ -1155,7 +1155,7 @@ second =check= command is somewhat verbose: it indicates that the
 placeholder, =?A=, can itself depend on any of the variables =A=, =B=,
 =a=, and =b= that are in the context. If this additional information
 is annoying, you can suppress it by writing =@ident=, as described
-below. Alternatively, you can set an option to avoident pointing these
+below. Alternatively, you can set an option to avoid printing these
 arguments:
 #+BEGIN_SRC lean
 definition ident {A : Type} (x : A) := x
