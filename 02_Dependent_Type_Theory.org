@@ -248,7 +248,7 @@ creates a variable =u=, and declares =A : Type.{u}=. In other words,
 /polymorphic/; whenever it appears, Lean silently tries to infer which
 universe =A= lives in, maintaining as much generality as possible.
 
-You can ask Lean's pretty printer to make this informaiton explicit,
+You can ask Lean's pretty printer to make this information explicit,
 and use additional annotations to specify universe  levals explicitly.
 #+BEGIN_SRC lean
 constants A B : Type
