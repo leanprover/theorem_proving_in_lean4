@@ -692,11 +692,8 @@ local abbreviation my_id := @my_long_identity_function
 
 Lean also provides mechanisms to automatically insert /coercions/
 between types. These are user-defined functions between datatypes that
-make it possible to "view" one datatype as another. For example, Lean
-parses numerals like =123= to a special datatype known as =num=, which
-can, in turn, be coerced to the natural numbers, integers, reals and
-so on. Similarly, in any expression =a + n= where =a= is an integer
-and =n= is a natural number, =n= is coerced to an integer.
+make it possible to "view" one datatype as another. For example, any 
+natural number can be coerced to an integer.
 #+BEGIN_SRC lean
 import data.nat data.int
 open nat int
@@ -705,21 +702,17 @@ variables a b : int
 variables m n : nat
 
 -- BEGIN
-check 123            -- 123 : num
-check (123 : nat)    -- 123 : ℕ 
-check (123 : int)    -- 123 : ℤ
+check m + n          -- m + n : ℕ
 check a + n          -- a + n : ℤ
 check n + a          -- n + a : ℤ
-check a + 123        -- a + 123 : ℤ
+check (m + n : ℤ)    -- m + n : ℤ
 
 set_option pp.coercions true
 
-check 123            -- 123 : num           
-check (123 : nat)    -- of_num 123 : ℕ
-check (123 : int)    -- of_nat (of_num 123) : ℤ
+check m + n          -- m + n : ℕ
 check a + n          -- a + of_nat n : ℤ
 check n + a          -- of_nat n + a : ℤ
-check a + 123        -- a + of_nat (of_num 123) : ℤ
+check (m + n : ℤ)    -- of_nat (m + n) : ℤ
 -- END
 #+END_SRC
 Setting the option =pp.coercions= to =true= makes the coercions
@@ -727,11 +720,8 @@ explicit. Coercions that are declared in a namespace are only
 available to the system when the namespace is opened. The notation
 =(t : T)= constrains Lean to find an interpertation of =t= which gives
 it a type that is definitionally equal to =T=, thereby allowing you to
-specify the interpretation of =t= you have in mind. In the first
-=check= command, =123= is a generic numeral, which can be instantiated
-to any type that has a =0=, =1=, and addition. The two commands after
-that indicate that it is intended to be viewed as a =nat= and as an
-=int=, respectively.
+specify the interpretation of =t= you have in mind. Thus checking
+=(m + n : ℤ)= forces the insertion of a coercion.
 
 Here is an example of how we can define a coercion from the booleans
 to the natural numbers.
