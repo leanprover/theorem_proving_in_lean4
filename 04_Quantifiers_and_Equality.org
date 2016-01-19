@@ -47,8 +47,8 @@ building proofs involving the universal quantifier.
 
 The Calculus of Inductive Constructions therefore identifies =Π= and
 =∀= in this way. If =p= is any expression, =∀ x : A, p= is nothing more
-than alternative notation for =Π x : A, p=, with the idea is that the
-former is more natural in cases where where =p= is a
+than alternative notation for =Π x : A, p=, with the idea that the
+former is more natural than the latter in cases where where =p= is a
 proposition. Typically, the expression =p= will depend on =x :
 A=. Recall that, in the case of ordinary function spaces, we could
 interpret =A → B= as the special case of =Π x : A, B= in which =B= does
