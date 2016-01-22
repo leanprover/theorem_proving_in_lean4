@@ -1217,7 +1217,7 @@ Notice that now the first =check= command gives the type of the
 identifier, =ident=, without inserting any placeholders. Moreover, the
 output indicates that the first argument is implicit.
 
-Section [[file:08_Building_Theories_and_Proof::#More_on_Implicit_Arguments][More on Implicit Arguments]] explains another useful annotation,
+Section [[file:08_Building_Theories_and_Proofs.org::#More_on_Implicit_Arguments][More on Implicit Arguments]] explains another useful annotation,
 =!=, which makes explicit arguments implicit. In a sense, it is the
 opposite of =@=, and is most useful in the context of theorem proving,
 which we will turn to next.
