@@ -706,7 +706,7 @@ information. This section provides some guidance in both situations.
 
 If the error message is not sufficient to allow you to identify the
 problem, a first strategy is to ask Lean's pretty printer to show more
-information, as discussed in Section [[file:05_Interacting_with_Lean::#Setting_Options][Setting Options]], using some or
+information, as discussed in Section [[file:05_Interacting_with_Lean.org::#Setting_Options][Setting Options]], using some or
 all of the following options:
 #+BEGIN_SRC lean
 set_option pp.implicit true
@@ -936,7 +936,7 @@ Note that double does /not/ have =y= as argument. Variables are only
 included in declarations where they are actually mentioned. To ask
 Lean to include a variable in every definition in a section, use the
 =include= command. This is often useful with type classes, and is
-discussed in Section [[file:09_Type_Classes::#Instances_in_Sections][Instances in Sections]] in the next chapter.
+discussed in Section [[file:09_Type_Classes.org::#Instances_in_Sections][Instances in Sections]] in the next chapter.
 
 Notice that the variable =x= is generalized immediately, so that
 even within the section =double= is a function of =x=, and =t1= and
