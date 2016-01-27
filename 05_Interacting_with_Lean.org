@@ -327,14 +327,11 @@ Emacs interface.
 If you have never used the Emacs text editor before, you should spend
 some time experimenting with it. Emacs is an extremely powerful text
 editor, but it can also be overwhelming. There are a number of
-introductory tutorials on the web (see , including these:
-#+BEGIN_QUOTE
-[[http://www.gnu.org/software/emacs/tour/][Emacs tour: http://www.gnu.org/software/emacs/tour/]]
-[[http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/][Emacs beginners guide:
-http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/]]
-[[http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf][Emacs course:
-http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf]]
-#+END_QUOTE
+introductory tutorials on the web. See, for example:
+- [[http://www.gnu.org/software/emacs/tour/][A Guided Tour of Emacs]]
+- [[http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/][Absolute Beginner's Guide to Emacs]]
+- [[http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf][Introduction to Emacs Course (PDF)]]
+
 You can get pretty far simply using the menus at the top of the
 screen for basic editing and file management. Those menus list
 keyboard-equivalents for the commands. Notation like "C-x", short for
