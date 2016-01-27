@@ -445,11 +445,11 @@ choose "restart lean process" from the Lean menu, and with luck that
 will set things right again.
 
 This is a good place to mention another trick that is sometimes useful
-when editing long files. In Lean, the "exit" command halts processing
+when editing long files. In Lean, the =exit= command halts processing
 of the file abruptly. If you are making changes at the top of a
 long file and want to defer checking of the remainder of the file
 until you are done making those changes, you can temporarily insert an
-"exit."
+=exit=.
 
 ** Projects
 
