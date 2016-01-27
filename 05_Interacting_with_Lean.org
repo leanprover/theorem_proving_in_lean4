@@ -403,7 +403,7 @@ of the expression.
 This works even for implicit arguments. If you put your cursor on an
 underscore symbol, then, assuming Lean's elaborator was successful in
 inferring the value, Emacs shows you that value and its type. Typing
-"C-c C-f" replaces the inferred value with the underscore. In cases
+"C-c C-f" replaces the underscore with the inferred value. In cases
 where Lean is unable to infer a value of an implicit argument, the
 underscore is highlighted, and the error message indicates the type of
 the "hole" that needs to be filled. This can be extremely useful when
