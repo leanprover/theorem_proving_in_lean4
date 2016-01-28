@@ -10,9 +10,9 @@ We have seen that Lean's formal foundation includes basic types,
 =Prop, Type.{1}, Type.{2}, ...=, and allows for the formation of
 dependent function types, =Π x : A. B=. In the examples, we have also
 made use of additional types like =bool=, =nat=, and =int=, and type
-constructors, like =list=, and product, =×=. In fact, every concrete
-type other than the universes in Lean's library, and every type
-constructor other than Pi, is an instance of a general family of type
+constructors, like =list=, and product, =×=. In fact, in Lean's library,
+every concrete type other than the universes and every type
+constructor other than Pi is an instance of a general family of type
 constructions known as /inductive types/. It is remarkable that it is
 possible to construct a substantial edifice of mathematics based on
 nothing more than the type universes, Pi types, and inductive types;
