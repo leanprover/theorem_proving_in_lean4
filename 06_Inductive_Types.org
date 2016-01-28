@@ -173,10 +173,9 @@ allowed to use the shorter name when we open the namespace.
 
 The names =rec_on=, =cases_on=, =induction_on=, and so on are
 generated automatically. As noted above, they are /protected/ to avoid
-clashes; in other words, those names are not shorted by default when
-the namespace is open. You can explicitly declare the shorter
-identifiers as abbreviations at any time, however, or you can
-"unprotect" them using the =renaming= option when you open a
+name clashes. In other words, they are not provided by default when
+the namespace is opened. However, you can explicitly declare
+abbreviations for them using the =renaming= option when you open a
 namespace.
 
 #+BEGIN_SRC lean
