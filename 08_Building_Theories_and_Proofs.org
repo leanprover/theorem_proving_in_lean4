@@ -944,7 +944,7 @@ even within the section =double= is a function of =x=, and =t1= and
 =double= and =t1= to other expressions, like =y= and =2 * x=. It
 corresponds to the ordinary mathematical locution "in this section,
 let =x= and =y= range over the natural numbers." Whenever =x= and =y=
-occur, we assume they denotes natural numbers.
+occur, we assume they denote natural numbers.
 
 Sometimes, however, we wish to /fix/ a single value in a section. For
 example, in an ordinary mathematical text, we might say "in this
