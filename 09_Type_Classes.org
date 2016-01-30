@@ -895,7 +895,7 @@ end hide
 #+END_SRC
 Note that the =include= command includes a variable in every
 definition and theorem in that section.  If we want to declare a
-definition of theorem which does not use the instance, we can use the
+definition or theorem which does not use the instance, we can use the
 =omit= command:
 #+BEGIN_SRC lean
 namespace hide
