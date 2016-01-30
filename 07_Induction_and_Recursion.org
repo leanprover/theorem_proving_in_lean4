@@ -566,7 +566,7 @@ of =cases_on= introduced by the compiler can be reduced by marking
 parts that only report specialization.  In the next example, we define
 the type of finite ordinals =fin n=, a type with =n= inhabitants. We
 also define the function =to_nat= that maps an element of =fin n= to
-an elmeent of =nat=. If we do not mark =n+1= as inaccessible, the
+an element of =nat=. If we do not mark =n+1= as inaccessible, the
 compiler will generate a definition containing two =cases_on=
 expressions. We encourage you to replace =⌞n+1⌟= with =(n+1)= in the
 next example and inspect the generated definition using =print
