@@ -441,7 +441,7 @@ argument is asserted aggressively; if the next argument to =t= is a
 weaker implicit argument, marked with =⦃= and =⦄=, the implicit
 argument is not inserted unless the term is applied to something
 else. With =H : symmetric R=, this is what we want. Because we now
-have=H : ∀ ⦃a b : A⦄, R a b → R b a=, the expression =H= is
+have =H : ∀ ⦃a b : A⦄, R a b → R b a=, the expression =H= is
 interpreted as =@H=, but =H p= is interpreted as =@H _ _ p=. This
 allows us to prove =th3= in the expected way.
 #+BEGIN_SRC lean
