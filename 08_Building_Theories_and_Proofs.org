@@ -799,7 +799,7 @@ help locate the source of an error.
 The second strategy, providing additional information, can be achieved
 by using =have=, =show=, =(t : T)= notation, and =#<namespace>= (see
 Section [[file:05_Interacting_with_Lean.org::#Coercions][Coercions]]) to indicate expected types. More directly, it often
-help to specify the implicit arguments. When Lean cannot solve for the
+helps to specify the implicit arguments. When Lean cannot solve for the
 value of a metavariable corresponding to an implicit argument, you can
 always use =@= to provide that argument explicitly. Doing so will
 either help the elaborator solve the elaboration problem, or help you
