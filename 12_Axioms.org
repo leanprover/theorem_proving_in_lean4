@@ -88,7 +88,7 @@ use of =Prop= entirely. Inductive types and Pi types can be viewed as
 data types, and terms of these types can be "evaluated" by applying
 reduction rules until no more rules can be applied. In principle, any
 closed term (that is, term with no free variables) of type =ℕ= should
-evaluate to a numeral, =succ (succ (succ ... 0))=.
+evaluate to a numeral, =succ (... (succ zero)...)=.
 
 Introducing a proof-irrelevant =Prop= and marking theorems irreducible
 represents a first step towards separation of concerns. The intention
