@@ -31,7 +31,7 @@ automatically generates all the projection functions. The =structure=
 command also allows us to define new structures based on previously
 defined ones. Moreover, Lean provides convenient notation for defining
 instances of a given structure.
-
+
 ** Declaring Structures
 
 The structure command is essentially a "front end" for defining
@@ -495,8 +495,8 @@ end hide
 #+END_SRC
 Notice that we can suppress =:== and =::= when we are not declaring
 any new fields, as is the case for the structure =comm_monoid=. The
-=print prefix= command shows that the common fields of monoid and
-comm_semigroup have been merged.
+=print prefix= command shows that the common fields of =monoid= and
+=comm_semigroup= have been merged.
 
 The =renaming= clause allow us to perform non-trivial merge operations
 such as combining an abelian group with a monoid to obtain a ring.
