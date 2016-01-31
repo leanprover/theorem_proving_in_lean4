@@ -426,7 +426,7 @@ into pieces that are then reassembled to produce the conclusion.
 
 #+BEGIN_SRC lean
 import data.prod
-open prod prod.ops quot
+open prod prod.ops
 
 private definition eqv {A : Type} (p₁ p₂ : A × A) : Prop :=
 (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
