@@ -1185,9 +1185,9 @@ section
   parameter  (f : A → B)
   parameter  [inhA : inhabited A]
   parameter  [dex  : ∀ b, decidable (∃ a, f a = b)]
-  parameter  [encB : encodable A]
+  parameter  [encA : encodable A]
   parameter  [deqB : decidable_eq B]
-  include inhA dex encB deqB
+  include inhA dex encA deqB
 
   definition finv : B → A :=
   λ b : B, if ex : (∃ a, f a = b) then choose ex else arbitrary A
@@ -1205,7 +1205,7 @@ end
 #+END_SRC
 The argument is essentially the same as the classical one; we have
 simply replaced the classical =some= with the constructive choice
-function =choose=, and added three extra hypotheses: =dex=, =encB= and
+function =choose=, and added three extra hypotheses: =dex=, =encA= and
 =deqB=. The first one makes sure we can decide whether a value =b= is
 in the image of =f= or not, and the last two are needed to use
 =choose=.
