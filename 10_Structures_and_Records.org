@@ -306,10 +306,14 @@ red | green | blue
 -- BEGIN
 structure color_point (A : Type) extends private point A :=
 mk :: (c : color)
+
+variable f : point ℕ → bool
+
+check f (color_point.to_point (@color_point.mk ℕ 1 2 color.red))
 -- END
 #+END_SRC
-For private parent structures we have to use the coercions explicitly.
-If we remove =color_point.to_point= i the last example, we get a type
+For private parent structures, we have to use the coercions explicitly.
+If we remove =color_point.to_point= from the above =check= command, we get a type
 error.
 
 We can "rename" fields inherited from parent structures using the
