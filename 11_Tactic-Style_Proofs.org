@@ -510,11 +510,11 @@ begin
 end
 #+END_SRC
 
-You can also use nested =begin= / =end= pairs within a =begin...end=
-block.  In the nested block, Lean focuses on the first goal, and
+You can also nest =begin...end= blocks within other =begin...end=
+blocks.  In a nested block, Lean focuses on the first goal, and
 generates an error if it has not been fully solved at the end of the
-block. This can be helpful in making the number of subgoals introduced
-by a tactic manifest, and indicating when each subgoal is completed.
+block.  This can be helpful in indicating the separate proofs of
+multiple subgoals introduced by a tactic.
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 begin
