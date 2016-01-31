@@ -69,11 +69,11 @@ defined, but also induction principles that prove on their own. For
 example, recall that the standard library defines the type =finset A=
 of finite sets of elements of any type =A=. Typically, we assume =A=
 has decidable equality, which means in particular that we can decide
-whether an element =a : A= is a member of a finite set =s=. Clearly a
-property =P= holds of an arbitrary finite set when it holds of the
-empty set and is maintained whenever one adds a new elements =a= not
-in =s= to a finset =s=. This is encapsulated by the following
-principle of induction:
+whether an element =a : A= is a member of a finite set =s=. Clearly, a
+property =P= holds for an arbitrary finite set when it holds for the
+empty set and when it is maintained for a finite set =s= after a new
+element =a=, that was not previosly in =s=, is added to =s=. This is
+encapsulated by the following principle of induction:
 # TODO: this should be Lean text
 #+BEGIN_SRC text
 theorem finset.induction {A : Type} [h : decidable_eq A] {P : finset A → Prop}
