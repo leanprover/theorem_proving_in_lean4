@@ -14,7 +14,7 @@ we consider extensions of the CIC with additional axioms and
 rules. Extending a foundational system in such a way is often
 convenient; it can make it possible to prove more theorems, as well as
 make it easier to prove theorems that could have been proved
-otherwise. But there can negative consequences of adding additional
+otherwise. But there can be negative consequences of adding additional
 axioms, consequences which may go beyond concerns about their
 correctness. In particular, the use of axioms bears on the
 computational content of definitions and theorems, in ways we will
@@ -33,7 +33,7 @@ interpretation of type theory. In the standard library, the law of the
 excluded middle is a consequence of this axiom.
 The library also imports two semi-constructive (or mildly classical) axioms,
 propositional extensionality and quotients. These
-are used, for example, to develop a theories of sets and finite sets.
+are used, for example, to develop theories of sets and finite sets.
 Even some computationally inclined users may also wish to use the law
 of the excluded middle to reason about computation. Below we will
 describe the effects that these axioms have on computation aspects of
@@ -55,7 +55,7 @@ geometry dealt with constructions of geometric objects, algebra was
 concerned with algorithmic solutions to systems of equations, and
 analysis provided means to compute the future behavior of systems
 evolving over time. From the proof of a theorem to the effect that
-"for every =x=, there is a =y= such that ..." is was generally
+"for every =x=, there is a =y= such that ...", it was generally
 straightforward to extract an algorithm to compute such a =y= given
 =x=.
 
@@ -572,7 +572,7 @@ end uprod
 To complete the example, given =a : A= and =u : uprod A=, we define
 the proposition =a ∈ u= which should hold if =a= is one of the
 elements of the unordered pair =u=.  First, we define a similar
-proposition =mem_fn a u= on (ordered) pairs, then we show that
+proposition =mem_fn a u= on (ordered) pairs; then, we show that
 =mem_fn= respects the equivalence relation =eqv=, in the lemma
 =mem_respects=.  This is an idiom that is used extensively in the Lean
 standard library.
@@ -858,7 +858,7 @@ We can prove it using the choice axiom described in the previous section.
 This is a consequence of [[http://en.wikipedia.org/wiki/Diaconescu%27s_theorem][Diaconescu's theorem]]
 which states that the axiom of choice is sufficient to
 derive the law of excluded middle. More precisely, it shows that the
-law excluded middle follows from =strong_indefinite_description=
+law of the excluded middle follows from =strong_indefinite_description=
 (Hilbert's choice), =propext= (propositional extensionality) and
 =funext= (function extensionality).
 The standard library contains
@@ -1170,7 +1170,7 @@ have the assumption =∃ (x : A), p x=.
 We can use this to provide a constructive version of the theorem
 =has_left_inverse_of_injective=.  We remark this is not the only
 possible version. The constructive version contains more hypotheses
-than the constructive version. In Bishop's terminology, it avoids
+than the classical version. In Bishop's terminology, it avoids
 "pseudo-generality."  Considering the classical construction, it is
 clear that once we have =choose=, we can construct the left inverse as
 long as we can decide whether =b= is in the image of a function =f : A
