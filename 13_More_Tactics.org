@@ -74,12 +74,17 @@ property =P= holds for an arbitrary finite set when it holds for the
 empty set and when it is maintained for a finite set =s= after a new
 element =a=, that was not previosly in =s=, is added to =s=. This is
 encapsulated by the following principle of induction:
-# TODO: this should be Lean text
-#+BEGIN_SRC text
+#+BEGIN_SRC lean
+open finset
+namespace hide
+-- BEGIN
 theorem finset.induction {A : Type} [h : decidable_eq A] {P : finset A → Prop}
-    (H1 : P empty)
-    (H2 : ∀ ⦃a : A⦄, ∀{s : finset A}, a ∉ s → P s → P (insert a s)) :
-  ∀s, P s
+  (H₁ : P finset.empty)
+  (H₂ : ∀ ⦃a : A⦄ {s : finset A}, a ∉ s → P s → P (insert a s))
+  : (∀ s, P s)
+-- END
+  := sorry
+end hide
 #+END_SRC
 To use this as an induction principle, one has to mark it with the
 attribute =[recursor 6]=, which tells the induction tactic that this
