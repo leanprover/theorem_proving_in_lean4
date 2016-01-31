@@ -245,7 +245,7 @@ the introduction rule for =true=, respectively.
 ** Combinators
 
 Combinators are used to combine tactics. The most basic one is the
-=and_then= combinator, denoted by a colon, which applies tactics
+=and_then= combinator, written with a semicolon (=;=), which applies tactics
 successively. This is not the same as listing tactics separated by
 commas in a =begin ... end= block, since when multiple solutions are
 available, =and_then= will backtrack until it finds a solution or
@@ -255,7 +255,7 @@ replace the semicolon by a comma:
 example (p q : Prop) (Hq : q) : p ∨ q :=
 begin constructor; assumption end
 #+END_SRC
-The constructor tactic creates a /stream/ of outcomes, one for each
+The =constructor= tactic creates a /stream/ of outcomes, one for each
 possible result. A comma forces the tactic to commit to an answer at
 that point, whereas the semicolon causes Lean to systematically try
 all the possibilities. Here is a more elaborate example:
@@ -273,7 +273,7 @@ returns a stream of solutions rather than the first one that
 matches. In this case, the first solution that matches =p ?x= is
 ultimately not the right choice, and backtracking is crucial.
 
-The =par= tactic, denoted by =|=, tries one tactic and then the other,
+The =par= combinator, written with a vertical bar (=|=), tries one tactic and then the other,
 using the first one that succeeds. The =repeat= tactic applies a
 tactic repeatedly. Here is an example of these in use:
 #+BEGIN_SRC lean
