@@ -724,13 +724,16 @@ suppose f 0 ≥ f 1,
 show f 0 = f 1, from le.antisymm (H 0) this
 -- END
 #+END_SRC
-Using the keyword =assume= for this purpose would result in a
-syntactic ambiguity, since the expression =assume h k= could mean
-"assume =h= and assume =k=", leaving Lean to infer the relevant
-hypotheses from the context, or "assume proposition =h k= without a
-label". Using =suppose= avoids the problem. As with the anonymous
-=have=, the assumption can also be invoked by enclosing the assertion
-in backticks later in the proof.
+Notice that there is an asymmetry: you can use =have= with or without
+a label, but if you do not wish to name the assumption, you must use
+=suppose= rather than =assume=. The reason is that Lean allows us to
+write =assume H= to introduce a hypothesis without specifying it,
+leaving it to the system to infer to relevant assumption. An anonymous
+=assume= would thus lead to ambiguities when parsing expressions. 
+
+As with the anonymous =have=, when you use =suppose= to introduce an
+assumption, that assumption can also be invoked later in the proof by
+enclosing it in backticks.
 #+BEGIN_SRC lean
 import data.nat
 open nat algebra
