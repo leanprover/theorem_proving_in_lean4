@@ -100,7 +100,7 @@ priority. The proof =dec_trivial= will be explained below.
 As with =coercion= and other attributes, you can assign the =class= or
 =instance= attributes in a definition, or after the fact, with an
 =attribute= command. As usual, the assignments =attribute foo [class]=
-and =attribute foo [instance]= are only operant in the current
+and =attribute foo [instance]= are only in effect in the current
 namespace, but the assignments persist on import. To limit the scope
 of an assignment to the current file, use the =local attribute=
 variant.

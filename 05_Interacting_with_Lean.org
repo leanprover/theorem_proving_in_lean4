@@ -551,8 +551,8 @@ command =infixr= defines notation which associates to the right,
 instead.
 
 If you declare these notations in a namespace, the notation is only
-operant when the namespace is open. You can declare temporary notation
-using the keyword =local=, in which case the notation is operant only
+available when the namespace is open. You can declare temporary notation
+using the keyword =local=, in which case the notation is available
 in the current file, and moreover, within the scope of the current
 =namespace= or =section=, if you are in one.
 #+BEGIN_SRC lean
@@ -760,7 +760,7 @@ In both cases, the scope of the coercion is the current namespace, so
 the coercion will be in place whenever the module is imported and the
 namespace is open. Sometimes it is useful to assign an attribute only
 temporarily. The =local= modifier ensures that the declaration is only
-operant in the current file, and within the current namespace or
+in effect in the current file, and within the current namespace or
 section:
 #+BEGIN_SRC lean
 import data.bool data.nat
