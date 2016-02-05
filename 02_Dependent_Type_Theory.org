@@ -591,7 +591,7 @@ similar to the meaning of =(λ a, t2) t1=, but the two are not the
 same. In the first expression, you should think of every instance of
 =a= in =t2= as a syntactic abbreviation for =t1=. In the second
 expression, =a= is a variable, and the expression =λ a, t2= has to make
-sense independent of the value of =a=. The =let= construct is a
+sense independently of the value of =a=. The =let= construct is a
 stronger means of abbreviation, and there are expressions of the form
 ~let a := t1 in t2~ that cannot be expressed as =(λ a, t2) t1=. As an
 exercise, try to understand why the definition of =foo= below type
