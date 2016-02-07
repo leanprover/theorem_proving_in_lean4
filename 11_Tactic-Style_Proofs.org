@@ -1093,3 +1093,14 @@ begin
   rewrite [+mul_zero, +zero_mul, +add_zero]
 end
 #+END_SRC
+
+There are two variants of =rewrite=, namely =krewrite= and =xrewrite=,
+that are more aggressive about matching patterns. =krewrite= will
+unfold definitions as long as the head symbol matches, for example,
+when trying to match a pattern =f p= with an expression =f t=. In
+contrast, =xrewrite= will unfold all definitions that are not marked
+irreducible. Both are computationally expensive and should be used
+sparingly. =krewrite= is often useful when matching patterns requires
+unfolding projections in an algebraic structure.
+
+

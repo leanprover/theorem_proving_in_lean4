@@ -55,13 +55,15 @@ begin
   show succ x + y = y + succ x,
     begin
       induction y with y ihy,
-        {rewrite zero_add},
+        {krewrite zero_add},
       rewrite [succ_add, ih]
     end
 end
 -- END
 end hide
 #+END_SRC
+(For the use of =krewrite= here, see the end of Chapter [[file:11_Tactic-Style_Proofs.org::#Tactic-Style_Proofs][Tactic-Style
+Proofs]].)
 
 The induction tactic can be used not only with the induction
 principles that are created automatically when an inductive type is

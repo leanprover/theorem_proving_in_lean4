@@ -324,7 +324,7 @@ open nat eq.ops algebra
 example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
 have H1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, from !left_distrib,
 have H2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y),
-  from !right_distrib ▸ !right_distrib ▸ H1,
+  from (right_distrib x y x) ▸ !right_distrib ▸ H1,
 !add.assoc⁻¹ ▸ H2
 #+END_SRC
 
@@ -831,7 +831,8 @@ found in the standard library. It provides a nice example of the way that
 proof terms can be structured and made readable using the devices we have
 discussed here.
 #+BEGIN_SRC lean
-open nat algebra
+import data.nat
+open nat
   
 theorem sqrt_two_irrational {a b : ℕ} (co : coprime a b) : a^2 ≠ 2 * b^2 :=
 assume H : a^2 = 2 * b^2,
@@ -839,7 +840,7 @@ have even (a^2),
   from even_of_exists (exists.intro _ H),
 have even a,
   from even_of_even_pow this,
-obtain (c : nat) (aeq : a = 2 * c),
+obtain (c : ℕ) (aeq : a = 2 * c),
   from exists_of_even this,
 have 2 * (2 * c^2) = 2 * b^2,
   by rewrite [-H, aeq, *pow_two, mul.assoc, mul.left_comm c],
@@ -851,7 +852,7 @@ have even b,
   from even_of_even_pow this,
 have 2 ∣ gcd a b,
   from dvd_gcd (dvd_of_even `even a`) (dvd_of_even `even b`),
-have 2 ∣ 1,
+have 2 ∣ (1 : ℕ),
   begin+ rewrite [gcd_eq_one_of_coprime co at this], exact this end,
 show false, from absurd `2 ∣ 1` dec_trivial
 #+END_SRC
