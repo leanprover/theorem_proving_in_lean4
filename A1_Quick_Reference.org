@@ -27,8 +27,8 @@ help options                 : display all available options
 
 ** Common Options
 
-You can change an option by typing =set_option <option> <value>=. 
-The =<option>= field supports TAB-completion. 
+You can change an option by typing =set_option <option> <value>=.
+The =<option>= field supports TAB-completion.
 You can see an explanation of all options using =help options=.
 
 #+BEGIN_SRC text
@@ -51,12 +51,12 @@ pp.numerals        : print output as numerals
 ** Attributes
 
 These can generally be declared with a =definition= or =theorem=, or
-using the =attribute= or =local attribute= commands. 
+using the =attribute= or =local attribute= commands.
 
 Example: =local attribute nat.add nat.mul [reducible]=.
 #+BEGIN_SRC text
 reducible       : unfold at any time during elaboration if necessary
-quasireducible  : unfold during higher order unification, 
+quasireducible  : unfold during higher order unification,
                   but not during type class resolution
 semireducible   : unfold when performance is not critical
 irreducible     : avoid unfolding during elaboration
@@ -65,12 +65,12 @@ class           : type class declaration
 instance        : type class instance
 priority <num>  : add a priority to an instance or notation
 parsing-only    : use notation only for input
-unfold <num>    : if the argument at position <num> is marked with [constructor] 
+unfold <num>    : if the argument at position <num> is marked with [constructor]
                   unfold this and that argument (for iota reduction)
 constructor     : see unfold <num>
 unfold-full     : unfold definition when fully applied
 recursor        : user-defined recursor/eliminator, used for the induction tactic
-recursor <num>  : user-defined non-dependent recursor/eliminator 
+recursor <num>  : user-defined non-dependent recursor/eliminator
                   where <num> is the position of the major premise
 refl            : reflexivity lemma, used for calc-expressions, tactics and simplifier
 symm            : symmetry lemma, used for calc-expressions, tactics and simplifier
@@ -97,7 +97,7 @@ proof ... qed    : introduce a proof or definition block, elaborated separately
 The keywords =have= and =assert= can be anonymous, which is to say, they can be used without
 giving a label to the hypothesis. The corresponding element of the context can then be
 referred to using the keyword =this= until another anonymous element is introduced, or by
-enclosing the assertion in backticks. To avoid a syntactic ambiguity, the keyword =suppose= 
+enclosing the assertion in backticks. To avoid a syntactic ambiguity, the keyword =suppose=
 is used instead of =assume= to introduce an anonymous assumption.
 
 One can also use anonymous binders (like =lambda=, =take=, =obtain=, etc.) by enclosing
@@ -106,7 +106,7 @@ type in the context with a hidden name.
 
 *** Tactic Mode
 
-At any point in a proof or definition you can switch to tactic mode and apply tactics to 
+At any point in a proof or definition you can switch to tactic mode and apply tactics to
 finish that part of the proof or definition.
 
 #+BEGIN_SRC text
@@ -115,10 +115,10 @@ begin ... end   : enter tactic mode, and blocking mechanism within tactic mode
 by ...          : enter tactic mode, can only execute a single tactic
 begin+; by+     : same as =begin= and =by=, but make local results available
 have            : as in term mode (enters term mode), but visible to tactics
-assert          : as in term mode (stays in tactic mode)
 show            : as in term mode (enters term mode)
 match ... with  : as in term mode (enters term mode)
-let             : introduce local fact (opaque, in the body)
+let             : introduce abbreviation (not visible in the context)
+note            : introduce local fact (opaque, in the body)
 #+END_SRC
 
 Normally, entering tactic mode will make declarations in the local
@@ -134,10 +134,10 @@ section <id> .... end <id>   : begin / end section
 
 variable (var : type)        : introduce variable where needed
 variable {var : type}        : introduce implicit variable where needed
-variable {{var : type}}      : introduce implicit variable where needed, 
+variable {{var : type}}      : introduce implicit variable where needed,
                                which is not maximally inserted
 variable [var : type]        : introduce class inference variable where needed
-variable {var} (var) [var]   : change the bracket of an existing variable 
+variable {var} (var) [var]   : change the bracket type of an existing variable
 parameter                    : introduce variable, fixed within the section
 include                      : include variable in subsequent definitions
 omit                         : undo "include"
@@ -145,14 +145,14 @@ omit                         : undo "include"
 
 ** Tactics
 
-We say a tactic is more "aggressive" when it uses a more expensive (and complete) 
+We say a tactic is more "aggressive" when it uses a more expensive (and complete)
 unification algorithm, and/or unfolds more aggressively definitions.
 
 *** General tactics
 
 #+BEGIN_SRC text
 apply <expr>      : apply a theorem to the goal, create subgoals for non-dependent premises
-fapply <expr>     : like apply, but create subgoals also for dependent premises that were 
+fapply <expr>     : like apply, but create subgoals also for dependent premises that were
                     not assigned by unification procedure
 eapply <expr>     : like apply, but used for applying recursor-like definitions
 exact <expr>      : apply and close goal, or fail
@@ -184,7 +184,7 @@ esimp [<ids>]         : unfold definitions and simplify expressions in goal
 esimp [<ids>] at <id> : unfold definitions and simplify hypothesis in context
 esimp [<ids>] at *    : unfold definitions and simplify everything
 unfold <id>           : similar to (esimp <id>)
-fold <expr>           : unfolds <expr>, search for convertible term in the 
+fold <expr>           : unfolds <expr>, search for convertible term in the
                         goal, and replace it with <expr>
 
 beta                  : beta reduce goal
@@ -193,11 +193,11 @@ change <expr>         : change the goal to <expr> if it is convertible to <expr>
 
 rewrite <expr>        : apply a rewrite rule
 rewrite <expr-list>   : apply a sequence of rewrites
-krewrite              : using keyed rewriting, matches any subterm 
+krewrite              : using keyed rewriting, matches any subterm
                         with the same head as the rewrite rule
 xrewrite              : a more aggressive form of rewrite
 
-subst <id>            : substitute a variable defined in the context, and clear hypothesis and 
+subst <id>            : substitute a variable defined in the context, and clear hypothesis and
                         variable
 substvars             : substitute all variables in the context
 #+END_SRC
@@ -209,22 +209,22 @@ cases <expr>                    : decompose an element of an inductive type
 cases <expr> with <ids>         : name newly introduced variables as specified by <ids>
 induction <expr> (with <ids>)   : use induction
 induction <expr> using <def>    : use the definition <def> to apply induction
-constructor                     : construct an element of an inductive type by applying the 
+constructor                     : construct an element of an inductive type by applying the
                                   first constructor that succeeds
-constructor <i>                 : construct an element of an inductive type by applying the 
+constructor <i>                 : construct an element of an inductive type by applying the
                                   ith-constructor
-fconstructor                    : construct an element of an inductive type by (fapply)ing the 
+fconstructor                    : construct an element of an inductive type by (fapply)ing the
                                   first constructor that succeeds
-fconstructor <i>                : construct an element of an inductive type by (fapply)ing the 
+fconstructor <i>                : construct an element of an inductive type by (fapply)ing the
                                   ith-constructor
 injectivity                     : use injectivity of constructors
-split                           : equivalent to (constructor 1), only applicable to inductive 
+split                           : equivalent to (constructor 1), only applicable to inductive
                                   datatypes with a single constructor (e.g. and introduction)
-left                            : equivalent to (constructor 1), only applicable to inductive 
+left                            : equivalent to (constructor 1), only applicable to inductive
                                   datatypes with two constructors (e.g. left or introduction)
-right                           : equivalent to (constructor 2), only applicable to inductive 
+right                           : equivalent to (constructor 2), only applicable to inductive
                                   datatypes with two constructors (e.g. right or introduction)
-existsi <expr>                  : similar to (constructor 1) but we can provide an argument, 
+existsi <expr>                  : similar to (constructor 1) but we can provide an argument,
                                   useful for performing exists/sigma introduction
 #+END_SRC
 
@@ -243,19 +243,17 @@ trivial             : apply true introduction
 *** Combinators
 
 #+BEGIN_SRC text
-and_then <tac1> <tac2> (notation: <tac1> ; <tac2>)  
-                         : execute <tac1> and then execute <tac2>, backtracking when needed 
+and_then <tac1> <tac2> (notation: <tac1> ; <tac2>)
+                         : execute <tac1> and then execute <tac2>, backtracking when needed
                            (aka sequential composition)
-or_else <tac1> <tac2> (notation: (<tac1> | <tac2>)) 
+or_else <tac1> <tac2> (notation: (<tac1> | <tac2>))
                          : execute <tac1> if it fails, execute <tac2>
-append  <tac1> <tac2>    : execute <tac1> and <tac2> and append their proof state streams
-interleave <tac1> <tac2> : execute <tac1> and <tac2> and interleave the proof state streams 
-                           they produce
+<tac1>: <tac2>           : apply <tac1> and then apply <tac2> to all subgoals generated by <tac1>
 par <tac1> <tac2>        : execute <tac1> and <tac2> in parallel
 fixpoint (fun t, <tac>)  : fixpoint tactic, <tac> may refer to t
 try <tac>                : execute <tac>, if it fails do nothing
 repeat <tac>             : repeat <tac> zero or more times (until it fails)
-repeat1 <tac>            : like (repeat <tac>), but fails if <tac> does not succeed at least 
+repeat1 <tac>            : like (repeat <tac>), but fails if <tac> does not succeed at least
                            once
 at_most <num> <tac>      : like (repeat <tac>), but execute <tac> at most <num> times
 do <num> <tac>           : execute <tac> exactly <num> times
@@ -283,7 +281,7 @@ now                 : fail if there are unsolved goals
 state                          : display the current proof state
 check_expr <expr>              : display the type of the given expression in the current goal
 trace <string>                 : display the current string
-with_options [<options>] <tac> : execute a single tactic with different options 
+with_options [<options>] <tac> : execute a single tactic with different options
                                  (<options> is a comma-separated list)
 #+END_SRC
 
@@ -307,10 +305,10 @@ C-c C-e    : execute Lean command
 C-c C-r    : restart Lean process
 C-c C-p    : print the definition of the identifier under the cursor
              in a new buffer
-C-c C-g    : show the current goal at a line of a tactic proof, in a 
+C-c C-g    : show the current goal at a line of a tactic proof, in a
              new buffer
-C-c C-f    : fill a placeholder by the printed term in the minibuffer. 
-             Note: the elaborator might need more information 
+C-c C-f    : fill a placeholder by the printed term in the minibuffer.
+             Note: the elaborator might need more information
              to correctly infer the implicit arguments of this term
 #+END_SRC
 
