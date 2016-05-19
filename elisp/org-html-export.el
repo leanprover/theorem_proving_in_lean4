@@ -1,13 +1,10 @@
-;; emacs org-mode batch configuration
-(require 'cask "~/.cask/cask.el")
-(cask-initialize "./")
+(require 'f)
 (setq working-dir (f-dirname (f-this-file)))
 (add-to-list 'load-path working-dir)
 (setq make-backup-files nil)
 
 ;;; ORG mode
 (require 's)
-(require 'f)
 (require 'org)
 (require 'ox-bibtex)
 (require 'dash)
