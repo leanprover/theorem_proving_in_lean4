@@ -828,64 +828,66 @@ checker, for each definition and theorem processed. If you ever find
 the system slowing down while processing a file, this can help you
 locate the source of the problem.
 
-** Making Auxiliary Facts Visible
-:PROPERTIES:
-  :CUSTOM_ID: Making_Auxiliary_Facts_Visible
-:END:
+# This section is no longer valid.
+#
+# ** Making Auxiliary Facts Visible
+# :PROPERTIES:
+#   :CUSTOM_ID: Making_Auxiliary_Facts_Visible
+# :END:
 
-We have seen that the =have= construct introduces an auxiliary subgoal
-in a proof, and is useful for structuring and documenting proofs.
-Given the term =have H : p, from s, t=, by default, the hypothesis =H=
-is not "visible" by automated procedures and tactics used to construct
-=t=. This is important because too much information may negatively
-affect the performance and effectiveness of automated procedures. You
-can make =H= available to automated procedures and tactics by using
-the idiom =assert H : p, from s, t=. Here is an example:
-#+BEGIN_SRC lean
-example (p q r : Prop) : p ∧ q ∧ r → q ∧ p :=
-assume Hpqr : p ∧ q ∧ r,
-assert Hp   : p,     from and.elim_left Hpqr,
-have   Hqr  : q ∧ r, from and.elim_right Hpqr,
-assert Hq   : q,     from and.elim_left Hqr,
-proof
-  -- Hp and Hq are visible here,
-  -- Hqr is not because we used "have".
-  and.intro Hq Hp
-qed
-#+END_SRC
-Recall that =proof ... qed= block is implemented using tactics,
-so any hypothesis introduced using =have= is invisible inside it.
-In the example above, =Hqr= is not visible in the =proof ... qed=
-block.
+# We have seen that the =have= construct introduces an auxiliary subgoal
+# in a proof, and is useful for structuring and documenting proofs.
+# Given the term =have H : p, from s, t=, by default, the hypothesis =H=
+# is not "visible" by automated procedures and tactics used to construct
+# =t=. This is important because too much information may negatively
+# affect the performance and effectiveness of automated procedures. You
+# can make =H= available to automated procedures and tactics by using
+# the idiom =assert H : p, from s, t=. Here is an example:
+# #+BEGIN_SRC lean
+# example (p q r : Prop) : p ∧ q ∧ r → q ∧ p :=
+# assume Hpqr : p ∧ q ∧ r,
+# assert Hp   : p,     from and.elim_left Hpqr,
+# have   Hqr  : q ∧ r, from and.elim_right Hpqr,
+# assert Hq   : q,     from and.elim_left Hqr,
+# proof
+#   -- Hp and Hq are visible here,
+#   -- Hqr is not because we used "have".
+#   and.intro Hq Hp
+# qed
+# #+END_SRC
+# Recall that =proof ... qed= block is implemented using tactics,
+# so any hypothesis introduced using =have= is invisible inside it.
+# In the example above, =Hqr= is not visible in the =proof ... qed=
+# block.
 
-The =have=, =show= and =assert= terms have a variant which provide
-even more control over which hypotheses are available in =from s=.
-#+BEGIN_SRC text
-have   H : p, using H_1 ... H_n, from s, t
-assert H : p, using H_1 ... H_n, from s, t
-show   H : p, using H_1 ... H_n, from s
-#+END_SRC
-In all three terms, the hypotheses =H_1= ... =H_n= are available for
-automated procedures and tactics used in =s=.
-#+BEGIN_SRC lean
-example (p q r : Prop) : p ∧ q ∧ r → q ∧ p :=
-assume Hpqr : p ∧ q ∧ r,
-have   Hp   : p,      from and.elim_left Hpqr,
-have   Hqr  : q ∧ r,  from and.elim_right Hpqr,
-assert Hq   : q,      from and.elim_left Hqr,
-show q ∧ p, using Hp, from
-proof
-  -- Hp is visible here because of =using Hp=
-  and.intro Hq Hp
-qed
-#+END_SRC
-See Chapter [[file:11_Tactics-Style_Proofs.org::#Tactic-Style_Proofs][Tactic-Style Proofs]] for a discussion of Lean's tactics.
+# The =have=, =show= and =assert= terms have a variant which provide
+# even more control over which hypotheses are available in =from s=.
+# #+BEGIN_SRC text
+# have   H : p, using H_1 ... H_n, from s, t
+# assert H : p, using H_1 ... H_n, from s, t
+# show   H : p, using H_1 ... H_n, from s
+# #+END_SRC
+# In all three terms, the hypotheses =H_1= ... =H_n= are available for
+# automated procedures and tactics used in =s=.
+# #+BEGIN_SRC lean
+# example (p q r : Prop) : p ∧ q ∧ r → q ∧ p :=
+# assume Hpqr : p ∧ q ∧ r,
+# have   Hp   : p,      from and.elim_left Hpqr,
+# have   Hqr  : q ∧ r,  from and.elim_right Hpqr,
+# assert Hq   : q,      from and.elim_left Hqr,
+# show q ∧ p, using Hp, from
+# proof
+#   -- Hp is visible here because of =using Hp=
+#   and.intro Hq Hp
+# qed
+# #+END_SRC
+# See Chapter [[file:11_Tactics-Style_Proofs.org::#Tactic-Style_Proofs][Tactic-Style Proofs]] for a discussion of Lean's tactics.
 
-There are even situations where an auxiliary fact needs to be visible
-to the elaborator, so that it can solve unification problems that
-arise. This can arise when the expression to be synthesized depends on
-an auxiliary fact, =H=. We will see an example of this in Section
-[[file:11_Axioms.org::#Choice_Axioms][Choice Axioms]], when we discuss the Hilbert choice operator.
+# There are even situations where an auxiliary fact needs to be visible
+# to the elaborator, so that it can solve unification problems that
+# arise. This can arise when the expression to be synthesized depends on
+# an auxiliary fact, =H=. We will see an example of this in Section
+# [[file:11_Axioms.org::#Choice_Axioms][Choice Axioms]] when we discuss the Hilbert choice operator.
 
 ** Sections
 

@@ -253,32 +253,34 @@ the introduction rule for =true=, respectively.
 
 Combinators are used to combine tactics. The most basic one is the
 =and_then= combinator, written with a semicolon (=;=), which applies tactics
-successively. This is not the same as listing tactics separated by
-commas in a =begin ... end= block, since when multiple solutions are
-available, =and_then= will backtrack until it finds a solution or
-exhausts all the possibilities. The following example fails if we
-replace the semicolon by a comma:
-#+BEGIN_SRC lean
-example (p q : Prop) (Hq : q) : p ∨ q :=
-begin constructor; assumption end
-#+END_SRC
-The =constructor= tactic creates a /stream/ of outcomes, one for each
-possible result. A comma forces the tactic to commit to an answer at
-that point, whereas the semicolon causes Lean to systematically try
-all the possibilities. Here is a more elaborate example:
-#+BEGIN_SRC lean
-variable p : nat → Prop
-variable q : nat → Prop
-variables a b c : nat
+successively. 
 
-example : p c → p b → q b → p a → ∃ x, p x ∧ q x :=
-by intros; apply exists.intro; split; eassumption; eassumption
-#+END_SRC
-The =eassumption= tactic is stronger than =assumption= in that it is
-more aggressive when it comes to reducing expressions, and in that it
-returns a stream of solutions rather than the first one that
-matches. In this case, the first solution that matches =p ?x= is
-ultimately not the right choice, and backtracking is crucial.
+# This is not the same as listing tactics separated by
+# commas in a =begin ... end= block, since when multiple solutions are
+# available, =and_then= will backtrack until it finds a solution or
+# exhausts all the possibilities. The following example fails if we
+# replace the semicolon by a comma:
+# #+BEGIN_SRC lean
+# example (p q : Prop) (Hq : q) : p ∨ q :=
+# begin constructor; assumption end
+# #+END_SRC
+# The =constructor= tactic creates a /stream/ of outcomes, one for each
+# possible result. A comma forces the tactic to commit to an answer at
+# that point, whereas the semicolon causes Lean to systematically try
+# all the possibilities. Here is a more elaborate example:
+# #+BEGIN_SRC lean
+# variable p : nat → Prop
+# variable q : nat → Prop
+# variables a b c : nat
+
+# example : p c → p b → q b → p a → ∃ x, p x ∧ q x :=
+# by intros; apply exists.intro; split; eassumption; eassumption
+# #+END_SRC
+# The =eassumption= tactic is stronger than =assumption= in that it is
+# more aggressive when it comes to reducing expressions, and in that it
+# returns a stream of solutions rather than the first one that
+# matches. In this case, the first solution that matches =p ?x= is
+# ultimately not the right choice, and backtracking is crucial.
 
 The =par= combinator, written with a vertical bar (=|=), tries one tactic and then the other,
 using the first one that succeeds. The =repeat= tactic applies a
@@ -297,7 +299,7 @@ open set function eq.ops
 
 variables {X Y Z : Type}
 
-lemma image_compose (f : Y → X) (g : X → Y) (a : set X) : (f ∘ g) ' a = f ' (g ' a) :=
+lemma image_comp (f : Y → X) (g : X → Y) (a : set X) : (f ∘ g) ' a = f ' (g ' a) :=
 set.ext (take z,
   iff.intro
     (assume Hz,
@@ -305,7 +307,7 @@ set.ext (take z,
       by repeat (apply mem_image | assumption | reflexivity))
     (assume Hz,
       obtain y [x Hz₁ Hz₂] Hy₂, from Hz,
-      by repeat (apply mem_image | assumption | esimp [compose] | rewrite Hz₂)))
+      by repeat (apply mem_image | assumption | esimp [comp] | rewrite Hz₂)))
 #+END_SRC
 
 # TODO: need more and better examples, both above and below.

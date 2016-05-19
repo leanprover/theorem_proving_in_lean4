@@ -817,9 +817,9 @@ open nat algebra
 
 -- BEGIN
 variable f : ℕ → ℕ
-premise H : ∀ x : ℕ, f x ≤ f (x + 1)
 
-example (H' : ∃ x, f (x + 1) ≤ f x) : ∃ x, f (x + 1) = f x :=
+example (H : ∀ x : ℕ, f x ≤ f (x + 1)) (H' : ∃ x, f (x + 1) ≤ f x) :
+  ∃ x, f (x + 1) = f x :=
 obtain x `f (x + 1) ≤ f x`, from H',
 exists.intro x
   (show f (x + 1) = f x, from le.antisymm `f (x + 1) ≤ f x` (H x))
@@ -853,7 +853,7 @@ have even b,
 have 2 ∣ gcd a b,
   from dvd_gcd (dvd_of_even `even a`) (dvd_of_even `even b`),
 have 2 ∣ (1 : ℕ),
-  begin+ rewrite [gcd_eq_one_of_coprime co at this], exact this end,
+  by rewrite [gcd_eq_one_of_coprime co at this]; exact this,
 show false, from absurd `2 ∣ 1` dec_trivial
 #+END_SRC
 

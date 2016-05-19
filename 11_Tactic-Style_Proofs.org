@@ -432,46 +432,48 @@ end
 # out proofs by induction, when it is often needed to obtain
 # the right induction hypothesis.
 
-** Managing Auxiliary Facts
+# This section is no longer valid!
+#
+# ** Managing Auxiliary Facts
 
-Recall from Section [[file:08_Building_Theories_and_Proofs.org::#Making_Auxiliary_Facts_Visible][Making Auxiliary Facts Visible]] that we need to use
-=assert= instead of =have= to state auxiliary subgoals if we wish to
-use them in tactic proofs. For example, the following proofs fail, if
-we replace any =assert= by a =have=:
-#+BEGIN_SRC lean
-example (p q : Prop) (H : p ∧ q) : p ∧ q ∧ p :=
-assert Hp : p, from and.left H,
-assert Hq : q, from and.right H,
-begin
-  apply (and.intro Hp),
-  apply (and.intro Hq),
-  exact Hp
-end
+# Recall from Section [[file:08_Building_Theories_and_Proofs.org::#Making_Auxiliary_Facts_Visible][Making Auxiliary Facts Visible]] that we need to use
+# =assert= instead of =have= to state auxiliary subgoals if we wish to
+# use them in tactic proofs. For example, the following proofs fail, if
+# we replace any =assert= by a =have=:
+# #+BEGIN_SRC lean
+# example (p q : Prop) (H : p ∧ q) : p ∧ q ∧ p :=
+# assert Hp : p, from and.left H,
+# assert Hq : q, from and.right H,
+# begin
+#   apply (and.intro Hp),
+#   apply (and.intro Hq),
+#   exact Hp
+# end
 
-example (p q : Prop) (H : p ∧ q) : p ∧ q ∧ p :=
-assert Hp : p, from and.left H,
-assert Hq : q, from and.right H,
-begin
-  apply and.intro,
-  assumption,
-  apply and.intro,
-  repeat assumption
-end
-#+END_SRC
-Alternatively, we can explicitly put a =have= statement into the
-context with the keyword =using=:
-#+BEGIN_SRC lean
-example (p q : Prop) (H : p ∧ q) : p ∧ q ∧ p :=
-have Hp : p, from and.left H,
-have Hq : q, from and.right H,
-show _, using Hp Hq,
-begin
-  apply and.intro,
-  assumption,
-  apply and.intro,
-  repeat assumption
-end
-#+END_SRC
+# example (p q : Prop) (H : p ∧ q) : p ∧ q ∧ p :=
+# assert Hp : p, from and.left H,
+# assert Hq : q, from and.right H,
+# begin
+#   apply and.intro,
+#   assumption,
+#   apply and.intro,
+#   repeat assumption
+# end
+# #+END_SRC
+# Alternatively, we can explicitly put a =have= statement into the
+# context with the keyword =using=:
+# #+BEGIN_SRC lean
+# example (p q : Prop) (H : p ∧ q) : p ∧ q ∧ p :=
+# have Hp : p, from and.left H,
+# have Hq : q, from and.right H,
+# show _, using Hp Hq,
+# begin
+#   apply and.intro,
+#   assumption,
+#   apply and.intro,
+#   repeat assumption
+# end
+# #+END_SRC
 
 ** Structuring Tactic Proofs
 
