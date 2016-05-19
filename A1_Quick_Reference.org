@@ -1,6 +1,7 @@
 #+Title: Lean Quick Reference
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
 #+DATE: \href{https://github.com/leanprover/tutorial/commit/\gitHash}{Version \gitAbbrevHash}, updated at \gitAuthorIsoDate
+#+OPTIONS: H:4
 
 * Quick Reference
 
@@ -191,8 +192,8 @@ beta                  : beta reduce goal
 whnf                  : put goal in weak head normal form
 change <expr>         : change the goal to <expr> if it is convertible to <expr>
 
-rewrite <expr>        : apply a rewrite rule
-rewrite <expr-list>   : apply a sequence of rewrites
+rewrite <rule>        : apply a rewrite rule (see below)
+rewrite [<rules>]     : apply a sequence of rewrite rules (see below)
 krewrite              : using keyed rewriting, matches any subterm
                         with the same head as the rewrite rule
 xrewrite              : a more aggressive form of rewrite
@@ -200,6 +201,37 @@ xrewrite              : a more aggressive form of rewrite
 subst <id>            : substitute a variable defined in the context, and clear hypothesis and
                         variable
 substvars             : substitute all variables in the context
+#+END_SRC
+
+**** Rewrite rules
+
+You can combine rewrite rules from different groups in the following order, starting with the innermost:
+
+#+BEGIN_SRC text
+e                : match left-hand-side of equation e to a goal subterm,
+                   then replace every occurence with right-hand-side
+{p}e             : apply e only where pattern p (which may contain placeholders) matches
+
+n t              : apply t exactly n times
+n>t              : apply t at most n times
+*t               : apply t zero or more times (up to rewriter.max_iter)
++t               : apply t one or more times
+
+-t               : apply t in reverse direction
+
+↑id              : unfold id
+↑[ids]           : unfold ids
+↓id              : fold id
+▸expr            : reduce goal to expression expr
+▸*               : equivalent to esimp
+
+t at {i, ...}    : apply t only at numbered occurences
+t at -{i, ...}   : apply t only at all but the numbered occurences
+t at H           : apply t at hypothesis H
+t at H {i, ...}  : apply t only at numbered occurences in H
+t at H -{i, ...} : apply t only at all but the numbered occurences in H
+t at * ⊢         : apply t at all hypotheses
+t at *           : apply t at the goal and all hypotheses
 #+END_SRC
 
 *** Induction and cases
