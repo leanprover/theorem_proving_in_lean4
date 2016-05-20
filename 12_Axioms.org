@@ -789,58 +789,60 @@ epsilon_spec H
 end hide
 #+END_SRC
 
-In Section [[file:08_Building_Theories_and_Proofs.org::#Making_Auxiliary_Facts_Visible][Making Auxiliary Facts Visible]], we explained that, on some
-occasions, it is necessary to use =assert= instead of =have= to put
-auxiliary goals into the context so that the elaborator can find
-them. This often comes up in connection to =epsilon= and =some=,
-because these induce dependencies on elements of =Prop=. The following
-examples illustrate some of the places where =assert= is needed. A
-good rule of thumb is that if you are using =some= or =epsilon=, and
-you are presented with a strange error message, trying changing =have=
-to =assert=.
+# This is no longer the case.
+#
+# In Section [[file:08_Building_Theories_and_Proofs.org::#Making_Auxiliary_Facts_Visible][Making Auxiliary Facts Visible]], we explained that, on some
+# occasions, it is necessary to use =assert= instead of =have= to put
+# auxiliary goals into the context so that the elaborator can find
+# them. This often comes up in connection to =epsilon= and =some=,
+# because these induce dependencies on elements of =Prop=. The following
+# examples illustrate some of the places where =assert= is needed. A
+# good rule of thumb is that if you are using =some= or =epsilon=, and
+# you are presented with a strange error message, trying changing =have=
+# to =assert=.
 
-#+BEGIN_SRC lean
-open classical
+# #+BEGIN_SRC lean
+# open classical
 
-section
-  variable A : Type
-  variable a : A
+# section
+#   variable A : Type
+#   variable a : A
 
-  -- o.k.
-  example : ∃ x : A, x = x :=
-  have H1 : ∃ y, y = y, from exists.intro a rfl,
-  have H2 : some H1 = some H1, from some_spec H1,
-  exists.intro (some H1) H2
+#   -- o.k.
+#   example : ∃ x : A, x = x :=
+#   have H1 : ∃ y, y = y, from exists.intro a rfl,
+#   have H2 : some H1 = some H1, from some_spec H1,
+#   exists.intro (some H1) H2
 
-  /-
-  -- invalid local context
-  example : ∃ x : A, x = x :=
-  have H1 : ∃ y, y = y, from exists.intro a rfl,
-  have H2 : some H1 = some H1, from some_spec H1,
-  exists.intro _ H2
-  -/
+#   /-
+#   -- invalid local context
+#   example : ∃ x : A, x = x :=
+#   have H1 : ∃ y, y = y, from exists.intro a rfl,
+#   have H2 : some H1 = some H1, from some_spec H1,
+#   exists.intro _ H2
+#   -/
 
-  -- o.k.
-  example : ∃ x : A, x = x :=
-  assert H1 : ∃ y, y = y, from exists.intro a rfl,
-  have H2 : some H1 = some H1, from some_spec H1,
-  exists.intro _ H2
+#   -- o.k.
+#   example : ∃ x : A, x = x :=
+#   assert H1 : ∃ y, y = y, from exists.intro a rfl,
+#   have H2 : some H1 = some H1, from some_spec H1,
+#   exists.intro _ H2
 
-  /-
-  -- invalid local context
-  example : ∃ x : A, x = x :=
-  have H1 : ∃ y, y = y, from exists.intro a rfl,
-  have H2 : some H1 = some H1, from some_spec H1,
-  exists.intro (some H1) (eq.trans H2 H2)
-  -/
+#   /-
+#   -- invalid local context
+#   example : ∃ x : A, x = x :=
+#   have H1 : ∃ y, y = y, from exists.intro a rfl,
+#   have H2 : some H1 = some H1, from some_spec H1,
+#   exists.intro (some H1) (eq.trans H2 H2)
+#   -/
 
-  -- o.k.
-  example : ∃ x : A, x = x :=
-  assert H1 : ∃ y, y = y, from exists.intro a rfl,
-  have H2 : some H1 = some H1, from some_spec H1,
-  exists.intro (some H1) (eq.trans H2 H2)
-end
-#+END_SRC
+#   -- o.k.
+#   example : ∃ x : A, x = x :=
+#   assert H1 : ∃ y, y = y, from exists.intro a rfl,
+#   have H2 : some H1 = some H1, from some_spec H1,
+#   exists.intro (some H1) (eq.trans H2 H2)
+# end
+# #+END_SRC
 
 ** Excluded Middle
 
