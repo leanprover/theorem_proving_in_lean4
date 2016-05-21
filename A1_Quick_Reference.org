@@ -249,7 +249,7 @@ fconstructor                    : construct an element of an inductive type by (
                                   first constructor that succeeds
 fconstructor <i>                : construct an element of an inductive type by (fapply)ing the
                                   ith-constructor
-injectivity                     : use injectivity of constructors
+injection <id> (with <ids>)     : use injectivity of constructors at specified hypothesis
 split                           : equivalent to (constructor 1), only applicable to inductive
                                   datatypes with a single constructor (e.g. and introduction)
 left                            : equivalent to (constructor 1), only applicable to inductive
