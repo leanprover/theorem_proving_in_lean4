@@ -180,7 +180,7 @@ you wish to use.
 
 The command =import standard= imports the essential parts of the
 standard library, and by now you have seen many of the namespaces you
-will need. For exmaple, you should =open nat= for notation when you
+will need. For example, you should =open nat= for notation when you
 are working with the natural numbers, and =open int= when you are
 working with the integers. In general, however, it is important for
 you to be familiar with the library and its contents, so you know what
