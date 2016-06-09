@@ -1,16 +1,16 @@
 os:
   - linux
 language: c++
-sudo: false
+sudo: true
+dist: trusty
 cache: apt
 addons:
   apt:
     sources:
-    - kalakris-cmake
     - ubuntu-toolchain-r-test
-    - cassou-emacs
     packages:
-    - emacs24
+    - cmake
+    - cmake-data
     - mercurial
     - python2.7
     - texlive-latex-recommended
@@ -26,12 +26,12 @@ addons:
     - pgf
     - moreutils
     - nodejs
-    - g++-4.8
-    - libstdc++-4.8-dev
+    - g++-5
+    - libstdc++-5-dev
     - libgmp-dev
     - libmpfr-dev
     - liblua5.2-dev
-    - cmake
+    - emacs24
 env:
   global:
    # GH_TOKEN=[secure]              (to push to leanprover org)
@@ -44,7 +44,7 @@ env:
 before_install:
   - mkdir ~/bin
   - export PATH="/home/travis/.cask/bin:~/bin:$PATH"
-  - curl -fsSkL https://raw.github.com/cask/cask/master/go | python
+  - curl -fsSL https://raw.github.com/cask/cask/master/go | python
   - cask
   - tar xvfz header/l3kernel.tar.gz -C ~/
 
@@ -57,7 +57,7 @@ install:
       cd lean &&
       mkdir build &&
       cd build &&
-      cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8 ../src &&
+      cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-5 ../src &&
       make &&
       cd ../../;
     fi
