@@ -49,7 +49,7 @@ check n
 check n + 0        -- nat    
 check m * (n + 0)  -- nat
 check b1           -- bool
-check b1 && b2     -- "&&" is bolean and
+check b1 && b2     -- "&&" is boolean and
 check b1 || b2     -- boolean or
 check tt           -- boolean "true"
 -- END
