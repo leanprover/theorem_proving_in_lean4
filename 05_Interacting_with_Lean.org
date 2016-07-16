@@ -620,8 +620,8 @@ open algebra nat int
 variables a b : int
 variables m n : nat
 
-check a + b    -- ℕ 
-check m + n    -- ℤ
+check a + b    -- ℤ
+check m + n    -- ℕ
 print notation +
 #+END_SRC
 This is sometimes called /parametric polymorphism/, in contrast to /ad
