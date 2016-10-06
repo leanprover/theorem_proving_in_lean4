@@ -92,17 +92,12 @@ this is not specific to Lean at all. To start with, we will explain
 the logical system that Lean is based on, a version of /dependent type
 theory/ that is powerful enough to prove almost any conventional
 mathematical theorem, and expressive enough to do it in a natural
-way. We will explain not only how to define mathematical objects and
+way. More specifically, Lean is based on a variant of a system known
+as the /Calculus of Inductive
+Constructions/\cite{Coquand1988,pfenning:paulin:mohring:89}, or /CIC/.
+We will explain not only how to define mathematical objects and
 express mathematical assertions in dependent type theory, but also how
 to use it as a language for writing proofs. 
-
-In fact, Lean supports two versions of dependent type theory. The
-first is a variant of a system known as the /Calculus of Inductive
-Constructions/\cite{Coquand1988,pfenning:paulin:mohring:89}, or
-/CIC/. This is the system used by Lean's standard library, and is the
-focus of this tutorial. The second version of dependent type theory
-implements an axiomatic framework for [[http://homotopytypetheory.org/][homotopy type theory]],
-which we will discuss in a later chapter.
 
 Because fully detailed axiomatic proofs are so complicated, the
 challenge of theorem proving is to have the computer fill in as many
@@ -129,9 +124,9 @@ below:
 #+BEGIN_SRC lean
 -- BEGIN
 theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=
-assume Hpq : p ∧ q,
-have Hp : p, from and.elim_left Hpq,
-have Hq : q, from and.elim_right Hpq,
+assume hpq : p ∧ q,
+have hp : p, from and.elim_left Hpq,
+have hq : q, from and.elim_right Hpq,
 show q ∧ p, from and.intro Hq Hp
 -- END
 #+END_SRC
@@ -148,6 +143,6 @@ This tutorial is an open access project maintained on Github. Many
 people have contributed to the effort, providing corrections,
 suggestions, examples, and text. We are grateful to Ulrik Buchholz,
 Nathan Carter, Amine Chaieb, Floris van Doorn, Anthony Hart, Sean
-Leather, Christopher John Mazey, Daniel Velleman, and Théo Zimmerman
-for their contributions, and we apologize to those whose names we have
-inadvertently omitted.
+Leather, Christopher John Mazey, Sebastian Ullrich, Daniel Velleman,
+and Théo Zimmerman for their contributions, and we apologize to those
+whose names we have inadvertently omitted.
