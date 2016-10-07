@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+set -e
+if [ "$#" -ne 2 ]; then
+    echo "Usage example: $0 leanprover tutorial"
+    exit 1
+fi
 
 # 1. Build
 make
@@ -13,7 +18,7 @@ mkdir deploy
 cd deploy
 rm -rf *
 git init
-cp ../*.html ../tutorial.pdf ../quickref.pdf .
+cp ../*.html ../tutorial.pdf .  # JA : temporarily removed ../quickref.pdf
 cp -r ../css ../images ../fonts ../js .
 for CSS in css/*.css
 do
@@ -25,12 +30,12 @@ do
     minify ${JS} > ${JS}.min
     mv ${JS}.min ${JS}
 done
-git add -f *.html tutorial.pdf quickref.pdf
+git add -f *.html tutorial.pdf   # JA temporarily removed quickref.pdf
 git add -f css/*
 git add -f images/*
 git add -f fonts/*
 git add -f js/*
 git commit -m "Update `date`"
-git push git@github.com:leanprover/tutorial.git +HEAD:gh-pages
+git push git@github.com:$1/$2.git +HEAD:gh-pages
 cd ../
 rm -rf deploy
