@@ -505,6 +505,55 @@ constructor, =∧= and =×= are treated separately in Lean. With the
 analogy, however, the proof we have just constructed is similar to a
 function that swaps the elements of a pair.
 
+# TODO: fill in a reference later
+
+We will see in a later chapter that certain types in Lean are
+/structures/, which is to say, the type is defined with a single
+canonical /constructor/ which builds an element of the type from a
+sequence of suitable arguments. For every =p q : Prop=, =p ∧ q= is an
+example: the canonical way to construct an element is to apply
+=and.intro= to suitable arguments =hp : p= and =hq : q=. Lean allows
+us to use /anonymous constructor/ notation =⟨arg1, arg2, ...⟩= in
+situations like these, when the relevant type can be inferred from the
+context. In particular, we can often write =⟨hp, hq⟩= instead of
+=and.intro hp hq=:
+#+BEGIN_SRC lean
+variables p q : Prop
+premises  (hp : p) (hq : q)
+
+check (⟨hp, hq⟩ : p ∧ q)
+#+END_SRC
+These angle brackets are obtained by typing =\<= and =\>=,
+respectively.
+
+Lean provides another useful syntactic gadget. Given an expression =e=
+of type =foo= (possibly applied to some arguments), the notation
+=e^.bar= is shorthand for =foo.bar e=. This provides a convenient way
+of accessing functions without opening a namespace. For example, the
+following three expressions all mean the same thing:
+#+BEGIN_SRC lean
+variable l : list ℕ
+
+check list.head l
+check l^.head
+check l↣head
+#+END_SRC
+As a result, given =h : p ∧ q=, we can write =h^.left= for =and.left h=
+and =h^.right= for =and.right h=. We can therefore rewrite the sample
+proof above conveniently as follows:
+#+BEGIN_SRC lean
+variables p q : Prop
+-- BEGIN
+example (h : p ∧ q) : q ∧ p :=
+⟨h^.right, h^.left⟩
+-- END
+#+END_SRC
+There is a fine line between brevity and obfuscation, and omitting
+information in this way can sometimes make a proof harder to read. But
+for straightforward constructions like the one above, when the type of
+=h= and the goal of the construction as salient, the notation is clean
+and effective.
+
 *** Disjunction
 
 The expression =or.intro_left q hp= creates a proof of =p ∨ q= from a
@@ -553,6 +602,20 @@ Notice that there is enough information in the full expression for
 Lean to infer the types of =hp= and =hq= as well. But using the type
 annotations in the longer version makes the proof more readable, and
 can help catch and debug errors.
+
+Because =or= has two constructors, we cannot use anonymous constructor
+notation. But we can still write =h^.elim= instead of =or.elim h=:
+#+BEGIN_SRC lean
+variables p q r: Prop
+-- BEGIN
+example (h : p ∨ q) : q ∨ p :=
+h^.elim
+  (assume hp : p, or.inr hp)
+  (assume hq : q, or.inl hq)
+-- END
+#+END_SRC
+Once again, you should exercise judgment as to whether such
+abbreviations enhance or diminish readability.
 
 *** Negation and Falsity
 
@@ -677,6 +740,21 @@ premise h : p ∧ q
 example : q ∧ p := iff.mp (and_swap p q) h
 -- END
 #+END_SRC
+Because =iff= is defined internally from =and=, we can use the
+anonymous constructor notation to construct a proof of =p ↔ q= from
+proofs of the forward and backward directions. We can also use the
+=.^= notation wit =mp= and =mpr=. The previous examples can therefore
+be written concisely as follows:
+#+BEGIN_SRC lean
+variables p q : Prop
+
+-- BEGIN
+theorem and_swap : p ∧ q ↔ q ∧ p :=
+⟨ λ h, ⟨h^.right, h^.left⟩, λ h, ⟨h^.right, h^.left⟩ ⟩
+
+example (h : p ∧ q) : q ∧ p := (and_swap p q)^.mp h
+-- END
+#+END_SRC
 
 ** Introducing Auxiliary Subgoals
 
@@ -789,7 +867,7 @@ or.elim (em p)
     or.inr
       (show ¬q, from
         assume hq : q,
-        h (and.intro hp hq)))
+        h ⟨hp, hq⟩))
   (assume hp : ¬p,
     or.inl hp)
 -- END
@@ -803,7 +881,7 @@ such contexts.
 There are additional classical axioms that are not included by default
 in the standard library. We will discuss these in detail in a later chapter.
 
-# TODO: add reference Chapter [[file:12_Axioms.org::#Axioms_and_Computation][Axioms and Computation]].
+# TODO: add reference to Chapter [[file:12_Axioms.org::#Axioms_and_Computation][Axioms and Computation]].
 
 ** Examples of Propositional Validities
 :PROPERTIES:
@@ -895,22 +973,22 @@ variables p q r : Prop
 example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 iff.intro
   (assume h : p ∧ (q ∨ r),
-    have hp : p, from and.left h,
-    or.elim (and.right h)
+    have hp : p, from h^.left,
+    or.elim (h^.right)
       (assume hq : q,
-        show (p ∧ q) ∨ (p ∧ r), from or.inl (and.intro hp hq))
+        show (p ∧ q) ∨ (p ∧ r), from or.inl ⟨hp, hq⟩)
       (assume hr : r,
-        show (p ∧ q) ∨ (p ∧ r), from or.inr (and.intro hp hr)))
+        show (p ∧ q) ∨ (p ∧ r), from or.inr ⟨hp, hr⟩))
   (assume h : (p ∧ q) ∨ (p ∧ r),
     or.elim h
       (assume hpq : p ∧ q,
-        have hp : p, from and.left hpq,
-        have hq : q, from and.right hpq,
-        show p ∧ (q ∨ r), from and.intro hp (or.inl hq))
+        have hp : p, from hpq^.left,
+        have hq : q, from hpq^.right,
+        show p ∧ (q ∨ r), from ⟨hp, or.inl hq⟩)
       (assume hpr : p ∧ r,
-        have hp : p, from and.left hpr,
-        have hr : r, from and.right hpr,
-        show p ∧ (q ∨ r), from and.intro hp (or.inr hr)))
+        have hp : p, from hpr^.left,
+        have hr : r, from hpr^.right,
+        show p ∧ (q ∨ r), from ⟨hp, or.inr hr⟩))
 
 -- an example that requires classical reasoning
 example : ¬(p ∧ ¬q) → (p → q) :=
