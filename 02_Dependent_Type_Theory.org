@@ -70,7 +70,7 @@ experiment with the system, but it is ultimately undesirable: Lean is
 a foundational system, which is to say, it provides us with powerful
 mechanisms to /define/ all the mathematical objects we need, rather
 than simply postulating them to the system. We will explore these
-mechanisms in the chapters to come. 
+mechanisms in the chapters to come.
 
 What makes simple type theory powerful is that one can build new types
 out of others. For example, if =A= and =B= are types, =A → B= denotes
@@ -434,7 +434,7 @@ eval b && ff         -- ff
 print "reducing arithmetic expressions"
 eval n + 0           -- n
 eval n + 2           -- succ (succ n)
-eval (2 : nat) + 3   -- 5
+eval 2 + 3           -- 5
 #+END_SRC
 In a later chapter, we will explain how these terms are evaluated. For
 now, we only wish to emphasize that this is an important feature of
@@ -1120,35 +1120,60 @@ This definition of =ident= has the same effect as the one above.
 
 Lean has very complex mechanisms for instantiating implicit arguments,
 and we will see that they can be used to infer function types,
-predicates, and even proofs. The process of instantiating "holes," or
-"placeholder," in a term is often known as /elaboration/.
+predicates, and even proofs. The process of instantiating these
+"holes," or "placeholders," in a term is often known as
+/elaboration/. The presence of implicit arguments means that at times
+there may be insufficient information to fix the meaning of an
+expression precisely. An expression like =id= or =list.nil= is said to
+be /polymorphic/, because it can take on different meanings in
+different contexts. One can always specify the type =T= of an
+expression =e= by writing =(e : T)=. This instructs Lean's elaborator
+to use the value =T= as the type of =e= when trying to resolve
+implicit arguments. The second pair of examples below use this
+mechanism to specify the desired types of the expressions =id= and
+=list.nil=:
+#+BEGIN_SRC lean
+check list.nil             -- list ?M1
+check id                   -- ?M1 → ?M1
+
+check (list.nil : list ℕ)  -- list ℕ
+check (id : ℕ → ℕ)         -- ℕ → ℕ
+#+END_SRC
+
+Numerals are overloaded in Lean, but when the type of a numeral cannot
+be inferred, Lean assumes, by default, that it is a natural number. So
+the expressions in the first two =check= commands are elaborated in
+the same way, whereas the third =check= command interprets =2= as a
+raw numeral.
+#+BEGIN_SRC lean
+check 2            -- ℕ
+check (2 : ℕ)      -- ℕ
+check (2 : num)    -- num
+#+END_SRC
 
 # TODO: what to say about this?
 # As this
 # tutorial progresses, we will gradually learn more about what Lean's
 # powerful elaborator can do, and we will discuss the elaborator in
 # depth in Chapter [[file:08_Building_Theories_and_Proofs.org::#Elaboration_and_Unification][Elaboration and Unification]].
- 
+
 Sometimes, however, we may find ourselves in a situation where we have
 declared an argument to a function to be implicit, but now want to
 provide the argument explicitly. If =foo= is such a function, the
 notation =@foo= denotes the same function with all the arguments made
 explicit.
 #+BEGIN_SRC lean
-universe variable u
-definition ident {A : Type u} (x : A) := x
-
 variables A B : Type
 variables (a : A) (b : B)
 
 -- BEGIN
-check @ident        -- Π {A : Type u_1}, A → A
-check @ident A      -- A → A
-check @ident B      -- B → B
-check @ident A a    -- A
-check @ident B b    -- B
+check @id        -- Π {A : Type u_1}, A → A
+check @id A      -- A → A
+check @id B      -- B → B
+check @id A a    -- A
+check @id B b    -- B
 -- END
 #+END_SRC
 Notice that now the first =check= command gives the type of the
-identifier, =ident=, without inserting any placeholders. Moreover, the
+identifier, =id=, without inserting any placeholders. Moreover, the
 output indicates that the first argument is implicit.
