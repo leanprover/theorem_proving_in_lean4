@@ -519,14 +519,14 @@ definition curry (A B C : Type) (f : A × B → C) : A → B → C := sorry
 definition uncurry (A B C : Type) (f : A → B → C) : A × B → C := sorry
 #+END_SRC
 
-** Local definitions
+** Local Definitions
 
 Lean also allows you to introduce "local" definitions using the =let=
 construct. The expression ~let a := t1 in t2~ is definitionally equal to
 the result of replacing every occurrence of =a= in =t2= by =t1=.
 #+BEGIN_SRC lean
-check let y := (2 : ℕ) + 2 in y * y   -- ℕ
-eval  let y := (2 : ℕ) + 2 in y * y   -- 16
+check let y := 2 + 2 in y * y   -- ℕ
+eval  let y := 2 + 2 in y * y   -- 16
 
 definition t (x : ℕ) : ℕ :=
 let y := x + x in y * y
@@ -536,8 +536,8 @@ eval t 2   -- 16
 Here, =t= is definitionally equal to the term =(x + x) * (x + x)=.
 You can combine multiple assignments in a single =let= statement:
 #+BEGIN_SRC lean
-check let y := (2 : ℕ) + 2, z := y + y in z * z   -- 16
-eval  let y := (2 : ℕ) + 2, z := y + y in z * z   -- 64
+check let y := 2 + 2, z := y + y in z * z   -- 16
+eval  let y := 2 + 2, z := y + y in z * z   -- 64
 #+END_SRC
 
 Notice that the meaning of the expression ~let a := t1 in t2~ is very
