@@ -398,17 +398,19 @@ show r, from h1 (h2 h3)
 #+END_SRC
 As a theorem of propositional logic, what does =t2= say?
 
-Lean allows the alternative syntax =premise= and =premises=
-for =variable= and =variables=. This makes sense, of course, for
-variables whose type is an element of =Prop=. The following definition
-of =t2= has the same net effect as the preceding one.
+Lean allows the alternative syntax =premise= and =premises= for
+=variable= and =variables=. This makes sense, of course, for variables
+whose type is an element of =Prop=. It is also often useful to use
+numeric unicode subscripts, entered as =\0=, =\1=, =\2=, ..., for
+hypotheses. The following definition of =t2= has the same net effect
+as the preceding one.
 #+BEGIN_SRC lean
 variables p q r s : Prop
-premises (h1 : q → r) (h2 : p → q)
+premises (h₁ : q → r) (h₂ : p → q)
 
 theorem t2 : p → r :=
-assume h3 : p,
-show r, from h1 (h2 h3)
+assume h₃ : p,
+show r, from h₁ (h₂ h₃)
 #+END_SRC
 
 ** Propositional Logic
@@ -553,6 +555,21 @@ information in this way can sometimes make a proof harder to read. But
 for straightforward constructions like the one above, when the type of
 =h= and the goal of the construction as salient, the notation is clean
 and effective.
+
+It is common to iterate constructions like "and." Lean also allows you
+to flatten nested constructors that associate to the right, so that
+these two proofs are equivalent:
+#+BEGIN_SRC lean
+variables p q : Prop
+-- BEGIN
+example (h : p ∧ q) : q ∧ p ∧ q:=
+⟨h^.right, ⟨h^.left, h^.right⟩⟩
+
+example (h : p ∧ q) : q ∧ p ∧ q:=
+⟨h^.right, h^.left, h^.right⟩
+-- END
+#+END_SRC
+This is often useful as well.
 
 *** Disjunction
 
