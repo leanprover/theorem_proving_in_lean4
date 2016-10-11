@@ -5,6 +5,9 @@
 # here. So we have to do it later.
 
 * Dependent Type Theory
+:PROPERTIES:
+  :CUSTOM_ID: Dependent_Type_Theory
+:END:
 
 Dependent type theory is a powerful and expressive language, allowing
 us to express complex mathematical assertions, write complex hardware
@@ -113,7 +116,8 @@ alternative =->=, so that the expression =nat -> nat= and =nat → nat=
 mean the same thing. Both expressions denote the type of functions
 that take a natural number as input and return a natural number as
 output. The symbol =ℕ= is alternative unicode notation for =nat=; you
-can enter it by typing =\nat=.
+can enter it by typing =\nat=. The unicode symbol =×= for the
+cartesian product is entered =\prod=.
 
 There are a few more things to notice here. First, the
 application of a function =f= to a value =x= is denoted =f x=. Second,
@@ -791,6 +795,9 @@ is closed. As a result, namespaces and sections provide useful ways of
 managing the background context while we work with Lean.
 
 ** Dependent Types
+:PROPERTIES:
+  :CUSTOM_ID: Dependent_Types
+:END:
 
 You now have rudimentary ways of defining functions and objects in Lean,
 and we will gradually introduce you to many more. Our ultimate goal in
