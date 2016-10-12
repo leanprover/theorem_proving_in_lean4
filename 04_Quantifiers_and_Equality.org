@@ -725,9 +725,6 @@ convenient.
 # TODO: in the examples below, it would be nice to use le_trans
 # instead of nat.le_trans; we need nat as an instance of the class.
 
-# TODO: when we have something like the Lean 2 `p` notation, we 
-# can use that in examples below
-
 To start with, we can use anonymous "have" expressions to introduce an
 auxiliary goal without having to label it. We can refer to the last
 expression introduced in this way using the keyword =this=:
@@ -743,45 +740,8 @@ show f 0 ≤ f 3, from nat.le_trans this (h 2)
 Often proofs move from one fact to the next, so this can be effective
 in eliminating the clutter of lots of labels.
 
-# One can also refer to any element or hypothesis in the context,
-# anonymous or not, by enclosing the type in backticks:
-
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat algebra
-
-# variable f : ℕ → ℕ
-# premise h : ∀ x : ℕ, f x ≤ f (x + 1)
-
-# -- BEGIN
-# example : f 0 ≤ f 3 :=
-# have f 0 ≤ f 1, from h 0,
-# have f 0 ≤ f 2, from le.trans `f 0 ≤ f 1` (h 1),
-# show f 0 ≤ f 3, from le.trans `f 0 ≤ f 2` (h 2)
-# -- END
-# #+END_SRC
-# In the last line, for example, the expression =`f 0 ≤ f 2`= means "find
-# any element of the context that has type =f 0 ≤ f 2=." In other words,
-# we state the assertion rather than name the variable that witnesses
-# its truth. This can be done anywhere later in the proof:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat algebra
-
-# variable f : ℕ → ℕ
-# premise h : ∀ x : ℕ, f x ≤ f (x + 1)
-
-# -- BEGIN
-# example : f 0 ≤ f 3 :=
-# have f 0 ≤ f 1, from h 0,
-# have f 1 ≤ f 2, from h 1,
-# have f 2 ≤ f 3, from h 2,
-# show f 0 ≤ f 3, from le.trans `f 0 ≤ f 1` (le.trans `f 1 ≤ f 2` `f 2 ≤ f 3`)
-# -- END
-# #+END_SRC
-
-When the goal can be inferred, we can also ask Lean to fill in the
-proof by writing =by assumption=:
+When the goal can be inferred, we can also ask Lean instead to fill in
+the proof by writing =by assumption=:
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
 premise h : ∀ x : ℕ, f x ≤ f (x + 1)
@@ -794,6 +754,53 @@ show f 0 ≤ f 3, from nat.le_trans (by assumption) (h 2)
 This tells Lean to use the =assumption= tactic, which, in turn, proves
 the goal by finding a suitable hypothesis in the local context. We
 will learn more abou the =assumption= tactic in the next chapter.
+
+We can also ask Lean to fill in the proof by writing =‹p›=, where =p=
+is the proposition whose proof we want Lean to find in the context.
+#+BEGIN_SRC lean
+variable f : ℕ → ℕ
+premise h : ∀ x : ℕ, f x ≤ f (x + 1)
+
+-- BEGIN
+example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
+suppose f 0 ≥ f 1,
+suppose f 1 ≥ f 2,
+have f 0 ≥ f 2, from nat.le_trans this ‹f 0 ≥ f 1›,
+have f 0 ≤ f 2, from nat.le_trans (h 0) (h 1),
+show f 0 = f 2, from nat.le_antisymm this ‹f 0 ≥ f 2›
+-- END
+#+END_SRC
+You can type these corner quotes using =\f<= and =\f>=,
+respectively. The letter "f" is for "French," since the unicode
+symbols can also be used as French quotation marks. In fact, the
+notation is defined in Lean as follows:
+#+BEGIN_SRC lean
+notation `‹` p `›` := show p, by assumption
+#+END_SRC
+This approach is more robust than using =by assumption=, because the
+type of the assumption that needs to be inferred is given
+explicitly. It also makes proofs more readable. Here is a more
+elaborate example:
+#+BEGIN_SRC lean
+variable f : ℕ → ℕ
+premise h : ∀ x : ℕ, f x ≤ f (x + 1)
+
+-- BEGIN
+example : f 0 ≤ f 3 :=
+have f 0 ≤ f 1, from h 0,
+have f 1 ≤ f 2, from h 1,
+have f 2 ≤ f 3, from h 2,
+show f 0 ≤ f 3, from nat.le_trans ‹f 0 ≤ f 1› 
+                       (nat.le_trans ‹f 1 ≤ f 2› ‹f 2 ≤ f 3›)
+-- END
+#+END_SRC
+Keep in mind that use can use the French quotation marks in this way
+to refer to /anything/ in the context, not just things that were
+introduced anonymously. It use is also not limited to propositions,
+though using it for data is somewhat odd:
+#+BEGIN_SRC lean
+example (n : ℕ) : ℕ := ‹ℕ› 
+#+END_SRC
 
 The =suppose= keyword acts as an anonymous assume:
 #+BEGIN_SRC lean
@@ -813,27 +820,9 @@ write =assume h= to introduce a hypothesis without specifying it,
 leaving it to the system to infer to relevant assumption. An anonymous
 =assume= would thus lead to ambiguities when parsing expressions. 
 
-# As with the anonymous =have=, when you use =suppose= to introduce an
-# assumption, that assumption can also be invoked later in the proof by
-# enclosing it in backticks.
-# #+BEGIN_SRC lean
-# variable f : ℕ → ℕ
-# premise h : ∀ x : ℕ, f x ≤ f (x + 1)
-
-# -- BEGIN
-# example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
-# suppose f 0 ≥ f 1,
-# suppose f 1 ≥ f 2,
-# have f 0 ≥ f 2, from le_trans `f 2 ≤ f 1` `f 1 ≤ f 0`,
-# have f 0 ≤ f 2, from le_trans (h 0) (h 1),
-# show f 0 = f 2, from le_antisymm this `f 0 ≥ f 2`
-# -- END
-# #+END_SRC
-# Notice that =le_antisymm= is the assertion that if =a ≤ b= and =b ≤ a=
-# then =a = b=, and =a ≥ b= is definitionally equal to =b ≤ a=.
-
 As with the anonymous =have=, when you use =suppose= to introduce an
-assumption, Lean can also find it later with the =assumption= tactic.
+assumption, that assumption can also be invoked later in the proof by
+enclosing it in backticks.
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
 premise h : ∀ x : ℕ, f x ≤ f (x + 1)
@@ -842,89 +831,13 @@ premise h : ∀ x : ℕ, f x ≤ f (x + 1)
 example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
 suppose f 0 ≥ f 1,
 suppose f 1 ≥ f 2,
-have f 0 ≥ f 2, from nat.le_trans this (by assumption),
+have f 0 ≥ f 2, from nat.le_trans ‹f 2 ≤ f 1› ‹f 1 ≤ f 0›,
 have f 0 ≤ f 2, from nat.le_trans (h 0) (h 1),
-show f 0 = f 2, from nat.le_antisymm this (by assumption)
+show f 0 = f 2, from nat.le_antisymm this ‹f 0 ≥ f 2›
 -- END
 #+END_SRC
 Notice that =le_antisymm= is the assertion that if =a ≤ b= and =b ≤ a=
 then =a = b=, and =a ≥ b= is definitionally equal to =b ≤ a=.
-
-# TODO: add this sort of stuff if / when it becomes available, or
-#   delete if we decide not to use it
-
-# One can also do an anonymous =assume= by enclosing the statement in
-# backticks.
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat algebra
-
-# variable f : ℕ → ℕ
-# premise h : ∀ x : ℕ, f x ≤ f (x + 1)
-
-# -- BEGIN
-# example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
-# assume `f 0 ≥ f 1`,
-# assume `f 1 ≥ f 2`,
-# have f 0 ≥ f 2, from le.trans `f 2 ≤ f 1` `f 1 ≤ f 0`,
-# have f 0 ≤ f 2, from le.trans (h 0) (h 1),
-# show f 0 = f 2, from le.antisymm this `f 0 ≥ f 2`
-# -- END
-# #+END_SRC
-# This is slightly weaker than using =suppose=, because we can no longer
-# use the identifier =this=. But the mechanism is more general: it can
-# be used with other binders, like =take= and =obtains=.
-
-# If more than one element of the context has the named type, the
-# expression is ambiguous:
-# #+BEGIN_SRC lean
-# definition imp_self (p : Prop) : p → p :=
-# assume `p`, `p`
-
-# print imp_self
-
-# definition imp_self2 (p : Prop) : p → p → p :=
-# assume `p` `p`, `p`
-
-# print imp_self2
-# #+END_SRC
-# The output shows that in the second example, it is the second argument
-# that is chosen. Using anonymous binders when data is involved looks
-# somewhat odd:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat algebra
-
-# -- BEGIN
-# definition idnat : ℕ → ℕ :=
-# take `ℕ`, `ℕ`
-
-# print idnat
-
-# definition idnat2 : ℕ → ℕ → ℕ :=
-# take `ℕ` `ℕ`, `ℕ`
-
-# print idnat2
-# eval idnat2 0 1  -- returns 1
-# -- END
-# #+END_SRC
-# But with propositions it is usually quite natural. Here is an example
-# of an anonymous binder used with the =obtain= construction, continuing
-# the examples above.
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat algebra
-
-# -- BEGIN
-# variable f : ℕ → ℕ
-
-# example (h : ∀ x : ℕ, f x ≤ f (x + 1)) (h' : ∃ x, f (x + 1) ≤ f x) :
-#   ∃ x, f (x + 1) = f x :=
-# obtain x `f (x + 1) ≤ f x`, from h',
-# exists.intro x
-#   (show f (x + 1) = f x, from le.antisymm `f (x + 1) ≤ f x` (h x))
-# -- END
-# #+END_SRC
 
 # TODO: include a nice example like this when possible.
 
