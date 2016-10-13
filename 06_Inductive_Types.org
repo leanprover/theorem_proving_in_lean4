@@ -21,7 +21,7 @@ everything else follows from those.
 Intuitively, an inductive type is built up from a specified list of
 constructors. In Lean, the syntax for specifying such a type is as follows:
 #+BEGIN_SRC text
-inductive foo : Type :=
+inductive foo : Type
 | constructor₁ : ... → foo
 | constructor₂ : ... → foo
 ...
@@ -68,7 +68,7 @@ elaborate and complex examples.
 The simplest kind of inductive type is simply a type with a finite,
 enumerated list of elements.
 #+BEGIN_SRC lean
-inductive weekday : Type :=
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -80,7 +80,7 @@ inductive weekday : Type :=
 The =inductive= command creates a new type, =weekday=. The
 constructors all live in the =weekday= namespace.
 #+BEGIN_SRC lean
-inductive weekday : Type :=
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -116,10 +116,7 @@ order. Note that the shorter versions of names like =weekday.rec= and
 =weekday= namespace, to avoid clashes.  If we import =nat=, we can use
 =rec_on= to define a function from weekday to the natural numbers:
 #+BEGIN_SRC lean
-import data.nat
-open nat
-
-inductive weekday : Type :=
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -129,7 +126,7 @@ inductive weekday : Type :=
 | saturday : weekday
 
 -- BEGIN
-definition number_of_day (d : weekday) : nat :=
+definition number_of_day (d : weekday) : ℕ :=
 weekday.rec_on d 1 2 3 4 5 6 7
 
 eval number_of_day weekday.sunday
@@ -148,10 +145,7 @@ Below we will encounter a more restricted variant of =rec_on=, namely,
 are the same. You may prefer to use the label =cases_on=, because it
 emphasizes that the definition is really a definition by cases.
 #+BEGIN_SRC lean
-import data.nat
-open nat
-
-inductive weekday : Type :=
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -161,7 +155,7 @@ inductive weekday : Type :=
 | saturday : weekday
 
 -- BEGIN
-definition number_of_day (d : weekday) : nat :=
+definition number_of_day (d : weekday) : ℕ :=
 weekday.cases_on d 1 2 3 4 5 6 7
 -- END
 #+END_SRC
@@ -178,11 +172,11 @@ the namespace is opened. However, you can explicitly declare
 abbreviations for them using the =renaming= option when you open a
 namespace.
 
-#+BEGIN_SRC lean
-import data.nat
-open nat
+# TODO: we haven't discussed the [reducible] attribute yet
+# TODO: we haven't discussed open (renaming ...)
 
-inductive weekday : Type :=
+#+BEGIN_SRC lean
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -193,7 +187,8 @@ inductive weekday : Type :=
 
 -- BEGIN
 namespace weekday
-  local abbreviation cases_on := @weekday.cases_on
+  @[reducible]
+  private definition cases_on := @weekday.cases_on
 
   definition number_of_day (d : weekday) : nat :=
   cases_on d 1 2 3 4 5 6 7
@@ -209,7 +204,7 @@ check cases_on
 #+END_SRC
 We can define functions from =weekday= to =weekday=:
 #+BEGIN_SRC lean
-inductive weekday : Type :=
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -239,7 +234,7 @@ any weekday =d=? The induction principle parallels the recursion
 principle: we simply have to provide a proof of the claim for each
 constructor:
 #+BEGIN_SRC lean
-inductive weekday : Type :=
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -276,7 +271,7 @@ type of definition by recursion, where what is being "defined" is a
 proof instead of a piece of data. We could equally well have used
 =cases_on=:
 #+BEGIN_SRC lean
-inductive weekday : Type :=
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -308,7 +303,7 @@ end weekday
 While the =show= commands make the proof clearer and more
 readable, they are not necessary:
 #+BEGIN_SRC lean
-inductive weekday : Type :=
+inductive weekday : Type
 | sunday : weekday
 | monday : weekday
 | tuesday : weekday
@@ -341,10 +336,10 @@ namespace hide
 -- BEGIN
 inductive empty : Type
 
-inductive unit : Type :=
-star : unit
+inductive unit : Type
+| star : unit
 
-inductive bool : Type :=
+inductive bool : Type
 | ff : bool
 | tt : bool
 -- END
@@ -366,9 +361,6 @@ operations =band=, =bor=, =bnot= on the boolean, and verifying common
 identities. Note that defining a binary operation like =band= will
 require nested cases splits:
 #+BEGIN_SRC lean
-import data.bool
-open bool
-
 namespace hide
 
 -- BEGIN
@@ -394,57 +386,54 @@ sum type in the library:
 namespace hide
 
 -- BEGIN
-inductive prod (A B : Type) :=
-mk : A → B → prod A B
+universe variables u v
 
-inductive sum (A B : Type) : Type :=
-| inl {} : A → sum A B
-| inr {} : B → sum A B
+inductive prod (A : Type u) (B : Type v)
+| mk : A → B → prod
+
+inductive sum (A : Type u) (B : Type v)
+| inl {} : A → sum
+| inr {} : B → sum
 -- END
 
 end hide
 #+END_SRC
-For the moment, ignore the annotation ={}= after the constructors
-=inl= and =inr=; we will explain that below. In the meanwhile, think
-about what is going on in these examples. The product type has one
-constructor, =prod.mk=, which takes two arguments. To define a
-function on =prod A B=, we can assume the input is of the form =prod.mk a
-b=, and we have to specify the output, in terms of =a= and =b=. We can
-use this to define the two projections for prod; remember that the
-standard library defines notation =A × B= for =prod A B= and =(a, b)=
-for =prod.mk a b=.
+Notice that we do not include the types =A= and =B= in the target of
+the constructors. For the moment, ignore the annotation ={}= after the
+constructors =inl= and =inr=; we will explain that below. In the
+meanwhile, think about what is going on in these examples. The product
+type has one constructor, =prod.mk=, which takes two arguments. To
+define a function on =prod A B=, we can assume the input is of the
+form =prod.mk a b=, and we have to specify the output, in terms of =a=
+and =b=. We can use this to define the two projections for prod;
+remember that the standard library defines notation =A × B= for =prod
+A B= and =(a, b)= for =prod.mk a b=.
 #+BEGIN_SRC lean
-import data.prod
-open prod
-
-namespace hide
+universe variables u v
 
 -- BEGIN
-definition pr1 {A B : Type} (p : A × B) : A :=
+definition fst {A : Type u} {B : Type v} (p : A × B) : A :=
 prod.rec_on p (λ a b, a)
 
-definition pr2 {A B : Type} (p : A × B) : B :=
+definition snd {A : Type u} {B : Type v} (p : A × B) : B :=
 prod.rec_on p (λ a b, b)
 -- END
-
-end hide
 #+END_SRC
-The function =pr1= takes a pair, =p=. Applying the recursor
+The function =fst= takes a pair, =p=. Applying the recursor
 =prod.rec_on p (fun a b, a)= interprets =p= as a pair, =prod.mk a b=,
 and then uses the second argument to determine what to do with =a= and
-=b=.
+=b=. Remember that you can enter the symbol for a product by typing
+=\times=. Recall also from [[file:02_Dependent_Type_Theory.org::#Dependent_Types][Section 2.8]] that to give these definitions
+the greatest generality possible, we allow the types =A= and =B= to
+belong to any universe.
 
 Here is another example:
 #+BEGIN_SRC lean
-import data.bool data.prod data.nat data.prod data.sum
-open prod sum nat bool
--- BEGIN
 definition prod_example (p : bool × ℕ) : ℕ :=
 prod.rec_on p (λ b n, cond b (2 * n) (2 * n + 1))
 
 eval prod_example (tt, 3)
 eval prod_example (ff, 3)
--- END
 #+END_SRC
 The =cond= function is a boolean conditional: =cond b t1 t2= return
 =t1= if =b= is true, and =t2= otherwise. (It has the same effect as
@@ -460,21 +449,19 @@ to specify an output value in terms of =a=, or the input is of the
 form =inr b=, in which case we have to specify an output value in
 terms of =b=.
 #+BEGIN_SRC lean
-import data.bool data.prod data.nat data.prod data.sum
-open prod sum nat bool
-
 -- BEGIN
-definition sum_example (s : ℕ + ℕ) : ℕ :=
+definition sum_example (s : ℕ ⊕ ℕ) : ℕ :=
 sum.cases_on s (λ n, 2 * n) (λ n, 2 * n + 1)
 
-eval sum_example (inl 3)
-eval sum_example (inr 3)
+eval sum_example (sum.inl 3)
+eval sum_example (sum.inr 3)
 -- END
 #+END_SRC
 This example is similar to the previous one, but now an input to
 =sum_example= is implicitly either of the form =inl n= or =inr n=. In
 the first case, the function returns =2 * n=, and the second case, it
-returns =2 * n + 1=.
+returns =2 * n + 1=. You can enter the symbol for the sum by typing
+=\oplus=.
 
 In the section after next we will see what happens when the
 constructor of an inductive type takes arguments from the inductive
@@ -502,14 +489,14 @@ namespace hide
 
 -- BEGIN
 structure prod (A B : Type) :=
-mk :: (pr1 : A) (pr2 : B)
+mk :: (fst : A) (snd : B)
 -- END
 
 end hide
 #+END_SRC
 The =structure= command simultaneously introduces the inductive type,
 =prod=, its constructor, =mk=, the usual eliminators (=rec=,
-=rec_on=), as well as the projections, =pr1= and =pr2=, as defined
+=rec_on=), as well as the projections, =fst= and =snd=, as defined
 above.
 
 If you do not name the constructor, Lean uses =mk= as a
@@ -531,12 +518,16 @@ structures, and Lean provides substantial infrastructure to support
 working with them. Here, for example, is the definition of a
 semigroup:
 #+BEGIN_SRC lean
-structure Semigroup : Type :=
-(carrier : Type)
+universe variable u
+
+structure Semigroup :=
+(carrier : Type u)
 (mul : carrier → carrier → carrier)
 (mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c))
 #+END_SRC
-We will see more examples in Chapter [[file:10_Structures_and_Records.org::#Structures_and_Records][Structures and Records]].
+We will see more examples in a later chapter.
+
+# TODO: add reference, Chapter [[file:10_Structures_and_Records.org::#Structures_and_Records][Structures and Records]].
 
 Notice that the product type depends on parameters =A B : Type= which
 are arguments to the constructors as well as =prod=.  Lean detects
@@ -549,12 +540,14 @@ argument implicit by default, but will do so if we add the annotation
 ={}= after the constructor. We used that option, for example, in the
 definition of =sum=:
 #+BEGIN_SRC lean
+universe variables u v
+
 namespace hide
 
 -- BEGIN
-inductive sum (A B : Type) : Type :=
-| inl {} : A → sum A B
-| inr {} : B → sum A B
+inductive sum (A : Type u) (B : Type v)
+| inl {} : A → sum
+| inr {} : B → sum
 -- END
 
 end hide
@@ -565,11 +558,13 @@ As a result, the argument =A= to =inl= and the argument =B= to
 We have already discussed sigma types, also known as the dependent
 product:
 #+BEGIN_SRC lean
+universe variables u v
+
 namespace hide
 
 -- BEGIN
-inductive sigma {A : Type} (B : A → Type) :=
-dpair : Π a : A, B a → sigma B
+inductive sigma {A : Type u} (B : A → Type v)
+| dpair : Π a : A, B a → sigma
 -- END
 
 end hide
@@ -577,15 +572,17 @@ end hide
 Two more examples of inductive types in the library are the
 following:
 #+BEGIN_SRC lean
+universe variable u
+
 namespace hide
 
 -- BEGIN
-inductive option (A : Type) : Type :=
-| none {} : option A
-| some    : A → option A
+inductive option (A : Type u)
+| none {} : option
+| some    : A → option
 
-inductive inhabited (A : Type) : Type :=
-mk : A → inhabited A
+inductive inhabited (A : Type u)
+| mk : A → inhabited
 -- END
 
 end hide
@@ -624,15 +621,15 @@ namespace hide
 -- BEGIN
 inductive false : Prop
 
-inductive true : Prop :=
-intro : true
+inductive true : Prop
+| intro : true
 
-inductive and (a b : Prop) : Prop :=
-intro : a → b → and a b
+inductive and (a b : Prop) : Prop
+| intro : a → b → and
 
-inductive or (a b : Prop) : Prop :=
-| intro_left  : a → or a b
-| intro_right : b → or a b
+inductive or (a b : Prop) : Prop
+| intro_left  : a → or
+| intro_right : b → or
 -- END
 
 end hide
@@ -651,43 +648,47 @@ discuss below, in the section on inductive families.
 
 Even the existential quantifier is inductively defined:
 #+BEGIN_SRC lean
+universe variable u
+
 namespace hide
 
 -- BEGIN
-inductive Exists {A : Type} (P : A → Prop) : Prop :=
-intro : ∀ (a : A), P a → Exists P
+inductive Exists {A : Type u} (p : A → Prop) : Prop
+| intro : ∀ (a : A), p a → Exists
 
 definition exists.intro := @Exists.intro
 -- END
 
 end hide
 #+END_SRC
-Keep in mind that the notation =∃ x : A, P= is syntactic sugar for
-=Exists (λ x : A, P)=.
+Keep in mind that the notation =∃ x : A, p= is syntactic sugar for
+=Exists (λ x : A, p)=.
 
 The definitions of =false=, =true=, =and=, and =or= are perfectly
 analogous to the definitions of =empty=, =unit=, =prod=, and
 =sum=. The difference is that the first group yields elements of
-=Prop=, and the second yields elements of =Type.{i}= for =i= greater
-than 0. In a similar way, =∃ x : A, P= is a =Prop=-valued variant of
-=Σ x : A, P=.
+=Prop=, and the second yields elements of =Type i= for =i= greater
+than 0. In a similar way, =∃ x : A, p= is a =Prop=-valued variant of
+=Σ x : A, p=.
 
 This is a good place to mention another inductive type, denoted ={x :
-A | P}=, which is sort of a hybrid between =∃ x : A, P= and =Σ x : A, P=.
+A | p}=, which is sort of a hybrid between =∃ x : A, P= and =Σ x : A, P=.
 #+BEGIN_SRC lean
+universe variable u
+
 namespace hide
 
 -- BEGIN
-inductive subtype {A : Type} (P : A → Prop) : Type :=
-tag : Π x : A, P x → subtype P
+inductive subtype {A : Type u} (p : A → Prop)
+| tag : Π x : A, p x → subtype
 -- END
 
 end hide
 #+END_SRC
-The notation ={x : A | P}= is syntactic sugar for =subtype (λ x : A,
-P)=. It is modeled after subset notation in set theory: the idea is
-that ={x : A | P}= denotes the collection of elements of =A= that have
-property =P=.
+The notation ={x : A | p}= is syntactic sugar for =subtype (λ x : A,
+p)=. It is modeled after subset notation in set theory: the idea is
+that ={x : A | p}= denotes the collection of elements of =A= that have
+property =[=.
 
 ** Defining the Natural Numbers
 
@@ -701,7 +702,7 @@ natural numbers:
 namespace hide
 
 -- BEGIN
-inductive nat : Type :=
+inductive nat : Type
 | zero : nat
 | succ : nat → nat
 -- END
@@ -730,7 +731,7 @@ n=. If we check the type of the recursor,
 #+BEGIN_SRC lean
 namespace hide
 
-inductive nat : Type :=
+inductive nat : Type
 | zero : nat
 | succ : nat → nat
 -- BEGIN
@@ -760,7 +761,7 @@ assuming the value =add m n= is already determined, we define =add m
 #+BEGIN_SRC lean
 namespace hide
 
-inductive nat : Type :=
+inductive nat : Type
 | zero : nat
 | succ : nat → nat
 -- BEGIN
@@ -784,7 +785,7 @@ defining equations for addition now hold definitionally:
 #+BEGIN_SRC lean
 namespace hide
 
-inductive nat : Type :=
+inductive nat : Type
 | zero : nat
 | succ : nat → nat
 
@@ -792,9 +793,9 @@ namespace nat
 
 definition add (m n : nat) : nat :=
 nat.rec_on n m (fun n add_m_n, succ add_m_n)
--- BEGIN
-notation 0 := zero
-infix `+` := add
+-- BEGIN]
+instance : has_zero nat := has_zero.mk zero
+instance : has_add nat := has_add.mk add 
 
 theorem add_zero (m : nat) : m + 0 = m := rfl
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
@@ -803,45 +804,34 @@ end nat
 
 end hide
 #+END_SRC
+We will explain how the =instance= command works in a later
+chapter. In the examples below, we will henceforth use Lean's version
+of the natural numbers.
+
+# TODO: do this!
 
 Proving a fact like =0 + m = m=, however, requires a proof by
 induction. As observed above, the induction principle is just a
 special case of the recursion principle, when the codomain =C n= is an
 element of =Prop=. It represents the familiar pattern of an inductive
 proof: to prove =∀ n, C n=, first prove =C 0=, and then, for arbitrary
-=n=, assume =IH : C n= and prove =C (succ n)=.
+=n=, assume =ih : C n= and prove =C (succ n)=.
 #+BEGIN_SRC lean
 namespace hide
+open nat
 
-inductive nat : Type :=
-| zero : nat
-| succ : nat → nat
-
-namespace nat
-
-definition add (m n : nat) : nat :=
-nat.rec_on n m (fun n add_m_n, succ add_m_n)
-
-notation 0 := zero
-infix `+` := add
-
-theorem add_zero (m : nat) : m + 0 = m := rfl
-theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
 -- BEGIN
-local abbreviation induction_on := @nat.induction_on
-
-theorem zero_add (n : nat) : 0 + n = n :=
-induction_on n
+theorem zero_add (n : ℕ) : 0 + n = n :=
+nat.induction_on n
   (show 0 + 0 = 0, from rfl)
   (take n,
-    assume IH : 0 + n = n,
+    assume ih : 0 + n = n,
     show 0 + succ n = succ n, from
       calc
         0 + succ n = succ (0 + n) : rfl
-          ... = succ n : IH)
--- END
-end nat
+          ... = succ n : by rewrite ih)
 
+-- END
 end hide
 #+END_SRC
 
@@ -858,146 +848,54 @@ is a good guess, and once we make that choice the proof almost writes
 itself:
 #+BEGIN_SRC lean
 namespace hide
-
-inductive nat : Type :=
-| zero : nat
-| succ : nat → nat
-
-namespace nat
-
-definition add (m n : nat) : nat :=
-nat.rec_on n m (fun n add_m_n, succ add_m_n)
-
-notation 0 := zero
-infix `+` := add
-
-theorem add_zero (m : nat) : m + 0 = m := rfl
-theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
-
-local abbreviation induction_on := @nat.induction_on
-
-theorem zero_add (n : nat) : 0 + n = n :=
-induction_on n
-  (show 0 + 0 = 0, from rfl)
-  (take n,
-    assume IH : 0 + n = n,
-    show 0 + succ n = succ n, from
-      calc
-        0 + succ n = succ (0 + n) : rfl
-          ... = succ n : IH)
+open nat
 
 -- BEGIN
-theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
-induction_on k
+theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
+nat.induction_on k
   (show m + n + 0 = m + (n + 0), from rfl)
   (take k,
-    assume IH : m + n + k = m + (n + k),
+    assume ih : m + n + k = m + (n + k),
     show m + n + succ k = m + (n + succ k), from
       calc
         m + n + succ k = succ (m + n + k) : rfl
-          ... = succ (m + (n + k)) : IH
+          ... = succ (m + (n + k)) : by rewrite ih
           ... = m + succ (n + k) : rfl
           ... = m + (n + succ k) : rfl)
 -- END
-end nat
-
 end hide
 #+END_SRC
-
-# REMARK from Leo: I commented the following example because
-# after recent changes it only goes through if we use the 'reducible add'
-# command. I think it is too early to discuss this command.
-
-# Notice that most of the calculation holds definitionally. Lean's
-# elaborator is smart enough to perform the right definitional
-# reductions, allowing for a much shorter proof:
-# #+BEGIN_SRC lean
-# namespace hide
-
-# inductive nat : Type :=
-# zero : nat,
-# succ : nat → nat
-
-# namespace nat
-
-# definition add (m n : nat) : nat :=
-# rec_on n m (take n add_m_n, succ add_m_n)
-
-# notation 0 := zero
-# infix `+` := add
-
-# theorem add_zero (m : nat) : m + 0 = m := rfl
-# theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
-
-# theorem zero_add (n : nat) : 0 + n = n :=
-# induction_on n
-#   (show 0 + 0 = 0, from rfl)
-#   (take n,
-#     assume IH : 0 + n = n,
-#     show 0 + succ n = succ n, from
-#       calc
-#         0 + succ n = succ (0 + n) : rfl
-#           ... = succ n : IH)
-
-# -- BEGIN
-# reducible add
-# theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
-# induction_on k rfl (take k IH, eq.subst IH rfl)
-# -- END
-# end nat
-
-# end hide
-# #+END_SRC
 
 For another example, suppose we try to prove the commutativity of
 addition. Choosing induction on the second argument, we might begin as
 follows:
 #+BEGIN_SRC lean
 namespace hide
+open nat
 
-inductive nat : Type :=
-| zero : nat
-| succ : nat → nat
-
-namespace nat
-
-definition add (m n : nat) : nat :=
-nat.rec_on n m (fun n add_m_n, succ add_m_n)
-
-notation 0 := zero
-infix `+` := add
-
-theorem add_zero (m : nat) : m + 0 = m := rfl
-theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
-
-local abbreviation induction_on := @nat.induction_on
-
-theorem zero_add (n : nat) : 0 + n = n :=
-induction_on n
-  (show 0 + 0 = 0, from rfl)
-  (take n,
-    assume IH : 0 + n = n,
-    show 0 + succ n = succ n, from
+theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
+nat.induction_on k
+  (show m + n + 0 = m + (n + 0), from rfl)
+  (take k,
+    assume ih : m + n + k = m + (n + k),
+    show m + n + succ k = m + (n + succ k), from
       calc
-        0 + succ n = succ (0 + n) : rfl
-          ... = succ n : IH)
-
-attribute add [reducible]
-theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
-induction_on k rfl (fun k IH, eq.subst IH rfl)
+        m + n + succ k = succ (m + n + k) : rfl
+          ... = succ (m + (n + k)) : by rewrite ih
+          ... = m + succ (n + k) : rfl
+          ... = m + (n + succ k) : rfl)
 
 -- BEGIN
 theorem add_comm (m n : nat) : m + n = n + m :=
-induction_on n
-  (show m + 0 = 0 + m, from eq.symm (zero_add m))
+nat.induction_on n
+  (show m + 0 = 0 + m, by rewrite nat.zero_add)
   (take n,
-    assume IH : m + n = n + m,
+    assume ih : m + n = n + m,
     calc
       m + succ n = succ (m + n) : rfl
-        ... = succ (n + m) : IH
+        ... = succ (n + m) : by rewrite ih
         ... = succ n + m : sorry)
 -- END
-end nat
 
 end hide
 #+END_SRC
@@ -1006,52 +904,32 @@ that =succ (n + m) = succ n + m=. We can prove this by induction on
 =m=:
 #+BEGIN_SRC lean
 namespace hide
+open nat
 
-inductive nat : Type :=
-| zero : nat
-| succ : nat → nat
-
-namespace nat
-
-definition add (m n : nat) : nat :=
-nat.rec_on n m (fun n add_m_n, succ add_m_n)
-
-notation 0 := zero
-infix `+` := add
-
-theorem add_zero (m : nat) : m + 0 = m := rfl
-theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
-
-local abbreviation induction_on := @nat.induction_on
-
-theorem zero_add (n : nat) : 0 + n = n :=
-induction_on n
-  (show 0 + 0 = 0, from rfl)
-  (take n,
-    assume IH : 0 + n = n,
-    show 0 + succ n = succ n, from
+theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
+nat.induction_on k
+  (show m + n + 0 = m + (n + 0), from rfl)
+  (take k,
+    assume ih : m + n + k = m + (n + k),
+    show m + n + succ k = m + (n + succ k), from
       calc
-        0 + succ n = succ (0 + n) : rfl
-          ... = succ n : IH)
-
-attribute add [reducible]
-theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
-induction_on k rfl (take k IH, eq.subst IH rfl)
+        m + n + succ k = succ (m + n + k) : rfl
+          ... = succ (m + (n + k)) : by rewrite ih
+          ... = m + succ (n + k) : rfl
+          ... = m + (n + succ k) : rfl)
 
 -- BEGIN
 theorem succ_add (m n : nat) : succ m + n = succ (m + n) :=
-induction_on n
+nat.induction_on n
   (show succ m + 0 = succ (m + 0), from rfl)
   (take n,
-    assume IH : succ m + n = succ (m + n),
+    assume ih : succ m + n = succ (m + n),
     show succ m + succ n = succ (m + succ n), from
       calc
         succ m + succ n = succ (succ m + n) : rfl
-          ... = succ (succ (m + n)) : IH
+          ... = succ (succ (m + n)) : by rewrite ih
           ... = succ (m + succ n) : rfl)
 -- END
-end nat
-
 end hide
 #+END_SRC
 We can then replace the =sorry= in the previous proof with =succ_add=.
@@ -1061,91 +939,7 @@ such as multiplication, the predecessor function (with =pred 0 = 0=),
 truncated subtraction (with =n - m = 0= when =m= is greater than or
 equal to =n=), and exponentiation. Then try proving some of their
 basic properties, building on the theorems we have already proved.
-#+BEGIN_SRC lean
-namespace hide
 
-inductive nat : Type :=
-| zero : nat
-| succ : nat → nat
-
-namespace nat
-
-definition add (m n : nat) : nat :=
-nat.rec_on n m (fun n add_m_n, succ add_m_n)
-
-notation 0 := zero
-infix `+` := add
-
-theorem add_zero (m : nat) : m + 0 = m := rfl
-
-theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
-
-local abbreviation induction_on := @nat.induction_on
-
-theorem zero_add (n : nat) : 0 + n = n :=
-induction_on n
-  (show 0 + 0 = 0, from rfl)
-  (take n,
-    assume IH : 0 + n = n,
-    show 0 + succ n = succ n, from
-      calc
-        0 + succ n = succ (0 + n) : rfl
-          ... = succ n : IH)
-
-attribute add [reducible]
-theorem add_assoc (m n k : nat) : m + n + k = m + (n + k) :=
-induction_on k rfl (take k IH, eq.subst IH rfl)
-
-theorem succ_add (m n : nat) : succ m + n = succ (m + n) :=
-induction_on n
-  (show succ m + 0 = succ (m + 0), from rfl)
-  (take n,
-    assume IH : succ m + n = succ (m + n),
-    show succ m + succ n = succ (m + succ n), from
-      calc
-        succ m + succ n = succ (succ m + n) : rfl
-          ... = succ (succ (m + n)) : IH
-          ... = succ (m + succ n) : rfl)
-
-theorem add_comm (m n : nat) : m + n = n + m :=
-induction_on n
-  (show m + 0 = 0 + m, from eq.symm (zero_add m))
-  (take n,
-    assume IH : m + n = n + m,
-    calc
-      m + succ n = succ (m + n) : rfl
-        ... = succ (n + m) : IH
-        ... = succ n + m : succ_add)
-
--- BEGIN
--- define mul by recursion on the second argument
-definition mul (m n : nat) : nat := sorry
-
-infix `*` := mul
-
--- these should be proved by rfl
-theorem mul_zero (m : nat) : m * 0 = 0 := sorry
-theorem mul_succ (m n : nat) : m * (succ n) = m * n + m := sorry
-
-theorem zero_mul (n : nat) : 0 * n = 0 := sorry
-
-theorem mul_distrib (m n k : nat) : m * (n + k) = m * n + m * k := sorry
-
-theorem mul_assoc (m n k : nat) : m * n * k = m * (n * k) := sorry
-
--- hint: you will need to prove an auxiliary statement
-theorem mul_comm (m n : nat) : m * n = n * m := sorry
-
-definition pred (n : nat) : nat := nat.cases_on n zero (fun n, n)
-
-theorem pred_succ (n : nat) : pred (succ n) = n := sorry
-
-theorem succ_pred (n : nat) : n ≠ 0 → succ (pred n) = n := sorry
--- END
-end nat
-
-end hide
-#+END_SRC
 
 ** Other Inductive Types
 
@@ -1153,11 +947,13 @@ Let us consider some more examples of inductively defined
 types. For any type, =A=, the type =list A= of lists of elements
 of =A= is defined in the library.
 #+BEGIN_SRC lean
+universe variable u
+
 namespace hide
 -- BEGIN
-inductive list (A : Type) : Type :=
-| nil {} : list A
-| cons : A → list A → list A
+inductive list (A : Type u)
+| nil {} : list
+| cons : A → list → list
 
 namespace list
 
@@ -1189,12 +985,14 @@ write =@nil A= to specify the type =A=.
 
 Lean allows us to define iterative notation for lists:
 #+BEGIN_SRC lean
+universe variable u
+
 namespace hide
 
 -- BEGIN
-inductive list (A : Type) : Type :=
-| nil {} : list A
-| cons : A → list A → list A
+inductive list (A : Type u)
+| nil {} : list
+| cons : A → list → list
 
 namespace list
 
@@ -1203,7 +1001,7 @@ notation `[` l:(foldr `,` (h t, cons h t) nil) `]` := l
 section
   open nat
   check [1, 2, 3, 4, 5]
-  check ([1, 2, 3, 4, 5] : list ℕ)
+  check ([1, 2, 3, 4, 5] : list num)
 end
 
 end list
@@ -1211,17 +1009,18 @@ end list
 
 end hide
 #+END_SRC
-In the first =check=, Lean assumes that =[1, 2, 3, 4, 5]= is merely a
-list of numerals. The =(t : list ℕ)= expression forces Lean to interpret =t= as
-a list of natural numbers.
+In the first =check=, Lean assumes that =[1, 2, 3, 4, 5]= is a list of
+natural numbers. The =(t : list num)= expression forces Lean to interpret =t= as
+a list of numerials.
 
 As an exercise, prove the following:
 #+BEGIN_SRC lean
+universe variable u
 namespace hide
 
-inductive list (A : Type) : Type :=
-| nil {} : list A
-| cons : A → list A → list A
+inductive list (A : Type u)
+| nil {} : list
+| cons : A → list → list
 
 namespace list
 
@@ -1256,16 +1055,13 @@ expected (for example, =length (s ++ t) = length s + length t=).
 
 For another example, we can define the type of binary trees:
 #+BEGIN_SRC lean
-inductive binary_tree :=
+inductive binary_tree
 | leaf : binary_tree
 | node : binary_tree → binary_tree → binary_tree
 #+END_SRC
 In fact, we can even define the type of countably branching trees:
 #+BEGIN_SRC lean
-import data.nat
-open nat
-
-inductive cbtree :=
+inductive cbtree
 | leaf : cbtree
 | sup : (ℕ → cbtree) → cbtree
 
@@ -1275,508 +1071,511 @@ definition succ (t : cbtree) : cbtree :=
 sup (λ n, t)
 
 definition omega : cbtree :=
-sup (nat.rec leaf (λ n t, succ t))
+sup (λ n, nat.rec_on n leaf (λ n t, succ t)) 
 
 end cbtree
 #+END_SRC
 
-** Generalizations
-
-We now consider two generalizations of inductive types that
-are sometimes useful. First, Lean supports /mutually defined inductive
-types/. The idea is that we can define two (or more) inductive types
-at the same time, where each one refers to the other.
-
-#+BEGIN_SRC lean
-inductive tree (A : Type) : Type :=
-| node : A → forest A → tree A
-with forest : Type :=
-| nil  : forest A
-| cons : tree A → forest A → forest A
-#+END_SRC
-In this example, a =tree= with elements labeled from =A= is of the
-form =node a f=, where =a= is an element of =A= (the label), and =f= a
-forest. At the same time, a =forest= of trees with elements labeled
-from =A= is essentially defined to be a list of trees.
-
-A more powerful generalization is given by the possibility of defining
-inductive type =families=. There are indexed families of types defined
-by a simultaneous induction of the following form:
-#+BEGIN_SRC text
-inductive foo : ... → Type :=
-| constructor₁ : ... → foo ...
-| constructor₂ : ... → foo ...
-...
-| constructorₙ : ... → foo ...
-#+END_SRC
-In contrast to ordinary inductive definition, which construct an
-element of =Type=, the more general version constructs a function
-=... → Type=, where "=...=" denotes a sequence of argument types, also
-known as /indices/. Each constructor then constructs an element of some
-type in the family. One example is the definition of =vector A n=, the
-type of vectors of elements of =A= of length =n=:
-#+BEGIN_SRC lean
-open nat
-namespace hide
-
--- BEGIN
-inductive vector (A : Type) : nat → Type :=
-| nil {} : vector A zero
-| cons   : Π {n}, A → vector A n → vector A (succ n)
--- END
-
-end hide
-#+END_SRC
-Notice that the =cons= constructor takes an element of =vector A n=,
-and returns an element of =vector A (succ n)=, thereby using an
-element of one member of the family to build an element of another.
-
-Another example is given by the family of types =fin n=. For each =n=,
-=fin n= is supposed to denote a generic type of =n= elements:
-#+BEGIN_SRC lean
-namespace hide
-
--- BEGIN
-inductive fin : nat → Type :=
-| fz : Π n, fin (nat.succ n)
-| fs : Π {n}, fin n → fin (nat.succ n)
--- END
-
-end hide
-#+END_SRC
-This example may be hard to understand, so you should take the time to
-think about how it works.
-
-Yet another example is given by the definition of the equality type in
-the library:
-#+BEGIN_SRC lean
-namespace hide
-
--- BEGIN
-inductive eq {A : Type} (a : A) : A → Prop :=
-refl : eq a a
--- END
-
-end hide
-#+END_SRC
-For each fixed =A : Type= and =a : A=, this definition constructs a
-family of types =eq a x=, indexed by =x : A=. Notably, however, there
-is only one constructor, =refl=, which is an element of =eq a
-a=. Intuitively, the only way to construct a proof of =eq a x= is to
-use reflexivity, in the case where =x= is =a=.  Note that =eq a a= is
-the only inhabited type in the family of types =eq a x=.  The
-elimination principle generated by Lean says that =eq= is the /least/
-reflexive relation on =A=. The eliminator/recursor for =eq= is of the
-following form:
-#+BEGIN_SRC text
-eq.rec_on : Π {A : Type} {a : A} {C : A → Type} {b : A}, a = b → C a → C b
-#+END_SRC
-It is a remarkable fact that all the basic axioms for equality follow
-from the constructor, =refl=, and the eliminator, =eq.rec_on=.
-
-This eliminator illustrates the exception to the fact
-that inductive definitions living in =Prop= can only eliminate to
-=Prop=. Because there is only one constructor to =eq=, it carries no
-information, other than the type is inhabited, and Lean's internal
-logic allows us to eliminate to an arbitrary =Type=. This is how we
-define a /cast/ operation that casts an element from type =A= into =B=
-when a proof =p : eq A B= is provided:
-#+BEGIN_SRC lean
-namespace hide
-
-inductive eq {A : Type} (a : A) : A → Prop :=
-refl : eq a a
-
--- BEGIN
-theorem cast {A B : Type} (p : eq A B) (a : A) : B :=
-eq.rec_on p a
--- END
-
-end hide
-#+END_SRC
-
-The recursor =eq.rec_on= is also used to define substitution:
-#+BEGIN_SRC lean
-namespace hide
-
-inductive eq {A : Type} (a : A) : A → Prop :=
-refl : eq a a
-
--- BEGIN
-theorem subst {A : Type} {a b : A} {P : A → Prop}
-  (H₁ : eq a b) (H₂ : P a) : P b :=
-eq.rec H₂ H₁
--- END
-
-end hide
-#+END_SRC
-Using the recursor with =H₁ : a = b=, we may assume =a= and =b= are
-the same, in which case, =P b= and =P a= are the same.
-
-It is not hard to prove that =eq= is symmetric and transitive.
-In the following example, we prove =symm= and leave as exercise
-the theorems =trans= and =congr= (congruence).
-
-#+BEGIN_SRC lean
-namespace hide
-
-inductive eq {A : Type} (a : A) : A → Prop :=
-refl : eq a a
-
-theorem subst {A : Type} {a b : A} {P : A → Prop}
-  (H₁ : eq a b) (H₂ : P a) : P b :=
-eq.rec H₂ H₁
-
--- BEGIN
-theorem symm {A : Type} {a b : A} (H : eq a b) : eq b a :=
-subst H (eq.refl a)
-
-theorem trans {A : Type} {a b c : A} (H₁ : eq a b) (H₂ : eq b c) : eq a c :=
-sorry
-
-theorem congr {A B : Type} {a b : A} (f : A → B) (H : eq a b) : eq (f a) (f b) :=
-sorry
--- END
-
-end hide
-#+END_SRC
-
-In the type theory literature, there are further generalizations of
-inductive definitions, for example, the principles of
-/induction-recursion/ and /induction-induction/.  These are not
-supported by Lean.
-
-** Heterogeneous Equality
-
-Given =A : Type= and =B : A → Type=, suppose we want to generalize the
-congruence theorem =congr= in the previous example to dependent
-functions =f : Π x : A, B x=. Roughly speaking, we would like to have
-a theorem that, says that if =a = b=, then =f a = f b=. The first
-obstacle is stating the theorem: the term =eq (f a) (f b)= is not type
-correct since =f a= has type =B a=, =f b= has type =B b=, and the
-equality predicate =eq= expects both arguments to have the same
-type. Notice that =f a= has type =B a=, so the term =eq.rec_on H (f
-a)= has type =B b=. You should think of =eq.rec_on H (f a)= as "=f a=,
-viewed as an element of =B b=." We can then write =eq (eq.rec_on H (f a))
-(f b)= to express that =f a= and =f b= are equal, modulo the
-difference between their types. Here is a proof of the generalized
-congruence theorem, with this approach:
-#+BEGIN_SRC lean
-namespace hide
-
-inductive eq {A : Type} (a : A) : A → Prop :=
-refl : eq a a
-
--- BEGIN
-theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
-               (H : eq a b) : eq (eq.rec_on H (f a)) (f b) :=
-have h₁ : ∀ h : eq a a, eq (eq.rec_on h (f a)) (f a), from
-  assume h : eq a a, eq.refl (eq.rec_on h (f a)),
-have h₂ : ∀ h : eq a b, eq (eq.rec_on h (f a)) (f b), from
-  eq.rec_on H h₁,
-show eq (eq.rec_on H (f a)) (f b), from
-  h₂ H
--- END
-
-end hide
-#+END_SRC
-
-Another option is to define a /heterogeneous equality/ =heq= that can
-equate terms of different types, so that we can write =heq (f a) (f
-b)= instead of =eq (eq.rec_on H (f a)) (f b)=. It is straightforward
-to define such an equality in Lean:
-#+BEGIN_SRC lean
-namespace hide
-
--- BEGIN
-inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
-refl : heq a a
--- END
-
-end hide
-#+END_SRC
-Moreover, given =a b : A=, we can prove =heq a b → eq a b= using proof
-irrelevance.  This theorem is called =heq.to_eq= in the Lean standard
-library. We can now state and prove =hcongr= using heterogeneous
-equality. Note the proof is also more compact and easier to
-understand.
-#+BEGIN_SRC lean
-namespace hide
-
-inductive eq {A : Type} (a : A) : A → Prop :=
-refl : eq a a
-
-inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
-refl : heq a a
-
--- BEGIN
-theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
-               (H : eq a b) : heq (f a) (f b) :=
-eq.rec_on H (heq.refl (f a))
--- END
-
-end hide
-#+END_SRC
-Heterogeneous equality, which gives elements of different types the
-illusion that they can be considered equal, is sometimes called /John
-Major equality/. (The name is a bit of political humor, due to Conor
-McBride.)
-
-** Automatically Generated Constructions
-:PROPERTIES:
-  :CUSTOM_ID: Automatically_Generated_Constructions
-:END:
-
-In the previous sections, we have seen that whenever we declare an
-inductive datatype =I=, the Lean kernel automatically declares its
-constructors (aka introduction rules), and generates and declares the
-eliminator/recursor =I.rec=. The eliminator expresses a principle of
-definition by recursion, as well as the principle of proof by
-induction. The kernel also associates a /computational rule/ which
-determines how these definitions are eliminated when terms and proofs
-are normalized.
-
-Consider, for example, the natural numbers. Given the motive =C : nat
-→ Type=, and minor premises =fz : C zero= and =fs : Π (n : nat), C n →
-C (succ n)=, we have the following two computational rules: =nat.rec
-fz fs zero= reduces to =fz=, and =nat.rec fz fs (succ a)= reduces to
-=fs a (nat.rec fz fs a)=.
-#+BEGIN_SRC lean
-open nat
-
-variable C  : nat → Type
-variable fz : C zero
-variable fs : Π (n : nat), C n → C (succ n)
-
-eval nat.rec fz fs zero
--- nat.rec_on is defined from nat.rec
-eval nat.rec_on zero fz fs
-
-example : nat.rec fz fs zero = fz :=
-rfl
-
-variable a : nat
-
-eval nat.rec fz fs (succ a)
-eval nat.rec_on (succ a) fz fs
-
-example (a : nat) : nat.rec fz fs (succ a) = fs a (nat.rec fz fs a) :=
-rfl
-#+END_SRC
-The source code that validates an inductive declaration and generates
-the eliminator/recursor and computational rules is part of the Lean
-kernel. The kernel is also known as the /trusted code base/, because a
-bug in the kernel may compromise the soundness of the whole system.
-
-When you define an inductive datatype, Lean automatically generates a
-number of useful definitions. We have already seen some of them:
-=rec_on=, =induction_on=, and =cases_on=. The module =M= that
-generates these definitions is /not/ part of the trusted code base. A
-bug in =M= does not compromise the soundness of the whole system,
-since the kernel will catch such errors when type checking any
-incorrectly generated definition produced by =M=.
-
-As described before, =rec_on= just uses its arguments in a more
-convenient order than =rec=. In =rec_on=, the major premise is
-provided before the minor premises. Constructions using =rec_on= are
-often easier to read and understand than the equivalent ones using
-=rec=.
-#+BEGIN_SRC lean
-open nat
-
-print definition nat.rec_on
-
-definition rec_on {C : nat → Type} (n : nat)
-                  (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
-nat.rec fz fs n
-#+END_SRC
-Moreover, =induction_on= is just a special case of =rec_on= where the
-motive =C= is a proposition. Finally, =cases_on= is a special case of
-=rec_on= where the inductive/recursive hypotheses are omitted in the
-minor premises. For example, in =nat.cases_on= the minor premise =fs=
-has type =Π (n : nat), C (succ n)= instead of =Π (n : nat), C n → C
-(succ n)=. Note that the inductive/recursive hypothesis =C n= has
-been omitted.
-
-#+BEGIN_SRC lean
-namespace hide
--- BEGIN
-open nat
-
-print definition nat.induction_on
-print definition nat.cases_on
-
-definition induction_on {C : nat → Prop} (n : nat)
-                        (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
-nat.rec_on n fz fs
-
-definition cases_on {C : nat → Prop} (n : nat)
-                    (fz : C zero) (fs : Π a, C (succ a)) : C n :=
-nat.rec_on n fz (fun (a : nat) (r : C a), fs a)
--- END
-end hide
-#+END_SRC
-
-For any inductive datatype that is not a proposition, we can show that
-its constructors are injective and disjoint. For example, on =nat=, we
-can show that =succ a = succ b → a = b= (injectivity), and =succ a ≠
-zero= (disjointness). Both proofs can be performed using the
-automatically generated definition =nat.no_confusion=. More generally,
-for any inductive datatype =I= that is not a proposition, Lean
-automatically generates a definition of =I.no_confusion=. Given a
-motive =C= and an equality =h : c₁ t = c₂ s=, where =c₁= and =c₂= are
-two distinct =I= constructors, =I.no_confusion= constructs an
-inhabitant of =C=.  This is essentially the /principle of explosion/,
-that is, the fact that anything follows from a contradiction. On the
-other hand, given a proof of =c t = c s= with the same constructor on
-both sides and a proof of =t = s → C=, =I.no_confusion= returns an
-inhabitant of =C=.
-
-Let us illustrate by considering the constructions for the type =nat=.
-The type of =no_confusion= is based on the auxiliary definition
-=no_confusion_type=:
-#+BEGIN_SRC lean
-open nat
-
-check @nat.no_confusion
--- Π {P : Type} {v1 v2 : ℕ}, v1 = v2 → nat.no_confusion_type P v1 v2
-
-check nat.no_confusion_type
--- Type → ℕ → ℕ → Type
-#+END_SRC
-Note that the motive is an implicit argument in =no_confusion=. The
-constructions work as follows:
-#+BEGIN_SRC lean
-open nat
--- BEGIN
-variable C : Type
-variables a b : nat
-
-eval nat.no_confusion_type C zero     (succ a)
--- C
-eval nat.no_confusion_type C (succ a) zero
--- C
-eval nat.no_confusion_type C zero     zero
--- C → C
-eval nat.no_confusion_type C (succ a) (succ b)
--- (a = b → C) → C
--- END
-#+END_SRC
-In other words, from a proof of =zero = succ a= or =succ a = 0=, we
-obtain an element of any type =C= at will. On the other hand, a proof
-of =zero = zero= provides no help in constructing an element of type
-=C=, whereas a proof of =succ a = succ b= reduces the task of
-constructing an element of type =C= to the task of constructing such
-an element under the additional hypothesis =a = b=.
-
-It is not hard to prove that constructors are injective and disjoint
-using =no_confusion=.  In the following example, we prove these two
-properties for =nat= and leave as exercise the equivalent proofs for
-trees.
-#+BEGIN_SRC lean
-open nat
-
-theorem succ_ne_zero (a : nat) (h : succ a = zero) : false :=
-nat.no_confusion h
-
-theorem succ.inj (a b : nat) (h : succ a = succ b) : a = b :=
-nat.no_confusion h (fun e : a = b, e)
-
-inductive tree (A : Type) : Type :=
-| leaf : A → tree A
-| node : tree A → tree A → tree A
-
-open tree
-
-variable {A : Type}
-
-theorem leaf_ne_node {a : A} {l r : tree A}
-                     (h : leaf a = node l r) : false :=
-sorry
-
-theorem leaf_inj {a b : A} (h : leaf a = leaf b) : a = b :=
-sorry
-
-theorem node_inj_left {l1 r1 l2 r2 : tree A}
-                      (h : node l1 r1 = node l2 r2) : l1 = l2 :=
-sorry
-
-theorem node_inj_right {l1 r1 l2 r2 : tree A}
-                       (h : node l1 r1 = node l2 r2) : r1 = r2 :=
-sorry
-#+END_SRC
-
-If a constructor contains dependent arguments (such as =sigma.mk=),
-the generated =no_confusion= uses heterogeneous equality to equate
-arguments of different types:
-#+BEGIN_SRC lean
-variables (A : Type) (B : A → Type)
-variables (a1 a2 : A) (b1 : B a1) (b2 : B a2)
-variable  (C : Type)
-
--- Remark: b1 and b2 have different types
-
-eval sigma.no_confusion_type C (sigma.mk a1 b1) (sigma.mk a2 b2)
--- (a1 = a2 → b1 == b2 → C) → C
-#+END_SRC
-
-Lean also generates the predicate transformer =below= and the recursor
-=brec_on=. It is unlikely that you will ever need to use these
-constructions directly; they are auxiliary definitions used by the
-recursive equation compiler we will describe in the next chapter, and
-we will not discuss them further here.
-
-** Universe Levels
-
-Since an inductive type lives in =Type.{i}= for some =i=, it is
-reasonable to ask /which/ universe levels =i= can be instantiated
-to. The goal of this section is to explain the relevant constraints.
-
-In the standard library, there are two cases, depending on whether the
-inductive type is specified to land in =Prop=. Let us first consider
-the case where the inductive type is not specified to land in =Prop=,
-which is the only case that arises in the homotopy type theory
-instantiation of the kernel. Recall that each constructor =c= in the
-definition of a family =C= of inductive types is of the form
-#+BEGIN_SRC text
-c : Π (a : A) (b : B[a]), C a p[a,b]
-#+END_SRC
-where =a= is a sequence of datatype parameters, =b= is the sequence of
-arguments to the constructors, and =p[a, b]= are the indices, which
-determine which element of the inductive family the construction
-inhabits. Then the universe level =i= of =C= is constrained to satisfy
-the following:
-#+BEGIN_QUOTE
-For each constructor =c= as above, and each =Bk[a]= in the sequence
-=B[a]=, if =Bk[a] : Type.{j}=, we have =i= ≥ =j=.
-#+END_QUOTE
-In other words, the universe level =i= is required to be at least as
-large as the universe level of each type that represents an argument
-to a constructor.
-
-When the inductive type =C= is specified to land in =Prop=, there are
-no constraints on the universe levels of the constructor
-arguments. But these universe levels do have a bearing on the
-elimination rule. Generally speaking, for an inductive type in =Prop=,
-the motive of the elimination rule is required to be in =Prop=. The
-exception we alluded to in the discussion of equality above is this:
-we are allowed to eliminate to an arbitrary =Type= when there is only
-one constructor, and each constructor argument is either in =Prop= or
-an index. This exception, which makes it possible to treat ordinary
-equality and heterogeneous equality as inductive types, can be
-justified by the fact that the elimination rule cannot take advantage
-of any "hidden" information.
-
-Because inductive types can be polymorphic over universe levels,
-whether an inductive definition lands in =Prop= could, in principle,
-depend on how the universe levels are instantiated. To simplify the
-generation of the recursors, Lean adopts a convention that rules out
-this ambiguity: if you do not specify that the inductive type is an
-element of =Prop=, Lean requires the universe level to be at least
-one. Hence, a type specified by single inductive definition is either
-always in =Prop= or never in =Prop=. For example, if =A= and =B= are
-elements of =Prop=, =A × B= is assumed to have universe level at least
-one, representing a datatype rather than a proposition. The analogous
-definition of =A × B=, where =A= and =B= are restricted to =Prop= and
-the resulting type is declared to be an element of =Prop= instead of
-=Type=, is exactly the definition of =A ∧ B=.
+# TODO (JDA): I got tired here, but more can be ported from the parts
+# that are commented out below.
+
+# ** Generalizations
+
+# We now consider two generalizations of inductive types that
+# are sometimes useful. First, Lean supports /mutually defined inductive
+# types/. The idea is that we can define two (or more) inductive types
+# at the same time, where each one refers to the other.
+
+# #+BEGIN_SRC lean
+# inductive tree (A : Type) : Type :=
+# | node : A → forest A → tree A
+# with forest : Type :=
+# | nil  : forest A
+# | cons : tree A → forest A → forest A
+# #+END_SRC
+# In this example, a =tree= with elements labeled from =A= is of the
+# form =node a f=, where =a= is an element of =A= (the label), and =f= a
+# forest. At the same time, a =forest= of trees with elements labeled
+# from =A= is essentially defined to be a list of trees.
+
+# A more powerful generalization is given by the possibility of defining
+# inductive type =families=. There are indexed families of types defined
+# by a simultaneous induction of the following form:
+# #+BEGIN_SRC text
+# inductive foo : ... → Type :=
+# | constructor₁ : ... → foo ...
+# | constructor₂ : ... → foo ...
+# ...
+# | constructorₙ : ... → foo ...
+# #+END_SRC
+# In contrast to ordinary inductive definition, which construct an
+# element of =Type=, the more general version constructs a function
+# =... → Type=, where "=...=" denotes a sequence of argument types, also
+# known as /indices/. Each constructor then constructs an element of some
+# type in the family. One example is the definition of =vector A n=, the
+# type of vectors of elements of =A= of length =n=:
+# #+BEGIN_SRC lean
+# open nat
+# namespace hide
+
+# -- BEGIN
+# inductive vector (A : Type) : nat → Type :=
+# | nil {} : vector A zero
+# | cons   : Π {n}, A → vector A n → vector A (succ n)
+# -- END
+
+# end hide
+# #+END_SRC
+# Notice that the =cons= constructor takes an element of =vector A n=,
+# and returns an element of =vector A (succ n)=, thereby using an
+# element of one member of the family to build an element of another.
+
+# Another example is given by the family of types =fin n=. For each =n=,
+# =fin n= is supposed to denote a generic type of =n= elements:
+# #+BEGIN_SRC lean
+# namespace hide
+
+# -- BEGIN
+# inductive fin : nat → Type :=
+# | fz : Π n, fin (nat.succ n)
+# | fs : Π {n}, fin n → fin (nat.succ n)
+# -- END
+
+# end hide
+# #+END_SRC
+# This example may be hard to understand, so you should take the time to
+# think about how it works.
+
+# Yet another example is given by the definition of the equality type in
+# the library:
+# #+BEGIN_SRC lean
+# namespace hide
+
+# -- BEGIN
+# inductive eq {A : Type} (a : A) : A → Prop :=
+# refl : eq a a
+# -- END
+
+# end hide
+# #+END_SRC
+# For each fixed =A : Type= and =a : A=, this definition constructs a
+# family of types =eq a x=, indexed by =x : A=. Notably, however, there
+# is only one constructor, =refl=, which is an element of =eq a
+# a=. Intuitively, the only way to construct a proof of =eq a x= is to
+# use reflexivity, in the case where =x= is =a=.  Note that =eq a a= is
+# the only inhabited type in the family of types =eq a x=.  The
+# elimination principle generated by Lean says that =eq= is the /least/
+# reflexive relation on =A=. The eliminator/recursor for =eq= is of the
+# following form:
+# #+BEGIN_SRC text
+# eq.rec_on : Π {A : Type} {a : A} {C : A → Type} {b : A}, a = b → C a → C b
+# #+END_SRC
+# It is a remarkable fact that all the basic axioms for equality follow
+# from the constructor, =refl=, and the eliminator, =eq.rec_on=.
+
+# This eliminator illustrates the exception to the fact
+# that inductive definitions living in =Prop= can only eliminate to
+# =Prop=. Because there is only one constructor to =eq=, it carries no
+# information, other than the type is inhabited, and Lean's internal
+# logic allows us to eliminate to an arbitrary =Type=. This is how we
+# define a /cast/ operation that casts an element from type =A= into =B=
+# when a proof =p : eq A B= is provided:
+# #+BEGIN_SRC lean
+# namespace hide
+
+# inductive eq {A : Type} (a : A) : A → Prop :=
+# refl : eq a a
+
+# -- BEGIN
+# theorem cast {A B : Type} (p : eq A B) (a : A) : B :=
+# eq.rec_on p a
+# -- END
+
+# end hide
+# #+END_SRC
+
+# The recursor =eq.rec_on= is also used to define substitution:
+# #+BEGIN_SRC lean
+# namespace hide
+
+# inductive eq {A : Type} (a : A) : A → Prop :=
+# refl : eq a a
+
+# -- BEGIN
+# theorem subst {A : Type} {a b : A} {P : A → Prop}
+#   (H₁ : eq a b) (H₂ : P a) : P b :=
+# eq.rec H₂ H₁
+# -- END
+
+# end hide
+# #+END_SRC
+# Using the recursor with =H₁ : a = b=, we may assume =a= and =b= are
+# the same, in which case, =P b= and =P a= are the same.
+
+# It is not hard to prove that =eq= is symmetric and transitive.
+# In the following example, we prove =symm= and leave as exercise
+# the theorems =trans= and =congr= (congruence).
+
+# #+BEGIN_SRC lean
+# namespace hide
+
+# inductive eq {A : Type} (a : A) : A → Prop :=
+# refl : eq a a
+
+# theorem subst {A : Type} {a b : A} {P : A → Prop}
+#   (H₁ : eq a b) (H₂ : P a) : P b :=
+# eq.rec H₂ H₁
+
+# -- BEGIN
+# theorem symm {A : Type} {a b : A} (H : eq a b) : eq b a :=
+# subst H (eq.refl a)
+
+# theorem trans {A : Type} {a b c : A} (H₁ : eq a b) (H₂ : eq b c) : eq a c :=
+# sorry
+
+# theorem congr {A B : Type} {a b : A} (f : A → B) (H : eq a b) : eq (f a) (f b) :=
+# sorry
+# -- END
+
+# end hide
+# #+END_SRC
+
+# In the type theory literature, there are further generalizations of
+# inductive definitions, for example, the principles of
+# /induction-recursion/ and /induction-induction/.  These are not
+# supported by Lean.
+
+# ** Heterogeneous Equality
+
+# Given =A : Type= and =B : A → Type=, suppose we want to generalize the
+# congruence theorem =congr= in the previous example to dependent
+# functions =f : Π x : A, B x=. Roughly speaking, we would like to have
+# a theorem that, says that if =a = b=, then =f a = f b=. The first
+# obstacle is stating the theorem: the term =eq (f a) (f b)= is not type
+# correct since =f a= has type =B a=, =f b= has type =B b=, and the
+# equality predicate =eq= expects both arguments to have the same
+# type. Notice that =f a= has type =B a=, so the term =eq.rec_on H (f
+# a)= has type =B b=. You should think of =eq.rec_on H (f a)= as "=f a=,
+# viewed as an element of =B b=." We can then write =eq (eq.rec_on H (f a))
+# (f b)= to express that =f a= and =f b= are equal, modulo the
+# difference between their types. Here is a proof of the generalized
+# congruence theorem, with this approach:
+# #+BEGIN_SRC lean
+# namespace hide
+
+# inductive eq {A : Type} (a : A) : A → Prop :=
+# refl : eq a a
+
+# -- BEGIN
+# theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
+#                (H : eq a b) : eq (eq.rec_on H (f a)) (f b) :=
+# have h₁ : ∀ h : eq a a, eq (eq.rec_on h (f a)) (f a), from
+#   assume h : eq a a, eq.refl (eq.rec_on h (f a)),
+# have h₂ : ∀ h : eq a b, eq (eq.rec_on h (f a)) (f b), from
+#   eq.rec_on H h₁,
+# show eq (eq.rec_on H (f a)) (f b), from
+#   h₂ H
+# -- END
+
+# end hide
+# #+END_SRC
+
+# Another option is to define a /heterogeneous equality/ =heq= that can
+# equate terms of different types, so that we can write =heq (f a) (f
+# b)= instead of =eq (eq.rec_on H (f a)) (f b)=. It is straightforward
+# to define such an equality in Lean:
+# #+BEGIN_SRC lean
+# namespace hide
+
+# -- BEGIN
+# inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
+# refl : heq a a
+# -- END
+
+# end hide
+# #+END_SRC
+# Moreover, given =a b : A=, we can prove =heq a b → eq a b= using proof
+# irrelevance.  This theorem is called =heq.to_eq= in the Lean standard
+# library. We can now state and prove =hcongr= using heterogeneous
+# equality. Note the proof is also more compact and easier to
+# understand.
+# #+BEGIN_SRC lean
+# namespace hide
+
+# inductive eq {A : Type} (a : A) : A → Prop :=
+# refl : eq a a
+
+# inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
+# refl : heq a a
+
+# -- BEGIN
+# theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
+#                (H : eq a b) : heq (f a) (f b) :=
+# eq.rec_on H (heq.refl (f a))
+# -- END
+
+# end hide
+# #+END_SRC
+# Heterogeneous equality, which gives elements of different types the
+# illusion that they can be considered equal, is sometimes called /John
+# Major equality/. (The name is a bit of political humor, due to Conor
+# McBride.)
+
+# ** Automatically Generated Constructions
+# :PROPERTIES:
+#   :CUSTOM_ID: Automatically_Generated_Constructions
+# :END:
+
+# In the previous sections, we have seen that whenever we declare an
+# inductive datatype =I=, the Lean kernel automatically declares its
+# constructors (aka introduction rules), and generates and declares the
+# eliminator/recursor =I.rec=. The eliminator expresses a principle of
+# definition by recursion, as well as the principle of proof by
+# induction. The kernel also associates a /computational rule/ which
+# determines how these definitions are eliminated when terms and proofs
+# are normalized.
+
+# Consider, for example, the natural numbers. Given the motive =C : nat
+# → Type=, and minor premises =fz : C zero= and =fs : Π (n : nat), C n →
+# C (succ n)=, we have the following two computational rules: =nat.rec
+# fz fs zero= reduces to =fz=, and =nat.rec fz fs (succ a)= reduces to
+# =fs a (nat.rec fz fs a)=.
+# #+BEGIN_SRC lean
+# open nat
+
+# variable C  : nat → Type
+# variable fz : C zero
+# variable fs : Π (n : nat), C n → C (succ n)
+
+# eval nat.rec fz fs zero
+# -- nat.rec_on is defined from nat.rec
+# eval nat.rec_on zero fz fs
+
+# example : nat.rec fz fs zero = fz :=
+# rfl
+
+# variable a : nat
+
+# eval nat.rec fz fs (succ a)
+# eval nat.rec_on (succ a) fz fs
+
+# example (a : nat) : nat.rec fz fs (succ a) = fs a (nat.rec fz fs a) :=
+# rfl
+# #+END_SRC
+# The source code that validates an inductive declaration and generates
+# the eliminator/recursor and computational rules is part of the Lean
+# kernel. The kernel is also known as the /trusted code base/, because a
+# bug in the kernel may compromise the soundness of the whole system.
+
+# When you define an inductive datatype, Lean automatically generates a
+# number of useful definitions. We have already seen some of them:
+# =rec_on=, =induction_on=, and =cases_on=. The module =M= that
+# generates these definitions is /not/ part of the trusted code base. A
+# bug in =M= does not compromise the soundness of the whole system,
+# since the kernel will catch such errors when type checking any
+# incorrectly generated definition produced by =M=.
+
+# As described before, =rec_on= just uses its arguments in a more
+# convenient order than =rec=. In =rec_on=, the major premise is
+# provided before the minor premises. Constructions using =rec_on= are
+# often easier to read and understand than the equivalent ones using
+# =rec=.
+# #+BEGIN_SRC lean
+# open nat
+
+# print definition nat.rec_on
+
+# definition rec_on {C : nat → Type} (n : nat)
+#                   (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
+# nat.rec fz fs n
+# #+END_SRC
+# Moreover, =induction_on= is just a special case of =rec_on= where the
+# motive =C= is a proposition. Finally, =cases_on= is a special case of
+# =rec_on= where the inductive/recursive hypotheses are omitted in the
+# minor premises. For example, in =nat.cases_on= the minor premise =fs=
+# has type =Π (n : nat), C (succ n)= instead of =Π (n : nat), C n → C
+# (succ n)=. Note that the inductive/recursive hypothesis =C n= has
+# been omitted.
+
+# #+BEGIN_SRC lean
+# namespace hide
+# -- BEGIN
+# open nat
+
+# print definition nat.induction_on
+# print definition nat.cases_on
+
+# definition induction_on {C : nat → Prop} (n : nat)
+#                         (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
+# nat.rec_on n fz fs
+
+# definition cases_on {C : nat → Prop} (n : nat)
+#                     (fz : C zero) (fs : Π a, C (succ a)) : C n :=
+# nat.rec_on n fz (fun (a : nat) (r : C a), fs a)
+# -- END
+# end hide
+# #+END_SRC
+
+# For any inductive datatype that is not a proposition, we can show that
+# its constructors are injective and disjoint. For example, on =nat=, we
+# can show that =succ a = succ b → a = b= (injectivity), and =succ a ≠
+# zero= (disjointness). Both proofs can be performed using the
+# automatically generated definition =nat.no_confusion=. More generally,
+# for any inductive datatype =I= that is not a proposition, Lean
+# automatically generates a definition of =I.no_confusion=. Given a
+# motive =C= and an equality =h : c₁ t = c₂ s=, where =c₁= and =c₂= are
+# two distinct =I= constructors, =I.no_confusion= constructs an
+# inhabitant of =C=.  This is essentially the /principle of explosion/,
+# that is, the fact that anything follows from a contradiction. On the
+# other hand, given a proof of =c t = c s= with the same constructor on
+# both sides and a proof of =t = s → C=, =I.no_confusion= returns an
+# inhabitant of =C=.
+
+# Let us illustrate by considering the constructions for the type =nat=.
+# The type of =no_confusion= is based on the auxiliary definition
+# =no_confusion_type=:
+# #+BEGIN_SRC lean
+# open nat
+
+# check @nat.no_confusion
+# -- Π {P : Type} {v1 v2 : ℕ}, v1 = v2 → nat.no_confusion_type P v1 v2
+
+# check nat.no_confusion_type
+# -- Type → ℕ → ℕ → Type
+# #+END_SRC
+# Note that the motive is an implicit argument in =no_confusion=. The
+# constructions work as follows:
+# #+BEGIN_SRC lean
+# open nat
+# -- BEGIN
+# variable C : Type
+# variables a b : nat
+
+# eval nat.no_confusion_type C zero     (succ a)
+# -- C
+# eval nat.no_confusion_type C (succ a) zero
+# -- C
+# eval nat.no_confusion_type C zero     zero
+# -- C → C
+# eval nat.no_confusion_type C (succ a) (succ b)
+# -- (a = b → C) → C
+# -- END
+# #+END_SRC
+# In other words, from a proof of =zero = succ a= or =succ a = 0=, we
+# obtain an element of any type =C= at will. On the other hand, a proof
+# of =zero = zero= provides no help in constructing an element of type
+# =C=, whereas a proof of =succ a = succ b= reduces the task of
+# constructing an element of type =C= to the task of constructing such
+# an element under the additional hypothesis =a = b=.
+
+# It is not hard to prove that constructors are injective and disjoint
+# using =no_confusion=.  In the following example, we prove these two
+# properties for =nat= and leave as exercise the equivalent proofs for
+# trees.
+# #+BEGIN_SRC lean
+# open nat
+
+# theorem succ_ne_zero (a : nat) (h : succ a = zero) : false :=
+# nat.no_confusion h
+
+# theorem succ.inj (a b : nat) (h : succ a = succ b) : a = b :=
+# nat.no_confusion h (fun e : a = b, e)
+
+# inductive tree (A : Type) : Type :=
+# | leaf : A → tree A
+# | node : tree A → tree A → tree A
+
+# open tree
+
+# variable {A : Type}
+
+# theorem leaf_ne_node {a : A} {l r : tree A}
+#                      (h : leaf a = node l r) : false :=
+# sorry
+
+# theorem leaf_inj {a b : A} (h : leaf a = leaf b) : a = b :=
+# sorry
+
+# theorem node_inj_left {l1 r1 l2 r2 : tree A}
+#                       (h : node l1 r1 = node l2 r2) : l1 = l2 :=
+# sorry
+
+# theorem node_inj_right {l1 r1 l2 r2 : tree A}
+#                        (h : node l1 r1 = node l2 r2) : r1 = r2 :=
+# sorry
+# #+END_SRC
+
+# If a constructor contains dependent arguments (such as =sigma.mk=),
+# the generated =no_confusion= uses heterogeneous equality to equate
+# arguments of different types:
+# #+BEGIN_SRC lean
+# variables (A : Type) (B : A → Type)
+# variables (a1 a2 : A) (b1 : B a1) (b2 : B a2)
+# variable  (C : Type)
+
+# -- Remark: b1 and b2 have different types
+
+# eval sigma.no_confusion_type C (sigma.mk a1 b1) (sigma.mk a2 b2)
+# -- (a1 = a2 → b1 == b2 → C) → C
+# #+END_SRC
+
+# Lean also generates the predicate transformer =below= and the recursor
+# =brec_on=. It is unlikely that you will ever need to use these
+# constructions directly; they are auxiliary definitions used by the
+# recursive equation compiler we will describe in the next chapter, and
+# we will not discuss them further here.
+
+# ** Universe Levels
+
+# Since an inductive type lives in =Type.{i}= for some =i=, it is
+# reasonable to ask /which/ universe levels =i= can be instantiated
+# to. The goal of this section is to explain the relevant constraints.
+
+# In the standard library, there are two cases, depending on whether the
+# inductive type is specified to land in =Prop=. Let us first consider
+# the case where the inductive type is not specified to land in =Prop=,
+# which is the only case that arises in the homotopy type theory
+# instantiation of the kernel. Recall that each constructor =c= in the
+# definition of a family =C= of inductive types is of the form
+# #+BEGIN_SRC text
+# c : Π (a : A) (b : B[a]), C a p[a,b]
+# #+END_SRC
+# where =a= is a sequence of datatype parameters, =b= is the sequence of
+# arguments to the constructors, and =p[a, b]= are the indices, which
+# determine which element of the inductive family the construction
+# inhabits. Then the universe level =i= of =C= is constrained to satisfy
+# the following:
+# #+BEGIN_QUOTE
+# For each constructor =c= as above, and each =Bk[a]= in the sequence
+# =B[a]=, if =Bk[a] : Type.{j}=, we have =i= ≥ =j=.
+# #+END_QUOTE
+# In other words, the universe level =i= is required to be at least as
+# large as the universe level of each type that represents an argument
+# to a constructor.
+
+# When the inductive type =C= is specified to land in =Prop=, there are
+# no constraints on the universe levels of the constructor
+# arguments. But these universe levels do have a bearing on the
+# elimination rule. Generally speaking, for an inductive type in =Prop=,
+# the motive of the elimination rule is required to be in =Prop=. The
+# exception we alluded to in the discussion of equality above is this:
+# we are allowed to eliminate to an arbitrary =Type= when there is only
+# one constructor, and each constructor argument is either in =Prop= or
+# an index. This exception, which makes it possible to treat ordinary
+# equality and heterogeneous equality as inductive types, can be
+# justified by the fact that the elimination rule cannot take advantage
+# of any "hidden" information.
+
+# Because inductive types can be polymorphic over universe levels,
+# whether an inductive definition lands in =Prop= could, in principle,
+# depend on how the universe levels are instantiated. To simplify the
+# generation of the recursors, Lean adopts a convention that rules out
+# this ambiguity: if you do not specify that the inductive type is an
+# element of =Prop=, Lean requires the universe level to be at least
+# one. Hence, a type specified by single inductive definition is either
+# always in =Prop= or never in =Prop=. For example, if =A= and =B= are
+# elements of =Prop=, =A × B= is assumed to have universe level at least
+# one, representing a datatype rather than a proposition. The analogous
+# definition of =A × B=, where =A= and =B= are restricted to =Prop= and
+# the resulting type is declared to be an element of =Prop= instead of
+# =Type=, is exactly the definition of =A ∧ B=.
