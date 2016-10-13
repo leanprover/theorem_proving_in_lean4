@@ -536,7 +536,7 @@
 # brackets are entered as =\cll= and =\clr=, for "corner-lower-left" and
 # "corner-lower-right") or =?(t)=.
 
-# The following example can be found in \cite{goguen:et:al:06}. We
+# The following example can be found in cite{goguen:et:al:06}. We
 # declare an inductive type that defines the property of "being in the
 # image of =f=". You can view an element of the type =image_of f b= as
 # evidence that =b= is in the image of =f=, whereby the constructor
