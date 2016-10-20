@@ -10,7 +10,7 @@ WATCHMAN_BIN ?= $(CWD)/watchman/bin/watchman
 TMPDIR := $(shell mktemp -d /tmp/lean-tutorial.XXXX)
 NAV_DATA := js/nav_data.js
 
-all: $(HTMLS) tutorial.pdf build_nav_data   # quickref.pdf
+all: $(HTMLS) build_nav_data   # quickref.pdf tutorial.pdf
 
 htmls: $(HTMLS)
 
