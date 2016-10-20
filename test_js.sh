@@ -1,7 +1,7 @@
 #!/bin/bash
-# Test is all examples in the .org files are working with lean.js
+# Test is all examples in the .org files are working with lean3.js
 
-LEAN_JS=lean.js
+LEAN_JS=lean3.js
 RUN_LEAN_JS=run_lean_js.sh
 
 if [ $# -ne 1 ]; then

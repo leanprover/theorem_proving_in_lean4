@@ -565,11 +565,7 @@ var myModule = (function() {
             var start_time = new Date().getTime();
             myModule.append_console("-- Initializing Lean...           ");
             setTimeout(function() {
-                if (myModule.useHoTT) {
-                    Module.lean_init(true);
-                } else {
-                    Module.lean_init(false);
-                }
+                Module.lean_init();
                 myModule.append_console("Done");
                 myModule.append_console_nl("(" + elapsed_time_string(start_time) + ")");
             }, 5);
@@ -701,7 +697,7 @@ if (gup("mem") != "") {
     Module.TOTAL_MEMORY=64 * 1024 * 1024;
 }
 
-// timestamp before loading lean.js
+// timestamp before loading lean3.js
 Module['print'] = function(text) {
     myModule.push_output_buffer(text);
     editor_main.focus();
@@ -724,10 +720,5 @@ Module.preRun.push(function() {
     myModule.append_console_nl("(" + elapsed_time_string(lean_loading_start_time) + ")");
 })
 $.ajaxPrefilter(undefined);
-if (myModule.useHoTT) {
-    myModule.append_console("-- Loading lean.hott.js...             ");
-    loadJSFile("//leanprover.github.io/lean.js/lean.hott.js");
-} else {
-    myModule.append_console("-- Loading lean.js...             ");
-    loadJSFile("//leanprover.github.io/lean.js/lean.js");
-}
+myModule.append_console("-- Loading lean3.js...             ");
+loadJSFile("//leanprover.github.io/lean.js/lean3.js");
