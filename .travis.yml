@@ -77,12 +77,17 @@ script:
   # Build input-method.js
   - cask exec emacs --no-site-file --no-site-lisp -q --batch -l ./elisp/org-html-export.el -l ./lean/src/emacs/lean-input.el -f lean-input-export-translations-to-stdout > js/input-method.js
   # Push to gh-pages
+  # Leo: I have replaced the command
+  #         git add -f *.html tutorial.pdf quickref.pdf &&
+  # with
+  #         git add -f *.html &&
+  # because the PDF generation is not working on Ubuntu 16.04
   - if [[ "${REPO}" == "BLESSED" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
       git config --global user.email "notifications@travis-ci.org" &&
       git config --global user.name "Travis CI" &&
       git checkout --orphan gh-pages &&
       rm -f .git/index &&
-      git add -f *.html tutorial.pdf quickref.pdf &&
+      git add -f *.html &&
       for CSS in css/*.css; do cssmin ${CSS} | sponge ${CSS} ; done &&
       git add css &&
       git add images &&
@@ -92,7 +97,7 @@ script:
       rm -rf pygments-main &&
       git clean -fxd &&
       git commit -m "Update `date -R`" &&
-      git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/tutorial.git +HEAD:gh-pages &&
+      git push -q https://soonhokong:${GH_TOKEN}@github.com/leanprover/theorem_proving_in_lean.git +HEAD:gh-pages &&
       git checkout -f master;
     fi
   # Test
