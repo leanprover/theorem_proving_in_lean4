@@ -53,8 +53,12 @@ install:
   # Install Lean dependencies
   - git clone https://github.com/leanprover/lean
   # Build Lean
+  # Leo: Remove
+  #    git checkout lean3
+  # when lean3 branch becomes master
   - if [[ $TEST == TRUE ]] ; then
       cd lean &&
+      git checkout lean3 &&
       mkdir build &&
       cd build &&
       cmake -DIGNORE_SORRY=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-5 ../src &&
