@@ -272,7 +272,7 @@ Incidentally, there are tactics =reflexivity=, =symmetry=, and
 reflexivity, for example, is more general than writing =apply
 eq.refl=, because it works for any relation that has been tagged with
 the =refl= attribute.
-# TODO: add a reference to the chapter that describes attributes. 
+# TODO: add a reference to the chapter that describes attributes.
 With that tactic, the previous proof can be written more elegantly as
 follows:
 #+BEGIN_SRC lean
@@ -412,7 +412,7 @@ above brings =h= along with it:
 example (x y : ℕ) (h : x = y) : y = x :=
 begin
   revert x,     -- goal is y : ℕ ⊢ ∀ (x : ℕ), x = y → y = x
-  intros, 
+  intros,
   symmetry,
   assumption
 end
@@ -422,7 +422,7 @@ You can also revert multiple elements of the context at once:
 example (x y : ℕ) (h : x = y) : y = x :=
 begin
   revert x y,     -- goal is x y : ℕ ⊢ ∀ (x : ℕ), x = y → y = x
-  intros, 
+  intros,
   symmetry,
   assumption
 end
@@ -1066,5 +1066,3 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # irreducible. Both are computationally expensive and should be used
 # sparingly. =krewrite= is often useful when matching patterns requires
 # unfolding projections in an algebraic structure.
-
-

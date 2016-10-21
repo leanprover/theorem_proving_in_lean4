@@ -143,6 +143,6 @@ This tutorial is an open access project maintained on Github. Many
 people have contributed to the effort, providing corrections,
 suggestions, examples, and text. We are grateful to Ulrik Buchholz,
 Nathan Carter, Amine Chaieb, Floris van Doorn, Anthony Hart, Sean
-Leather, Christopher John Mazey, Sebastian Ullrich, Daniel Velleman,
+Leather, Christopher John Mazey, Assia Mahboubi, Sebastian Ullrich, Daniel Velleman,
 and Théo Zimmerman for their contributions, and we apologize to those
 whose names we have inadvertently omitted.

@@ -126,7 +126,7 @@ inductive weekday : Type
 | saturday : weekday
 
 -- BEGIN
-definition number_of_day (d : weekday) : ℕ :=
+def number_of_day (d : weekday) : ℕ :=
 weekday.rec_on d 1 2 3 4 5 6 7
 
 eval number_of_day weekday.sunday
@@ -155,7 +155,7 @@ inductive weekday : Type
 | saturday : weekday
 
 -- BEGIN
-definition number_of_day (d : weekday) : ℕ :=
+def number_of_day (d : weekday) : ℕ :=
 weekday.cases_on d 1 2 3 4 5 6 7
 -- END
 #+END_SRC
@@ -188,9 +188,9 @@ inductive weekday : Type
 -- BEGIN
 namespace weekday
   @[reducible]
-  private definition cases_on := @weekday.cases_on
+  private def cases_on := @weekday.cases_on
 
-  definition number_of_day (d : weekday) : nat :=
+  def number_of_day (d : weekday) : nat :=
   cases_on d 1 2 3 4 5 6 7
 end weekday
 
@@ -215,10 +215,10 @@ inductive weekday : Type
 
 -- BEGIN
 namespace weekday
-  definition next (d : weekday) : weekday :=
+  def next (d : weekday) : weekday :=
   weekday.cases_on d monday tuesday wednesday thursday friday saturday sunday
 
-  definition previous (d : weekday) : weekday :=
+  def previous (d : weekday) : weekday :=
   weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
   eval next (next tuesday)
@@ -244,10 +244,10 @@ inductive weekday : Type
 | saturday : weekday
 
 namespace weekday
-  definition next (d : weekday) : weekday :=
+  def next (d : weekday) : weekday :=
   weekday.cases_on d monday tuesday wednesday thursday friday saturday sunday
 
-  definition previous (d : weekday) : weekday :=
+  def previous (d : weekday) : weekday :=
   weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
 -- BEGIN
@@ -281,10 +281,10 @@ inductive weekday : Type
 | saturday : weekday
 
 namespace weekday
-  definition next (d : weekday) : weekday :=
+  def next (d : weekday) : weekday :=
   weekday.cases_on d monday tuesday wednesday thursday friday saturday sunday
 
-  definition previous (d : weekday) : weekday :=
+  def previous (d : weekday) : weekday :=
   weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
 -- BEGIN
@@ -313,10 +313,10 @@ inductive weekday : Type
 | saturday : weekday
 
 namespace weekday
-  definition next (d : weekday) : weekday :=
+  def next (d : weekday) : weekday :=
   weekday.cases_on d monday tuesday wednesday thursday friday saturday sunday
 
-  definition previous (d : weekday) : weekday :=
+  def previous (d : weekday) : weekday :=
   weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
 -- BEGIN
@@ -364,7 +364,7 @@ require nested cases splits:
 namespace hide
 
 -- BEGIN
-definition band (b1 b2 : bool) : bool :=
+def band (b1 b2 : bool) : bool :=
 bool.cases_on b1
   ff
   (bool.cases_on b2 ff tt)
@@ -412,10 +412,10 @@ A B= and =(a, b)= for =prod.mk a b=.
 universe variables u v
 
 -- BEGIN
-definition fst {A : Type u} {B : Type v} (p : A × B) : A :=
+def fst {A : Type u} {B : Type v} (p : A × B) : A :=
 prod.rec_on p (λ a b, a)
 
-definition snd {A : Type u} {B : Type v} (p : A × B) : B :=
+def snd {A : Type u} {B : Type v} (p : A × B) : B :=
 prod.rec_on p (λ a b, b)
 -- END
 #+END_SRC
@@ -429,7 +429,7 @@ belong to any universe.
 
 Here is another example:
 #+BEGIN_SRC lean
-definition prod_example (p : bool × ℕ) : ℕ :=
+def prod_example (p : bool × ℕ) : ℕ :=
 prod.rec_on p (λ b n, cond b (2 * n) (2 * n + 1))
 
 eval prod_example (tt, 3)
@@ -450,7 +450,7 @@ form =inr b=, in which case we have to specify an output value in
 terms of =b=.
 #+BEGIN_SRC lean
 -- BEGIN
-definition sum_example (s : ℕ ⊕ ℕ) : ℕ :=
+def sum_example (s : ℕ ⊕ ℕ) : ℕ :=
 sum.cases_on s (λ n, 2 * n) (λ n, 2 * n + 1)
 
 eval sum_example (sum.inl 3)
@@ -507,7 +507,7 @@ open nat
 
 -- BEGIN
 record color := (red : nat) (green : nat) (blue : nat)
-definition yellow := color.mk 255 255 0
+def yellow := color.mk 255 255 0
 eval color.red yellow
 -- END
 #+END_SRC
@@ -656,7 +656,7 @@ namespace hide
 inductive Exists {A : Type u} (p : A → Prop) : Prop
 | intro : ∀ (a : A), p a → Exists
 
-definition exists.intro := @Exists.intro
+def exists.intro := @Exists.intro
 -- END
 
 end hide
@@ -767,7 +767,7 @@ inductive nat : Type
 -- BEGIN
 namespace nat
 
-definition add (m n : nat) : nat :=
+def add (m n : nat) : nat :=
 nat.rec_on n m (λ n add_m_n, succ add_m_n)
 
 -- try it out
@@ -791,11 +791,11 @@ inductive nat : Type
 
 namespace nat
 
-definition add (m n : nat) : nat :=
+def add (m n : nat) : nat :=
 nat.rec_on n m (fun n add_m_n, succ add_m_n)
 -- BEGIN]
 instance : has_zero nat := has_zero.mk zero
-instance : has_add nat := has_add.mk add 
+instance : has_add nat := has_add.mk add
 
 theorem add_zero (m : nat) : m + 0 = m := rfl
 theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
@@ -961,7 +961,7 @@ variable {A : Type}
 
 notation h :: t  := cons h t
 
-definition append (s t : list A) : list A :=
+def append (s t : list A) : list A :=
 list.rec t (λ x l u, x::u) s
 
 notation s ++ t := append s t
@@ -1030,7 +1030,7 @@ variable {A : Type}
 
 notation h :: t  := cons h t
 
-definition append (s t : list A) : list A :=
+def append (s t : list A) : list A :=
 list.rec_on s t (λ x l u, x::u)
 
 notation s ++ t := append s t
@@ -1067,11 +1067,11 @@ inductive cbtree
 
 namespace cbtree
 
-definition succ (t : cbtree) : cbtree :=
+def succ (t : cbtree) : cbtree :=
 sup (λ n, t)
 
-definition omega : cbtree :=
-sup (λ n, nat.rec_on n leaf (λ n t, succ t)) 
+def omega : cbtree :=
+sup (λ n, nat.rec_on n leaf (λ n t, succ t))
 
 end cbtree
 #+END_SRC

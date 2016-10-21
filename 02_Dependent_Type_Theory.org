@@ -472,34 +472,33 @@ it explicitly. This clarifies your intention, and Lean will flag an
 error if the right-hand side of the definition does not have the right
 type.
 
-Because function definitions are so common, Lean provides an
-alternative notation, which puts the abstracted variables before the
+Because function definitions are so common, Lean provides the shorthand
+=def= for =definition=, and an alternative notation, which puts the abstracted variables before the
 colon and omits the lambda:
 #+BEGIN_SRC lean
-definition double (x : ℕ) : ℕ := x + x
+def double (x : ℕ) : ℕ := x + x
 print double
 check double 3
 eval double 3    -- 6
 
-definition square (x : ℕ) := x * x
+def square (x : ℕ) := x * x
 print square
 check square 3
 eval square 3    -- 9
 
-definition do_twice (f : ℕ → ℕ) (x : ℕ) : ℕ := f (f x)
+def do_twice (f : ℕ → ℕ) (x : ℕ) : ℕ := f (f x)
 
 eval do_twice double 2    -- 8
 #+END_SRC
 These definitions are equivalent to the following:
 #+BEGIN_SRC lean
-definition double : ℕ → ℕ := λ x, x + x
-definition square : ℕ → ℕ := λ x, x * x
-definition do_twice : (ℕ → ℕ) → ℕ → ℕ := λ f x, f (f x)
+def double : ℕ → ℕ := λ x, x + x
+def square : ℕ → ℕ := λ x, x * x
+def do_twice : (ℕ → ℕ) → ℕ → ℕ := λ f x, f (f x)
 #+END_SRC
 We can even use this approach to specify arguments that are types:
 #+BEGIN_SRC lean
-definition compose (A B C : Type) (g : B → C) (f : A → B) (x : A) :
-  C :=
+def compose (A B C : Type) (g : B → C) (f : A → B) (x : A) : C :=
 g (f x)
 #+END_SRC
 As an exercise, we encourage you to use =do_twice= and =double= to
@@ -518,9 +517,9 @@ arguments successively. As another exercise, we encourage you to
 complete the following definitions, which "curry" and "uncurry" a
 function.
 #+BEGIN_SRC lean
-definition curry (A B C : Type) (f : A × B → C) : A → B → C := sorry
+def curry (A B C : Type) (f : A × B → C) : A → B → C := sorry
 
-definition uncurry (A B C : Type) (f : A → B → C) : A × B → C := sorry
+def uncurry (A B C : Type) (f : A → B → C) : A × B → C := sorry
 #+END_SRC
 
 ** Local Definitions
@@ -532,7 +531,7 @@ the result of replacing every occurrence of =a= in =t2= by =t1=.
 check let y := 2 + 2 in y * y   -- ℕ
 eval  let y := 2 + 2 in y * y   -- 16
 
-definition t (x : ℕ) : ℕ :=
+def t (x : ℕ) : ℕ :=
 let y := x + x in y * y
 
 eval t 2   -- 16
@@ -555,10 +554,10 @@ stronger means of abbreviation, and there are expressions of the form
 exercise, try to understand why the definition of =foo= below type
 checks, but the definition of =bar= does not.
 #+BEGIN_SRC lean
-definition foo := let a := nat  in λ x : a, x + 2
+def foo := let a := nat  in λ x : a, x + 2
 
 /-
-definition bar := (λ a, λ x : a, x + 2) nat
+def bar := (λ a, λ x : a, x + 2) nat
 -/
 #+END_SRC
 
@@ -587,12 +586,12 @@ we have declared types =A=, =B=, and =C= to populate our context. This
 can be avoided, using implicit or explicit lambda abstraction in our
 definitions to declare such objects "locally":
 #+BEGIN_SRC lean
-definition compose (A B C : Type) (g : B → C) (f : A → B) (x : A) :
+def compose (A B C : Type) (g : B → C) (f : A → B) (x : A) :
   C := g (f x)
 
-definition do_twice (A : Type) (h : A → A) (x : A) : A := h (h x)
+def do_twice (A : Type) (h : A → A) (x : A) : A := h (h x)
 
-definition do_thrice (A : Type) (h : A → A) (x : A) : A := h (h (h x))
+def do_thrice (A : Type) (h : A → A) (x : A) : A := h (h (h x))
 #+END_SRC
 Repeating declarations in this way can be tedious, however. Lean
 provides us with the =variable= and =variables= commands to make such
@@ -600,9 +599,9 @@ declarations look global:
 #+BEGIN_SRC lean
 variables (A B C : Type)
 
-definition compose (g : B → C) (f : A → B) (x : A) : C := g (f x)
-definition do_twice (h : A → A) (x : A) : A := h (h x)
-definition do_thrice (h : A → A) (x : A) : A := h (h (h x))
+def compose (g : B → C) (f : A → B) (x : A) : C := g (f x)
+def do_twice (h : A → A) (x : A) : A := h (h x)
+def do_thrice (h : A → A) (x : A) : A := h (h (h x))
 #+END_SRC
 We can declare variables of any type, not just =Type= itself:
 #+BEGIN_SRC lean
@@ -610,9 +609,9 @@ variables (A B C : Type)
 variables (g : B → C) (f : A → B) (h : A → A)
 variable x : A
 
-definition compose := g (f x)
-definition do_twice := h (h x)
-definition do_thrice := h (h (h x))
+def compose := g (f x)
+def do_twice := h (h x)
+def do_thrice := h (h (h x))
 
 print compose
 print do_twice
@@ -642,9 +641,9 @@ section useful
   variables (g : B → C) (f : A → B) (h : A → A)
   variable x : A
 
-  definition compose := g (f x)
-  definition do_twice := h (h x)
-  definition do_thrice := h (h (h x))
+  def compose := g (f x)
+  def do_twice := h (h x)
+  def do_thrice := h (h (h x))
 end useful
 #+END_SRC
 When the section is closed, the variables go out of scope, and become
@@ -666,11 +665,11 @@ Lean provides us with the ability to group definitions, notation, and
 other information into nested, hierarchical /namespaces/:
 #+BEGIN_SRC lean
 namespace foo
-  definition a : ℕ := 5
-  definition f (x : ℕ) : ℕ := x + 7
+  def a : ℕ := 5
+  def f (x : ℕ) : ℕ := x + 7
 
-  definition fa : ℕ := f a
-  definition ffa : ℕ := f (f a)
+  def fa : ℕ := f a
+  def ffa : ℕ := f (f a)
 
   print "inside foo"
 
@@ -732,13 +731,13 @@ check append
 Like sections, namespaces can be nested:
 #+BEGIN_SRC lean
 namespace foo
-  definition a : ℕ := 5
-  definition f (x : ℕ) : ℕ := x + 7
+  def a : ℕ := 5
+  def f (x : ℕ) : ℕ := x + 7
 
-  definition fa : ℕ := f a
+  def fa : ℕ := f a
 
   namespace bar
-    definition ffa : ℕ := f (f a)
+    def ffa : ℕ := f (f a)
 
     check fa
     check ffa
@@ -760,17 +759,17 @@ Namespaces that have been closed can later be reopened, even in
 another file:
 #+BEGIN_SRC lean
 namespace foo
-  definition a : ℕ := 5
-  definition f (x : ℕ) : ℕ := x + 7
+  def a : ℕ := 5
+  def f (x : ℕ) : ℕ := x + 7
 
-  definition fa : ℕ := f a
+  def fa : ℕ := f a
 end foo
 
 check foo.a
 check foo.f
 
 namespace foo
-  definition ffa : ℕ := f (f a)
+  def ffa : ℕ := f (f a)
 end foo
 #+END_SRC
 Like sections, nested namespaces have to be closed in the order they
@@ -1067,7 +1066,7 @@ declaration of the variables. We can also use this device in function
 definitions:
 #+BEGIN_SRC lean
 universe variable u
-definition ident {A : Type u} (x : A) := x
+def ident {A : Type u} (x : A) := x
 
 variables A B : Type u
 variables (a : A) (b : B)
@@ -1094,7 +1093,7 @@ a nontraditional name here only to avoid a clash of names.
 # below. Alternatively, you can set an option to avoid printing these
 # arguments:
 # #+BEGIN_SRC lean
-# definition ident {A : Type} (x : A) := x
+# def ident {A : Type} (x : A) := x
 
 # -- BEGIN
 # variables A B : Type
@@ -1113,7 +1112,7 @@ universe variable u
 section
   variable {A : Type u}
   variable x : A
-  definition ident := x
+  def ident := x
 end
 
 variables A B : Type u
