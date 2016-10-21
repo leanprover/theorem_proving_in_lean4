@@ -97,7 +97,7 @@ as the /Calculus of Inductive
 Constructions/\cite{Coquand1988,pfenning:paulin:mohring:89}, or /CIC/.
 We will explain not only how to define mathematical objects and
 express mathematical assertions in dependent type theory, but also how
-to use it as a language for writing proofs. 
+to use it as a language for writing proofs.
 
 Because fully detailed axiomatic proofs are so complicated, the
 challenge of theorem proving is to have the computer fill in as many
@@ -125,9 +125,9 @@ below:
 -- BEGIN
 theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=
 assume hpq : p ∧ q,
-have hp : p, from and.elim_left Hpq,
-have hq : q, from and.elim_right Hpq,
-show q ∧ p, from and.intro Hq Hp
+have hp : p, from and.elim_left hpq,
+have hq : q, from and.elim_right hpq,
+show q ∧ p, from and.intro hq hp
 -- END
 #+END_SRC
 Once again, if you are reading the book online, you will see a button

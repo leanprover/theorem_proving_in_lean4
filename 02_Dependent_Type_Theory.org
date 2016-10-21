@@ -48,7 +48,7 @@ constants b1 b2 : bool  -- declare two constants at once
 
 check m            -- output: nat
 check n
-check n + 0        -- nat    
+check n + 0        -- nat
 check m * (n + 0)  -- nat
 check b1           -- bool
 check b1 && b2     -- "&&" is boolean and
@@ -105,7 +105,7 @@ check (m, n).1        -- ℕ
 check (p.1, n)        -- ℕ × ℕ
 check F f             -- ℕ
 
--- Try it on your own: write down some types, declare some constants, 
+-- Try it on your own: write down some types, declare some constants,
 -- and check some expressions.
 
 #+END_SRC
@@ -199,7 +199,7 @@ check Type      -- Type₂
 #+END_SRC
 We have actually come up against one of the most subtle aspects of
 Lean's typing system. Lean's underlying foundation has an infinite
-hierarchy of types: 
+hierarchy of types:
 #+BEGIN_SRC lean
 check Type 1   -- Type₂
 check Type 2   -- Type₃
@@ -213,7 +213,7 @@ contains =Type 2= as an element. The list is indefinite, so that there
 is a =Type n= for every natural number =n=. Lean introduces
 abbreviations for the first three levels:
 #+BEGIN_SRC lean
-check Type    -- same as Type 1 
+check Type    -- same as Type 1
 check Type₂   -- same as Type 2
 check Type₃   -- same as Type 3
 #+END_SRC
@@ -317,7 +317,7 @@ check λ x, g (f x)
 check λ b : B, λ x : A, x     -- B → A → A
 check λ (b : B) (x : A), x    -- equivalent to the previous line
 check λ (g : B → C) (f : A → B) (x : A), g (f x)
-                              -- (B → C) → (A → B) → A → C                           
+                              -- (B → C) → (A → B) → A → C
 -- we can even abstract over the type
 
 check λ (A B : Type) (b : B) (x : A), x
@@ -343,7 +343,7 @@ constant b : B
 check λ b : B, λ x : A, x     -- B → A → A
 check λ (b : B) (x : A), x    -- B → A → A
 check λ (g : B → C) (f : A → B) (x : A), g (f x)
-                              -- (B → C) → (A → B) → A → C                           
+                              -- (B → C) → (A → B) → A → C
 -- END
 
 check λ (A B : Type) (b : B) (x : A), x
@@ -394,7 +394,7 @@ check (λ x : A, g (f x)) (h (h a))  -- C
 
 check (λ (v : B → C) (u : A → B) x, v (u x)) g f a   -- C
 
-check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q), 
+check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
         v (u x)) A B C g f a        -- C
 #+END_SRC
 As expected, the expression =(λ x : A, x) a= has type =A=. In fact,
@@ -409,12 +409,12 @@ constants (a : A) (b : B)
 
 eval (λ x : A, x) a                -- a
 eval (λ x : A, b) a                -- b
-eval (λ x : A, b) (h a)            -- b 
+eval (λ x : A, b) (h a)            -- b
 eval (λ x : A, g (f x)) a          -- g (f a)
 
 eval (λ (v : B → C) (u : A → B) x, v (u x)) g f a   -- g (f a)
 
-eval (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q), 
+eval (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
        v (u x)) A B C g f a        -- g (f a)
 #+END_SRC
 The command =eval= tells Lean to /evaluate/ an expression. The process
@@ -499,7 +499,7 @@ definition do_twice : (ℕ → ℕ) → ℕ → ℕ := λ f x, f (f x)
 We can even use this approach to specify arguments that are types:
 #+BEGIN_SRC lean
 definition compose (A B C : Type) (g : B → C) (f : A → B) (x : A) :
-  C := 
+  C :=
 g (f x)
 #+END_SRC
 As an exercise, we encourage you to use =do_twice= and =double= to
@@ -791,7 +791,7 @@ defined in a namespace are operant only when the namespace is open,
 and notation defined in a section has scope limited to the
 section. Similarly, if we use the =open= command inside a section or
 namespace, it only remains in effect until that section or namespace
-is closed. As a result, namespaces and sections provide useful ways of 
+is closed. As a result, namespaces and sections provide useful ways of
 managing the background context while we work with Lean.
 
 ** Dependent Types
@@ -874,7 +874,7 @@ end hide
 You can enter the symbol =Π= by typing =\Pi=. Here, =nil= is intended
 to denote the empty list, =head= and =tail= return the first element
 of a list and the remainder, respectively. The constant =append= is
-intended to denote the function that concatenates two lists. 
+intended to denote the function that concatenates two lists.
 
 We emphasize that these constant declarations are only for the
 purposes of illustration. The =list= type and all these operations
@@ -908,9 +908,9 @@ constant vec : Type u → ℕ → Type u
 
 namespace vec
   constant empty : Π A : Type u, vec A 0
-  constant cons : 
+  constant cons :
     Π (A : Type u) (n : ℕ), A → vec A n → vec A (n + 1)
-  constant append : 
+  constant append :
     Π (A : Type u) (n m : ℕ),  vec A m → vec A n → vec A (n + m)
 end vec
 #+END_SRC
@@ -920,19 +920,17 @@ dependent types. Here we will mention just one more important and
 illustrative example, the /Sigma types/, =Σ x : A, B x=, sometimes
 also known as /dependent pairs/. These are, in a sense, companions to
 the Pi types. The type =Σ x : A, B x= denotes the type of pairs
-=sigma.mk a b= where =a : A= and =b : B a=. 
+=sigma.mk a b= where =a : A= and =b : B a=.
 # TODO: where to discuss this? The angle brackets only work where
 #   the expected type is known.
 # You can also use angle
 # brackets =<a, b>= as notation for =sigma.mk a b=. (To type these
-# brackets, use the shortcuts =\<= and =\>=.)  
+# brackets, use the shortcuts =\<= and =\>=.)
 Just as Pi types =Π x : A, B x= generalize the notion of a function
 type =A → B= by allowing =B= to depend on =A=, Sigma types =Σ x : A, B
 x= generalize the cartesian product =A × B= in the same way: in the
 expression =sigma.mk a b=, the type of the second element of the pair,
-=b : B a=, depends on the first element of the pair, =a : A=. Lean
-also defines the alternative syntax =dpair a b= for =sigma.mk a b=,
-denoting a "dependent pair."
+=b : B a=, depends on the first element of the pair, =a : A=.
 #+BEGIN_SRC lean
 variable A : Type
 variable B : A → Type
@@ -940,16 +938,15 @@ variable a : A
 variable b : B a
 
 check sigma.mk a b   -- Σ (a : A), B a
-check dpair a b      -- Σ (a : A), B a
-check (dpair a b).1  -- A
-check (dpair a b).2  -- B (sigma.fst (dpair a b))
+check (sigma.mk a b).1  -- A
+check (sigma.mk a b).2  -- B (sigma.fst (sigma.mk a b))
 
-eval  (dpair a b).1  -- a
-eval  (dpair a b).2  -- b
+eval  (sigma.mk a b).1  -- a
+eval  (sigma.mk a b).2  -- b
 #+END_SRC
-Notice that when =p= is a dependent pair the expressions =(dpair a b).1= and
-=(dpair a b).2= are short for =sigma.fst (dpair a b)= and =sigma.snd
-(dpair a b)=, respectively, and that these reduce to =a= and =b=,
+Notice that when =p= is a dependent pair the expressions =(sigma.mk a b).1= and
+=(sigma.mk a b).2= are short for =sigma.fst (sigma.mk a b)= and =sigma.snd
+(sigma.mk a b)=, respectively, and that these reduce to =a= and =b=,
 respectively.
 
 ** Implicit Arguments
@@ -1076,7 +1073,7 @@ variables A B : Type u
 variables (a : A) (b : B)
 
 check ident      -- ?M_1 → ?M_1
-check ident a    -- A 
+check ident a    -- A
 check ident b    -- B
 #+END_SRC
 This makes the first argument to =ident= implicit. Notationally, this
