@@ -36,9 +36,9 @@ addons:
 env:
   global:
    # GH_TOKEN=[secure]              (to push to leanprover org)
-   - secure: "LAgBomK36BzF2mN/lOwua+gDzLgF6RyuMYBjMlP5KY3knUZT8m/9wff2GlWGm87anb6aIJH69ERjVyFU4sWi9qcD+26vs1m9agMFxuqTfpibeDoz/rd9D/9LA3mNeO6v5kR2FTQ/OTTC6nMC4olRxdzz22Jg9ly7cNzfFPuSGFA="
+   - secure: "kh905d0i41O3lTSNiNiIRdS7A9GEU7qSN23+DV5hYNiBVhL/G/TSmf1p9xHU/H7lzoQUWQFVpT9RjdyVOwuZXqwHnatRe5nonBmiBgqyMqASeXJT5tpHh+uQ7kuTHJL5kvxW/wv1qxm2JucRQLNXlE152XbdCembxU3mk0ePQ1IuTo/LAneZtxT2OEO2mbb2xSjY644Hx81enTd6iWFyKnzpWa/0EZBbWEilivYQT1r5TqWVSKgLSxbQbTmO/6IyV39wJZrxwNM0/Nnc4ysS+znblrlSW85K/E2UbOgucLfvMopdjvIjiEwZ/x/e5JPZGoV6Pa73NElo5hJOwYmR4A3XaR04J+qOuyxa6PLFuijdwzadbeDhJpoIW3sq4e6fsHgb96i3H9MN+E2fO6zMNVaX50lqG4GiNM1igxM9zWK9YlYfaYfzaEF3J7KiF6Q7DTegaTuRYWjykcw0U3xw01MxSDpHlnEnbvn1v7i+1rpvH2uMwBcevsRC0u6jD9wzfUauU9/xvJOApFe3+NvDEdJJXWZrXHDnZl8jsfszjeH+xapi7uxBmhsQOkGjsSSTwyvDeydQxJgKKELEe7aRwbud6WYnAeDYPpaGnYLS0L982ycOb9r7BvfuI5CD0NMU5//htHQFfA+kj7K4bn2VA2XfrcmLWtwpWp8O71LXKQE="
    # REPO=BLESSED                  (to perform extra stuff only for pushes to the blessed repo)
-   - secure: "Du/ZXFXdhRZL6AU6t6G8A3BNr3oPpHK4h2UCK00b+bgonHy7kDgTE0YxRVOf8VpXqfJwekzT4hWJhnKXasTp5avNEVEbdWC4nyM4tZbl6a8g8iI3Oo+JB6seSO6fIhrv6sZ7BCa6iuKDwzWJ0sQnXL+kx/zUqcle5eVUu5ic/24="
+   - secure: "QMccPDK4PpvBNJA0eAn9KTjG5kPZYPilxo3Zlj+CncbTBaLMlXSbZDhblqXwrgnNrL8L0ctUFBP0hH8BOsuFwvQmXDT2NxX+g+pqoFR0fvZDbDKKzUW9sp8zA7Fj/J3U6s8dp/L3+Zwbfo0uV0PLr1HiXLnE0He8o5y+mS5uIL+LPit0hVUdKwc7cqe5vfouXJEOoCeIqII6u6U/gRSfuoIVK9UuvMfc8DtAHURmZOtFQdiwuKbNO9klFLHUth/Hhsg9ZOSIfDjBtcWE20Fvx8ZF462XGdEFDymV4yNGmwTNu7ud8qEGm4FuAhSfe5pPtc0n/gZAjibz5B5+pL+tNOwfo0Rh8rCI1DPXEp+QBm9SPR9ZesaZ2gKF/7s3jebjEOhZcs3hGPxlsT2Z3bc8Psd2m9bdQviTolQCRcMZ4PzYlkWwePNNxjk4l4EEtT6qWrOX3MP67cmC/hHyk/csLOQi63p22BBuoD4DUlfBAJqTKHwXlR7NHxnBFHJAd0siJRjW9Rt7k9Unr/y5bbQd24sB2eefxYI9WOmIo7hrMRvFZW9MM6U44PTxs9bL7RKsJeeE5urdtMz+ki5SUvjy7bgK8UNw+vOI/IHmD0g4WSmfn+uopwKIzH7p+/e7uHOHce+pTWbobCCQI7qpL+7CHkueToYDIbW+w6ifvKBca5M="
   matrix:
    - TEST=TRUE
 
