@@ -1,0 +1,1014 @@
+#+Title: Theorem Proving in Lean
+#+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]], [[http://www.cs.cmu.edu/~soonhok][Soonho Kong]]
+
+* Type Classes
+:PROPERTIES:
+  :CUSTOM_ID: Type_Classes
+:END:
+
+We have seen that Lean's elaborator provides helpful automation,
+filling in information that is tedious to enter by hand. In this
+section we will explore a simple but powerful technical device known
+as /type class inference/, which provides yet another mechanism for
+the elaborator to supply missing information.
+
+The notion of a /type class/ originated with the /Haskell/ programming
+language. Many of the original uses carry over, but, as we will see,
+the realm of interactive theorem proving raises even more
+possibilities for their use.
+
+** Type Classes and Instances
+
+Any family of types can be marked as a /type class/.
+Then we can declare particular elements of a type class to be
+/instances/. These provide hints to the elaborator: any time the
+elaborator is looking for an element of a type class, it can consult a
+table of declared instances to find a suitable element.
+
+More precisely, there are three steps involved:
++ First, we declare a family of inductive types to be a type class.
++ Second, we declare instances of the type class.
++ Finally, we mark some implicit arguments with square brackets
+  instead of curly brackets, to inform the elaborator that these
+  arguments should be inferred by the type class mechanism.
+
+Here is a somewhat frivolous example:
+#+BEGIN_SRC lean
+attribute [class] nat
+
+instance nat_one : ℕ := 1
+/- The command instance is syntax sugar for
+def nat_one : ℕ := 1
+attribute [instance, reducible] nat_one
+-/
+
+def foo [x : ℕ] : nat := x
+
+check @foo
+eval foo
+
+example : foo = 1 := rfl
+#+END_SRC
+Here we declare =nat= to be a class with a "canonical" instance
+=1=. Then we declare =foo= to be, essentially, the identity function
+on the natural numbers, but we mark the argument implicit, and
+indicate that it should be inferred by type class inference. When we write
+=foo=, the preprocessor interprets it as =foo ?x=, where =?x= is an
+implicit argument. But when the elaborator gets hold of the
+expression, it sees that =?x : ℕ= is supposed to be solved by type
+class inference. It looks for a suitable element of the class, and it
+finds the instance =one=. Thus, when we evaluate =foo=, we
+simply get =1=.
+
+
+It is tempting to think of =foo= as defined to be equal to =1=, but
+that is misleading. Every time we write =foo=, the elaborator searches
+for a value. If we declare other instances of the class, that can
+change the value that is assigned to the implicit argument. This can
+result in seemingly paradoxical behavior. For example, we might
+continue the development above as follows:
+#+BEGIN_SRC lean
+attribute [class] nat
+
+instance nat_one : ℕ := 1
+
+def foo [x : ℕ] : nat := x
+
+eval foo
+
+example : foo = 1 := rfl
+
+-- BEGIN
+instance nat_two : ℕ := 2
+
+eval foo
+
+example : foo ≠ 1 :=
+λ h : 2 = 1, nat.no_confusion h (λ h : 1 = 0, nat.no_confusion h)
+-- END
+#+END_SRC
+Now the "same" expression =foo= evaluates to =2=. Whereas before we
+could prove =foo = 1=, now we can prove =foo ≠ 1=, because the
+inferred implicit argument has changed. When searching for a suitable
+instance of a type class, the elaborator tries the most recent
+instance declaration first, by default. We will see below, however,
+that it is possible to give individual instances higher or lower
+priority.
+
+As with other attributes, you can assign the =class= or
+=instance= attributes in a definition, or after the fact, with an
+=attribute= command. As usual, the assignments =attribute [class] foo=
+and =attribute [instance] foo=.
+To limit the scope of an assignment to the current file,
+use the =local attribute= variant.
+
+The reason the example is frivolous is that there is rarely a need to
+"infer" a natural number; we can just hard-code the choice of =1= or
+=2= into the definition of =foo=. Type classes become useful when
+they depend on parameters, in which case, the value that is inferred
+depends on these parameters.
+
+Let us work through a simple example. Many theorems hold under the
+additional assumption that a type is inhabited, which is to say, it
+has at least one element. For example, if =A= is a type, =∃ x : A, x =
+x= is true only if =A= is inhabited. Similarly, it often happens that
+we would like a definition to return a default element in a "corner
+case." For example, we would like the expression =head l= to be of
+type =A= when =l= is of type =list A=; but then we are faced with the
+problem that =head l= needs to return an "arbitrary" element of =A= in
+the case where =l= is the empty list, =nil=.
+
+For purposes like this, the standard library defines a type class
+=inhabited : Type → Type=, to enable type class inference to infer a
+"default" or "arbitrary" element of an inhabited type. We will carry
+out a similar development in the examples that follow, using a
+namespace =hide= to avoid conflicting with the definitions in the
+standard library.
+
+Let us start with the first step of the program above, declaring an
+appropriate class:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+class inhabited (A : Type) :=
+(value : A)
+/- The command 'class' above is shorthand for
+
+@[class] structure inhabited (A : Type) :=
+(value : A)
+-/
+-- END
+
+end hide
+#+END_SRC
+An element of the class =inhabited A= is simply an expression of the
+form =inhabited.mk a=, for some element =a : A=.
+The projection =inhabited.value= will allow us to "extract" such an element of =A=
+from an element of =inhabited A=.
+
+The second step of the program is to populate the class with some
+instances:
+#+BEGIN_SRC lean
+namespace hide
+
+class inhabited (A : Type) :=
+(value : A)
+
+-- BEGIN
+instance Prop_inhabited : inhabited Prop :=
+inhabited.mk true
+
+instance bool_inhabited : inhabited bool :=
+inhabited.mk tt
+
+instance nat_inhabited : inhabited nat :=
+inhabited.mk 0
+
+instance unit_inhabited : inhabited unit :=
+inhabited.mk ()
+-- END
+end hide
+#+END_SRC
+
+In the Lean standard library, we regularly use the anonymous constructor
+when defining instances. It is particularly useful when the class name is long.
+
+
+#+BEGIN_SRC lean
+namespace hide
+
+class inhabited (A : Type) :=
+(value : A)
+
+-- BEGIN
+instance Prop_inhabited : inhabited Prop :=
+⟨true⟩
+
+instance bool_inhabited : inhabited bool :=
+⟨tt⟩
+
+instance nat_inhabited : inhabited nat :=
+⟨0⟩
+
+instance unit_inhabited : inhabited unit :=
+⟨()⟩
+-- END
+end hide
+#+END_SRC
+
+This arranges things so that when type class inference is asked to
+infer an element =?M : Prop=, it can find the element =true= to assign
+to =?M=, and similarly for the elements =tt=, =0=, and =()= of
+the types =bool=, =nat=, and =unit=, respectively.
+
+The final step of the program is to define a function that infers an
+element =s : inhabited A= and puts it to good use. The following
+function simply extracts the corresponding element =a : A=:
+#+BEGIN_SRC lean
+namespace hide
+
+class inhabited (A : Type) :=
+(value : A)
+
+instance Prop_inhabited : inhabited Prop :=
+⟨true⟩
+
+instance bool_inhabited : inhabited bool :=
+⟨tt⟩
+
+instance nat_inhabited : inhabited nat :=
+⟨0⟩
+
+instance unit_inhabited : inhabited unit :=
+⟨()⟩
+-- BEGIN
+definition default (A : Type) [s : inhabited A] : A :=
+@inhabited.value A s
+-- END
+end hide
+#+END_SRC
+
+This has the effect that given a type expression =A=, whenever we
+write =default A=, we are really writing =default A ?s=, leaving the
+elaborator to find a suitable value for the metavariable
+=?s=. When the elaborator succeeds in finding such a value, it has
+effectively produced an element of type =A=, as though by magic.
+#+BEGIN_SRC lean
+namespace hide
+
+class inhabited (A : Type) :=
+(value : A)
+
+instance Prop_inhabited : inhabited Prop :=
+⟨true⟩
+
+instance bool_inhabited : inhabited bool :=
+⟨tt⟩
+
+instance nat_inhabited : inhabited nat :=
+⟨0⟩
+
+instance unit_inhabited : inhabited unit :=
+⟨()⟩
+
+definition default (A : Type) [s : inhabited A] : A :=
+@inhabited.value A s
+-- BEGIN
+check default Prop    -- Prop
+check default nat     -- ℕ
+check default bool    -- bool
+check default unit    -- unit
+-- END
+end hide
+#+END_SRC
+In general, whenever we write =default A=, we are asking the
+elaborator to synthesize an element of type =A=.
+
+Notice that we can "see" the value that is synthesized with =eval=:
+#+BEGIN_SRC lean
+namespace hide
+
+class inhabited (A : Type) :=
+(value : A)
+
+instance Prop_inhabited : inhabited Prop :=
+⟨true⟩
+
+instance bool_inhabited : inhabited bool :=
+⟨tt⟩
+
+instance nat_inhabited : inhabited nat :=
+⟨0⟩
+
+instance unit_inhabited : inhabited unit :=
+⟨()⟩
+
+definition default (A : Type) [s : inhabited A] : A :=
+@inhabited.value A s
+-- BEGIN
+eval default Prop    -- true
+eval default nat     -- 0
+eval default bool    -- tt
+eval default unit    -- ()
+-- END
+end hide
+#+END_SRC
+
+Sometimes we want to think of the default element of a type as being
+an /arbitrary/ element, whose specific value should not play a role in
+our proofs. For that purpose, we can write =arbitrary A= instead of
+=default A=. The definition of =arbitrary= is the same as that of
+default, but is marked =irreducible= to discourage the elaborator from
+unfolding it. This does not preclude proofs from making use of the
+value, however, so the use of =arbitrary= rather than =default=
+functions primarily to signal intent.
+
+** Chaining Instances
+
+If that were the extent of type class inference, it would not be all
+the impressive; it would be simply a mechanism of storing a list of
+instances for the elaborator to find in a lookup table. What makes
+type class inference powerful is that one can /chain/ instances. That
+is, an instance declaration can in turn depend on an implicit instance
+of a type class. This causes class inference to chain through
+instances recursively, backtracking when necessary, in a Prolog-like
+search.
+
+For example, the following definition shows that if two types =A= and
+=B= are inhabited, then so is their product:
+#+BEGIN_SRC lean
+namespace hide
+
+class inhabited (A : Type) :=
+(value : A)
+
+instance Prop_inhabited : inhabited Prop :=
+⟨true⟩
+
+instance bool_inhabited : inhabited bool :=
+⟨tt⟩
+
+instance nat_inhabited : inhabited nat :=
+⟨0⟩
+
+instance unit_inhabited : inhabited unit :=
+⟨()⟩
+
+definition default (A : Type) [s : inhabited A] : A :=
+@inhabited.value A s
+-- BEGIN
+instance prod_inhabited {A B : Type} [inhabited A] [inhabited B]
+                        : inhabited (prod A B) :=
+⟨(default A, default B)⟩
+-- END
+end hide
+#+END_SRC
+With this added to the earlier instance declarations, type class
+instance can infer, for example, a default element of =nat × bool × unit=:
+#+BEGIN_SRC lean
+namespace hide
+
+class inhabited (A : Type) :=
+(value : A)
+
+instance Prop_inhabited : inhabited Prop :=
+⟨true⟩
+
+instance bool_inhabited : inhabited bool :=
+⟨tt⟩
+
+instance nat_inhabited : inhabited nat :=
+⟨0⟩
+
+instance unit_inhabited : inhabited unit :=
+⟨()⟩
+
+definition default (A : Type) [s : inhabited A] : A :=
+@inhabited.value A s
+
+instance prod_inhabited {A B : Type} [inhabited A] [inhabited B]
+                        : inhabited (prod A B) :=
+⟨(default A, default B)⟩
+
+-- BEGIN
+check default (nat × bool)
+eval default (nat × bool)
+-- END
+end hide
+#+END_SRC
+Given the expression =default (nat × bool)=, the elaborator is
+called on to infer an implicit argument =?M : inhabited (nat × bool)=.
+The instance =prod_inhabited= reduces this to inferring
+=?M1 : inhabited nat= and =?M2 : inhabited bool=. The first
+one is solved by the instance =nat_inhabited=. The second uses
+=bool_inhabited=.
+
+Similarly, we can inhabit function spaces with suitable constant
+functions:
+#+BEGIN_SRC lean
+namespace hide
+
+class inhabited (A : Type) :=
+(value : A)
+
+instance Prop_inhabited : inhabited Prop :=
+⟨true⟩
+
+instance bool_inhabited : inhabited bool :=
+⟨tt⟩
+
+instance nat_inhabited : inhabited nat :=
+⟨0⟩
+
+instance unit_inhabited : inhabited unit :=
+⟨()⟩
+
+definition default (A : Type) [s : inhabited A] : A :=
+@inhabited.value A s
+
+instance prod_inhabited {A B : Type} [inhabited A] [inhabited B]
+                        : inhabited (prod A B) :=
+⟨(default A, default B)⟩
+
+-- BEGIN
+instance inhabited_fun (A : Type) {B : Type} [inhabited B] : inhabited (A → B) :=
+⟨(λ a : A, default B)⟩
+
+check default (nat → nat × bool)
+eval default (nat → nat × bool)
+-- END
+end hide
+#+END_SRC
+In this case, type class inference finds the default element =λ (a : nat), (0, tt)=.
+
+As an exercise, try defining default instances for other types, such
+as sum types and the list type.
+
+** Decidable Propositions
+
+Let us consider another example of a type class defined in the
+standard library, namely the type class of =decidable=
+propositions. Roughly speaking, an element of =Prop= is said to be
+decidable if we can decide whether it is true or false. The
+distinction is only useful in constructive mathematics; classically,
+every proposition is decidable. Nonetheless, as we will see, the
+implementation of the type class allows for a smooth transition
+between constructive and classical logic.
+
+In the standard library, =decidable= is defined formally as follows:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+class inductive decidable (p : Prop) : Type
+| is_false : ¬p → decidable
+| is_true  :  p → decidable
+-- END
+end hide
+#+END_SRC
+Logically speaking, having an element =t : decidable p= is stronger
+than having an element =t : p ∨ ¬p=; it enables us to define values of
+an arbitrary type depending on the truth value of =p=. For example,
+for the expression =if p then a else b= to make sense, we need to know
+that =p= is decidable. That expression is syntactic sugar for =ite p a
+b=, where =ite= is defined as follows:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+def ite (c : Prop) [d : decidable c] {A : Type} (t e : A) : A :=
+decidable.rec_on d (λ hnc, e) (λ hc, t)
+-- END
+end hide
+#+END_SRC
+
+The standard library also contains a variant of =ite= called =dite=,
+the dependent if-then-else expression. It is defined as follows:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+definition dite (c : Prop) [d : decidable c] {A : Type} (t : c → A) (e : ¬ c → A) : A :=
+decidable.rec_on d (λ hnc : ¬ c, e hnc) (λ hc : c, t hc)
+-- END
+end hide
+#+END_SRC
+That is, in =dite c t e=, we can assume =hc : c= in the "then" branch,
+and =hnc : ¬ c= in the "else" branch.  To make =dite= more convenient
+to use, Lean allows us to write =if h : c then t else e= instead of
+=dite c (λ h : ¬ c, e) (λ h : c, t)=.
+
+In the standard library, we cannot prove that every proposition is
+decidable. But we can prove that /certain/ propositions are
+decidable. For example, we can prove that basic operations like
+equality and comparisons on the natural numbers and the integers are
+decidable. Moreover, decidability is preserved under propositional
+connectives:
+#+BEGIN_SRC lean
+check @and.decidable
+-- Π {p q : Prop} [hp : decidable p] [hq : decidable q], decidable (p ∧ q)
+
+check @or.decidable
+check @not.decidable
+check @implies.decidable
+#+END_SRC
+Thus we can carry out definitions by cases on decidable predicates on
+the natural numbers:
+#+BEGIN_SRC lean
+open nat
+
+definition step (a b x : ℕ) : ℕ :=
+if x < a ∨ x > b then 0 else 1
+
+set_option pp.implicit true
+print definition step
+#+END_SRC
+Turning on implicit arguments shows that the elaborator has inferred
+the decidability of the proposition =x < a ∨ x > b=, simply by
+applying appropriate instances.
+
+With the classical axioms, we can prove that every proposition is
+decidable. When you import the classical axioms, then, =decidable p=
+has an instance for every =p=, and the elaborator infers that value
+quickly. Thus all theorems in the standard library that rely on
+decidability assumptions are freely available in the classical
+library.
+
+# This explains the "proof" =dec_trivial= in Section [[Type Classes and Instances][Type Classes and
+# Instances]] above. The expression =dec_trivial= is actually defined in
+# the module =init.logic= to be notation for the expression =of_is_true
+# trivial=, where =of_is_true= infers the decidability of the theorem
+# you are trying to prove, extracts the corresponding decision
+# procedure, and confirms that it evaluates to =true=.
+
+** Overloading with Type Classes
+
+We now consider the application of type classes that motivates their
+use in functional programming languages like Haskell, namely, to
+overload notation in a principled way. In Lean, a symbol like =+= can
+be given entirely unrelated meanings, a phenomenon that is sometimes
+called "ad-hoc" overloading. Typically, however, we use the =+= symbol to
+denote a binary function from a type to itself, that is, a function of
+type =A → A → A= for some type =A=. We can use type classes to infer
+an appropriate addition function for suitable types =A=. We will see
+in the next section that this is especially useful for developing
+algebraic hierarchies of structures in a formal setting.
+
+We can declare a type class =has_add A= as follows:
+#+BEGIN_SRC lean
+namespace hide
+-- BEGIN
+universe variables u
+
+class has_add (A : Type u) :=
+(add : A → A → A)
+
+def add {A : Type u} [has_add A] : A → A → A := has_add.add
+
+local notation a `+` b := add a b
+--END
+end hide
+#+END_SRC
+The class =has_add A= is supposed to be inhabited exactly when there
+is an appropriate addition function for =A=. The =add= function is
+designed to find an instance of =has_add A= for the given type, =A=,
+and apply the corresponding binary addition function. The notation
+=a + b= thus refers to the addition that is appropriate to the type of
+=a= and =b=. We can the declare instances for =nat=, and =bool=:
+#+BEGIN_SRC lean
+namespace hide
+universe variables u
+
+class has_add (A : Type u) :=
+(add : A → A → A)
+
+def add {A : Type u} [has_add A] : A → A → A := has_add.add
+
+local notation a `+` b := add a b
+
+-- BEGIN
+instance nat_has_add : has_add nat :=
+⟨nat.add⟩
+
+instance bool_has_add : has_add bool :=
+⟨bor⟩
+
+check 2 + 2    -- nat
+check tt + ff  -- bool
+-- END
+end hide
+#+END_SRC
+# In the example above, we expose the coercions in namespaces =nat=
+# and =int=, so that we can use numerals. If we opened these namespace
+# outright, the symbol =+= would be ad-hoc overloaded. This would result
+# in an ambiguity as to which addition we have in mind when we write
+# =a + b= for =a b : nat=. The ambiguity is benign, however, since the
+# new interpretation of =+= for =nat= is definitionally equal to the
+# usual one. Setting the option to turn off notation while
+# pretty-printing shows us that it is the new =add= function that is
+# inferred in each case. Thus we are relying on type class overloading
+# to disambiguate the meaning of the expression, rather than ad-hoc
+# overloading.
+
+As with =inhabited= and =decidable=, the power of type class inference
+stems not only from the fact that the class enables the elaborator to
+look up appropriate instances, but also from the fact that it can
+chain instances to infer complex addition operations. For example,
+assuming that there are appropriate addition functions for types =A=
+and =B=, we can define addition on =A × B= pointwise:
+#+BEGIN_SRC lean
+namespace hide
+universe variables u v
+class has_add (A : Type u) :=
+(add : A → A → A)
+
+def add {A : Type u} [has_add A] : A → A → A := has_add.add
+
+local notation a `+` b := add a b
+
+instance nat_has_add : has_add nat :=
+⟨nat.add⟩
+
+instance bool_has_add : has_add bool :=
+⟨bor⟩
+
+-- BEGIN
+instance prod_has_add {A : Type u} {B : Type v} [has_add A] [has_add B] : has_add (A × B) :=
+⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
+
+check (1, 2) + (3, 4)    -- ℕ × ℕ
+eval  (1, 2) + (3, 4)    -- (4, 6)
+-- END
+end hide
+#+END_SRC
+We can similarly define pointwise addition of functions:
+#+BEGIN_SRC lean
+namespace hide
+universe variables u v
+class has_add (A : Type u) :=
+(add : A → A → A)
+
+def add {A : Type u} [has_add A] : A → A → A := has_add.add
+
+local notation a `+` b := add a b
+
+instance nat_has_add : has_add nat :=
+⟨nat.add⟩
+
+instance bool_has_add : has_add bool :=
+⟨bor⟩
+
+instance prod_has_add {A : Type u} {B : Type v} [has_add A] [has_add B] : has_add (A × B) :=
+⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
+
+-- BEGIN
+instance fun_has_add {A : Type u} {B : Type v} [has_add B] : has_add (A → B) :=
+⟨λ f g x, f x + g x⟩
+
+check (λ x : nat, 1) + (λ x, 2)   -- ℕ → ℕ
+eval (λ x : nat, 1) + (λ x, 2)    -- λ (x : ℕ), 3
+-- END
+end hide
+#+END_SRC
+As an exercise, try defining instances of =has_add= for lists,
+and show that they have the work as expected.
+
+** Managing Type Class Inference
+
+Recall from Section [[file:05_Interacting_with_Lean.org::#Displaying_Information][Displaying Information]] that you can ask Lean for
+information about the classes and instances that are currently in
+scope:
+#+BEGIN_SRC lean
+print classes
+print instances inhabited
+#+END_SRC
+At times, you may find that the type class inference fails to find an
+expected instance, or, worse, falls into an infinite loop and times
+out. To help debug in these situations, Lean enables you to request a
+trace of the search:
+#+BEGIN_SRC lean
+set_option trace.class_instances true
+#+END_SRC
+If you add this to your file in Emacs mode and use =C-c C-x= to run an
+independent Lean process on your file, the output buffer will show a
+trace every time the type class resolution procedure is subsequently
+triggered.
+
+You can also limit the search depth (the default is 32):
+#+BEGIN_SRC lean
+set_option class.instance_max_depth 5
+#+END_SRC
+Remember also that in the Emacs Lean mode, tab completion works in
+=set_option=, to help you find suitable options.
+
+As noted above, the type class instances in a given context represent
+a Prolog-like program, which gives rise to a backtracking search. Both
+the efficiency of the program and the solutions that are found can
+depend on the order in which the system tries the instance.  Instances
+which are declared last are tried first.  Moreover, if instances are
+declared in other modules, the order in which they are tried depends
+on the order in which namespaces are opened.  Instances declared in
+namespaces which are opened later are tried earlier.
+
+You can change the order that type classes instances are tried by
+assigning them a /priority/. When an instance is declared, it is
+assigned a priority value =std.priority.default=, defined to be 1000
+in module =init.priority= in both the standard and hott libraries. You
+can assign other priorities when defining an instance, and you can
+later change the priority with the =attribute= command. The following
+example illustrates how this is done:
+#+BEGIN_SRC lean
+class foo :=
+(a : nat) (b : nat)
+
+@[priority std.priority.default+1]
+instance i1 : foo :=
+⟨1, 1⟩
+
+instance i2 : foo :=
+⟨2, 2⟩
+
+example : foo.a = 1 := rfl
+
+@[priority std.priority.default+20]
+instance i3 : foo :=
+⟨3, 3⟩
+
+example : foo.a = 3 := rfl
+
+attribute [instance, priority 10] i3
+
+example : foo.a = 1 := rfl
+
+attribute [instance, priority std.priority.default-10] i1
+
+example : foo.a = 2 := rfl
+#+END_SRC
+
+# ** Instances in Sections
+# :PROPERTIES:
+#   :CUSTOM_ID: Instances_in_Sections
+# :END:
+
+# We can easily introduces instances of type classes in a section or
+# context using variables and parameters. Recall that variables are only
+# included in declarations when they are explicitly mentioned. Instances
+# of type classes are rarely explicitly mentioned in definitions, so to
+# make sure that an instance of a type class is included in every
+# definition and theorem, we use the =include= command.
+# #+BEGIN_SRC lean
+# import standard
+
+# namespace hide
+
+# inductive has_add [class] (A : Type) : Type :=
+# mk : (A → A → A) → has_add A
+
+# definition add {A : Type} [s : has_add A] :=
+# has_add.rec (λ x, x) s
+
+# notation a `+` b := add a b
+
+# -- BEGIN
+# section
+#   variables {A : Type} [H : has_add A] (a b : A)
+#   include H
+
+#   definition foo : a + b = a + b := rfl
+#   check @foo
+# end
+# -- END
+
+# end hide
+# #+END_SRC
+# Note that the =include= command includes a variable in every
+# definition and theorem in that section.  If we want to declare a
+# definition or theorem which does not use the instance, we can use the
+# =omit= command:
+# #+BEGIN_SRC lean
+# namespace hide
+
+# inductive has_add [class] (A : Type) : Type :=
+# mk : (A → A → A) → has_add A
+
+# definition add {A : Type} [s : has_add A] :=
+# has_add.rec (λ x, x) s
+
+# notation a `+` b := add a b
+
+# -- BEGIN
+# section
+#   variables {A : Type} [H : has_add A] (a b : A)
+#   include H
+#   definition foo1 : a + b = a + b := rfl
+#   omit H
+#   definition foo2 : a  = a := rfl -- H is not an argument of foo2
+#   include H
+#   definition foo3 : a + a = a + a := rfl
+
+#   check @foo1
+#   check @foo2
+#   check @foo3
+# end
+# -- END
+
+# end hide
+# #+END_SRC
+
+# ** Bounded Quantification
+
+# A "bounded universal quantifier" is one that is of the form =∀ x :
+# nat, x < n → P x=. As a final illustration of the power of type class
+# inference, we show that a proposition of this form is decidable
+# assuming =P= is, and that type class inference can make use of that
+# fact.
+
+# First, we define =ball n P= as shorthand for ∀ x : nat, x < n → P x.
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat decidable
+
+# definition ball (n : nat) (P : nat → Prop) : Prop :=
+# ∀ x, x < n → P x
+# #+END_SRC lean
+# Next, we prove some auxiliary facts that are needed for the
+# decidability proof.
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat decidable algebra
+
+# definition ball (n : nat) (P : nat → Prop) : Prop :=
+# ∀ x, x < n → P x
+
+# -- BEGIN
+# -- ∀ x : nat, x < 0 → P x
+# definition ball_zero (P : nat → Prop) : ball zero P :=
+# λ x Hlt, absurd Hlt !not_lt_zero
+
+# variables {n : nat} {P : nat → Prop}
+
+# -- (∀ x : nat, x < succ n → P x) implies (∀ x : nat, x < n → P x)
+# definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
+# λ x Hlt, H x (lt.step Hlt)
+
+# -- (∀ x : nat, x < n → P x) and (P n) implies (∀ x : nat, x < succ n → P x)
+# definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
+# λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
+#   (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
+#   (λ hlt : x < n, H₁ x hlt)
+
+# -- (¬ P n) implies ¬ (∀ x : nat, x < succ n → P x)
+# definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
+# λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
+
+# -- ¬ (∀ x : nat, x < n → P x) implies ¬ (∀ x : nat, x < succ n → P x)
+# definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
+# λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
+# -- END
+# #+END_SRC
+# Finally, assuming =P= is a decidable predicate, we prove =∀ x : nat, x
+# < n → P x= by induction on =n=.
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat decidable algebra
+
+# definition ball (n : nat) (P : nat → Prop) : Prop :=
+# ∀ x, x < n → P x
+# definition ball_zero (P : nat → Prop) : ball zero P :=
+# λ x Hlt, absurd Hlt !not_lt_zero
+
+# variables {n : nat} {P : nat → Prop}
+
+# definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
+# λ x Hlt, H x (lt.step Hlt)
+
+# definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
+# λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
+#   (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
+#   (λ hlt : x < n, H₁ x hlt)
+
+# definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
+# λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
+
+# definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
+# λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
+
+# -- BEGIN
+# definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P)
+# | dec_ball 0     := inl (ball_zero P)
+# | dec_ball (a+1) :=
+#   match dec_ball a with
+#   | inl iH  :=
+#       match H a with
+#       | inl Pa  := inl (ball_succ_of_ball iH Pa)
+#       | inr nPa := inr (not_ball_of_not nPa)
+#       end
+#   | inr niH := inr (not_ball_succ_of_not_ball niH)
+#   end
+# -- END
+# #+END_SRC
+# Now we can use =dec_trivial= to prove simple theorems by "evaluation."
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat decidable algebra
+
+# definition ball (n : nat) (P : nat → Prop) : Prop :=
+# ∀ x, x < n → P x
+# definition ball_zero (P : nat → Prop) : ball zero P :=
+# λ x Hlt, absurd Hlt !not_lt_zero
+
+# variables {n : nat} {P : nat → Prop}
+
+# definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
+# λ x Hlt, H x (lt.step Hlt)
+
+# definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
+# λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
+#   (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
+#   (λ hlt : x < n, H₁ x hlt)
+
+# definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
+# λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
+
+# definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
+# λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
+
+# definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P)
+# | dec_ball 0     := inl (ball_zero P)
+# | dec_ball (a+1) :=
+#   match dec_ball a with
+#   | inl iH  :=
+#       match H a with
+#       | inl Pa  := inl (ball_succ_of_ball iH Pa)
+#       | inr nPa := inr (not_ball_of_not nPa)
+#       end
+#   | inr niH := inr (not_ball_succ_of_not_ball niH)
+#   end
+
+# -- BEGIN
+# example : ∀ x : nat, x ≤ 4 → x ≠ 6 :=
+# dec_trivial
+
+# example : ¬ ∀ x : nat, x ≤ 5 → ∀ y, y < x → y * y ≠ x :=
+# dec_trivial
+# -- END
+# #+END_SRC
+# We can also use the bounded quantifier to define a computable
+# function. In this example, the expression =is_constant_range f n=
+# returns =tt= if and only if the function =f= has the same value for
+# every =i= such that =0 ≤ i < n=.
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat decidable algebra
+
+# definition ball (n : nat) (P : nat → Prop) : Prop :=
+# ∀ x, x < n → P x
+# definition ball_zero (P : nat → Prop) : ball zero P :=
+# λ x Hlt, absurd Hlt !not_lt_zero
+
+# variables {n : nat} {P : nat → Prop}
+
+# definition ball_of_ball_succ (H : ball (succ n) P) : ball n P  :=
+# λ x Hlt, H x (lt.step Hlt)
+
+# definition ball_succ_of_ball (H₁ : ball n P) (H₂ : P n) : ball (succ n) P :=
+# λ (x : nat) (Hlt : x < succ n), or.elim (eq_or_lt_of_le (le_of_lt_succ Hlt))
+#   (λ he  : x = n, eq.rec_on (eq.rec_on he rfl) H₂)
+#   (λ hlt : x < n, H₁ x hlt)
+
+# definition not_ball_of_not (H₁ : ¬ P n) : ¬ ball (succ n) P :=
+# λ (H : ball (succ n) P), absurd (H n (lt.base n)) H₁
+
+# definition not_ball_succ_of_not_ball (H₁ : ¬ ball n P) : ¬ ball (succ n) P :=
+# λ (H : ball (succ n) P), absurd (ball_of_ball_succ H) H₁
+
+# definition dec_ball [instance] (H : decidable_pred P) : Π (n : nat), decidable (ball n P)
+# | dec_ball 0     := inl (ball_zero P)
+# | dec_ball (a+1) :=
+#   match dec_ball a with
+#   | inl iH  :=
+#       match H a with
+#       | inl Pa  := inl (ball_succ_of_ball iH Pa)
+#       | inr nPa := inr (not_ball_of_not nPa)
+#       end
+#   | inr niH := inr (not_ball_succ_of_not_ball niH)
+#   end
+
+# -- BEGIN
+# open bool
+# definition is_constant_range (f : nat → nat) (n : nat) : bool :=
+# if ∀ i, i < n → f i = f 0 then tt else ff
+
+# example : is_constant_range (λ i, zero) 10 = tt :=
+# rfl
+# -- END
+# #+END_SRC
+
+
+# As an exercise, we encourage you to show that =∃ x : nat, x < n ∧ P x= is also
+# decidable.
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat decidable algebra
+
+# definition bex (n : nat) (P : nat → Prop) : Prop :=
+# ∃ x : nat, x < n ∧ P x
+
+# definition not_bex_zero (P : nat → Prop) : ¬ bex 0 P :=
+# sorry
+
+# variables {n : nat} {P : nat → Prop}
+
+# definition bex_succ (H : bex n P) : bex (succ n) P :=
+# sorry
+
+# definition bex_succ_of_pred  (H : P n) : bex (succ n) P :=
+# sorry
+
+# definition not_bex_succ (H₁ : ¬ bex n P) (H₂ : ¬ P n) : ¬ bex (succ n) P :=
+# sorry
+
+# definition dec_bex [instance] (H : decidable_pred P) : Π (n : nat), decidable (bex n P) :=
+# sorry
+# #+END_SRC
