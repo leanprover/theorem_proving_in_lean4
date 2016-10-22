@@ -547,7 +547,7 @@ class has_add (A : Type u) :=
 def add {A : Type u} [has_add A] : A → A → A := has_add.add
 
 local notation a `+` b := add a b
---END
+-- END
 end hide
 #+END_SRC
 The class =has_add A= is supposed to be inhabited exactly when there
