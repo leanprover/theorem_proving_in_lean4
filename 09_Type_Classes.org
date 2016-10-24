@@ -656,9 +656,10 @@ and show that they have the work as expected.
 
 ** Managing Type Class Inference
 
-Recall from Section [[file:05_Interacting_with_Lean.org::#Displaying_Information][Displaying Information]] that you can ask Lean for
-information about the classes and instances that are currently in
-scope:
+# TODO: add:
+# Recall from Section [[file:05_Interacting_with_Lean.org::#Displaying_Information][Displaying Information]] that 
+You can ask Lean for information about the classes and instances that
+are currently in scope:
 #+BEGIN_SRC lean
 print classes
 print instances inhabited
