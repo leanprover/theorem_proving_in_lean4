@@ -1,6 +1,0 @@
-#+OPTIONS: toc:nil
-#+OPTIONS: html-postamble:nil
-#+HTML_HEAD_EXTRA:<link rel="stylesheet" href="css/tutorial.css"/>
-#+HTML_HEAD_EXTRA:<link rel="stylesheet" href="css/code.css"/>
-#+HTML_HEAD_EXTRA:<script type="text/javascript" charset="utf-8">if(!window.PolymerGestures) { var head = document.getElementsByTagName('head')[0]; var js = document.createElement("script"); js.type = "text/javascript"; js.src = "//cdn.jsdelivr.net/webcomponentsjs/0.7.20/webcomponents.min.js"; head.appendChild(js); } </script>
-#+HTML_HEAD_EXTRA:<link rel='import' href='juicy-ace-editor.html'/>

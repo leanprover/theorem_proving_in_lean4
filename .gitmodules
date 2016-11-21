@@ -1,0 +1,3 @@
+[submodule "mkleanbook"]
+	path = mkleanbook
+	url = https://github.com/leanprover/mkleanbook
