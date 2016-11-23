@@ -8,6 +8,7 @@ addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
+    - sourceline: 'ppa:jonathonf/texlive-2016'
     packages:
     - cmake
     - cmake-data
@@ -20,6 +21,7 @@ addons:
     - texlive-latex-extra
     - texlive-luatex
     - texlive-fonts-recommended
+    - texlive-generic-recommended
     - latexmk
     - latex-xcolor
     - lmodern
@@ -31,8 +33,8 @@ addons:
     - libstdc++-5-dev
     - libgmp-dev
     - libmpfr-dev
-    - liblua5.2-dev
     - emacs24
+    - bibtex2html
 env:
   global:
    # GH_TOKEN=[secure]              (to push to leanprover org)
@@ -40,14 +42,12 @@ env:
    # REPO=BLESSED                  (to perform extra stuff only for pushes to the blessed repo)
    - secure: "QMccPDK4PpvBNJA0eAn9KTjG5kPZYPilxo3Zlj+CncbTBaLMlXSbZDhblqXwrgnNrL8L0ctUFBP0hH8BOsuFwvQmXDT2NxX+g+pqoFR0fvZDbDKKzUW9sp8zA7Fj/J3U6s8dp/L3+Zwbfo0uV0PLr1HiXLnE0He8o5y+mS5uIL+LPit0hVUdKwc7cqe5vfouXJEOoCeIqII6u6U/gRSfuoIVK9UuvMfc8DtAHURmZOtFQdiwuKbNO9klFLHUth/Hhsg9ZOSIfDjBtcWE20Fvx8ZF462XGdEFDymV4yNGmwTNu7ud8qEGm4FuAhSfe5pPtc0n/gZAjibz5B5+pL+tNOwfo0Rh8rCI1DPXEp+QBm9SPR9ZesaZ2gKF/7s3jebjEOhZcs3hGPxlsT2Z3bc8Psd2m9bdQviTolQCRcMZ4PzYlkWwePNNxjk4l4EEtT6qWrOX3MP67cmC/hHyk/csLOQi63p22BBuoD4DUlfBAJqTKHwXlR7NHxnBFHJAd0siJRjW9Rt7k9Unr/y5bbQd24sB2eefxYI9WOmIo7hrMRvFZW9MM6U44PTxs9bL7RKsJeeE5urdtMz+ki5SUvjy7bgK8UNw+vOI/IHmD0g4WSmfn+uopwKIzH7p+/e7uHOHce+pTWbobCCQI7qpL+7CHkueToYDIbW+w6ifvKBca5M="
   matrix:
-   - TEST=TRUE
+   - TEST=FALSE
 
 before_install:
   - mkdir ~/bin
   - export PATH="/home/travis/.cask/bin:~/bin:$PATH"
   - curl -fsSL https://raw.github.com/cask/cask/master/go | python
-  - cask
-  - tar xvfz header/l3kernel.tar.gz -C ~/
 
 install:
   # Install Lean dependencies
@@ -65,27 +65,18 @@ install:
       make &&
       cd ../../;
     fi
-  # bibtex2html
-  - wget --no-check-certificate http://www.lri.fr/\~filliatr/ftp/bibtex2html/bibtex2html-1.98-linux.tar.gz
-  - tar xvfz bibtex2html-1.98-linux.tar.gz
-  - cp -v bibtex2html-1.98-linux/* ~/bin
-  - rm -rf bibtex2html-1.98-linux bibtex2html-1.98-linux.tar.gz
   - sudo npm -g i cssmin minify
 
 script:
-  - EMACS_BIN=emacs make
+  - make
   # Build completion.js
-  - echo "var completions = [" > js/completion.js
-  - ./lean/bin/lean --server < js/completion_input.in | grep "|" | grep -v "^private\." | sort | uniq | sed -e "s/\([^|]\+\)|\(.\+\)/{name:\"\1\", value:\"\1\", meta:\"\2\"},/" >> js/completion.js
-  - echo "]" >> js/completion.js
+  # - echo "var completions = [" > js/completion.js
+  # - ./lean/bin/lean --server < js/completion_input.in | grep "|" | grep -v "^private\." | sort | uniq | sed -e "s/\([^|]\+\)|\(.\+\)/{name:\"\1\", value:\"\1\", meta:\"\2\"},/" >> js/completion.js
+  # - echo "]" >> js/completion.js
   # Build input-method.js
-  - cask exec emacs --no-site-file --no-site-lisp -q --batch -l ./elisp/org-html-export.el -l ./lean/src/emacs/lean-input.el -f lean-input-export-translations-to-stdout > js/input-method.js
+  # - cask exec emacs --no-site-file --no-site-lisp -q --batch -l ./elisp/org-html-export.el -l ./lean/src/emacs/lean-input.el -f lean-input-export-translations-to-stdout > js/input-method.js
   # Push to gh-pages
-  # Leo: I have replaced the command
-  #         git add -f *.html tutorial.pdf quickref.pdf &&
-  # with
-  #         git add -f *.html &&
-  # because the PDF generation is not working on Ubuntu 16.04
+  # Leo: I did not add PDF because the PDF generation is not working on Ubuntu 16.04
   - if [[ "${REPO}" == "BLESSED" ]] && [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
       git config --global user.email "notifications@travis-ci.org" &&
       git config --global user.name "Travis CI" &&
