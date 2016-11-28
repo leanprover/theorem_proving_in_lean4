@@ -1,41 +1,46 @@
 #!/usr/bin/env bash
 set -e
 if [ "$#" -ne 2 ]; then
-    echo "Usage example: $0 leanprover tutorial"
+    echo "Usage example: $0 leanprover theorem_proving_in_lean"
     exit 1
 fi
 
-# 1. Build
-make
-make build_nav_data
+# 1. Check NPM and minify
+hash npm 2>/dev/null || { echo >&2 "npm is not found. Visit https://nodejs.org/ and install node and npm."; exit 1; }
 
-# 2. Check cssmin, minify
-hash cssmin 2>/dev/null || { echo >&2 "cssmin is not installed. Run 'npm -g i minify'."; exit 1; }
-hash minify 2>/dev/null || { echo >&2 "minify is not installed. Run 'npm -g i minify'."; exit 1; }
+MINIFY=`npm root`/minify/bin/minify.js
+if [ ! -f ${MINIFY} ] ; then
+    echo ${MINIFY}
+    echo >&2 "minify is not found at ${MINIFY}. Run 'npm install minify' to install it."
+    exit 1
+fi
+
+# 2. Build
+make
 
 # 3. Deploy
 mkdir deploy
 cd deploy
 rm -rf *
 git init
-cp ../*.html ../tutorial.pdf .  # JA : temporarily removed ../quickref.pdf
+cp ../*.html ../theorem_proving.pdf .
 cp -r ../css ../images ../fonts ../js .
 for CSS in css/*.css
 do
-    cssmin ${CSS} > ${CSS}.min
+    ${MINIFY} ${CSS} > ${CSS}.min
     mv ${CSS}.min ${CSS}
 done
 for JS in js/*.js
 do
-    minify ${JS} > ${JS}.min
+    ${MINIFY} ${JS} > ${JS}.min
     mv ${JS}.min ${JS}
 done
-git add -f *.html tutorial.pdf   # JA temporarily removed quickref.pdf
+git add -f *.html theorem_proving.pdf
 git add -f css/*
 git add -f images/*
 git add -f fonts/*
 git add -f js/*
 git commit -m "Update `date`"
-git push git@github.com:$1/$2.git +HEAD:gh-pages
+git push git@github.com:$1/$2 +HEAD:gh-pages
 cd ../
 rm -rf deploy
