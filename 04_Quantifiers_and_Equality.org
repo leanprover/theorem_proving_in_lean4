@@ -511,7 +511,7 @@ x : A, p x= can be thought of as a big disjunction of the propositions
 =p a=, as =a= ranges over all the elements of =A=.
 
 Notice that an existential proposition is very similar to a sigma
-type, as described in are very similar to the sigma types described in
+type, as described in 
 [[file:02_Dependent_Type_Theory.org::#Dependent_Types][Section 2.8]]. The difference is that given =a : A= and =h : p a=,
 =exists.intro a h= has type =(∃ x : A, p x) : Prop= and =sigma.mk a h=
 has type =(Σ x : A, p x) : Type=. The similarity between =∃= and =Σ=
