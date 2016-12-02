@@ -358,7 +358,7 @@ calc
     ... = 1 + d  : nat.add_comm d (1 : ℕ)
     ... =  e     : eq.symm h4
 #+END_SRC
-We will explain the expression =include h3= in the next chatper. The
+We will explain the expression =include h3= in the next chapter. The
 third line of the proof uses the =rewrite= tactic, which we will also
 discuss in the next chapter.
 # TODO: make sure we do this.
@@ -384,7 +384,7 @@ calc
 # rename self_lt_succ to lt_succ_self
 
 # TODO: these next paragraphs are no longer correct. But it would be
-# nice to do that example when we have left_distrib and right_disrib.
+# nice to do that example when we have left_distrib and right_distrib.
 
 # Lean offers some nice additional features. If the justification for a
 # line of a calculational proof is =foo=, Lean will try adding implicit
@@ -753,7 +753,7 @@ show f 0 ≤ f 3, from nat.le_trans (by assumption) (h 2)
 #+END_SRC
 This tells Lean to use the =assumption= tactic, which, in turn, proves
 the goal by finding a suitable hypothesis in the local context. We
-will learn more abou the =assumption= tactic in the next chapter.
+will learn more about the =assumption= tactic in the next chapter.
 
 We can also ask Lean to fill in the proof by writing =‹p›=, where =p=
 is the proposition whose proof we want Lean to find in the context.

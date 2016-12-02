@@ -23,7 +23,7 @@ We will describe proofs that consist of sequences of tactics as
 "tactic-style" proofs, to contrast with the ways of writing proof
 terms we have seen so far, which we will call "term-style"
 proofs. Each style has its own advantages and disadvantages. For
-exmample, tactic-style proofs can be harder to read, because they
+example, tactic-style proofs can be harder to read, because they
 require the reader to predict or guess the results of each
 instruction. But they can also be shorter and easier to
 write. Moreover, tactics offer a gateway to using Lean's automation,
@@ -406,7 +406,7 @@ end
 #+END_SRC
 But =revert= is even more clever, in that it will revert not only an
 element of the context but also all the subsequent elements of the
-context that depend on it. For exmaple, reverting =x= in the example
+context that depend on it. For example, reverting =x= in the example
 above brings =h= along with it:
 #+BEGIN_SRC lean
 example (x y : ℕ) (h : x = y) : y = x :=

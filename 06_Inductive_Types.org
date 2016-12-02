@@ -1011,7 +1011,7 @@ end hide
 #+END_SRC
 In the first =check=, Lean assumes that =[1, 2, 3, 4, 5]= is a list of
 natural numbers. The =(t : list num)= expression forces Lean to interpret =t= as
-a list of numerials.
+a list of numerals.
 
 As an exercise, prove the following:
 #+BEGIN_SRC lean

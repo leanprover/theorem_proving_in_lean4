@@ -574,7 +574,7 @@ We have seen that the =constant= command allows us to declare new
 objects, which then become part of the global context. Declaring new
 objects in this way is somewhat crass. Lean enables us to /define/ all
 of the mathematical objects we need, and /declaring/ new objects
-willy-nilly is therefore somewhat lazy. In the words of Bertand
+willy-nilly is therefore somewhat lazy. In the words of Bertrand
 Russell, it has all the advantages of theft over honest toil. We will
 see in the next chapter that it is also somewhat dangerous: declaring
 a new constant is tantamount to declaring an axiomatic extension of
