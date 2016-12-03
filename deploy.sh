@@ -23,7 +23,7 @@ mkdir deploy
 cd deploy
 rm -rf *
 git init
-cp ../*.html ../theorem_proving.pdf .
+cp ../*.html ../theorem_proving_in_lean.pdf .
 cp -r ../css ../images ../fonts ../js .
 for CSS in css/*.css
 do
@@ -35,7 +35,7 @@ do
     ${MINIFY} ${JS} > ${JS}.min
     mv ${JS}.min ${JS}
 done
-git add -f *.html theorem_proving.pdf
+git add -f *.html theorem_proving_in_lean.pdf
 git add -f css/*
 git add -f images/*
 git add -f fonts/*
