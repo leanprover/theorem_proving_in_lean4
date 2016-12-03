@@ -526,7 +526,13 @@ premises  (hp : p) (hq : q)
 check (⟨hp, hq⟩ : p ∧ q)
 #+END_SRC
 These angle brackets are obtained by typing =\<= and =\>=,
-respectively.
+respectively. Alternatively, you can use ASCII equivalents =(|= and =|)=:
+#+BEGIN_SRC lean
+variables p q : Prop
+premises  (hp : p) (hq : q)
+
+example : p ∧ q := (|hp, hq|) 
+#+END_SRC
 
 Lean provides another useful syntactic gadget. Given an expression =e=
 of type =foo= (possibly applied to some arguments), the notation
