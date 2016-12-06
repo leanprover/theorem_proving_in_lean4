@@ -293,35 +293,78 @@ example (A : Type) (a b : A) (P : A → Prop) (h1 : a = b) (h2 : P a) : P b :=
 h1 ▸ h2
 #+END_SRC
 The triangle in the second presentation is nothing more than notation
-for =eq.subst=, and you can enter it by typing =\t=.
+for =eq.subst=, and you can enter it by typing =\t=. 
 
-# TODO: restore example when there is more in the basic library
+The rule =eq.subst= is used to define the following auxiliary rules,
+which carry out more explicit substitutions. They are designed to deal
+with applicative terms, that is, terms of form =s t=. Specifically,
+=congr_arg= can be used to replace the argument, =congr_fun= can be
+used to replace the terms that is being applied, and =congr= can be
+used to replace both at once.
+#+BEGIN_SRC lean
+variable α : Type
+variables a b : α
+variables f g : α → ℕ
+premise h₁ : a = b
+premise h₂ : f = g
 
-# Here is an example of a calculation in the natural numbers that uses
-# substitution combined with associativity, commutativity, and
-# distributivity of the natural numbers. Of course, carrying out such
-# calculations require being able to invoke such supporting
-# theorems. You can find a number of identities involving the natural
-# numbers in the associated library files, for example, in the module
-# [[https://github.com/leanprover/lean/blob/master/library/data/nat/basic.lean][data.nat.basic]]. In the next chapter, we will have more to say about
-# how to find theorems in Lean's library.
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat eq.ops algebra
+example : f a = f b := congr_arg f h₁
+example : f a = g a := congr_fun h₂ a
+example : f a = g b := congr h₂ h₁
+#+END_SRC
 
-# example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-# have h1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, from !left_distrib,
-# have h2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y),
-#   from (right_distrib x y x) ▸ !right_distrib ▸ h1,
-# !add.assoc⁻¹ ▸ h2
-# #+END_SRC
+# TODO: use int rather than comm_ring in the examples below
 
-It is often important to be able to carry out substitutions like this
-by hand, but it is tedious to prove examples like the one above in
-this way. Fortunately, Lean provides an environment that provides
-better support for such calculations, which we will turn to now.
+Lean's library contains a large number of common identities, such as
+these:
+#+BEGIN_SRC lean
+variables (α : Type) [comm_ring α] 
+variables a b c d : α
 
-** The Calculation Environment
+example : a + 0 = a := add_zero a
+example : 0 + a = a := zero_add a
+example : a * 1 = a := mul_one a
+example : 1 * a = a := one_mul a
+example : -a + a = 0 := neg_add_self a
+example : a + -a = 0 := add_neg_self a
+example : a - a = 0 := sub_self a
+example : a + b = b + a := add_comm a b
+example : a + b + c = a + (b + c) := add_assoc a b c
+example : a * b = b * a := mul_comm a b
+example : a * b * c = a * (b * c) := mul_assoc a b c
+example : a * (b + c) = a * b + a * c := mul_add a b c
+example : a * (b + c) = a * b + a * c := left_distrib a b c -- alternative name
+example : (a + b) * c = a * c + b * c := add_mul a b c
+example : (a + b) * c = a * c + b * c := right_distrib a b c -- alternative name
+example : a * (b - c) = a * b - a * c := mul_sub a b c
+example : (a - b) * c = a * c - b * c := sub_mul a b c
+#+END_SRC
+Identities likes these are designed to work in arbitrary instances of
+the relevant algebraic structures, using the type class mechanism that
+is described in [[file:10_Type_Classes.org::#Type_Classes][Chapter 10]]. [[file::06_Interacting_with_Lean.org:#Interacting_with_Lean.org][Chapter 6]] provides some pointers as to
+how to find them in the library. Here is an example of a calculation
+in the natural numbers that uses substitution combined with
+associativity, commutativity, and distributivity of the natural
+numbers.
+#+BEGIN_SRC lean
+variables x y z : ℕ 
+
+example (x y z : ℕ) : x * (y + z) = x * y + x * z := mul_add x y z
+example (x y z : ℕ) : x * (y + z) = x * y + x * z := mul_add x y z
+example (x y z : ℕ) : x + y + z = x + (y + z) := add_assoc x y z
+
+example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+have h1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, from mul_add (x + y) x y,
+have h2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y),
+  from (add_mul x y x) ▸ (add_mul x y y) ▸ h1,
+h2^.trans (add_assoc (x * x + y * x)(x * y) (y * y))^.symm
+#+END_SRC
+It is often important to be able to carry out substitutions by hand,
+but it is tedious to prove examples like the one above in this
+way. Fortunately, Lean provides an environment that provides better
+support for such calculations, which we will turn to now.
+
+** Calculational Proofs
 
 A calculational proof is just a chain of intermediate results that are
 meant to be composed by basic principles such as the transitivity of
@@ -349,26 +392,104 @@ variable h2 : b = c + 1
 variable h3 : c = d
 variable h4 : e = 1 + d
 
-include h3
 theorem T : a = e :=
 calc
   a     = b      : h1
     ... = c + 1  : h2
-    ... = d + 1  : by rewrite h3
-    ... = 1 + d  : nat.add_comm d (1 : ℕ)
+    ... = d + 1  : congr_arg _ h3
+    ... = 1 + d  : add_comm d (1 : ℕ)
     ... =  e     : eq.symm h4
 #+END_SRC
-We will explain the expression =include h3= in the next chapter. The
-third line of the proof uses the =rewrite= tactic, which we will also
-discuss in the next chapter.
-# TODO: make sure we do this.
+The style of writing proofs is most effective when it is used in
+conjunction with the =simp= and =rewrite= tactics, which are discussed
+in greater detail in the next chapter. For example, using the
+abbreviation =rw= for rewrite, the proof above could be written as
+follows:
+#+BEGIN_SRC lean
+variables (a b c d e : ℕ)
+variable h1 : a = b
+variable h2 : b = c + 1
+variable h3 : c = d
+variable h4 : e = 1 + d
+
+include h1 h2 h3 h4
+theorem T : a = e :=
+calc
+  a     = b      : by rw h1
+    ... = c + 1  : by rw h2
+    ... = d + 1  : by rw h3
+    ... = 1 + d  : by rw add_comm
+    ... =  e     : by rw h4
+#+END_SRC
+In the next chapter, we will see that hypotheses can be introduced,
+renamed, and modified by tactics, so it is not always clear what the
+names in =rw h1= refer to (though, in this case, it is). For that
+reason, section variables and premises that only appear in a tactic command
+or block are not automatically add to the context. The =include=
+command takes care of that. Essentially, the =rewrite= tactic uses a
+given equality (which can a hypothesis, a theorem name, or a complex
+term) to "rewrite" the goal. If doing so reduces the goal to an
+identity =t = t=, the tactic applies reflexivity to prove it.
+
+Rewrites can applied sequentially, so that the proof above can be
+shortened to this:
+#+BEGIN_SRC lean
+variables (a b c d e : ℕ)
+variable h1 : a = b
+variable h2 : b = c + 1
+variable h3 : c = d
+variable h4 : e = 1 + d
+
+include h1 h2 h3 h4
+-- BEGIN
+theorem T : a = e :=
+calc
+  a     = d + 1   : by rw [h1, h2, h3]
+    ... = 1 + d  : by rw add_comm
+     ... =  e     : by rw h4
+-- END
+#+END_SRC
+Or even this:
+#+BEGIN_SRC lean
+variables (a b c d e : ℕ)
+variable h1 : a = b
+variable h2 : b = c + 1
+variable h3 : c = d
+variable h4 : e = 1 + d
+
+include h1 h2 h3 h4
+-- BEGIN
+theorem T : a = e :=
+by rw [h1, h2, h3, add_comm, h4]
+-- END
+#+END_SRC
+The =simp= tactic, instead, rewrites the goal by applying the given
+identities repeatedly, in any order, anywhere they are applicable in a
+term. It also uses other rules that have been previously declared to
+the system, and applies associativity and commutativity wisely to put
+expressions in canonical forms. As a result, we can also prove the
+theorem as follows:
+#+BEGIN_SRC lean
+variables (a b c d e : ℕ)
+variable h1 : a = b
+variable h2 : b = c + 1
+variable h3 : c = d
+variable h4 : e = 1 + d
+
+include h1 h2 h3 h4
+-- BEGIN
+theorem T : a = e :=
+by simp [h1, h2, h3, h4]
+-- END
+#+END_SRC
+We will discuss variations of =rw= and =simp= in the next chapter.
 
 The =calc= command can be configured for any relation that supports
 some form of transitivity. It can even combine different relations.
 #+BEGIN_SRC lean
-attribute [trans] nat.le_trans
-attribute [trans] nat.lt_of_lt_of_le
-attribute [trans] nat.lt_trans
+attribute [trans] le_trans
+attribute [trans] lt_of_lt_of_le
+attribute [trans] lt_trans
 
 theorem T2 (a b c d : ℕ)
   (h1 : a = b) (h2 : b ≤ c) (h3 : c + 1 < d) : a < d :=
@@ -383,42 +504,27 @@ calc
 # declare all trans attributes in [init]
 # rename self_lt_succ to lt_succ_self
 
-# TODO: these next paragraphs are no longer correct. But it would be
-# nice to do that example when we have left_distrib and right_distrib.
+With =calc=, we can write the proof in the last section in a more
+natural and perspicuous way.
+#+BEGIN_SRC lean
+example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+calc
+  (x + y) * (x + y) = (x + y) * x + (x + y) * y  : by rw mul_add
+    ... = x * x + y * x + (x + y) * y            : by rw add_mul
+    ... = x * x + y * x + (x * y + y * y)        : by rw add_mul
+    ... = x * x + y * x + x * y + y * y          : by rw -add_assoc
+#+END_SRC
+Here the negation before =add_assoc= tells rewrite to use the identity
+in the opposite direction. If brevity is what we are after, both =rw=
+and =simp= can do the job on their own:
+#+BEGIN_SRC lean
+example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+by rw [mul_add, add_mul, add_mul, -add_assoc]
 
-# Lean offers some nice additional features. If the justification for a
-# line of a calculational proof is =foo=, Lean will try adding implicit
-# arguments if =foo= alone fails to do the job. If that doesn't work,
-# Lean will try the symmetric version, =foo⁻¹=, again adding arguments
-# if necessary. If that doesn't work, Lean proceeds to try ={foo}= and
-# ={foo⁻¹}=, again, adding arguments if necessary. This can simplify the
-# presentation of a =calc= proof considerably. Consider, for example,
-# the following proof of the identity in the last section:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat algebra
+example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+by simp [mul_add, add_mul, add_mul]
+#+END_SRC
 
-# -- BEGIN
-# example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-# calc
-#   (x + y) * (x + y) = (x + y) * x + (x + y) * y  : left_distrib
-#     ... = x * x + y * x + (x + y) * y            : right_distrib
-#     ... = x * x + y * x + (x * y + y * y)        : right_distrib
-#     ... = x * x + y * x + x * y + y * y          : add.assoc
-# -- END
-# #+END_SRC
-# As an exercise, we suggest carrying out a similar expansion of =(x -
-# y) * (x + y)=, using in the appropriate order the theorems
-# =left_distrib=, =mul.comm= and =add.comm= and the theorems
-# =mul_sub_right_distrib= and =add_sub_add_left= in the file
-# [[https://github.com/leanprover/lean/blob/master/library/data/nat/sub.lean][data.nat.sub]]. Note that this exercise is slightly more involved than
-# the previous example, because the subtraction on natural numbers is
-# truncated, so that =n - m= is equal to =0= when =m= is greater than or
-# equal to =n=.
-
-# TODO: this should go in the next chapter.
-
-# ** The Simplifier
 
 ** The Existential Quantifier
 
@@ -511,11 +617,11 @@ x : A, p x= can be thought of as a big disjunction of the propositions
 =p a=, as =a= ranges over all the elements of =A=.
 
 Notice that an existential proposition is very similar to a sigma
-type, as described in 
-[[file:02_Dependent_Type_Theory.org::#Dependent_Types][Section 2.8]]. The difference is that given =a : A= and =h : p a=, the term
-=exists.intro a h= has type =(∃ x : A, p x) : Prop= and =sigma.mk a h=
-has type =(Σ x : A, p x) : Type=. The similarity between =∃= and =Σ=
-is another instance of the Curry-Howard isomorphism.
+type, as described in [[file:02_Dependent_Type_Theory.org::#Dependent_Types][Section 2.8]]. The difference is that given =a :
+A= and =h : p a=, the term =exists.intro a h= has type =(∃ x : A, p
+x) : Prop= and =sigma.mk a h= has type =(Σ x : A, p x) : Type=. The
+similarity between =∃= and =Σ= is another instance of the Curry-Howard
+isomorphism.
 
 Lean provides a more convenient way to eliminate from an existential
 quantifier with the =match= statement:
@@ -529,12 +635,12 @@ end
 #+END_SRC
 The =match= statement is part of Lean's function definition system,
 which provides a convenient and expressive ways of defining complex
-functions in the system. It is, once again, the Curry-Howard
-isomorphism that allows us to co-opt this mechanism for writing proofs
-as well. The =match= statement "destructs" the existential assertion
-into the components =w= and =hw=, which can then be used in the body
-of the statement to prove the proposition. We can annotate the types
-used in the match for greater clarity:
+functions. Once again, it is the Curry-Howard isomorphism that allows
+us to co-opt this mechanism for writing proofs as well. The =match=
+statement "destructs" the existential assertion into the components
+=w= and =hw=, which can then be used in the body of the statement to
+prove the proposition. We can annotate the types used in the match for
+greater clarity:
 #+BEGIN_SRC lean
 variables (A : Type) (p q : A → Prop)
 
@@ -568,27 +674,34 @@ assume ⟨w, hpw, hqw⟩, ⟨w, hqw, hpw⟩
 -- END
 #+END_SRC
 
+In the following example, we define =even a= as =∃ b, a = 2*b=, and
+then we show that the sum of two even numbers is an even number.
+#+BEGIN_SRC lean
+definition is_even (a : nat) := ∃ b, a = 2 * b
+
+theorem even_plus_even {a b : nat} (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
+exists.elim h1 (take w1, assume hw1 : a = 2 * w1,
+exists.elim h2 (take w2, assume hw2 : b = 2 * w2,
+  exists.intro (w1 + w2)
+    (calc
+      a + b = 2 * w1 + 2 * w2  : by rw [hw1, hw2]
+        ... = 2*(w1 + w2)      : by rw mul_add)))
+#+END_SRC
+Using the various gadgets described in this chapter --- the match
+statement, anonymous constructors, and the =rewrite= tactic, we can
+write this proof concisely as follows:
+#+BEGIN_SRC lean
+definition is_even (a : nat) := ∃ b, a = 2 * b
+
+-- BEGIN
+theorem even_plus_even {a b : nat} (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
+match h1, h2 with
+| ⟨w1, hw1⟩, ⟨w2, hw2⟩ := ⟨w1 + w2, by rw [hw1, hw2, mul_add]⟩
+end
+-- END
+#+END_SRC 
+
 # TODO: discuss obtains here when available
-
-# TODO: restore this next example when we have distributivity.
-
-# In the following example, we define =even a= as =∃ b, a = 2*b=, and
-# then we show that the sum of two even numbers is an even number.
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat algebra
-
-# definition is_even (a : nat) := ∃ b, a = 2 * b
-
-# theorem even_plus_even {a b : nat} (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
-# exists.elim h1 (fun (w1 : nat) (hw1 : a = 2 * w1),
-# exists.elim h2 (fun (w2 : nat) (hw2 : b = 2 * w2),
-#   exists.intro (w1 + w2)
-#     (calc
-#       a + b = 2*w1 + b      : hw1
-#         ... = 2*w1 + 2*w2   : hw2
-#         ... = 2*(w1 + w2)   : left_distrib)))
-# #+END_SRC
 
 # Lean provides syntactic sugar for =exists.elim=. The expression
 # #+BEGIN_SRC text
@@ -716,14 +829,12 @@ iff.intro
 ** More on the Proof Language
 
 We have seen that keywords like =assume=, =take=, =have=, and =show=
-# , and =obtain= 
 make it possible to write formal proof terms that mirror the
 structure of informal mathematical proofs. In this section, we discuss
 some additional features of the proof language that are often
 convenient.
 
-# TODO: in the examples below, it would be nice to use le_trans
-# instead of nat.le_trans; we need nat as an instance of the class.
+# , and =obtain= 
 
 To start with, we can use anonymous "have" expressions to introduce an
 auxiliary goal without having to label it. We can refer to the last
@@ -734,8 +845,8 @@ premise h : ∀ x : ℕ, f x ≤ f (x + 1)
 
 example : f 0 ≤ f 3 :=
 have f 0 ≤ f 1, from h 0,
-have f 0 ≤ f 2, from nat.le_trans this (h 1),
-show f 0 ≤ f 3, from nat.le_trans this (h 2)
+have f 0 ≤ f 2, from le_trans this (h 1),
+show f 0 ≤ f 3, from le_trans this (h 2)
 #+END_SRC
 Often proofs move from one fact to the next, so this can be effective
 in eliminating the clutter of lots of labels.
@@ -748,8 +859,8 @@ premise h : ∀ x : ℕ, f x ≤ f (x + 1)
 
 example : f 0 ≤ f 3 :=
 have f 0 ≤ f 1, from h 0,
-have f 0 ≤ f 2, from nat.le_trans (by assumption) (h 1),
-show f 0 ≤ f 3, from nat.le_trans (by assumption) (h 2)
+have f 0 ≤ f 2, from le_trans (by assumption) (h 1),
+show f 0 ≤ f 3, from le_trans (by assumption) (h 2)
 #+END_SRC
 This tells Lean to use the =assumption= tactic, which, in turn, proves
 the goal by finding a suitable hypothesis in the local context. We
@@ -765,9 +876,9 @@ premise h : ∀ x : ℕ, f x ≤ f (x + 1)
 example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
 suppose f 0 ≥ f 1,
 suppose f 1 ≥ f 2,
-have f 0 ≥ f 2, from nat.le_trans this ‹f 0 ≥ f 1›,
-have f 0 ≤ f 2, from nat.le_trans (h 0) (h 1),
-show f 0 = f 2, from nat.le_antisymm this ‹f 0 ≥ f 2›
+have f 0 ≥ f 2, from le_trans this ‹f 0 ≥ f 1›,
+have f 0 ≤ f 2, from le_trans (h 0) (h 1),
+show f 0 = f 2, from le_antisymm this ‹f 0 ≥ f 2›
 -- END
 #+END_SRC
 You can type these corner quotes using =\f<= and =\f>=,
@@ -790,8 +901,8 @@ example : f 0 ≤ f 3 :=
 have f 0 ≤ f 1, from h 0,
 have f 1 ≤ f 2, from h 1,
 have f 2 ≤ f 3, from h 2,
-show f 0 ≤ f 3, from nat.le_trans ‹f 0 ≤ f 1› 
-                       (nat.le_trans ‹f 1 ≤ f 2› ‹f 2 ≤ f 3›)
+show f 0 ≤ f 3, from le_trans ‹f 0 ≤ f 1› 
+                       (le_trans ‹f 1 ≤ f 2› ‹f 2 ≤ f 3›)
 -- END
 #+END_SRC
 Keep in mind that use can use the French quotation marks in this way
@@ -810,7 +921,7 @@ premise h : ∀ x : ℕ, f x ≤ f (x + 1)
 -- BEGIN
 example : f 0 ≥ f 1 → f 0 = f 1 :=
 suppose f 0 ≥ f 1,
-show f 0 = f 1, from nat.le_antisymm (h 0) this
+show f 0 = f 1, from le_antisymm (h 0) this
 -- END
 #+END_SRC
 Notice that there is an asymmetry: you can use =have= with or without
@@ -831,9 +942,9 @@ premise h : ∀ x : ℕ, f x ≤ f (x + 1)
 example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
 suppose f 0 ≥ f 1,
 suppose f 1 ≥ f 2,
-have f 0 ≥ f 2, from nat.le_trans ‹f 2 ≤ f 1› ‹f 1 ≤ f 0›,
-have f 0 ≤ f 2, from nat.le_trans (h 0) (h 1),
-show f 0 = f 2, from nat.le_antisymm this ‹f 0 ≥ f 2›
+have f 0 ≥ f 2, from le_trans ‹f 2 ≤ f 1› ‹f 1 ≤ f 0›,
+have f 0 ≤ f 2, from le_trans (h 0) (h 1),
+show f 0 = f 2, from le_antisymm this ‹f 0 ≥ f 2›
 -- END
 #+END_SRC
 Notice that =le_antisymm= is the assertion that if =a ≤ b= and =b ≤ a=
