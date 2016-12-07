@@ -1,7 +1,7 @@
 /*.html
 /*.aux
 /_minted*
-/theorem_proving.*
+/theorem_proving_in_lean.*
 /gitHeadInfo.gin
 /pygments-main
 /node_modules
@@ -9,3 +9,4 @@
 /fonts
 /images
 /js
+.cask/
