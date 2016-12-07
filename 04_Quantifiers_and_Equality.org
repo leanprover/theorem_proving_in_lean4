@@ -10,48 +10,48 @@ universal and existential quantifiers, and the equality relation.
 
 ** The Universal Quantifier
 
-Notice that if =A= is any type, we can represent a unary predicate =p=
-on =A= as an object of type =A → Prop=. In that case, given =x : A=,
+Notice that if =α= is any type, we can represent a unary predicate =p=
+on =α= as an object of type =α → Prop=. In that case, given =x : α=,
 =p x= denotes the assertion that =p= holds of =x=. Similarly, an
-object =r : A → A → Prop= denotes a binary relation on =A=: given =x
-y : A=, =r x y= denotes the assertion that =x= is related to =y=.
+object =r : α → α → Prop= denotes a binary relation on =α=: given =x
+y : α=, =r x y= denotes the assertion that =x= is related to =y=.
 
-The universal quantifier, =∀ x : A, p x= is supposed to denote the
-assertion that "for every =x : A=, =p x=" holds. As with the
+The universal quantifier, =∀ x : α, p x= is supposed to denote the
+assertion that "for every =x : α=, =p x=" holds. As with the
 propositional connectives, in systems of natural deduction, "forall"
 is governed by an introduction and elimination rule. Informally, the
 introduction rule states:
 #+BEGIN_QUOTE
-Given a proof of =p x=, in a context where =x : A= is arbitrary, we
-obtain a proof =∀ x : A, p x=.
+Given a proof of =p x=, in a context where =x : α= is arbitrary, we
+obtain a proof =∀ x : α, p x=.
 #+END_QUOTE
 The elimination rule states:
 #+BEGIN_QUOTE
-Given a proof =∀ x : A, p x= and any term =t : A=, we obtain a proof of
+Given a proof =∀ x : α, p x= and any term =t : α=, we obtain a proof of
 =p t=.
 #+END_QUOTE
 As was the case for implication, the propositions-as-types
 interpretation now comes into play. Remember the introduction and
 elimination rules for Pi types:
 #+BEGIN_QUOTE
-Given a term =t= of type =B x=, in a context where =x : A= is
-arbitrary, we have =(λ x : A, t) : Π x : A, B x=.
+Given a term =t= of type =β x=, in a context where =x : α= is
+arbitrary, we have =(λ x : α, t) : Π x : α, β x=.
 #+END_QUOTE
 The elimination rule states:
 #+BEGIN_QUOTE
-Given a term =s : Π x : A, B x= and any term =t : A=, we have =s t : B t=.
+Given a term =s : Π x : α, β x= and any term =t : α=, we have =s t : β t=.
 #+END_QUOTE
-In the case where =p x= has type =Prop=, if we replace =Π x : A, B x=
-with =∀ x : A, p x=, we can read these as the correct rules for
+In the case where =p x= has type =Prop=, if we replace =Π x : α, β x=
+with =∀ x : α, p x=, we can read these as the correct rules for
 building proofs involving the universal quantifier.
 
 The Calculus of Inductive Constructions therefore identifies =Π= and
-=∀= in this way. If =p= is any expression, =∀ x : A, p= is nothing more
-than alternative notation for =Π x : A, p=, with the idea that the
+=∀= in this way. If =p= is any expression, =∀ x : α, p= is nothing more
+than alternative notation for =Π x : α, p=, with the idea that the
 former is more natural than the latter in cases where where =p= is a
 proposition. Typically, the expression =p= will depend on =x :
-A=. Recall that, in the case of ordinary function spaces, we could
-interpret =A → B= as the special case of =Π x : A, B= in which =B= does
+α=. Recall that, in the case of ordinary function spaces, we could
+interpret =α → β= as the special case of =Π x : α, β= in which =β= does
 not depend on =x=. Similarly, we can think of an implication =p → q=
 between propositions as the special case of =∀ x : p, q= in which the
 expression =q= does not depend on =x=.
@@ -59,20 +59,20 @@ expression =q= does not depend on =x=.
 Here is an example of how the propositions-as-types correspondence
 gets put into practice.
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 
-example : (∀ x : A, p x ∧ q x) → ∀ y : A, p y  :=
-assume h : ∀ x : A, p x ∧ q x,
-take y : A,
+example : (∀ x : α, p x ∧ q x) → ∀ y : α, p y  :=
+assume h : ∀ x : α, p x ∧ q x,
+take y : α,
 show p y, from (h y)^.left
 #+END_SRC
 
 As a notational convention, we give the universal quantifier the
 widest scope possible, so parentheses are needed to limit the
 quantifier over =x= to the hypothesis in the example above. The
-canonical way to prove =∀ y : A, p y= is to take an arbitrary =y=, and
+canonical way to prove =∀ y : α, p y= is to take an arbitrary =y=, and
 prove =p y=. This is the introduction rule. Now, given that =h= has
-type =∀ x : A, p x ∧ q x=, the expression =h y= has type =p y ∧ q
+type =∀ x : α, p x ∧ q x=, the expression =h y= has type =p y ∧ q
 y=. This is the elimination rule. Taking the left conjunct gives the
 desired conclusion, =p y=.
 
@@ -81,26 +81,26 @@ variables are considered to be equivalent. So, for example, we could
 have used the same variable, =x=, in both the hypothesis and
 conclusion, or chosen the variable =z= instead of =y= in the proof:
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 
 -- BEGIN
-example : (∀ x : A, p x ∧ q x) → ∀ y : A, p y  :=
-assume h : ∀ x : A, p x ∧ q x,
-take z : A,
+example : (∀ x : α, p x ∧ q x) → ∀ y : α, p y  :=
+assume h : ∀ x : α, p x ∧ q x,
+take z : α,
 show p z, from and.elim_left (h z)
 -- END
 #+END_SRC
 
-As another example, here is how we can express the fact that a
+αs another example, here is how we can express the fact that a
 relation, =r=, is transitive:
 #+BEGIN_SRC lean
-variables (A : Type) (r : A → A → Prop)
+variables (α : Type) (r : α → α → Prop)
 variable trans_r : ∀ x y z, r x y → r y z → r x z
 
-variables (a b c : A)
+variables (a b c : α)
 variables (hab : r a b) (hbc : r b c)
 
-check trans_r          -- ∀ (x y z : A), r x y → r y z → r x z
+check trans_r          -- ∀ (x y z : α), r x y → r y z → r x z
 check trans_r a b c
 check trans_r a b c hab
 check trans_r a b c hab hbc
@@ -115,10 +115,10 @@ In situations like this, it can be tedious to supply the arguments =a
 b c=, when they can be inferred from =hab hbc=. For that reason, it is
 common to make these arguments implicit:
 #+BEGIN_SRC lean
-variables (A : Type) (r : A → A → Prop)
+variables (α : Type) (r : α → α → Prop)
 variable (trans_r : ∀ {x y z}, r x y → r y z → r x z)
 
-variables (a b c : A)
+variables (a b c : α)
 variables (hab : r a b) (hbc : r b c)
 
 check trans_r
@@ -129,25 +129,25 @@ The advantage is that we can simply write =trans_r hab hbc= as a proof
 of =r a c=. A disadvantage is that Lean does not have enough
 information to infer the types of the arguments in the expressions
 =trans_r= and =trans_r hab=. The output of the =check= command
-contains expressions like =?z A r trans_r a b c hab hbc=. Such an
+contains expressions like =?z α r trans_r a b c hab hbc=. Such an
 expression indicates an arbitrary value, that may depend on any of the
 values listed (in this case, all the variables in the local context).
 
 Here is an example of how we can carry out elementary reasoning with
 an equivalence relation:
 #+BEGIN_SRC lean
-variables (A : Type) (r : A → A → Prop)
+variables (α : Type) (r : α → α → Prop)
 
 variable refl_r : ∀ x, r x x
 variable symm_r : ∀ {x y}, r x y → r y x
 variable trans_r : ∀ {x y z}, r x y → r y z → r x z
 
-example (a b c d : A) (hab : r a b) (hcb : r c b) (hcd : r c d) : r a d :=
+example (a b c d : α) (hab : r a b) (hcb : r c b) (hcd : r c d) : r a d :=
 trans_r (trans_r hab (symm_r hcb)) hcd
 #+END_SRC
 You might want to try to prove some of these equivalences:
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 
 example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
 example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
@@ -160,10 +160,10 @@ It is often possible to bring a component outside a universal
 quantifier, when it does not depend on the quantified variable (one
 direction of the second of these requires classical logic):
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 variable r : Prop
 
-example : A → ((∀ x : A, r) ↔ r) := sorry
+example : α → ((∀ x : α, r) ↔ r) := sorry
 example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
 example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
 #+END_SRC
@@ -180,19 +180,19 @@ example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : false := sorry
 
 It is the typing rule for Pi types, and the universal quantifier in
 particular, that distinguishes =Prop= from other types. Suppose we
-have =A : Type i= and =B : Type j=, where the expression =B= may
-depend on a variable =x : A=. Then =Π x : A, B= is an element of
+have =α : Type i= and =β : Type j=, where the expression =β= may
+depend on a variable =x : α=. Then =Π x : α, β= is an element of
 =Type (imax i j)=, where =imax i j= is the maximum of =i= and =j= if
 =j= is not 0, and 0 otherwise.
 
-The idea is as follows. If =j= is not =0=, then =Π x : A, B= is an
+The idea is as follows. If =j= is not =0=, then =Π x : α, β= is an
 element of =Type (max i j)=. In other words, the type of dependent
-functions from =A= to =B= "lives" in the universe with smallest index
-greater-than or equal to the indices of the universes of =A= and
-=B=. Suppose, however, that =B= is of =Type 0=, that is, an element
-of =Prop=. In that case, =Π x : A, B= is an element of =Type 0= as
-well, no matter which type universe =A= lives in. In other words, if
-=B= is a proposition depending on =A=, then =∀ x : A, B= is again a
+functions from =α= to =β= "lives" in the universe with smallest index
+greater-than or equal to the indices of the universes of =α= and
+=β=. Suppose, however, that =β= is of =Type 0=, that is, an element
+of =Prop=. In that case, =Π x : α, β= is an element of =Type 0= as
+well, no matter which type universe =α= lives in. In other words, if
+=β= is a proposition depending on =α=, then =∀ x : α, β= is again a
 proposition. This reflects the interpretation of =Prop= as the type of
 propositions rather than data, and it is what makes =Prop=
 /impredicative/.
@@ -201,11 +201,11 @@ The term "predicative" stems from foundational developments around the
 turn of the twentieth century, when logicians such as Poincaré and
 Russell blamed set-theoretic paradoxes on the "vicious circles" that
 arise when we define a property by quantifying over a collection that
-includes the very property being defined. Notice that if =A= is any
-type, we can form the type =A → Prop= of all predicates on =A= (the
-"power type of =A="). The impredicativity of Prop means that we can
-form propositions that quantify over =A → Prop=. In particular, we can
-define predicates on =A= by quantifying over all predicates on =A=,
+includes the very property being defined. Notice that if =α= is any
+type, we can form the type =α → Prop= of all predicates on =α= (the
+"power type of =α="). The impredicativity of Prop means that we can
+form propositions that quantify over =α → Prop=. In particular, we can
+define predicates on =α= by quantifying over all predicates on =α=,
 which is exactly the type of circularity that was once considered
 problematic.
 
@@ -228,7 +228,7 @@ check eq.trans   -- ?M_2 = ?M_3 → ?M_3 = ?M_4 → ?M_2 = ?M_4
 Thus, for example, we can specialize the example from the previous section
 to the equality relation:
 #+BEGIN_SRC lean
-variables (A : Type) (a b c d : A)
+variables (α : Type) (a b c d : α)
 premises (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 example : a = d :=
@@ -237,7 +237,7 @@ eq.trans (eq.trans hab (eq.symm hcb)) hcd
 
 If we "open" the eq namespace, the names become shorter:
 #+BEGIN_SRC lean
-variables (A : Type) (a b c d : A)
+variables (α : Type) (a b c d : α)
 premises (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 -- BEGIN
@@ -248,7 +248,7 @@ example : a = d := trans (trans hab (symm hcb)) hcd
 #+END_SRC
 We can also use the projection notation:
 #+BEGIN_SRC lean
-variables (A : Type) (a b c d : A)
+variables (α : Type) (a b c d : α)
 premises (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 -- BEGIN
@@ -262,20 +262,20 @@ interpretation, and that the logical framework treats terms with a
 common reduct as the same. As a result, some nontrivial identities can
 be proved by reflexivity:
 #+BEGIN_SRC lean
-variables (A B : Type)
+variables (α β : Type)
 
-example (f : A → B) (a : A) : (λ x, f x) a = f a := eq.refl _
-example (a : A) (b : A) : (a, b).1 = a := eq.refl _
+example (f : α → β) (a : α) : (λ x, f x) a = f a := eq.refl _
+example (a : α) (b : α) : (a, b).1 = a := eq.refl _
 example : 2 + 3 = 5 := eq.refl _
 #+END_SRC
 This feature of the framework is so important that the library defines
 a notation =rfl= for =eq.refl _=:
 #+BEGIN_SRC lean
-variables (A B : Type)
+variables (α β : Type)
 
 -- BEGIN
-example (f : A → B) (a : A) : (λ x, f x) a = f a := rfl
-example (a : A) (b : A) : (a, b).1 = a := rfl
+example (f : α → β) (a : α) : (λ x, f x) a = f a := rfl
+example (a : α) (b : α) : (a, b).1 = a := rfl
 example : 2 + 3 = 5 := rfl
 -- END
 #+END_SRC
@@ -286,10 +286,10 @@ in the sense that we can substitute equal expressions without changing
 the truth value. That is, given =h1 : a = b= and =h2 : P a=, we can construct
 a proof for =P b= using substitution: =eq.subst h1 h2=.
 #+BEGIN_SRC lean
-example (A : Type) (a b : A) (P : A → Prop) (h1 : a = b) (h2 : P a) : P b :=
+example (α : Type) (a b : α) (P : α → Prop) (h1 : a = b) (h2 : P a) : P b :=
 eq.subst h1 h2
 
-example (A : Type) (a b : A) (P : A → Prop) (h1 : a = b) (h2 : P a) : P b :=
+example (α : Type) (a b : α) (P : α → Prop) (h1 : a = b) (h2 : P a) : P b :=
 h1 ▸ h2
 #+END_SRC
 The triangle in the second presentation is nothing more than notation
@@ -529,13 +529,13 @@ by simp [mul_add, add_mul, add_mul]
 ** The Existential Quantifier
 
 Finally, consider the existential quantifier, which can be written as
-either =exists x : A, p x= or =∃ x : A, p x=. Both versions are
+either =exists x : α, p x= or =∃ x : α, p x=. Both versions are
 actually notationally convenient abbreviations for a more long-winded
-expression, =Exists (λ x : A, p x)=, defined in Lean's library.
+expression, =Exists (λ x : α, p x)=, defined in Lean's library.
 
 As you should by now expect, the library includes both an introduction
 rule and an elimination rule. The introduction rule is
-straightforward: to prove =∃ x : A, p x=, it suffices to provide a
+straightforward: to prove =∃ x : α, p x=, it suffices to provide a
 suitable term =t= and a proof of =p t=. here are some examples:
 #+BEGIN_SRC lean
 open nat
@@ -569,7 +569,7 @@ example (x y z : ℕ) (hxy : x < y) (hyz : y < z) : ∃ w, x < w ∧ w < z :=
 -- END
 #+END_SRC
 Note that =exists.intro= has implicit arguments: Lean has to infer the
-predicate =p : A → Prop= in the conclusion =∃ x, p x=. This is not a
+predicate =p : α → Prop= in the conclusion =∃ x, p x=. This is not a
 trivial affair. For example, if we have have =hg : g 0 0 = 0= and
 write =exists.intro 0 hg=, there are many possible values for the
 predicate =p=, corresponding to the theorems =∃ x, g x x = x=, =∃ x, g
@@ -596,14 +596,14 @@ check gex4
 We can view =exists.intro= as an information-hiding operation: we are
 "hiding" the witness to the body of the assertion. The existential
 elimination rule, =exists.elim=, performs the opposite operation. It
-allows us to prove a proposition =q= from =∃ x : A, p x=, by showing
+allows us to prove a proposition =q= from =∃ x : α, p x=, by showing
 that =q= follows from =p w= for an arbitrary value =w=. Roughly
 speaking, since we know there is an =x= satisfying =p x=, we can give
 it a name, say, =w=. If =q= does not mention =w=, then showing that
 =q= follows from =p w= is tantamount to showing the =q= follows from
 the existence of any such =x=. Here is an example:
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 
 example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
 exists.elim h 
@@ -613,20 +613,20 @@ exists.elim h
 #+END_SRC
 It may be helpful to compare the
 exists-elimination rule to the or-elimination rule: the assertion =∃
-x : A, p x= can be thought of as a big disjunction of the propositions
-=p a=, as =a= ranges over all the elements of =A=.
+x : α, p x= can be thought of as a big disjunction of the propositions
+=p a=, as =a= ranges over all the elements of =α=.
 
 Notice that an existential proposition is very similar to a sigma
 type, as described in [[file:02_Dependent_Type_Theory.org::#Dependent_Types][Section 2.8]]. The difference is that given =a :
-A= and =h : p a=, the term =exists.intro a h= has type =(∃ x : A, p
-x) : Prop= and =sigma.mk a h= has type =(Σ x : A, p x) : Type=. The
+α= and =h : p a=, the term =exists.intro a h= has type =(∃ x : α, p
+x) : Prop= and =sigma.mk a h= has type =(Σ x : α, p x) : Type=. The
 similarity between =∃= and =Σ= is another instance of the Curry-Howard
 isomorphism.
 
 Lean provides a more convenient way to eliminate from an existential
 quantifier with the =match= statement:
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 
 example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
 match h with ⟨w, hw⟩ :=
@@ -642,11 +642,11 @@ statement "destructs" the existential assertion into the components
 prove the proposition. We can annotate the types used in the match for
 greater clarity:
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 
 -- BEGIN
 example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
-match h with ⟨(w : A), (hw : p w ∧ q w)⟩ :=
+match h with ⟨(w : α), (hw : p w ∧ q w)⟩ :=
   ⟨w, hw^.right, hw^.left⟩
 end
 -- END
@@ -654,7 +654,7 @@ end
 We can even use the match statement to decompose the conjunction at
 the same time:
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 
 -- BEGIN
 example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
@@ -666,7 +666,7 @@ end
 Lean will even allow us to use an implicit =match= in the =assume=
 statement:
 #+BEGIN_SRC lean
-variables (A : Type) (p q : A → Prop)
+variables (α : Type) (p q : α → Prop)
 
 -- BEGIN
 example : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
@@ -738,7 +738,7 @@ a particular =x= that satisfies =p=.
 #+BEGIN_SRC lean
 open classical
 
-variables (A : Type) (p : A → Prop)
+variables (α : Type) (p : α → Prop)
 
 example (h : ¬ ∀ x, ¬ p x) : ∃ x, p x :=
 by_contradiction
@@ -758,12 +758,12 @@ require some form of classical reasoning.
 #+BEGIN_SRC lean
 open classical
 
-variables (A : Type) (p q : A → Prop)
-variable a : A
+variables (α : Type) (p q : α → Prop)
+variable a : α
 variable r : Prop
 
-example : (∃ x : A, r) → r := sorry
-example : r → (∃ x : A, r) := sorry
+example : (∃ x : α, r) → r := sorry
+example : r → (∃ x : α, r) := sorry
 example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r := sorry
 example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := sorry
 
@@ -776,8 +776,8 @@ example : (∀ x, p x → r) ↔ (∃ x, p x) → r := sorry
 example : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
 example : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
 #+END_SRC
-Notice that the declaration =variable a : A= amounts to the assumption
-that there is at least one element of type =A=. This assumption is
+Notice that the declaration =variable a : α= amounts to the assumption
+that there is at least one element of type =α=. This assumption is
 needed in the second example, as well as in the last two.
 
 # TODO: restore at least one use of obtain in the examples below when we have
@@ -787,8 +787,8 @@ Here are solutions to two of the more difficult ones:
 #+BEGIN_SRC lean
 open classical
 
-variables (A : Type) (p q : A → Prop)
-variable a : A
+variables (α : Type) (p q : α → Prop)
+variable a : α
 variable r : Prop
 
 -- BEGIN
