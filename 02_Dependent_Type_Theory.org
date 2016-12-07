@@ -76,10 +76,10 @@ than simply postulating them to the system. We will explore these
 mechanisms in the chapters to come.
 
 What makes simple type theory powerful is that one can build new types
-out of others. For example, if =A= and =B= are types, =A → B= denotes
-the type of functions from =A= to =B=, and =A × B= denotes the cartesian
+out of others. For example, if =α= and =β= are types, =α → β= denotes
+the type of functions from =α= to =β=, and =α × β= denotes the cartesian
 product, that is, the type of ordered pairs consisting of an element
-of =A= paired with an element of =B=.
+of =α= paired with an element of =β=.
 #+BEGIN_SRC lean
 constants m n : nat
 
@@ -117,7 +117,9 @@ mean the same thing. Both expressions denote the type of functions
 that take a natural number as input and return a natural number as
 output. The symbol =ℕ= is alternative unicode notation for =nat=; you
 can enter it by typing =\nat=. The unicode symbol =×= for the
-cartesian product is entered =\prod=.
+cartesian product is entered =\prod=. We will generally use lower-case
+greek letters like =α=, =β=, and =γ= to range over types. You can
+enter these particular ones with =\a=, =\b=, and =\g=.
 
 There are a few more things to notice here. First, the
 application of a function =f= to a value =x= is denoted =f x=. Second,
@@ -161,31 +163,31 @@ check (nat → nat) → nat
 We see that each one of the expressions above is an object of type
 =Type=.  We can also declare new constants and constructors for types:
 #+BEGIN_SRC lean
-constants A B : Type
+constants α β : Type
 constant F : Type → Type
 constant G : Type → Type → Type
 
-check A        -- Type
-check F A      -- Type
+check α        -- Type
+check F α      -- Type
 check F nat    -- Type
-check G A      -- Type → Type
-check G A B    -- Type
-check G A nat  -- Type
+check G α      -- Type → Type
+check G α β    -- Type
+check G α nat  -- Type
 #+END_SRC
 Indeed, we have already seen an example of a function of type =Type →
 Type → Type=, namely, the Cartesian product.
 #+BEGIN_SRC lean
-constants A B : Type
+constants α β : Type
 
-check prod A B       -- Type
+check prod α β       -- Type
 check prod nat nat   -- Type
 #+END_SRC
-Here is another example: given any type =A=, the type =list A= denotes
-the type of lists of elements of type =A=.
+Here is another example: given any type =α=, the type =list α= denotes
+the type of lists of elements of type =α=.
 #+BEGIN_SRC lean
-constant A : Type
+constant α : Type
 
-check list A    -- Type
+check list α    -- Type
 check list nat  -- Type
 #+END_SRC
 
@@ -222,15 +224,15 @@ which is also denoted =Prop=. This type has special properties, and
 will be discussed in the next chapter.
 
 We want some operations, however, to be /polymorphic/ over type
-universes. For example, =list A= should make sense for any type =A=,
-no matter which type universe =A= lives in. This explains the type
+universes. For example, =list α= should make sense for any type =α=,
+no matter which type universe =α= lives in. This explains the type
 annotation of the function =list=:
 #+BEGIN_SRC lean
 check list    -- Type u_1 → Type (max 1 u_1)
 #+END_SRC
 Here =u_1= is a variable ranging over type levels. The output of the
-=check= command means that whenever =A= has type =Type n=, =list A=
-also has type =Type n= if =n= is at least 1, and has =Type 1= if =A=
+=check= command means that whenever =α= has type =Type n=, =list α=
+also has type =Type n= if =n= is at least 1, and has =Type 1= if =α=
 has type =0=. The function =prod= is similarly polymorphic:
 #+BEGIN_SRC lean
 check prod    -- Type u_1 → Type u_2 → Type (max 1 u_1 u_2)
@@ -239,8 +241,8 @@ To define polymorphic constants and variables, Lean allows us to
 declare universe variables explicitly:
 #+BEGIN_SRC lean
 universe variable u
-constant A : Type u
-check A
+constant α : Type u
+check α
 #+END_SRC
 Throughout this book, you will see us do this in examples when we want
 type constructions to have as much generality as possible. We will see
@@ -255,15 +257,15 @@ Conversely, if we have =p : nat × nat=, then we have =fst p : nat= and
 =snd p : nat=. This gives us a way of "using" a pair, by extracting its
 two components.
 
-We already know how to "use" a function =f : A → B=, namely, we can
-apply it to an element =a : A= to obtain =f a : B=. But how do we
+We already know how to "use" a function =f : α → β=, namely, we can
+apply it to an element =a : α= to obtain =f a : β=. But how do we
 create a function from another expression?
 
 The companion to application is a process known as "abstraction," or
 "lambda abstraction." Suppose that by temporarily postulating a
-variable =x : A= we can construct an expression =t : B=. Then the
-expression =fun x : A, t=, or, equivalently, =λ x : A, t=, is an object
-of type =A → B=. Think of this as the function from =A= to =B= which
+variable =x : α= we can construct an expression =t : β=. Then the
+expression =fun x : α, t=, or, equivalently, =λ x : α, t=, is an object
+of type =α → β=. Think of this as the function from =α= to =β= which
 maps any value =x= to the value =t=, which depends on =x=. For
 example, in mathematics it is common to say "let =f= be the function
 which maps any natural number =x= to =x + 5=." The expression =λ x :
@@ -275,24 +277,24 @@ check λ x : nat, x + 5
 #+END_SRC
 Here are some more abstract examples:
 #+BEGIN_SRC lean
-constants A B  : Type
-constants a1 a2 : A
-constants b1 b2 : B
+constants α β  : Type
+constants a1 a2 : α
+constants b1 b2 : β
 
-constant f : A → A
-constant g : A → B
-constant h : A → B → A
-constant p : A → A → bool
+constant f : α → α
+constant g : α → β
+constant h : α → β → α
+constant p : α → α → bool
 
-check fun x : A, f x                      -- A → A
-check λ x : A, f x                        -- A → A
-check λ x : A, f (f x)                    -- A → A
-check λ x : A, h x b1                     -- A → A
-check λ y : B, h a1 y                     -- B → A
-check λ x : A, p (f (f x)) (h (f a1) b2)  -- A → bool
-check λ x : A, λ y : B, h (f x) y         -- A → B → A
-check λ (x : A) (y : B), h (f x) y        -- A → B → A
-check λ x y, h (f x) y                    -- A → B → A
+check fun x : α, f x                      -- α → α
+check λ x : α, f x                        -- α → α
+check λ x : α, f (f x)                    -- α → α
+check λ x : α, h x b1                     -- α → α
+check λ y : β, h a1 y                     -- β → α
+check λ x : α, p (f (f x)) (h (f a1) b2)  -- α → bool
+check λ x : α, λ y : β, h (f x) y         -- α → β → α
+check λ (x : α) (y : β), h (f x) y        -- α → β → α
+check λ x y, h (f x) y                    -- α → β → α
 #+END_SRC
 Lean interprets the final three examples as the same expression; in
 the last expression, Lean infers the type of =x= and =y= from the
@@ -302,120 +304,120 @@ Be sure to try writing some expressions of your own. Some
 mathematically common examples of operations of functions can be
 described in terms of lambda abstraction:
 #+BEGIN_SRC lean
-constants A B C : Type
-constant f : A → B
-constant g : B → C
-constant b : B
+constants α β γ : Type
+constant f : α → β
+constant g : β → γ
+constant b : β
 
-check λ x : A, x        -- A → A
-check λ x : A, b        -- A → B
-check λ x : A, g (f x)  -- A → C
+check λ x : α, x        -- α → α
+check λ x : α, b        -- α → β
+check λ x : α, g (f x)  -- α → γ
 check λ x, g (f x)
 
 -- we can abstract any of the constants in the previous definitions
 
-check λ b : B, λ x : A, x     -- B → A → A
-check λ (b : B) (x : A), x    -- equivalent to the previous line
-check λ (g : B → C) (f : A → B) (x : A), g (f x)
-                              -- (B → C) → (A → B) → A → C
+check λ b : β, λ x : α, x     -- β → α → α
+check λ (b : β) (x : α), x    -- equivalent to the previous line
+check λ (g : β → γ) (f : α → β) (x : α), g (f x)
+                              -- (β → γ) → (α → β) → α → γ
 -- we can even abstract over the type
 
-check λ (A B : Type) (b : B) (x : A), x
-check λ (A B C : Type) (g : B → C) (f : A → B) (x : A), g (f x)
+check λ (α β : Type) (b : β) (x : α), x
+check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
 #+END_SRC
 
-Think about what these expressions mean. The expression =λ x : A, x=
-denotes the identity function on =A=, the expression =λ x : A, b=
-denotes the constant function that always returns =b=, and =λ x : A, g
+Think about what these expressions mean. The expression =λ x : α, x=
+denotes the identity function on =α=, the expression =λ x : α, b=
+denotes the constant function that always returns =b=, and =λ x : α, g
 (f x)=, denotes the composition of =f= and =g=. We can, in general,
 leave off the type annotations on the variable and let Lean infer it
 for us. So, for example, we can write =λ x, g (f x)= instead of =λ x :
-A, g (f x)=.
+α, g (f x)=.
 
 We can abstract over any of the constants in the previous definitions:
 #+BEGIN_SRC lean
-constants A B C : Type
-constant f : A → B
-constant g : B → C
-constant b : B
+constants α β γ : Type
+constant f : α → β
+constant g : β → γ
+constant b : β
 
 -- BEGIN
-check λ b : B, λ x : A, x     -- B → A → A
-check λ (b : B) (x : A), x    -- B → A → A
-check λ (g : B → C) (f : A → B) (x : A), g (f x)
-                              -- (B → C) → (A → B) → A → C
+check λ b : β, λ x : α, x     -- β → α → α
+check λ (b : β) (x : α), x    -- β → α → α
+check λ (g : β → γ) (f : α → β) (x : α), g (f x)
+                              -- (β → γ) → (α → β) → α → γ
 -- END
 
-check λ (A B : Type) (b : B) (x : A), x
-check λ (A B C : Type) (g : B → C) (f : A → B) (x : A), g (f x)
+check λ (α β : Type) (b : β) (x : α), x
+check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
 #+END_SRC
 Lean lets us combine lambdas, so the second example is equivalent to
 the first. We can even abstract over the type:
 #+BEGIN_SRC lean
-constants A B C : Type
-constant f : A → B
-constant g : B → C
-constant b : B
+constants α β γ : Type
+constant f : α → β
+constant g : β → γ
+constant b : β
 
 -- BEGIN
-check λ (A B : Type) (b : B) (x : A), x
-check λ (A B C : Type) (g : B → C) (f : A → B) (x : A), g (f x)
+check λ (α β : Type) (b : β) (x : α), x
+check λ (α β γ : Type) (g : β → γ) (f : α → B) (x : α), g (f x)
 -- END
 #+END_SRC
 The last expression, for example, denotes the function that takes
-three types, =A=, =B=, and =C=, and two functions, =g : B → C= and
-=f : A → B=, and returns the composition of =g= and =f=. (Making sense
+three types, =α=, =β=, and =γ=, and two functions, =g : β → γ= and
+=f : α → β=, and returns the composition of =g= and =f=. (Making sense
 of the type of this function requires an understanding of dependent
 products, which we will explain below.) Within a lambda expression =λ
-x : A, t=, the variable =x= is a "bound variable": it is really a
+x : α, t=, the variable =x= is a "bound variable": it is really a
 placeholder, whose "scope" does not extend beyond =t=. For example,
-the variable =b= in the expression =λ (b : B) (x : A), x= has nothing
+the variable =b= in the expression =λ (b : β) (x : α), x= has nothing
 to do with the constant =b= declared earlier. In fact, the expression
-denotes the same function as =λ (u : B) (z : A), z=. Formally, the
+denotes the same function as =λ (u : β) (z : α), z=. Formally, the
 expressions that are the same up to a renaming of bound variables are
 called /alpha equivalent/, and are considered "the same." Lean
 recognizes this equivalence.
 
-Notice that applying a term =t : A → B= to a term =s : A= yields an
-expression =t s : B=. Returning to the previous example and renaming
+Notice that applying a term =t : α → β= to a term =s : α= yields an
+expression =t s : β=. Returning to the previous example and renaming
 bound variables for clarity, notice the types of the following
 expressions:
 #+BEGIN_SRC lean
-constants A B C : Type
-constant f : A → B
-constant g : B → C
-constant h : A → A
-constants (a : A) (b : B)
+constants α β γ : Type
+constant f : α → β
+constant g : β → γ
+constant h : α → α
+constants (a : α) (b : β)
 
-check (λ x : A, x) a                -- A
-check (λ x : A, b) a                -- B
-check (λ x : A, b) (h a)            -- B
-check (λ x : A, g (f x)) (h (h a))  -- C
+check (λ x : α, x) a                -- α
+check (λ x : α, b) a                -- β
+check (λ x : α, b) (h a)            -- β
+check (λ x : α, g (f x)) (h (h a))  -- γ
 
-check (λ (v : B → C) (u : A → B) x, v (u x)) g f a   -- C
+check (λ (v : β → γ) (u : α → β) x, v (u x)) g f a   -- γ
 
 check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
-        v (u x)) A B C g f a        -- C
+        v (u x)) α β γ g f a        -- γ
 #+END_SRC
-As expected, the expression =(λ x : A, x) a= has type =A=. In fact,
-more should be true: applying the expression =(λ x : A, x)= to =a=
+As expected, the expression =(λ x : α, x) a= has type =α=. In fact,
+more should be true: applying the expression =(λ x : α, x)= to =a=
 should "return" the value =a=. And, indeed, it does:
 #+BEGIN_SRC lean
-constants A B C : Type
-constant f : A → B
-constant g : B → C
-constant h : A → A
-constants (a : A) (b : B)
+constants α β γ : Type
+constant f : α → β
+constant g : β → γ
+constant h : α → α
+constants (a : α) (b : β)
 
-eval (λ x : A, x) a                -- a
-eval (λ x : A, b) a                -- b
-eval (λ x : A, b) (h a)            -- b
-eval (λ x : A, g (f x)) a          -- g (f a)
+eval (λ x : α, x) a                -- a
+eval (λ x : α, b) a                -- b
+eval (λ x : α, b) (h a)            -- b
+eval (λ x : α, g (f x)) a          -- g (f a)
 
-eval (λ (v : B → C) (u : A → B) x, v (u x)) g f a   -- g (f a)
+eval (λ (v : β → γ) (u : α → β) x, v (u x)) g f a   -- g (f a)
 
 eval (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
-       v (u x)) A B C g f a        -- g (f a)
+       v (u x)) α β γ g f a        -- g (f a)
 #+END_SRC
 The command =eval= tells Lean to /evaluate/ an expression. The process
 of simplifying an expression =(λ x, t)s= to =t[s/x]= -- that is, =t=
@@ -498,7 +500,7 @@ def do_twice : (ℕ → ℕ) → ℕ → ℕ := λ f x, f (f x)
 #+END_SRC
 We can even use this approach to specify arguments that are types:
 #+BEGIN_SRC lean
-def compose (A B C : Type) (g : B → C) (f : A → B) (x : A) : C :=
+def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
 g (f x)
 #+END_SRC
 As an exercise, we encourage you to use =do_twice= and =double= to
@@ -517,9 +519,9 @@ arguments successively. As another exercise, we encourage you to
 complete the following definitions, which "curry" and "uncurry" a
 function.
 #+BEGIN_SRC lean
-def curry (A B C : Type) (f : A × B → C) : A → B → C := sorry
+def curry (α β γ : Type) (f : α × β → γ) : α → β → γ := sorry
 
-def uncurry (A B C : Type) (f : A → B → C) : A × B → C := sorry
+def uncurry (α β γ : Type) (f : α → β → γ) : α × β → γ := sorry
 #+END_SRC
 
 ** Local Definitions
@@ -582,32 +584,32 @@ our foundational system, and may result in inconsistency.
 
 So far, in this tutorial, we have used the =constant= command to
 create "arbitrary" objects to work with in our examples. For example,
-we have declared types =A=, =B=, and =C= to populate our context. This
+we have declared types =α=, =β=, and =γ= to populate our context. This
 can be avoided, using implicit or explicit lambda abstraction in our
 definitions to declare such objects "locally":
 #+BEGIN_SRC lean
-def compose (A B C : Type) (g : B → C) (f : A → B) (x : A) :
-  C := g (f x)
+def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) :
+  γ := g (f x)
 
-def do_twice (A : Type) (h : A → A) (x : A) : A := h (h x)
+def do_twice (α : Type) (h : α → α) (x : α) : α := h (h x)
 
-def do_thrice (A : Type) (h : A → A) (x : A) : A := h (h (h x))
+def do_thrice (α : Type) (h : α → α) (x : α) : α := h (h (h x))
 #+END_SRC
 Repeating declarations in this way can be tedious, however. Lean
 provides us with the =variable= and =variables= commands to make such
 declarations look global:
 #+BEGIN_SRC lean
-variables (A B C : Type)
+variables (α β γ : Type)
 
-def compose (g : B → C) (f : A → B) (x : A) : C := g (f x)
-def do_twice (h : A → A) (x : A) : A := h (h x)
-def do_thrice (h : A → A) (x : A) : A := h (h (h x))
+def compose (g : β → γ) (f : α → β) (x : α) : γ := g (f x)
+def do_twice (h : α → α) (x : α) : α := h (h x)
+def do_thrice (h : α → α) (x : α) : α := h (h (h x))
 #+END_SRC
 We can declare variables of any type, not just =Type= itself:
 #+BEGIN_SRC lean
-variables (A B C : Type)
-variables (g : B → C) (f : A → B) (h : A → A)
-variable x : A
+variables (α β γ : Type)
+variables (g : β → γ) (f : α → β) (h : α → α)
+variable x : α
 
 def compose := g (f x)
 def do_twice := h (h x)
@@ -626,7 +628,7 @@ difference: rather than creating permanent entities, the declarations
 simply tell Lean to insert the variables as bound variables in
 definitions that refer to them. Lean is smart enough to figure out
 which variables are used explicitly or implicitly in a definition. We
-can therefore proceed as though =A=, =B=, =C=, =g=, =f=, =h=, and =x=
+can therefore proceed as though =α=, =β=, =γ=, =g=, =f=, =h=, and =x=
 are fixed objects when we write our definitions, and let Lean abstract
 the definitions for us automatically.
 
@@ -637,9 +639,9 @@ scope of a variable. For that purpose, Lean provides the notion of a
 =section=:
 #+BEGIN_SRC lean
 section useful
-  variables (A B C : Type)
-  variables (g : B → C) (f : A → B) (h : A → A)
-  variable x : A
+  variables (α β γ : Type)
+  variables (g : β → γ) (f : α → β) (h : α → α)
+  variable x : α
 
   def compose := g (f x)
   def do_twice := h (h x)
@@ -809,47 +811,47 @@ why that is useful.
 
 The short explanation is that what makes dependent type theory
 dependent is that types can depend on parameters. You have already
-seen a nice example of this: the type =list A= depends on the argument
-=A=, and this dependence is what distinguishes =list ℕ= and =list
-bool=. For another example, consider the type =vec A n=, the type of
-vectors of elements of =A= of length =n=. This type depends on /two/
-parameters: the type =A : Type= of the elements in the vector and the
+seen a nice example of this: the type =list α= depends on the argument
+=α=, and this dependence is what distinguishes =list ℕ= and =list
+bool=. For another example, consider the type =vec α n=, the type of
+vectors of elements of =α= of length =n=. This type depends on /two/
+parameters: the type =α : Type= of the elements in the vector and the
 length =n : ℕ=.
 
 Suppose we wish to write a function =cons= which inserts a new element
 at the head of a list. What type should =cons= have? Such a function
 is /polymorphic/: we expect the =cons= function for =ℕ=, =bool=, or
-an arbitrary type =A= to behave the same way. So it makes sense to
+an arbitrary type =α= to behave the same way. So it makes sense to
 take the type to be the first argument to =cons=, so that for any
-type, =A=, =cons A= is the insertion function for lists of type
-=A=. In other words, for every =A=, =cons A= is the function that
-takes an element =a : A= and a list =l : list A=, and returns a new
-list, so we have =cons A a l : list A=.
+type, =α=, =cons α= is the insertion function for lists of type
+=α=. In other words, for every =α=, =cons α= is the function that
+takes an element =a : α= and a list =l : list α=, and returns a new
+list, so we have =cons α a l : list α=.
 
-It is clear that =cons A= should have type =A → list A → list A=. But
-what type should =cons= have? A first guess might be =Type → A → list
-A → list A=, but, on reflection, this does not make sense: the =A= in
+It is clear that =cons α= should have type =α → list α → list α=. But
+what type should =cons= have? A first guess might be =Type → α → list
+α → list α=, but, on reflection, this does not make sense: the =α= in
 this expression does not refer to anything, whereas it should refer to
-the argument of type =Type=. In other words, /assuming/ =A : Type= is
+the argument of type =Type=. In other words, /assuming/ =α : Type= is
 the first argument to the function, the type of the next two elements
-are =A= and =list A=. These types vary depending on the first
-argument, =A=.
+are =α= and =list α=. These types vary depending on the first
+argument, =α=.
 
 This is an instance of a /Pi type/ in dependent type theory. Given
-=A : Type= and =B : A → Type=, think of =B= as a family of types over
-=A=, that is, a type =B a= for each =a : A=. In that case, the type
-=Π x : A, B x= denotes the type of functions =f= with the property
-that, for each =a : A=, =f a= is an element of =B a=. In other words,
+=α : Type= and =β : α → Type=, think of =β= as a family of types over
+=α=, that is, a type =β a= for each =a : α=. In that case, the type
+=Π x : α, β x= denotes the type of functions =f= with the property
+that, for each =a : α=, =f a= is an element of =β a=. In other words,
 the type of the value returned by =f= depends on its input.
 
-Notice that =Π x : A, B= makes sense for any expression =B :
-Type=. When the value of =B= depends on =x= (as does, for example, the
-expression =B x= in the previous paragraph), =Π x : A, B= denotes a
-dependent function type. When =B= doesn't depend on =x=, =Π
-x : A, B= is no different from the type =A → B=. Indeed, in dependent
-type theory (and in Lean), the Pi construction is fundamental, and =A
-→ B= is nothing more than notation for =Π x : A, B= when =B= does not
-depend on =A=.
+Notice that =Π x : α, β= makes sense for any expression =β :
+Type=. When the value of =β= depends on =x= (as does, for example, the
+expression =β x= in the previous paragraph), =Π x : α, β= denotes a
+dependent function type. When =β= doesn't depend on =x=, =Π
+x : α, β= is no different from the type =α → β=. Indeed, in dependent
+type theory (and in Lean), the Pi construction is fundamental, and =α
+→ β= is nothing more than notation for =Π x : α, β= when =β= does not
+depend on =α=.
 
 Returning to the example of lists, we can model some basic list
 operations as follows. We use =namespace hide= to avoid a naming conflict
@@ -862,11 +864,11 @@ universe variable u
 
 constant list : Type u → Type u
 
-constant cons : Π A : Type u, A → list A → list A
-constant nil : Π A : Type u, list A
-constant head : Π A : Type u, list A → A
-constant tail : Π A : Type u, list A → list A
-constant append : Π A : Type u, list A → list A → list A
+constant cons : Π α : Type u, α → list α → list α
+constant nil : Π α : Type u, list α
+constant head : Π α : Type u, list α → α
+constant tail : Π α : Type u, list α → list α
+constant append : Π α : Type u, list α → list α → list α
 
 end hide
 #+END_SRC
@@ -887,13 +889,13 @@ open list
 
 check list     -- Type u_1 → Type u_1
 
-check @cons    -- Π {A : Type u_1}, A → list A → list A
-check @nil     -- Π {A : Type u_1}, list A
-check @head    -- Π {A : Type u_1} [_inst_1 : inhabited A], list A → A
-check @tail    -- Π {A : Type u_1}, list A → list A
-check @append  -- Π {A : Type u_1}, list A → list A → list A
+check @cons    -- Π {α : Type u_1}, α → list α → list α
+check @nil     -- Π {α : Type u_1}, list α
+check @head    -- Π {α : Type u_1} [_inst_1 : inhabited α], list α → α
+check @tail    -- Π {α : Type u_1}, list α → list α
+check @append  -- Π {α : Type u_1}, list α → list α → list α
 #+END_SRC
-There is a subtlety in the definition of =head=: the type =A= is
+There is a subtlety in the definition of =head=: the type =α= is
 required to have at least one element, and when passed the
 empty list, the function must determine a default element of the
 relevant type. We will explain how this is done in a later chapter.
@@ -906,39 +908,39 @@ universe variable u
 constant vec : Type u → ℕ → Type u
 
 namespace vec
-  constant empty : Π A : Type u, vec A 0
+  constant empty : Π α : Type u, vec α 0
   constant cons :
-    Π (A : Type u) (n : ℕ), A → vec A n → vec A (n + 1)
+    Π (α : Type u) (n : ℕ), α → vec α n → vec α (n + 1)
   constant append :
-    Π (A : Type u) (n m : ℕ),  vec A m → vec A n → vec A (n + m)
+    Π (α : Type u) (n m : ℕ),  vec α m → vec α n → vec α (n + m)
 end vec
 #+END_SRC
 
 In the coming chapters, you will come across many instances of
 dependent types. Here we will mention just one more important and
-illustrative example, the /Sigma types/, =Σ x : A, B x=, sometimes
+illustrative example, the /Sigma types/, =Σ x : α, β x=, sometimes
 also known as /dependent pairs/. These are, in a sense, companions to
-the Pi types. The type =Σ x : A, B x= denotes the type of pairs
-=sigma.mk a b= where =a : A= and =b : B a=.
+the Pi types. The type =Σ x : α, β x= denotes the type of pairs
+=sigma.mk a b= where =a : α= and =b : β a=.
 # TODO: where to discuss this? The angle brackets only work where
 #   the expected type is known.
 # You can also use angle
 # brackets =<a, b>= as notation for =sigma.mk a b=. (To type these
 # brackets, use the shortcuts =\<= and =\>=.)
-Just as Pi types =Π x : A, B x= generalize the notion of a function
-type =A → B= by allowing =B= to depend on =A=, Sigma types =Σ x : A, B
-x= generalize the cartesian product =A × B= in the same way: in the
+Just as Pi types =Π x : α, β x= generalize the notion of a function
+type =α → β= by allowing =β= to depend on =α=, Sigma types =Σ x : α, β
+x= generalize the cartesian product =α × β= in the same way: in the
 expression =sigma.mk a b=, the type of the second element of the pair,
-=b : B a=, depends on the first element of the pair, =a : A=.
+=b : β a=, depends on the first element of the pair, =a : α=.
 #+BEGIN_SRC lean
-variable A : Type
-variable B : A → Type
-variable a : A
-variable b : B a
+variable α : Type
+variable β : α → Type
+variable a : α
+variable b : β a
 
-check sigma.mk a b   -- Σ (a : A), B a
-check (sigma.mk a b).1  -- A
-check (sigma.mk a b).2  -- B (sigma.fst (sigma.mk a b))
+check sigma.mk a b   -- Σ (a : α), β a
+check (sigma.mk a b).1  -- α
+check (sigma.mk a b).2  -- β (sigma.fst (sigma.mk a b))
 
 eval  (sigma.mk a b).1  -- a
 eval  (sigma.mk a b).2  -- b
@@ -960,46 +962,46 @@ universe variable u
 constant list : Type u → Type u
 
 namespace list
-  constant cons : Π A : Type u, A → list A → list A
-  constant nil : Π A : Type u, list A
-  constant append : Π A : Type u, list A → list A → list A
+  constant cons : Π α : Type u, α → list α → list α
+  constant nil : Π α : Type u, list α
+  constant append : Π α : Type u, list α → list α → list α
 end list
 end hide
 #+END_SRC
-Then, given a type =A=, some elements of =A=, and some lists of
-elements of =A=, we can construct new lists using the constructors.
+Then, given a type =α=, some elements of =α=, and some lists of
+elements of =α=, we can construct new lists using the constructors.
 #+BEGIN_SRC lean
 namespace hide
 universe variable u
 constant list : Type u → Type u
 
 namespace list
-  constant cons : Π A : Type u, A → list A → list A
-  constant nil : Π A : Type u, list A
-  constant append : Π A : Type u, list A → list A → list A
+  constant cons : Π α : Type u, α → list α → list α
+  constant nil : Π α : Type u, list α
+  constant append : Π α : Type u, list α → list α → list α
 end list
 
 -- BEGIN
 open hide.list
 
-variable  A : Type
-variable  a : A
-variables l1 l2 : list A
+variable  α : Type
+variable  a : α
+variables l1 l2 : list α
 
-check cons A a (nil A)
-check append A (cons A a (nil A)) l1
-check append A (append A (cons A a (nil A)) l1) l2
+check cons α a (nil α)
+check append α (cons α a (nil α)) l1
+check append α (append α (cons α a (nil α)) l1) l2
 -- END
 end hide
 #+END_SRC
 
 Because the constructors are polymorphic over types, we have to insert
-the type =A= as an argument repeatedly. But this information is
-redundant: one can infer the argument =A= in =cons A a (nil A)= from
-the fact that the second argument, =a=, has type =A=. One can
-similarly infer the argument in =nil A=, not from anything else in
+the type =α= as an argument repeatedly. But this information is
+redundant: one can infer the argument =α= in =cons α a (nil α)= from
+the fact that the second argument, =a=, has type =α=. One can
+similarly infer the argument in =nil α=, not from anything else in
 that expression, but from the fact that it is sent as an argument to
-the function =cons=, which expects an element of type =list A= in that
+the function =cons=, which expects an element of type =list α= in that
 position.
 
 This is a central feature of dependent type theory: terms carry a lot
@@ -1013,16 +1015,16 @@ universe variable u
 constant list : Type u → Type u
 
 namespace list
-  constant cons : Π A : Type u, A → list A → list A
-  constant nil : Π A : Type u, list A
-  constant append : Π A : Type u, list A → list A → list A
+  constant cons : Π α : Type u, α → list α → list α
+  constant nil : Π α : Type u, list α
+  constant append : Π α : Type u, list α → list α → list α
 end list
 
 open hide.list
 
-variable  A : Type
-variable  a : A
-variables l1 l2 : list A
+variable  α : Type
+variable  a : α
+variables l1 l2 : list α
 
 -- BEGIN
 check cons _ a (nil _)
@@ -1044,16 +1046,16 @@ constant list : Type u → Type u
 
 -- BEGIN
 namespace list
-  constant cons : Π {A : Type u}, A → list A → list A
-  constant nil : Π {A : Type u}, list A
-  constant append : Π {A : Type u}, list A → list A → list A
+  constant cons : Π {α : Type u}, α → list α → list α
+  constant nil : Π {α : Type u}, list α
+  constant append : Π {α : Type u}, list α → list α → list α
 end list
 
 open hide.list
 
-variable  A : Type
-variable  a : A
-variables l1 l2 : list A
+variable  α : Type
+variable  a : α
+variables l1 l2 : list α
 
 check cons a nil
 check append (cons a nil) l1
@@ -1061,19 +1063,19 @@ check append (append (cons a nil) l1) l2
 -- END
 end hide
 #+END_SRC
-All that has changed are the braces around =A : Type u= in the
+All that has changed are the braces around =α : Type u= in the
 declaration of the variables. We can also use this device in function
 definitions:
 #+BEGIN_SRC lean
 universe variable u
-def ident {A : Type u} (x : A) := x
+def ident {α : Type u} (x : α) := x
 
-variables A B : Type u
-variables (a : A) (b : B)
+variables α β : Type u
+variables (a : α) (b : β)
 
 check ident      -- ?M_1 → ?M_1
-check ident a    -- A
-check ident b    -- B
+check ident a    -- α
+check ident b    -- β
 #+END_SRC
 This makes the first argument to =ident= implicit. Notationally, this
 hides the specification of the type, making it look as though =ident=
@@ -1083,24 +1085,24 @@ a nontraditional name here only to avoid a clash of names.
 
 # TODO: pp.metavar_args is gone. What to say about this?
 
-# In the first =check= command, the inscription =?A= indicates that the
+# In the first =check= command, the inscription =?α= indicates that the
 # type of =ident= depends on a "placeholder," or "metavariable," that
 # should, in general, be inferred from the context. The output of the
 # second =check= command is somewhat verbose: it indicates that the
-# placeholder, =?A=, can itself depend on any of the variables =A=, =B=,
+# placeholder, =?α=, can itself depend on any of the variables =α=, =β=,
 # =a=, and =b= that are in the context. If this additional information
 # is annoying, you can suppress it by writing =@ident=, as described
 # below. Alternatively, you can set an option to avoid printing these
 # arguments:
 # #+BEGIN_SRC lean
-# def ident {A : Type} (x : A) := x
+# def ident {α : Type} (x : α) := x
 
 # -- BEGIN
-# variables A B : Type
-# variables (a : A) (b : B)
+# variables α β : Type
+# variables (a : α) (b : β)
 
 # set_option pp.metavar_args true
-# check ident      -- ?A → ?A
+# check ident      -- ?α → ?α
 # -- END
 # #+END_SRC
 
@@ -1110,13 +1112,13 @@ the =variables= command:
 universe variable u
 
 section
-  variable {A : Type u}
-  variable x : A
+  variable {α : Type u}
+  variable x : α
   def ident := x
 end
 
-variables A B : Type u
-variables (a : A) (b : B)
+variables α β : Type u
+variables (a : α) (b : β)
 
 check ident
 check ident a
@@ -1169,15 +1171,15 @@ provide the argument explicitly. If =foo= is such a function, the
 notation =@foo= denotes the same function with all the arguments made
 explicit.
 #+BEGIN_SRC lean
-variables A B : Type
-variables (a : A) (b : B)
+variables α β : Type
+variables (a : α) (b : β)
 
 -- BEGIN
-check @id        -- Π {A : Type u_1}, A → A
-check @id A      -- A → A
-check @id B      -- B → B
-check @id A a    -- A
-check @id B b    -- B
+check @id        -- Π {α : Type u_1}, α → α
+check @id α      -- α → α
+check @id β      -- β → β
+check @id α a    -- α
+check @id β b    -- β
 -- END
 #+END_SRC
 Notice that now the first =check= command gives the type of the
