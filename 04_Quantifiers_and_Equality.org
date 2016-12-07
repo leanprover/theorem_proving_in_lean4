@@ -487,22 +487,14 @@ We will discuss variations of =rw= and =simp= in the next chapter.
 The =calc= command can be configured for any relation that supports
 some form of transitivity. It can even combine different relations.
 #+BEGIN_SRC lean
-attribute [trans] le_trans
-attribute [trans] lt_of_lt_of_le
-attribute [trans] lt_trans
-
 theorem T2 (a b c d : ℕ)
   (h1 : a = b) (h2 : b ≤ c) (h3 : c + 1 < d) : a < d :=
 calc
   a     = b     : h1
-    ... < b + 1 : nat.self_lt_succ b
+    ... < b + 1 : nat.lt_succ_self b
     ... ≤ c + 1 : nat.succ_le_succ h2
     ... < d     : h3
 #+END_SRC
-
-# TODO: for the previous example:
-# declare all trans attributes in [init]
-# rename self_lt_succ to lt_succ_self
 
 With =calc=, we can write the proof in the last section in a more
 natural and perspicuous way.

@@ -361,7 +361,7 @@ constant b : β
 
 -- BEGIN
 check λ (α β : Type) (b : β) (x : α), x
-check λ (α β γ : Type) (g : β → γ) (f : α → B) (x : α), g (f x)
+check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
 -- END
 #+END_SRC
 The last expression, for example, denotes the function that takes

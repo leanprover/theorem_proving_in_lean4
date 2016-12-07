@@ -222,7 +222,7 @@ Sometimes, to disambiguate the name of theorem or better convey the
 intended reference, it is necessary to describe some of the
 hypotheses. The word "of" is used to separate these hypotheses:
 #+BEGIN_SRC lean
-check @lt_of_succ_le
+check @nat.lt_of_succ_le
 check @lt_of_not_ge
 check @lt_of_le_of_ne
 check @add_lt_add_of_lt_of_le
@@ -300,11 +300,15 @@ check @eq.subst
 But it also applies to predicates and relations that can be introduced
 and eliminated in similar ways.
 #+BEGIN_SRC lean
-check @dvd.intro
-check @dvd.dest
-check @dvd.elim
-check @lt.refl
+check @le.refl
 #+END_SRC
+
+# TODO: add these when available
+# check @le.dest
+# check @le.elim
+# check @dvd.intro
+# check @dvd.dest
+# check @dvd.elim
 
 
 ** Lean's Emacs Mode
