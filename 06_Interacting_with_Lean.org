@@ -48,7 +48,7 @@ eval add 3 2
 print add
 
 -- a user-defined function
-definition foo {A : Type} (x : A) : A := x
+definition foo {α : Type} (x : α) : α := x
 
 check foo
 check @foo
@@ -665,8 +665,8 @@ discussion of =list= in the next chapter for an example.
 # import data.list data.tuple
 # open list tuple
 
-# variables (A : Type) (m n : ℕ)
-# variables (v : tuple A m) (w : tuple A n) (s t : list A)
+# variables (α : Type) (m n : ℕ)
+# variables (v : tuple α m) (w : tuple α n) (s t : list α)
 
 # check s ++ t
 # check v ++ w
@@ -678,8 +678,8 @@ discussion of =list= in the next chapter for an example.
 # import data.list data.tuple
 # open list tuple
 
-# variables (A : Type) (m n : ℕ)
-# variables (v : tuple A m) (w : tuple A n) (s t : list A)
+# variables (α : Type) (m n : ℕ)
+# variables (v : tuple α m) (w : tuple α n) (s t : list α)
 
 # -- BEGIN 
 # check (#list λ x y, x ++ y)
@@ -712,7 +712,7 @@ discussion of =list= in the next chapter for an example.
 # convenient shorthand for long expressions. One common use is to
 # abbreviate a long identifier:
 # #+BEGIN_SRC lean
-# definition my_long_identity_function {A : Type} (x : A) : A := x
+# definition my_long_identity_function {α : Type} (x : α) : α := x
 # local abbreviation my_id := @my_long_identity_function
 # #+END_SRC
 

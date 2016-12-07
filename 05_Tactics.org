@@ -200,13 +200,13 @@ end
 
 The =intro= command can more generally be used to introduce a variable of any type:
 #+BEGIN_SRC lean
-example (A : Type) : A → A :=
+example (α : Type) : α → α :=
 begin
   intro a,
   exact a
 end
 
-example (A : Type) : ∀ x : A, x = x :=
+example (α : Type) : ∀ x : α, x = x :=
 begin
   intro x,
   exact eq.refl x
@@ -875,13 +875,13 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 
 # The =rewrite= tactic is not restricted to propositions. In the
 # following example, we use =rewrite h at v= to rewrite the hypothesis
-# =v : vector A n= to =v : vector A 0=.
+# =v : vector α n= to =v : vector α 0=.
 # #+BEGIN_SRC lean
 # import data.examples.vector
 # open nat
 
-# variables {A : Type} {n : nat}
-# example (h : n = 0) (v : vector A n) : vector A 0 :=
+# variables {α : Type} {n : nat}
+# example (h : n = 0) (v : vector α n) : vector α 0 :=
 # begin
 #   rewrite h at v,
 #   exact v
@@ -931,10 +931,10 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # -- BEGIN
 # open algebra
 
-# variables {A : Type} [s : group A]
+# variables {α : Type} [s : group α]
 # include s
 
-# theorem inv_eq_of_mul_eq_one {a b : A} (h : a * b = 1) : a⁻¹ = b :=
+# theorem inv_eq_of_mul_eq_one {a b : α} (h : a * b = 1) : a⁻¹ = b :=
 # by rewrite [-(mul_one a⁻¹), -h, inv_mul_cancel_left]
 # -- END
 # end hide
@@ -1014,14 +1014,14 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # end
 # #+END_SRC
 
-# Here is another example: given any type =A=, we show that the =list A=
+# Here is another example: given any type =α=, we show that the =list α=
 # append operation =s ++ t= is associative.
 # #+BEGIN_SRC lean
 # import data.list
 # open list
-# variable {A : Type}
+# variable {α : Type}
 
-# theorem append_assoc : ∀ (s t u : list A), s ++ t ++ u = s ++ (t ++ u)
+# theorem append_assoc : ∀ (s t u : list α), s ++ t ++ u = s ++ (t ++ u)
 # | append_assoc nil t u      := by apply rfl
 # | append_assoc (a :: l) t u :=
 #   begin
@@ -1036,7 +1036,7 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # (s ++ t ++ u) = a :: s ++ (t ++ u)= by applying the reduction step =▸
 # a :: (l ++ t ++ u) = _=.  The idea is to expose the term =l ++ t ++
 # u=, which can be rewritten using the inductive hypothesis
-# =append_assoc (s t u : list A) : s ++ t ++ u = s ++ (t ++ u)=. Notice
+# =append_assoc (s t u : list α) : s ++ t ++ u = s ++ (t ++ u)=. Notice
 # that we used a placeholder =_= in the right-hand-side of this
 # reduction step; this placeholder is unified with the right-hand-side
 # of the main goal. As a result, we do not have the copy the right-hand
@@ -1052,7 +1052,7 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # import algebra.ring
 # open algebra
 
-# example {A : Type} [s : comm_ring A] (a b c : A) : a * 0 + 0 * b + c * 0 + 0 * a = 0 :=
+# example {α : Type} [s : comm_ring α] (a b c : α) : a * 0 + 0 * b + c * 0 + 0 * a = 0 :=
 # begin
 #   rewrite [+mul_zero, +zero_mul, +add_zero]
 # end

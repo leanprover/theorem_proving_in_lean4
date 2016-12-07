@@ -8,7 +8,7 @@
 
 We have seen that Lean's formal foundation includes basic types,
 =Prop, Type.{1}, Type.{2}, ...=, and allows for the formation of
-dependent function types, =Π x : A. B=. In the examples, we have also
+dependent function types, =Π x : α. β=. In the examples, we have also
 made use of additional types like =bool=, =nat=, and =int=, and type
 constructors, like =list=, and product, =×=. In fact, in Lean's library,
 every concrete type other than the universes and every type
@@ -388,34 +388,34 @@ namespace hide
 -- BEGIN
 universe variables u v
 
-inductive prod (A : Type u) (B : Type v)
-| mk : A → B → prod
+inductive prod (α : Type u) (β : Type v)
+| mk : α → β → prod
 
-inductive sum (A : Type u) (B : Type v)
-| inl {} : A → sum
-| inr {} : B → sum
+inductive sum (α : Type u) (β : Type v)
+| inl {} : α → sum
+| inr {} : β → sum
 -- END
 
 end hide
 #+END_SRC
-Notice that we do not include the types =A= and =B= in the target of
+Notice that we do not include the types =α= and =β= in the target of
 the constructors. For the moment, ignore the annotation ={}= after the
 constructors =inl= and =inr=; we will explain that below. In the
 meanwhile, think about what is going on in these examples. The product
 type has one constructor, =prod.mk=, which takes two arguments. To
-define a function on =prod A B=, we can assume the input is of the
+define a function on =prod α β=, we can assume the input is of the
 form =prod.mk a b=, and we have to specify the output, in terms of =a=
 and =b=. We can use this to define the two projections for prod;
-remember that the standard library defines notation =A × B= for =prod
-A B= and =(a, b)= for =prod.mk a b=.
+remember that the standard library defines notation =α × β= for =prod
+α β= and =(a, b)= for =prod.mk a b=.
 #+BEGIN_SRC lean
 universe variables u v
 
 -- BEGIN
-def fst {A : Type u} {B : Type v} (p : A × B) : A :=
+def fst {α : Type u} {β : Type v} (p : α × β) : α :=
 prod.rec_on p (λ a b, a)
 
-def snd {A : Type u} {B : Type v} (p : A × B) : B :=
+def snd {α : Type u} {β : Type v} (p : α × β) : β :=
 prod.rec_on p (λ a b, b)
 -- END
 #+END_SRC
@@ -424,7 +424,7 @@ The function =fst= takes a pair, =p=. Applying the recursor
 and then uses the second argument to determine what to do with =a= and
 =b=. Remember that you can enter the symbol for a product by typing
 =\times=. Recall also from [[file:02_Dependent_Type_Theory.org::#Dependent_Types][Section 2.8]] that to give these definitions
-the greatest generality possible, we allow the types =A= and =B= to
+the greatest generality possible, we allow the types =α= and =β= to
 belong to any universe.
 
 Here is another example:
@@ -443,7 +443,7 @@ consisting of a boolean, =b=, and a number, =n=, and returns either
 
 In contrast, the sum type has /two/ constructors, =inl= and =inr= (for
 "insert left" and "insert right"), each of which takes /one/ (explicit)
-argument. To define a function on =sum A B=, we have to handle two
+argument. To define a function on =sum α β=, we have to handle two
 cases: either the input is of the form =inl a=, in which case we have
 to specify an output value in terms of =a=, or the input is of the
 form =inr b=, in which case we have to specify an output value in
@@ -470,9 +470,9 @@ section is that this is not the case: each constructor relies only on
 previously specified types.
 
 Notice that a type with multiple constructors is disjunctive: an
-element of =sum A B= is either of the form =inl a= /or/ of the form
+element of =sum α β= is either of the form =inl a= /or/ of the form
 =inl b=. A constructor with multiple arguments introduces conjunctive
-information: from an element =prod.mk a b= of =prod A B= we can
+information: from an element =prod.mk a b= of =prod α β= we can
 extract =a= /and/ =b=. An arbitrary inductive type can include both
 features, by having any number of constructors, each of which takes
 any number of arguments.
@@ -488,8 +488,8 @@ with a single constructor.
 namespace hide
 
 -- BEGIN
-structure prod (A B : Type) :=
-mk :: (fst : A) (snd : B)
+structure prod (α β : Type) :=
+mk :: (fst : α) (snd : β)
 -- END
 
 end hide
@@ -529,7 +529,7 @@ We will see more examples in a later chapter.
 
 # TODO: add reference, Chapter [[file:10_Structures_and_Records.org::#Structures_and_Records][Structures and Records]].
 
-Notice that the product type depends on parameters =A B : Type= which
+Notice that the product type depends on parameters =α β : Type= which
 are arguments to the constructors as well as =prod=.  Lean detects
 when these arguments can be inferred from later arguments to a
 constructor, and makes them implicit in that case. Sometimes an
@@ -545,14 +545,14 @@ universe variables u v
 namespace hide
 
 -- BEGIN
-inductive sum (A : Type u) (B : Type v)
-| inl {} : A → sum
-| inr {} : B → sum
+inductive sum (α : Type u) (β : Type v)
+| inl {} : α → sum
+| inr {} : β → sum
 -- END
 
 end hide
 #+END_SRC
-As a result, the argument =A= to =inl= and the argument =B= to
+αs a result, the argument =α= to =inl= and the argument =β= to
 =inr= are left implicit.
 
 We have already discussed sigma types, also known as the dependent
@@ -563,8 +563,8 @@ universe variables u v
 namespace hide
 
 -- BEGIN
-inductive sigma {A : Type u} (B : A → Type v)
-| dpair : Π a : A, B a → sigma
+inductive sigma {α : Type u} (β : α → Type v)
+| dpair : Π a : α, β a → sigma
 -- END
 
 end hide
@@ -577,34 +577,34 @@ universe variable u
 namespace hide
 
 -- BEGIN
-inductive option (A : Type u)
+inductive option (α : Type u)
 | none {} : option
-| some    : A → option
+| some    : α → option
 
-inductive inhabited (A : Type u)
-| mk : A → inhabited
+inductive inhabited (α : Type u)
+| mk : α → inhabited
 -- END
 
 end hide
 #+END_SRC
 In the semantics of dependent type theory, there is no built-in notion
-of a partial function. Every element of a function type =A → B= or a
-Pi type =Π x : A, B= is assumed to have a value at every input. The
+of a partial function. Every element of a function type =α → β= or a
+Pi type =Π x : α, β= is assumed to have a value at every input. The
 =option= type provides a way of representing partial functions. An
-element of =option B= is either =none= or of the form =some b=, for
-some value =b : B=. Thus we can think of an element =f= of the type =A
-→ option B= as being a partial function from =A= to =B=: for every
-=a : A=, =f a= either returns =none=, indicating the =f a= is
+element of =option β= is either =none= or of the form =some b=, for
+some value =b : β=. Thus we can think of an element =f= of the type =α
+→ option β= as being a partial function from =α= to =β=: for every
+=a : α=, =f a= either returns =none=, indicating the =f a= is
 "undefined", or =some b=.
 
-An element of =inhabited A= is simply a witness to the fact that there
-is an element of =A=. Later, we will see that =inhabited= is an
+An element of =inhabited α= is simply a witness to the fact that there
+is an element of =α=. Later, we will see that =inhabited= is an
 example of a /type class/ in Lean: Lean can be instructed that
 suitable base types are inhabited, and can automatically infer that
 other constructed types are inhabited on that basis.
 
 As exercises, we encourage you to develop a notion of composition for
-partial functions from =A= to =B= and =B= to =C=, and show that it
+partial functions from =α= to =β= and =β= to =γ=, and show that it
 behaves as expected. We also encourage you to show that =bool= and
 =nat= are inhabited, that the product of two inhabited types is
 inhabited, and that the type of functions to an inhabited type is
@@ -653,41 +653,41 @@ universe variable u
 namespace hide
 
 -- BEGIN
-inductive Exists {A : Type u} (p : A → Prop) : Prop
-| intro : ∀ (a : A), p a → Exists
+inductive Exists {α : Type u} (p : α → Prop) : Prop
+| intro : ∀ (a : α), p a → Exists
 
 def exists.intro := @Exists.intro
 -- END
 
 end hide
 #+END_SRC
-Keep in mind that the notation =∃ x : A, p= is syntactic sugar for
-=Exists (λ x : A, p)=.
+Keep in mind that the notation =∃ x : α, p= is syntactic sugar for
+=Exists (λ x : α, p)=.
 
 The definitions of =false=, =true=, =and=, and =or= are perfectly
 analogous to the definitions of =empty=, =unit=, =prod=, and
 =sum=. The difference is that the first group yields elements of
 =Prop=, and the second yields elements of =Type i= for =i= greater
-than 0. In a similar way, =∃ x : A, p= is a =Prop=-valued variant of
-=Σ x : A, p=.
+than 0. In a similar way, =∃ x : α, p= is a =Prop=-valued variant of
+=Σ x : α, p=.
 
 This is a good place to mention another inductive type, denoted ={x :
-A | p}=, which is sort of a hybrid between =∃ x : A, P= and =Σ x : A, P=.
+α | p}=, which is sort of a hybrid between =∃ x : α, P= and =Σ x : α, P=.
 #+BEGIN_SRC lean
 universe variable u
 
 namespace hide
 
 -- BEGIN
-inductive subtype {A : Type u} (p : A → Prop)
-| tag : Π x : A, p x → subtype
+inductive subtype {α : Type u} (p : α → Prop)
+| tag : Π x : α, p x → subtype
 -- END
 
 end hide
 #+END_SRC
-The notation ={x : A | p}= is syntactic sugar for =subtype (λ x : A,
+The notation ={x : α | p}= is syntactic sugar for =subtype (λ x : α,
 p)=. It is modeled after subset notation in set theory: the idea is
-that ={x : A | p}= denotes the collection of elements of =A= that have
+that ={x : α | p}= denotes the collection of elements of =α= that have
 property =[=.
 
 ** Defining the Natural Numbers
@@ -793,7 +793,7 @@ namespace nat
 
 def add (m n : nat) : nat :=
 nat.rec_on n m (fun n add_m_n, succ add_m_n)
--- BEGIN]
+-- BEGIN
 instance : has_zero nat := has_zero.mk zero
 instance : has_add nat := has_add.mk add
 
@@ -944,44 +944,44 @@ basic properties, building on the theorems we have already proved.
 ** Other Inductive Types
 
 Let us consider some more examples of inductively defined
-types. For any type, =A=, the type =list A= of lists of elements
-of =A= is defined in the library.
+types. For any type, =α=, the type =list α= of lists of elements
+of =α= is defined in the library.
 #+BEGIN_SRC lean
 universe variable u
 
 namespace hide
 -- BEGIN
-inductive list (A : Type u)
+inductive list (α : Type u)
 | nil {} : list
-| cons : A → list → list
+| cons : α → list → list
 
 namespace list
 
-variable {A : Type}
+variable {α : Type}
 
 notation h :: t  := cons h t
 
-def append (s t : list A) : list A :=
+def append (s t : list α) : list α :=
 list.rec t (λ x l u, x::u) s
 
 notation s ++ t := append s t
 
-theorem nil_append (t : list A) : nil ++ t = t := rfl
+theorem nil_append (t : list α) : nil ++ t = t := rfl
 
-theorem cons_append (x : A) (s t : list A) : x::s ++ t = x::(s ++ t) := rfl
+theorem cons_append (x : α) (s t : list α) : x::s ++ t = x::(s ++ t) := rfl
 
 end list
 -- END
 end hide
 #+END_SRC
-A list of elements of type =A= is either the empty list, =nil=, or an
-element =h : A= followed by a list =t : list A=. We define the
+A list of elements of type =α= is either the empty list, =nil=, or an
+element =h : α= followed by a list =t : list α=. We define the
 notation =h :: t= to represent the latter. The first element, =h=, is
 commonly known as the "head" of the list, and the remainder, =t=, is
 known as the "tail." Recall that the notation ={}= in the definition of
 the inductive type ensures that the argument to =nil= is implicit. In
 most cases, it can be inferred from context. When it cannot, we have to
-write =@nil A= to specify the type =A=.
+write =@nil α= to specify the type =α=.
 
 Lean allows us to define iterative notation for lists:
 #+BEGIN_SRC lean
@@ -990,9 +990,9 @@ universe variable u
 namespace hide
 
 -- BEGIN
-inductive list (A : Type u)
+inductive list (α : Type u)
 | nil {} : list
-| cons : A → list → list
+| cons : α → list → list
 
 namespace list
 
@@ -1018,38 +1018,38 @@ As an exercise, prove the following:
 universe variable u
 namespace hide
 
-inductive list (A : Type u)
+inductive list (α : Type u)
 | nil {} : list
-| cons : A → list → list
+| cons : α → list → list
 
 namespace list
 
 notation `[` l:(foldr `,` (h t, cons h t) nil) `]` := l
 
-variable {A : Type}
+variable {α : Type}
 
 notation h :: t  := cons h t
 
-def append (s t : list A) : list A :=
+def append (s t : list α) : list α :=
 list.rec_on s t (λ x l u, x::u)
 
 notation s ++ t := append s t
 
-theorem nil_append (t : list A) : nil ++ t = t := rfl
+theorem nil_append (t : list α) : nil ++ t = t := rfl
 
-theorem cons_append (x : A) (s t : list A) : x::s ++ t = x::(s ++ t) := rfl
+theorem cons_append (x : α) (s t : list α) : x::s ++ t = x::(s ++ t) := rfl
 
 -- BEGIN
-theorem append_nil (t : list A) : t ++ nil = t := sorry
+theorem append_nil (t : list α) : t ++ nil = t := sorry
 
-theorem append_assoc (r s t : list A) : r ++ s ++ t = r ++ (s ++ t) := sorry
+theorem append_assoc (r s t : list α) : r ++ s ++ t = r ++ (s ++ t) := sorry
 -- END
 
 end list
 
 end hide
 #+END_SRC
-Try also defining the function =length : Π A : Type, list A → nat=
+Try also defining the function =length : Π α : Type, list α → nat=
 that returns the length of a list, and prove that it behaves as
 expected (for example, =length (s ++ t) = length s + length t=).
 
@@ -1087,16 +1087,16 @@ end cbtree
 # at the same time, where each one refers to the other.
 
 # #+BEGIN_SRC lean
-# inductive tree (A : Type) : Type :=
-# | node : A → forest A → tree A
+# inductive tree (α : Type) : Type :=
+# | node : α → forest α → tree α
 # with forest : Type :=
-# | nil  : forest A
-# | cons : tree A → forest A → forest A
+# | nil  : forest α
+# | cons : tree α → forest α → forest α
 # #+END_SRC
-# In this example, a =tree= with elements labeled from =A= is of the
-# form =node a f=, where =a= is an element of =A= (the label), and =f= a
+# In this example, a =tree= with elements labeled from =α= is of the
+# form =node a f=, where =a= is an element of =α= (the label), and =f= a
 # forest. At the same time, a =forest= of trees with elements labeled
-# from =A= is essentially defined to be a list of trees.
+# from =α= is essentially defined to be a list of trees.
 
 # A more powerful generalization is given by the possibility of defining
 # inductive type =families=. There are indexed families of types defined
@@ -1112,22 +1112,22 @@ end cbtree
 # element of =Type=, the more general version constructs a function
 # =... → Type=, where "=...=" denotes a sequence of argument types, also
 # known as /indices/. Each constructor then constructs an element of some
-# type in the family. One example is the definition of =vector A n=, the
-# type of vectors of elements of =A= of length =n=:
+# type in the family. One example is the definition of =vector α n=, the
+# type of vectors of elements of =α= of length =n=:
 # #+BEGIN_SRC lean
 # open nat
 # namespace hide
 
 # -- BEGIN
-# inductive vector (A : Type) : nat → Type :=
-# | nil {} : vector A zero
-# | cons   : Π {n}, A → vector A n → vector A (succ n)
+# inductive vector (α : Type) : nat → Type :=
+# | nil {} : vector α zero
+# | cons   : Π {n}, α → vector α n → vector α (succ n)
 # -- END
 
 # end hide
 # #+END_SRC
-# Notice that the =cons= constructor takes an element of =vector A n=,
-# and returns an element of =vector A (succ n)=, thereby using an
+# Notice that the =cons= constructor takes an element of =vector α n=,
+# and returns an element of =vector α (succ n)=, thereby using an
 # element of one member of the family to build an element of another.
 
 # Another example is given by the family of types =fin n=. For each =n=,
@@ -1152,23 +1152,23 @@ end cbtree
 # namespace hide
 
 # -- BEGIN
-# inductive eq {A : Type} (a : A) : A → Prop :=
+# inductive eq {α : Type} (a : α) : α → Prop :=
 # refl : eq a a
 # -- END
 
 # end hide
 # #+END_SRC
-# For each fixed =A : Type= and =a : A=, this definition constructs a
-# family of types =eq a x=, indexed by =x : A=. Notably, however, there
+# For each fixed =α : Type= and =a : α=, this definition constructs a
+# family of types =eq a x=, indexed by =x : α=. Notably, however, there
 # is only one constructor, =refl=, which is an element of =eq a
 # a=. Intuitively, the only way to construct a proof of =eq a x= is to
 # use reflexivity, in the case where =x= is =a=.  Note that =eq a a= is
 # the only inhabited type in the family of types =eq a x=.  The
 # elimination principle generated by Lean says that =eq= is the /least/
-# reflexive relation on =A=. The eliminator/recursor for =eq= is of the
+# reflexive relation on =α=. The eliminator/recursor for =eq= is of the
 # following form:
 # #+BEGIN_SRC text
-# eq.rec_on : Π {A : Type} {a : A} {C : A → Type} {b : A}, a = b → C a → C b
+# eq.rec_on : Π {α : Type} {a : α} {C : α → Type} {b : α}, a = b → C a → C b
 # #+END_SRC
 # It is a remarkable fact that all the basic axioms for equality follow
 # from the constructor, =refl=, and the eliminator, =eq.rec_on=.
@@ -1178,16 +1178,16 @@ end cbtree
 # =Prop=. Because there is only one constructor to =eq=, it carries no
 # information, other than the type is inhabited, and Lean's internal
 # logic allows us to eliminate to an arbitrary =Type=. This is how we
-# define a /cast/ operation that casts an element from type =A= into =B=
-# when a proof =p : eq A B= is provided:
+# define a /cast/ operation that casts an element from type =α= into =β=
+# when a proof =p : eq α β= is provided:
 # #+BEGIN_SRC lean
 # namespace hide
 
-# inductive eq {A : Type} (a : A) : A → Prop :=
+# inductive eq {α : Type} (a : α) : α → Prop :=
 # refl : eq a a
 
 # -- BEGIN
-# theorem cast {A B : Type} (p : eq A B) (a : A) : B :=
+# theorem cast {α β : Type} (p : eq α β) (a : α) : β :=
 # eq.rec_on p a
 # -- END
 
@@ -1198,11 +1198,11 @@ end cbtree
 # #+BEGIN_SRC lean
 # namespace hide
 
-# inductive eq {A : Type} (a : A) : A → Prop :=
+# inductive eq {α : Type} (a : α) : α → Prop :=
 # refl : eq a a
 
 # -- BEGIN
-# theorem subst {A : Type} {a b : A} {P : A → Prop}
+# theorem subst {α : Type} {a b : α} {P : α → Prop}
 #   (H₁ : eq a b) (H₂ : P a) : P b :=
 # eq.rec H₂ H₁
 # -- END
@@ -1219,21 +1219,21 @@ end cbtree
 # #+BEGIN_SRC lean
 # namespace hide
 
-# inductive eq {A : Type} (a : A) : A → Prop :=
+# inductive eq {α : Type} (a : α) : α → Prop :=
 # refl : eq a a
 
-# theorem subst {A : Type} {a b : A} {P : A → Prop}
+# theorem subst {α : Type} {a b : α} {P : α → Prop}
 #   (H₁ : eq a b) (H₂ : P a) : P b :=
 # eq.rec H₂ H₁
 
 # -- BEGIN
-# theorem symm {A : Type} {a b : A} (H : eq a b) : eq b a :=
+# theorem symm {α : Type} {a b : α} (H : eq a b) : eq b a :=
 # subst H (eq.refl a)
 
-# theorem trans {A : Type} {a b c : A} (H₁ : eq a b) (H₂ : eq b c) : eq a c :=
+# theorem trans {α : Type} {a b c : α} (H₁ : eq a b) (H₂ : eq b c) : eq a c :=
 # sorry
 
-# theorem congr {A B : Type} {a b : A} (f : A → B) (H : eq a b) : eq (f a) (f b) :=
+# theorem congr {α β : Type} {a b : α} (f : α → β) (H : eq a b) : eq (f a) (f b) :=
 # sorry
 # -- END
 
@@ -1247,27 +1247,27 @@ end cbtree
 
 # ** Heterogeneous Equality
 
-# Given =A : Type= and =B : A → Type=, suppose we want to generalize the
+# Given =α : Type= and =β : α → Type=, suppose we want to generalize the
 # congruence theorem =congr= in the previous example to dependent
-# functions =f : Π x : A, B x=. Roughly speaking, we would like to have
+# functions =f : Π x : α, β x=. Roughly speaking, we would like to have
 # a theorem that, says that if =a = b=, then =f a = f b=. The first
 # obstacle is stating the theorem: the term =eq (f a) (f b)= is not type
-# correct since =f a= has type =B a=, =f b= has type =B b=, and the
+# correct since =f a= has type =β a=, =f b= has type =β b=, and the
 # equality predicate =eq= expects both arguments to have the same
-# type. Notice that =f a= has type =B a=, so the term =eq.rec_on H (f
-# a)= has type =B b=. You should think of =eq.rec_on H (f a)= as "=f a=,
-# viewed as an element of =B b=." We can then write =eq (eq.rec_on H (f a))
+# type. Notice that =f a= has type =β a=, so the term =eq.rec_on H (f
+# a)= has type =β b=. You should think of =eq.rec_on H (f a)= as "=f a=,
+# viewed as an element of =β b=." We can then write =eq (eq.rec_on H (f a))
 # (f b)= to express that =f a= and =f b= are equal, modulo the
 # difference between their types. Here is a proof of the generalized
 # congruence theorem, with this approach:
 # #+BEGIN_SRC lean
 # namespace hide
 
-# inductive eq {A : Type} (a : A) : A → Prop :=
+# inductive eq {α : Type} (a : α) : α → Prop :=
 # refl : eq a a
 
 # -- BEGIN
-# theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
+# theorem hcongr {α : Type} {β : α → Type} {a b : α} (f : Π x : α, β x)
 #                (H : eq a b) : eq (eq.rec_on H (f a)) (f b) :=
 # have h₁ : ∀ h : eq a a, eq (eq.rec_on h (f a)) (f a), from
 #   assume h : eq a a, eq.refl (eq.rec_on h (f a)),
@@ -1288,13 +1288,13 @@ end cbtree
 # namespace hide
 
 # -- BEGIN
-# inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
+# inductive heq {α : Type} (a : α) : Π {β : Type}, β → Prop :=
 # refl : heq a a
 # -- END
 
 # end hide
 # #+END_SRC
-# Moreover, given =a b : A=, we can prove =heq a b → eq a b= using proof
+# Moreover, given =a b : α=, we can prove =heq a b → eq a b= using proof
 # irrelevance.  This theorem is called =heq.to_eq= in the Lean standard
 # library. We can now state and prove =hcongr= using heterogeneous
 # equality. Note the proof is also more compact and easier to
@@ -1302,14 +1302,14 @@ end cbtree
 # #+BEGIN_SRC lean
 # namespace hide
 
-# inductive eq {A : Type} (a : A) : A → Prop :=
+# inductive eq {α : Type} (a : α) : α → Prop :=
 # refl : eq a a
 
-# inductive heq {A : Type} (a : A) : Π {B : Type}, B → Prop :=
+# inductive heq {α : Type} (a : α) : Π {β : Type}, β → Prop :=
 # refl : heq a a
 
 # -- BEGIN
-# theorem hcongr {A : Type} {B : A → Type} {a b : A} (f : Π x : A, B x)
+# theorem hcongr {α : Type} {β : α → Type} {a b : α} (f : Π x : α, β x)
 #                (H : eq a b) : heq (f a) (f b) :=
 # eq.rec_on H (heq.refl (f a))
 # -- END
@@ -1481,26 +1481,26 @@ end cbtree
 # theorem succ.inj (a b : nat) (h : succ a = succ b) : a = b :=
 # nat.no_confusion h (fun e : a = b, e)
 
-# inductive tree (A : Type) : Type :=
-# | leaf : A → tree A
-# | node : tree A → tree A → tree A
+# inductive tree (α : Type) : Type :=
+# | leaf : α → tree α
+# | node : tree α → tree α → tree α
 
 # open tree
 
-# variable {A : Type}
+# variable {α : Type}
 
-# theorem leaf_ne_node {a : A} {l r : tree A}
+# theorem leaf_ne_node {a : α} {l r : tree α}
 #                      (h : leaf a = node l r) : false :=
 # sorry
 
-# theorem leaf_inj {a b : A} (h : leaf a = leaf b) : a = b :=
+# theorem leaf_inj {a b : α} (h : leaf a = leaf b) : a = b :=
 # sorry
 
-# theorem node_inj_left {l1 r1 l2 r2 : tree A}
+# theorem node_inj_left {l1 r1 l2 r2 : tree α}
 #                       (h : node l1 r1 = node l2 r2) : l1 = l2 :=
 # sorry
 
-# theorem node_inj_right {l1 r1 l2 r2 : tree A}
+# theorem node_inj_right {l1 r1 l2 r2 : tree α}
 #                        (h : node l1 r1 = node l2 r2) : r1 = r2 :=
 # sorry
 # #+END_SRC
@@ -1509,8 +1509,8 @@ end cbtree
 # the generated =no_confusion= uses heterogeneous equality to equate
 # arguments of different types:
 # #+BEGIN_SRC lean
-# variables (A : Type) (B : A → Type)
-# variables (a1 a2 : A) (b1 : B a1) (b2 : B a2)
+# variables (α : Type) (β : α → Type)
+# variables (a1 a2 : α) (b1 : β a1) (b2 : β a2)
 # variable  (C : Type)
 
 # -- Remark: b1 and b2 have different types
@@ -1538,7 +1538,7 @@ end cbtree
 # instantiation of the kernel. Recall that each constructor =c= in the
 # definition of a family =C= of inductive types is of the form
 # #+BEGIN_SRC text
-# c : Π (a : A) (b : B[a]), C a p[a,b]
+# c : Π (a : α) (b : β[a]), C a p[a,b]
 # #+END_SRC
 # where =a= is a sequence of datatype parameters, =b= is the sequence of
 # arguments to the constructors, and =p[a, b]= are the indices, which
@@ -1546,8 +1546,8 @@ end cbtree
 # inhabits. Then the universe level =i= of =C= is constrained to satisfy
 # the following:
 # #+BEGIN_QUOTE
-# For each constructor =c= as above, and each =Bk[a]= in the sequence
-# =B[a]=, if =Bk[a] : Type.{j}=, we have =i= ≥ =j=.
+# For each constructor =c= as above, and each =βk[a]= in the sequence
+# =β[a]=, if =βk[a] : Type.{j}=, we have =i= ≥ =j=.
 # #+END_QUOTE
 # In other words, the universe level =i= is required to be at least as
 # large as the universe level of each type that represents an argument
@@ -1573,9 +1573,9 @@ end cbtree
 # this ambiguity: if you do not specify that the inductive type is an
 # element of =Prop=, Lean requires the universe level to be at least
 # one. Hence, a type specified by single inductive definition is either
-# always in =Prop= or never in =Prop=. For example, if =A= and =B= are
-# elements of =Prop=, =A × B= is assumed to have universe level at least
+# always in =Prop= or never in =Prop=. For example, if =α= and =β= are
+# elements of =Prop=, =α × β= is assumed to have universe level at least
 # one, representing a datatype rather than a proposition. The analogous
-# definition of =A × B=, where =A= and =B= are restricted to =Prop= and
+# definition of =α × β=, where =α= and =β= are restricted to =Prop= and
 # the resulting type is declared to be an element of =Prop= instead of
-# =Type=, is exactly the definition of =A ∧ B=.
+# =Type=, is exactly the definition of =α ∧ β=.

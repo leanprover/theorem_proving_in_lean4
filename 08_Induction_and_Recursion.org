@@ -113,23 +113,23 @@ theorem bnot_bnot : ∀ (b : bool), bnot (bnot b) = b
 end hide
 #+END_SRC
 
-As described in Chapter [[file:06_Inductive_Types.org::#Inductive_Types][Inductive Types]], Lean inductive datatypes can
-be parametric. The following example defines the =tail= function using
-pattern matching.  The argument =A : Type= is a parameter and occurs
+As described in [[file:07_Inductive_Types.org::#Inductive_Types][Chapter 7]], Lean inductive datatypes can be
+parametric. The following example defines the =tail= function using
+pattern matching.  The argument =α : Type= is a parameter and occurs
 before the colon to indicate it does not participate in the pattern
 matching. Lean allows parameters to occur after =:=, but it cannot
 pattern match on them.
 #+BEGIN_SRC lean
 open list
 
-def tail1 {A : Type} : list A → list A
+def tail1 {α : Type} : list α → list α
 | nil      := nil
 | (h :: t) := t
 
--- Parameter A may occur after ':'
-def tail2 : Π {A : Type}, list A → list A
-| A nil      := nil
-| A (h :: t) := t
+-- Parameter α may occur after ':'
+def tail2 : Π {α : Type}, list α → list α
+| α nil      := nil
+| α (h :: t) := t
 #+END_SRC
 
 
@@ -236,7 +236,7 @@ Another classic example is the list =append= function.
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
-def append {A : Type} : list A → list A → list A
+def append {α : Type} : list α → list α → list α
 | []     l := l
 | (h::t) l := h :: append t l
 
@@ -249,13 +249,13 @@ end hide
 
 All the examples we have seen so far can be easily written
 using =cases_on= and =rec_on=. However, this is not the case
-with indexed inductive families, such as =vector A n=.
+with indexed inductive families, such as =vector α n=.
 A lot of boilerplate code needs to be written to define
 very simple functions such as =map=, =zip=, and =unzip= using
 recursors.
 
 To understand the difficulty, consider what it would take to define a
-function =tail= which takes a vector =v : vector A (succ n)= and
+function =tail= which takes a vector =v : vector α (succ n)= and
 deletes the first element. A first thought might be to use the
 =cases_on= function:
 #+BEGIN_SRC lean
@@ -263,27 +263,27 @@ namespace hide
 -- BEGIN
 open nat
 
-inductive vector (A : Type) : nat → Type
+inductive vector (α : Type) : nat → Type
 | nil {} : vector 0
-| cons   : Π {n}, A → vector n → vector (succ n)
+| cons   : Π {n}, α → vector n → vector (succ n)
 
 open vector
 local notation h :: t := cons h t
 
 check @vector.cases_on
--- Π {A : Type}
---   {C : Π (a : ℕ), vector A a → Type}
+-- Π {α : Type}
+--   {C : Π (a : ℕ), vector α a → Type}
 --   {a : ℕ}
---   (n : vector A a),
+--   (n : vector α a),
 --   (e1 : C 0 nil)
---   (e2 : Π {n : ℕ} (a : A) (a_1 : vector A n), C (succ n) (cons a a_1)),
+--   (e2 : Π {n : ℕ} (a : α) (a_1 : vector α n), C (succ n) (cons a a_1)),
 --   C a n
 -- END
 
 end hide
 #+END_SRC
 But what value should we return in the =nil= case? Something funny is
-going on: if =v= has type =vector A (succ n)=, it /can't/ be nil, but
+going on: if =v= has type =vector α (succ n)=, it /can't/ be nil, but
 it is not clear how to tell that to =cases_on=.
 
 One standard solution is to define an auxiliary function:
@@ -291,22 +291,22 @@ One standard solution is to define an auxiliary function:
 namespace hide
 open nat
 
-inductive vector (A : Type) : nat → Type
+inductive vector (α : Type) : nat → Type
 | nil {} : vector 0
-| cons   : Π {n}, A → vector n → vector (succ n)
+| cons   : Π {n}, α → vector n → vector (succ n)
 
 open vector
 
 -- BEGIN
-def tail_aux {A : Type} {n m : nat} (v : vector A m) :
-    m = succ n → vector A n :=
+def tail_aux {α : Type} {n m : nat} (v : vector α m) :
+    m = succ n → vector α n :=
 vector.cases_on v
   (assume H : 0 = succ n, nat.no_confusion H)
-  (take m (a : A) w : vector A m,
+  (take m (a : α) w : vector α m,
     assume H : succ m = succ n,
       nat.no_confusion H (λ H1 : m = n, eq.rec_on H1 w))
 
-def tail {A : Type} {n : nat} (v : vector A (succ n)) : vector A n :=
+def tail {α : Type} {n : nat} (v : vector α (succ n)) : vector α n :=
 tail_aux v rfl
 -- END
 end hide
@@ -333,29 +333,29 @@ Here are a number of examples:
 namespace hide
 open nat
 
-inductive vector (A : Type) : nat → Type
+inductive vector (α : Type) : nat → Type
 | nil {} : vector 0
-| cons   : Π {n}, A → vector n → vector (succ n)
+| cons   : Π {n}, α → vector n → vector (succ n)
 
 open vector
 local notation h :: t := cons h t
 
 -- BEGIN
-def head {A : Type} : Π {n}, vector A (succ n) → A
+def head {α : Type} : Π {n}, vector α (succ n) → α
 | n (h :: t) := h
 
-def tail {A : Type} : Π {n}, vector A (succ n) → vector A n
+def tail {α : Type} : Π {n}, vector α (succ n) → vector α n
 | n (h :: t) := t
 
-lemma eta {A : Type} : ∀ {n} (v : vector A (succ n)), head v :: tail v = v
+lemma eta {α : Type} : ∀ {n} (v : vector α (succ n)), head v :: tail v = v
 | n (h::t) := rfl
 
-def map {A B C : Type} (f : A → B → C)
-               : Π {n : nat}, vector A n → vector B n → vector C n
+def map {α β γ : Type} (f : α → β → γ)
+               : Π {n : nat}, vector α n → vector β n → vector γ n
 | 0        nil     nil     := nil
 | (succ n) (a::va) (b::vb) := f a b :: map va vb
 
-def zip {A B : Type} : Π {n}, vector A n → vector B n → vector (A × B) n
+def zip {α β : Type} : Π {n}, vector α n → vector β n → vector (α × β) n
 | 0        nil nil         := nil
 | (succ n) (a::va) (b::vb) := (a, b) :: zip va vb
 -- END
@@ -368,15 +368,15 @@ families are far from straightforward. For example:
 namespace hide
 open nat
 
-inductive vector (A : Type) : nat → Type
+inductive vector (α : Type) : nat → Type
 | nil {} : vector 0
-| cons   : Π {n}, A → vector n → vector (succ n)
+| cons   : Π {n}, α → vector n → vector (succ n)
 
 open vector
 local notation h :: t := cons h t
 
-def map {A B C : Type} (f : A → B → C)
-        : Π {n : nat}, vector A n → vector B n → vector C n
+def map {α β γ : Type} (f : α → β → γ)
+        : Π {n : nat}, vector α n → vector β n → vector γ n
 | 0        nil     nil     := nil
 | (succ n) (a::va) (b::vb) := f a b :: map va vb
 
@@ -443,14 +443,14 @@ Some functional languages support /incomplete patterns/. In these
 languages, the interpreter produces an exception or returns an
 arbitrary value for incomplete cases. We can simulate the arbitrary
 value approach using the =inhabited= type class, discussed in [[file:10_Type_Classes.org::#Type_Classes][Chapter
-10]] Roughly, an element of =inhabited A= is simply a witness to the
-fact that there is an element of =A=; in [[file:10_Type_Classes.org::#Type_Classes][Chapter 10]] we will see that
+10]] Roughly, an element of =inhabited α= is simply a witness to the
+fact that there is an element of =α=; in [[file:10_Type_Classes.org::#Type_Classes][Chapter 10]] we will see that
 Lean can be instructed that suitable base types are inhabited, and can
 automatically infer that other constructed types are inhabited on that
 basis. On this basis, the standard library provides an arbitrary
-element, =arbitrary A=, of any inhabited type.
+element, =arbitrary α=, of any inhabited type.
 
-We can also use the type =option A= to simulate incomplete patterns.
+We can also use the type =option α= to simulate incomplete patterns.
 The idea is to return =some a= for the provided patterns, and use
 =none= for the incomplete cases. The following example demonstrates
 both approaches.
@@ -504,13 +504,13 @@ definition. To define the function =inverse= below, we /have to/ mark =f
 a= inaccessible.
 
 #+BEGIN_SRC lean
-variables {A B : Type}
-inductive image_of (f : A → B) : B → Type
+variables {α β : Type}
+inductive image_of (f : α → β) : β → Type
 | imf : Π a, image_of (f a)
 
 open image_of
 
-def inverse {f : A → B} : Π b, image_of f b → A
+def inverse {f : α → β} : Π b, image_of f b → α
 | .(f a) (imf .f a) := a
 #+END_SRC
 
@@ -530,10 +530,10 @@ match a with
 end
 
 -- We can use recursive equations and match
-variable {A : Type}
-variable p : A → bool
+variable {α : Type}
+variable p : α → bool
 
-definition filter : list A → list A
+definition filter : list α → list α
 | []       := []
 | (a :: l) :=
   match p a with
