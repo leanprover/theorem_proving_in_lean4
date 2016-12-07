@@ -110,12 +110,12 @@ depends on these parameters.
 
 Let us work through a simple example. Many theorems hold under the
 additional assumption that a type is inhabited, which is to say, it
-has at least one element. For example, if =A= is a type, =∃ x : A, x =
-x= is true only if =A= is inhabited. Similarly, it often happens that
+has at least one element. For example, if =α= is a type, =∃ x : α, x =
+x= is true only if =α= is inhabited. Similarly, it often happens that
 we would like a definition to return a default element in a "corner
 case." For example, we would like the expression =head l= to be of
-type =A= when =l= is of type =list A=; but then we are faced with the
-problem that =head l= needs to return an "arbitrary" element of =A= in
+type =α= when =l= is of type =list α=; but then we are faced with the
+problem that =head l= needs to return an "arbitrary" element of =α= in
 the case where =l= is the empty list, =nil=.
 
 For purposes like this, the standard library defines a type class
@@ -131,29 +131,29 @@ appropriate class:
 namespace hide
 
 -- BEGIN
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 /- The command 'class' above is shorthand for
 
-@[class] structure inhabited (A : Type) :=
-(value : A)
+@[class] structure inhabited (α : Type) :=
+(value : α)
 -/
 -- END
 
 end hide
 #+END_SRC
-An element of the class =inhabited A= is simply an expression of the
-form =inhabited.mk a=, for some element =a : A=.
-The projection =inhabited.value= will allow us to "extract" such an element of =A=
-from an element of =inhabited A=.
+An element of the class =inhabited α= is simply an expression of the
+form =inhabited.mk a=, for some element =a : α=.
+The projection =inhabited.value= will allow us to "extract" such an element of =α=
+from an element of =inhabited α=.
 
 The second step of the program is to populate the class with some
 instances:
 #+BEGIN_SRC lean
 namespace hide
 
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 
 -- BEGIN
 instance Prop_inhabited : inhabited Prop :=
@@ -178,8 +178,8 @@ when defining instances. It is particularly useful when the class name is long.
 #+BEGIN_SRC lean
 namespace hide
 
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 
 -- BEGIN
 instance Prop_inhabited : inhabited Prop :=
@@ -203,13 +203,13 @@ to =?M=, and similarly for the elements =tt=, =0=, and =()= of
 the types =bool=, =nat=, and =unit=, respectively.
 
 The final step of the program is to define a function that infers an
-element =s : inhabited A= and puts it to good use. The following
-function simply extracts the corresponding element =a : A=:
+element =s : inhabited α= and puts it to good use. The following
+function simply extracts the corresponding element =a : α=:
 #+BEGIN_SRC lean
 namespace hide
 
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 
 instance Prop_inhabited : inhabited Prop :=
 ⟨true⟩
@@ -223,22 +223,22 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 -- BEGIN
-definition default (A : Type) [s : inhabited A] : A :=
-@inhabited.value A s
+definition default (α : Type) [s : inhabited α] : α :=
+@inhabited.value α s
 -- END
 end hide
 #+END_SRC
 
-This has the effect that given a type expression =A=, whenever we
-write =default A=, we are really writing =default A ?s=, leaving the
+This has the effect that given a type expression =α=, whenever we
+write =default α=, we are really writing =default α ?s=, leaving the
 elaborator to find a suitable value for the metavariable
 =?s=. When the elaborator succeeds in finding such a value, it has
-effectively produced an element of type =A=, as though by magic.
+effectively produced an element of type =α=, as though by magic.
 #+BEGIN_SRC lean
 namespace hide
 
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 
 instance Prop_inhabited : inhabited Prop :=
 ⟨true⟩
@@ -252,8 +252,8 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (A : Type) [s : inhabited A] : A :=
-@inhabited.value A s
+definition default (α : Type) [s : inhabited α] : α :=
+@inhabited.value α s
 -- BEGIN
 check default Prop    -- Prop
 check default nat     -- ℕ
@@ -262,15 +262,15 @@ check default unit    -- unit
 -- END
 end hide
 #+END_SRC
-In general, whenever we write =default A=, we are asking the
-elaborator to synthesize an element of type =A=.
+In general, whenever we write =default α=, we are asking the
+elaborator to synthesize an element of type =α=.
 
 Notice that we can "see" the value that is synthesized with =eval=:
 #+BEGIN_SRC lean
 namespace hide
 
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 
 instance Prop_inhabited : inhabited Prop :=
 ⟨true⟩
@@ -284,8 +284,8 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (A : Type) [s : inhabited A] : A :=
-@inhabited.value A s
+definition default (α : Type) [s : inhabited α] : α :=
+@inhabited.value α s
 -- BEGIN
 eval default Prop    -- true
 eval default nat     -- 0
@@ -297,8 +297,8 @@ end hide
 
 Sometimes we want to think of the default element of a type as being
 an /arbitrary/ element, whose specific value should not play a role in
-our proofs. For that purpose, we can write =arbitrary A= instead of
-=default A=. The definition of =arbitrary= is the same as that of
+our proofs. For that purpose, we can write =arbitrary α= instead of
+=default α=. The definition of =arbitrary= is the same as that of
 default, but is marked =irreducible= to discourage the elaborator from
 unfolding it. This does not preclude proofs from making use of the
 value, however, so the use of =arbitrary= rather than =default=
@@ -315,13 +315,13 @@ of a type class. This causes class inference to chain through
 instances recursively, backtracking when necessary, in a Prolog-like
 search.
 
-For example, the following definition shows that if two types =A= and
-=B= are inhabited, then so is their product:
+For example, the following definition shows that if two types =α= and
+=β= are inhabited, then so is their product:
 #+BEGIN_SRC lean
 namespace hide
 
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 
 instance Prop_inhabited : inhabited Prop :=
 ⟨true⟩
@@ -335,12 +335,12 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (A : Type) [s : inhabited A] : A :=
-@inhabited.value A s
+definition default (α : Type) [s : inhabited α] : α :=
+@inhabited.value α s
 -- BEGIN
-instance prod_inhabited {A B : Type} [inhabited A] [inhabited B]
-                        : inhabited (prod A B) :=
-⟨(default A, default B)⟩
+instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
+                        : inhabited (prod α β) :=
+⟨(default α, default β)⟩
 -- END
 end hide
 #+END_SRC
@@ -349,8 +349,8 @@ instance can infer, for example, a default element of =nat × bool × unit=:
 #+BEGIN_SRC lean
 namespace hide
 
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 
 instance Prop_inhabited : inhabited Prop :=
 ⟨true⟩
@@ -364,12 +364,12 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (A : Type) [s : inhabited A] : A :=
-@inhabited.value A s
+definition default (α : Type) [s : inhabited α] : α :=
+@inhabited.value α s
 
-instance prod_inhabited {A B : Type} [inhabited A] [inhabited B]
-                        : inhabited (prod A B) :=
-⟨(default A, default B)⟩
+instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
+                        : inhabited (prod α β) :=
+⟨(default α, default β)⟩
 
 -- BEGIN
 check default (nat × bool)
@@ -389,8 +389,8 @@ functions:
 #+BEGIN_SRC lean
 namespace hide
 
-class inhabited (A : Type) :=
-(value : A)
+class inhabited (α : Type) :=
+(value : α)
 
 instance Prop_inhabited : inhabited Prop :=
 ⟨true⟩
@@ -404,16 +404,16 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (A : Type) [s : inhabited A] : A :=
-@inhabited.value A s
+definition default (α : Type) [s : inhabited α] : α :=
+@inhabited.value α s
 
-instance prod_inhabited {A B : Type} [inhabited A] [inhabited B]
-                        : inhabited (prod A B) :=
-⟨(default A, default B)⟩
+instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
+                        : inhabited (prod α β) :=
+⟨(default α, default β)⟩
 
 -- BEGIN
-instance inhabited_fun (A : Type) {B : Type} [inhabited B] : inhabited (A → B) :=
-⟨(λ a : A, default B)⟩
+instance inhabited_fun (α : Type) {β : Type} [inhabited β] : inhabited (α → β) :=
+⟨(λ a : α, default β)⟩
 
 check default (nat → nat × bool)
 eval default (nat → nat × bool)
@@ -457,7 +457,7 @@ b=, where =ite= is defined as follows:
 namespace hide
 
 -- BEGIN
-def ite (c : Prop) [d : decidable c] {A : Type} (t e : A) : A :=
+def ite (c : Prop) [d : decidable c] {α : Type} (t e : α) : α :=
 decidable.rec_on d (λ hnc, e) (λ hc, t)
 -- END
 end hide
@@ -469,7 +469,7 @@ the dependent if-then-else expression. It is defined as follows:
 namespace hide
 
 -- BEGIN
-definition dite (c : Prop) [d : decidable c] {A : Type} (t : c → A) (e : ¬ c → A) : A :=
+definition dite (c : Prop) [d : decidable c] {α : Type} (t : c → α) (e : ¬ c → α) : α :=
 decidable.rec_on d (λ hnc : ¬ c, e hnc) (λ hc : c, t hc)
 -- END
 end hide
@@ -530,29 +530,29 @@ overload notation in a principled way. In Lean, a symbol like =+= can
 be given entirely unrelated meanings, a phenomenon that is sometimes
 called "ad-hoc" overloading. Typically, however, we use the =+= symbol to
 denote a binary function from a type to itself, that is, a function of
-type =A → A → A= for some type =A=. We can use type classes to infer
-an appropriate addition function for suitable types =A=. We will see
+type =α → α → α= for some type =α=. We can use type classes to infer
+an appropriate addition function for suitable types =α=. We will see
 in the next section that this is especially useful for developing
 algebraic hierarchies of structures in a formal setting.
 
-We can declare a type class =has_add A= as follows:
+We can declare a type class =has_add α= as follows:
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
 universe variables u
 
-class has_add (A : Type u) :=
-(add : A → A → A)
+class has_add (α : Type u) :=
+(add : α → α → α)
 
-def add {A : Type u} [has_add A] : A → A → A := has_add.add
+def add {α : Type u} [has_add α] : α → α → α := has_add.add
 
 local notation a `+` b := add a b
 -- END
 end hide
 #+END_SRC
-The class =has_add A= is supposed to be inhabited exactly when there
-is an appropriate addition function for =A=. The =add= function is
-designed to find an instance of =has_add A= for the given type, =A=,
+The class =has_add α= is supposed to be inhabited exactly when there
+is an appropriate addition function for =α=. The =add= function is
+designed to find an instance of =has_add α= for the given type, =α=,
 and apply the corresponding binary addition function. The notation
 =a + b= thus refers to the addition that is appropriate to the type of
 =a= and =b=. We can the declare instances for =nat=, and =bool=:
@@ -560,10 +560,10 @@ and apply the corresponding binary addition function. The notation
 namespace hide
 universe variables u
 
-class has_add (A : Type u) :=
-(add : A → A → A)
+class has_add (α : Type u) :=
+(add : α → α → α)
 
-def add {A : Type u} [has_add A] : A → A → A := has_add.add
+def add {α : Type u} [has_add α] : α → α → α := has_add.add
 
 local notation a `+` b := add a b
 
@@ -595,15 +595,15 @@ As with =inhabited= and =decidable=, the power of type class inference
 stems not only from the fact that the class enables the elaborator to
 look up appropriate instances, but also from the fact that it can
 chain instances to infer complex addition operations. For example,
-assuming that there are appropriate addition functions for types =A=
-and =B=, we can define addition on =A × B= pointwise:
+assuming that there are appropriate addition functions for types =α=
+and =β=, we can define addition on =α × β= pointwise:
 #+BEGIN_SRC lean
 namespace hide
 universe variables u v
-class has_add (A : Type u) :=
-(add : A → A → A)
+class has_add (α : Type u) :=
+(add : α → α → α)
 
-def add {A : Type u} [has_add A] : A → A → A := has_add.add
+def add {α : Type u} [has_add α] : α → α → α := has_add.add
 
 local notation a `+` b := add a b
 
@@ -614,7 +614,7 @@ instance bool_has_add : has_add bool :=
 ⟨bor⟩
 
 -- BEGIN
-instance prod_has_add {A : Type u} {B : Type v} [has_add A] [has_add B] : has_add (A × B) :=
+instance prod_has_add {α : Type u} {β : Type v} [has_add α] [has_add β] : has_add (α × β) :=
 ⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
 
 check (1, 2) + (3, 4)    -- ℕ × ℕ
@@ -626,10 +626,10 @@ We can similarly define pointwise addition of functions:
 #+BEGIN_SRC lean
 namespace hide
 universe variables u v
-class has_add (A : Type u) :=
-(add : A → A → A)
+class has_add (α : Type u) :=
+(add : α → α → α)
 
-def add {A : Type u} [has_add A] : A → A → A := has_add.add
+def add {α : Type u} [has_add α] : α → α → α := has_add.add
 
 local notation a `+` b := add a b
 
@@ -639,11 +639,11 @@ instance nat_has_add : has_add nat :=
 instance bool_has_add : has_add bool :=
 ⟨bor⟩
 
-instance prod_has_add {A : Type u} {B : Type v} [has_add A] [has_add B] : has_add (A × B) :=
+instance prod_has_add {α : Type u} {β : Type v} [has_add α] [has_add β] : has_add (α × β) :=
 ⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
 
 -- BEGIN
-instance fun_has_add {A : Type u} {B : Type v} [has_add B] : has_add (A → B) :=
+instance fun_has_add {α : Type u} {β : Type v} [has_add β] : has_add (α → β) :=
 ⟨λ f g x, f x + g x⟩
 
 check (λ x : nat, 1) + (λ x, 2)   -- ℕ → ℕ
@@ -743,17 +743,17 @@ example : foo.a = 2 := rfl
 
 # namespace hide
 
-# inductive has_add [class] (A : Type) : Type :=
-# mk : (A → A → A) → has_add A
+# inductive has_add [class] (α : Type) : Type :=
+# mk : (α → α → α) → has_add α
 
-# definition add {A : Type} [s : has_add A] :=
+# definition add {α : Type} [s : has_add α] :=
 # has_add.rec (λ x, x) s
 
 # notation a `+` b := add a b
 
 # -- BEGIN
 # section
-#   variables {A : Type} [H : has_add A] (a b : A)
+#   variables {α : Type} [H : has_add α] (a b : α)
 #   include H
 
 #   definition foo : a + b = a + b := rfl
@@ -770,17 +770,17 @@ example : foo.a = 2 := rfl
 # #+BEGIN_SRC lean
 # namespace hide
 
-# inductive has_add [class] (A : Type) : Type :=
-# mk : (A → A → A) → has_add A
+# inductive has_add [class] (α : Type) : Type :=
+# mk : (α → α → α) → has_add α
 
-# definition add {A : Type} [s : has_add A] :=
+# definition add {α : Type} [s : has_add α] :=
 # has_add.rec (λ x, x) s
 
 # notation a `+` b := add a b
 
 # -- BEGIN
 # section
-#   variables {A : Type} [H : has_add A] (a b : A)
+#   variables {α : Type} [H : has_add α] (a b : α)
 #   include H
 #   definition foo1 : a + b = a + b := rfl
 #   omit H

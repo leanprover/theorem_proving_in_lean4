@@ -43,8 +43,8 @@ namespace with the same name. The general form is as follows:
 #+END_SRC
 Most parts are optional. Here is an example:
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-mk :: (x : A) (y : A)
+structure point (α : Type) :=
+mk :: (x : α) (y : α)
 #+END_SRC
 
 Values of type =point= are created using =point.mk a b=, and the
@@ -53,8 +53,8 @@ p=. The structure command also generates useful recursors and
 theorems. Here are some of the constructions generated for the
 declaration above.
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-mk :: (x : A) (y : A)
+structure point (α : Type) :=
+mk :: (x : α) (y : α)
 
 -- BEGIN
 check point              -- a Type
@@ -67,8 +67,8 @@ check point.y            -- a projection / field accessor
 You can obtain the complete list of generated constructions using the
 command =print prefix=.
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-mk :: (x : A) (y : A)
+structure point (α : Type) :=
+mk :: (x : α) (y : α)
 
 -- BEGIN
 print prefix point
@@ -79,8 +79,8 @@ Here are some simple theorems and expressions that use the generated
 constructions. As usual, you can avoid the prefix =point= by using
 the command =open point=.
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-mk :: (x : A) (y : A)
+structure point (α : Type) :=
+mk :: (x : α) (y : α)
 
 -- BEGIN
 eval point.x (point.mk 10 20)
@@ -88,10 +88,10 @@ eval point.y (point.mk 10 20)
 
 open point
 
-example (A : Type) (a b : A) : x (mk a b) = a :=
+example (α : Type) (a b : α) : x (mk a b) = a :=
 rfl
 
-example (A : Type) (a b : A) : y (mk a b) = b :=
+example (α : Type) (a b : α) : y (mk a b) = b :=
 rfl
 -- END
 #+END_SRC
@@ -99,8 +99,8 @@ rfl
 Given =p : point nat=, the notation =p^.x= is shorthand for =point.x p=.
 This provides a convenient way of accessing the fields of a structure.
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-mk :: (x : A) (y : A)
+structure point (α : Type) :=
+mk :: (x : α) (y : α)
 
 -- BEGIN
 def p := point.mk 10 20
@@ -116,8 +116,8 @@ by default.
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
-structure prod (A : Type) (B : Type) :=
-(pr1 : A) (pr2 : B)
+structure prod (α : Type) (β : Type) :=
+(pr1 : α) (pr2 : β)
 
 check prod.mk
 -- END
@@ -126,20 +126,20 @@ end hide
 
 The keyword =record= is an alias for =structure=.
 #+BEGIN_SRC lean
-record point (A : Type) :=
-mk :: (x : A) (y : A)
+record point (α : Type) :=
+mk :: (x : α) (y : α)
 #+END_SRC
 
 You can provide universe levels explicitly. The annotations in the
-next example force the parameters =A= and =B= to be types from the
+next example force the parameters =α= and =β= to be types from the
 same universe, and set the return type to also be in the same
 universe.
 
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
-structure {u} prod (A : Type u) (B : Type u) : Type (max 1 u) :=
-(pr1 : A) (pr2 : B)
+structure {u} prod (α : Type u) (β : Type u) : Type (max 1 u) :=
+(pr1 : α) (pr2 : β)
 
 set_option pp.universes true
 check prod.mk
@@ -150,7 +150,7 @@ The =set_option= command above instructs Lean to display the universe
 levels.
 
 We use =max 1 l= as the resultant universe level to ensure the
-universe level is never =0= even when the parameter =A= and =B= are
+universe level is never =0= even when the parameter =α= and =β= are
 propositions.  Recall that in Lean, =Type 0= is =Prop=, which is
 impredicative and proof irrelevant.
 
@@ -160,8 +160,8 @@ values whenever the expected type is known.
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
-structure {u} prod (A : Type u) (B : Type u) : Type (max 1 u) :=
-(pr1 : A) (pr2 : B)
+structure {u} prod (α : Type u) (β : Type u) : Type (max 1 u) :=
+(pr1 : α) (pr2 : β)
 
 example : prod nat nat :=
 ⟨1, 2⟩
@@ -189,8 +189,8 @@ For example, we use this notation to define "points." The
 order that the fields are specified does not matter, so all the
 expressions below define the same point.
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-mk :: (x : A) (y : A)
+structure point (α : Type) :=
+mk :: (x : α) (y : α)
 
 check { point . x := 10, y := 20 }   -- point ℕ
 check { point . y := 20, x := 10 }
@@ -205,7 +205,7 @@ If the unspecified fields cannot be inferred, Lean signs an error
 indicating the corresponding placeholder could not be synthesized.
 #+BEGIN_SRC lean
 structure my_struct :=
-mk :: {A : Type} {B : Type} (a : A) (b : B)
+mk :: {α : Type} {β : Type} (a : α) (b : β)
 
 check { my_struct . a := 10, b := true }
 #+END_SRC
@@ -224,8 +224,8 @@ one the contains the unspecified field. Lean raises an error if any of
 the field names remain unspecified after all the objects are visited.
 
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-mk :: (x : A) (y : A)
+structure point (α : Type) :=
+mk :: (x : α) (y : α)
 
 def p : point nat :=
 {x := 1, y := 2}
@@ -239,13 +239,13 @@ eval {p with x := 3}
 We can /extend/ existing structures by adding new fields.
 This feature allow us to simulate a form of /inheritance/.
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-mk :: (x : A) (y : A)
+structure point (α : Type) :=
+mk :: (x : α) (y : α)
 
 inductive color
 | red | green | blue
 
-structure color_point (A : Type) extends point A :=
+structure color_point (α : Type) extends point α :=
 mk :: (c : color)
 #+END_SRC
 
@@ -254,12 +254,12 @@ We can "rename" fields inherited from parent structures using the
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
-structure prod (A : Type) (B : Type) :=
-pair :: (pr1 : A) (pr2 : B)
+structure prod (α : Type) (β : Type) :=
+pair :: (pr1 : α) (pr2 : β)
 
 -- Rename fields pr1 and pr2 to x and y respectively.
-structure point3 (A : Type) extends prod A A renaming pr1→x pr2→y :=
-mk :: (z : A)
+structure point3 (α : Type) extends prod α α renaming pr1→x pr2→y :=
+mk :: (z : α)
 
 check point3.x
 check point3.y
@@ -272,13 +272,13 @@ In the next example, we define a structure using multiple
 inheritance, and then define an object using objects of the parent
 structures.
 #+BEGIN_SRC lean
-structure point (A : Type) :=
-(x : A) (y : A) (z : A)
+structure point (α : Type) :=
+(x : α) (y : α) (z : α)
 
 structure rgb_val :=
 (red : nat) (green : nat) (blue : nat)
 
-structure red_green_point (A : Type) extends point A, rgb_val :=
+structure red_green_point (α : Type) extends point α, rgb_val :=
 (no_blue : blue = 0)
 
 definition p   : point nat := {x := 10, y := 10, z := 20}
