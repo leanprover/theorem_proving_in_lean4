@@ -129,9 +129,11 @@ pp.beta      : beta reduce terms before displaying them
 In Lean, /coercions/ can be inserted automatically to cast an element
 of one data type to another, for example, to cast an element of =nat=
 to an element of =int=. We will say more about them later in this
-chapter. This list is not exhaustive; you can see a complete list by
-typing =set_option pp.= and then using tab-completion in the Lean
-mode for Emacs, also discussed below.
+chapter.
+# TODO: add back when implemented
+# This list is not exhaustive; you can see a complete list by
+# typing =set_option pp.= and then using tab-completion in the Lean
+# mode for Emacs, also discussed below.
 
 As an example, the following settings yield much longer output:
 #+BEGIN_SRC lean
@@ -162,9 +164,9 @@ definitions and theorems in the library. Recall that the =import=
 command at the beginning of a file imports previously compiled results
 from other files, and that importing is transitive; if you import
 =foo= and =foo= imports =bar=, then the definitions and theorems from
-=bar= are available to you as well. But the act of opening a namespace
---- which provides shorter names, notations, rewrite rules, and more
---- does not carry over. In each file, you need to open the namespaces
+=bar= are available to you as well. But the act of opening a namespace,
+which provides shorter names,
+does not carry over. In each file, you need to open the namespaces
 you wish to use.
 
 # TODO: what to say here? Will we keep "standard"? So far, we have
@@ -229,7 +231,7 @@ check @add_lt_add_of_lt_of_le
 #+END_SRC
 
 # TODO: add this when we have these names
-#
+# 
 # Sometimes abbreviations or alternative descriptions are easier to work
 # with. For example, we use `pos`, `neg`, `nonpos`, `nonneg` rather than
 # `zero_lt`, `lt_zero`, `le_zero`, and `zero_le`.
@@ -283,7 +285,7 @@ name even when the =prod= namespace is open.
 With the propositions as types correspondence, it then makes sense
 that operations that construct, destruct, and otherwise make use of
 propositions are also grouped intro namespaces. We have already seen
-that this is the case with with the logical connectives:
+that this is the case with the logical connectives:
 #+BEGIN_SRC lean
 check @and.intro
 check @and.elim
@@ -424,8 +426,8 @@ library.
 # If you put your cursor on an identifier and type "C-c C-p", Lean
 # prints the definition of that identifier in a separate buffer. 
 
-If you put your cursor on an identifier that is defined in Lean's
-library and hit "M-.", Emacs will take you to the identifier's
+If you put your cursor on an identifier
+and hit =M-.=, Emacs will take you to the identifier's
 definition, whether it is in the same file, in another file in the
 project (see [[#Object_Files_and_Projects][Section 6.5]] below), or in the library. This works even in
 an autocompletion popup window: if you start typing an identifier,
@@ -437,7 +439,7 @@ In tactic mode, if you put your cursor on a tactic (or the keyword
 =begin= or =end=) and type =C-c C-g=, Emacs will show you the goal in
 the =*lean-info*= buffer. Here is another useful trick: if you see
 some notation in a Lean file and you want to know how to enter it from
-the keyboard, put the cursor on the symbol and type "C-c C-k".
+the keyboard, put the cursor on the symbol and type =C-c C-k=.
 
 Recall that typing an underscore in an expression asks Lean to infer a
 suitable value for the expression and fill it in automatically. In
@@ -495,7 +497,7 @@ with the extension =.olean=, for "object Lean".
 
 Assuming the directory that contains Lean is in your system path, you
 can run lean on a file =foo.lean= from a system command line by typing
-=lean foo=. If =foo= imports other files, by default Lean looks for
+=lean foo.lean=. If =foo= imports other files, by default Lean looks for
 these in the standard library, which it finds relative to the
 directory from which it was invoked, and the current directory. You
 can change the default or add additional directories by specifying the
@@ -512,7 +514,7 @@ When processing =foo=, Lean uses any =.olean= files it can find for
 the imports as long as they are up to date with the source
 file. Otherwise, it recursively compiles the dependencies when
 necessary. Of course, it is more efficient if it can use the =.olean=
-files. The command =lean --make foo= not only compiles =foo= but saves
+files. The command =lean --make foo.lean= not only compiles =foo= but saves
 the results in =foo.olean=. The command =lean --make= without any
 arguments will compile all the files in the current directory.
 
