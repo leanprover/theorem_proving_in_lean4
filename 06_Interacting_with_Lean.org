@@ -369,8 +369,7 @@ message in at the bottom of the frame. Alternatively, if you type =C-c
 ! l= while in Lean mode, Emacs opens a new window with a list of
 compilation errors. Lean relies on an Emacs package, /Flycheck/, for this
 functionality, as evidenced by the letters "FlyC" that appear in the
-Emacs information line. An asterisk next to these letters indicates
-that Flycheck is actively checking the file, using Lean. Flycheck
+Emacs information line.  Flycheck
 offers a number of commands that begin with =C-c !=. For example, =C-c
 ! n= moves the cursor to the next error, and =C-c ! p= moves the
 cursor to the previous error. You can get to a help menu that lists
@@ -431,7 +430,8 @@ definition, whether it is in the same file, in another file in the
 project (see [[#Object_Files_and_Projects][Section 6.5]] below), or in the library. This works even in
 an autocompletion popup window: if you start typing an identifier,
 press the tab key, choose a completion from the list of options, and
-press "M-.", you are taken to the symbol's definition.
+press "M-.", you are taken to the symbol's definition.  If you have Emacs 25 or
+later, you can even press "M-," to go back to the original location.
 
 In tactic mode, if you put your cursor on a tactic (or the keyword
 =begin= or =end=) and type =C-c C-g=, Emacs will show you the goal in
@@ -490,7 +490,7 @@ them to the type checker to confirm that they are well-formed and have
 the specified types. This is analogous to the compilation process for
 a programming language: the =.lean= file contains the source code that
 is then compiled down to machine representations of the desired formal
-objects. Lean stores the output of the compilation process in files
+objects.  Lean caches the output of the compilation process in files
 with the extension =.olean=, for "object Lean".
 
 Assuming the directory that contains Lean is in your system path, you
@@ -501,9 +501,9 @@ directory from which it was invoked, and the current directory. You
 can change the default or add additional directories by specifying the
 search paths in the =LEAN_PATH= environment variable. You can specify
 subdirectories using periods in the module name: for example, =import
-foo.bar.baz= looks for the file "foo/bar/baz.olean" relative to any of
+foo.bar.baz= looks for the file "foo/bar/baz.lean" relative to any of
 the locations listed in the search path. A leading period, as in
-=import .foo.bar=, indicates that the .olean file in question is
+=import .foo.bar=, indicates that the .lean file in question is
 specified relative to the current directory. Two leading periods, as
 in =import ..foo.bar=, indicates that the address is relative to the
 parent directory, and so on.
@@ -537,11 +537,10 @@ continue to type. Otherwise, the process is the same as command-line
 compilation: Lean uses =.olean= files when they are available and up
 to date, and compiles imports recursively when necessary.
 
-In fact, the Lean mode in Emacs starts a separate copy of the Lean
-server for each project being edited. As a result, if you are
-editing files =a.lean= and =b.lean=, and =b.lean= depends on =a.lean=,
-then whenever you make a change in =b.lean= the result is visible to
-=a.lean=. 
+In fact, the Lean mode in Emacs starts one Lean server for each project being
+edited.  As a result, if you are editing files =a.lean= and =b.lean= in the
+same project, and =b.lean= depends on =a.lean=, then whenever you make a change
+in =b.lean= the result is immediately visible to =a.lean=.
 
 Changes are not immediately available across projects,
 however. Suppose you have a project =foo= that depends on another
