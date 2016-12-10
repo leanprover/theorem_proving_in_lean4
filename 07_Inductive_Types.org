@@ -941,6 +941,164 @@ equal to =n=), and exponentiation. Then try proving some of their
 basic properties, building on the theorems we have already proved.
 
 
+# TODO(Jeremy): this material is from the old TPL. Here we should
+# describe the =cases= tactic, whereas the next chapter should
+# describe the function definition system, including patterns, match,
+# recursive definitions, etc.
+
+# Here is a description of what =cases e= does:
+#
+# - If =e= is a local hypothesis, it reverts anything that depends on
+#   =e=, splits on cases, and then re-introduces the same hypotheses.
+#
+# - If =e= is found in the conclusion of the goal, it generalizes over
+#   =e=, introduces the generalized variable, and splits on cases.
+#
+# - If =e= is not found in the conclusion of the goal, it splits on
+#   cases, even though the goal does not depend on the values of the
+#   cases. This is good e.g. for splitting on an =or= or an =exists=,
+#   or defining a function depending on cases.
+#
+# Give examples of all three cases. (Some examples were found in
+# Chapter 5.)
+#
+# def f (n : ℕ) : ℕ :=
+# begin
+#   cases n, exact 3, exact 7
+# end
+#
+# example : f 0 = 3 := rfl
+# example : f 5 = 7 := rfl
+#
+
+# ** Cases and Pattern Matching
+
+# The =cases= tactic works on elements of an inductively defined
+# type. It does what the name suggests: it decomposes an element of an
+# inductive type according to each of the possible constructors, and
+# leaves a goal for each case. Note that the following example also uses
+# the =revert= tactic to move the hypothesis into the conclusion of the
+# goal.
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat
+
+# example (x : ℕ) (h : x ≠ 0) : succ (pred x) = x :=
+# begin
+#   revert h,
+#   cases x,
+#   -- first goal: ⊢ 0 ≠ 0 → succ (pred 0) = 0
+#   { intro h₁,
+#     apply (absurd rfl h₁)},
+#   -- second goal: ⊢ succ a ≠ 0 → succ (pred (succ a)) = succ a
+#   { intro h₁,
+#     apply rfl}
+# end
+# #+END_SRC
+# The name of the =cases= tactic is particularly well suited to use with disjunctions:
+# #+BEGIN_SRC lean
+# example (a b : Prop) : a ∨ b → b ∨ a :=
+# begin
+#   intro h,
+#   cases h with [ha, hb],
+#   { exact or.inr ha },
+#   { exact or.inl hb }
+# end
+# #+END_SRC
+# In the next example, we rely on the decidability of equality for the
+# natural numbers to carry out another proof by cases:
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat
+
+# check nat.sub_self
+
+# example (m n : nat) : m - n = 0 ∨ m ≠ n :=
+# begin
+#   cases (decidable.em (m = n)) with [heq, hne],
+#   { apply eq.subst heq,
+#     exact or.inl (nat.sub_self m)},
+#   { apply or.inr hne }
+# end
+# #+END_SRC
+# The =cases= tactic can also be used to extract the arguments of a
+# constructor, even for an inductive type like =and=, for which there is
+# only one constructor.
+# #+BEGIN_SRC lean
+# example (p q : Prop) : p ∧ q → q ∧ p :=
+# begin
+#   intro h,
+#   cases h with [h₁, h₂],
+#   apply and.intro,
+#   exact h₂,
+#   exact h₁
+# end
+# #+END_SRC
+# Here the =with= clause names the two arguments to the constructor. If
+# you omit it, Lean will choose a name for you. If there are multiple
+# constructors with arguments, you can provide =cases= with a list of
+# all the names, arranged sequentially:
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat
+
+# inductive foo : Type :=
+# | bar1 : ℕ → ℕ → foo
+# | bar2 : ℕ → ℕ → ℕ → foo
+
+# definition silly (x : foo) : ℕ :=
+# begin
+#   cases x with [a, b, c, d, e],
+#   exact b,    -- a, b, c are in the context
+#   exact e     -- d, e    are in the context
+# end
+# #+END_SRC
+
+# You can also use pattern matching in a tactic block. With
+# #+BEGIN_SRC lean
+# example (p q r : Prop) : p ∧ q ↔ q ∧ p :=
+# begin
+#   apply iff.intro,
+#   { intro h,
+#     match h with
+#     |  and.intro h₁ h₂ := by apply and.intro; repeat assumption
+#     end },
+#   { intro h,
+#     match h with
+#     | and.intro h₁ h₂ := by apply and.intro; repeat assumption
+#     end },
+# end
+# #+END_SRC
+# With pattern matching, the first and third examples in this section
+# could be written as follows:
+# #+BEGIN_SRC lean
+# import data.nat
+# open nat
+
+# inductive foo : Type :=
+# | bar1 : ℕ → ℕ → foo
+# | bar2 : ℕ → ℕ → ℕ → foo
+
+# -- BEGIN
+# example (x : ℕ) (h : x ≠ 0) : succ (pred x) = x :=
+# begin
+#   revert h,
+#   match x with
+#   | 0      := by intro h₁; exact (absurd rfl h₁)
+#   | succ y := by intro h₁; apply rfl
+#   end
+# end
+
+# definition silly (x : foo) : ℕ :=
+# begin
+#   match x with
+#   | foo.bar1 a b   := b
+#   | foo.bar2 c d e := e
+#   end
+# end
+# -- END
+# #+END_SRC
+
 ** Other Inductive Types
 
 Let us consider some more examples of inductively defined
@@ -1244,6 +1402,9 @@ end cbtree
 # inductive definitions, for example, the principles of
 # /induction-recursion/ and /induction-induction/.  These are not
 # supported by Lean.
+
+# TODO(Jeremy): Move this to a later chapter on fine points of
+# dependent type theory.
 
 # ** Heterogeneous Equality
 
