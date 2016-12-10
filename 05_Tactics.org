@@ -658,16 +658,17 @@ end
 You can also use the =assert= tactic, which keeps you in tactic mode
 throughout.
 #+BEGIN_SRC lean
+example (p q : Prop) : p ∧ q ↔ q ∧ p :=
 begin
   apply iff.intro,
   { intro h,
     assert hp : p, exact h^.left,
     assert hq : q, exact h^.right,
-    constructor, repeat { assumption }},
+    exact ⟨hq, hp⟩ },
   intro h,
   assert hp : p, exact h^.right,
   assert hq : q, exact h^.left,
-  constructor, repeat { assumption }
+  exact ⟨hp, hq⟩
 end
 #+END_SRC
 Another option is to use the =note= tactic, which allows you to insert
