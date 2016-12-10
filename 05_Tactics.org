@@ -135,7 +135,8 @@ print test
 -- END
 #+END_SRC
 
-# TODO: I can't get sequencing to work (JDA) -- delete this?
+# TODO(Jeremy): will we eventually have a sequencing operator in Lean
+# 3?
 
 # Tactic applications can also be concatenated with a
 # semicolon. Formally speaking, there is only one (compound) step in the
@@ -267,11 +268,10 @@ begin
 end
 #+END_SRC
 
-Incidentally, there are tactics =reflexivity=, =symmetry=, and
-=transitivity=, which apply the corresponding operation. Using
-reflexivity, for example, is more general than writing =apply
-eq.refl=, because it works for any relation that has been tagged with
-the =refl= attribute.
+There are tactics =reflexivity=, =symmetry=, and =transitivity=, which
+apply the corresponding operation. Using reflexivity, for example, is
+more general than writing =apply eq.refl=, because it works for any
+relation that has been tagged with the =refl= attribute.
 # TODO: add a reference to the chapter that describes attributes.
 With that tactic, the previous proof can be written more elegantly as
 follows:
@@ -286,58 +286,34 @@ begin
 end
 #+END_SRC
 
+The =repeat= combinator can be used to simplify the last two lines:
+#+BEGIN_SRC lean
+example : ∀ a b c : nat, a = b → a = c → c = b :=
+begin
+  intros,
+  apply eq.trans,
+  apply eq.symm,
+  repeat { assumption }
+end
+#+END_SRC
+The curly braces introduce a new tactic block; they are equivalent to
+a using a nested =begin-end= pair, as discussed in the next section.
 
-# TODO: doesn't work
-
-# The =repeat= combinator can be used to simplify the last two lines:
-# #+BEGIN_SRC lean
-# example : ∀ a b c : nat, a = b → a = c → c = b :=
-# begin
-#   intros,
-#   apply eq.trans,
-#   apply eq.symm,
-#   repeat assumption
-# end
-# #+END_SRC
-
-# TODO: fapply is not set up for begin...end blocks yet
-
-# There is variant of =apply= called =fapply= that is more aggressive in
-# creating new subgoals for arguments. Here is an example of how it is
-# used:
-# #+BEGIN_SRC lean
-# example : ∃ a : ℕ, a = a :=
-# begin
-#   fapply exists.intro,
-#   exact nat.zero,
-#   apply rfl
-# end
-# #+END_SRC
-# The command =fapply exists.intro= creates two goals. The first is to
-# provide a natural number, =a=, and the second is to prove that =a =
-# a=. Notice that the second goal depends on the first; solving the
-# first goal instantiates a metavariable in the second.
-
-# Notice also that we could not write =exact 0= in the proof above,
-# because =0= is a numeral that is coerced to a natural number. In the
-# context of a tactic proof, expressions are elaborated "locally,"
-# before being sent to the tactic command. When the tactic command is
-# being processed, Lean does not have enough information to determine
-# that =0= needs to be coerced. We can get around that by stating the
-# type explicitly:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
-
-# -- BEGIN
-# example : ∃ a : ℕ, a = a :=
-# begin
-#   fapply exists.intro,
-#   exact (0 : ℕ),
-#   apply rfl
-# end
-# -- END
-# #+END_SRC
+There is variant of =apply= called =fapply= that is more aggressive in
+creating new subgoals for arguments. Here is an example of how it is
+used:
+#+BEGIN_SRC lean
+example : ∃ a : ℕ, a = a :=
+begin
+  fapply exists.intro,
+  exact 0,
+  apply rfl
+end
+#+END_SRC
+The command =fapply exists.intro= creates two goals. The first is to
+provide a natural number, =a=, and the second is to prove that =a =
+a=. Notice that the second goal depends on the first; solving the
+first goal instantiates a metavariable in the second.
 
 Another tactic that is sometimes useful is the =generalize= tactic,
 which is, in a sense, an inverse to =intro=.
@@ -352,8 +328,8 @@ begin
 end
 #+END_SRC
 Te =generalize= tactic generalizes the conclusion over the variable
-=x=, using a universal quantifier over =z=.  We generalize any term,
-not just a variable:
+=x=, using a universal quantifier over =z=.  We can generalize any
+term, not just a variable:
 #+BEGIN_SRC lean
 variables x y z : ℕ
 
@@ -421,297 +397,312 @@ You can also revert multiple elements of the context at once:
 #+BEGIN_SRC lean
 example (x y : ℕ) (h : x = y) : y = x :=
 begin
-  revert x y,     -- goal is x y : ℕ ⊢ ∀ (x : ℕ), x = y → y = x
+  revert x y,     -- goal is ⊢ ∀ (x y : ℕ), x = y → y = x
   intros,
   symmetry,
   assumption
 end
 #+END_SRC
 
+** More tactics
 
-# TODO: we are not ready for this next section. We do have nested begin / end,
-# but not =have= and =show= in tactic mode.
+Some additional tactics are useful for constructing and destructing
+propositions and data. For example, when applied to a goal of the form
+=p ∨ q=, the tactics =left= and =right= are equivalent =apply or.inl=
+and apply =or.inr=, respectively.  Conversely, the =cases= tactic can
+be used to decompose a disjunction.
+#+BEGIN_SRC lean
+example (p q : Prop) : p ∨ q → q ∨ p :=
+begin
+  intro h,
+  cases h with hp hq,
+  -- case hp : p
+  right, exact hp,
+  -- case hq : q
+  left, exact hq 
+end
+#+END_SRC
+After =cases h= is applied, there are two goals. In the first, the
+hypothesis =h : p ∨ q= is replaced by =hp : p=, and in the second, it
+is replaced by =hq : q=.  The =cases= can also be used to decompose
+a conjunction.
+#+BEGIN_SRC lean
+example (p q : Prop) : p ∧ q → q ∧ p :=
+begin
+  intro h,
+  cases h with hp hq,
+  constructor, exact hq, exact hp
+end
+#+END_SRC
+In this case, there is only one goal after the =cases= tactic is
+applied, with =h : p ∧ q= replaced by a pair of assumptions, =hp : p=
+and =hq : q=. The constructor applies the unique constructor for
+conjunction, =and.intro=. With these tactics, an example from the
+previous section can be rewritten as follows:
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+  intro h,
+   cases h with hp hqr,
+   cases hqr with hq hr,
+     left, constructor, repeat { assumption },
+     right, constructor, repeat { assumption },
+  intro h,
+    cases h with hpq hpr,
+      cases hpq with hp hq, 
+        constructor, exact hp, left, exact hq,
+      cases hpr with hp hr,
+        constructor, exact hp, right, exact hr
+end
+#+END_SRC
 
-# ** Structuring Tactic Proofs
+We will see in [[file:07_Inductive_Types.org::#Inductive_Types][Chapter 7]] that these tactics are quite general. The
+=cases= tactic can be used to decompose any element of an inductively defined type;
+=constructor= always applies the first constructor of an inductively
+type, and =left= and =right= can be used with inductively defined
+types with exactly =two= constructors. For example, we can uses
+=cases= and =constructor= with an existential quantifier:
+#+BEGIN_SRC lean
+example (p q : ℕ → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x :=
+begin
+  intro h,
+  cases h with x px,
+  constructor, left, exact px 
+end
+#+END_SRC
+Here, the =constructor= tactic leaves the first component of the
+existential assertion, the value of =x=, implicit. It is represented
+by a metavariable, which should be instantiated later on. (In this
+case, the proper value is determined by the tactic =exact px= since
+=px= has type =p x=.) If you want to specify that value, you can use
+the =existsi= tactic instead:
+#+BEGIN_SRC lean
+example (p q : ℕ → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x :=
+begin
+  intro h,
+  cases h with x px,
+  existsi x, left, exact px 
+end
+#+END_SRC
 
-# One thing that is nice about Lean's proof-writing syntax is that it is
-# possible to mix term-style and tactic-style proofs, and pass
-# between the two freely. For example, the tactics =apply= and =exact=
-# expect arbitrary terms, which you can write using =have=, =show=,
-# =obtains=, and so on. Conversely, when writing an arbitrary Lean term,
-# you can always invoke the tactic mode by inserting a =begin...end=
-# block. In the next example, we use =show= within a tactic block to
-# fulfill a goal by providing an explicit term.
-# #+BEGIN_SRC lean
-# example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
-# begin
-#   apply iff.intro,
-#     intro h,
-#     apply (or.elim (and.elim_right h)),
-#       intro hq,
-#       show (p ∧ q) ∨ (p ∧ r),
-#         from or.inl (and.intro (and.elim_left h) hq),
-#     intro hr,
-#     show (p ∧ q) ∨ (p ∧ r),
-#       from or.inr (and.intro (and.elim_left h) hr),
-#   intro h,
-#   apply (or.elim h),
-#     intro hpq,
-#     show p ∧ (q ∨ r), from
-#       and.intro
-#         (and.elim_left hpq)
-#         (or.inl (and.elim_right hpq)),
-#   intro hpr,
-#   show p ∧ (q ∨ r), from
-#     and.intro
-#       (and.elim_left hpr)
-#       (or.inr (and.elim_right hpr))
-# end
-# #+END_SRC
+These tactics can be used on data just as well as propositions. In the
+next two example, they are used to define functions which swap the
+components of the product and sum types:
+#+BEGIN_SRC lean
+universe variables u v
 
-# You can also nest =begin...end= blocks within other =begin...end=
-# blocks.  In a nested block, Lean focuses on the first goal, and
-# generates an error if it has not been fully solved at the end of the
-# block.  This can be helpful in indicating the separate proofs of
-# multiple subgoals introduced by a tactic.
-# #+BEGIN_SRC lean
-# example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
-# begin
-#   apply iff.intro,
-#   begin
-#     intro h,
-#     apply (or.elim (and.elim_right h)),
-#       intro hq,
-#       show (p ∧ q) ∨ (p ∧ r),
-#         from or.inl (and.intro (and.elim_left h) hq),
-#     intro hr,
-#     show (p ∧ q) ∨ (p ∧ r),
-#       from or.inr (and.intro (and.elim_left h) hr),
-#   end,
-#   begin
-#     intro h,
-#     apply (or.elim h),
-#     begin
-#       intro hpq,
-#       show p ∧ (q ∨ r), from
-#         and.intro
-#           (and.elim_left hpq)
-#           (or.inl (and.elim_right hpq)),
-#     end,
-#     begin
-#       intro hpr,
-#       show p ∧ (q ∨ r), from
-#         and.intro
-#           (and.elim_left hpr)
-#           (or.inr (and.elim_right hpr))
-#     end
-#   end
-# end
-# #+END_SRC
-# Notice that you still need to use a comma after a =begin...end=
-# block when there are remaining goals to be discharged. Within a
-# =begin...end= block, you can abbreviate nested occurrences of
-# =begin= and =end= with curly braces:
-# #+BEGIN_SRC lean
-# example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
-# begin
-#   apply iff.intro,
-#   { intro h,
-#     apply (or.elim (and.elim_right h)),
-#     { intro hq,
-#       apply or.intro_left,
-#       apply and.intro,
-#       { exact (and.elim_left h) },
-#       { exact hq }},
-#     { intro hr,
-#       apply or.intro_right,
-#       apply and.intro,
-#       { exact (and.elim_left h)},
-#       { exact hr }}},
-#   { intro h,
-#     apply (or.elim h),
-#     { intro hpq,
-#       apply and.intro,
-#       { exact (and.elim_left hpq) },
-#       { apply or.intro_left,
-#         exact (and.elim_right hpq) }},
-#     { intro hpr,
-#       apply and.intro,
-#       { exact (and.elim_left hpr)},
-#       { apply or.intro_right,
-#           exact (and.elim_right hpr) }}}
-# end
-# #+END_SRC
-# here we have adopted the convention that whenever a tactic increases
-# the number of goals to be solved, the tactics that solve each
-# subsequent goal are enclosed in braces. This may not increase
-# readability much, but it does help clarify the structure of the proof.
+def swap_pair {α : Type u} {β : Type v} : α × β → β × α :=
+begin
+  intro p,
+  cases p with ha hb,
+  constructor, exact hb, exact ha
+end
 
-# There is a =have= construct for tactic-style proofs that is similar to
-# the one for term-style proofs. In the proof below, the first =have=
-# creates the subgoal =hp : p=. The =from= clause solves it, and after
-# that =hp= is available to subsequent tactics. The example illustrates
-# that you can also use another =begin...end= block, or a =by= clause,
-# to prove a subgoal introduced by =have=.
-# #+BEGIN_SRC lean
-# -- BEGIN
-# variables p q : Prop
+def swap_sum {α : Type u} {β : Type v} : α ⊕ β → β ⊕ α :=
+begin
+  intro p,
+  cases p with ha hb,
+    right, exact ha,
+    left, exact hb
+end
+#+END_SRC
+Note that up to the names we have chosen for the variables, the
+definitions are identical to the proofs of the analogous propositions
+for conjunction and disjunction. The =cases= tactic will also do a
+case distinction on the natural numbers:
+#+BEGIN_SRC lean
+open nat
 
-# example : p ∧ q ↔ q ∧ p :=
-# begin
-#   apply iff.intro,
-#   begin
-#     intro h,
-#     have hp : p, from and.left h,
-#     have hq : q, from and.right h,
-#     apply and.intro,
-#     repeat assumption
-#   end,
-#   begin
-#     intro h,
-#     have hp : p,
-#       begin
-#         apply and.right,
-#         apply h
-#       end,
-#     have hq : q, by apply and.left; exact h,
-#     apply (and.intro hp hq)
-#   end
-# end
-# -- END
-# #+END_SRC
+example (P : ℕ → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : ℕ) : P m :=
+begin
+  cases m with m', exact h₀, exact h₁ m'
+end
+#+END_SRC
 
 
-# TODO: this goes in chapter on inductive types
+** Structuring Tactic Proofs
 
-# ** Cases and Pattern Matching
+One thing that is nice about Lean's proof-writing syntax is that it is
+possible to mix term-style and tactic-style proofs, and pass
+between the two freely. For example, the tactics =apply= and =exact=
+expect arbitrary terms, which you can write using =have=, =show=,
+and so on. Conversely, when writing an arbitrary Lean term,
+you can always invoke the tactic mode by inserting a =begin...end=
+block. In the next example, we use =show= within a tactic block to
+fulfill a goal by providing an explicit term.
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+    intro h,
+    cases h^.right with hq hr,
+      show (p ∧ q) ∨ (p ∧ r),
+        from or.inl ⟨h^.left, hq⟩,
+    show (p ∧ q) ∨ (p ∧ r),
+      from or.inr ⟨h^.left, hr⟩,
+  intro h,
+  cases h with hpq hpr,
+    show p ∧ (q ∨ r), from
+      ⟨hpq^.left, or.inl hpq^.right⟩,
+  show p ∧ (q ∨ r), from
+    ⟨hpr^.left, or.inr hpr^.right⟩
+end
+#+END_SRC
+The convention we have used for indentation will be explained momentarily.
 
-# The =cases= tactic works on elements of an inductively defined
-# type. It does what the name suggests: it decomposes an element of an
-# inductive type according to each of the possible constructors, and
-# leaves a goal for each case. Note that the following example also uses
-# the =revert= tactic to move the hypothesis into the conclusion of the
-# goal.
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
+You can also nest =begin...end= blocks within other =begin...end=
+blocks.  In a nested block, Lean focuses on the first goal, and
+generates an error if it has not been fully solved at the end of the
+block.  This can be helpful in indicating the separate proofs of
+multiple subgoals introduced by a tactic.
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+  begin
+    intro h,
+    cases h^.right with hq hr,
+    begin
+      show (p ∧ q) ∨ (p ∧ r),
+        from or.inl ⟨h^.left, hq⟩
+    end,
+    show (p ∧ q) ∨ (p ∧ r),
+      from or.inr ⟨h^.left, hr⟩
+  end,
+  intro h,
+  cases h with hpq hpr,
+  begin
+    show p ∧ (q ∨ r), from
+      ⟨hpq^.left, or.inl hpq^.right⟩
+  end,
+  show p ∧ (q ∨ r), from
+    ⟨hpr^.left, or.inr hpr^.right⟩
+end
+#+END_SRC
+Here, we have introduced a new =begin..end= block whenever a tactic
+leaves more than one subgoal. You can check (using =C-c C-g= in Emacs
+mode, for example) that every line in this proof, there is only one
+goal visible. Notice that you still need to use a comma after a
+=begin...end= block when there are remaining goals to be
+discharged. Within a =begin...end= block, you can abbreviate nested
+occurrences of =begin= and =end= with curly braces:
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+  { intro h,
+    cases h^.right with hq hr,
+    { show (p ∧ q) ∨ (p ∧ r),
+        from or.inl ⟨h^.left, hq⟩ },
+    show (p ∧ q) ∨ (p ∧ r),
+      from or.inr ⟨h^.left, hr⟩ },
+  intro h,
+  cases h with hpq hpr,
+  { show p ∧ (q ∨ r),
+      from ⟨hpq^.left, or.inl hpq^.right⟩ },
+  show p ∧ (q ∨ r),
+    from ⟨hpr^.left, or.inr hpr^.right⟩
+end
+#+END_SRC
+This helps explain the convention on indentation we have adopted here:
+every time a tactic leaves more than one subgoal, we separate the
+remaining subgoals by enclosing them in blocks and indenting, until we
+are back down to one subgoal. Another reasonable convention is to
+enclose all the remaining subgoals in indented blocks, including the
+last one:
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+begin
+  apply iff.intro,
+  { intro h,
+    cases h^.right with hq hr,
+    { show (p ∧ q) ∨ (p ∧ r),
+        from or.inl ⟨h^.left, hq⟩ },
+    { show (p ∧ q) ∨ (p ∧ r),
+        from or.inr ⟨h^.left, hr⟩ }},
+  { intro h,
+    cases h with hpq hpr,
+    { show p ∧ (q ∨ r),
+        from ⟨hpq^.left, or.inl hpq^.right⟩ },
+    { show p ∧ (q ∨ r),
+        from ⟨hpr^.left, or.inr hpr^.right⟩ }}
+end
+#+END_SRC
+This has the effect that the text in a long proof gradually creeps to
+the right in a long proof. Many theorems in mathematics have side
+conditions that can be dispelled quickly; using the first convention
+means that the proofs of these side conditions are indented until we
+return to the "linear" part of the proof.
 
-# example (x : ℕ) (h : x ≠ 0) : succ (pred x) = x :=
-# begin
-#   revert h,
-#   cases x,
-#   -- first goal: ⊢ 0 ≠ 0 → succ (pred 0) = 0
-#   { intro h₁,
-#     apply (absurd rfl h₁)},
-#   -- second goal: ⊢ succ a ≠ 0 → succ (pred (succ a)) = succ a
-#   { intro h₁,
-#     apply rfl}
-# end
-# #+END_SRC
-# The name of the =cases= tactic is particularly well suited to use with disjunctions:
-# #+BEGIN_SRC lean
-# example (a b : Prop) : a ∨ b → b ∨ a :=
-# begin
-#   intro h,
-#   cases h with [ha, hb],
-#   { exact or.inr ha },
-#   { exact or.inl hb }
-# end
-# #+END_SRC
-# In the next example, we rely on the decidability of equality for the
-# natural numbers to carry out another proof by cases:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
+There is a =have= construct for tactic-style proofs that is similar to
+the one for term-style proofs. In the proof below, the first =have=
+creates the subgoal =hp : p=. The =from= clause solves it, and after
+that =hp= is available to subsequent tactics. The example illustrates
+that you can also use another =begin...end= block, or a =by= clause,
+to prove a subgoal introduced by =have=.
+#+BEGIN_SRC lean
+example (p q : Prop) : p ∧ q ↔ q ∧ p :=
+begin
+  apply iff.intro,
+  { intro h,
+    have hp : p, from h^.left,
+    have hq : q, from h^.right,
+    begin exact ⟨hq, hp⟩ end },
+  intro h,
+  have hp : p, by exact h^.right,
+  have hq : q, begin exact h^.left end,
+  begin exact ⟨hp, hq⟩ end
+end
+#+END_SRC
+You can also use the =assert= tactic, which keeps you in tactic mode
+throughout.
+#+BEGIN_SRC lean
+begin
+  apply iff.intro,
+  { intro h,
+    assert hp : p, exact h^.left,
+    assert hq : q, exact h^.right,
+    constructor, repeat { assumption }},
+  intro h,
+  assert hp : p, exact h^.right,
+  assert hq : q, exact h^.left,
+  constructor, repeat { assumption }
+end
+#+END_SRC
+Another option is to use the =note= tactic, which allows you to insert
+a fact into the context, without having to state the proposition it
+proves.
+#+BEGIN_SRC lean
+example (p q : Prop) : p ∧ q ↔ q ∧ p :=
+begin
+  apply iff.intro,
+  { intro h,
+    note hp := h^.left,
+    note hq := h^.right,
+    exact ⟨hq, hp⟩ },
+  intro h,
+  note hp := h^.right,
+  note hq := h^.left,
+  exact ⟨hp, hq⟩
+end
+#+END_SRC
+In general, if =e= has type =t=, then ~note h := e~ adds a hypothesis
+=h : t= to the context, without giving you access to the contents of
+=e=. If, instead, you need the contents of =e=, use ~pose x := e~
+instead. This adds ~x : t := e~ to the context, as a =let= definition,
+which can be unfolded when needed. Here is an example:
+#+BEGIN_SRC lean
+example : ∃ x : ℕ, x + 3 = 8 :=
+begin
+  pose x := 5,
+  existsi x,
+  reflexivity
+end
+#+END_SRC
 
-# check nat.sub_self
 
-# example (m n : nat) : m - n = 0 ∨ m ≠ n :=
-# begin
-#   cases (decidable.em (m = n)) with [heq, hne],
-#   { apply eq.subst heq,
-#     exact or.inl (nat.sub_self m)},
-#   { apply or.inr hne }
-# end
-# #+END_SRC
-# The =cases= tactic can also be used to extract the arguments of a
-# constructor, even for an inductive type like =and=, for which there is
-# only one constructor.
-# #+BEGIN_SRC lean
-# example (p q : Prop) : p ∧ q → q ∧ p :=
-# begin
-#   intro h,
-#   cases h with [h₁, h₂],
-#   apply and.intro,
-#   exact h₂,
-#   exact h₁
-# end
-# #+END_SRC
-# Here the =with= clause names the two arguments to the constructor. If
-# you omit it, Lean will choose a name for you. If there are multiple
-# constructors with arguments, you can provide =cases= with a list of
-# all the names, arranged sequentially:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
-
-# inductive foo : Type :=
-# | bar1 : ℕ → ℕ → foo
-# | bar2 : ℕ → ℕ → ℕ → foo
-
-# definition silly (x : foo) : ℕ :=
-# begin
-#   cases x with [a, b, c, d, e],
-#   exact b,    -- a, b, c are in the context
-#   exact e     -- d, e    are in the context
-# end
-# #+END_SRC
-
-# You can also use pattern matching in a tactic block. With
-# #+BEGIN_SRC lean
-# example (p q r : Prop) : p ∧ q ↔ q ∧ p :=
-# begin
-#   apply iff.intro,
-#   { intro h,
-#     match h with
-#     |  and.intro h₁ h₂ := by apply and.intro; repeat assumption
-#     end },
-#   { intro h,
-#     match h with
-#     | and.intro h₁ h₂ := by apply and.intro; repeat assumption
-#     end },
-# end
-# #+END_SRC
-# With pattern matching, the first and third examples in this section
-# could be written as follows:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
-
-# inductive foo : Type :=
-# | bar1 : ℕ → ℕ → foo
-# | bar2 : ℕ → ℕ → ℕ → foo
-
-# -- BEGIN
-# example (x : ℕ) (h : x ≠ 0) : succ (pred x) = x :=
-# begin
-#   revert h,
-#   match x with
-#   | 0      := by intro h₁; exact (absurd rfl h₁)
-#   | succ y := by intro h₁; apply rfl
-#   end
-# end
-
-# definition silly (x : foo) : ℕ :=
-# begin
-#   match x with
-#   | foo.bar1 a b   := b
-#   | foo.bar2 c d e := e
-#   end
-# end
-# -- END
-# #+END_SRC
-
+# TODO(Jeremy): describe rewrite and simp
 
 ** The Rewrite Tactic
 
