@@ -352,7 +352,7 @@ standard library. This is necessary because these types are part of
 the Lean "prelude" that is automatically imported with the system is
 started.)
 
-The type =empty= is an inductive datatype with no constructors. The
+The type =empty= is an inductive data type with no constructors. The
 type =unit= has a single element, =star=, and the type =bool=
 represents the familiar boolean values. As an exercise, you should
 think about what the introduction and elimination rules for these
@@ -1488,7 +1488,7 @@ end cbtree
 # :END:
 
 # In the previous sections, we have seen that whenever we declare an
-# inductive datatype =I=, the Lean kernel automatically declares its
+# inductive data type =I=, the Lean kernel automatically declares its
 # constructors (aka introduction rules), and generates and declares the
 # eliminator/recursor =I.rec=. The eliminator expresses a principle of
 # definition by recursion, as well as the principle of proof by
@@ -1528,7 +1528,7 @@ end cbtree
 # kernel. The kernel is also known as the /trusted code base/, because a
 # bug in the kernel may compromise the soundness of the whole system.
 
-# When you define an inductive datatype, Lean automatically generates a
+# When you define an inductive data type, Lean automatically generates a
 # number of useful definitions. We have already seen some of them:
 # =rec_on=, =induction_on=, and =cases_on=. The module =M= that
 # generates these definitions is /not/ part of the trusted code base. A
@@ -1577,12 +1577,12 @@ end cbtree
 # end hide
 # #+END_SRC
 
-# For any inductive datatype that is not a proposition, we can show that
+# For any inductive data type that is not a proposition, we can show that
 # its constructors are injective and disjoint. For example, on =nat=, we
 # can show that =succ a = succ b → a = b= (injectivity), and =succ a ≠
 # zero= (disjointness). Both proofs can be performed using the
 # automatically generated definition =nat.no_confusion=. More generally,
-# for any inductive datatype =I= that is not a proposition, Lean
+# for any inductive data type =I= that is not a proposition, Lean
 # automatically generates a definition of =I.no_confusion=. Given a
 # motive =C= and an equality =h : c₁ t = c₂ s=, where =c₁= and =c₂= are
 # two distinct =I= constructors, =I.no_confusion= constructs an
@@ -1701,7 +1701,7 @@ end cbtree
 # #+BEGIN_SRC text
 # c : Π (a : α) (b : β[a]), C a p[a,b]
 # #+END_SRC
-# where =a= is a sequence of datatype parameters, =b= is the sequence of
+# where =a= is a sequence of data type parameters, =b= is the sequence of
 # arguments to the constructors, and =p[a, b]= are the indices, which
 # determine which element of the inductive family the construction
 # inhabits. Then the universe level =i= of =C= is constrained to satisfy
@@ -1736,7 +1736,7 @@ end cbtree
 # one. Hence, a type specified by single inductive definition is either
 # always in =Prop= or never in =Prop=. For example, if =α= and =β= are
 # elements of =Prop=, =α × β= is assumed to have universe level at least
-# one, representing a datatype rather than a proposition. The analogous
+# one, representing a data type rather than a proposition. The analogous
 # definition of =α × β=, where =α= and =β= are restricted to =Prop= and
 # the resulting type is declared to be an element of =Prop= instead of
 # =Type=, is exactly the definition of =α ∧ β=.
