@@ -70,8 +70,8 @@ example (a : nat) : sub2 (a + 2) = a := rfl
 -- END
 #+END_SRC
 
-We can use the command =print sub2= to inspect how our definition was compiled into
-recursors.
+We can use the command =print sub2= to see how our definition was
+compiled into recursors.
 #+BEGIN_SRC lean
 open nat
 
@@ -87,7 +87,7 @@ print sub2
 
 We will say a term is a /constructor application/ if it is of the form
 =c a_1 ... a_n= where =c= is the constructor of some inductive
-datatype.  Note that in the definition =sub2=, the terms =1= and =a+2=
+data type.  Note that in the definition =sub2=, the terms =1= and =a+2=
 are not constructor applications.  However, the compiler normalizes
 them at compilation time, and obtains the constructor applications
 =succ zero= and =succ (succ a)= respectively. This normalization step
@@ -113,7 +113,7 @@ theorem bnot_bnot : ∀ (b : bool), bnot (bnot b) = b
 end hide
 #+END_SRC
 
-As described in [[file:07_Inductive_Types.org::#Inductive_Types][Chapter 7]], Lean inductive datatypes can be
+As described in [[file:07_Inductive_Types.org::#Inductive_Types][Chapter 7]], Lean inductive data types can be
 parametric. The following example defines the =tail= function using
 pattern matching.  The argument =α : Type= is a parameter and occurs
 before the colon to indicate it does not participate in the pattern
@@ -312,10 +312,11 @@ tail_aux v rfl
 end hide
 #+END_SRC
 In the =nil= case, =m= is instantiated to =0=, and =no_confusion=
-# TODO: add: (discussed in Section [[file:06_Inductive_Types.org::#Automatically_Generated_Constructions][Automatically Generated Constructions]]) 
 makes use of the fact that =0 = succ n= cannot occur. Otherwise, =v=
 is of the form =a :: w=, and we can simply return =w=, after casting
 it from a vector of length =m= to a vector of length =n=.
+
+# TODO: add: (discussed in Section [[file:06_Inductive_Types.org::#Automatically_Generated_Constructions][Automatically Generated Constructions]]) 
 
 The difficulty in defining =tail= is to maintain the relationships
 between the indices.  The hypothesis =e : m = succ n= in =tail_aux= is
