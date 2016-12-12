@@ -255,7 +255,7 @@ end
 #+END_SRC
 It has a plural form, =intros=, which takes a list of names.
 #+BEGIN_SRC lean
-example : ∀ a b c : nat, a = b → a = c → c = b :=
+example : ∀ a b c : ℕ, a = b → a = c → c = b :=
 begin
   intros a b c h₁ h₂,
   exact eq.trans (eq.symm h₂) h₁
@@ -298,7 +298,7 @@ end
 The following example uses the =intros= command to introduce the three
 variables and two hypotheses automatically:
 #+BEGIN_SRC lean
-example : ∀ a b c : nat, a = b → a = c → c = b :=
+example : ∀ a b c : ℕ, a = b → a = c → c = b :=
 begin
   intros,
   apply eq.trans,
@@ -316,7 +316,7 @@ relation that has been tagged with the =refl= attribute.
 With that tactic, the previous proof can be written more elegantly as
 follows:
 #+BEGIN_SRC lean
-example : ∀ a b c : nat, a = b → a = c → c = b :=
+example : ∀ a b c : ℕ, a = b → a = c → c = b :=
 begin
   intros,
   transitivity,
@@ -328,7 +328,7 @@ end
 
 The =repeat= combinator can be used to simplify the last two lines:
 #+BEGIN_SRC lean
-example : ∀ a b c : nat, a = b → a = c → c = b :=
+example : ∀ a b c : ℕ, a = b → a = c → c = b :=
 begin
   intros,
   apply eq.trans,
@@ -873,67 +873,158 @@ In this example, after the =transitivity= tactic is applied, there are
 two goals, =a = ?m_1= and =?m_1 = c=. After the =change=, the two
 goals have been specialized to =a = b= and =b = c=. 
 
+# TODO(Jeremy): also describe
+#   tactic combinators (like =try=)
+#   tactics that manage goals
+#   subst, contradiction, refine
 
-# TODO(Jeremy): describe rewrite and simp, also drewrite and dsimp
 
-** The Rewrite Tactic
+** Rewriting and the Simplifier
+
+The =rewrite= tactic (abbreviated =rw=) and the =simp= tactic were
+introduced in [[file:04_Quantifiers_and_Equality.org::#Calculational_Proofs][Section 4.3]]. In this section, we discuss them in greater detail.
 
 The =rewrite= tactic provide a basic mechanism for applying
 substitutions to goals and hypotheses, providing a convenient and
-efficient way of working with equality.
-
-# TODO: add a citation
-
-The =rewrite= tactic has many features. The most basic form of the
+efficient way of working with equality. The most basic form of the
 tactic is =rewrite t=, where =t= is a term which conclusion is an
 equality. In the following example, we use this basic form to rewrite
 the goal using a hypothesis.
 #+BEGIN_SRC lean
-open nat
-variables (f : nat → nat) (k : nat)
+variables (f : ℕ → ℕ) (k : ℕ)
 
 example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 :=
 begin
-  rewrite h₂, -- replace k with 0
-  rewrite h₁  -- replace f 0 with 0
+  rw h₂, -- replace k with 0
+  rw h₁  -- replace f 0 with 0
 end
 #+END_SRC
-In the example above, the first =rewrite= tactic replaces =k= with =0=
-in the goal =f k = 0=.  Then, the second =rewrite= replace =f 0= with
-=0=. The =rewrite= tactic automatically closes any goal of
-the form =t = t=.
+In the example above, the first use of =rw= replaces =k= with =0= in
+the goal =f k = 0=.  Then, the second one replaces =f 0= with =0=. The
+tactic automatically closes any goal of the form =t = t=.
 
-Multiple rewrites can be combined using the notation =rewrite [t_1,
+Multiple rewrites can be combined using the notation =rw [t_1,
 ..., t_n]=, which is just shorthand for =rewrite t_1, ..., rewrite
-t_n=.  The previous example can be written as:
+t_n=.  The previous example can be written as follows:
 #+BEGIN_SRC lean
-open nat
-variables (f : nat → nat) (k : nat)
+variables (f : ℕ → ℕ) (k : ℕ)
 
 example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 :=
 begin
-  rewrite [h₂, h₁]
+  rw [h₂, h₁]
 end
 #+END_SRC
 
-By default, the =rewrite= tactic uses an equation in the forward
-direction, matching the left-hand side with an expression, and
-replacing it with the right-hand side. The notation =-t= can be used
-to instruct the tactic to use the equality =t= in the reverse
-direction.
+By default, =rw= uses an equation in the forward direction, matching
+the left-hand side with an expression, and replacing it with the
+right-hand side. The notation =-t= can be used to instruct the tactic
+to use the equality =t= in the reverse direction.
 #+BEGIN_SRC lean
-open nat
-variables (f : nat → nat) (a b : nat)
+variables (f : ℕ → ℕ) (a b : ℕ)
 
 example (h₁ : a = b) (h₂ : f a = 0) : f b = 0 :=
 begin
-  rewrite [-h₁, h₂]
+  rw [-h₁, h₂]
 end
 #+END_SRC
-In this example, the term =-h₁= instructs the =rewriter= to replace
+In this example, the term =-h₁= instructs the rewriter to replace
 =b= with =a=.
 
-# TODO: we do not have these features any more -- delete?
+Sometimes the left-hand side of an identity can match more than one
+subterm in the pattern, in which case the =rewrite= tactic chooses
+the first match it finds when traversing the term. If that is not the
+one you want, you can use additional arguments to specify the
+appropriate subterm.
+#+BEGIN_SRC lean
+example (a b c : ℕ) : a + b + c = a + c + b :=
+begin
+  rw [add_assoc, add_comm b, -add_assoc]
+end
+
+example (a b c : ℕ) : a + b + c = a + c + b :=
+begin
+  rw [add_assoc, add_assoc, add_comm b]
+end
+
+example (a b c : ℕ) : a + b + c = a + c + b :=
+begin
+  rw [add_assoc, add_assoc, add_comm _ b]
+end
+#+END_SRC
+In the first example above, the first step rewrites =a + b + c= to
+=a + (b + c)=.  Then next applies commutativity to the term =b + c=;
+without specifying the argument, the tactic would instead rewrite =a +
+(b + c)= to =(b + c) + a=.  Finally, the last step applies
+associativity in the reverse direction rewriting =a + (c + b)= to =a +
+c + b=. The next two examples instead apply associativity to move the
+parenthesis to the right on both sides, and then switch =b= and
+=c=. Notice that the last example specifies that the rewrite should
+take place on the right-hand side by specifying the second argument to
+=add_comm=. 
+
+By default, the =rewrite= tactic affects only the goal. The notation
+=rw t at h= applies the rewrite =t= at hypothesis =h=.
+#+BEGIN_SRC lean
+variables (f : ℕ → ℕ) (a : ℕ)
+
+example (h : a + 0 = 0) : f a = f 0 :=
+begin
+  rw add_zero at h, rw h
+end
+#+END_SRC
+The first step, =rw add_zero at h=, rewrites the hypothesis =a + 0 = 0=
+to =a = 0=. Then the new hypothesis =a = 0= is used to rewrite the
+goal to =f 0 = f 0=.
+
+# TODO(Jeremy): in this next example, eliminate the definition of
+# tuple when it is in the library.
+
+The =rewrite= tactic is not restricted to propositions. In the
+following example, we use =rw h at t= to rewrite the hypothesis
+=t : tuple α n= to =v : tuple α 0=.
+#+BEGIN_SRC lean
+universe variable u
+
+definition tuple (α : Type u) (n : ℕ) := { l : list α // list.length l = n }
+
+variables {α : Type u} {n : ℕ}
+
+example (h : n = 0) (t : tuple α n) : tuple α 0 :=
+begin
+  rw h at t,
+  exact t
+end
+#+END_SRC
+
+Note that the rewrite tactic can carry out generic calculuations in
+any algebraic structure. The following examples involve an arbitrary
+ring and an arbitrary group, respectively.
+#+BEGIN_SRC lean
+universe variable uu
+
+example {α : Type uu} [ring α] (a b c : α) : a * 0 + 0 * b + c * 0 + 0 * a = 0 :=
+begin
+  rw [mul_zero, mul_zero, zero_mul, zero_mul],
+  repeat { rw add_zero }
+end
+
+example {α : Type uu} [group α] {a b : α} (h : a * b = 1) : a⁻¹ = b :=
+by rw [-(mul_one a⁻¹), -h, inv_mul_cancel_left]
+#+END_SRC
+
+[A description of the =simp= is coming soon.]
+
+# TODO(Jeremy): still need to:
+#   Describe the simplifier
+#   Describe drewrite and dsimp
+#   Describe erewrite
+#   Describe unfold
+#   In the chapter on function definitions, write about using
+#     the generated equations.
+#   Use the 
+
+# TODO(Jeremy): This is old text, describing the rewrite tactic in
+# Lean 2.
 
 # The notation =*t= instructs the rewriter to apply the rewrite =t= zero
 # or more times, while the notation =+t= instructs the rewriter to use
@@ -942,7 +1033,7 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # import data.nat
 # open nat algebra
 
-# example (x y : nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+# example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
 # by rewrite [*left_distrib, *right_distrib, -add.assoc]
 # #+END_SRC
 
@@ -970,7 +1061,7 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # import data.nat
 # open nat algebra
 # -- BEGIN
-# example (a b c : nat) : a + b + c = a + c + b :=
+# example (a b c : ℕ) : a + b + c = a + c + b :=
 # begin
 #   rewrite [add.assoc, {b + _}add.comm, -add.assoc]
 # end
@@ -983,30 +1074,12 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # associativity in the "reverse direction" rewriting =a + (c + b)= to
 # =a + c + b=.
 
-# By default, the tactic affects only the goal. The notation =t at h=
-# applies the rewrite =t= at hypothesis =h=.
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat algebra
-# -- BEGIN
-# variables (f : nat → nat) (a : nat)
-
-# example (h : a + 0 = 0) : f a = f 0 :=
-# begin
-#   rewrite [add_zero at h, h]
-# end
-# -- END
-# #+END_SRC
-# The first step, =add_zero at h=, rewrites the hypothesis =(h : a + 0 = 0)=
-# to =a = 0=. Then the new hypothesis =(h : a = 0)= is used to rewrite the
-# goal to =f 0 = f 0=.
-
 # Multiple hypotheses can be specified in the same =at= clause.
 # #+BEGIN_SRC lean
 # import data.nat
 # open nat algebra
 # -- BEGIN
-# variables (a b : nat)
+# variables (a b : ℕ)
 
 # example (h₁ : a + 0 = 0) (h₂ : b + 0 = 0) : a + b = 0 :=
 # begin
@@ -1015,6 +1088,7 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # end
 # -- END
 # #+END_SRC
+
 # You may also use =t at *= to indicate that all hypotheses and the goal should
 # be rewritten using =t=. The tactic step fails if none of them can be rewritten.
 # The notation =t at * ⊢= applies =t= to all hypotheses. You can enter
@@ -1023,7 +1097,7 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # import data.nat
 # open nat algebra
 # -- BEGIN
-# variables (a b : nat)
+# variables (a b : ℕ)
 
 # example (h₁ : a + 0 = 0) (h₂ : b + 0 = 0) : a + b + 0 = 0 :=
 # begin
@@ -1033,23 +1107,8 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # -- END
 # #+END_SRC
 # The step =add_zero at *= rewrites the hypotheses =h₁=, =h₂= and the main goal
-# using the =add_zero (x : nat) : x + 0 = x=, producing =a = 0=, =b = 0= and
+# using the =add_zero (x : ℕ) : x + 0 = x=, producing =a = 0=, =b = 0= and
 # =a + b = 0= respectively.
-
-# The =rewrite= tactic is not restricted to propositions. In the
-# following example, we use =rewrite h at v= to rewrite the hypothesis
-# =v : vector α n= to =v : vector α 0=.
-# #+BEGIN_SRC lean
-# import data.examples.vector
-# open nat
-
-# variables {α : Type} {n : nat}
-# example (h : n = 0) (v : vector α n) : vector α 0 :=
-# begin
-#   rewrite h at v,
-#   exact v
-# end
-# #+END_SRC
 
 # Given a rewrite =(t : l = r)=, the tactic =rewrite t= by default
 # locates a sub-term =s= which matches the left-hand-side =l=, and then
@@ -1060,9 +1119,9 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # occurrences should be replaced.
 # #+BEGIN_SRC lean
 # import data.nat
-# open nat
+# open ℕ
 # -- BEGIN
-# variables (f : nat → nat → nat → nat) (a b : nat)
+# variables (f : ℕ → ℕ → ℕ → ℕ) (a b : ℕ)
 
 # example (h₁ : a = b) (h₂ : f b a b = 0) : f a a a = 0 :=
 # by rewrite [h₁ at {1, 3}, h₂]
@@ -1075,45 +1134,12 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # the previous example using this feature.
 # #+BEGIN_SRC lean
 # import data.nat
-# open nat
+# open ℕ
 
-# variables (f : nat → nat → nat → nat) (a b : nat)
+# variables (f : ℕ → ℕ → ℕ → ℕ) (a b : ℕ)
 # -- BEGIN
 # example (h₁ : a = b) (h₂ : f b a b = 0) : f a a a = 0 :=
 # by rewrite [h₁ at -{2}, h₂]
-# -- END
-# #+END_SRC
-
-# So far, we have used theorems and hypotheses as rewriting rules. In
-# these cases, the term =t= is just an identifier.  The notation
-# =rewrite (t)= can be used to provide an arbitrary term =t= as a
-# rewriting rule.
-# #+BEGIN_SRC lean
-# import algebra.group
-# namespace hide
-# -- BEGIN
-# open algebra
-
-# variables {α : Type} [s : group α]
-# include s
-
-# theorem inv_eq_of_mul_eq_one {a b : α} (h : a * b = 1) : a⁻¹ = b :=
-# by rewrite [-(mul_one a⁻¹), -h, inv_mul_cancel_left]
-# -- END
-# end hide
-# #+END_SRC
-# In the example above, the term =mul_one a⁻¹= has type =a⁻¹ * 1 = a⁻¹=.
-# Thus, the rewrite step =-(mul_one a⁻¹)= replaces =a⁻¹= with =a⁻¹ * 1=.
-
-# Calculational proofs and the rewrite tactic can be used together.
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
-# -- BEGIN
-# example (a b c : nat) (h₁ : a = b) (h₂ : b = c + 1) : a ≠ 0 :=
-# calc
-#   a     = succ c : by rewrite [h₁, h₂, add_one]
-#     ... ≠ 0      : succ_ne_zero c
 # -- END
 # #+END_SRC
 
@@ -1135,11 +1161,11 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # import data.nat
 # open nat
 # -- BEGIN
-# definition double (x : nat) := x + x
+# definition double (x : ℕ) := x + x
 
-# variable f : nat → nat
+# variable f : ℕ → ℕ
 
-# example (x y : nat) (h₁ : double x = 0) (h₃ : f 0 = 0) : f (x + x) = 0 :=
+# example (x y : ℕ) (h₁ : double x = 0) (h₃ : f 0 = 0) : f (x + x) = 0 :=
 # by rewrite [↑double at h₁, h₁, h₃]
 # -- END
 # #+END_SRC
@@ -1149,15 +1175,15 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 
 # The tactic =esimp= is a shorthand for =rewrite ▸*=. Here are two simple examples:
 # #+BEGIN_SRC lean
-# open sigma nat
+# open sigma ℕ
 
-# example (x y : nat) (h : (fun (a : nat), pr1 ⟨a, y⟩) x = 0) : x = 0 :=
+# example (x y : ℕ) (h : (fun (a : ℕ), pr1 ⟨a, y⟩) x = 0) : x = 0 :=
 # begin
 #   esimp at h,
 #   exact h
 # end
 
-# example (x y : nat) (h : x = 0) : (fun (a : nat), pr1 ⟨a, y⟩) x = 0 :=
+# example (x y : ℕ) (h : x = 0) : (fun (a : ℕ), pr1 ⟨a, y⟩) x = 0 :=
 # begin
 #   esimp,
 #   exact h
@@ -1168,9 +1194,9 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # #+BEGIN_SRC lean
 # open nat
 
-# definition foo [irreducible] (x : nat) := x + 1
+# definition foo [irreducible] (x : ℕ) := x + 1
 
-# example (a b : nat) (h : foo a = b) : a + 1 = b :=
+# example (a b : ℕ) (h : foo a = b) : a + 1 = b :=
 # begin
 #   rewrite ↓foo a,
 #   exact h
@@ -1204,22 +1230,6 @@ In this example, the term =-h₁= instructs the =rewriter= to replace
 # reduction step; this placeholder is unified with the right-hand-side
 # of the main goal. As a result, we do not have the copy the right-hand
 # side of the goal.
-
-# The =rewrite= tactic supports type classes. In the following example
-# we use theorems from the =mul_zero_class= and =add_monoid= classes in
-# an example for the =comm_ring= class. The rewrite is acceptable
-# because every =comm_ring= (commutative ring) is an instance of the
-# classes =mul_zero_class= and =add_monoid=.
-
-# #+BEGIN_SRC lean
-# import algebra.ring
-# open algebra
-
-# example {α : Type} [s : comm_ring α] (a b c : α) : a * 0 + 0 * b + c * 0 + 0 * a = 0 :=
-# begin
-#   rewrite [+mul_zero, +zero_mul, +add_zero]
-# end
-# #+END_SRC
 
 # There are two variants of =rewrite=, namely =krewrite= and =xrewrite=,
 # that are more aggressive about matching patterns. =krewrite= will

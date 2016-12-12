@@ -365,6 +365,9 @@ way. Fortunately, Lean provides an environment that provides better
 support for such calculations, which we will turn to now.
 
 ** Calculational Proofs
+:PROPERTIES:
+  :CUSTOM_ID: Calculational_Proofs
+:END:
 
 A calculational proof is just a chain of intermediate results that are
 meant to be composed by basic principles such as the transitivity of
