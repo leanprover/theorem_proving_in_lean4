@@ -163,34 +163,68 @@ occurs in a tactic block refers to a section variable that should
 therefore be added to the context. As a result, you need to explicitly
 tell Lean to include the relevant entities:
 #+BEGIN_SRC lean
-section
-  variables {p q : Prop} (hp : p) (hq : q)
+variables {p q : Prop} (hp : p) (hq : q)
 
-  include hp hq
+include hp hq
 
-  example : p ∧ q ∧ p :=
-  begin
-    apply and.intro hp,
-    exact and.intro hq hp
-  end
+example : p ∧ q ∧ p :=
+begin
+  apply and.intro hp,
+  exact and.intro hq hp
 end
 #+END_SRC
 The =include= command tells Lean to include the indicated variables
 (as well as any variables they depend on) from that point on, until
-the end of the section or file. The undo the effect of an =include=,
-you can use the =omit= command. Another workaround is to find a way to
+the end of the section or file. The limit the effect of an =include=,
+you can use the =omit= command afterwards:
+#+BEGIN_SRC lean
+variables {p q : Prop} (hp : p) (hq : q)
+
+-- BEGIN
+include hp hq
+
+example : p ∧ q ∧ p :=
+begin
+  apply and.intro hp,
+  exact and.intro hq hp
+end
+
+omit hp hq
+
+-- hp and hq are no longer included by default
+-- END
+#+END_SRC
+Alternatively, you can use a section to delimit the scope.
+#+BEGIN_SRC lean
+variables {p q : Prop} (hp : p) (hq : q)
+
+-- BEGIN
+section
+include hp hq
+
+example : p ∧ q ∧ p :=
+begin
+  apply and.intro hp,
+  exact and.intro hq hp
+end
+end
+
+-- hp and hq are no longer included by default
+-- END
+#+END_SRC
+Another workaround is to find a way to
 refer to the variable in question before entering a tactic block:
 #+BEGIN_SRC lean
-section
-  variables {p q : Prop} (hp : p) (hq : q)
+variables {p q : Prop} (hp : p) (hq : q)
 
-  example : p ∧ q ∧ p :=
-  let hp := hp, hq := hq in
-  begin
-    apply and.intro hp,
-    exact and.intro hq hp
-  end
+-- BEGIN
+example : p ∧ q ∧ p :=
+let hp := hp, hq := hq in
+begin
+  apply and.intro hp,
+  exact and.intro hq hp
 end
+-- END
 #+END_SRC
 Any mention of =hp= or =hq= at all will cause it to be added to the
 hypotheses in the example.
@@ -878,6 +912,7 @@ goals have been specialized to =a = b= and =b = c=.
 #   tactics that manage goals
 #   subst, contradiction, refine
 
+# TODO(Jeremy): break into two sections when this gets long enough
 
 ** Rewriting and the Simplifier
 
@@ -1011,17 +1046,121 @@ end
 example {α : Type uu} [group α] {a b : α} (h : a * b = 1) : a⁻¹ = b :=
 by rw [-(mul_one a⁻¹), -h, inv_mul_cancel_left]
 #+END_SRC
+Using the type class mechanism described in [[file:10_Type_Classes.org::#Type_Classes][Chapter 10]], Lean
+identifies both abstract and concrete instances of the relevant
+algebraic structures, and instantiates the relevant facts accordingly.
 
-[A description of the =simp= is coming soon.]
+# TODO(Jeremy): add a reference to the chapter on attributes
+
+Whereas =rewrite= is designed as a surgical tool for manipulating a
+goal, the simplifier offers a powerful form of automation. A number of
+identities in Lean's library have been tagged with the =[simp]=
+attribute, and the =simp= tactic uses them to iteratively rewrite
+subterms in an expression. 
+#+BEGIN_SRC lean
+variables (x y z : ℕ) (p : ℕ → Prop)
+premise   (h : p (x * y))
+
+example : (x + 0) * (0 + y * 1 + z * 0) = x * y :=
+by simp
+
+include h
+example : p ((x + 0) * (0 + y * 1 + z * 0)) :=
+begin simp, assumption end
+#+END_SRC
+In the first example, the left-hand side of the equality in the goal
+is simplifier using the usual identities involving 0 and 1, reducing
+the goal to =x * y = x * y=. At that point, =simp= applies reflexivity
+to finish it off. In the second example, =simp= reduces the goal to =p
+(x * y)=, at which point the assumption =h= finishes it off.
+
+As with =rw=, you can use the keyword =at= to simplify a hypothesis:
+#+BEGIN_SRC lean
+variables (x y z : ℕ) (p : ℕ → Prop)
+
+-- BEGIN
+example (h : p ((x + 0) * (0 + y * 1 + z * 0))) : p (x * y) :=
+begin simp at h, assumption end
+-- END
+#+END_SRC
+
+For operations that are commutative and associative, like addition on
+the natural numbers, the simplifier uses these two facts to rewrite an
+expression, as well as /left commutativity/. In the case of additition
+the latter is expressed as follows: =x + (y + z) = y + (x + z)=. It
+may seem that commutativity and left-commutativity are problematic, in
+that repeated application of either causes looping. But the simplifier
+detects identities that permute their arguments, and uses a technique
+known as /ordered rewriting/. This means that that the system
+maintains an internal ordering of terms, and only applies the identity
+if doing so decreases the order. With the three identities mentioned
+above, this has the effect that all the parentheses in an expression
+are associated to the right, and the expressions are ordered in a
+canonical (though somewhat arbitrary) way. Two expressions that are
+equivalent up to associativity and commutativity are then rewritten to
+the same canonical form.
+#+BEGIN_SRC lean
+variables (x y z w : ℕ) (p : ℕ → Prop)
+
+example : x * y + z * w  * x = x * w * z + y * x :=
+by simp
+
+example (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) :=
+begin simp, simp at h, assumption end
+#+END_SRC
+As with the rewriter, the simplifier behaves appropriately in
+algebraic structures:
+#+BEGIN_SRC lean
+variables {α : Type} [comm_ring α]
+ 
+example (x y z : α) : (x - x) * y + z = z :=
+begin simp end
+
+example (x y z w : α) : x * y + z * w  * x = x * w * z + y * x :=
+by simp
+#+END_SRC
+
+Also as with the =rewrite= tactic, you can pass additional arguments
+to =simp=. These can either be names of theorems or expressions.
+The =simp= tactic does not recognize the =-t= syntax, so to use an
+identity in the other direction you need to use =eq.symm=
+explicitly. In any case, the additional rules are added to the
+collection of identities that are used to simplify a term.
+#+BEGIN_SRC lean
+def f (m n : ℕ) : ℕ := m + n + m
+
+theorem f.def (m n : ℕ) : f m n = m + n + m := rfl
+
+example {m n : ℕ} (h : n = 1) (h' : 0 = m) : (f m n) * m = m :=
+by simp [h, h'^.symm, f.def]
+#+END_SRC
+If we add the attribute =[simp]= to the theorem =f.def=, we do not
+need to include it.
+#+BEGIN_SRC lean
+def f (m n : ℕ) : ℕ := m + n + m
+
+@[simp]
+theorem f.def (m n : ℕ) : f m n = m + n + m := rfl
+
+example {m n : ℕ} (h : n = 1) (h' : 0 = m) : (f m n) * m = m :=
+by simp [h, h'^.symm]
+#+END_SRC
 
 # TODO(Jeremy): still need to:
-#   Describe the simplifier
+#   Describe more features of the simplifier (as they become
+#     available)
+#   Talk about conditional rewriting
+#   Use more impressive examples
+#   Show a calculation with numerals
+#   Indicate that there is a configurable version (that will be
+#     discussed in /Programming in Lean/?).
+#
 #   Describe drewrite and dsimp
 #   Describe erewrite
 #   Describe unfold
 #   In the chapter on function definitions, write about using
 #     the generated equations.
-#   Use the 
+#   Use the simplifier in inductive proofs later on
 
 # TODO(Jeremy): This is old text, describing the rewrite tactic in
 # Lean 2.
