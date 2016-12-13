@@ -525,9 +525,7 @@ structure Semigroup :=
 (mul : carrier → carrier → carrier)
 (mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c))
 #+END_SRC
-We will see more examples in a later chapter.
-
-# TODO: add reference, Chapter [[file:10_Structures_and_Records.org::#Structures_and_Records][Structures and Records]].
+We will see more examples in [[file:09_Structures_and_Records.org::#Structures_and_Records][Chapter 9]].
 
 Notice that the product type depends on parameters =α β : Type= which
 are arguments to the constructors as well as =prod=.  Lean detects
@@ -640,7 +638,7 @@ govern what the eliminator of an inductive type can eliminate /to/,
 that is, what kinds of types can be the target of a recursor. Roughly
 speaking, what characterizes inductive types in =Prop= is that one can
 only eliminate to other types in =Prop=. This is consistent with the
-understanding that if =P : Prop=, an element =p : P= carries no
+understanding that if =p : Prop=, an element =hp : p= carries no
 data. There is a small exception to this rule, however, which we will
 discuss below, in the section on inductive families.
 
@@ -804,11 +802,9 @@ end nat
 
 end hide
 #+END_SRC
-We will explain how the =instance= command works in a later
-chapter. In the examples below, we will henceforth use Lean's version
-of the natural numbers.
-
-# TODO: do this!
+We will explain how the =instance= command works in [[file:10_Type_Classes.org::#Type_Classes][Chapter 10]]. In the
+examples below, we will henceforth use Lean's version of the natural
+numbers.
 
 Proving a fact like =0 + m = m=, however, requires a proof by
 induction. As observed above, the induction principle is just a
@@ -941,118 +937,199 @@ equal to =n=), and exponentiation. Then try proving some of their
 basic properties, building on the theorems we have already proved.
 
 
-# TODO(Jeremy): this material is from the old TPL. Here we should
-# describe the =cases= tactic, whereas the next chapter should
-# describe the function definition system, including patterns, match,
-# recursive definitions, etc.
+** Tactics
 
-# Here is a description of what =cases e= does:
-#
-# - If =e= is a local hypothesis, it reverts anything that depends on
-#   =e=, splits on cases, and then re-introduces the same hypotheses.
-#
-# - If =e= is found in the conclusion of the goal, it generalizes over
-#   =e=, introduces the generalized variable, and splits on cases.
-#
-# - If =e= is not found in the conclusion of the goal, it splits on
-#   cases, even though the goal does not depend on the values of the
-#   cases. This is good e.g. for splitting on an =or= or an =exists=,
-#   or defining a function depending on cases.
-#
-# Give examples of all three cases. (Some examples were found in
-# Chapter 5.)
-#
-# def f (n : ℕ) : ℕ :=
-# begin
-#   cases n, exact 3, exact 7
-# end
-#
-# example : f 0 = 3 := rfl
-# example : f 5 = 7 := rfl
-#
+Given the fundamental importance of inductive types in Lean, it should
+not be surprising that there are a number of tactics described to work
+with them effectively. We describe some of them here.
 
-# ** Cases and Pattern Matching
+The =cases= tactic works on elements of an inductively defined type,
+and does what the name suggests: it decomposes the element according
+to each of the possible constructors. In its most basic form, it is
+applied to an element =x= in the local context. It then reduces the
+goal to cases in which =x= is replaced by each of the constructions.
+#+BEGIN_SRC lean
+open nat
+variable p : ℕ → Prop
 
-# The =cases= tactic works on elements of an inductively defined
-# type. It does what the name suggests: it decomposes an element of an
-# inductive type according to each of the possible constructors, and
-# leaves a goal for each case. Note that the following example also uses
-# the =revert= tactic to move the hypothesis into the conclusion of the
-# goal.
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
+example (hz : p 0) (hs : ∀ n, p (succ n)) : ∀ n, p n :=
+begin
+  intro n,
+  cases n,
+  { exact hz },  -- goal is p 0
+  apply hs       -- goal is a : ℕ ⊢ p (succ a)
+end
+#+END_SRC 
+There are extra bells and whistles. For one thing, =cases= allows you
+to choose the names for the arguments to the constructors using a
+=with= clause. In the next example, for example, we choose the name
+=m= for the argument to =succ=, so that the second case refers to
+=succ m=. More importantly, the cases tactic will detect any items in
+the local context that depend on the target variable. It reverts these
+elements, does the split, and reintroduces them. In the example below,
+notice that the hypothesis =h : n ≠ 0= becomes =h : 0 ≠ 0= in the
+first branch, and =h : succ m ≠ 0= in the second.
+#+BEGIN_SRC lean
+example (n : ℕ) (h : n ≠ 0) : succ (pred n) = n :=
+begin
+  cases n with m,
+  -- first goal: h : 0 ≠ 0 ⊢ succ (pred 0) = 0
+    { apply (absurd rfl h) }, 
+  -- second goal: h : succ m ≠ 0 ⊢ succ (pred (succ a)) = succ a
+  reflexivity
+end
+#+END_SRC
 
-# example (x : ℕ) (h : x ≠ 0) : succ (pred x) = x :=
-# begin
-#   revert h,
-#   cases x,
-#   -- first goal: ⊢ 0 ≠ 0 → succ (pred 0) = 0
-#   { intro h₁,
-#     apply (absurd rfl h₁)},
-#   -- second goal: ⊢ succ a ≠ 0 → succ (pred (succ a)) = succ a
-#   { intro h₁,
-#     apply rfl}
-# end
-# #+END_SRC
-# The name of the =cases= tactic is particularly well suited to use with disjunctions:
-# #+BEGIN_SRC lean
-# example (a b : Prop) : a ∨ b → b ∨ a :=
-# begin
-#   intro h,
-#   cases h with [ha, hb],
-#   { exact or.inr ha },
-#   { exact or.inl hb }
-# end
-# #+END_SRC
-# In the next example, we rely on the decidability of equality for the
-# natural numbers to carry out another proof by cases:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
+Notice that =cases= can be used to produce data as well as prove
+propositions. 
+#+BEGIN_SRC lean
+def f (n : ℕ) : ℕ :=
+begin
+  cases n, exact 3, exact 7
+end
 
-# check nat.sub_self
+example : f 0 = 3 := rfl
+example : f 5 = 7 := rfl
+#+END_SRC
+Once again, cases will revert and depedencies in the context, split,
+and then reintroduce them.
+#+BEGIN_SRC lean
+universe variable u
 
-# example (m n : nat) : m - n = 0 ∨ m ≠ n :=
-# begin
-#   cases (decidable.em (m = n)) with [heq, hne],
-#   { apply eq.subst heq,
-#     exact or.inl (nat.sub_self m)},
-#   { apply or.inr hne }
-# end
-# #+END_SRC
-# The =cases= tactic can also be used to extract the arguments of a
-# constructor, even for an inductive type like =and=, for which there is
-# only one constructor.
-# #+BEGIN_SRC lean
-# example (p q : Prop) : p ∧ q → q ∧ p :=
-# begin
-#   intro h,
-#   cases h with [h₁, h₂],
-#   apply and.intro,
-#   exact h₂,
-#   exact h₁
-# end
-# #+END_SRC
-# Here the =with= clause names the two arguments to the constructor. If
-# you omit it, Lean will choose a name for you. If there are multiple
-# constructors with arguments, you can provide =cases= with a list of
-# all the names, arranged sequentially:
-# #+BEGIN_SRC lean
-# import data.nat
-# open nat
+definition tuple (α : Type u) (n : ℕ) := { l : list α // list.length l = n }
 
-# inductive foo : Type :=
-# | bar1 : ℕ → ℕ → foo
-# | bar2 : ℕ → ℕ → ℕ → foo
+variables {α : Type u} {n : ℕ}
 
-# definition silly (x : foo) : ℕ :=
-# begin
-#   cases x with [a, b, c, d, e],
-#   exact b,    -- a, b, c are in the context
-#   exact e     -- d, e    are in the context
-# end
-# #+END_SRC
+def f {n : ℕ} (t : tuple α n) : ℕ :=
+begin
+  cases n, exact 3, exact 7
+end
+
+def my_tuple : tuple ℕ 3 :=  ⟨[0, 1, 2], rfl⟩
+
+example : f my_tuple = 7 := rfl
+#+END_SRC
+
+If there are multiple constructors with arguments, you can provide
+=cases= with a list of all the names, arranged sequentially:
+#+BEGIN_SRC lean
+inductive foo : Type
+| bar1 : ℕ → ℕ → foo
+| bar2 : ℕ → ℕ → ℕ → foo
+
+def silly (x : foo) : ℕ :=
+begin
+  cases x with a b c d e,
+  exact b,    -- a, b, c are in the context
+  exact e     -- d, e    are in the context
+end
+#+END_SRC
+
+You can also use =cases= with an arbitrary expression. Assuming that
+expression occurs in the goal, the cases tactic will generalize over
+the expression, introduce the resulting universally quantified
+variable, and case on that.
+#+BEGIN_SRC lean
+open nat
+variable p : ℕ → Prop
+
+example (hz : p 0) (hs : ∀ n, p (succ n)) (m k : ℕ) : p (m + 3 * k) :=
+begin
+  cases (m + 3 * k),
+  { exact hz },  -- goal is p 0
+  apply hs       -- goal is a : ℕ ⊢ p (succ a)
+end
+#+END_SRC
+Think of this as saying "split on cases as to whether =m + 3 * k= is
+zero or the successor of some number." The result is functionally
+equivalent to the following:
+#+BEGIN_SRC lean
+open nat
+variable p : ℕ → Prop
+
+-- BEGIN
+example (hz : p 0) (hs : ∀ n, p (succ n)) (m k : ℕ) : p (m + 3 * k) :=
+begin
+  generalize (m + 3 * k) n,
+  intro n,
+  cases n,
+  { exact hz },  -- goal is p 0
+  apply hs       -- goal is a : ℕ ⊢ p (succ a)
+end
+-- END
+#+END_SRC
+Notice that the expression =m + 3 * k= is erased by generalize; all
+that matters is whether it is of the form =0= or =succ a=. This form
+of =cases= will /not/ revert any hypotheses that also mention the
+expression in equation (in this case, =m + 3 * k=). If such a term
+appears in a hypothesis and you want to generalize over that as well,
+you need to =revert= it explicitly.
+
+If the expression you case on does not appear in the goal, the
+=cases= tactic uses =assert= to put the type of the expression into
+the context. Here is an example:
+#+BEGIN_SRC lean
+example (p : Prop) (m n : ℕ) (h₁ : m < n → p) (h₂ : m ≥ n → p) : p :=
+begin
+  cases lt_or_ge m n with hlt hge,
+  { exact h₁ hlt },
+  exact h₂ hge
+end
+#+END_SRC
+The theorem =lt_or_ge m n= says =m < n ∨ m ≥ n=, and it is natural to
+think of the proof above as splitting on these two cases. In the first
+branch, we have the hypothesis =h₁ : m < n=, and in the second we have
+the hypothesis =h₂ : m ≥ n=. The proof above is functionally
+equivalent to the following:
+#+BEGIN_SRC lean
+example (p : Prop) (m n : ℕ) (h₁ : m < n → p) (h₂ : m ≥ n → p) : p :=
+begin
+  assert h : m < n ∨ m ≥ n,
+  { exact lt_or_ge m n },
+  cases h with hlt hge,
+  { exact h₁ hlt },
+  exact h₂ hge
+end
+#+END_SRC
+After the first two lines, we have =h : m < n ∨ m ≥ n= as a
+hypothesis, and we simply do cases on that.
+
+Here is another example, where we use the decidability of equality on
+the natural numbers to split on the cases =m = n= and =m ≠ n=.
+#+BEGIN_SRC lean
+check nat.sub_self
+
+example (m n : ℕ) : m - n = 0 ∨ m ≠ n :=
+begin
+  cases decidable.em (m = n) with heq hne,
+  { rw heq,
+    left, exact nat.sub_self n },
+  right, exact hne
+end
+#+END_SRC
+Remember that if you =open classical=, you can use the law of the
+excluded middle for any proposition at all. But using type class
+inference (see [[file:10_Type_Classes.org::#Type_Classes][Chapter 10]]), Lean can actually find the relevant
+decision procedure, which means that you can use the case split in a
+computable function.
+#+BEGIN_SRC lean
+def f (m k : ℕ) : ℕ :=
+begin
+  cases m - k, exact 3, exact 7
+end
+
+example : f 5 7 = 3 := rfl
+example : f 10 2 = 7 := rfl
+#+END_SRC
+Aspects of computability will be discussed in a later chapter.
+
+# TODO(Jeremy): add a reference to this.
+
+# TODO(Jeremy): discuss the induction tactic, and other tactics:
+# constructor, contradiction (uses no confusion), etc.
+
+
+# TODO(Jeremy): this is from Lean 2. Delete?
 
 # You can also use pattern matching in a tactic block. With
 # #+BEGIN_SRC lean
@@ -1099,11 +1176,12 @@ basic properties, building on the theorems we have already proved.
 # -- END
 # #+END_SRC
 
+
 ** Other Inductive Types
 
-Let us consider some more examples of inductively defined
-types. For any type, =α=, the type =list α= of lists of elements
-of =α= is defined in the library.
+Let us consider some more examples of inductively defined types. For
+any type, =α=, the type =list α= of lists of elements of =α= is
+defined in the library.
 #+BEGIN_SRC lean
 universe variable u
 
