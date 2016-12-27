@@ -492,7 +492,7 @@ search paths in the =LEAN_PATH= environment variable. You can specify
 subdirectories using periods in the module name: for example, =import
 foo.bar.baz= looks for the file "foo/bar/baz.lean" relative to any of
 the locations listed in the search path. A leading period, as in
-=import .foo.bar=, indicates that the .lean file in question is
+=import .foo.bar=, indicates that the =.lean= file in question is
 specified relative to the current directory. Two leading periods, as
 in =import ..foo.bar=, indicates that the address is relative to the
 parent directory, and so on.
