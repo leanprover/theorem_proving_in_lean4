@@ -4,8 +4,8 @@
 * Propositions and Proofs
 
 By now, you have seen how to define some elementary notions in
-dependent type theory. 
-# TODO: this hasn't been done yet. 
+dependent type theory.
+# TODO: this hasn't been done yet.
 # You have also seen that it is
 # possible to import objects that are defined in Lean's library.
 In this chapter, we will explain how mathematical propositions and
@@ -231,7 +231,7 @@ defined. This makes it possible to process and check theorems in
 parallel, since theorems later in a file do not make use of the
 contents of earlier proofs.
 
-# TODO: it looks like right now, parallel compilation is disabled in 
+# TODO: it looks like right now, parallel compilation is disabled in
 # Lean 3.
 
 # As with definitions, the =print= command will show you the proof of a
@@ -531,7 +531,7 @@ respectively. Alternatively, you can use ASCII equivalents =(|= and =|)=:
 variables p q : Prop
 premises  (hp : p) (hq : q)
 
-example : p ∧ q := (|hp, hq|) 
+example : p ∧ q := (|hp, hq|)
 #+END_SRC
 
 Lean provides another useful syntactic gadget. Given an expression =e=
@@ -766,7 +766,7 @@ example : q ∧ p := iff.mp (and_swap p q) h
 Because =iff= is defined internally from =and=, we can use the
 anonymous constructor notation to construct a proof of =p ↔ q= from
 proofs of the forward and backward directions. We can also use the
-=.^= notation wit =mp= and =mpr=. The previous examples can therefore
+=.^= notation with =mp= and =mpr=. The previous examples can therefore
 be written concisely as follows:
 #+BEGIN_SRC lean
 variables p q : Prop
@@ -804,13 +804,13 @@ leading to the final goal.
 Lean also supports a structured way of reasoning backwards from a
 goal, which models the "suffices to show" construction in ordinary
 mathematics. The next example simply permutes that last two lines in
-the previous proof. 
+the previous proof.
 #+BEGIN_SRC lean
 variables p q : Prop
 
 example (h : p ∧ q) : q ∧ p :=
 have hp : p, from and.left h,
-suffices hq : q, from and.intro hq hp, 
+suffices hq : q, from and.intro hq hp,
 show q, from and.right h
 #+END_SRC
 Writing =suffices hq : q= leaves us with two goals. First, we have to
