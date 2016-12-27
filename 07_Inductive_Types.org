@@ -686,7 +686,7 @@ end hide
 The notation ={x : α | p}= is syntactic sugar for =subtype (λ x : α,
 p)=. It is modeled after subset notation in set theory: the idea is
 that ={x : α | p}= denotes the collection of elements of =α= that have
-property =[=.
+property =p=.
 
 ** Defining the Natural Numbers
 
