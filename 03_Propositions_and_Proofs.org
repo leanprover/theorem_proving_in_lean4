@@ -539,13 +539,12 @@ Lean provides another useful syntactic gadget. Given an expression =e=
 of type =foo= (possibly applied to some arguments), the notation
 =e^.bar= is shorthand for =foo.bar e=. This provides a convenient way
 of accessing functions without opening a namespace. For example, the
-following three expressions all mean the same thing:
+following two expressions mean the same thing:
 #+BEGIN_SRC lean
 variable l : list ℕ
 
 check list.head l
 check l^.head
-check l↣head
 #+END_SRC
 As a result, given =h : p ∧ q=, we can write =h^.left= for =and.left h=
 and =h^.right= for =and.right h=. We can therefore rewrite the sample
