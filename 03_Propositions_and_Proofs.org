@@ -11,9 +11,10 @@ dependent type theory.
 In this chapter, we will explain how mathematical propositions and
 proofs are expressed in the language of dependent type theory, so that
 you can start proving assertions about the objects and notations that
-have been defined. The encoding we use here is specific to the
-standard library; we will discuss proofs in /homotopy type theory/ in
-a later chapter.
+have been defined.
+# The encoding we use here is specific to the
+# standard library; we will discuss proofs in /homotopy type theory/ in
+# a later chapter.
 
 ** Propositions as Types
 
