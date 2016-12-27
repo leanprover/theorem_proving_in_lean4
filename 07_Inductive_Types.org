@@ -825,7 +825,7 @@ nat.induction_on n
     show 0 + succ n = succ n, from
       calc
         0 + succ n = succ (0 + n) : rfl
-          ... = succ n : by rewrite ih)
+          ... = succ n : by rw ih)
 
 -- END
 end hide
@@ -855,7 +855,7 @@ nat.induction_on k
     show m + n + succ k = m + (n + succ k), from
       calc
         m + n + succ k = succ (m + n + k) : rfl
-          ... = succ (m + (n + k)) : by rewrite ih
+          ... = succ (m + (n + k)) : by rw ih
           ... = m + succ (n + k) : rfl
           ... = m + (n + succ k) : rfl)
 -- END
@@ -877,19 +877,19 @@ nat.induction_on k
     show m + n + succ k = m + (n + succ k), from
       calc
         m + n + succ k = succ (m + n + k) : rfl
-          ... = succ (m + (n + k)) : by rewrite ih
+          ... = succ (m + (n + k)) : by rw ih
           ... = m + succ (n + k) : rfl
           ... = m + (n + succ k) : rfl)
 
 -- BEGIN
 theorem add_comm (m n : nat) : m + n = n + m :=
 nat.induction_on n
-  (show m + 0 = 0 + m, by rewrite nat.zero_add)
+  (show m + 0 = 0 + m, by rw nat.zero_add)
   (take n,
     assume ih : m + n = n + m,
     calc
       m + succ n = succ (m + n) : rfl
-        ... = succ (n + m) : by rewrite ih
+        ... = succ (n + m) : by rw ih
         ... = succ n + m : sorry)
 -- END
 
@@ -910,7 +910,7 @@ nat.induction_on k
     show m + n + succ k = m + (n + succ k), from
       calc
         m + n + succ k = succ (m + n + k) : rfl
-          ... = succ (m + (n + k)) : by rewrite ih
+          ... = succ (m + (n + k)) : by rw ih
           ... = m + succ (n + k) : rfl
           ... = m + (n + succ k) : rfl)
 
@@ -923,7 +923,7 @@ nat.induction_on n
     show succ m + succ n = succ (m + succ n), from
       calc
         succ m + succ n = succ (succ m + n) : rfl
-          ... = succ (succ (m + n)) : by rewrite ih
+          ... = succ (succ (m + n)) : by rw ih
           ... = succ (m + succ n) : rfl)
 -- END
 end hide
