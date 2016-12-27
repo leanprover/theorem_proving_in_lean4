@@ -7,7 +7,7 @@
 :END:
 
 We have seen that Lean's formal foundation includes basic types,
-=Prop, Type.{1}, Type.{2}, ...=, and allows for the formation of
+=Prop, Type 1, Type 2, ...=, and allows for the formation of
 dependent function types, =Π x : α. β=. In the examples, we have also
 made use of additional types like =bool=, =nat=, and =int=, and type
 constructors, like =list=, and product, =×=. In fact, in Lean's library,
