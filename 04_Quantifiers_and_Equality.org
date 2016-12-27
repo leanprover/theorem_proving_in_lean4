@@ -91,7 +91,7 @@ show p z, from and.elim_left (h z)
 -- END
 #+END_SRC
 
-αs another example, here is how we can express the fact that a
+As another example, here is how we can express the fact that a
 relation, =r=, is transitive:
 #+BEGIN_SRC lean
 variables (α : Type) (r : α → α → Prop)
@@ -213,10 +213,10 @@ problematic.
 
 Let us now turn to one of the most fundamental relations defined in
 Lean's library, namely, the equality relation. In a later chapter,
-# TODO: add reference, Chapter [[file:06_Inductive_Types.org::#Inductive_Types][Inductive Types]] 
 we will explain /how/ equality is defined from the primitives of
 Lean's logical framework. In the meanwhile, here we explain how to use
 it.
+# TODO: add reference, Chapter [[file:06_Inductive_Types.org::#Inductive_Types][Inductive Types]]
 
 Of course, a fundamental property of equality is that it is an
 equivalence relation:
@@ -293,7 +293,7 @@ example (α : Type) (a b : α) (P : α → Prop) (h1 : a = b) (h2 : P a) : P b :
 h1 ▸ h2
 #+END_SRC
 The triangle in the second presentation is nothing more than notation
-for =eq.subst=, and you can enter it by typing =\t=. 
+for =eq.subst=, and you can enter it by typing =\t=.
 
 The rule =eq.subst= is used to define the following auxiliary rules,
 which carry out more explicit substitutions. They are designed to deal
@@ -318,7 +318,7 @@ example : f a = g b := congr h₂ h₁
 Lean's library contains a large number of common identities, such as
 these:
 #+BEGIN_SRC lean
-variables (α : Type) [comm_ring α] 
+variables (α : Type) [comm_ring α]
 variables a b c d : α
 
 example : a + 0 = a := add_zero a
@@ -347,7 +347,7 @@ in the natural numbers that uses substitution combined with
 associativity, commutativity, and distributivity of the natural
 numbers.
 #+BEGIN_SRC lean
-variables x y z : ℕ 
+variables x y z : ℕ
 
 example (x y z : ℕ) : x * (y + z) = x * y + x * z := mul_add x y z
 example (x y z : ℕ) : x * (y + z) = x * y + x * z := mul_add x y z
@@ -447,9 +447,9 @@ include h1 h2 h3 h4
 -- BEGIN
 theorem T : a = e :=
 calc
-  a     = d + 1   : by rw [h1, h2, h3]
+  a     = d + 1  : by rw [h1, h2, h3]
     ... = 1 + d  : by rw add_comm
-     ... =  e     : by rw h4
+    ... =  e     : by rw h4
 -- END
 #+END_SRC
 Or even this:
@@ -601,7 +601,7 @@ the existence of any such =x=. Here is an example:
 variables (α : Type) (p q : α → Prop)
 
 example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
-exists.elim h 
+exists.elim h
   (take w,
     assume hw : p w ∧ q w,
     show ∃ x, q x ∧ p x, from ⟨w, hw^.right, hw^.left⟩)
@@ -694,7 +694,7 @@ match h1, h2 with
 | ⟨w1, hw1⟩, ⟨w2, hw2⟩ := ⟨w1 + w2, by rw [hw1, hw2, mul_add]⟩
 end
 -- END
-#+END_SRC 
+#+END_SRC
 
 # TODO: discuss obtains here when available
 
@@ -829,7 +829,7 @@ structure of informal mathematical proofs. In this section, we discuss
 some additional features of the proof language that are often
 convenient.
 
-# , and =obtain= 
+# , and =obtain=
 
 To start with, we can use anonymous "have" expressions to introduce an
 auxiliary goal without having to label it. We can refer to the last
@@ -896,7 +896,7 @@ example : f 0 ≤ f 3 :=
 have f 0 ≤ f 1, from h 0,
 have f 1 ≤ f 2, from h 1,
 have f 2 ≤ f 3, from h 2,
-show f 0 ≤ f 3, from le_trans ‹f 0 ≤ f 1› 
+show f 0 ≤ f 3, from le_trans ‹f 0 ≤ f 1›
                        (le_trans ‹f 1 ≤ f 2› ‹f 2 ≤ f 3›)
 -- END
 #+END_SRC
@@ -905,7 +905,7 @@ to refer to /anything/ in the context, not just things that were
 introduced anonymously. It use is also not limited to propositions,
 though using it for data is somewhat odd:
 #+BEGIN_SRC lean
-example (n : ℕ) : ℕ := ‹ℕ› 
+example (n : ℕ) : ℕ := ‹ℕ›
 #+END_SRC
 
 The =suppose= keyword acts as an anonymous assume:
@@ -924,7 +924,7 @@ a label, but if you do not wish to name the assumption, you must use
 =suppose= rather than =assume=. The reason is that Lean allows us to
 write =assume h= to introduce a hypothesis without specifying it,
 leaving it to the system to infer to relevant assumption. An anonymous
-=assume= would thus lead to ambiguities when parsing expressions. 
+=assume= would thus lead to ambiguities when parsing expressions.
 
 As with the anonymous =have=, when you use =suppose= to introduce an
 assumption, that assumption can also be invoked later in the proof by
@@ -954,7 +954,7 @@ then =a = b=, and =a ≥ b= is definitionally equal to =b ≤ a=.
 # #+BEGIN_SRC lean
 # import data.nat
 # open nat
-  
+
 # theorem sqrt_two_irrational {a b : ℕ} (co : coprime a b) : a^2 ≠ 2 * b^2 :=
 # assume h : a^2 = 2 * b^2,
 # have even (a^2),
@@ -979,7 +979,7 @@ then =a = b=, and =a ≥ b= is definitionally equal to =b ≤ a=.
 # #+END_SRC
 
 # A previously used example is found below. We had to reject it because
-# we cannot currently include primes.lean in the web version of Lean. 
+# we cannot currently include primes.lean in the web version of Lean.
 # See the discussion at https://github.com/leanprover/tutorial/issues/138.
 #
 # The following proof that there are infinitely many primes is a slight
