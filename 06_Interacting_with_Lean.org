@@ -47,7 +47,7 @@ eval add 3 2
 print add
 
 -- a user-defined function
-definition foo {α : Type} (x : α) : α := x
+def foo {α : Type} (x : α) : α := x
 
 check foo
 check @foo
@@ -573,7 +573,7 @@ new notation.
 #+BEGIN_SRC lean
 notation `[` a `**` b `]` := a * b + 1
 
-definition mul_square (a b : ℕ) := a * a * b * b
+def mul_square (a b : ℕ) := a * a * b * b
 
 infix `<*>`:50 := mul_square
 

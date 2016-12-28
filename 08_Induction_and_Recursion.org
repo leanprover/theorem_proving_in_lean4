@@ -534,7 +534,7 @@ end
 variable {α : Type}
 variable p : α → bool
 
-definition filter : list α → list α
+def filter : list α → list α
 | []       := []
 | (a :: l) :=
   match p a with

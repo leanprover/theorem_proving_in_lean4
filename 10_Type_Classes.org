@@ -252,7 +252,7 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (α : Type) [s : inhabited α] : α :=
+def default (α : Type) [s : inhabited α] : α :=
 @inhabited.value α s
 -- BEGIN
 check default Prop    -- Prop
@@ -284,7 +284,7 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (α : Type) [s : inhabited α] : α :=
+def default (α : Type) [s : inhabited α] : α :=
 @inhabited.value α s
 -- BEGIN
 eval default Prop    -- true
@@ -335,7 +335,7 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (α : Type) [s : inhabited α] : α :=
+def default (α : Type) [s : inhabited α] : α :=
 @inhabited.value α s
 -- BEGIN
 instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
@@ -364,7 +364,7 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (α : Type) [s : inhabited α] : α :=
+def default (α : Type) [s : inhabited α] : α :=
 @inhabited.value α s
 
 instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
@@ -404,7 +404,7 @@ instance nat_inhabited : inhabited nat :=
 instance unit_inhabited : inhabited unit :=
 ⟨()⟩
 
-definition default (α : Type) [s : inhabited α] : α :=
+def default (α : Type) [s : inhabited α] : α :=
 @inhabited.value α s
 
 instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
@@ -469,7 +469,7 @@ the dependent if-then-else expression. It is defined as follows:
 namespace hide
 
 -- BEGIN
-definition dite (c : Prop) [d : decidable c] {α : Type} (t : c → α) (e : ¬ c → α) : α :=
+def dite (c : Prop) [d : decidable c] {α : Type} (t : c → α) (e : ¬ c → α) : α :=
 decidable.rec_on d (λ hnc : ¬ c, e hnc) (λ hc : c, t hc)
 -- END
 end hide
@@ -498,7 +498,7 @@ the natural numbers:
 #+BEGIN_SRC lean
 open nat
 
-definition step (a b x : ℕ) : ℕ :=
+def step (a b x : ℕ) : ℕ :=
 if x < a ∨ x > b then 0 else 1
 
 set_option pp.implicit true

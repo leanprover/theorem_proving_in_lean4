@@ -672,7 +672,7 @@ assume ⟨w, hpw, hqw⟩, ⟨w, hqw, hpw⟩
 In the following example, we define =even a= as =∃ b, a = 2*b=, and
 then we show that the sum of two even numbers is an even number.
 #+BEGIN_SRC lean
-definition is_even (a : nat) := ∃ b, a = 2 * b
+def is_even (a : nat) := ∃ b, a = 2 * b
 
 theorem even_plus_even {a b : nat} (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
 exists.elim h1 (take w1, assume hw1 : a = 2 * w1,
@@ -686,7 +686,7 @@ Using the various gadgets described in this chapter --- the match
 statement, anonymous constructors, and the =rewrite= tactic, we can
 write this proof concisely as follows:
 #+BEGIN_SRC lean
-definition is_even (a : nat) := ∃ b, a = 2 * b
+def is_even (a : nat) := ∃ b, a = 2 * b
 
 -- BEGIN
 theorem even_plus_even {a b : nat} (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=

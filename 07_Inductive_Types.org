@@ -996,7 +996,7 @@ and then reintroduce them.
 #+BEGIN_SRC lean
 universe variable u
 
-definition tuple (α : Type u) (n : ℕ) := { l : list α // list.length l = n }
+def tuple (α : Type u) (n : ℕ) := { l : list α // list.length l = n }
 
 variables {α : Type u} {n : ℕ}
 
