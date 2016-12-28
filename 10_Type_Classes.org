@@ -695,7 +695,7 @@ namespaces which are opened later are tried earlier.
 You can change the order that type classes instances are tried by
 assigning them a /priority/. When an instance is declared, it is
 assigned a priority value =std.priority.default=, defined to be 1000
-in module =init.priority= in both the standard and hott libraries. You
+in module =init.core= in the standard library. You
 can assign other priorities when defining an instance, and you can
 later change the priority with the =attribute= command. The following
 example illustrates how this is done:
