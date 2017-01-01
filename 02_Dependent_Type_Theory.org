@@ -117,7 +117,7 @@ mean the same thing. Both expressions denote the type of functions
 that take a natural number as input and return a natural number as
 output. The symbol =ℕ= is alternative unicode notation for =nat=; you
 can enter it by typing =\nat=. The unicode symbol =×= for the
-cartesian product is entered =\prod=. We will generally use lower-case
+cartesian product is entered =\times=. We will generally use lower-case
 greek letters like =α=, =β=, and =γ= to range over types. You can
 enter these particular ones with =\a=, =\b=, and =\g=.
 
