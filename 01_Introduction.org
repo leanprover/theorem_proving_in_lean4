@@ -82,7 +82,8 @@ The second way to use Lean is to install and run it natively on your
 computer. The native version is much faster than the web version, and
 is more flexible in other ways, too. It comes with an Emacs mode that
 offers powerful support for writing and debugging proofs, and is much
-better suited for serious use.
+better suited for serious use. The source code, and instructions for 
+building Lean, are available at [[https://github.com/leanprover/lean/]].
 
 ** About this Book
 
