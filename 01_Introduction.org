@@ -85,6 +85,12 @@ offers powerful support for writing and debugging proofs, and is much
 better suited for serious use. The source code, and instructions for 
 building Lean, are available at [[https://github.com/leanprover/lean/]].
 
+At this moment, the development branch of Lean does not support homotopy
+type theory. If you are interested in using Lean to do homotopy type
+theory, you will need to use the snapshot provided at
+[[https://github.com/leanprover/lean2/]]. The tutorial for that snapshot
+is at [[https://leanprover.github.io/tutorial/]].
+
 ** About this Book
 
 This book is designed to teach you to develop and verify proofs in
