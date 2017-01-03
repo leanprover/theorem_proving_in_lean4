@@ -322,9 +322,9 @@ variables x y z w : ℕ
 example (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w :=
 begin
   apply eq.trans,
-  assumption,     -- solves x = ?b with h₁
+  assumption,     -- solves x = ?m_1 with h₁
   apply eq.trans,
-  assumption,     -- solves ?b = w with h₂
+  assumption,     -- solves y = ?m_1 with h₂
   assumption      -- solves z = w with h₃
 end
 -- END
