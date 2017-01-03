@@ -477,7 +477,7 @@ end hide
 That is, in =dite c t e=, we can assume =hc : c= in the "then" branch,
 and =hnc : ¬ c= in the "else" branch.  To make =dite= more convenient
 to use, Lean allows us to write =if h : c then t else e= instead of
-=dite c (λ h : ¬ c, e) (λ h : c, t)=.
+=dite c (λ h : c, t) (λ h : ¬ c, e)=.
 
 In the standard library, we cannot prove that every proposition is
 decidable. But we can prove that /certain/ propositions are
