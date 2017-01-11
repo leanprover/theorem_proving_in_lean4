@@ -127,8 +127,7 @@ pp.beta      : beta reduce terms before displaying them
 #+END_SRC
 In Lean, /coercions/ can be inserted automatically to cast an element
 of one data type to another, for example, to cast an element of =nat=
-to an element of =int=. We will say more about them later in this
-chapter.
+to an element of =int=. We will say more about them later.
 # TODO: add back when implemented
 # This list is not exhaustive; you can see a complete list by
 # typing =set_option pp.= and then using tab-completion in the Lean
@@ -176,7 +175,7 @@ you wish to use.
 # standard library, and by now you have seen many of the namespaces you
 # will need. For example, you should =open nat= for notation when you
 # are working with the natural numbers, and =open int= when you are
-# working with the integers. 
+# working with the integers.
 
 In general, it is important for you to be familiar with the library
 and its contents, so you know what theorems, definitions, notations,
@@ -230,7 +229,7 @@ check @add_lt_add_of_lt_of_le
 #+END_SRC
 
 # TODO: add this when we have these names
-# 
+#
 # Sometimes abbreviations or alternative descriptions are easier to work
 # with. For example, we use `pos`, `neg`, `nonpos`, `nonneg` rather than
 # `zero_lt`, `lt_zero`, `le_zero`, and `zero_le`.
@@ -394,7 +393,7 @@ The Emacs Lean mode also maintains a continuous dialog with the
 background Lean server and uses it to present useful information to
 you. For example, if you put your cursor on any identifier --- a
 theorem name, a defined symbol, or a variable --- Emacs displays its
-type in the information line at the bottom. 
+type in the information line at the bottom.
 
 # TODO: this is no longer true. Delete?
 # If you put the cursor
@@ -404,14 +403,14 @@ type in the information line at the bottom.
 # This works even for implicit arguments. If you put your cursor on an
 # underscore symbol, then, assuming Lean's elaborator was successful in
 # inferring the value, Emacs shows you that value and its type. Typing
-# "C-c C-f" replaces the underscore with the inferred value. 
+# "C-c C-f" replaces the underscore with the inferred value.
 
 The Lean mode supports tab completion. In a context where Lean expects
 an identifier (e.g. a theorem name or a defined symbol), if you start
 typing and then hit the tab key, a popup window suggests possible
 matches or near-matches for the expression you have typed. This helps
 you find the theorems you need without having to browse the
-library. 
+library.
 
 # TODO: this is no longer true. Delete?
 # You can also press tab after an =import= command, to see a
@@ -420,7 +419,7 @@ library.
 
 # TODO: this is no longer true. Delete?
 # If you put your cursor on an identifier and type "C-c C-p", Lean
-# prints the definition of that identifier in a separate buffer. 
+# prints the definition of that identifier in a separate buffer.
 
 If you put your cursor on an identifier and hit =M-.=, Emacs will take
 you to the identifier's definition, whether it is in the same file, in
@@ -504,7 +503,7 @@ necessary. Of course, it is more efficient if it can use the =.olean=
 files. The command =lean --make foo.lean= not only compiles =foo= but saves
 the results in =foo.olean=. You can compile more than one file at
 once, for example, with a command like =lean --make foo.lean bar.lean
-baz.lean=. 
+baz.lean=.
 
 One often wants to create complex projects and arrange the source
 files in nested directories. If =bar= is a path to a directory, =lean
@@ -672,8 +671,8 @@ discussion of =list= in the next chapter for an example.
 # check v ++ w
 # #+END_SRC
 # Where it is necessary to disambiguate, Lean allows you to precede an
-# expression with the notation =#<namespace>= to specify the namespace 
-# in which notation is to be interpreted. 
+# expression with the notation =#<namespace>= to specify the namespace
+# in which notation is to be interpreted.
 # #+BEGIN_SRC lean
 # import data.list data.tuple
 # open list tuple
@@ -681,7 +680,7 @@ discussion of =list= in the next chapter for an example.
 # variables (α : Type) (m n : ℕ)
 # variables (v : tuple α m) (w : tuple α n) (s t : list α)
 
-# -- BEGIN 
+# -- BEGIN
 # check (#list λ x y, x ++ y)
 # check (#tuple λ x y, x ++ y)
 # -- END
@@ -723,7 +722,7 @@ discussion of =list= in the next chapter for an example.
 
 # Lean also provides mechanisms to automatically insert /coercions/
 # between types. These are user-defined functions between datatypes that
-# make it possible to "view" one datatype as another. For example, any 
+# make it possible to "view" one datatype as another. For example, any
 # natural number can be coerced to an integer.
 # #+BEGIN_SRC lean
 # import data.nat data.int
