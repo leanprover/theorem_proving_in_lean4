@@ -838,7 +838,7 @@ check em p
 
 Intuitively, the constructive "or" is very strong: asserting =p ∨ q=
 amounts to knowing which is the case. If =RH= represents the Riemann
-hypothesis, a classical mathematician is willing to assert =Rh ∨ ¬RH=,
+hypothesis, a classical mathematician is willing to assert =RH ∨ ¬RH=,
 even though we cannot yet assert either disjunct.
 
 One consequence of the law of the excluded middle is the principle of
