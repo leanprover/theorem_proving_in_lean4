@@ -486,8 +486,8 @@ end
 
 Some additional tactics are useful for constructing and destructing
 propositions and data. For example, when applied to a goal of the form
-=p ∨ q=, the tactics =left= and =right= are equivalent =apply or.inl=
-and apply =or.inr=, respectively.  Conversely, the =cases= tactic can
+=p ∨ q=, the tactics =left= and =right= are equivalent to =apply or.inl=
+and =apply or.inr=, respectively.  Conversely, the =cases= tactic can
 be used to decompose a disjunction.
 #+BEGIN_SRC lean
 example (p q : Prop) : p ∨ q → q ∨ p :=
@@ -538,9 +538,10 @@ end
 We will see in [[file:07_Inductive_Types.org::#Inductive_Types][Chapter 7]] that these tactics are quite general. The
 =cases= tactic can be used to decompose any element of an inductively
 defined type; =constructor= always applies the first constructor of an
-inductively type, and =left= and =right= can be used with inductively
-defined types with exactly =two= constructors. For example, we can
-uses =cases= and =constructor= with an existential quantifier:
+inductively defined type, and =left= and =right= can be used with
+inductively defined types with exactly =two= constructors. For
+example, we can use =cases= and =constructor= with an existential
+quantifier:
 #+BEGIN_SRC lean
 example (p q : ℕ → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x :=
 begin
