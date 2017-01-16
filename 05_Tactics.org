@@ -1070,7 +1070,7 @@ example : p ((x + 0) * (0 + y * 1 + z * 0)) :=
 begin simp, assumption end
 #+END_SRC
 In the first example, the left-hand side of the equality in the goal
-is simplifier using the usual identities involving 0 and 1, reducing
+is simplified using the usual identities involving 0 and 1, reducing
 the goal to =x * y = x * y=. At that point, =simp= applies reflexivity
 to finish it off. In the second example, =simp= reduces the goal to =p
 (x * y)=, at which point the assumption =h= finishes it off.
