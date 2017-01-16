@@ -156,7 +156,7 @@ In the Lean Emacs mode, if you put your cursor on the "b" in "by" and
 press "C-c C-g", Lean shows you the goal that the tactic is supposed
 to meet.
 
-We will see below that hypothesis and be introduced, reverted,
+We will see below that hypotheses can be introduced, reverted,
 modified, and renamed over the course of a tactic block. As a result,
 it is impossible for the Lean parser to detect when an identifier that
 occurs in a tactic block refers to a section variable that should
