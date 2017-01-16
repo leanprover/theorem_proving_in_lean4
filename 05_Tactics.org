@@ -401,8 +401,8 @@ begin
   reflexivity
 end
 #+END_SRC
-Te =generalize= tactic generalizes the conclusion over the variable
-=x=, using a universal quantifier over =z=.  We can generalize any
+The =generalize= tactic generalizes the conclusion over the variable
+=x= using a universal quantifier over =z=.  We can generalize any
 term, not just a variable:
 #+BEGIN_SRC lean
 variables x y z : ℕ
