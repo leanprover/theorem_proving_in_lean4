@@ -923,7 +923,7 @@ introduced in [[file:04_Quantifiers_and_Equality.org::#Calculational_Proofs][Sec
 The =rewrite= tactic provide a basic mechanism for applying
 substitutions to goals and hypotheses, providing a convenient and
 efficient way of working with equality. The most basic form of the
-tactic is =rewrite t=, where =t= is a term which conclusion is an
+tactic is =rewrite t=, where =t= is a term whose conclusion is an
 equality. In the following example, we use this basic form to rewrite
 the goal using a hypothesis.
 #+BEGIN_SRC lean
