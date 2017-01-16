@@ -842,11 +842,17 @@ variables n m : nat
 variable i : int
 check i + ↑n + ↑m
 check i + ↑(n + m)
-/- The following doesn't work because we process i, the expected type is nat,
-   but we don't have a coercion from int to nat. -/
+
+/- In the above two examples, the coercions are not
+   strictly necessary since Lean will insert implicit
+   nat → int coercions. However, the following example
+   doesn't work because the expected type of i is a nat
+   to match the type of n (and no int → nat coercion
+   exists). -/
 -- check n + i
-/- The operator ↑ can be used to save the day. In instructs Lean, that it
-   must use a coercion around n. -/
+
+/- Assuming we want the more general type, we can
+   insert an explicit ↑ to coerce n to int. -/
 check ↑n + i
 -- END
 #+END_SRC
