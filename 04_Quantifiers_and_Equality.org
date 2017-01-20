@@ -928,7 +928,7 @@ leaving it to the system to infer to relevant assumption. An anonymous
 
 As with the anonymous =have=, when you use =suppose= to introduce an
 assumption, that assumption can also be invoked later in the proof by
-enclosing it in backticks.
+enclosing it in French quotes.
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
 premise h : ∀ x : ℕ, f x ≤ f (x + 1)
