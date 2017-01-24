@@ -63,7 +63,7 @@ print inductive              : display an inductive type and its constructors
 print notation               : display all notation
 print notation <tokens>      : display notation using any of the tokens
 print axioms                 : display assumed axioms
-print options                : display options set by user or emacs mode
+print options                : display options set by user
 print prefix <namespace>     : display all declarations in the namespace
 print classes                : display all classes
 print instances <class name> : display all instances of the given class
@@ -128,10 +128,6 @@ pp.beta      : beta reduce terms before displaying them
 In Lean, /coercions/ can be inserted automatically to cast an element
 of one data type to another, for example, to cast an element of =nat=
 to an element of =int=. We will say more about them later.
-# TODO: add back when implemented
-# This list is not exhaustive; you can see a complete list by
-# typing =set_option pp.= and then using tab-completion in the Lean
-# mode for Emacs, also discussed below.
 
 As an example, the following settings yield much longer output:
 #+BEGIN_SRC lean
@@ -176,8 +172,8 @@ you wish to use.
 
 In general, it is important for you to be familiar with the library
 and its contents, so you know what theorems, definitions, notations,
-and resources are available to you. Below we will see that Emacs'
-Lean mode can also help you find things you need, but studying the
+and resources are available to you. Below we will see that Lean's
+editor modes can also help you find things you need, but studying the
 contents of the library directly is often unavoidable. Lean's standard
 library can be found online, on github:
 #+BEGIN_QUOTE
@@ -191,11 +187,12 @@ provide additional information.
 
 Lean's library developers follow general naming guidelines to make it
 easier to guess the name of a theorem you need, or to find it using
-tab completion in Emacs' Lean mode, which is discussed in the next
-section. Identifiers are generally =snake_case=, which is to say, they
-are composed of words written in lower case separated by
-underscores. For the most part, we rely on descriptive names. Often
-the name of theorem simply describes the conclusion:
+tab completion in editors with a Lean mode that supports this, which
+is discussed in the next section. Identifiers are generally
+=snake_case=, which is to say, they are composed of words written in
+lower case separated by underscores. For the most part, we rely on
+descriptive names. Often the name of theorem simply describes the
+conclusion:
 #+BEGIN_SRC lean
 open nat
 
