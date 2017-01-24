@@ -517,9 +517,9 @@ sequence of suitable arguments. For every =p q : Prop=, =p ∧ q= is an
 example: the canonical way to construct an element is to apply
 =and.intro= to suitable arguments =hp : p= and =hq : q=. Lean allows
 us to use /anonymous constructor/ notation =⟨arg1, arg2, ...⟩= in
-situations like these, when the relevant type can be inferred from the
-context. In particular, we can often write =⟨hp, hq⟩= instead of
-=and.intro hp hq=:
+situations like these, when the relevant type is an inductive type and
+can be inferred from the context. In particular, we can often write
+=⟨hp, hq⟩= instead of =and.intro hp hq=:
 #+BEGIN_SRC lean
 variables p q : Prop
 premises  (hp : p) (hq : q)
@@ -536,10 +536,10 @@ example : p ∧ q := (|hp, hq|)
 #+END_SRC
 
 Lean provides another useful syntactic gadget. Given an expression =e=
-of type =foo= (possibly applied to some arguments), the notation
-=e^.bar= is shorthand for =foo.bar e=. This provides a convenient way
-of accessing functions without opening a namespace. For example, the
-following two expressions mean the same thing:
+of an inductive type =foo= (possibly applied to some arguments), the
+notation =e^.bar= is shorthand for =foo.bar e=. This provides a
+convenient way of accessing functions without opening a namespace. For
+example, the following two expressions mean the same thing:
 #+BEGIN_SRC lean
 variable l : list ℕ
 

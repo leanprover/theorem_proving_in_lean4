@@ -135,9 +135,6 @@ to an element of =int=. We will say more about them later.
 
 As an example, the following settings yield much longer output:
 #+BEGIN_SRC lean
-import data.nat
-open nat
-
 set_option pp.implicit true
 set_option pp.universes true
 set_option pp.notation false
@@ -278,10 +275,8 @@ product in terms of a function on the two components. Names like
 =prod.rec= are /protected/, which means that one has to use the full
 name even when the =prod= namespace is open.
 
-With the propositions as types correspondence, it then makes sense
-that operations that construct, destruct, and otherwise make use of
-propositions are also grouped intro namespaces. We have already seen
-that this is the case with the logical connectives:
+With the propositions as types correspondence, logical connectives are
+also instances of inductive types, and so we tend to use dot notation for them as well:
 #+BEGIN_SRC lean
 check @and.intro
 check @and.elim
@@ -295,19 +290,6 @@ check @exists.elim
 check @eq.refl
 check @eq.subst
 #+END_SRC
-But it also applies to predicates and relations that can be introduced
-and eliminated in similar ways.
-#+BEGIN_SRC lean
-check @le.refl
-#+END_SRC
-
-# TODO: add these when available
-# check @le.dest
-# check @le.elim
-# check @dvd.intro
-# check @dvd.dest
-# check @dvd.elim
-
 
 ** Using Lean with Emacs
 
@@ -331,7 +313,7 @@ keyboard-equivalents for the commands. Notation like "C-x", short for
 "control x," means "hold down the control key while typing x." The
 notation "M-x", short for "Meta x," means "hold down the Alt key while
 typing x," or, equivalently, "press the Esc key, followed by x." For
-example, the "File" menu lists "C-c C-s" as a keyboard-equivalent for
+ example, the "File" menu lists "C-c C-s" as a keyboard-equivalent for
 the "save file" command.
 
 There are a number of benefits to using the native version of Lean

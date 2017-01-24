@@ -885,7 +885,7 @@ nat.induction_on k
 -- BEGIN
 theorem add_comm (m n : nat) : m + n = n + m :=
 nat.induction_on n
-  (show m + 0 = 0 + m, by rw nat.zero_add)
+  (show m + 0 = 0 + m, by rw [zero_add, add_zero])
   (take n,
     assume ih : m + n = n + m,
     calc
@@ -971,6 +971,8 @@ elements, does the split, and reintroduces them. In the example below,
 notice that the hypothesis =h : n ≠ 0= becomes =h : 0 ≠ 0= in the
 first branch, and =h : succ m ≠ 0= in the second.
 #+BEGIN_SRC lean
+open nat
+
 example (n : ℕ) (h : n ≠ 0) : succ (pred n) = n :=
 begin
   cases n with m,
