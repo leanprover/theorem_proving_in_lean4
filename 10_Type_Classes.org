@@ -998,7 +998,7 @@ instance Semigroup_has_mul (S : Semigroup) : has_mul (S^.carrier) :=
 instance Semigroup_to_sort : has_coe_to_sort Semigroup :=
 {S := _, coe := λ S, S^.carrier}
 
-structure morphism (S1 S2 : Semigroup) : Type _ :=
+structure morphism (S1 S2 : Semigroup) :=
 (mor : S1 → S2)
 (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
@@ -1021,7 +1021,7 @@ instance Semigroup_has_mul (S : Semigroup) : has_mul (S^.carrier) :=
 instance Semigroup_to_sort : has_coe_to_sort Semigroup :=
 {S := _, coe := λ S, S^.carrier}
 
-structure morphism (S1 S2 : Semigroup) : Type _ :=
+structure morphism (S1 S2 : Semigroup) :=
 (mor : S1 → S2)
 (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
@@ -1070,7 +1070,7 @@ instance Semigroup_has_mul (S : Semigroup) : has_mul (S^.carrier) :=
 instance Semigroup_to_sort : has_coe_to_sort Semigroup :=
 {S := _, coe := λ S, S^.carrier}
 
-structure morphism (S1 S2 : Semigroup) : Type _ :=
+structure morphism (S1 S2 : Semigroup) :=
 (mor : S1 → S2)
 (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 

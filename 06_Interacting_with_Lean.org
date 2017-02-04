@@ -288,6 +288,261 @@ check @eq.refl
 check @eq.subst
 #+END_SRC
 
+# But it also applies to predicates and relations that can be introduced
+# and eliminated in similar ways.
+# #+BEGIN_SRC lean
+# check @le_refl
+# #+END_SRC
+
+# TODO: add these when available
+# check @le.dest
+# check @le.elim
+# check @dvd.intro
+# check @dvd.dest
+# check @dvd.elim
+
+
+** Using Lean with Emacs
+
+This tutorial is designed to be read alongside Lean's web-browser
+interface, which runs a Javascript-compiled version of Lean inside
+your web browser. But there is a much more powerful interface to Lean
+that runs as a special mode in the Emacs text editor. This section
+describes some of the advantages and features of the Emacs interface.
+
+If you have never used Emacs before, you should spend
+some time experimenting with it. Emacs is an extremely powerful text
+editor, but it can also be overwhelming. There are a number of
+introductory tutorials on the web. See, for example:
+- [[http://www.gnu.org/software/emacs/tour/][A Guided Tour of Emacs]]
+- [[http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/][Absolute Beginner's Guide to Emacs]]
+- [[http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/earlier/Emacs/files/course.pdf][Introduction to Emacs Course (PDF)]]
+
+You can get pretty far simply using the menus at the top of the
+screen for basic editing and file management. Those menus list
+keyboard-equivalents for the commands. Notation like "C-x", short for
+"control x," means "hold down the control key while typing x." The
+notation "M-x", short for "Meta x," means "hold down the Alt key while
+typing x," or, equivalently, "press the Esc key, followed by x." For
+example, the "File" menu lists "C-c C-s" as a keyboard-equivalent for
+the "save file" command.
+
+There are a number of benefits to using the native version of Lean
+instead of the web interface. Perhaps the most important is file
+management. The web interface imports the entire standard library
+internally, which is why some examples in this tutorial have to put
+examples in a namespace, =hide=, to avoid conflicting with objects
+already defined in the standard library. Moreover, the web interface
+only operates on one file at a time. Using the Emacs editor, you can
+create and edit Lean theory files anywhere on your file system, as
+with any editor or word processor. From these files, you can import
+pieces of the library at will, as well as your own theories, defined
+in separate files.
+
+To use the Emacs with Lean, you simply need to create a file with the
+extension ".lean" and edit it. For example, you can create a file by
+typing =emacs my_file.lean= in a terminal window, in the directory
+where you want to keep the file. Assuming everything has been
+installed correctly, Emacs will start up in Lean mode, already
+checking your file in the background.
+
+You can then start typing, or copy any of the examples in this
+tutorial. (In the latter case, make sure you include the =import= and
+=open= commands that are sometimes hidden in the text.) Lean mode
+offers syntax highlighting, so commands, identifiers, and so on are
+helpfully color-coded. Any errors that Lean detects are subtly
+underlined in red, and the editor adds an annotation to the left
+margin at lines where errors occur. As you continue to type and
+eliminate errors, these annotations magically disappear.
+
+If you put the cursor on a highlighted error, Emacs displays the error
+message in at the bottom of the frame. Alternatively, if you type =C-c
+! l= while in Lean mode, Emacs opens a new window with a list of
+compilation errors. Lean relies on an Emacs package, /Flycheck/, for
+this functionality, as evidenced by the letters "FlyC" that appear in
+the Emacs information line.  Flycheck offers a number of commands that
+begin with =C-c !=. For example, =C-c ! n= moves the cursor to the
+next error, and =C-c ! p= moves the cursor to the previous error. You
+can get to a help menu that lists these key bindings by clicking on
+the "FlyC" tag.
+
+It may be disconcerting to see a perfectly good proof suddenly "break"
+when you change a single character. Moreover, changes can introduce
+errors downstream. But the error messages vanish quickly when
+correctness is restored. Lean is quite fast. It uses multiple cores to
+process a file, and caches previous work to speed up compilation. As a
+result, changes you make are registered almost instantaneously.
+
+It is often inconvenient to have to put the cursor on a highlighted
+identifier to see an error message or the outcome of a =print= or
+=check= command. The keystrokes =C-c C-n= toggle =Lean-Next-Error=
+mode, in which the next message (or all the messages that occur on the
+line that the cursor is on, if there are any) appears in a buffer
+named =*lean-info*=. You can position this window anywhere you want
+using Emacs commands to splitting windows and loading
+buffers. Pressing =C-c C-n= again toggles the mode off.
+
+The Emacs Lean mode also maintains a continuous dialog with the
+background Lean server and uses it to present useful information to
+you. For example, if you put your cursor on any identifier --- a
+theorem name, a defined symbol, or a variable --- Emacs displays its
+type in the information line at the bottom.
+
+# TODO: this is no longer true. Delete?
+# If you put the cursor
+# on the opening parenthesis of an expression, Emacs displays the type
+# of the expression.
+
+# This works even for implicit arguments. If you put your cursor on an
+# underscore symbol, then, assuming Lean's elaborator was successful in
+# inferring the value, Emacs shows you that value and its type. Typing
+# "C-c C-f" replaces the underscore with the inferred value.
+
+The Lean mode supports tab completion. In a context where Lean expects
+an identifier (e.g. a theorem name or a defined symbol), if you start
+typing and then hit the tab key, a popup window suggests possible
+matches or near-matches for the expression you have typed. This helps
+you find the theorems you need without having to browse the
+library.
+
+# TODO: this is no longer true. Delete?
+# You can also press tab after an =import= command, to see a
+# list of possible imports, or after the =set_option= command, to see a
+# list of options.
+
+# TODO: this is no longer true. Delete?
+# If you put your cursor on an identifier and type "C-c C-p", Lean
+# prints the definition of that identifier in a separate buffer.
+
+If you put your cursor on an identifier and hit =M-.=, Emacs will take
+you to the identifier's definition, whether it is in the same file, in
+another file in the project (see [[#Object_Files_and_Projects][Section 6.5]] below), or in the
+library. This works even in an autocompletion popup window: if you
+start typing an identifier, press the tab key, choose a completion
+from the list of options, and press "M-.", you are taken to the
+symbol's definition.  If you have Emacs 25 or later, you can then
+press "M-," to go back to the original location.
+
+In tactic mode, if you put your cursor on a tactic (or the keyword
+=begin= or =end=) and type =C-c C-g=, Emacs will show you the goal in
+the =*lean-info*= buffer. Here is another useful trick: if you see
+some notation in a Lean file and you want to know how to enter it from
+the keyboard, put the cursor on the symbol and type =C-c C-k=.
+
+Recall that typing an underscore in an expression asks Lean to infer a
+suitable value for the expression and fill it in automatically. In
+cases where Lean is unable to determine a value for the argument, the
+underscore is highlighted, and the error message indicates the type of
+the "hole" that needs to be filled. This can be extremely useful when
+constructing proofs incrementally. One can start typing a "proof
+sketch," using either =sorry= or an underscore for details you intend
+to fill in later. Assuming the proof is correct modulo these missing
+pieces of information, the error message at an unfilled underscore
+tells you the type of the term you need to construct, typically an
+assertion you need to justify.
+
+The Emacs Lean-mode commands are summarized in the online documentation:
+#+BEGIN_QUOTE
+[[https://github.com/leanprover/lean/blob/master/src/emacs/README.md]]
+#+END_QUOTE
+
+If for some reason the Lean background process does not seem to be
+responding (for example, the information line no longer shows you type
+information), type "C-c C-r" or "M-x lean-server-restart-process", or
+choose "restart lean process" from the Lean menu, and with luck that
+will set things right again.
+
+In Lean, the =exit= command halts processing of a file
+abruptly. Inserting an =exit= therefore prevents Lean from checking
+the file beyond that point.
+
+
+** Imports, Object Files, and Projects
+:PROPERTIES:
+  :CUSTOM_ID: Object_Files_and_Projects
+:END:
+
+At this point, it will be helpful to convey more information about the
+inner workings of Lean. A =.lean= file (read "dot Lean") consists of
+instructions that tell Lean how to construct formal terms in dependent
+type theory. Processing this file is a matter of filling in missing
+or implicit information, constructing the relevant terms, and sending
+them to the type checker to confirm that they are well-formed and have
+the specified types. This is analogous to the compilation process for
+a programming language: the =.lean= file contains the source code that
+is then compiled down to machine representations of the desired formal
+objects. Lean caches the output of the compilation process in files
+with the extension =.olean=, for "object Lean".
+
+Assuming the directory that contains Lean is in your system path, you
+can run lean on a file =foo.lean= from a system command line by typing
+=lean foo.lean=. If =foo= imports other files, by default Lean looks for
+these in the standard library, which it finds relative to the
+directory from which it was invoked, and the current directory. You
+can change the default or add additional directories by specifying the
+search paths in the =LEAN_PATH= environment variable. You can specify
+subdirectories using periods in the module name: for example, =import
+foo.bar.baz= looks for the file "foo/bar/baz.lean" relative to any of
+the locations listed in the search path. A leading period, as in
+=import .foo.bar=, indicates that the =.lean= file in question is
+specified relative to the current directory. Two leading periods, as
+in =import ..foo.bar=, indicates that the address is relative to the
+parent directory, and so on.
+
+When processing =foo=, Lean uses any =.olean= files it can find for
+the imports as long as they are up to date with the source
+file. Otherwise, it recursively compiles the dependencies when
+necessary. Of course, it is more efficient if it can use the =.olean=
+files. The command =lean --make foo.lean= not only compiles =foo= but saves
+the results in =foo.olean=. You can compile more than one file at
+once, for example, with a command like =lean --make foo.lean bar.lean
+baz.lean=.
+
+One often wants to create complex projects and arrange the source
+files in nested directories. If =bar= is a path to a directory, =lean
+--make bar= compiles all the files in that directory, descending
+recursively into subdirectories. The specified directory is added to
+the =LEAN_PATH=, so files in a project can specify =imports= in
+absolute terms from the base directory. The command =lean --make= is
+equivalent to =lean --make .=, which is to say, it compiles all the
+files within and below the current directory.
+
+Similar considerations hold when running Lean from Emacs. Lean mode
+starts a background Lean process that not only checks files and
+provides the messages you see in Flycheck, but also responds to other
+queries for information. Lean processes the current file in the
+background, giving highest priority to theorems that are visible in
+the buffer, and updating compilation tasks as you continue to
+type. Otherwise, the process is the same as command-line compilation:
+Lean uses =.olean= files when they are available and up to date, and
+compiles imports recursively when necessary.
+
+Because files can be opened in Emacs anywhere and at any time, it
+takes a bit more effort to help Lean mode identify the root directory
+when you open a file in a project. You can do this simply by creating
+a file named =.project= in that root directory. The contents of the
+file are ignored; the file serves only as a marker. (On variants of
+Unix, you can create an empty file by typing =touch .project= at a
+shell prompt.) When you open any =.lean= file in Emacs, Lean mode
+traverses the parent directories, and if it finds a =.project= file
+along the way, it takes that to be the root of the project.
+
+In fact, Lean mode starts one Lean server for each project being
+edited. As a result, if you are editing files =a.lean= and =b.lean=
+in the same project, and =b.lean= depends on =a.lean=, then whenever
+you make a change in =b.lean= the result is immediately visible to
+=a.lean=.
+
+Changes are not immediately available across projects, however.
+Suppose you have a project =foo= that depends on another project =bar=
+and you are editing both. If you want the changes in =bar= to be
+available to =foo=, simply save all the files in =bar=, switch to any
+file in =foo=, and either type =C-c C-r= or choose the corresponding
+Lean menu option to restart the Lean server. Upon restarting, the
+server for =foo= will detect and use the new version of =bar=.
+
+>>>>>>> chore(*): make sure all examples work with the latest version
+
 ** Notation and Abbreviations
 :PROPERTIES:
   :CUSTOM_ID: Notation_and_Abbreviations

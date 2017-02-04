@@ -885,7 +885,7 @@ nat.induction_on k
 -- BEGIN
 theorem add_comm (m n : nat) : m + n = n + m :=
 nat.induction_on n
-  (show m + 0 = 0 + m, by rw [zero_add, add_zero])
+  (show m + 0 = 0 + m, by rw [nat.zero_add, nat.add_zero])
   (take n,
     assume ih : m + n = n + m,
     calc
@@ -960,7 +960,7 @@ begin
   { exact hz },  -- goal is p 0
   apply hs       -- goal is a : ℕ ⊢ p (succ a)
 end
-#+END_SRC 
+#+END_SRC
 There are extra bells and whistles. For one thing, =cases= allows you
 to choose the names for the arguments to the constructors using a
 =with= clause. In the next example, for example, we choose the name
@@ -977,14 +977,14 @@ example (n : ℕ) (h : n ≠ 0) : succ (pred n) = n :=
 begin
   cases n with m,
   -- first goal: h : 0 ≠ 0 ⊢ succ (pred 0) = 0
-    { apply (absurd rfl h) }, 
+    { apply (absurd rfl h) },
   -- second goal: h : succ m ≠ 0 ⊢ succ (pred (succ a)) = succ a
   reflexivity
 end
 #+END_SRC
 
 Notice that =cases= can be used to produce data as well as prove
-propositions. 
+propositions.
 #+BEGIN_SRC lean
 def f (n : ℕ) : ℕ :=
 begin

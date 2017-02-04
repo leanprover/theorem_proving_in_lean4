@@ -197,45 +197,46 @@ the elements of the type are just the elements of the set. Given that
 every expression in Lean has a type, it is natural to ask: what type
 does =Type= itself have?
 #+BEGIN_SRC lean
-check Type      -- Type₂
+check Type      -- Type 1
 #+END_SRC
 We have actually come up against one of the most subtle aspects of
 Lean's typing system. Lean's underlying foundation has an infinite
 hierarchy of types:
 #+BEGIN_SRC lean
-check Type 1   -- Type₂
-check Type 2   -- Type₃
+check Type     -- Type 1
+check Type 1   -- Type 2
+check Type 2   -- Type 3
 check Type 3   -- Type 4
 check Type 4   -- Type 5
 #+END_SRC
-Think of =Type 1= as a universe of "small" or "ordinary" types.
-=Type 2= is then a larger universe of types, which contains =Type 1= as an
-element, and =Type 3= is an even larger universe of types, which
-contains =Type 2= as an element. The list is indefinite, so that there
-is a =Type n= for every natural number =n=. Lean introduces
-abbreviations for the first three levels:
+Think of =Type 0= as a universe of "small" or "ordinary" types.
+=Type 1= is then a larger universe of types, which contains =Type 0= as an
+element, and =Type 2= is an even larger universe of types, which
+contains =Type 1= as an element. The list is indefinite, so that there
+is a =Type n= for every natural number =n=. =Type= is an abbreviation
+for =Type 0=:
 #+BEGIN_SRC lean
-check Type    -- same as Type 1
-check Type₂   -- same as Type 2
-check Type₃   -- same as Type 3
+check Type
+check Type 0
 #+END_SRC
-It is rare to have to use more than those. There is also a =Type 0=,
-which is also denoted =Prop=. This type has special properties, and
+There is also =Prop=, this type has special properties, and
 will be discussed in the next chapter.
+#+BEGIN_SRC lean
+check Prop -- Type 0
+#+END_SRC
 
 We want some operations, however, to be /polymorphic/ over type
 universes. For example, =list α= should make sense for any type =α=,
 no matter which type universe =α= lives in. This explains the type
 annotation of the function =list=:
 #+BEGIN_SRC lean
-check list    -- Type u_1 → Type (max 1 u_1)
+check list    -- Type u_1 → Type u_1
 #+END_SRC
 Here =u_1= is a variable ranging over type levels. The output of the
 =check= command means that whenever =α= has type =Type n=, =list α=
-also has type =Type n= if =n= is at least 1, and has =Type 1= if =α=
-has type =0=. The function =prod= is similarly polymorphic:
+also has type =Type n=. The function =prod= is similarly polymorphic:
 #+BEGIN_SRC lean
-check prod    -- Type u_1 → Type u_2 → Type (max 1 u_1 u_2)
+check prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 #+END_SRC
 To define polymorphic constants and variables, Lean allows us to
 declare universe variables explicitly:

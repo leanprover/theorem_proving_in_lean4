@@ -132,10 +132,11 @@ implication in a proof system for natural deduction correspond exactly
 to the rules governing abstraction and application for functions is an
 instance of the /Curry-Howard isomorphism/, sometimes known as the
 /propositions-as-types/ paradigm. In fact, the type =Prop= is
-syntactic sugar for =Type 0=, the very bottom of the type hierarchy
-described in the last chapter. =Prop= has some special features, but
-like the other type universes, it is closed under the arrow
-constructor: if we have =p q : Prop=, then =p → q : Prop=.
+syntactic sugar for =Sort 0=, the very bottom of the type hierarchy
+described in the last chapter. Moreover, =Type u= is also just
+syntactic sugar for =Sort (u+1)=.
+=Prop= has some special features, but like the other type universes,
+it is closed under the arrow constructor: if we have =p q : Prop=, then =p → q : Prop=.
 
 There are at least two ways of thinking about propositions as types. To
 some who take a constructive view of logic and mathematics, this is a
