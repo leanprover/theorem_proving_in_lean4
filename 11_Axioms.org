@@ -32,14 +32,14 @@ extensionality, and a quotient construction which in turn implies the
 principle of function extensionality. These extensions are used, for
 example, to develop theories of sets and finite sets. We will see
 below that using these theorems can block evaluation in Lean's kernel,
-so that closed terms of type =ℕ= no longer evaluate to numerals . But
+so that closed terms of type =ℕ= no longer evaluate to numerals. But
 Lean erases types and propositional information when compiling
 definitions to bytecode for its virtual machine evaluator, and since
 these axioms only add new propositions, they are compatible with that
 computational interpretation. Even computationally inclined users may
 wish to use the classical law of the excluded middle to reason about
-computation. This also blocks evaluation in the kernel, but it
-compatible with compilication to bytecode.
+computation. This also blocks evaluation in the kernel, but it is
+compatible with compilation to bytecode.
 
 The standard library also defines a choice principle that is entirely
 antithetical to a computational interpretation, since it magically
@@ -51,7 +51,7 @@ mark such definitions as =noncomputable= to flag that fact.
 
 Using a clever trick (known as Diaconescu's theorem), one can use
 propositional extensionality, function extensionality, and choice to
-derive the law of the excluded middle. As noted above, however, uses
+derive the law of the excluded middle. As noted above, however, use
 of the law of the excluded middle is still compatible with bytecode
 compilation and code extraction, as are other classical principles, as
 long as they are not used to manufacture data.
@@ -800,7 +800,7 @@ As a result, =f₁= is equal to =f₂=.
   :CUSTOM_ID: Choice_Axioms
 :END:
 
-The state the final axiom defined in the standard library, we need the
+To state the final axiom defined in the standard library, we need the
 =nonempty= type, which is defined as follows:
 #+BEGIN_SRC lean
 universe u
