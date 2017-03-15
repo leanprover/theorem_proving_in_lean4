@@ -727,7 +727,10 @@ attribute [instance, priority std.priority.default-10] i1
 example : foo.a = 2 := rfl
 #+END_SRC
 
-** Coercions
+** Coercions using Type Classes
+:PROPERTIES:
+  :CUSTOM_ID: Coercions_using_Type_Classes
+:END:
 
 The most basic type of coercion maps elements of one type to
 another. For example, a coercion from =nat= to =int= allows us to view

@@ -659,6 +659,12 @@ can use an anonymous =section= / =end= pair. If you do name a section,
 however, you have to close it using the same name. Sections can also
 be nested, which allows you to declare new variables incrementally.
 
+We will see in [[file:06_Interacting_with_Lean.org::#Interacting_with_Lean][Chapter 6]] that, as a scoping mechanism, sections govern
+more than just variables; other commands have effects that are only
+operant in the current section. Similarly, if we use the =open=
+command inside a section, it only remains in effect until that section
+is closed.
+
 ** Namespaces
 :PROPERTIES:
   :CUSTOM_ID: Namespaces
@@ -780,21 +786,12 @@ are opened. Also, a namespace cannot be opened within a section;
 namespaces have to live on the outer levels.
 
 Namespaces and sections serve different purposes: namespaces organize
-data and sections declare variables for insertion in theorems. A
-namespace can be viewed as a special kind of section, however. In
-particular, if you use the =variable= command within a namespace, its
-scope is limited to the namespace. Similarly, if you use an =open=
-command within a namespace, its effects disappear when the namespace
-is closed.
-
-As scoping mechanisms, namespaces and sections govern more than just
-variables and identifier names. We will later see that notations
-defined in a namespace are operant only when the namespace is open,
-and notation defined in a section has scope limited to the
-section. Similarly, if we use the =open= command inside a section or
-namespace, it only remains in effect until that section or namespace
-is closed. As a result, namespaces and sections provide useful ways of
-managing the background context while we work with Lean.
+data and sections declare variables for insertion in theorems. In many
+respects, however, a =namespace ... end= block behaves the same as a
+=section ... end= block. In particular, if you use the =variable=
+command within a namespace, its scope is limited to the
+namespace. Similarly, if you use an =open= command within a namespace,
+its effects disappear when the namespace is closed.
 
 ** Dependent Types
 :PROPERTIES:
