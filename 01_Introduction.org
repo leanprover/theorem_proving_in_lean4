@@ -66,7 +66,7 @@ systems, and to verify claims in both domains.
 ** About Lean
 
 The /Lean/ project was launched by Leonardo de Moura at Microsoft
-Research Redmond in 2012. It is an ongoing, long-term effort, and
+Research Redmond in 2013. It is an ongoing, long-term effort, and
 much of the potential for automation will be realized only gradually
 over time. Lean is released under the Apache 2.0 license, a permissive
 open source license that permits others to use and extend the code and
