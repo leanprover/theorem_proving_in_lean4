@@ -78,14 +78,14 @@ section
 
   def double := x + x
 
-  check double y
-  check double (2 * x)
+  #check double y
+  #check double (2 * x)
 
   theorem t1 : double (x + y) = double x + double y :=
   by simp [double]
 
-  check t1 y
-  check t1 (2 * x)
+  #check t1 y
+  #check t1 (2 * x)
 
   theorem t2 : double (x * y) = double x * y := 
   by simp [double, mul_add]
@@ -122,9 +122,9 @@ section
 
   theorem baz : x = x := rfl
 
-  check @foo
-  check @bar
-  check @baz
+  #check @foo
+  #check @bar
+  #check @baz
 end
 #+END_SRC
 The =omit= command simply undoes the effect of the =include=; it does
@@ -153,9 +153,9 @@ section
 
   theorem baz : x = x := rfl
 
-  check @foo
-  check @bar
-  check @baz
+  #check @foo
+  #check @bar
+  #check @baz
 end
 #+END_SRC
 The include command is often useful with structures that are not
@@ -192,9 +192,9 @@ section
   variable {x}
   theorem baz : x = x := rfl
 
-  check @foo
-  check @bar
-  check @baz
+  #check @foo
+  #check @bar
+  #check @baz
 end
 #+END_SRC
 Using these subsequent =variables= commands does not change the order
@@ -230,12 +230,12 @@ section
     r a e :=
   transr h₁ (t1 h₂ h₃ h₄)
 
-  check t1
-  check t2
+  #check t1
+  #check t2
 end
 
-check t1
-check t2
+#check t1
+#check t2
 #+END_SRC
 As with variables, the parameters =α=, =r=, and =transR= are inserted
 as arguments to definitions and theorems as needed. But there is a
@@ -271,8 +271,8 @@ end foo
 
 open foo
 
-check bar
-check foo.bar
+#check bar
+#check foo.bar
 #+END_SRC 
 It is not important the the definition of =foo.bar= was the result of
 a =namespace= command:
@@ -281,8 +281,8 @@ def foo.bar : ℕ := 1
 
 open foo
 
-check bar
-check foo.bar
+#check bar
+#check foo.bar
 #+END_SRC
 
 Although the names of theorems and definitions have to be unique, the
@@ -297,9 +297,9 @@ tries to use type information to disambiguate the meaning in context,
 but you can always disambiguate by giving the full name. To that end,
 the string =_root_= is an explicit description of the empty prefix.
 #+BEGIN_SRC lean
-check add_sub_cancel
-check nat.add_sub_cancel
-check _root_.add_sub_cancel
+#check add_sub_cancel
+#check nat.add_sub_cancel
+#check _root_.add_sub_cancel
 #+END_SRC
 
 We can prevent the shorter alias from being created by using the
@@ -311,8 +311,8 @@ end foo
 
 open foo
 
--- check bar -- error
-check foo.bar
+-- #check bar -- error
+#check foo.bar
 #+END_SRC
 This is often used for names like =nat.rec_on= and =nat.induction_on=,
 to prevent overloading of common names.
@@ -328,7 +328,7 @@ open nat (hiding succ add sub)
 creates aliases for everything in the =nat= namespace /except/ the
 identifiers lists. The command
 #+BEGIN_SRC lean
-open nat (renaming induction_on → induction_on) (renaming add → plus) (hiding succ sub)
+open nat (renaming mul → times) (renaming add → plus) (hiding succ sub)
 #+END_SRC
 creates aliases for everything in the =nat= namespace except =succ=
 and =sub=, renaming =nat.add= to =plus=, and renaming the protected
@@ -453,7 +453,7 @@ example : 5 ∣ 5 := by simp
 end
 
 -- error: 
--- check 5 ∣ 5
+-- #check 5 ∣ 5
 -- END
 #+END_SRC
 For yet another example, the =reflexivity= tactic makes use of objects
@@ -603,8 +603,8 @@ def mul_square (a b : ℕ) := a * a * b * b
 
 infix `<*>`:50 := mul_square
 
-eval [2 ** 3]
-eval 2 <*> 3
+#reduce [2 ** 3]
+#reduce 2 <*> 3
 #+END_SRC
 In this example, the =notation= command defines a complex binary
 notation for multiplying and adding one. The =infix= command declares
@@ -639,9 +639,9 @@ attribute:
 notation [parsing_only] `[` a `**` b `]` := a * b + 1
 
 variables a b : ℕ
-check [a ** b]
+#check [a ** b]
 #+END_SRC
-The output of the =check= command displays the expression as =a * b +
+The output of the =#check= command displays the expression as =a * b +
 1=. Lean also provides mechanisms for iterated notation, such as =[a,
 b, c, d, e]= to denote a list with the indicated elements. See the
 discussion of =list= in the next chapter for an example.
@@ -694,11 +694,11 @@ section mod_m
   end
 end mod_m
 
-check (mod_refl : ∀ (m a : ℤ), mod_equiv m a a)
+#check (mod_refl : ∀ (m a : ℤ), mod_equiv m a a)
 
-check (mod_symm : ∀ (m a b : ℤ), mod_equiv m a b → mod_equiv m b a)
+#check (mod_symm : ∀ (m a b : ℤ), mod_equiv m a b → mod_equiv m b a)
 
-check (mod_trans : ∀ (m a b c : ℤ), 
+#check (mod_trans : ∀ (m a b c : ℤ), 
                     mod_equiv m a b → mod_equiv m b c → mod_equiv m a c)
 -- END
 #+END_SRC
@@ -717,11 +717,11 @@ detect and insert /coercions/ of this sort.
 variables m n : ℕ
 variables i j : ℤ
 
-check i + m      -- i + ↑m : ℤ
-check i + m + j  -- i + ↑m + j : ℤ
-check i + m + n  -- i + ↑m + ↑n : ℤ
+#check i + m      -- i + ↑m : ℤ
+#check i + m + j  -- i + ↑m + j : ℤ
+#check i + m + n  -- i + ↑m + ↑n : ℤ
 #+END_SRC
-Notice that the output of the =check= command shows that a coercion
+Notice that the output of the =#check= command shows that a coercion
 has been inserted by printing an arrow. The latter is notation for
 the function =coe=; you can type the unicode arrow with =\u= or use
 the =coe= instead. In fact, when the order of arguments is different,
@@ -733,9 +733,9 @@ variables m n : ℕ
 variables i j : ℤ
 
 -- BEGIN
-check ↑m + i        -- ↑m + i : ℤ
-check ↑(m + n) + i  -- ↑(m + n) + i : ℤ
-check ↑m + ↑n + i   -- ↑m + ↑n + i : ℤ
+#check ↑m + i        -- ↑m + i : ℤ
+#check ↑(m + n) + i  -- ↑(m + n) + i : ℤ
+#check ↑m + ↑n + i   -- ↑m + ↑n + i : ℤ
 -- END
 #+END_SRC
 
@@ -750,87 +750,81 @@ for details, see [[file:10_Type_Classes.org::#Coercions_using_Type_Classes][Sect
 There are a number of ways in which you can query Lean for information
 about its current state and the objects and theorems that are
 available in the current context. You have already seen two of the
-most common ones, =check= and =eval=. Remember that =check= is often
+most common ones, =#check= and =#reduce=. Remember that =#check= is often
 used in conjunction with the =@= operator, which makes all of the
 arguments to a theorem or definition explicit. In addition, you can
-use the =print= command to get information about any identifier. If
+use the =#print= command to get information about any identifier. If
 the identifier denotes a definition or theorem, Lean prints the type
 of the symbol, and its definition. If it is a constant or an axiom,
 Lean indicates that fact, and shows the type.
 #+BEGIN_SRC lean
 -- examples with equality
-check eq
-check @eq
-check eq.symm
-check @eq.symm
+#check eq
+#check @eq
+#check eq.symm
+#check @eq.symm
 
-print eq.symm
+#print eq.symm
 
 -- examples with and
-check and
-check and.intro
-check @and.intro
-
--- examples with addition
-check add
-check @add
-eval add 3 2
-print add
+#check and
+#check and.intro
+#check @and.intro
 
 -- a user-defined function
 def foo {α : Type} (x : α) : α := x
 
-check foo
-check @foo
-eval foo
-eval (foo @nat.zero)
-print foo
+#check foo
+#check @foo
+#reduce foo
+#reduce (foo @nat.zero)
+#print foo
 #+END_SRC
 
-There are other useful =print= commands:
+There are other useful =#print= commands:
 #+BEGIN_SRC text
-print definition             : display definition
-print inductive              : display an inductive type and its constructors
-print notation               : display all notation
-print notation <tokens>      : display notation using any of the tokens
-print axioms                 : display assumed axioms
-print options                : display options set by user
-print prefix <namespace>     : display all declarations in the namespace
-print classes                : display all classes
-print instances <class name> : display all instances of the given class
-print fields <structure>     : display all "fields" of a structure
+#print definition             : display definition
+#print inductive              : display an inductive type and its constructors
+#print notation               : display all notation
+#print notation <tokens>      : display notation using any of the tokens
+#print axioms                 : display assumed axioms
+#print options                : display options set by user
+#print prefix <namespace>     : display all declarations in the namespace
+#print classes                : display all classes
+#print instances <class name> : display all instances of the given class
+#print fields <structure>     : display all "fields" of a structure
 #+END_SRC
 We will discuss inductive types, structures, classes, instances in the
 next four chapters. Here are examples of how these commands are used:
 #+BEGIN_SRC lean
-print notation
-print notation + * -
-print axioms
-print options
-print prefix nat
-print prefix nat.le
-print classes
-print instances ring
-print fields ring
+#print notation
+#print notation + * -
+#print axioms
+#print options
+#print prefix nat
+#print prefix nat.le
+#print classes
+#print instances ring
+#print fields ring
 #+END_SRC
 
 The behavior of the generic print command is determined by its
 argument, so that the following pairs of commands all do the same
 thing.
 #+BEGIN_SRC lean
-print add
-print definition add
+#print list.append
+#print definition list.append
 
-print +
-print notation +
+#print +
+#print notation +
 
-print nat
-print inductive nat
+#print nat
+#print inductive nat
 
-print group
-print inductive group
+#print group
+#print inductive group
 #+END_SRC
-Moreover, both =print group= and =print inductive group= recognize
+Moreover, both =#print group= and =#print inductive group= recognize
 that a group is a structure (see [[file:09_Structures_and_Records.org::#Structures_and_Records][Chapter 9]]), and so print the fields as
 well.
 
@@ -863,9 +857,9 @@ set_option pp.universes true
 set_option pp.notation false
 set_option pp.numerals false
 
-check 2 + 2 = 4
-eval (λ x, x + 2) = (λ x, x + 3)
-check (λ x, x + 1) 1
+#check 2 + 2 = 4
+#reduce (λ x, x + 2) = (λ x, x + 3)
+#check (λ x, x + 1) 1
 #+END_SRC
 The command =set_option pp.all true= carries out these settings all at
 once, whereas =set_option pp.all false= reverts to the previous
@@ -879,7 +873,7 @@ lambda-expressions, but this is sometimes useful. The =pp.beta= option
 controls this feature.
 #+BEGIN_SRC lean
 set_option pp.beta true
-check (λ x, x + 1) 1
+#check (λ x, x + 1) 1
 #+END_SRC
 
 ** Elaboration Hints
@@ -1024,11 +1018,11 @@ conclusion:
 #+BEGIN_SRC lean
 open nat
 
-check succ_ne_zero
-check @mul_zero
-check @mul_one
-check @sub_add_eq_add_sub
-check @le_iff_lt_or_eq
+#check succ_ne_zero
+#check @mul_zero
+#check @mul_one
+#check @sub_add_eq_add_sub
+#check @le_iff_lt_or_eq
 #+END_SRC
 If only a prefix of the description is enough to convey the meaning,
 the name may be made even shorter:
@@ -1036,18 +1030,18 @@ the name may be made even shorter:
 open nat
 
 -- BEGIN
-check @neg_neg
-check pred_succ
+#check @neg_neg
+#check pred_succ
 -- END
 #+END_SRC
 Sometimes, to disambiguate the name of theorem or better convey the
 intended reference, it is necessary to describe some of the
 hypotheses. The word "of" is used to separate these hypotheses:
 #+BEGIN_SRC lean
-check @nat.lt_of_succ_le
-check @lt_of_not_ge
-check @lt_of_le_of_ne
-check @add_lt_add_of_lt_of_le
+#check @nat.lt_of_succ_le
+#check @lt_of_not_ge
+#check @lt_of_le_of_ne
+#check @add_lt_add_of_lt_of_le
 #+END_SRC
 
 # TODO: add this when we have these names
@@ -1065,18 +1059,18 @@ check @add_lt_add_of_lt_of_le
 Sometimes the word "left" or "right" is helpful to describe variants
 of a theorem.
 #+BEGIN_SRC lean
-check @add_le_add_left
-check @add_le_add_right
+#check @add_le_add_left
+#check @add_le_add_right
 #+END_SRC
 
 # TODO: add these
-# check le_of_mul_le_mul_left
-# check le_of_mul_le_mul_right
+# #check le_of_mul_le_mul_left
+# #check le_of_mul_le_mul_right
 
 We can also use the word "self" to indicate a repeated argument:
 #+BEGIN_SRC lean
-check mul_inv_self
-check neg_add_self
+#check mul_inv_self
+#check neg_add_self
 #+END_SRC
 
 Remember that identifiers in Lean can be organized into hierarchical
@@ -1088,10 +1082,10 @@ types in Lean generates associated operations, and these are stored in
 a namespace with the same name as the type under definition. For
 example, the product type comes with the following opens:
 #+BEGIN_SRC lean
-check @prod.mk
-check @prod.fst
-check @prod.snd
-check @prod.rec
+#check @prod.mk
+#check @prod.fst
+#check @prod.snd
+#check @prod.rec
 #+END_SRC
 The first is used to construct a pair, whereas the next two,
 =prod.fst= and =prod.snd=, project the two elements. The last,
@@ -1103,17 +1097,17 @@ name even when the =prod= namespace is open.
 With the propositions as types correspondence, logical connectives are
 also instances of inductive types, and so we tend to use dot notation for them as well:
 #+BEGIN_SRC lean
-check @and.intro
-check @and.elim
-check @and.left
-check @and.right
-check @or.inl
-check @or.inr
-check @or.elim
-check @exists.intro
-check @exists.elim
-check @eq.refl
-check @eq.subst
+#check @and.intro
+#check @and.elim
+#check @and.left
+#check @and.right
+#check @or.inl
+#check @or.inr
+#check @or.elim
+#check @exists.intro
+#check @exists.elim
+#check @eq.refl
+#check @eq.subst
 #+END_SRC
 
 # TODO(Jeremy): if later we want to give examples of how to define
@@ -1136,17 +1130,17 @@ check @eq.subst
 # variables m n : nat
 
 # -- BEGIN
-# check m + n          -- m + n : ℕ
-# check a + n          -- a + n : ℤ
-# check n + a          -- n + a : ℤ
-# check (m + n : ℤ)    -- m + n : ℤ
+# #check m + n          -- m + n : ℕ
+# #check a + n          -- a + n : ℤ
+# #check n + a          -- n + a : ℤ
+# #check (m + n : ℤ)    -- m + n : ℤ
 
 # set_option pp.coercions true
 
-# check m + n          -- m + n : ℕ
-# check a + n          -- a + of_nat n : ℤ
-# check n + a          -- of_nat n + a : ℤ
-# check (m + n : ℤ)    -- of_nat (m + n) : ℤ
+# #check m + n          -- m + n : ℕ
+# #check a + n          -- a + of_nat n : ℤ
+# #check n + a          -- of_nat n + a : ℤ
+# #check (m + n : ℤ)    -- of_nat (m + n) : ℤ
 # -- END
 # #+END_SRC
 # Setting the option =pp.coercions= to =true= makes the coercions
@@ -1166,12 +1160,12 @@ check @eq.subst
 # definition bool.to_nat [coercion] (b : bool) : nat :=
 # bool.cond b 1 0
 
-# eval 2 + ff
-# eval 2 + tt
-# eval tt + tt + tt + ff
+# #reduce 2 + ff
+# #reduce 2 + tt
+# #reduce tt + tt + tt + ff
 
-# print coercions        -- show all coercions
-# print coercions bool   -- show all coercions from bool
+# #print coercions        -- show all coercions
+# #print coercions bool   -- show all coercions from bool
 # #+END_SRC
 # The tag "coercion" is an /attribute/ that is associated with the
 # symbol =bool.to_nat=. It does not change the meaning of
@@ -1189,9 +1183,9 @@ check @eq.subst
 
 # attribute bool.to_nat [coercion]
 # -- END
-# eval 2 + ff
-# eval 2 + tt
-# eval tt + tt + tt + ff
+# #reduce 2 + ff
+# #reduce 2 + tt
+# #reduce tt + tt + tt + ff
 # #+END_SRC
 # In both cases, the scope of the coercion is the current namespace, so
 # the coercion will be in place whenever the module is imported and the

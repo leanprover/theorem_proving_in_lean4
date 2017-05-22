@@ -90,13 +90,13 @@ inductive weekday : Type
 | saturday : weekday
 
 -- BEGIN
-check weekday.sunday
-check weekday.monday
+#check weekday.sunday
+#check weekday.monday
 
 open weekday
 
-check sunday
-check monday
+#check sunday
+#check monday
 -- END
 #+END_SRC
 Think of =sunday=, =monday=, ..., =saturday= as being distinct elements of
@@ -130,9 +130,9 @@ inductive weekday : Type
 def number_of_day (d : weekday) : ℕ :=
 weekday.rec_on d 1 2 3 4 5 6 7
 
-eval number_of_day weekday.sunday
-eval number_of_day weekday.monday
-eval number_of_day weekday.tuesday
+#reduce number_of_day weekday.sunday
+#reduce number_of_day weekday.monday
+#reduce number_of_day weekday.tuesday
 -- END
 #+END_SRC
 The first (explicit) argument to =rec_on= is the element being "analyzed." The
@@ -166,12 +166,11 @@ structure in a namespace with the same name. For example, we can put
 the =number_of_day= function in the =weekday= namespace. We are then
 allowed to use the shorter name when we open the namespace.
 
-The names =rec_on=, =cases_on=, =induction_on=, and so on are
-generated automatically. As noted above, they are /protected/ to avoid
-name clashes. In other words, they are not provided by default when
-the namespace is opened. However, you can explicitly declare
-abbreviations for them using the =renaming= option when you open a
-namespace.
+The names =rec_on= abd =cases_on= are generated automatically. As
+noted above, they are /protected/ to avoid name clashes. In other
+words, they are not provided by default when the namespace is
+opened. However, you can explicitly declare abbreviations for them
+using the =renaming= option when you open a namespace.
 
 # TODO: we haven't discussed the [reducible] attribute yet
 # TODO: we haven't discussed open (renaming ...)
@@ -195,12 +194,12 @@ namespace weekday
   cases_on d 1 2 3 4 5 6 7
 end weekday
 
-eval weekday.number_of_day weekday.sunday
+#reduce weekday.number_of_day weekday.sunday
 
 open weekday (renaming cases_on → cases_on)
 
-eval number_of_day sunday
-check cases_on
+#reduce number_of_day sunday
+#check cases_on
 -- END
 #+END_SRC
 We can define functions from =weekday= to =weekday=:
@@ -222,8 +221,8 @@ namespace weekday
   def previous (d : weekday) : weekday :=
   weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
-  eval next (next tuesday)
-  eval next (previous tuesday)
+  #reduce next (next tuesday)
+  #reduce next (previous tuesday)
 
   example : next (previous tuesday) = tuesday := rfl
 end weekday
@@ -234,43 +233,6 @@ How can we prove the general theorem that =next (previous d) = d= for
 any weekday =d=? The induction principle parallels the recursion
 principle: we simply have to provide a proof of the claim for each
 constructor:
-#+BEGIN_SRC lean
-inductive weekday : Type
-| sunday : weekday
-| monday : weekday
-| tuesday : weekday
-| wednesday : weekday
-| thursday : weekday
-| friday : weekday
-| saturday : weekday
-
-namespace weekday
-  def next (d : weekday) : weekday :=
-  weekday.cases_on d monday tuesday wednesday thursday friday saturday sunday
-
-  def previous (d : weekday) : weekday :=
-  weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
-
--- BEGIN
-  theorem next_previous (d: weekday) : next (previous d) = d :=
-  weekday.induction_on d
-    (show next (previous sunday) = sunday, from rfl)
-    (show next (previous monday) = monday, from rfl)
-    (show next (previous tuesday) = tuesday, from rfl)
-    (show next (previous wednesday) = wednesday, from rfl)
-    (show next (previous thursday) = thursday, from rfl)
-    (show next (previous friday) = friday, from rfl)
-    (show next (previous saturday) = saturday, from rfl)
--- END
-end weekday
-#+END_SRC
-
-In fact, =induction_on= is just a special case of =rec_on= where the
-target type is an element of =Prop=. In other words, under the
-propositions-as-types correspondence, the principle of induction is a
-type of definition by recursion, where what is being "defined" is a
-proof instead of a piece of data. We could equally well have used
-=cases_on=:
 #+BEGIN_SRC lean
 inductive weekday : Type
 | sunday : weekday
@@ -301,8 +263,44 @@ namespace weekday
 -- END
 end weekday
 #+END_SRC
-While the =show= commands make the proof clearer and more
-readable, they are not necessary:
+Notic that, under the propositions-as-types correspondence, we can use
+=cases_on= to prove theorems as well as define function. In fact, 
+we could equally well have used =rec_on=:
+#+BEGIN_SRC lean
+inductive weekday : Type
+| sunday : weekday
+| monday : weekday
+| tuesday : weekday
+| wednesday : weekday
+| thursday : weekday
+| friday : weekday
+| saturday : weekday
+
+namespace weekday
+  def next (d : weekday) : weekday :=
+  weekday.cases_on d monday tuesday wednesday thursday friday saturday sunday
+
+  def previous (d : weekday) : weekday :=
+  weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
+
+-- BEGIN
+  theorem next_previous (d: weekday) : next (previous d) = d :=
+  weekday.rec_on d
+    (show next (previous sunday) = sunday, from rfl)
+    (show next (previous monday) = monday, from rfl)
+    (show next (previous tuesday) = tuesday, from rfl)
+    (show next (previous wednesday) = wednesday, from rfl)
+    (show next (previous thursday) = thursday, from rfl)
+    (show next (previous friday) = friday, from rfl)
+    (show next (previous saturday) = saturday, from rfl)
+-- END
+end weekday
+#+END_SRC
+In other words, under the propositions-as-types correspondence, the
+proof by cases is a kind of definition by recursion, where what is
+being "defined" is a proof instead of a piece of data. While the
+=show= commands make the proof clearer and more readable, they are not
+necessary:
 #+BEGIN_SRC lean
 inductive weekday : Type
 | sunday : weekday
@@ -433,8 +431,8 @@ Here is another example:
 def prod_example (p : bool × ℕ) : ℕ :=
 prod.rec_on p (λ b n, cond b (2 * n) (2 * n + 1))
 
-eval prod_example (tt, 3)
-eval prod_example (ff, 3)
+#reduce prod_example (tt, 3)
+#reduce prod_example (ff, 3)
 #+END_SRC
 The =cond= function is a boolean conditional: =cond b t1 t2= return
 =t1= if =b= is true, and =t2= otherwise. (It has the same effect as
@@ -454,8 +452,8 @@ terms of =b=.
 def sum_example (s : ℕ ⊕ ℕ) : ℕ :=
 sum.cases_on s (λ n, 2 * n) (λ n, 2 * n + 1)
 
-eval sum_example (sum.inl 3)
-eval sum_example (sum.inr 3)
+#reduce sum_example (sum.inl 3)
+#reduce sum_example (sum.inr 3)
 -- END
 #+END_SRC
 This example is similar to the previous one, but now an input to
@@ -507,9 +505,9 @@ as a triple of RGB values:
 open nat
 
 -- BEGIN
-record color := (red : nat) (green : nat) (blue : nat)
+structure color := (red : nat) (green : nat) (blue : nat)
 def yellow := color.mk 255 255 0
-eval color.red yellow
+#reduce color.red yellow
 -- END
 #+END_SRC
 The definition of =yellow= forms the record with the three values
@@ -734,7 +732,7 @@ inductive nat : Type
 | zero : nat
 | succ : nat → nat
 -- BEGIN
-check @nat.rec_on
+#check @nat.rec_on
 -- END
 
 end hide
@@ -770,7 +768,7 @@ def add (m n : nat) : nat :=
 nat.rec_on n m (λ n add_m_n, succ add_m_n)
 
 -- try it out
-eval add (succ zero) (succ (succ zero))
+#reduce add (succ zero) (succ (succ zero))
 
 end nat
 -- END
@@ -819,7 +817,7 @@ open nat
 
 -- BEGIN
 theorem zero_add (n : ℕ) : 0 + n = n :=
-nat.induction_on n
+nat.rec_on n
   (show 0 + 0 = 0, from rfl)
   (take n,
     assume ih : 0 + n = n,
@@ -831,10 +829,8 @@ nat.induction_on n
 -- END
 end hide
 #+END_SRC
-
-In the example above, we encourage you to replace =induction_on= with
-=rec_on= and observe that the theorem is still accepted by Lean. As we
-have seen above, =induction_on= is just a special case of =rec_on=.
+Notice that, once again, when =nat.rec_on= is used in the context of a
+proof, it is really the induction principle in disguise.
 
 For another example, let us prove the associativity of addition, =∀ m n
 k, m + n + k = m + (n + k)=. (The notation =+=, as we have defined it,
@@ -849,7 +845,7 @@ open nat
 
 -- BEGIN
 theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
-nat.induction_on k
+nat.rec_on k
   (show m + n + 0 = m + (n + 0), from rfl)
   (take k,
     assume ih : m + n + k = m + (n + k),
@@ -871,7 +867,7 @@ namespace hide
 open nat
 
 theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
-nat.induction_on k
+nat.rec_on k
   (show m + n + 0 = m + (n + 0), from rfl)
   (take k,
     assume ih : m + n + k = m + (n + k),
@@ -884,7 +880,7 @@ nat.induction_on k
 
 -- BEGIN
 theorem add_comm (m n : nat) : m + n = n + m :=
-nat.induction_on n
+nat.rec_on n
   (show m + 0 = 0 + m, by rw [nat.zero_add, nat.add_zero])
   (take n,
     assume ih : m + n = n + m,
@@ -904,7 +900,7 @@ namespace hide
 open nat
 
 theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
-nat.induction_on k
+nat.rec_on k
   (show m + n + 0 = m + (n + 0), from rfl)
   (take k,
     assume ih : m + n + k = m + (n + k),
@@ -917,7 +913,7 @@ nat.induction_on k
 
 -- BEGIN
 theorem succ_add (m n : nat) : succ m + n = succ (m + n) :=
-nat.induction_on n
+nat.rec_on n
   (show succ m + 0 = succ (m + 0), from rfl)
   (take n,
     assume ih : succ m + n = succ (m + n),
@@ -1100,7 +1096,7 @@ hypothesis, and we simply do cases on that.
 Here is another example, where we use the decidability of equality on
 the natural numbers to split on the cases =m = n= and =m ≠ n=.
 #+BEGIN_SRC lean
-check nat.sub_self
+#check nat.sub_self
 
 example (m n : ℕ) : m - n = 0 ∨ m ≠ n :=
 begin
@@ -1239,8 +1235,8 @@ notation `[` l:(foldr `,` (h t, cons h t) nil) `]` := l
 
 section
   open nat
-  check [1, 2, 3, 4, 5]
-  check ([1, 2, 3, 4, 5] : list num)
+  #check [1, 2, 3, 4, 5]
+  #check ([1, 2, 3, 4, 5] : list num)
 end
 
 end list
@@ -1248,7 +1244,7 @@ end list
 
 end hide
 #+END_SRC
-In the first =check=, Lean assumes that =[1, 2, 3, 4, 5]= is a list of
+In the first =#check=, Lean assumes that =[1, 2, 3, 4, 5]= is a list of
 natural numbers. The =(t : list num)= expression forces Lean to interpret =t= as
 a list of numerals.
 
@@ -1589,17 +1585,17 @@ end cbtree
 # variable fz : C zero
 # variable fs : Π (n : nat), C n → C (succ n)
 
-# eval nat.rec fz fs zero
+# #reduce nat.rec fz fs zero
 # -- nat.rec_on is defined from nat.rec
-# eval nat.rec_on zero fz fs
+# #reduce nat.rec_on zero fz fs
 
 # example : nat.rec fz fs zero = fz :=
 # rfl
 
 # variable a : nat
 
-# eval nat.rec fz fs (succ a)
-# eval nat.rec_on (succ a) fz fs
+# #reduce nat.rec fz fs (succ a)
+# #reduce nat.rec_on (succ a) fz fs
 
 # example (a : nat) : nat.rec fz fs (succ a) = fs a (nat.rec fz fs a) :=
 # rfl
@@ -1625,7 +1621,7 @@ end cbtree
 # #+BEGIN_SRC lean
 # open nat
 
-# print definition nat.rec_on
+# #print definition nat.rec_on
 
 # definition rec_on {C : nat → Type} (n : nat)
 #                   (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
@@ -1644,8 +1640,8 @@ end cbtree
 # -- BEGIN
 # open nat
 
-# print definition nat.induction_on
-# print definition nat.cases_on
+# #print definition nat.induction_on
+# #print definition nat.cases_on
 
 # definition induction_on {C : nat → Prop} (n : nat)
 #                         (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
@@ -1693,13 +1689,13 @@ end cbtree
 # variable C : Type
 # variables a b : nat
 
-# eval nat.no_confusion_type C zero     (succ a)
+# #reduce nat.no_confusion_type C zero     (succ a)
 # -- C
-# eval nat.no_confusion_type C (succ a) zero
+# #reduce nat.no_confusion_type C (succ a) zero
 # -- C
-# eval nat.no_confusion_type C zero     zero
+# #reduce nat.no_confusion_type C zero     zero
 # -- C → C
-# eval nat.no_confusion_type C (succ a) (succ b)
+# #reduce nat.no_confusion_type C (succ a) (succ b)
 # -- (a = b → C) → C
 # -- END
 # #+END_SRC
@@ -1757,7 +1753,7 @@ end cbtree
 
 # -- Remark: b1 and b2 have different types
 
-# eval sigma.no_confusion_type C (sigma.mk a1 b1) (sigma.mk a2 b2)
+# #reduce sigma.no_confusion_type C (sigma.mk a1 b1) (sigma.mk a2 b2)
 # -- (a1 = a2 → b1 == b2 → C) → C
 # #+END_SRC
 
