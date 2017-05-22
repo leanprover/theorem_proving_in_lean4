@@ -37,9 +37,9 @@ constant not : Prop → Prop
 constant implies : Prop → Prop → Prop
 
 variables p q r : Prop
-check and p q                      -- Prop
-check or (and p q) r               -- Prop
-check implies (and p q) (and q p)  -- Prop
+#check and p q                      -- Prop
+#check or (and p q) r               -- Prop
+#check implies (and p q) (and q p)  -- Prop
 -- END
 
 end hide
@@ -61,7 +61,7 @@ constant Proof : Prop → Type
 constant and_comm : Π p q : Prop, Proof (implies (and p q) (and q p))
 
 variables p q : Prop
-check and_comm p q      -- Proof (implies (and p q) (and q p))
+#check and_comm p q      -- Proof (implies (and p q) (and q p))
 -- END
 
 end hide
@@ -233,29 +233,7 @@ defined. This makes it possible to process and check theorems in
 parallel, since theorems later in a file do not make use of the
 contents of earlier proofs.
 
-# TODO: it looks like right now, parallel compilation is disabled in
-# Lean 3.
-
-# As with definitions, the =print= command will show you the proof of a
-# theorem, with a slight twist: if you want to print a theorem in the
-# same file in which it is defined, you need to use the =reveal= command
-# to force Lean to use the theorem itself, rather than its axiomatic
-# surrogate.
-# #+BEGIN_SRC lean
-# constants p q : Prop
-
-# -- BEGIN
-# theorem t1 : p → q → p := λ hp : p, λ hq : q, hp
-
-# reveal t1
-# print t1
-# -- END
-# #+END_SRC
-# (To save space, the online version of Lean does not store proofs of
-# theorems in the library, so you cannot print them in the browser
-# interface.)
-
-As with definitions, the =print= command will show you the proof of a
+As with definitions, the =#print= command will show you the proof of a
 theorem.
 #+BEGIN_SRC lean
 constants p q : Prop
@@ -263,7 +241,7 @@ constants p q : Prop
 -- BEGIN
 theorem t1 : p → q → p := λ hp : p, λ hq : q, hp
 
-print t1
+#print t1
 -- END
 #+END_SRC
 (To save space, the online version of Lean does not store proofs of
@@ -322,7 +300,7 @@ constants p q : Prop
 -- BEGIN
 theorem t1 (hp : p) (hq : q) : p := hp
 
-check t1 -- p → q → p
+#check t1 -- p → q → p
 -- END
 #+END_SRC
 Now we can apply the theorem =t1= just as a function application.
@@ -348,7 +326,7 @@ So it would be more natural to define the theorem so that it
 quantifies over those, too:
 #+BEGIN_SRC lean
 theorem t1 (p q : Prop) (hp : p) (hq : q) : p := hp
-check t1
+#check t1
 #+END_SRC
 The type of =t1= is now =∀ p q : Prop, p → q → p=. We can read this as
 the assertion "for every pair of propositions =p q=, we have =p → q →
@@ -367,53 +345,30 @@ theorem t1 (p q : Prop) (hp : p) (hq : q) : p := hp
 
 variables p q r s : Prop
 
-check t1 p q                -- p → q → p
-check t1 r s                -- r → s → r
-check t1 (r → s) (s → r)    -- (r → s) → (s → r) → r → s
+#check t1 p q                -- p → q → p
+#check t1 r s                -- r → s → r
+#check t1 (r → s) (s → r)    -- (r → s) → (s → r) → r → s
 
 variable h : r → s
-check t1 (r → s) (s → r) h  -- (s → r) → r → s
+#check t1 (r → s) (s → r) h  -- (s → r) → r → s
 #+END_SRC
 Remember that under the propositions-as-types correspondence, a
 variable =h= of type =r → s= can be viewed as the hypothesis, or
-premise, that =r → s= holds. For that reason, Lean offers the
-alternative syntax, =premise=, for =variable=.
-#+BEGIN_SRC lean
-theorem t1 (p q : Prop) (hp : p) (hq : q) : p := hp
-
-variables p q r s : Prop
-
--- BEGIN
-premise h : r → s
-check t1 (r → s) (s → r) h
--- END
-#+END_SRC
+premise, that =r → s= holds.
 
 As another example, let us consider the composition function discussed
 in the last chapter, now with propositions instead of types.
 #+BEGIN_SRC lean
 variables p q r s : Prop
 
-theorem t2 (h1 : q → r) (h2 : p → q) : p → r :=
-assume h3 : p,
-show r, from h1 (h2 h3)
-#+END_SRC
-As a theorem of propositional logic, what does =t2= say?
-
-Lean allows the alternative syntax =premise= and =premises= for
-=variable= and =variables=. This makes sense, of course, for variables
-whose type is an element of =Prop=. It is also often useful to use
-numeric unicode subscripts, entered as =\0=, =\1=, =\2=, ..., for
-hypotheses. The following definition of =t2= has the same net effect
-as the preceding one.
-#+BEGIN_SRC lean
-variables p q r s : Prop
-premises (h₁ : q → r) (h₂ : p → q)
-
-theorem t2 : p → r :=
+theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
 assume h₃ : p,
 show r, from h₁ (h₂ h₃)
 #+END_SRC
+As a theorem of propositional logic, what does =t2= say? It is often
+useful to use numeric unicode subscripts, entered as =\0=, =\1=, =\2=,
+..., for hypotheses, as we did in this example.
+
 
 ** Propositional Logic
 
@@ -434,9 +389,9 @@ They all take values in =Prop=.
 #+BEGIN_SRC lean
 variables p q : Prop
 
-check p → q → p ∧ q
-check ¬p → p ↔ false
-check p ∨ q → q ∨ p
+#check p → q → p ∧ q
+#check ¬p → p ↔ false
+#check p ∨ q → q ∨ p
 #+END_SRC
 
 The order of operations is fairly standard: unary negation =¬= binds
@@ -468,7 +423,7 @@ variables p q : Prop
 
 example (hp : p) (hq : q) : p ∧ q := and.intro hp hq
 
-check assume (hp : p) (hq : q), and.intro hp hq
+#check assume (hp : p) (hq : q), and.intro hp hq
 -- END
 #+END_SRC
 The =example= command states a theorem without naming it or storing it
@@ -523,15 +478,15 @@ can be inferred from the context. In particular, we can often write
 =⟨hp, hq⟩= instead of =and.intro hp hq=:
 #+BEGIN_SRC lean
 variables p q : Prop
-premises  (hp : p) (hq : q)
+variables  (hp : p) (hq : q)
 
-check (⟨hp, hq⟩ : p ∧ q)
+#check (⟨hp, hq⟩ : p ∧ q)
 #+END_SRC
 These angle brackets are obtained by typing =\<= and =\>=,
 respectively. Alternatively, you can use ASCII equivalents =(|= and =|)=:
 #+BEGIN_SRC lean
 variables p q : Prop
-premises  (hp : p) (hq : q)
+variables  (hp : p) (hq : q)
 
 example : p ∧ q := (|hp, hq|)
 #+END_SRC
@@ -544,8 +499,8 @@ example, the following two expressions mean the same thing:
 #+BEGIN_SRC lean
 variable l : list ℕ
 
-check list.head l
-check l^.head
+#check list.head l
+#check l^.head
 #+END_SRC
 As a result, given =h : p ∧ q=, we can write =h^.left= for =and.left h=
 and =h^.right= for =and.right h=. We can therefore rewrite the sample
@@ -742,7 +697,7 @@ iff.intro
   (assume h : q ∧ p,
     show p ∧ q, from and.intro (and.right h) (and.left h))
 
-check and_swap p q    -- p ∧ q ↔ q ∧ p
+#check and_swap p q    -- p ∧ q ↔ q ∧ p
 -- END
 #+END_SRC
 Because they represent a form of /modus ponens/, =iff.elim_left= and
@@ -760,7 +715,7 @@ iff.intro
     show p ∧ q, from and.intro (and.right h) (and.left h))
 
 -- BEGIN
-premise h : p ∧ q
+variable h : p ∧ q
 example : q ∧ p := iff.mp (and_swap p q) h
 -- END
 #+END_SRC
@@ -834,7 +789,7 @@ you have to open the classical namespace.
 open classical
 
 variable p : Prop
-check em p
+#check em p
 #+END_SRC
 
 Intuitively, the constructive "or" is very strong: asserting =p ∨ q=

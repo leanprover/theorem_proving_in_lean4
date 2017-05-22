@@ -46,14 +46,14 @@ constants b1 b2 : bool  -- declare two constants at once
 
 /- check their types -/
 
-check m            -- output: nat
-check n
-check n + 0        -- nat
-check m * (n + 0)  -- nat
-check b1           -- bool
-check b1 && b2     -- "&&" is boolean and
-check b1 || b2     -- boolean or
-check tt           -- boolean "true"
+#check m            -- output: nat
+#check n
+#check n + 0        -- nat
+#check m * (n + 0)  -- nat
+#check b1           -- bool
+#check b1 && b2     -- "&&" is boolean and
+#check b1 || b2     -- boolean or
+#check tt           -- boolean "true"
 
 -- Try some examples of your own.
 
@@ -66,7 +66,7 @@ blocks can be nested, making it possible to "comment out" chunks of
 code, just as in many programming languages.
 
 The =constant= and =constants= commands introduce new constant symbols
-into the working environment, and the =check= command asks Lean to
+into the working environment, and the =#check= command asks Lean to
 report their types. You should test this, and try typing some examples
 of your own. Declaring new objects in this way is a good way to
 experiment with the system, but it is ultimately undesirable: Lean is
@@ -94,16 +94,16 @@ constant h : nat × nat → nat
 
 constant F : (nat → nat) → nat   -- a "functional"
 
-check f               -- ℕ → ℕ
-check f n             -- ℕ
-check g m n           -- ℕ
-check g m             -- ℕ → ℕ
-check (m, n)          -- ℕ × ℕ
-check p.1             -- ℕ
-check p.2             -- ℕ
-check (m, n).1        -- ℕ
-check (p.1, n)        -- ℕ × ℕ
-check F f             -- ℕ
+#check f               -- ℕ → ℕ
+#check f n             -- ℕ
+#check g m n           -- ℕ
+#check g m             -- ℕ → ℕ
+#check (m, n)          -- ℕ × ℕ
+#check p.1             -- ℕ
+#check p.2             -- ℕ
+#check (m, n).1        -- ℕ
+#check (p.1, n)        -- ℕ × ℕ
+#check F f             -- ℕ
 
 -- Try it on your own: write down some types, declare some constants,
 -- and check some expressions.
@@ -148,16 +148,16 @@ are first-class citizens, which is to say that they themselves are
 objects of study. For that to be the case, each of them also has to
 have a type.
 #+BEGIN_SRC lean
-check nat               -- Type
-check bool              -- Type
-check nat → bool        -- Type
-check nat × bool        -- Type
-check nat → nat         -- ...
-check nat × nat → nat
-check nat → nat → nat
-check nat → (nat → nat)
-check nat → nat → bool
-check (nat → nat) → nat
+#check nat               -- Type
+#check bool              -- Type
+#check nat → bool        -- Type
+#check nat × bool        -- Type
+#check nat → nat         -- ...
+#check nat × nat → nat
+#check nat → nat → nat
+#check nat → (nat → nat)
+#check nat → nat → bool
+#check (nat → nat) → nat
 #+END_SRC
 
 We see that each one of the expressions above is an object of type
@@ -167,28 +167,28 @@ constants α β : Type
 constant F : Type → Type
 constant G : Type → Type → Type
 
-check α        -- Type
-check F α      -- Type
-check F nat    -- Type
-check G α      -- Type → Type
-check G α β    -- Type
-check G α nat  -- Type
+#check α        -- Type
+#check F α      -- Type
+#check F nat    -- Type
+#check G α      -- Type → Type
+#check G α β    -- Type
+#check G α nat  -- Type
 #+END_SRC
 Indeed, we have already seen an example of a function of type =Type →
 Type → Type=, namely, the Cartesian product.
 #+BEGIN_SRC lean
 constants α β : Type
 
-check prod α β       -- Type
-check prod nat nat   -- Type
+#check prod α β       -- Type
+#check prod nat nat   -- Type
 #+END_SRC
 Here is another example: given any type =α=, the type =list α= denotes
 the type of lists of elements of type =α=.
 #+BEGIN_SRC lean
 constant α : Type
 
-check list α    -- Type
-check list nat  -- Type
+#check list α    -- Type
+#check list nat  -- Type
 #+END_SRC
 
 For those more comfortable with set-theoretic foundations, it may be
@@ -197,17 +197,17 @@ the elements of the type are just the elements of the set. Given that
 every expression in Lean has a type, it is natural to ask: what type
 does =Type= itself have?
 #+BEGIN_SRC lean
-check Type      -- Type 1
+#check Type      -- Type 1
 #+END_SRC
 We have actually come up against one of the most subtle aspects of
 Lean's typing system. Lean's underlying foundation has an infinite
 hierarchy of types:
 #+BEGIN_SRC lean
-check Type     -- Type 1
-check Type 1   -- Type 2
-check Type 2   -- Type 3
-check Type 3   -- Type 4
-check Type 4   -- Type 5
+#check Type     -- Type 1
+#check Type 1   -- Type 2
+#check Type 2   -- Type 3
+#check Type 3   -- Type 4
+#check Type 4   -- Type 5
 #+END_SRC
 Think of =Type 0= as a universe of "small" or "ordinary" types.
 =Type 1= is then a larger universe of types, which contains =Type 0= as an
@@ -216,13 +216,13 @@ contains =Type 1= as an element. The list is indefinite, so that there
 is a =Type n= for every natural number =n=. =Type= is an abbreviation
 for =Type 0=:
 #+BEGIN_SRC lean
-check Type
-check Type 0
+#check Type
+#check Type 0
 #+END_SRC
 There is also =Prop=, this type has special properties, and
 will be discussed in the next chapter.
 #+BEGIN_SRC lean
-check Prop -- Type 0
+#check Prop -- Type 0
 #+END_SRC
 
 We want some operations, however, to be /polymorphic/ over type
@@ -230,20 +230,20 @@ universes. For example, =list α= should make sense for any type =α=,
 no matter which type universe =α= lives in. This explains the type
 annotation of the function =list=:
 #+BEGIN_SRC lean
-check list    -- Type u_1 → Type u_1
+#check list    -- Type u_1 → Type u_1
 #+END_SRC
 Here =u_1= is a variable ranging over type levels. The output of the
-=check= command means that whenever =α= has type =Type n=, =list α=
+=#check= command means that whenever =α= has type =Type n=, =list α=
 also has type =Type n=. The function =prod= is similarly polymorphic:
 #+BEGIN_SRC lean
-check prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
+#check prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 #+END_SRC
 To define polymorphic constants and variables, Lean allows us to
 declare universe variables explicitly:
 #+BEGIN_SRC lean
 universe variable u
 constant α : Type u
-check α
+#check α
 #+END_SRC
 Throughout this book, you will see us do this in examples when we want
 type constructions to have as much generality as possible. We will see
@@ -273,8 +273,8 @@ which maps any natural number =x= to =x + 5=." The expression =λ x :
 nat, x + 5= is just a symbolic representation of the right-hand side
 of this assignment.
 #+BEGIN_SRC lean
-check fun x : nat, x + 5
-check λ x : nat, x + 5
+#check fun x : nat, x + 5
+#check λ x : nat, x + 5
 #+END_SRC
 Here are some more abstract examples:
 #+BEGIN_SRC lean
@@ -287,15 +287,15 @@ constant g : α → β
 constant h : α → β → α
 constant p : α → α → bool
 
-check fun x : α, f x                      -- α → α
-check λ x : α, f x                        -- α → α
-check λ x : α, f (f x)                    -- α → α
-check λ x : α, h x b1                     -- α → α
-check λ y : β, h a1 y                     -- β → α
-check λ x : α, p (f (f x)) (h (f a1) b2)  -- α → bool
-check λ x : α, λ y : β, h (f x) y         -- α → β → α
-check λ (x : α) (y : β), h (f x) y        -- α → β → α
-check λ x y, h (f x) y                    -- α → β → α
+#check fun x : α, f x                      -- α → α
+#check λ x : α, f x                        -- α → α
+#check λ x : α, f (f x)                    -- α → α
+#check λ x : α, h x b1                     -- α → α
+#check λ y : β, h a1 y                     -- β → α
+#check λ x : α, p (f (f x)) (h (f a1) b2)  -- α → bool
+#check λ x : α, λ y : β, h (f x) y         -- α → β → α
+#check λ (x : α) (y : β), h (f x) y        -- α → β → α
+#check λ x y, h (f x) y                    -- α → β → α
 #+END_SRC
 Lean interprets the final three examples as the same expression; in
 the last expression, Lean infers the type of =x= and =y= from the
@@ -310,21 +310,21 @@ constant f : α → β
 constant g : β → γ
 constant b : β
 
-check λ x : α, x        -- α → α
-check λ x : α, b        -- α → β
-check λ x : α, g (f x)  -- α → γ
-check λ x, g (f x)
+#check λ x : α, x        -- α → α
+#check λ x : α, b        -- α → β
+#check λ x : α, g (f x)  -- α → γ
+#check λ x, g (f x)
 
 -- we can abstract any of the constants in the previous definitions
 
-check λ b : β, λ x : α, x     -- β → α → α
-check λ (b : β) (x : α), x    -- equivalent to the previous line
-check λ (g : β → γ) (f : α → β) (x : α), g (f x)
+#check λ b : β, λ x : α, x     -- β → α → α
+#check λ (b : β) (x : α), x    -- equivalent to the previous line
+#check λ (g : β → γ) (f : α → β) (x : α), g (f x)
                               -- (β → γ) → (α → β) → α → γ
 -- we can even abstract over the type
 
-check λ (α β : Type) (b : β) (x : α), x
-check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
+#check λ (α β : Type) (b : β) (x : α), x
+#check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
 #+END_SRC
 
 Think about what these expressions mean. The expression =λ x : α, x=
@@ -343,14 +343,14 @@ constant g : β → γ
 constant b : β
 
 -- BEGIN
-check λ b : β, λ x : α, x     -- β → α → α
-check λ (b : β) (x : α), x    -- β → α → α
-check λ (g : β → γ) (f : α → β) (x : α), g (f x)
+#check λ b : β, λ x : α, x     -- β → α → α
+#check λ (b : β) (x : α), x    -- β → α → α
+#check λ (g : β → γ) (f : α → β) (x : α), g (f x)
                               -- (β → γ) → (α → β) → α → γ
 -- END
 
-check λ (α β : Type) (b : β) (x : α), x
-check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
+#check λ (α β : Type) (b : β) (x : α), x
+#check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
 #+END_SRC
 Lean lets us combine lambdas, so the second example is equivalent to
 the first. We can even abstract over the type:
@@ -361,8 +361,8 @@ constant g : β → γ
 constant b : β
 
 -- BEGIN
-check λ (α β : Type) (b : β) (x : α), x
-check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
+#check λ (α β : Type) (b : β) (x : α), x
+#check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
 -- END
 #+END_SRC
 The last expression, for example, denotes the function that takes
@@ -390,14 +390,14 @@ constant g : β → γ
 constant h : α → α
 constants (a : α) (b : β)
 
-check (λ x : α, x) a                -- α
-check (λ x : α, b) a                -- β
-check (λ x : α, b) (h a)            -- β
-check (λ x : α, g (f x)) (h (h a))  -- γ
+#check (λ x : α, x) a                -- α
+#check (λ x : α, b) a                -- β
+#check (λ x : α, b) (h a)            -- β
+#check (λ x : α, g (f x)) (h (h a))  -- γ
 
-check (λ (v : β → γ) (u : α → β) x, v (u x)) g f a   -- γ
+#check (λ (v : β → γ) (u : α → β) x, v (u x)) g f a   -- γ
 
-check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
+#check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
         v (u x)) α β γ g f a        -- γ
 #+END_SRC
 As expected, the expression =(λ x : α, x) a= has type =α=. In fact,
@@ -410,38 +410,40 @@ constant g : β → γ
 constant h : α → α
 constants (a : α) (b : β)
 
-eval (λ x : α, x) a                -- a
-eval (λ x : α, b) a                -- b
-eval (λ x : α, b) (h a)            -- b
-eval (λ x : α, g (f x)) a          -- g (f a)
+#reduce (λ x : α, x) a                -- a
+#reduce (λ x : α, b) a                -- b
+#reduce (λ x : α, b) (h a)            -- b
+#reduce (λ x : α, g (f x)) a          -- g (f a)
 
-eval (λ (v : β → γ) (u : α → β) x, v (u x)) g f a   -- g (f a)
+#reduce (λ (v : β → γ) (u : α → β) x, v (u x)) g f a   -- g (f a)
 
-eval (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
+#reduce (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
        v (u x)) α β γ g f a        -- g (f a)
 #+END_SRC
-The command =eval= tells Lean to /evaluate/ an expression. The process
-of simplifying an expression =(λ x, t)s= to =t[s/x]= -- that is, =t=
-with =s= substituted for the variable =x= -- is known as /beta
-reduction/, and two terms that beta reduce to a common term are called
-/beta equivalent/. But the =eval= command carries out other forms of
-reduction as well:
+The command =#reduce= tells Lean to evaluate an expression by
+/reducing/ it to normal form, which is to say, carrying out all the
+computational reductions that are sanctioned by the underlying
+logic. The process of simplifying an expression =(λ x, t)s= to
+=t[s/x]= -- that is, =t= with =s= substituted for the variable =x= --
+is known as /beta reduction/, and two terms that beta reduce to a
+common term are called /beta equivalent/. But the =#reduce= command
+carries out other forms of reduction as well:
 #+BEGIN_SRC lean
 constants m n : nat
 constant b : bool
 
-print "reducing pairs"
-eval (m, n).1        -- m
-eval (m, n).2        -- n
+#print "reducing pairs"
+#reduce (m, n).1        -- m
+#reduce (m, n).2        -- n
 
-print "reducing boolean expressions"
-eval tt && ff        -- ff
-eval b && ff         -- ff
+#print "reducing boolean expressions"
+#reduce tt && ff        -- ff
+#reduce b && ff         -- ff
 
-print "reducing arithmetic expressions"
-eval n + 0           -- n
-eval n + 2           -- succ (succ n)
-eval 2 + 3           -- 5
+#print "reducing arithmetic expressions"
+#reduce n + 0           -- n
+#reduce n + 2           -- succ (succ n)
+#reduce 2 + 3           -- 5
 #+END_SRC
 In a later chapter, we will explain how these terms are evaluated. For
 now, we only wish to emphasize that this is an important feature of
@@ -462,8 +464,8 @@ important way of defining new objects.
 #+BEGIN_SRC lean
 definition foo : (ℕ → ℕ) → ℕ := λ f, f 0
 
-check foo    -- ℕ
-print foo    -- λ (f : ℕ → ℕ), f 0
+#check foo    -- ℕ
+#print foo    -- λ (f : ℕ → ℕ), f 0
 #+END_SRC
 We can omit the type when Lean has enough information to infer it:
 #+BEGIN_SRC lean
@@ -480,18 +482,18 @@ Because function definitions are so common, Lean provides the shorthand
 colon and omits the lambda:
 #+BEGIN_SRC lean
 def double (x : ℕ) : ℕ := x + x
-print double
-check double 3
-eval double 3    -- 6
+#print double
+#check double 3
+#reduce double 3    -- 6
 
 def square (x : ℕ) := x * x
-print square
-check square 3
-eval square 3    -- 9
+#print square
+#check square 3
+#reduce square 3    -- 9
 
 def do_twice (f : ℕ → ℕ) (x : ℕ) : ℕ := f (f x)
 
-eval do_twice double 2    -- 8
+#reduce do_twice double 2    -- 8
 #+END_SRC
 These definitions are equivalent to the following:
 #+BEGIN_SRC lean
@@ -531,19 +533,19 @@ Lean also allows you to introduce "local" definitions using the =let=
 construct. The expression ~let a := t1 in t2~ is definitionally equal to
 the result of replacing every occurrence of =a= in =t2= by =t1=.
 #+BEGIN_SRC lean
-check let y := 2 + 2 in y * y   -- ℕ
-eval  let y := 2 + 2 in y * y   -- 16
+#check let y := 2 + 2 in y * y   -- ℕ
+#reduce  let y := 2 + 2 in y * y   -- 16
 
 def t (x : ℕ) : ℕ :=
 let y := x + x in y * y
 
-eval t 2   -- 16
+#reduce t 2   -- 16
 #+END_SRC
 Here, =t= is definitionally equal to the term =(x + x) * (x + x)=.
 You can combine multiple assignments in a single =let= statement:
 #+BEGIN_SRC lean
-check let y := 2 + 2, z := y + y in z * z   -- 16
-eval  let y := 2 + 2, z := y + y in z * z   -- 64
+#check let y := 2 + 2, z := y + y in z * z   -- 16
+#reduce  let y := 2 + 2, z := y + y in z * z   -- 64
 #+END_SRC
 
 Notice that the meaning of the expression ~let a := t1 in t2~ is very
@@ -555,7 +557,7 @@ sense independently of the value of =a=. The =let= construct is a
 stronger means of abbreviation, and there are expressions of the form
 ~let a := t1 in t2~ that cannot be expressed as =(λ a, t2) t1=. As an
 exercise, try to understand why the definition of =foo= below type
-checks, but the definition of =bar= does not.
+#checks, but the definition of =bar= does not.
 #+BEGIN_SRC lean
 def foo := let a := nat  in λ x : a, x + 2
 
@@ -616,9 +618,9 @@ def compose := g (f x)
 def do_twice := h (h x)
 def do_thrice := h (h (h x))
 
-print compose
-print do_twice
-print do_thrice
+#print compose
+#print do_twice
+#print do_thrice
 #+END_SRC
 Printing them out shows that all three groups of definitions have
 exactly the same effect.
@@ -680,32 +682,32 @@ namespace foo
   def fa : ℕ := f a
   def ffa : ℕ := f (f a)
 
-  print "inside foo"
+  #print "inside foo"
 
-  check a
-  check f
-  check fa
-  check ffa
-  check foo.fa
+  #check a
+  #check f
+  #check fa
+  #check ffa
+  #check foo.fa
 end foo
 
-print "outside the namespace"
+#print "outside the namespace"
 
--- check a  -- error
--- check f  -- error
-check foo.a
-check foo.f
-check foo.fa
-check foo.ffa
+-- #check a  -- error
+-- #check f  -- error
+#check foo.a
+#check foo.f
+#check foo.fa
+#check foo.ffa
 
 open foo
 
-print "opened foo"
+#print "opened foo"
 
-check a
-check f
-check fa
-check foo.fa
+#check a
+#check f
+#check fa
+#check foo.fa
 #+END_SRC
 When we declare that we are working in the namespace =foo=, every
 identifier we declare has a full name with prefix "=foo.=" Within the
@@ -723,18 +725,18 @@ namespaces give us a way to manage our working environment.
 For example, Lean groups definitions and theorems involving lists into
 a namespace =list=.
 #+BEGIN_SRC lean
-check list.nil
-check list.cons
-check list.append
+#check list.nil
+#check list.cons
+#check list.append
 #+END_SRC
 We will discuss their types, below. The command =open list= allows us
 to use the shorter names:
 #+BEGIN_SRC lean
 open list
 
-check nil
-check cons
-check append
+#check nil
+#check cons
+#check append
 #+END_SRC
 
 Like sections, namespaces can be nested:
@@ -748,21 +750,21 @@ namespace foo
   namespace bar
     def ffa : ℕ := f (f a)
 
-    check fa
-    check ffa
+    #check fa
+    #check ffa
   end bar
 
-  check fa
-  check bar.ffa
+  #check fa
+  #check bar.ffa
 end foo
 
-check foo.fa
-check foo.bar.ffa
+#check foo.fa
+#check foo.bar.ffa
 
 open foo
 
-check fa
-check bar.ffa
+#check fa
+#check bar.ffa
 #+END_SRC
 Namespaces that have been closed can later be reopened, even in
 another file:
@@ -774,8 +776,8 @@ namespace foo
   def fa : ℕ := f a
 end foo
 
-check foo.a
-check foo.f
+#check foo.a
+#check foo.f
 
 namespace foo
   def ffa : ℕ := f (f a)
@@ -885,13 +887,13 @@ difference between the round and curly brackets momentarily.)
 #+BEGIN_SRC lean
 open list
 
-check list     -- Type u_1 → Type u_1
+#check list     -- Type u_1 → Type u_1
 
-check @cons    -- Π {α : Type u_1}, α → list α → list α
-check @nil     -- Π {α : Type u_1}, list α
-check @head    -- Π {α : Type u_1} [_inst_1 : inhabited α], list α → α
-check @tail    -- Π {α : Type u_1}, list α → list α
-check @append  -- Π {α : Type u_1}, list α → list α → list α
+#check @cons    -- Π {α : Type u_1}, α → list α → list α
+#check @nil     -- Π {α : Type u_1}, list α
+#check @head    -- Π {α : Type u_1} [_inst_1 : inhabited α], list α → α
+#check @tail    -- Π {α : Type u_1}, list α → list α
+#check @append  -- Π {α : Type u_1}, list α → list α → list α
 #+END_SRC
 There is a subtlety in the definition of =head=: the type =α= is
 required to have at least one element, and when passed the
@@ -936,12 +938,12 @@ variable β : α → Type
 variable a : α
 variable b : β a
 
-check sigma.mk a b   -- Σ (a : α), β a
-check (sigma.mk a b).1  -- α
-check (sigma.mk a b).2  -- β (sigma.fst (sigma.mk a b))
+#check sigma.mk a b   -- Σ (a : α), β a
+#check (sigma.mk a b).1  -- α
+#check (sigma.mk a b).2  -- β (sigma.fst (sigma.mk a b))
 
-eval  (sigma.mk a b).1  -- a
-eval  (sigma.mk a b).2  -- b
+#reduce  (sigma.mk a b).1  -- a
+#reduce  (sigma.mk a b).2  -- b
 #+END_SRC
 Notice that when =p= is a dependent pair the expressions =(sigma.mk a b).1= and
 =(sigma.mk a b).2= are short for =sigma.fst (sigma.mk a b)= and =sigma.snd
@@ -986,9 +988,9 @@ variable  α : Type
 variable  a : α
 variables l1 l2 : list α
 
-check cons α a (nil α)
-check append α (cons α a (nil α)) l1
-check append α (append α (cons α a (nil α)) l1) l2
+#check cons α a (nil α)
+#check append α (cons α a (nil α)) l1
+#check append α (append α (cons α a (nil α)) l1) l2
 -- END
 end hide
 #+END_SRC
@@ -1025,9 +1027,9 @@ variable  a : α
 variables l1 l2 : list α
 
 -- BEGIN
-check cons _ a (nil _)
-check append _ (cons _ a (nil _)) l1
-check append _ (append _ (cons _ a (nil _)) l1) l2
+#check cons _ a (nil _)
+#check append _ (cons _ a (nil _)) l1
+#check append _ (append _ (cons _ a (nil _)) l1) l2
 -- END
 end hide
 #+END_SRC
@@ -1055,9 +1057,9 @@ variable  α : Type
 variable  a : α
 variables l1 l2 : list α
 
-check cons a nil
-check append (cons a nil) l1
-check append (append (cons a nil) l1) l2
+#check cons a nil
+#check append (cons a nil) l1
+#check append (append (cons a nil) l1) l2
 -- END
 end hide
 #+END_SRC
@@ -1071,9 +1073,9 @@ def ident {α : Type u} (x : α) := x
 variables α β : Type u
 variables (a : α) (b : β)
 
-check ident      -- ?M_1 → ?M_1
-check ident a    -- α
-check ident b    -- β
+#check ident      -- ?M_1 → ?M_1
+#check ident a    -- α
+#check ident b    -- β
 #+END_SRC
 This makes the first argument to =ident= implicit. Notationally, this
 hides the specification of the type, making it look as though =ident=
@@ -1083,10 +1085,10 @@ a nontraditional name here only to avoid a clash of names.
 
 # TODO: pp.metavar_args is gone. What to say about this?
 
-# In the first =check= command, the inscription =?α= indicates that the
+# In the first =#check= command, the inscription =?α= indicates that the
 # type of =ident= depends on a "placeholder," or "metavariable," that
 # should, in general, be inferred from the context. The output of the
-# second =check= command is somewhat verbose: it indicates that the
+# second =#check= command is somewhat verbose: it indicates that the
 # placeholder, =?α=, can itself depend on any of the variables =α=, =β=,
 # =a=, and =b= that are in the context. If this additional information
 # is annoying, you can suppress it by writing =@ident=, as described
@@ -1100,7 +1102,7 @@ a nontraditional name here only to avoid a clash of names.
 # variables (a : α) (b : β)
 
 # set_option pp.metavar_args true
-# check ident      -- ?α → ?α
+# #check ident      -- ?α → ?α
 # -- END
 # #+END_SRC
 
@@ -1118,9 +1120,9 @@ end
 variables α β : Type u
 variables (a : α) (b : β)
 
-check ident
-check ident a
-check ident b
+#check ident
+#check ident a
+#check ident b
 #+END_SRC
 This definition of =ident= has the same effect as the one above.
 
@@ -1139,22 +1141,22 @@ implicit arguments. The second pair of examples below use this
 mechanism to specify the desired types of the expressions =id= and
 =list.nil=:
 #+BEGIN_SRC lean
-check list.nil             -- list ?M1
-check id                   -- ?M1 → ?M1
+#check list.nil             -- list ?M1
+#check id                   -- ?M1 → ?M1
 
-check (list.nil : list ℕ)  -- list ℕ
-check (id : ℕ → ℕ)         -- ℕ → ℕ
+#check (list.nil : list ℕ)  -- list ℕ
+#check (id : ℕ → ℕ)         -- ℕ → ℕ
 #+END_SRC
 
 Numerals are overloaded in Lean, but when the type of a numeral cannot
 be inferred, Lean assumes, by default, that it is a natural number. So
-the expressions in the first two =check= commands are elaborated in
-the same way, whereas the third =check= command interprets =2= as a
+the expressions in the first two =#check= commands are elaborated in
+the same way, whereas the third =#check= command interprets =2= as a
 raw numeral.
 #+BEGIN_SRC lean
-check 2            -- ℕ
-check (2 : ℕ)      -- ℕ
-check (2 : num)    -- num
+#check 2            -- ℕ
+#check (2 : ℕ)      -- ℕ
+#check (2 : num)    -- num
 #+END_SRC
 
 # TODO: what to say about this?
@@ -1173,13 +1175,13 @@ variables α β : Type
 variables (a : α) (b : β)
 
 -- BEGIN
-check @id        -- Π {α : Type u_1}, α → α
-check @id α      -- α → α
-check @id β      -- β → β
-check @id α a    -- α
-check @id β b    -- β
+#check @id        -- Π {α : Type u_1}, α → α
+#check @id α      -- α → α
+#check @id β      -- β → β
+#check @id α a    -- α
+#check @id β b    -- β
 -- END
 #+END_SRC
-Notice that now the first =check= command gives the type of the
+Notice that now the first =#check= command gives the type of the
 identifier, =id=, without inserting any placeholders. Moreover, the
 output indicates that the first argument is implicit.

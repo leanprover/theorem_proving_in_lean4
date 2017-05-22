@@ -100,10 +100,10 @@ variable trans_r : ∀ x y z, r x y → r y z → r x z
 variables (a b c : α)
 variables (hab : r a b) (hbc : r b c)
 
-check trans_r          -- ∀ (x y z : α), r x y → r y z → r x z
-check trans_r a b c
-check trans_r a b c hab
-check trans_r a b c hab hbc
+#check trans_r          -- ∀ (x y z : α), r x y → r y z → r x z
+#check trans_r a b c
+#check trans_r a b c hab
+#check trans_r a b c hab hbc
 #+END_SRC
 Think about what is going on here. When we instantiate =trans_r= at
 the values =a b c=, we end up with a proof of =r a b → r b c → r a
@@ -121,14 +121,14 @@ variable (trans_r : ∀ {x y z}, r x y → r y z → r x z)
 variables (a b c : α)
 variables (hab : r a b) (hbc : r b c)
 
-check trans_r
-check trans_r hab
-check trans_r hab hbc
+#check trans_r
+#check trans_r hab
+#check trans_r hab hbc
 #+END_SRC
 The advantage is that we can simply write =trans_r hab hbc= as a proof
 of =r a c=. A disadvantage is that Lean does not have enough
 information to infer the types of the arguments in the expressions
-=trans_r= and =trans_r hab=. The output of the =check= command
+=trans_r= and =trans_r hab=. The output of the =#check= command
 contains expressions like =?z α r trans_r a b c hab hbc=. Such an
 expression indicates an arbitrary value, that may depend on any of the
 values listed (in this case, all the variables in the local context).
@@ -221,15 +221,15 @@ it.
 Of course, a fundamental property of equality is that it is an
 equivalence relation:
 #+BEGIN_SRC lean
-check eq.refl    -- ∀ (a : ?M_1), a = a
-check eq.symm    -- ?M_2 = ?M_3 → ?M_3 = ?M_2
-check eq.trans   -- ?M_2 = ?M_3 → ?M_3 = ?M_4 → ?M_2 = ?M_4
+#check eq.refl    -- ∀ (a : ?M_1), a = a
+#check eq.symm    -- ?M_2 = ?M_3 → ?M_3 = ?M_2
+#check eq.trans   -- ?M_2 = ?M_3 → ?M_3 = ?M_4 → ?M_2 = ?M_4
 #+END_SRC
 Thus, for example, we can specialize the example from the previous section
 to the equality relation:
 #+BEGIN_SRC lean
 variables (α : Type) (a b c d : α)
-premises (hab : a = b) (hcb : c = b) (hcd : c = d)
+variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 example : a = d :=
 eq.trans (eq.trans hab (eq.symm hcb)) hcd
@@ -238,7 +238,7 @@ eq.trans (eq.trans hab (eq.symm hcb)) hcd
 If we "open" the eq namespace, the names become shorter:
 #+BEGIN_SRC lean
 variables (α : Type) (a b c d : α)
-premises (hab : a = b) (hcb : c = b) (hcd : c = d)
+variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 -- BEGIN
 open eq
@@ -249,7 +249,7 @@ example : a = d := trans (trans hab (symm hcb)) hcd
 We can also use the projection notation:
 #+BEGIN_SRC lean
 variables (α : Type) (a b c d : α)
-premises (hab : a = b) (hcb : c = b) (hcd : c = d)
+variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 -- BEGIN
 example : a = d := (hab^.trans hcb^.symm)^.trans hcd
@@ -305,8 +305,8 @@ used to replace both at once.
 variable α : Type
 variables a b : α
 variables f g : α → ℕ
-premise h₁ : a = b
-premise h₂ : f = g
+variable h₁ : a = b
+variable h₂ : f = g
 
 example : f a = f b := congr_arg f h₁
 example : f a = g a := congr_fun h₂ a
@@ -427,7 +427,7 @@ calc
 In the next chapter, we will see that hypotheses can be introduced,
 renamed, and modified by tactics, so it is not always clear what the
 names in =rw h1= refer to (though, in this case, it is). For that
-reason, section variables and premises that only appear in a tactic command
+reason, section variables and variables that only appear in a tactic command
 or block are not automatically add to the context. The =include=
 command takes care of that. Essentially, the =rewrite= tactic uses a
 given equality (which can a hypothesis, a theorem name, or a complex
@@ -545,7 +545,7 @@ exists.intro 0 h
 example (x y z : ℕ) (hxy : x < y) (hyz : y < z) : ∃ w, x < w ∧ w < z :=
 exists.intro y (and.intro hxy hyz)
 
-check @exists.intro
+#check @exists.intro
 #+END_SRC
 We can use the anonymous constructor notation =⟨t, h⟩= for
 =exists.intro t h=, when the type is clear from the context.
@@ -582,10 +582,10 @@ theorem gex3 : ∃ x, g 0 0 = x := ⟨0, hg⟩
 theorem gex4 : ∃ x, g x x = 0 := ⟨0, hg⟩
 
 set_option pp.implicit true  -- display implicit arguments
-check gex1
-check gex2
-check gex3
-check gex4
+#check gex1
+#check gex2
+#check gex3
+#check gex4
 #+END_SRC
 
 We can view =exists.intro= as an information-hiding operation: we are
@@ -836,7 +836,7 @@ auxiliary goal without having to label it. We can refer to the last
 expression introduced in this way using the keyword =this=:
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
-premise h : ∀ x : ℕ, f x ≤ f (x + 1)
+variable h : ∀ x : ℕ, f x ≤ f (x + 1)
 
 example : f 0 ≤ f 3 :=
 have f 0 ≤ f 1, from h 0,
@@ -850,7 +850,7 @@ When the goal can be inferred, we can also ask Lean instead to fill in
 the proof by writing =by assumption=:
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
-premise h : ∀ x : ℕ, f x ≤ f (x + 1)
+variable h : ∀ x : ℕ, f x ≤ f (x + 1)
 
 example : f 0 ≤ f 3 :=
 have f 0 ≤ f 1, from h 0,
@@ -865,7 +865,7 @@ We can also ask Lean to fill in the proof by writing =‹p›=, where =p=
 is the proposition whose proof we want Lean to find in the context.
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
-premise h : ∀ x : ℕ, f x ≤ f (x + 1)
+variable h : ∀ x : ℕ, f x ≤ f (x + 1)
 
 -- BEGIN
 example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
@@ -889,7 +889,7 @@ explicitly. It also makes proofs more readable. Here is a more
 elaborate example:
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
-premise h : ∀ x : ℕ, f x ≤ f (x + 1)
+variable h : ∀ x : ℕ, f x ≤ f (x + 1)
 
 -- BEGIN
 example : f 0 ≤ f 3 :=
@@ -911,7 +911,7 @@ example (n : ℕ) : ℕ := ‹ℕ›
 The =suppose= keyword acts as an anonymous assume:
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
-premise h : ∀ x : ℕ, f x ≤ f (x + 1)
+variable h : ∀ x : ℕ, f x ≤ f (x + 1)
 
 -- BEGIN
 example : f 0 ≥ f 1 → f 0 = f 1 :=
@@ -931,7 +931,7 @@ assumption, that assumption can also be invoked later in the proof by
 enclosing it in French quotes.
 #+BEGIN_SRC lean
 variable f : ℕ → ℕ
-premise h : ∀ x : ℕ, f x ≤ f (x + 1)
+variable h : ∀ x : ℕ, f x ≤ f (x + 1)
 
 -- BEGIN
 example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
