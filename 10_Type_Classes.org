@@ -44,8 +44,8 @@ attribute [instance, reducible] nat_one
 
 def foo [x : ℕ] : nat := x
 
-check @foo
-eval foo
+#check @foo
+#reduce foo
 
 example : foo = 1 := rfl
 #+END_SRC
@@ -74,14 +74,14 @@ instance nat_one : ℕ := 1
 
 def foo [x : ℕ] : nat := x
 
-eval foo
+#reduce foo
 
 example : foo = 1 := rfl
 
 -- BEGIN
 instance nat_two : ℕ := 2
 
-eval foo
+#reduce foo
 
 example : foo ≠ 1 :=
 λ h : 2 = 1, nat.no_confusion h (λ h : 1 = 0, nat.no_confusion h)
@@ -255,17 +255,17 @@ instance unit_inhabited : inhabited unit :=
 def default (α : Type) [s : inhabited α] : α :=
 @inhabited.value α s
 -- BEGIN
-check default Prop    -- Prop
-check default nat     -- ℕ
-check default bool    -- bool
-check default unit    -- unit
+#check default Prop    -- Prop
+#check default nat     -- ℕ
+#check default bool    -- bool
+#check default unit    -- unit
 -- END
 end hide
 #+END_SRC
 In general, whenever we write =default α=, we are asking the
 elaborator to synthesize an element of type =α=.
 
-Notice that we can "see" the value that is synthesized with =eval=:
+Notice that we can "see" the value that is synthesized with =#reduce=:
 #+BEGIN_SRC lean
 namespace hide
 
@@ -287,10 +287,10 @@ instance unit_inhabited : inhabited unit :=
 def default (α : Type) [s : inhabited α] : α :=
 @inhabited.value α s
 -- BEGIN
-eval default Prop    -- true
-eval default nat     -- 0
-eval default bool    -- tt
-eval default unit    -- ()
+#reduce default Prop    -- true
+#reduce default nat     -- 0
+#reduce default bool    -- tt
+#reduce default unit    -- ()
 -- END
 end hide
 #+END_SRC
@@ -372,8 +372,8 @@ instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
 ⟨(default α, default β)⟩
 
 -- BEGIN
-check default (nat × bool)
-eval default (nat × bool)
+#check default (nat × bool)
+#reduce default (nat × bool)
 -- END
 end hide
 #+END_SRC
@@ -415,8 +415,8 @@ instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
 instance inhabited_fun (α : Type) {β : Type} [inhabited β] : inhabited (α → β) :=
 ⟨(λ a : α, default β)⟩
 
-check default (nat → nat × bool)
-eval default (nat → nat × bool)
+#check default (nat → nat × bool)
+#reduce default (nat → nat × bool)
 -- END
 end hide
 #+END_SRC
@@ -486,12 +486,12 @@ equality and comparisons on the natural numbers and the integers are
 decidable. Moreover, decidability is preserved under propositional
 connectives:
 #+BEGIN_SRC lean
-check @and.decidable
+#check @and.decidable
 -- Π {p q : Prop} [hp : decidable p] [hq : decidable q], decidable (p ∧ q)
 
-check @or.decidable
-check @not.decidable
-check @implies.decidable
+#check @or.decidable
+#check @not.decidable
+#check @implies.decidable
 #+END_SRC
 Thus we can carry out definitions by cases on decidable predicates on
 the natural numbers:
@@ -502,7 +502,7 @@ def step (a b x : ℕ) : ℕ :=
 if x < a ∨ x > b then 0 else 1
 
 set_option pp.implicit true
-print definition step
+#print definition step
 #+END_SRC
 Turning on implicit arguments shows that the elaborator has inferred
 the decidability of the proposition =x < a ∨ x > b=, simply by
@@ -574,8 +574,8 @@ instance nat_has_add : has_add nat :=
 instance bool_has_add : has_add bool :=
 ⟨bor⟩
 
-check 2 + 2    -- nat
-check tt + ff  -- bool
+#check 2 + 2    -- nat
+#check tt + ff  -- bool
 -- END
 end hide
 #+END_SRC
@@ -617,8 +617,8 @@ instance bool_has_add : has_add bool :=
 instance prod_has_add {α : Type u} {β : Type v} [has_add α] [has_add β] : has_add (α × β) :=
 ⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
 
-check (1, 2) + (3, 4)    -- ℕ × ℕ
-eval  (1, 2) + (3, 4)    -- (4, 6)
+#check (1, 2) + (3, 4)    -- ℕ × ℕ
+#reduce  (1, 2) + (3, 4)    -- (4, 6)
 -- END
 end hide
 #+END_SRC
@@ -646,8 +646,8 @@ instance prod_has_add {α : Type u} {β : Type v} [has_add α] [has_add β] : ha
 instance fun_has_add {α : Type u} {β : Type v} [has_add β] : has_add (α → β) :=
 ⟨λ f g x, f x + g x⟩
 
-check (λ x : nat, 1) + (λ x, 2)   -- ℕ → ℕ
-eval (λ x : nat, 1) + (λ x, 2)    -- λ (x : ℕ), 3
+#check (λ x : nat, 1) + (λ x, 2)   -- ℕ → ℕ
+#reduce (λ x : nat, 1) + (λ x, 2)    -- λ (x : ℕ), 3
 -- END
 end hide
 #+END_SRC
@@ -661,8 +661,8 @@ and show that they have the work as expected.
 You can ask Lean for information about the classes and instances that
 are currently in scope:
 #+BEGIN_SRC lean
-print classes
-print instances inhabited
+#print classes
+#print instances inhabited
 #+END_SRC
 At times, you may find that the type class inference fails to find an
 expected instance, or, worse, falls into an infinite loop and times
@@ -758,9 +758,15 @@ to =Prop= as follows:
 #+BEGIN_SRC lean
 instance bool_to_Prop : has_coe bool Prop :=
 ⟨λ b, b = tt⟩
--- Now, we can use bool terms in if-then-else terms
-vm_eval if tt then "hello" else "world"
-vm_eval if ff then "hello" else "world"
+#+END_SRC
+This enables us to use boolean terms in if-then-else expressions:
+#+BEGIN_SRC lean
+instance bool_to_Prop : has_coe bool Prop :=
+⟨λ b, b = tt⟩
+-- BEGIN
+#reduce if tt then 3 else 5
+#reduce if ff then 3 else 5
+-- END
 #+END_SRC
 
 We can define a coercion from =list α= to =set α= as follows:
@@ -777,7 +783,7 @@ instance list_to_set_coe (α : Type u) : has_coe (list α) (set α) :=
 def s : set nat  := {1, 2}
 def l : list nat := [3, 4]
 
-check s ∪ l -- set nat
+#check s ∪ l -- set nat
 #+END_SRC
 
 Coercions are only considered if the given and expected types do not
@@ -797,8 +803,8 @@ instance list_to_set_coe (α : Type u) : has_coe (list α) (set α) :=
 def s : set nat  := {1, 2}
 
 -- BEGIN
-/- The following check command produces an error. -/
--- check s ∪ [3, 2]
+/- The following #check command produces an error. -/
+-- #check s ∪ [3, 2]
 -- END
 #+END_SRC
 We can workaround this issue by using a type ascription.
@@ -815,14 +821,14 @@ instance list_to_set_coe (α : Type u) : has_coe (list α) (set α) :=
 def s : set nat  := {1, 2}
 
 -- BEGIN
-check s ∪ [(3:nat), 2]
+#check s ∪ [(3:nat), 2]
 -- or
-check s ∪ ([3, 2] : list nat)
+#check s ∪ ([3, 2] : list nat)
 -- END
 #+END_SRC
 
 In the examples above, you may have noticed the symbol =↑= produced
-by the =check= commands. It is the lift operator, =↑t= is notation
+by the =#check= commands. It is the lift operator, =↑t= is notation
 for =coe t=. We can use this operator to force a coercion to be
 introduced in a particular place. It is also helpful to make our
 intent clear, and workaround limitations of the coercion resolution system.
@@ -839,12 +845,12 @@ instance list_to_set_coe (α : Type u) : has_coe (list α) (set α) :=
 def s : set nat  := {1, 2}
 
 -- BEGIN
-check s ∪ ↑[3, 2]
+#check s ∪ ↑[3, 2]
 
 variables n m : nat
 variable i : int
-check i + ↑n + ↑m
-check i + ↑(n + m)
+#check i + ↑n + ↑m
+#check i + ↑(n + m)
 
 /- In the above two examples, the coercions are not
    strictly necessary since Lean will insert implicit
@@ -852,11 +858,11 @@ check i + ↑(n + m)
    doesn't work because the expected type of i is a nat
    to match the type of n (and no int → nat coercion
    exists). -/
--- check n + i
+-- #check n + i
 
 /- Assuming we want the more general type, we can
    insert an explicit ↑ to coerce n to int. -/
-check ↑n + i
+#check ↑n + i
 -- END
 #+END_SRC
 
@@ -867,7 +873,7 @@ namespace hide
 universe variable u
 -- BEGIN
 instance coe_subtype {α : Type u} {p : α → Prop} : has_coe {x // p x} α :=
-⟨λ s, subtype.elt_of s⟩
+⟨λ s, subtype.val s⟩
 -- END
 end hide
 #+END_SRC
@@ -890,7 +896,7 @@ instance lift_list {a : Type u} {b : Type v} [has_lift_t a b] : has_lift (list a
 
 variables s : list nat
 variables r : list int
-check ↑s ++ r
+#check ↑s ++ r
 
 end hide
 #+END_SRC
@@ -941,7 +947,7 @@ structure Semigroup : Type (u+1) :=
 instance Semigroup_has_mul (S : Semigroup) : has_mul (S^.carrier) :=
 ⟨S^.mul⟩
 -- BEGIN
-check Semigroup.carrier
+#check Semigroup.carrier
 -- END
 #+END_SRC
 If we declare this function to be a coercion, then whenever we have a
@@ -1005,7 +1011,7 @@ structure morphism (S1 S2 : Semigroup) :=
 (mor : S1 → S2)
 (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
-check @morphism.mor
+#check @morphism.mor
 -- END
 #+END_SRC
 As a result, it is a prime candidate for the third type of coercion.
@@ -1092,9 +1098,9 @@ calc
   f (a * a * a) = f (a * a) * f a : by rw [resp_mul f]
             ... = f a * f a * f a : by rw [resp_mul f]
 
-check @test
+#check @test
 set_option pp.coercions false
-check @test
+#check @test
 -- END
 #+END_SRC
 
@@ -1128,7 +1134,7 @@ check @test
 #   include H
 
 #   definition foo : a + b = a + b := rfl
-#   check @foo
+#   #check @foo
 # end
 # -- END
 
@@ -1159,9 +1165,9 @@ check @test
 #   include H
 #   definition foo3 : a + a = a + a := rfl
 
-#   check @foo1
-#   check @foo2
-#   check @foo3
+#   #check @foo1
+#   #check @foo2
+#   #check @foo3
 # end
 # -- END
 

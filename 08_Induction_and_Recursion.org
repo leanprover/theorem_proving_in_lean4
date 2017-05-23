@@ -70,7 +70,7 @@ example (a : nat) : sub2 (a + 2) = a := rfl
 -- END
 #+END_SRC
 
-We can use the command =print sub2= to see how our definition was
+We can use the command =#print sub2= to see how our definition was
 compiled into recursors.
 #+BEGIN_SRC lean
 open nat
@@ -81,7 +81,7 @@ def sub2 : nat → nat
 | (a+2) := a
 
 -- BEGIN
-print sub2
+#print sub2
 -- END
 #+END_SRC
 
@@ -270,7 +270,7 @@ inductive vector (α : Type) : nat → Type
 open vector
 local notation h :: t := cons h t
 
-check @vector.cases_on
+#check @vector.cases_on
 -- Π {α : Type}
 --   {C : Π (a : ℕ), vector α a → Type}
 --   {a : ℕ}
@@ -382,8 +382,8 @@ def map {α β γ : Type} (f : α → β → γ)
 | (succ n) (a::va) (b::vb) := f a b :: map va vb
 
 -- BEGIN
-print map
-print map._main
+#print map
+#print map._main
 -- END
 end hide
 #+END_SRC
@@ -499,7 +499,7 @@ evidence that =b= is in the image of =f=, whereby the constructor
 =imf= is used to build such evidence. We can then define any function
 =f= with an "inverse" which takes anything in the image of =f= to an
 element that is mapped to it. The typing rules forces us to write =f
-a= for the first argument, but this term is not a variable nor a
+a= for the first argument, but this term is neither a variable nor a
 constructor application, and plays no role in the pattern-matching
 definition. To define the function =inverse= below, we /have to/ mark =f
 a= inaccessible.
@@ -512,7 +512,7 @@ inductive image_of (f : α → β) : β → Type
 open image_of
 
 def inverse {f : α → β} : Π b, image_of f b → α
-| .(f a) (imf .f a) := a
+| .(f a) (imf .(f) a) := a
 #+END_SRC
 
 In the example above, the inaccessible annotation makes it clear

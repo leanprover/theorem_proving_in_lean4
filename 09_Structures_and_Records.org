@@ -57,21 +57,20 @@ structure point (α : Type) :=
 mk :: (x : α) (y : α)
 
 -- BEGIN
-check point              -- a Type
-check point.rec_on       -- the recursor
-check point.induction_on -- then recursor to Prop
-check point.x            -- a projection / field accessor
-check point.y            -- a projection / field accessor
+#check point              -- a Type
+#check point.rec_on       -- the recursor / induction principle
+#check point.x            -- a projection / field accessor
+#check point.y            -- a projection / field accessor
 -- END
 #+END_SRC
 You can obtain the complete list of generated constructions using the
-command =print prefix=.
+command =#print prefix=.
 #+BEGIN_SRC lean
 structure point (α : Type) :=
 mk :: (x : α) (y : α)
 
 -- BEGIN
-print prefix point
+#print prefix point
 -- END
 #+END_SRC
 
@@ -83,8 +82,8 @@ structure point (α : Type) :=
 mk :: (x : α) (y : α)
 
 -- BEGIN
-eval point.x (point.mk 10 20)
-eval point.y (point.mk 10 20)
+#reduce point.x (point.mk 10 20)
+#reduce point.y (point.mk 10 20)
 
 open point
 
@@ -105,9 +104,9 @@ mk :: (x : α) (y : α)
 -- BEGIN
 def p := point.mk 10 20
 
-check p^.x -- nat
-eval  p^.x -- 10
-eval  p^.y -- 20
+#check p^.x -- nat
+#reduce  p^.x -- 10
+#reduce  p^.y -- 20
 -- END
 #+END_SRC
 
@@ -119,15 +118,9 @@ namespace hide
 structure prod (α : Type) (β : Type) :=
 (pr1 : α) (pr2 : β)
 
-check prod.mk
+#check prod.mk
 -- END
 end hide
-#+END_SRC
-
-The keyword =record= is an alias for =structure=.
-#+BEGIN_SRC lean
-record point (α : Type) :=
-mk :: (x : α) (y : α)
 #+END_SRC
 
 You can provide universe levels explicitly. The annotations in the
@@ -142,7 +135,7 @@ structure {u} prod (α : Type u) (β : Type u) : Type (max 1 u) :=
 (pr1 : α) (pr2 : β)
 
 set_option pp.universes true
-check prod.mk
+#check prod.mk
 -- END
 end hide
 #+END_SRC
@@ -166,15 +159,15 @@ structure {u} prod (α : Type u) (β : Type u) : Type (max 1 u) :=
 example : prod nat nat :=
 ⟨1, 2⟩
 
-check (⟨1, 2⟩ : prod nat nat)
+#check (⟨1, 2⟩ : prod nat nat)
 -- END
 end hide
 #+END_SRC
 
 ** Objects
 
-We have been using constructors to create elements of a structure (or
-record) type. For structures containing many fields, this is often
+We have been using constructors to create elements of a structure
+type. For structures containing many fields, this is often
 inconvenient, because we have to remember the order in which the
 fields were defined. Lean therefore provides the following alternative
 notations for defining elements of a structure type.
@@ -192,9 +185,9 @@ expressions below define the same point.
 structure point (α : Type) :=
 mk :: (x : α) (y : α)
 
-check { point . x := 10, y := 20 }   -- point ℕ
-check { point . y := 20, x := 10 }
-check ({x := 10, y := 20} : point nat)
+#check { point . x := 10, y := 20 }   -- point ℕ
+#check { point . y := 20, x := 10 }
+#check ({x := 10, y := 20} : point nat)
 
 example : point nat :=
 { y := 20, x := 10 }
@@ -207,7 +200,7 @@ indicating the corresponding placeholder could not be synthesized.
 structure my_struct :=
 mk :: {α : Type} {β : Type} (a : α) (b : β)
 
-check { my_struct . a := 10, b := true }
+#check { my_struct . a := 10, b := true }
 #+END_SRC
 
 /Record update/ is another common operation. It consists in creating
@@ -230,8 +223,8 @@ mk :: (x : α) (y : α)
 def p : point nat :=
 {x := 1, y := 2}
 
-eval {p with y := 3}
-eval {p with x := 3}
+#reduce {p with y := 3}
+#reduce {p with x := 3}
 #+END_SRC
 
 ** Inheritance
@@ -249,24 +242,24 @@ structure color_point (α : Type) extends point α :=
 mk :: (c : color)
 #+END_SRC
 
-We can "rename" fields inherited from parent structures using the
-=renaming= clause.
-#+BEGIN_SRC lean
-namespace hide
--- BEGIN
-structure prod (α : Type) (β : Type) :=
-pair :: (pr1 : α) (pr2 : β)
+# We can "rename" fields inherited from parent structures using the
+# =renaming= clause.
+# #+BEGIN_SRC lean
+# namespace hide
+# -- BEGIN
+# structure prod (α : Type) (β : Type) :=
+# pair :: (pr1 : α) (pr2 : β)
 
--- Rename fields pr1 and pr2 to x and y respectively.
-structure point3 (α : Type) extends prod α α renaming pr1→x pr2→y :=
-mk :: (z : α)
+# -- Rename fields pr1 and pr2 to x and y respectively.
+# structure point3 (α : Type) extends prod α α renaming pr1→x pr2→y :=
+# mk :: (z : α)
 
-check point3.x
-check point3.y
-check point3.z
--- END
-end hide
-#+END_SRC
+# #check point3.x
+# #check point3.y
+# #check point3.z
+# -- END
+# end hide
+# #+END_SRC
 
 In the next example, we define a structure using multiple
 inheritance, and then define an object using objects of the parent

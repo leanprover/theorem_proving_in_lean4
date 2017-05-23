@@ -173,7 +173,7 @@ propositional equivalence. The second example represents a more
 essential use of =propext=. In fact, it is equivalent to =propext=
 itself, a fact which we encourage you to prove.
 
-Given any definition or theorem in Lean, you can use the =print
+Given any definition or theorem in Lean, you can use the =#print
 axioms= command to display the axioms it depends on.
 #+BEGIN_SRC lean
 variables a b c d e : Prop
@@ -186,8 +186,8 @@ theorem thm₂ (h : a ↔ b) (h₁ : p a) : p b :=
 propext h ▸ h₁
 
 -- BEGIN
-print axioms thm₁  -- propext
-print axioms thm₂  -- propext
+#print axioms thm₁  -- propext
+#print axioms thm₂  -- propext
 -- END
 #+END_SRC
 
@@ -199,7 +199,7 @@ all their inputs are equal.
 #+BEGIN_SRC lean
 universes u₁ u₂
 
-check (@funext : ∀ {α : Type u₁} {β : α → Type u₂} {f₁ f₂ : Π (x : α), β x},
+#check (@funext : ∀ {α : Type u₁} {β : α → Type u₂} {f₁ f₂ : Π (x : α), β x},
         (∀ (x : α), f₁ x = f₂ x) → f₁ = f₂)
 #+END_SRC
 From a classical, set-theoretic perspective, this is exactly what it
@@ -300,10 +300,10 @@ theorem feq : f₁ = f₂ := funext (take x, (zero_add x)^.symm)
 def val : ℕ := eq.rec_on feq (0 : ℕ)
 
 -- complicated!
-eval val
+#reduce val
 
 -- evaluates to 0
-vm_eval val
+#eval val
 #+END_SRC
 First, we show that the two functions =f₁= and =f₂= are equal using
 function extensionality, and then we cast =0= of type =ℕ= by
@@ -323,10 +323,10 @@ theorem tteq : (true ∧ true) = true := propext (and_true true)
 def val : ℕ := eq.rec_on tteq 0
 
 -- complicated!
-eval val
+#reduce val
 
 -- evaluates to 0
-vm_eval val
+#eval val
 #+END_SRC
 
 Current research programs, including work on
@@ -395,16 +395,16 @@ variable  r : α → α → Prop
 variable  a : α
 
 -- the quotient type
-check (quot r : Type)
+#check (quot r : Type)
 
 -- the class of a
-check (quot.mk r a : quot r)
+#check (quot.mk r a : quot r)
 
 variable  f : α → β
-premise   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂ 
+variable   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂ 
 
 -- the corresponding function on quot r
-check (quot.lift f h : quot r → β)
+#check (quot.lift f h : quot r → β)
 
 -- the computation principle
 theorem thm : quot.lift f h (quot.mk r a) = f a := rfl
@@ -420,11 +420,11 @@ variables α β : Type
 variable  r : α → α → Prop
 variable  a : α
 variable  f : α → β
-premise   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂ 
+variable   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂ 
 theorem thm : quot.lift f h (quot.mk r a) = f a := rfl
 
 -- BEGIN
-print axioms thm   -- no axioms
+#print axioms thm   -- no axioms
 -- END
 #+END_SRC
 They are, like inductively defined types and the associated
@@ -444,7 +444,7 @@ end hide
 #+END_SRC
 This is the axiom that asserts that any two element of =α= that are
 related by =r= become identified in the quotient. If a theorem or
-definition makes use of =quot.sound=, it will show up in the =print
+definition makes use of =quot.sound=, it will show up in the =#print
 axioms= command.
 
 Of course, the quotient construction is most commonly used in
@@ -521,7 +521,7 @@ implicit in the notation =setoid.r=, as well as the theorem
 universe u
 
 -- BEGIN
-check (@quotient.exact : ∀ {α : Type u} [setoid α] {a b : α}, ⟦a⟧ = ⟦b⟧ → a ≈ b)
+#check (@quotient.exact : ∀ {α : Type u} [setoid α] {a b : α}, ⟦a⟧ = ⟦b⟧ → a ≈ b)
 -- END
 #+END_SRC
 Together with =quotient.sound=, this implies that the elements of the
@@ -872,10 +872,10 @@ universe u
 
 -- BEGIN
 noncomputable def some {a : Sort u} {p : a → Prop} (h : ∃ x, p x) : a :=
-subtype.elt_of (indefinite_description p h)
+subtype.val (indefinite_description p h)
 
 theorem some_spec {a : Sort u} {p : a → Prop} (h : ∃ x, p x) : p (some h) :=
-subtype.has_property (indefinite_description p h)
+subtype.property (indefinite_description p h)
 -- END
 
 end hide
@@ -902,7 +902,7 @@ universe u
 open classical
 
 -- BEGIN
-check (@strong_indefinite_description :
+#check (@strong_indefinite_description :
         Π {α : Sort u} (p : α → Prop), nonempty α → {x // (∃ (y : α), p y) → p x})
 -- END
 #+END_SRC
@@ -915,9 +915,9 @@ universe u
 open classical
 
 -- BEGIN
-check (@epsilon : Π {α : Sort u} [nonempty α], (α → Prop) → α)
+#check (@epsilon : Π {α : Sort u} [nonempty α], (α → Prop) → α)
 
-check (@epsilon_spec : ∀ {a : Sort u} {p : a → Prop} (hex : ∃ (y : a), p y), 
+#check (@epsilon_spec : ∀ {a : Sort u} {p : a → Prop} (hex : ∃ (y : a), p y), 
          p (@epsilon _ (nonempty_of_exists hex) p))
 -- END
 #+END_SRC
@@ -929,7 +929,7 @@ The law of the excluded middle is the following
 open classical
 namespace hide
 -- BEGIN
-check (@em : ∀ (p : Prop), p ∨ ¬p)
+#check (@em : ∀ (p : Prop), p ∨ ¬p)
 -- END
 end hide
 #+END_SRC
@@ -1214,9 +1214,9 @@ informative.
 # import data.encodable
 # open encodable subtype
 # -- BEGIN
-# check @choose
+# #check @choose
 # -- choose : Π {A : Type} {p : A → Prop} [c : encodable A] [d : decidable_pred p], (∃ (x : A), p x) → A
-# check @choose_spec
+# #check @choose_spec
 # -- choose_spec : ∀ {A : Type} {p : A → Prop} [c : encodable A] [d : decidable_pred p] (ex : ∃ (x : A), p x), p (choose ex)
 # -- END
 # #+END_SRC
@@ -1296,23 +1296,23 @@ informative.
 
 # The Lean standard library contains only 3 axioms: =quot.sound=, =propext= and =strong_indefinite_description=.
 # Most of the library depends only on the first two.
-# The command =print axioms= displays all axioms that have been asserted/imported into the current logical context.
-# Similarly, the command =print axioms decl_name= prints all axioms the declaration =decl_name= depends on.
+# The command =#print axioms= displays all axioms that have been asserted/imported into the current logical context.
+# Similarly, the command =#print axioms decl_name= #prints all axioms the declaration =decl_name= depends on.
 
 # /IMPORTANT/: in the Lean web version, we erase the proof of most
 # theorems. The idea is to reduce the size of the file that must be
 # downloaded to run Lean on your web browser. So, the result of the
-# =print axioms= commands is not precise on the web version. Please use
+# =#print axioms= commands is not precise on the web version. Please use
 # the Lean native application if you are interested in using these
 # commands.
 
 # #+BEGIN_SRC lean
 # import data.finset data.set
 # -- BEGIN
-# print axioms
-# print axioms nat.add
-# print axioms finset.union
-# print axioms set.empty_union
-# print axioms classical.some
+# #print axioms
+# #print axioms nat.add
+# #print axioms finset.union
+# #print axioms set.empty_union
+# #print axioms classical.some
 # -- END
 # #+END_SRC
