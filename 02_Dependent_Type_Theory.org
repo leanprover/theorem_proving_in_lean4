@@ -56,24 +56,24 @@ constants b1 b2 : bool  -- declare two constants at once
 #check tt           -- boolean "true"
 
 -- Try some examples of your own.
-
 #+END_SRC
 
-The =/-= and =-/= annotations indicate that the next line is a comment
-block that is ignored by Lean. Similarly, two dashes indicate that the
-rest of the line contains a comment that is also ignored. Comment
-blocks can be nested, making it possible to "comment out" chunks of
-code, just as in many programming languages.
+Any text between the =/-= and =-/= constitutes a comment that is
+ignored by Lean. Similarly, two dashes indicate that the rest of the
+line contains a comment that is also ignored. Comment blocks can be
+nested, making it possible to "comment out" chunks of code, just as in
+many programming languages.
 
 The =constant= and =constants= commands introduce new constant symbols
-into the working environment, and the =#check= command asks Lean to
-report their types. You should test this, and try typing some examples
-of your own. Declaring new objects in this way is a good way to
-experiment with the system, but it is ultimately undesirable: Lean is
-a foundational system, which is to say, it provides us with powerful
-mechanisms to /define/ all the mathematical objects we need, rather
-than simply postulating them to the system. We will explore these
-mechanisms in the chapters to come.
+into the working environment. The =#check= command asks Lean to report
+their types; in Lean, commands that query the system for information
+typically begin with the hash symbol. You should declaring some
+constants and type checking some expressions on your own. Declaring
+new objects in this way is a good way to experiment with the system,
+but it is ultimately undesirable: Lean is a foundational system, which
+is to say, it provides us with powerful mechanisms to /define/ all the
+mathematical objects we need, rather than simply postulating them. We
+will explore these mechanisms in the chapters to come.
 
 What makes simple type theory powerful is that one can build new types
 out of others. For example, if =α= and =β= are types, =α → β= denotes
@@ -104,11 +104,8 @@ constant F : (nat → nat) → nat   -- a "functional"
 #check (m, n).1        -- ℕ
 #check (p.1, n)        -- ℕ × ℕ
 #check F f             -- ℕ
-
--- Try it on your own: write down some types, declare some constants,
--- and check some expressions.
-
 #+END_SRC
+Once again, you should try come examples on your own.
 
 Let us dispense with some basic syntax. You can enter the unicode
 arrow =→= by typing =\to= or "=\r=. You can also use the ASCII
@@ -137,13 +134,13 @@ nat → nat= and "redefining" it to look like =g= is a process known as
 /currying/, something we will come back to below.
 
 By now you may also have guessed that, in Lean, =(m, n)= denotes the
-ordered pair of =m= and =n=, and if =p= is a pair, =fst p= and =snd p=
+ordered pair of =m= and =n=, and if =p= is a pair, =p.1= and =p.2=
 denote the two projections.
 
 ** Types as Objects
 
 One way in which Lean's dependent type theory extends simple type
-theory is that types themselves -- entities like =nat= and =bool= --
+theory is that types themselves --- entities like =nat= and =bool= ---
 are first-class citizens, which is to say that they themselves are
 objects of study. For that to be the case, each of them also has to
 have a type.
@@ -219,11 +216,11 @@ for =Type 0=:
 #check Type
 #check Type 0
 #+END_SRC
-There is also =Prop=, this type has special properties, and
-will be discussed in the next chapter.
+There is also another type, =Prop=, which has special properties.
 #+BEGIN_SRC lean
-#check Prop -- Type 0
+#check Prop -- Type
 #+END_SRC
+We will discuss =Prop= in the next chapter.
 
 We want some operations, however, to be /polymorphic/ over type
 universes. For example, =list α= should make sense for any type =α=,
@@ -245,10 +242,11 @@ universe variable u
 constant α : Type u
 #check α
 #+END_SRC
-Throughout this book, you will see us do this in examples when we want
-type constructions to have as much generality as possible. We will see
-that the ability to treat type constructors as instances of ordinary
-mathematical functions is a powerful feature of dependent type theory.
+Throughout this book, we will do this in examples when we want type
+constructions to have as much generality as possible. We will come to
+learn that the ability to treat type constructors as instances of
+ordinary mathematical functions is a powerful feature of dependent
+type theory.
 
 ** Function Abstraction and Evaluation
 
@@ -301,9 +299,9 @@ Lean interprets the final three examples as the same expression; in
 the last expression, Lean infers the type of =x= and =y= from the
 types of =f= and =h=.
 
-Be sure to try writing some expressions of your own. Some
-mathematically common examples of operations of functions can be
-described in terms of lambda abstraction:
+Try writing some expressions on your own. Some mathematically common
+examples of operations of functions can be described in terms of
+lambda abstraction:
 #+BEGIN_SRC lean
 constants α β γ : Type
 constant f : α → β
@@ -314,19 +312,7 @@ constant b : β
 #check λ x : α, b        -- α → β
 #check λ x : α, g (f x)  -- α → γ
 #check λ x, g (f x)
-
--- we can abstract any of the constants in the previous definitions
-
-#check λ b : β, λ x : α, x     -- β → α → α
-#check λ (b : β) (x : α), x    -- equivalent to the previous line
-#check λ (g : β → γ) (f : α → β) (x : α), g (f x)
-                              -- (β → γ) → (α → β) → α → γ
--- we can even abstract over the type
-
-#check λ (α β : Type) (b : β) (x : α), x
-#check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
 #+END_SRC
-
 Think about what these expressions mean. The expression =λ x : α, x=
 denotes the identity function on =α=, the expression =λ x : α, b=
 denotes the constant function that always returns =b=, and =λ x : α, g
@@ -348,9 +334,6 @@ constant b : β
 #check λ (g : β → γ) (f : α → β) (x : α), g (f x)
                               -- (β → γ) → (α → β) → α → γ
 -- END
-
-#check λ (α β : Type) (b : β) (x : α), x
-#check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
 #+END_SRC
 Lean lets us combine lambdas, so the second example is equivalent to
 the first. We can even abstract over the type:
@@ -442,7 +425,7 @@ constant b : bool
 
 #print "reducing arithmetic expressions"
 #reduce n + 0           -- n
-#reduce n + 2           -- succ (succ n)
+#reduce n + 2           -- nat.succ (nat.succ n)
 #reduce 2 + 3           -- 5
 #+END_SRC
 In a later chapter, we will explain how these terms are evaluated. For
@@ -454,7 +437,25 @@ equal/. They are considered "the same" by the underlying logical
 framework, and Lean does its best to recognize and support these
 identifications.
 
+It is this computational behavior that makes it possible to use Lean
+as a programming language as well. Indeed, Lean extracts bytecode from
+terms an a computationally pure fragment of the logical framework, and
+can evaluate them quite efficiently:
+#+BEGIN_SRC lean
+#eval 12345 * 54321
+#+END_SRC
+In contrast, the =#reduce= command relies on Lean's trusted kernel,
+the part of Lean that is responsible for checking and verifying the
+correctness of expressions and proofs. As such, the =#reduce= command
+is more trustworthy, but far less efficient. We will have more to say
+about =#eval= in [[file:11_Axioms_and_Computation.org::#Axioms_and_Computation][Chapter 11]], and it will plays a central role in
+[[https://leanprover.github.io/programming_in_lean][Programming in Lean]]. In this tutorial, however, we will generally rely
+on =#reduce= instead.
+
 ** Introducing Definitions
+:PROPERTIES:
+  :CUSTOM_ID: Introducing_Definitions
+:END:
 
 As we have noted above, declaring constants in the Lean environment is
 a good way to postulate new objects to experiment with, but most of
@@ -477,8 +478,9 @@ it explicitly. This clarifies your intention, and Lean will flag an
 error if the right-hand side of the definition does not have the right
 type.
 
-Because function definitions are so common, Lean provides the shorthand
-=def= for =definition=, and an alternative notation, which puts the abstracted variables before the
+Because function definitions are so common, Lean provides the
+shorthand =def= for =definition=. It also allows us to use an
+alternative format which puts the abstracted variables before the
 colon and omits the lambda:
 #+BEGIN_SRC lean
 def double (x : ℕ) : ℕ := x + x
@@ -627,13 +629,14 @@ exactly the same effect.
 
 The =variable= and =variables= commands look like the =constant= and
 =constants= commands we have used above, but there is an important
-difference: rather than creating permanent entities, the declarations
-simply tell Lean to insert the variables as bound variables in
-definitions that refer to them. Lean is smart enough to figure out
-which variables are used explicitly or implicitly in a definition. We
-can therefore proceed as though =α=, =β=, =γ=, =g=, =f=, =h=, and =x=
-are fixed objects when we write our definitions, and let Lean abstract
-the definitions for us automatically.
+difference. Rather than creating permanent entities, the former
+commands simply instruct Lean to insert the declared variables as
+bound variables in definitions that refer to them. Lean is smart
+enough to figure out which variables are used explicitly or implicitly
+in a definition. We can therefore proceed as though =α=, =β=, =γ=,
+=g=, =f=, =h=, and =x= are fixed objects when we write our
+definitions, and let Lean abstract the definitions for us
+automatically.
 
 When declared in this way, a variable stays in scope until the end of
 the file we are working on, and we cannot declare another variable
@@ -655,7 +658,7 @@ When the section is closed, the variables go out of scope, and become
 nothing more than a distant memory.
 
 You do not have to indent the lines within a section, since Lean
-treats any blocks of returns, spaces, and tabs equivalently as
+treats any string of returns, spaces, and tabs equivalently as
 whitespace. Nor do you have to name a section, which is to say, you
 can use an anonymous =section= / =end= pair. If you do name a section,
 however, you have to close it using the same name. Sections can also
@@ -800,14 +803,14 @@ its effects disappear when the namespace is closed.
   :CUSTOM_ID: Dependent_Types
 :END:
 
-You now have rudimentary ways of defining functions and objects in Lean,
-and we will gradually introduce you to many more. Our ultimate goal in
-Lean is to /prove/ things about the objects we define, and the next
-chapter will introduce you to Lean's mechanisms for stating theorems
-and constructing proofs. Meanwhile, let us remain on the topic of
-defining objects in dependent type theory for just a moment longer,
-in order to explain what makes dependent type theory /dependent/, and
-why that is useful.
+You have now seen one way of defining functions and objects in Lean,
+and we will gradually introduce you to many more. But an important
+goal in Lean is to /prove/ things about the objects we define, and the
+next chapter will introduce you to Lean's mechanisms for stating
+theorems and constructing proofs. Meanwhile, let us remain on the
+topic of defining objects in dependent type theory for just a moment
+longer. In this section, we will explain what makes dependent type
+theory /dependent/, and why dependent types are useful.
 
 The short explanation is that what makes dependent type theory
 dependent is that types can depend on parameters. You have already
@@ -837,37 +840,36 @@ the first argument to the function, the type of the next two elements
 are =α= and =list α=. These types vary depending on the first
 argument, =α=.
 
-This is an instance of a /Pi type/ in dependent type theory. Given
-=α : Type= and =β : α → Type=, think of =β= as a family of types over
-=α=, that is, a type =β a= for each =a : α=. In that case, the type
-=Π x : α, β x= denotes the type of functions =f= with the property
-that, for each =a : α=, =f a= is an element of =β a=. In other words,
-the type of the value returned by =f= depends on its input.
+This is an instance of a /Pi type/, or /dependent function type/.
+Given =α : Type= and =β : α → Type=, think of =β= as a family of types
+over =α=, that is, a type =β a= for each =a : α=. In that case, the
+type =Π x : α, β x= denotes the type of functions =f= with the
+property that, for each =a : α=, =f a= is an element of =β a=. In
+other words, the type of the value returned by =f= depends on its
+input.
 
 Notice that =Π x : α, β= makes sense for any expression =β :
 Type=. When the value of =β= depends on =x= (as does, for example, the
 expression =β x= in the previous paragraph), =Π x : α, β= denotes a
-dependent function type. When =β= doesn't depend on =x=, =Π
-x : α, β= is no different from the type =α → β=. Indeed, in dependent
-type theory (and in Lean), the Pi construction is fundamental, and =α
-→ β= is nothing more than notation for =Π x : α, β= when =β= does not
-depend on =α=.
+dependent function type. When =β= doesn't depend on =x=, =Π x : α, β=
+is no different from the type =α → β=. Indeed, in dependent type
+theory (and in Lean), the Pi construction is fundamental, and =α → β=
+is just notation for =Π x : α, β= when =β= does not depend on =α=.
 
 Returning to the example of lists, we can model some basic list
 operations as follows. We use =namespace hide= to avoid a naming conflict
 with the =list= type defined in the standard library.
-# TODO: where?
 #+BEGIN_SRC lean
 namespace hide
 
 universe variable u
 
-constant list : Type u → Type u
+constant list   : Type u → Type u
 
-constant cons : Π α : Type u, α → list α → list α
-constant nil : Π α : Type u, list α
-constant head : Π α : Type u, list α → α
-constant tail : Π α : Type u, list α → list α
+constant cons   : Π α : Type u, α → list α → list α
+constant nil    : Π α : Type u, list α
+constant head   : Π α : Type u, list α → α
+constant tail   : Π α : Type u, list α → list α
 constant append : Π α : Type u, list α → list α → list α
 
 end hide
@@ -880,7 +882,7 @@ intended to denote the function that concatenates two lists.
 We emphasize that these constant declarations are only for the
 purposes of illustration. The =list= type and all these operations
 are, in fact, /defined/ in Lean's standard library, and are proved to
-have the expected properties. In fact, as the next example shows, the
+have the expected properties. Moreover, as the next example shows, the
 types indicated above are essentially the types of the objects that
 are defined in the library. (We will explain the =@= symbol and the
 difference between the round and curly brackets momentarily.)
@@ -896,11 +898,9 @@ open list
 #check @append  -- Π {α : Type u_1}, list α → list α → list α
 #+END_SRC
 There is a subtlety in the definition of =head=: the type =α= is
-required to have at least one element, and when passed the
-empty list, the function must determine a default element of the
-relevant type. We will explain how this is done in a later chapter.
-# TODO: add this reference when the chapter is restored
-# We will explain how this is done in Chapter [[file:09_Type_Classes.org::#Type_Classes][Type Classes]].
+required to have at least one element, and when passed the empty list,
+the function must determine a default element of the relevant type. We
+will explain how this is done in [[file:10_Type_Classes.org::#Type_Classes][Chapter 10]].
 
 Vector operations are handled similarly:
 #+BEGIN_SRC lean
@@ -919,7 +919,7 @@ end vec
 In the coming chapters, you will come across many instances of
 dependent types. Here we will mention just one more important and
 illustrative example, the /Sigma types/, =Σ x : α, β x=, sometimes
-also known as /dependent pairs/. These are, in a sense, companions to
+also known as /dependent products/. These are, in a sense, companions to
 the Pi types. The type =Σ x : α, β x= denotes the type of pairs
 =sigma.mk a b= where =a : α= and =b : β a=.
 # TODO: where to discuss this? The angle brackets only work where
@@ -927,6 +927,7 @@ the Pi types. The type =Σ x : α, β x= denotes the type of pairs
 # You can also use angle
 # brackets =<a, b>= as notation for =sigma.mk a b=. (To type these
 # brackets, use the shortcuts =\<= and =\>=.)
+
 Just as Pi types =Π x : α, β x= generalize the notion of a function
 type =α → β= by allowing =β= to depend on =α=, Sigma types =Σ x : α, β
 x= generalize the cartesian product =α × β= in the same way: in the
@@ -938,7 +939,7 @@ variable β : α → Type
 variable a : α
 variable b : β a
 
-#check sigma.mk a b   -- Σ (a : α), β a
+#check sigma.mk a b      -- Σ (a : α), β a
 #check (sigma.mk a b).1  -- α
 #check (sigma.mk a b).2  -- β (sigma.fst (sigma.mk a b))
 
@@ -962,8 +963,8 @@ universe variable u
 constant list : Type u → Type u
 
 namespace list
-  constant cons : Π α : Type u, α → list α → list α
-  constant nil : Π α : Type u, list α
+  constant cons   : Π α : Type u, α → list α → list α
+  constant nil    : Π α : Type u, list α
   constant append : Π α : Type u, list α → list α → list α
 end list
 end hide
@@ -976,8 +977,8 @@ universe variable u
 constant list : Type u → Type u
 
 namespace list
-  constant cons : Π α : Type u, α → list α → list α
-  constant nil : Π α : Type u, list α
+  constant cons   : Π α : Type u, α → list α → list α
+  constant nil    : Π α : Type u, list α
   constant append : Π α : Type u, list α → list α → list α
 end list
 
@@ -1015,8 +1016,8 @@ universe variable u
 constant list : Type u → Type u
 
 namespace list
-  constant cons : Π α : Type u, α → list α → list α
-  constant nil : Π α : Type u, list α
+  constant cons   : Π α : Type u, α → list α → list α
+  constant nil    : Π α : Type u, list α
   constant append : Π α : Type u, list α → list α → list α
 end list
 
@@ -1046,8 +1047,8 @@ constant list : Type u → Type u
 
 -- BEGIN
 namespace list
-  constant cons : Π {α : Type u}, α → list α → list α
-  constant nil : Π {α : Type u}, list α
+  constant cons   : Π {α : Type u}, α → list α → list α
+  constant nil    : Π {α : Type u}, list α
   constant append : Π {α : Type u}, list α → list α → list α
 end list
 
@@ -1083,31 +1084,8 @@ simply takes an argument of any type. In fact, the function =id= is
 defined in the standard library in exactly this way. We have chosen
 a nontraditional name here only to avoid a clash of names.
 
-# TODO: pp.metavar_args is gone. What to say about this?
-
-# In the first =#check= command, the inscription =?α= indicates that the
-# type of =ident= depends on a "placeholder," or "metavariable," that
-# should, in general, be inferred from the context. The output of the
-# second =#check= command is somewhat verbose: it indicates that the
-# placeholder, =?α=, can itself depend on any of the variables =α=, =β=,
-# =a=, and =b= that are in the context. If this additional information
-# is annoying, you can suppress it by writing =@ident=, as described
-# below. Alternatively, you can set an option to avoid printing these
-# arguments:
-# #+BEGIN_SRC lean
-# def ident {α : Type} (x : α) := x
-
-# -- BEGIN
-# variables α β : Type
-# variables (a : α) (b : β)
-
-# set_option pp.metavar_args true
-# #check ident      -- ?α → ?α
-# -- END
-# #+END_SRC
-
-Variables can also be declared implicit when they are declared with
-the =variables= command:
+Variables can also be specified as implicit when they are declared
+with the =variables= command:
 #+BEGIN_SRC lean
 universe variable u
 
@@ -1124,7 +1102,7 @@ variables (a : α) (b : β)
 #check ident a
 #check ident b
 #+END_SRC
-This definition of =ident= has the same effect as the one above.
+This definition of =ident= here has the same effect as the one above.
 
 Lean has very complex mechanisms for instantiating implicit arguments,
 and we will see that they can be used to infer function types,
@@ -1134,12 +1112,13 @@ predicates, and even proofs. The process of instantiating these
 there may be insufficient information to fix the meaning of an
 expression precisely. An expression like =id= or =list.nil= is said to
 be /polymorphic/, because it can take on different meanings in
-different contexts. One can always specify the type =T= of an
-expression =e= by writing =(e : T)=. This instructs Lean's elaborator
-to use the value =T= as the type of =e= when trying to resolve
-implicit arguments. The second pair of examples below use this
-mechanism to specify the desired types of the expressions =id= and
-=list.nil=:
+different contexts. 
+
+One can always specify the type =T= of an expression =e= by writing
+=(e : T)=. This instructs Lean's elaborator to use the value =T= as
+the type of =e= when trying to resolve implicit arguments. The second
+pair of examples below use this mechanism to specify the desired types
+of the expressions =id= and =list.nil=:
 #+BEGIN_SRC lean
 #check list.nil             -- list ?M1
 #check id                   -- ?M1 → ?M1
@@ -1151,19 +1130,14 @@ mechanism to specify the desired types of the expressions =id= and
 Numerals are overloaded in Lean, but when the type of a numeral cannot
 be inferred, Lean assumes, by default, that it is a natural number. So
 the expressions in the first two =#check= commands are elaborated in
-the same way, whereas the third =#check= command interprets =2= as a
-raw numeral.
+the same way, whereas the third =#check= command interprets =2= as an
+integer, and the fourth interprets it as a raw numeral.
 #+BEGIN_SRC lean
 #check 2            -- ℕ
 #check (2 : ℕ)      -- ℕ
+#check (2 : ℤ)      -- ℤ
 #check (2 : num)    -- num
 #+END_SRC
-
-# TODO: what to say about this?
-# As this
-# tutorial progresses, we will gradually learn more about what Lean's
-# powerful elaborator can do, and we will discuss the elaborator in
-# depth in Chapter [[file:08_Building_Theories_and_Proofs.org::#Elaboration_and_Unification][Elaboration and Unification]].
 
 Sometimes, however, we may find ourselves in a situation where we have
 declared an argument to a function to be implicit, but now want to
@@ -1185,3 +1159,25 @@ variables (a : α) (b : β)
 Notice that now the first =#check= command gives the type of the
 identifier, =id=, without inserting any placeholders. Moreover, the
 output indicates that the first argument is implicit.
+
+** Exercises
+
+1. Define the function =Do_twice=, as described in [[#Introducing_Definitions][Section 2.4]].
+
+2. Define the functions =curry= and =uncurry=, as described in
+   [[#Introducing_Definitions][Section 2.4]].
+
+3. Above, we used the example =vec α n= for vectors of elements of
+   type =α= of length =n=. Declare a constant =vec_add= that could
+   represent a function that adds two vectors of natural numbers of
+   the same length, and a constant =vec_reverse= that can represent a
+   function that reverses its argument. Use implicit arguments for
+   parameters that can be inferred. Declare some variables and check
+   some expressions involving the constants that you have declared.
+
+4. Similarly, declare a constant =matrix= so that =matrix α m n= could
+   represent the type of =m= by =n= matrices. Declare some constants
+   to represent functions on this type, such as matrix addition and
+   multiplication, and (using =vec=) multiplication of a matrix by a
+   vector. Once again, declare some variables and check some
+   expressions involving the constants that you have declared. 
