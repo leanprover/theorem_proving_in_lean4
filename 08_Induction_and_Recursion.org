@@ -2,6 +2,9 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]], [[http://leodemoura.github.io][Leonardo de Moura]]
 
 * Induction and Recursion
+:PROPERTIES:
+  :CUSTOM_ID: Induction_and_Recursion
+:END:
 
 Other than the type universes and Pi types, inductively defined types
 provide the only means of defining new types in the Calculus of
