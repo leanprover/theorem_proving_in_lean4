@@ -133,21 +133,18 @@ end
 -- END
 #+END_SRC
 
-# TODO(Jeremy): will we eventually have a sequencing operator in Lean
-# 3?
-
-# Tactic applications can also be concatenated with a
-# semicolon. Formally speaking, there is only one (compound) step in the
-# following proof:
-# #+BEGIN_SRC lean
-# theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
-# begin
-#   apply (and.intro hp); exact (and.intro hq hp)
-# end
-# #+END_SRC
-
-Whenever a proof term is expected, instead of using a =begin...end=
-block, you can write the =by= keyword followed by a single tactic:
+Tactic applications can also be concatenated with a semicolon.
+Formally speaking, there is only one (compound) step in the following
+proof:
+#+BEGIN_SRC lean
+theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
+begin
+  apply (and.intro hp); exact (and.intro hq hp)
+end
+#+END_SRC
+In a situation like this, when there is only a single tactic step
+involved, you can use the =by= keyword instead of using a
+=begin...end= block.
 #+BEGIN_SRC lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
 by exact and.intro hp (and.intro hq hp)
@@ -359,6 +356,20 @@ begin
   assumption
 end
 #+END_SRC
+In each case, the use of transitivity introduces a metavariable for
+the middle term, which is then determined by the later
+tactics. Alternatively, we can send this middle term as an optional
+argument to =transitivity=:
+#+BEGIN_SRC lean
+example : ∀ a b c : ℕ, a = b → a = c → c = b :=
+begin
+  intros a b c h₁ h₂,
+  transitivity a,
+  symmetry,
+  assumption,
+  assumption
+end
+#+END_SRC
 
 The =repeat= combinator can be used to simplify the last two lines:
 #+BEGIN_SRC lean
@@ -397,7 +408,7 @@ variables x y z : ℕ
 example : x = x :=
 begin
   generalize x z, -- goal is x : ℕ ⊢ ∀ (z : ℕ), z = z
-  intro y,      -- goal is x y : ℕ ⊢ y = y
+  intro y,        -- goal is x y : ℕ ⊢ y = y
   reflexivity
 end
 #+END_SRC
@@ -570,7 +581,7 @@ These tactics can be used on data just as well as propositions. In the
 next two example, they are used to define functions which swap the
 components of the product and sum types:
 #+BEGIN_SRC lean
-universe variables u v
+universes u v
 
 def swap_pair {α : Type u} {β : Type v} : α × β → β × α :=
 begin
@@ -599,9 +610,8 @@ begin
   cases m with m', exact h₀, exact h₁ m'
 end
 #+END_SRC
-For further discussion, see [[file:07_Inductive_Types.org::#Inductive_Types][Chapter 7]].
-
-# TODO: here and above, add a more specific section reference.
+The =cases= tactic, and its companion, the =induction= tactic, are
+discussed in greater detail in [[file:07_Inductive_Types.org::#Tactics][Section 7.5]].
 
 ** Structuring Tactic Proofs
 :PROPERTIES:
@@ -626,8 +636,8 @@ example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
 begin
   intro h,
   exact
-    have hp : p, from h^.left,
-    have hqr : q ∨ r, from h^.right,
+    have hp : p, from h.left,
+    have hqr : q ∨ r, from h.right,
     show (p ∧ q) ∨ (p ∧ r),
     begin
       cases hqr with hq hr,
@@ -642,96 +652,176 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 begin
   apply iff.intro,
     intro h,
-    cases h^.right with hq hr,
+    cases h.right with hq hr,
       exact
         show (p ∧ q) ∨ (p ∧ r),
-          from or.inl ⟨h^.left, hq⟩,
+          from or.inl ⟨h.left, hq⟩,
     exact
       show (p ∧ q) ∨ (p ∧ r),
-        from or.inr ⟨h^.left, hr⟩,
+        from or.inr ⟨h.left, hr⟩,
   intro h,
   cases h with hpq hpr,
     exact
       show p ∧ (q ∨ r),
-        from ⟨hpq^.left, or.inl hpq^.right⟩,
+        from ⟨hpq.left, or.inl hpq.right⟩,
   exact show p ∧ (q ∨ r),
-    from ⟨hpr^.left, or.inr hpr^.right⟩
+    from ⟨hpr.left, or.inr hpr.right⟩
 end
 #+END_SRC
-With the =exact= tactic, we use =show= to indicate the goal at that
-point in the proof. In fact, this idiom is so useful that Lean offers
-the following abbreviation: in a tactic block, the expression =show p,
-from t= abbreviates =exact (show p, from t)=. Thus we could have
-written the previous example more concisely as follows:
+In fact, there is a =show= tactic, which is the analog of the =show=
+keyword in a proof term: it simply declares the type of the goal that
+is about to be solved, while remaining in tactic mode. With this
+tactic, the previous proof could we written as follows:
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 begin
   apply iff.intro,
     intro h,
-    cases h^.right with hq hr,
+    cases h.right with hq hr,
       show (p ∧ q) ∨ (p ∧ r),
-        from or.inl ⟨h^.left, hq⟩,
-    show (p ∧ q) ∨ (p ∧ r),
-      from or.inr ⟨h^.left, hr⟩,
+        exact or.inl ⟨h.left, hq⟩,
+      show (p ∧ q) ∨ (p ∧ r),
+        exact or.inr ⟨h.left, hr⟩,
   intro h,
   cases h with hpq hpr,
     show p ∧ (q ∨ r),
-      from ⟨hpq^.left, or.inl hpq^.right⟩,
-  show p ∧ (q ∨ r),
-    from ⟨hpr^.left, or.inr hpr^.right⟩
+      exact ⟨hpq.left, or.inl hpq.right⟩,
+    show p ∧ (q ∨ r),
+      exact ⟨hpr.left, or.inr hpr.right⟩
 end
 #+END_SRC
-This blurs the distinction between proof-term mode and tactic-mode,
-and so it is important to use indentation and the structuring
-mechanisms discussed below to make it clear where a proof term ends.
-The convention we have used for indentation will be explained momentarily.
+The =show= tactic can actually be used to rewrite a goal to something
+definitionally equivalent:
+#+BEGIN_SRC lean
+example (n : ℕ) : n + 1 = nat.succ n :=
+begin
+  show nat.succ n = nat.succ n,
+  reflexivity
+end
+#+END_SRC
+In fact, =show= does a little more work. When there are multiple
+goals, you can use =show= to select which goal you want to work
+on. Thus both proofs below work:
+#+BEGIN_SRC lean
+example (p q : Prop) : p ∧ q → q ∧ p :=
+begin
+  intro h,
+  cases h with hp hq,
+  split,
+  show q, exact hq,
+  show p, exact hp
+end
 
-In the same way, in a tactic block, Lean interprets =have p, from t₁,
-t₂= as an abbreviation for =exact (have p, from t₁, t₂)=. Thus the
-first example in this section could have been written more concisely
-as follows:
+example (p q : Prop) : p ∧ q → q ∧ p :=
+begin
+  intro h,
+  cases h with hp hq,
+  split,
+  show p, exact hp,
+  show q, exact hq
+end
+#+END_SRC
+
+# In a tactic block, Lean interprets =have p, from t₁,
+# t₂= as an abbreviation for =exact (have p, from t₁, t₂)=. Thus the
+# first example in this section could have been written more concisely
+# as follows:
+# #+BEGIN_SRC lean
+# example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
+# begin
+#   intro h,
+#   have hp : p, from h.left,
+#   have hqr : q ∨ r, from h.right,
+#   show (p ∧ q) ∨ (p ∧ r),
+#   begin
+#     cases hqr with hq hr,
+#       exact or.inl ⟨hp, hq⟩,
+#     exact or.inr ⟨hp, hr⟩
+#   end
+# end
+# #+END_SRC
+
+The analogue of =have= in a tactic script is the =assert= tactic,
+which introduces a new subgoal, and then names the result of that
+subgoal for use in the rest of the proof. For example, the two
+=assert=s below open goals for =p= and =q ∨ r=, respectively, and then
+add =hp : p= and =hqr : q ∨ r= to the context for subsequent use.
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
 begin
   intro h,
-  have hp : p, from h^.left,
-  have hqr : q ∨ r, from h^.right,
+  assert hp : p, 
+    exact h.left,
+  assert hqr : q ∨ r,
+    exact h.right,
   show (p ∧ q) ∨ (p ∧ r),
-  begin
-    cases hqr with hq hr,
-      exact or.inl ⟨hp, hq⟩,
-    exact or.inr ⟨hp, hr⟩
-  end
+  cases hqr with hq hr,
+    exact or.inl ⟨hp, hq⟩,
+  exact or.inr ⟨hp, hr⟩
 end
 #+END_SRC
+You can use any sequence of tactics to dispatch the subgoal introduced
+by =assert=. Lean also provides a =note= tactic, which combines the
+effects of an =assert= and subsequent =exact=:
+#+BEGIN_SRC lean
+example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
+begin
+  intro h,
+  note hp : p := h.left,
+  note hqr : q ∨ r := h.right,
+  show (p ∧ q) ∨ (p ∧ r),
+  cases hqr with hq hr,
+    exact or.inl ⟨hp, hq⟩,
+  exact or.inr ⟨hp, hr⟩
+end
+#+END_SRC
+Here type types can be omitted, so we can write =note hp := h.left=
+and =note hqr := h.right=. Even the labels =hp= and =hq= can be
+ommitted, in which case, the new facts are introduced with the label
+=this=.
 
-You can also nest =begin...end= blocks within other =begin...end=
-blocks.  In a nested block, Lean focuses on the first goal, and
-generates an error if it has not been fully solved at the end of the
-block.  This can be helpful in indicating the separate proofs of
-multiple subgoals introduced by a tactic.
+Lean also has a =pose= tactic, similar to the =note= tactic, which is
+used to introduce local definitions. 
+#+BEGIN_SRC lean
+example : ∃ x, x + 2 = 8 :=
+begin
+  pose a : ℕ := 3 * 2,
+  existsi a, 
+  reflexivity
+end
+#+END_SRC
+As we =note=, you can make the type explicit by writing ~pose a : ℕ :=
+3 * 2~. The difference between =pose= and =have= is that =pose=
+introduces a local "let" definition, so that the definition of the
+local constant can be unfolded in the proof.
+
+For even more structured proofs, you can nest =begin...end= blocks
+within other =begin...end= blocks.  In a nested block, Lean focuses on
+the first goal, and generates an error if it has not been fully solved
+at the end of the block.  This can be helpful in indicating the
+separate proofs of multiple subgoals introduced by a tactic.
 #+BEGIN_SRC lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 begin
   apply iff.intro,
   begin
     intro h,
-    cases h^.right with hq hr,
+    cases h.right with hq hr,
     begin
       show (p ∧ q) ∨ (p ∧ r),
-        from or.inl ⟨h^.left, hq⟩
+        exact or.inl ⟨h.left, hq⟩
     end,
     show (p ∧ q) ∨ (p ∧ r),
-      from or.inr ⟨h^.left, hr⟩
+      exact or.inr ⟨h.left, hr⟩
   end,
   intro h,
   cases h with hpq hpr,
   begin
-    show p ∧ (q ∨ r), from
-      ⟨hpq^.left, or.inl hpq^.right⟩
+    show p ∧ (q ∨ r),
+      exact ⟨hpq.left, or.inl hpq.right⟩
   end,
-  show p ∧ (q ∨ r), from
-    ⟨hpr^.left, or.inr hpr^.right⟩
+  show p ∧ (q ∨ r),
+    exact ⟨hpr.left, or.inr hpr.right⟩
 end
 #+END_SRC
 Here, we have introduced a new =begin..end= block whenever a tactic
@@ -748,17 +838,17 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 begin
   apply iff.intro,
   { intro h,
-    cases h^.right with hq hr,
+    cases h.right with hq hr,
     { show (p ∧ q) ∨ (p ∧ r),
-        from or.inl ⟨h^.left, hq⟩ },
+        exact or.inl ⟨h.left, hq⟩ },
     show (p ∧ q) ∨ (p ∧ r),
-      from or.inr ⟨h^.left, hr⟩ },
+      exact or.inr ⟨h.left, hr⟩ },
   intro h,
   cases h with hpq hpr,
   { show p ∧ (q ∨ r),
-      from ⟨hpq^.left, or.inl hpq^.right⟩ },
+      exact ⟨hpq.left, or.inl hpq.right⟩ },
   show p ∧ (q ∨ r),
-    from ⟨hpr^.left, or.inr hpr^.right⟩
+    exact ⟨hpr.left, or.inr hpr.right⟩
 end
 #+END_SRC
 This helps explain the convention on indentation we have adopted here:
@@ -784,17 +874,17 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
 begin
   apply iff.intro,
   { intro h,
-    cases h^.right with hq hr,
+    cases h.right with hq hr,
     { show (p ∧ q) ∨ (p ∧ r),
-        from or.inl ⟨h^.left, hq⟩ },
+        exact or.inl ⟨h.left, hq⟩ },
     { show (p ∧ q) ∨ (p ∧ r),
-        from or.inr ⟨h^.left, hr⟩ }},
+        exact or.inr ⟨h.left, hr⟩ }},
   { intro h,
     cases h with hpq hpr,
     { show p ∧ (q ∨ r),
-        from ⟨hpq^.left, or.inl hpq^.right⟩ },
+        exact ⟨hpq.left, or.inl hpq.right⟩ },
     { show p ∧ (q ∨ r),
-        from ⟨hpr^.left, or.inr hpr^.right⟩ }}
+        exact ⟨hpr.left, or.inr hpr.right⟩ }}
 end
 #+END_SRC
 With this convention, the proof using =foo= described above would look
@@ -816,97 +906,23 @@ quickly; using the first convention means that the proofs of these
 side conditions are indented until we return to the "linear" part of
 the proof.
 
-You can simulate the effect of the =have= construct without leaving
-tactic mode using the =assert= tactic.
+Combining these various mechanisms makes for nicely structured tactic proofs:
 #+BEGIN_SRC lean
 example (p q : Prop) : p ∧ q ↔ q ∧ p :=
 begin
   apply iff.intro,
   { intro h,
-    assert hp : p, exact h^.left,
-    assert hq : q, exact h^.right,
-    exact ⟨hq, hp⟩ },
+    note hp : p := h.left,
+    note hq : q := h.right,
+    show q ∧ p, 
+      exact ⟨hq, hp⟩ },
   intro h,
-  assert hp : p, exact h^.right,
-  assert hq : q, exact h^.left,
-  exact ⟨hp, hq⟩
+  note hp : p := h.right,
+  note hq : q := h.left,
+  show p ∧ q, 
+    exact ⟨hp, hq⟩
 end
 #+END_SRC
-Here, the first =assert= creates a new subgoal, =p=. After that
-subgoal is proved, we are left with the original subgoal, with the
-context augmented by =hp : p=. Tactics are used are to prove both
-subgoals.
-
-Another option is to use the =note= tactic, which allows you to insert
-a fact into the context, without having to state the proposition it
-proves.
-#+BEGIN_SRC lean
-example (p q : Prop) : p ∧ q ↔ q ∧ p :=
-begin
-  apply iff.intro,
-  { intro h,
-    note hp := h^.left,
-    note hq := h^.right,
-    exact ⟨hq, hp⟩ },
-  intro h,
-  note hp := h^.right,
-  note hq := h^.left,
-  exact ⟨hp, hq⟩
-end
-#+END_SRC
-In general, if =e= has type =t=, then ~note h := e~ adds a hypothesis
-=h : t= to the context, without giving you access to the contents of
-=e=. If, instead, you need the contents of =e=, use ~pose x := e~
-instead. This adds ~x : t := e~ to the context as a =let= definition
-that can be unfolded when needed. Here is an example:
-#+BEGIN_SRC lean
-example : ∃ x : ℕ, x + 3 = 8 :=
-begin
-  pose x := 5,
-  existsi x,
-  reflexivity
-end
-#+END_SRC
-
-Just as the =assert= tactic can be used to simulate the benefits of
-=have=, the =change= tactic can be used to simulate the benefits of
-=show=. In the following example, the tactic =change q= affirms that the
-goal at that point is =q=, and the tactic =change p= affirms that the
-goal is =p=.
-#+BEGIN_SRC lean
-example (p q : Prop) : p ∧ q → q ∧ p :=
-begin
-  intro h,
-  split,
-  { change q,
-    exact h^.right },
-  change p,
-  exact h^.left
-end
-#+END_SRC
-The name of the =change= tactic is explained by the fact that it can
-be used to replace a goal by any definitionally equivalent statement.
-#+BEGIN_SRC lean
-example (a b : ℕ) (h : a = b) : a + 0 = b + 0 :=
-begin
-  change a = b,
-  assumption
-end
-#+END_SRC
-The =change= statement will also work if the expression you give it
-has metavariables, in which case, it tries to unify the expression
-with the goal.
-#+BEGIN_SRC lean
-example (a b c : ℕ) (h₁ : a = b) (h₂ : b = c) : a = c :=
-begin
-  transitivity,
-    change _ = b, assumption,
-  assumption
-end
-#+END_SRC
-In this example, after the =transitivity= tactic is applied, there are
-two goals, =a = ?m_1= and =?m_1 = c=. After the =change=, the two
-goals have been specialized to =a = b= and =b = c=.
 
 # TODO(Jeremy): also describe
 #   tactic combinators (like =try=)
@@ -1019,7 +1035,7 @@ The =rewrite= tactic is not restricted to propositions. In the
 following example, we use =rw h at t= to rewrite the hypothesis
 =t : tuple α n= to =v : tuple α 0=.
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 def tuple (α : Type u) (n : ℕ) := { l : list α // list.length l = n }
 
@@ -1036,15 +1052,15 @@ Note that the rewrite tactic can carry out generic calculations in
 any algebraic structure. The following examples involve an arbitrary
 ring and an arbitrary group, respectively.
 #+BEGIN_SRC lean
-universe variable uu
+universe u
 
-example {α : Type uu} [ring α] (a b c : α) : a * 0 + 0 * b + c * 0 + 0 * a = 0 :=
+example {α : Type u} [ring α] (a b c : α) : a * 0 + 0 * b + c * 0 + 0 * a = 0 :=
 begin
   rw [mul_zero, mul_zero, zero_mul, zero_mul],
   repeat { rw add_zero }
 end
 
-example {α : Type uu} [group α] {a b : α} (h : a * b = 1) : a⁻¹ = b :=
+example {α : Type u} [group α] {a b : α} (h : a * b = 1) : a⁻¹ = b :=
 by rw [-(mul_one a⁻¹), -h, inv_mul_cancel_left]
 #+END_SRC
 Using the type class mechanism described in [[file:10_Type_Classes.org::#Type_Classes][Chapter 10]], Lean
@@ -1133,7 +1149,7 @@ def f (m n : ℕ) : ℕ := m + n + m
 theorem f.def (m n : ℕ) : f m n = m + n + m := rfl
 
 example {m n : ℕ} (h : n = 1) (h' : 0 = m) : (f m n) * m = m :=
-by simp [h, h'^.symm, f.def]
+by simp [h, h'.symm, f.def]
 #+END_SRC
 If we add the attribute =[simp]= to the theorem =f.def=, we do not
 need to include it.
@@ -1144,7 +1160,7 @@ def f (m n : ℕ) : ℕ := m + n + m
 theorem f.def (m n : ℕ) : f m n = m + n + m := rfl
 
 example {m n : ℕ} (h : n = 1) (h' : 0 = m) : (f m n) * m = m :=
-by simp [h, h'^.symm]
+by simp [h, h'.symm]
 #+END_SRC
 
 # TODO(Jeremy): still need to:

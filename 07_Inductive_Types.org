@@ -385,7 +385,7 @@ sum type in the library:
 namespace hide
 
 -- BEGIN
-universe variables u v
+universes u v
 
 inductive prod (α : Type u) (β : Type v)
 | mk : α → β → prod
@@ -408,7 +408,7 @@ and =b=. We can use this to define the two projections for prod;
 remember that the standard library defines notation =α × β= for =prod
 α β= and =(a, b)= for =prod.mk a b=.
 #+BEGIN_SRC lean
-universe variables u v
+universes u v
 
 -- BEGIN
 def fst {α : Type u} {β : Type v} (p : α × β) : α :=
@@ -517,7 +517,7 @@ structures, and Lean provides substantial infrastructure to support
 working with them. Here, for example, is the definition of a
 semigroup:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 structure Semigroup :=
 (carrier : Type u)
@@ -537,7 +537,7 @@ argument implicit by default, but will do so if we add the annotation
 ={}= after the constructor. We used that option, for example, in the
 definition of =sum=:
 #+BEGIN_SRC lean
-universe variables u v
+universes u v
 
 namespace hide
 
@@ -555,7 +555,7 @@ end hide
 We have already discussed sigma types, also known as the dependent
 product:
 #+BEGIN_SRC lean
-universe variables u v
+universes u v
 
 namespace hide
 
@@ -569,7 +569,7 @@ end hide
 Two more examples of inductive types in the library are the
 following:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 namespace hide
 
@@ -645,7 +645,7 @@ discuss below, in the section on inductive families.
 
 Even the existential quantifier is inductively defined:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 namespace hide
 
@@ -671,7 +671,7 @@ than 0. In a similar way, =∃ x : α, p= is a =Prop=-valued variant of
 This is a good place to mention another inductive type, denoted ={x :
 α | p}=, which is sort of a hybrid between =∃ x : α, P= and =Σ x : α, P=.
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 namespace hide
 
@@ -933,8 +933,10 @@ truncated subtraction (with =n - m = 0= when =m= is greater than or
 equal to =n=), and exponentiation. Then try proving some of their
 basic properties, building on the theorems we have already proved.
 
-
 ** Tactics
+:PROPERTIES:
+  :CUSTOM_ID: Tactics
+:END:
 
 Given the fundamental importance of inductive types in Lean, it should
 not be surprising that there are a number of tactics described to work
@@ -993,7 +995,7 @@ example : f 5 = 7 := rfl
 Once again, cases will revert and depedencies in the context, split,
 and then reintroduce them.
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 def tuple (α : Type u) (n : ℕ) := { l : list α // list.length l = n }
 
@@ -1175,14 +1177,13 @@ Aspects of computability will be discussed in a later chapter.
 # -- END
 # #+END_SRC
 
-
 ** Other Inductive Types
 
 Let us consider some more examples of inductively defined types. For
 any type, =α=, the type =list α= of lists of elements of =α= is
 defined in the library.
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 namespace hide
 -- BEGIN
@@ -1220,7 +1221,7 @@ write =@nil α= to specify the type =α=.
 
 Lean allows us to define iterative notation for lists:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 namespace hide
 
@@ -1236,7 +1237,7 @@ notation `[` l:(foldr `,` (h t, cons h t) nil) `]` := l
 section
   open nat
   #check [1, 2, 3, 4, 5]
-  #check ([1, 2, 3, 4, 5] : list num)
+  #check ([1, 2, 3, 4, 5] : list int)
 end
 
 end list
@@ -1245,12 +1246,12 @@ end list
 end hide
 #+END_SRC
 In the first =#check=, Lean assumes that =[1, 2, 3, 4, 5]= is a list of
-natural numbers. The =(t : list num)= expression forces Lean to interpret =t= as
-a list of numerals.
+natural numbers. The =(t : list int)= expression forces Lean to interpret =t= as
+a list of integers.
 
 As an exercise, prove the following:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 namespace hide
 
 inductive list (α : Type u)

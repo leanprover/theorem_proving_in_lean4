@@ -539,7 +539,7 @@ We can declare a type class =has_add α= as follows:
 #+BEGIN_SRC lean
 namespace hide
 -- BEGIN
-universe variables u
+universes u
 
 class has_add (α : Type u) :=
 (add : α → α → α)
@@ -558,7 +558,7 @@ and apply the corresponding binary addition function. The notation
 =a= and =b=. We can the declare instances for =nat=, and =bool=:
 #+BEGIN_SRC lean
 namespace hide
-universe variables u
+universes u
 
 class has_add (α : Type u) :=
 (add : α → α → α)
@@ -599,7 +599,7 @@ assuming that there are appropriate addition functions for types =α=
 and =β=, we can define addition on =α × β= pointwise:
 #+BEGIN_SRC lean
 namespace hide
-universe variables u v
+universes u v
 class has_add (α : Type u) :=
 (add : α → α → α)
 
@@ -625,7 +625,7 @@ end hide
 We can similarly define pointwise addition of functions:
 #+BEGIN_SRC lean
 namespace hide
-universe variables u v
+universes u v
 class has_add (α : Type u) :=
 (add : α → α → α)
 
@@ -771,7 +771,7 @@ instance bool_to_Prop : has_coe bool Prop :=
 
 We can define a coercion from =list α= to =set α= as follows:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 def list.to_set {α : Type u} : list α → set α
 | []     := ∅
@@ -791,7 +791,7 @@ contain metavariables at elaboration time. In the following example,
 when we elaborate the union operator, the type of =[3, 2]= is =list ?m=,
 and a coercion will not be considered since it contains metavariables.
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 def list.to_set {α : Type u} : list α → set α
 | []     := ∅
@@ -809,7 +809,7 @@ def s : set nat  := {1, 2}
 #+END_SRC
 We can workaround this issue by using a type ascription.
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 def list.to_set {α : Type u} : list α → set α
 | []     := ∅
@@ -833,7 +833,7 @@ for =coe t=. We can use this operator to force a coercion to be
 introduced in a particular place. It is also helpful to make our
 intent clear, and workaround limitations of the coercion resolution system.
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 def list.to_set {α : Type u} : list α → set α
 | []     := ∅
@@ -870,7 +870,7 @@ The standard library defines a coercion from subtype ={x : α // p x}= to =α=
 as follows:
 #+BEGIN_SRC lean
 namespace hide
-universe variable u
+universe u
 -- BEGIN
 instance coe_subtype {α : Type u} {p : α → Prop} : has_coe {x // p x} α :=
 ⟨λ s, subtype.val s⟩
@@ -889,7 +889,7 @@ an instance of =has_lift_t=, we must use the operator =↑=.
 In the standard library, we have the following instance:
 #+BEGIN_SRC lean
 namespace hide
-universe variables u v
+universes u v
 
 instance lift_list {a : Type u} {b : Type v} [has_lift_t a b] : has_lift (list a) (list b) :=
 ⟨λ l, list.map (@coe a b _) l⟩
@@ -919,7 +919,7 @@ defining algebraic structures in which one component, the carrier of
 the structure, is a =Type=. For example, we can define a semigroup as
 follows:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 structure Semigroup : Type (u+1) :=
 (carrier : Type u)
@@ -937,7 +937,7 @@ that Lean can infer the argument =S= from the types of =a= and =b=.
 The function =Semigroup.carrier= maps the class =Semigroup= to the
 sort =Type u=:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 structure Semigroup : Type (u+1) :=
 (carrier : Type u)
@@ -953,7 +953,7 @@ instance Semigroup_has_mul (S : Semigroup) : has_mul (S^.carrier) :=
 If we declare this function to be a coercion, then whenever we have a
 semigroup =S : Semigroup=, we can write =a : S= instead of =a : S^.carrier=:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 structure Semigroup : Type (u+1) :=
 (carrier : Type u)
@@ -993,7 +993,7 @@ carrier of =S1= to the carrier of =S2= (note the implicit coercion)
 that respects the multiplication. The projection =morphism.mor= takes
 a morphism to the underlying function:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 structure Semigroup : Type (u+1) :=
 (carrier : Type u)
@@ -1016,7 +1016,7 @@ structure morphism (S1 S2 : Semigroup) :=
 #+END_SRC
 As a result, it is a prime candidate for the third type of coercion.
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 structure Semigroup : Type (u+1) :=
 (carrier : Type u)
@@ -1065,7 +1065,7 @@ We can instruct Lean's pretty-printer to hide the operators =↑= and =⇑=
 with =set_option=.
 
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 structure Semigroup : Type (u+1) :=
 (carrier : Type u)

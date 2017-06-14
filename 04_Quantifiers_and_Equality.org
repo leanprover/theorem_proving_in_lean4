@@ -199,7 +199,7 @@ equivalence relation:
 We can make the output easier to read by telling Lean not to the insert
 implicit arguments (which are displayed here as metavariables).
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 #check @eq.refl.{u}   -- ∀ {α : Sort u} (a : α), a = a
 #check @eq.symm.{u}   -- ∀ {α : Sort u} {a b : α}, a = b → b = a

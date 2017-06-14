@@ -238,7 +238,7 @@ also has type =Type n=. The function =prod= is similarly polymorphic:
 To define polymorphic constants and variables, Lean allows us to
 declare universe variables explicitly:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 constant α : Type u
 #check α
 #+END_SRC
@@ -862,7 +862,7 @@ with the =list= type defined in the standard library.
 #+BEGIN_SRC lean
 namespace hide
 
-universe variable u
+universe u
 
 constant list   : Type u → Type u
 
@@ -904,7 +904,7 @@ will explain how this is done in [[file:10_Type_Classes.org::#Type_Classes][Chap
 
 Vector operations are handled similarly:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 constant vec : Type u → ℕ → Type u
 
 namespace vec
@@ -959,7 +959,7 @@ respectively.
 Suppose we have an implementation of lists as described above.
 #+BEGIN_SRC lean
 namespace hide
-universe variable u
+universe u
 constant list : Type u → Type u
 
 namespace list
@@ -973,7 +973,7 @@ Then, given a type =α=, some elements of =α=, and some lists of
 elements of =α=, we can construct new lists using the constructors.
 #+BEGIN_SRC lean
 namespace hide
-universe variable u
+universe u
 constant list : Type u → Type u
 
 namespace list
@@ -1012,7 +1012,7 @@ that the system should fill in the information automatically. This is
 known as an "implicit argument."
 #+BEGIN_SRC lean
 namespace hide
-universe variable u
+universe u
 constant list : Type u → Type u
 
 namespace list
@@ -1042,7 +1042,7 @@ default, be left implicit. This is done by putting the arguments in
 curly braces, as follows:
 #+BEGIN_SRC lean
 namespace hide
-universe variable u
+universe u
 constant list : Type u → Type u
 
 -- BEGIN
@@ -1068,7 +1068,7 @@ All that has changed are the braces around =α : Type u= in the
 declaration of the variables. We can also use this device in function
 definitions:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 def ident {α : Type u} (x : α) := x
 
 variables α β : Type u
@@ -1087,7 +1087,7 @@ a nontraditional name here only to avoid a clash of names.
 Variables can also be specified as implicit when they are declared
 with the =variables= command:
 #+BEGIN_SRC lean
-universe variable u
+universe u
 
 section
   variable {α : Type u}
@@ -1136,7 +1136,6 @@ integer, and the fourth interprets it as a raw numeral.
 #check 2            -- ℕ
 #check (2 : ℕ)      -- ℕ
 #check (2 : ℤ)      -- ℤ
-#check (2 : num)    -- num
 #+END_SRC
 
 Sometimes, however, we may find ourselves in a situation where we have

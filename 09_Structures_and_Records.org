@@ -172,9 +172,9 @@ inconvenient, because we have to remember the order in which the
 fields were defined. Lean therefore provides the following alternative
 notations for defining elements of a structure type.
 #+BEGIN_SRC text
-  { structure-name . <field-name> := <expr>)* }
+  { structure-name . (<field-name> := <expr>)* }
   or
-  {<field-name> := <expr>)*}
+  { (<field-name> := <expr>)* }
 #+END_SRC
 The prefix =structure-name .= can be omitted whenever the name of the structure
 can be inferred from the expected type.
@@ -208,7 +208,7 @@ a new record object by modifying the value of one or more fields.
 Lean provides a variation of the notation described above for
 record updates.
 #+BEGIN_SRC text
-  { record-obj with <field-name> := <expr>)* }
+  { record-obj with (<field-name> := <expr>)* }
 #+END_SRC
 The semantics is simple: record objects =<record-obj>=
 provide the values for the unspecified fields. If more than one record
