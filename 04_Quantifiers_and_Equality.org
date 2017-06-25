@@ -415,7 +415,7 @@ names in =rw h1= refer to (though, in this case, it is). For that
 reason, section variables and variables that only appear in a tactic command
 or block are not automatically add to the context. The =include=
 command takes care of that. Essentially, the =rewrite= tactic uses a
-given equality (which can a hypothesis, a theorem name, or a complex
+given equality (which can be a hypothesis, a theorem name, or a complex
 term) to "rewrite" the goal. If doing so reduces the goal to an
 identity =t = t=, the tactic applies reflexivity to prove it.
 
