@@ -274,7 +274,7 @@ open foo
 #check bar
 #check foo.bar
 #+END_SRC 
-It is not important the the definition of =foo.bar= was the result of
+It is not important that the definition of =foo.bar= was the result of
 a =namespace= command:
 #+BEGIN_SRC lean
 def foo.bar : ℕ := 1
