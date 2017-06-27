@@ -8,7 +8,7 @@ fi
 # 1. Check NPM and minify
 hash npm 2>/dev/null || { echo >&2 "npm is not found. Visit https://nodejs.org/ and install node and npm."; exit 1; }
 
-MINIFY=`npm root`/minify/bin/minify.js
+MINIFY=`npm root`/.bin/minify
 if [ ! -f ${MINIFY} ] ; then
     echo ${MINIFY}
     echo >&2 "minify is not found at ${MINIFY}. Run 'npm install minify' to install it."
