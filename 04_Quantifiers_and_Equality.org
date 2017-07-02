@@ -2,6 +2,9 @@
 #+Author: [[http://www.andrew.cmu.edu/user/avigad][Jeremy Avigad]]
 
 * Quantifiers and Equality
+:PROPERTIES:
+  :CUSTOM_ID: Quantifiers_and_Equality
+:END:
 
 The last chapter introduced you to methods that construct proofs of
 statements involving the propositional connectives. In this chapter,
@@ -116,7 +119,8 @@ In situations like this, it can be tedious to supply the arguments =a
 b c=, when they can be inferred from =hab hbc=. For that reason, it is
 common to make these arguments implicit:
 #+BEGIN_SRC lean
-variables (α : Type) (r : α → α → Prop)
+universe u
+variables (α : Type u) (r : α → α → Prop)
 variable  trans_r : ∀ {x y z}, r x y → r y z → r x z
 
 variables (a b c : α)
@@ -129,10 +133,9 @@ variables (hab : r a b) (hbc : r b c)
 The advantage is that we can simply write =trans_r hab hbc= as a proof
 of =r a c=. A disadvantage is that Lean does not have enough
 information to infer the types of the arguments in the expressions
-=trans_r= and =trans_r hab=. The output of the =#check= command
-contains expressions like =?z α r trans_r a b c hab hbc=. Such an
-expression indicates an arbitrary value, that may depend on any of the
-values listed (in this case, all the variables in the local context).
+=trans_r= and =trans_r hab=. The output of the first =#check= command
+is =r ?M_1 ?M_2 → r ?M_2 ?M_3 → r ?M_1 ?M_3=, indicating that the
+implicit arguments are unspecified in this case.
 
 Here is an example of how we can carry out elementary reasoning with
 an equivalence relation:
