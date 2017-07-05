@@ -899,7 +899,7 @@ to be =nat=. However, some inference problems are /higher order/. For
 example, the substitution operation for equality, =eq.subst=, has the
 following type:
 #+BEGIN_SRC lean_text
-eq.subst : ∀ {α : Sort u} {P : α → Prop} {a b : α}, a = b → P a → P b
+eq.subst : ∀ {α : Sort u} {p : α → Prop} {a b : α}, a = b → p a → p b
 #+END_SRC
 Now suppose we are given =a b : ℕ= and =h₁ : a = b= and =h₂ : a * b >
 a=. Then, in the expression =eq.subst h₁ h₂=, =P= could be any of the

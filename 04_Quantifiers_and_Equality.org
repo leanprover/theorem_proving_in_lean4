@@ -209,21 +209,22 @@ universe u
 #check @eq.trans.{u}  -- ∀ {α : Sort u} {a b c : α}, a = b → b = c → a = c
 #+END_SRC
 The inscription =.{u}= tells Lean to instantiate the constants at the
-universe =u=, rather than 
+universe =u=.
 
 Thus, for example, we can specialize the example from the previous section
 to the equality relation:
 #+BEGIN_SRC lean
+universe u
 variables (α : Type) (a b c d : α)
 variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 example : a = d :=
 eq.trans (eq.trans hab (eq.symm hcb)) hcd
 #+END_SRC
-
 If we "open" the =eq= namespace, the names become shorter:
 #+BEGIN_SRC lean
-variables (α : Type) (a b c d : α)
+universe u
+variables (α : Type u) (a b c d : α)
 variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 -- BEGIN
@@ -234,7 +235,8 @@ example : a = d := trans (trans hab (symm hcb)) hcd
 #+END_SRC
 We can also use the projection notation:
 #+BEGIN_SRC lean
-variables (α : Type) (a b c d : α)
+universe u
+variables (α : Type u) (a b c d : α)
 variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
 -- BEGIN
@@ -248,7 +250,8 @@ interpretation, and that the logical framework treats terms with a
 common reduct as the same. As a result, some nontrivial identities can
 be proved by reflexivity:
 #+BEGIN_SRC lean
-variables (α β : Type)
+universe u
+variables (α β : Type u)
 
 example (f : α → β) (a : α) : (λ x, f x) a = f a := eq.refl _
 example (a : α) (b : α) : (a, b).1 = a := eq.refl _
@@ -257,7 +260,8 @@ example : 2 + 3 = 5 := eq.refl _
 This feature of the framework is so important that the library defines
 a notation =rfl= for =eq.refl _=:
 #+BEGIN_SRC lean
-variables (α β : Type)
+universe u
+variables (α β : Type u)
 
 -- BEGIN
 example (f : α → β) (a : α) : (λ x, f x) a = f a := rfl
@@ -269,13 +273,15 @@ example : 2 + 3 = 5 := rfl
 Equality is much more than an equivalence relation, however. It has
 the important property that every assertion respects the equivalence,
 in the sense that we can substitute equal expressions without changing
-the truth value. That is, given =h1 : a = b= and =h2 : P a=, we can construct
-a proof for =P b= using substitution: =eq.subst h1 h2=.
+the truth value. That is, given =h1 : a = b= and =h2 : p a=, we can construct
+a proof for =p b= using substitution: =eq.subst h1 h2=.
 #+BEGIN_SRC lean
-example (α : Type) (a b : α) (P : α → Prop) (h1 : a = b) (h2 : P a) : P b :=
+universe u
+
+example (α : Type u) (a b : α) (p : α → Prop) (h1 : a = b) (h2 : p a) : p b :=
 eq.subst h1 h2
 
-example (α : Type) (a b : α) (P : α → Prop) (h1 : a = b) (h2 : P a) : P b :=
+example (α : Type u) (a b : α) (p : α → Prop) (h1 : a = b) (h2 : p a) : p b :=
 h1 ▸ h2
 #+END_SRC
 The triangle in the second presentation is nothing more than notation
@@ -331,9 +337,9 @@ facts hold in any commutative ring, of which Lean recognizes the
 integers to be an instance. [[file::06_Interacting_with_Lean.org:#Interacting_with_Lean.org][Chapter 6]] provides some pointers as to how
 to find theorems like this in the library.
 
-Here is an example of a calculation
-in the natural numbers that uses substitution combined with
-associativity, commutativity, and distributivity of the integers.
+Here is an example of a calculation in the natural numbers that uses
+substitution combined with associativity, commutativity, and
+distributivity of the integers.
 #+BEGIN_SRC lean
 variables x y z : ℤ
 
@@ -345,12 +351,26 @@ example (x y : ℕ) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
 have h1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, from mul_add (x + y) x y,
 have h2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y),
   from (add_mul x y x) ▸ (add_mul x y y) ▸ h1,
-h2.trans (add_assoc (x * x + y * x)(x * y) (y * y)).symm
+h2.trans (add_assoc (x * x + y * x) (x * y) (y * y)).symm
 #+END_SRC
-It is often important to be able to carry out substitutions by hand,
-but it is tedious to prove examples like the one above in this
-way. Fortunately, Lean provides an environment that provides better
-support for such calculations, which we will turn to now.
+
+Notice that the second implicit parameter to =eq.subst=, which
+provides the context in which the substitution is to occur, has type
+=α → Prop=. Inferring this predicate therefore requires an instance of
+/higher-order unification/. In full generally, the problem of
+determining whether a higher-order unifier exists is undecidable, and
+Lean can at best provide imperfect and approximate solutions to the
+problem. As a result, =eq.subst= doesn't always do what you want it
+to. This issue is discussed in greater detail in [[file:06_Interacting_with_Lean.org::#Elaboration_Hints][Section 6.10]]. 
+
+Because equational reasoning is so common and important, Lean provides
+a number of mechanisms to carry it out more effectively. The next
+section offers syntax that allow you to write calculational proofs in
+a more natural and perspicuous way. But, more importantly, equational
+reasoning is supported by a term rewriter, a simplifier, and other
+kinds of automation. The term rewriter and simplifier are described
+briefly in the next setion, and then in greater detail in the next
+chapter.
 
 ** Calculational Proofs
 :PROPERTIES:

@@ -3,10 +3,9 @@
 
 # TODO(Jeremy): I still need to describe these tactics:
 # - injection (do this in the next chapter)
-# - unfold
-# - cc
 # - by_cases, by_contradiction / by_contra 
 #      (and local attribute classical.prop_decidable [instance])
+#   (maybe do this in the axioms and computation chapter?)
 
 * Tactics
 :PROPERTIES:
@@ -1268,7 +1267,7 @@ Using the type class mechanism described in [[file:10_Type_Classes.org::#Type_Cl
 identifies both abstract and concrete instances of the relevant
 algebraic structures, and instantiates the relevant facts accordingly.
 
-# TODO(Jeremy): add a reference to the chapter on attributes
+# TODO(Jeremy): in the next release, describe the conv framework.
 
 ** Using the Simplifier
 
