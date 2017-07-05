@@ -492,10 +492,10 @@ annotations are essential, for example, when a term occurring in the
 left-hand side is neither a variable nor a constructor application,
 because these are not suitable targets for pattern matching. We can
 view such inaccessible terms as "don't care" components of the
-patterns. You can declare a subterm inaccessible by writing =.t=.
-If =t= is a composite term, we need to write =.(t)=.
+patterns. You can declare a subterm inaccessible by writing =.(t)=.
+If the inaccessible term can be inferred, you can also write =._=.
 
-The following example can be found in cite{goguen:et:al:06}. We
+The following example can be found in \cite{goguen:et:al:06}. We
 declare an inductive type that defines the property of "being in the
 image of =f=". You can view an element of the type =image_of f b= as
 evidence that =b= is in the image of =f=, whereby the constructor
