@@ -958,7 +958,7 @@ operations in more detail in the next chapter.
 
 Once again, these attributes can assigned and reassigned after an
 object is defined, and you can use the =local= modifier to limit their
-scope. Moreover, using the =@= simple in front of an identifier in an
+scope. Moreover, using the =@= symbol in front of an identifier in an
 expression instructs the elaborator to use the =[elab_simple]=
 strategy; the idea is that, when you provide the tricky parameters
 explicitly, you want the elaborator to weigh that information
