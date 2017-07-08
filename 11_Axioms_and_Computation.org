@@ -133,7 +133,7 @@ legitimate to use, for example, the law of the excluded middle, =p ∨
 ¬p=, where =p= is any proposition. Of course, this, too, can block
 computation according to the rules of CIC, but it does not block
 bytecode evaluation, as described above. It is only the choice
-principles discussed in [[#Choice_Axioms][Section 11.5]] that completely erasing the
+principles discussed in [[#Choice_Axioms][Section 11.5]] that completely erase the
 distinction between the proof-irrelevant and data-relevant parts of
 the theory.
 
