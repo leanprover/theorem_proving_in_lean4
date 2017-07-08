@@ -555,7 +555,7 @@ is an appropriate addition function for =α=. The =add= function is
 designed to find an instance of =has_add α= for the given type, =α=,
 and apply the corresponding binary addition function. The notation
 =a + b= thus refers to the addition that is appropriate to the type of
-=a= and =b=. We can the declare instances for =nat=, and =bool=:
+=a= and =b=. We can then declare instances for =nat=, and =bool=:
 #+BEGIN_SRC lean
 namespace hide
 universes u
