@@ -113,7 +113,7 @@ theory/ that is powerful enough to prove almost any conventional
 mathematical theorem, and expressive enough to do it in a natural
 way. More specifically, Lean is based on a variant of a system known
 as the /Calculus of Inductive
-Constructions/\cite{Coquand1988,pfenning:paulin:mohring:89}, or /CIC/.
+Constructions/ \cite{Coquand1988,pfenning:paulin:mohring:89}, or /CIC/.
 We will explain not only how to define mathematical objects and
 express mathematical assertions in dependent type theory, but also how
 to use it as a language for writing proofs.

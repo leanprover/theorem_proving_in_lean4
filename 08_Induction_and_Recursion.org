@@ -549,6 +549,216 @@ example : filter is_not_zero [1, 0, 0, 3, 0] = [1, 3] := rfl
 -- END
 #+END_SRC
 
-** Well-Founded Recursion
+# TODO: let notation, structured assume
 
-[TODO: write this section.]
+# ** Well-Founded Recursion
+
+# [TODO: write this section.]
+
+
+# ** Under the Hood
+
+# ** Automatically Generated Constructions
+# :PROPERTIES:
+#   :CUSTOM_ID: Automatically_Generated_Constructions
+# :END:
+
+# In the previous sections, we have seen that whenever we declare an
+# inductive data type =I=, the Lean kernel automatically declares its
+# constructors (aka introduction rules), and generates and declares the
+# eliminator/recursor =I.rec=. The eliminator expresses a principle of
+# definition by recursion, as well as the principle of proof by
+# induction. The kernel also associates a /computational rule/ which
+# determines how these definitions are eliminated when terms and proofs
+# are normalized.
+
+# Consider, for example, the natural numbers. Given the motive =C : nat
+# → Type=, and minor premises =fz : C zero= and =fs : Π (n : nat), C n →
+# C (succ n)=, we have the following two computational rules: =nat.rec
+# fz fs zero= reduces to =fz=, and =nat.rec fz fs (succ a)= reduces to
+# =fs a (nat.rec fz fs a)=.
+# #+BEGIN_SRC lean
+# open nat
+
+# variable C  : nat → Type
+# variable fz : C zero
+# variable fs : Π (n : nat), C n → C (succ n)
+
+# #reduce nat.rec fz fs zero
+# -- nat.rec_on is defined from nat.rec
+# #reduce nat.rec_on zero fz fs
+
+# example : nat.rec fz fs zero = fz :=
+# rfl
+
+# variable a : nat
+
+# #reduce nat.rec fz fs (succ a)
+# #reduce nat.rec_on (succ a) fz fs
+
+# example (a : nat) : nat.rec fz fs (succ a) = fs a (nat.rec fz fs a) :=
+# rfl
+# #+END_SRC
+# The source code that validates an inductive declaration and generates
+# the eliminator/recursor and computational rules is part of the Lean
+# kernel. The kernel is also known as the /trusted code base/, because a
+# bug in the kernel may compromise the soundness of the whole system.
+
+# When you define an inductive data type, Lean automatically generates a
+# number of useful definitions. We have already seen some of them:
+# =rec_on=, =induction_on=, and =cases_on=. The module =M= that
+# generates these definitions is /not/ part of the trusted code base. A
+# bug in =M= does not compromise the soundness of the whole system,
+# since the kernel will catch such errors when type checking any
+# incorrectly generated definition produced by =M=.
+
+# As described before, =rec_on= just uses its arguments in a more
+# convenient order than =rec=. In =rec_on=, the major premise is
+# provided before the minor premises. Constructions using =rec_on= are
+# often easier to read and understand than the equivalent ones using
+# =rec=.
+# #+BEGIN_SRC lean
+# open nat
+
+# #print definition nat.rec_on
+
+# definition rec_on {C : nat → Type} (n : nat)
+#                   (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
+# nat.rec fz fs n
+# #+END_SRC
+# Moreover, =induction_on= is just a special case of =rec_on= where the
+# motive =C= is a proposition. Finally, =cases_on= is a special case of
+# =rec_on= where the inductive/recursive hypotheses are omitted in the
+# minor premises. For example, in =nat.cases_on= the minor premise =fs=
+# has type =Π (n : nat), C (succ n)= instead of =Π (n : nat), C n → C
+# (succ n)=. Note that the inductive/recursive hypothesis =C n= has
+# been omitted.
+
+# #+BEGIN_SRC lean
+# namespace hide
+# -- BEGIN
+# open nat
+
+# #print definition nat.induction_on
+# #print definition nat.cases_on
+
+# definition induction_on {C : nat → Prop} (n : nat)
+#                         (fz : C zero) (fs : Π a, C a → C (succ a)) : C n :=
+# nat.rec_on n fz fs
+
+# definition cases_on {C : nat → Prop} (n : nat)
+#                     (fz : C zero) (fs : Π a, C (succ a)) : C n :=
+# nat.rec_on n fz (fun (a : nat) (r : C a), fs a)
+# -- END
+# end hide
+# #+END_SRC
+
+# For any inductive data type that is not a proposition, we can show that
+# its constructors are injective and disjoint. For example, on =nat=, we
+# can show that =succ a = succ b → a = b= (injectivity), and =succ a ≠
+# zero= (disjointness). Both proofs can be performed using the
+# automatically generated definition =nat.no_confusion=. More generally,
+# for any inductive data type =I= that is not a proposition, Lean
+# automatically generates a definition of =I.no_confusion=. Given a
+# motive =C= and an equality =h : c₁ t = c₂ s=, where =c₁= and =c₂= are
+# two distinct =I= constructors, =I.no_confusion= constructs an
+# inhabitant of =C=.  This is essentially the /principle of explosion/,
+# that is, the fact that anything follows from a contradiction. On the
+# other hand, given a proof of =c t = c s= with the same constructor on
+# both sides and a proof of =t = s → C=, =I.no_confusion= returns an
+# inhabitant of =C=.
+
+# Let us illustrate by considering the constructions for the type =nat=.
+# The type of =no_confusion= is based on the auxiliary definition
+# =no_confusion_type=:
+# #+BEGIN_SRC lean
+# open nat
+
+# check @nat.no_confusion
+# -- Π {P : Type} {v1 v2 : ℕ}, v1 = v2 → nat.no_confusion_type P v1 v2
+
+# check nat.no_confusion_type
+# -- Type → ℕ → ℕ → Type
+# #+END_SRC
+# Note that the motive is an implicit argument in =no_confusion=. The
+# constructions work as follows:
+# #+BEGIN_SRC lean
+# open nat
+# -- BEGIN
+# variable C : Type
+# variables a b : nat
+
+# #reduce nat.no_confusion_type C zero     (succ a)
+# -- C
+# #reduce nat.no_confusion_type C (succ a) zero
+# -- C
+# #reduce nat.no_confusion_type C zero     zero
+# -- C → C
+# #reduce nat.no_confusion_type C (succ a) (succ b)
+# -- (a = b → C) → C
+# -- END
+# #+END_SRC
+# In other words, from a proof of =zero = succ a= or =succ a = 0=, we
+# obtain an element of any type =C= at will. On the other hand, a proof
+# of =zero = zero= provides no help in constructing an element of type
+# =C=, whereas a proof of =succ a = succ b= reduces the task of
+# constructing an element of type =C= to the task of constructing such
+# an element under the additional hypothesis =a = b=.
+
+# It is not hard to prove that constructors are injective and disjoint
+# using =no_confusion=.  In the following example, we prove these two
+# properties for =nat= and leave as exercise the equivalent proofs for
+# trees.
+# #+BEGIN_SRC lean
+# open nat
+
+# theorem succ_ne_zero (a : nat) (h : succ a = zero) : false :=
+# nat.no_confusion h
+
+# theorem succ.inj (a b : nat) (h : succ a = succ b) : a = b :=
+# nat.no_confusion h (fun e : a = b, e)
+
+# inductive tree (α : Type) : Type :=
+# | leaf : α → tree α
+# | node : tree α → tree α → tree α
+
+# open tree
+
+# variable {α : Type}
+
+# theorem leaf_ne_node {a : α} {l r : tree α}
+#                      (h : leaf a = node l r) : false :=
+# sorry
+
+# theorem leaf_inj {a b : α} (h : leaf a = leaf b) : a = b :=
+# sorry
+
+# theorem node_inj_left {l1 r1 l2 r2 : tree α}
+#                       (h : node l1 r1 = node l2 r2) : l1 = l2 :=
+# sorry
+
+# theorem node_inj_right {l1 r1 l2 r2 : tree α}
+#                        (h : node l1 r1 = node l2 r2) : r1 = r2 :=
+# sorry
+# #+END_SRC
+
+# If a constructor contains dependent arguments (such as =sigma.mk=),
+# the generated =no_confusion= uses heterogeneous equality to equate
+# arguments of different types:
+# #+BEGIN_SRC lean
+# variables (α : Type) (β : α → Type)
+# variables (a1 a2 : α) (b1 : β a1) (b2 : β a2)
+# variable  (C : Type)
+
+# -- Remark: b1 and b2 have different types
+
+# #reduce sigma.no_confusion_type C (sigma.mk a1 b1) (sigma.mk a2 b2)
+# -- (a1 = a2 → b1 == b2 → C) → C
+# #+END_SRC
+
+# Lean also generates the predicate transformer =below= and the recursor
+# =brec_on=. It is unlikely that you will ever need to use these
+# constructions directly; they are auxiliary definitions used by the
+# recursive equation compiler we will describe in the next chapter, and
+# we will not discuss them further here.
+

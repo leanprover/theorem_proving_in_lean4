@@ -345,9 +345,21 @@ end
 There are tactics =reflexivity=, =symmetry=, and =transitivity=, which
 apply the corresponding operation. Using reflexivity, for example, is
 more general than writing =apply eq.refl=, because it works for any
-relation that has been tagged with the =refl= attribute.
-# TODO: add a reference to the chapter that describes attributes.
-With that tactic, the previous proof can be written more elegantly as
+relation that has been tagged with the =refl= attribute. (Attributes
+will be discussed in [[file:06_Interacting_with_Lean.org::#Attributes][Section 6.4]].) The =reflexivity= tactic can also be 
+abbreviated as =refl=.
+#+BEGIN_SRC lean
+example (y : ℕ) : (λ x : ℕ, 0) y = 0 :=
+begin
+  refl
+end
+
+example (x : ℕ) : x ≤ x :=
+begin
+  refl
+end
+#+END_SRC
+With these tactic, the proof can be written more elegantly as
 follows:
 #+BEGIN_SRC lean
 example : ∀ a b c : ℕ, a = b → a = c → c = b :=
