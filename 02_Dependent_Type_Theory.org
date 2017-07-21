@@ -440,7 +440,7 @@ identifications.
 
 It is this computational behavior that makes it possible to use Lean
 as a programming language as well. Indeed, Lean extracts bytecode from
-terms an a computationally pure fragment of the logical framework, and
+terms in a computationally pure fragment of the logical framework, and
 can evaluate them quite efficiently:
 #+BEGIN_SRC lean
 #eval 12345 * 54321
@@ -481,7 +481,7 @@ type.
 
 Because function definitions are so common, Lean provides the
 shorthand =def= for =definition=. It also allows us to use an
-alternative format which puts the abstracted variables before the
+alternative format that puts the abstracted variables before the
 colon and omits the lambda:
 #+BEGIN_SRC lean
 def double (x : ℕ) : ℕ := x + x
@@ -514,8 +514,8 @@ define functions that quadruple their input, and multiply the input
 by 8. As a further exercise, we encourage you to try defining a
 function
 =Do_Twice : ((ℕ → ℕ) → (ℕ → ℕ)) → (ℕ → ℕ) → (ℕ → ℕ)=
-which iterates /its/ argument twice, so that =Do_Twice do_twice= a
-function which iterates /its/ input four times, and evaluate
+which applies /its/ argument twice, so that =Do_Twice do_twice= is a
+function that applies its input four times. Then evaluate
 =Do_Twice do_twice double 2=.
 
 Above, we discussed the process of "currying" a function, that is,
