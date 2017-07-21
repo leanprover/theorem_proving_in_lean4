@@ -67,7 +67,7 @@ many programming languages.
 The =constant= and =constants= commands introduce new constant symbols
 into the working environment. The =#check= command asks Lean to report
 their types; in Lean, commands that query the system for information
-typically begin with the hash symbol. You should declaring some
+typically begin with the hash symbol. You should try declaring some
 constants and type checking some expressions on your own. Declaring
 new objects in this way is a good way to experiment with the system,
 but it is ultimately undesirable: Lean is a foundational system, which
@@ -421,7 +421,8 @@ constant b : bool
 
 #print "reducing boolean expressions"
 #reduce tt && ff        -- ff
-#reduce b && ff         -- ff
+#reduce ff && b         -- ff
+#reduce b && ff         -- bool.rec ff ff b
 
 #print "reducing arithmetic expressions"
 #reduce n + 0           -- n
