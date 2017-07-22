@@ -1117,8 +1117,8 @@ different contexts.
 
 One can always specify the type =T= of an expression =e= by writing
 =(e : T)=. This instructs Lean's elaborator to use the value =T= as
-the type of =e= when trying to resolve implicit arguments. The second
-pair of examples below use this mechanism to specify the desired types
+the type of =e= when trying to resolve implicit arguments. In the second
+pair of examples below, this mechanism is used to specify the desired types
 of the expressions =id= and =list.nil=:
 #+BEGIN_SRC lean
 #check list.nil             -- list ?M1
@@ -1130,9 +1130,9 @@ of the expressions =id= and =list.nil=:
 
 Numerals are overloaded in Lean, but when the type of a numeral cannot
 be inferred, Lean assumes, by default, that it is a natural number. So
-the expressions in the first two =#check= commands are elaborated in
+the expressions in the first two =#check= commands below are elaborated in
 the same way, whereas the third =#check= command interprets =2= as an
-integer, and the fourth interprets it as a raw numeral.
+integer. 
 #+BEGIN_SRC lean
 #check 2            -- ℕ
 #check (2 : ℕ)      -- ℕ
