@@ -38,7 +38,7 @@ variables p q r : Prop
 end hide
 #+END_SRC
 We could then introduce, for each element =p : Prop=, another type
-=Proof p=, for the type of proofs of =p=. An "axiom" would be constant
+=Proof p=, for the type of proofs of =p=. An "axiom" would be a constant
 of such a type.
 #+BEGIN_SRC lean
 namespace hide
@@ -418,8 +418,8 @@ in the permanent context. Essentially, it just checks that the given
 term has the indicated type. It is convenient for illustration, and we
 will use it often.
 
-The expression =and.elim_left H= creates a proof of =p= from a proof
-=h : p ∧ q=.  Similarly, =and.elim_right H= is a proof of =q=. They
+The expression =and.elim_left h= creates a proof of =p= from a proof
+=h : p ∧ q=.  Similarly, =and.elim_right h= is a proof of =q=. They
 are commonly known as the right and left /and-elimination/ rules.
 #+BEGIN_SRC lean
 variables p q : Prop
@@ -500,7 +500,7 @@ example (h : p ∧ q) : q ∧ p :=
 There is a fine line between brevity and obfuscation, and omitting
 information in this way can sometimes make a proof harder to read. But
 for straightforward constructions like the one above, when the type of
-=h= and the goal of the construction as salient, the notation is clean
+=h= and the goal of the construction are salient, the notation is clean
 and effective.
 
 It is common to iterate constructions like "and." Lean also allows you
