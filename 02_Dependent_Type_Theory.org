@@ -466,7 +466,7 @@ important way of defining new objects.
 #+BEGIN_SRC lean
 definition foo : (ℕ → ℕ) → ℕ := λ f, f 0
 
-#check foo    -- ℕ
+#check foo    -- (ℕ → ℕ) → ℕ
 #print foo    -- λ (f : ℕ → ℕ), f 0
 #+END_SRC
 We can omit the type when Lean has enough information to infer it:
@@ -547,7 +547,7 @@ let y := x + x in y * y
 Here, =t= is definitionally equal to the term =(x + x) * (x + x)=.
 You can combine multiple assignments in a single =let= statement:
 #+BEGIN_SRC lean
-#check let y := 2 + 2, z := y + y in z * z   -- 16
+#check   let y := 2 + 2, z := y + y in z * z   -- ℕ
 #reduce  let y := 2 + 2, z := y + y in z * z   -- 64
 #+END_SRC
 
