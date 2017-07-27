@@ -313,7 +313,7 @@ end weekday
 specifically designed to make use of inductive types.
 
 Notice that, under the propositions-as-types correspondence, we can use
-=cases_on= to prove theorems as well as define function. In fact, 
+=cases_on= to prove theorems as well as define functions. In fact, 
 we could equally well have used =rec_on=:
 #+BEGIN_SRC lean
 inductive weekday : Type
@@ -421,8 +421,8 @@ meanwhile, think about what is going on in these examples. The product
 type has one constructor, =prod.mk=, which takes two arguments. To
 define a function on =prod α β=, we can assume the input is of the
 form =prod.mk a b=, and we have to specify the output, in terms of =a=
-and =b=. We can use this to define the two projections for prod;
-remember that the standard library defines notation =α × β= for =prod
+and =b=. We can use this to define the two projections for prod.
+Remember that the standard library defines notation =α × β= for =prod
 α β= and =(a, b)= for =prod.mk a b=.
 #+BEGIN_SRC lean
 universes u v
@@ -436,7 +436,7 @@ prod.rec_on p (λ a b, b)
 -- END
 #+END_SRC
 The function =fst= takes a pair, =p=. Applying the recursor
-=prod.rec_on p (fun a b, a)= interprets =p= as a pair, =prod.mk a b=,
+=prod.rec_on p (λ a b, a)= interprets =p= as a pair, =prod.mk a b=,
 and then uses the second argument to determine what to do with =a= and
 =b=. Remember that you can enter the symbol for a product by typing
 =\times=. Recall also from [[file:02_Dependent_Type_Theory.org::#Dependent_Types][Section 2.8]] that to give these definitions
@@ -479,6 +479,32 @@ the first case, the function returns =2 * n=, and the second case, it
 returns =2 * n + 1=. You can enter the symbol for the sum by typing
 =\oplus=.
 
+Notice that the product type depends on parameters =α β : Type= which
+are arguments to the constructors as well as =prod=.  Lean detects
+when these arguments can be inferred from later arguments to a
+constructor, and makes them implicit in that case. Sometimes an
+argument can only be inferred from the return type, which means that
+it could not be inferred by parsing the expression from bottom up, but
+may be inferrable from context. In that case, Lean does not make the
+argument implicit by default, but will do so if we add the annotation
+={}= after the constructor. We used that option, for example, in the
+definition of =sum=:
+#+BEGIN_SRC lean
+universes u v
+
+namespace hide
+
+-- BEGIN
+inductive sum (α : Type u) (β : Type v)
+| inl {} : α → sum
+| inr {} : β → sum
+-- END
+
+end hide
+#+END_SRC
+αs a result, the argument =α= to =inl= and the argument =β= to
+=inr= are left implicit.
+
 In the section after next we will see what happens when the
 constructor of an inductive type takes arguments from the inductive
 type itself. What characterizes the examples we consider in this
@@ -493,13 +519,37 @@ extract =a= /and/ =b=. An arbitrary inductive type can include both
 features, by having any number of constructors, each of which takes
 any number of arguments.
 
-A type, like =prod=, with only one constructor is purely conjunctive:
-the constructor simply packs the list of arguments into a single piece
-of data, essentially a tuple where the type of subsequent arguments
-can depend on the type of the initial argument. We can also think of
-such a type as a "record" or a "structure". In Lean, these two words
-are synonymous, and provide alternative syntax for inductive types
-with a single constructor.
+As with function definitions, Lean's inductive definition syntax will
+let you put named arguments to the constructors before the colon:
+#+BEGIN_SRC lean
+namespace hide
+
+-- BEGIN
+universes u v
+
+inductive prod (α : Type u) (β : Type v)
+| mk (fst : α) (snd : β) : prod
+
+inductive sum (α : Type u) (β : Type v)
+| inl {} (a : α) : sum
+| inr {} (b : β) : sum
+-- END
+
+end hide
+#+END_SRC
+The results of these definitions are essentially the same as the ones
+given earlier in this section. Note that in the definition of =sum=,
+the annotation ={}= refers to the parameters, =α= and =β=. As with
+function definitions, you can use curly braces to specify which
+arguments are meant to be left implicit.
+
+A type, like =prod=, that has only one constructor is purely
+conjunctive: the constructor simply packs the list of arguments into a
+single piece of data, essentially a tuple where the type of subsequent
+arguments can depend on the type of the initial argument. We can also
+think of such a type as a "record" or a "structure". In Lean, the
+keyword =structure= can be used to define such an inductive type as
+well as its projections, at the same time.
 #+BEGIN_SRC lean
 namespace hide
 
@@ -510,8 +560,8 @@ mk :: (fst : α) (snd : β)
 
 end hide
 #+END_SRC
-The =structure= command simultaneously introduces the inductive type,
-=prod=, its constructor, =mk=, the usual eliminators (=rec=,
+This example simultaneously introduces the inductive type,
+=prod=, its constructor, =mk=, the usual eliminators (=rec= and
 =rec_on=), as well as the projections, =fst= and =snd=, as defined
 above.
 
@@ -542,32 +592,6 @@ structure Semigroup :=
 (mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c))
 #+END_SRC
 We will see more examples in [[file:09_Structures_and_Records.org::#Structures_and_Records][Chapter 9]].
-
-Notice that the product type depends on parameters =α β : Type= which
-are arguments to the constructors as well as =prod=.  Lean detects
-when these arguments can be inferred from later arguments to a
-constructor, and makes them implicit in that case. Sometimes an
-argument can only be inferred from the return type, which means that
-it could not be inferred by parsing the expression from bottom up, but
-may be inferrable from context. In that case, Lean does not make the
-argument implicit by default, but will do so if we add the annotation
-={}= after the constructor. We used that option, for example, in the
-definition of =sum=:
-#+BEGIN_SRC lean
-universes u v
-
-namespace hide
-
--- BEGIN
-inductive sum (α : Type u) (β : Type v)
-| inl {} : α → sum
-| inr {} : β → sum
--- END
-
-end hide
-#+END_SRC
-αs a result, the argument =α= to =inl= and the argument =β= to
-=inr= are left implicit.
 
 We have already discussed sigma types, also known as the dependent
 product:
@@ -681,9 +705,8 @@ Keep in mind that the notation =∃ x : α, p= is syntactic sugar for
 The definitions of =false=, =true=, =and=, and =or= are perfectly
 analogous to the definitions of =empty=, =unit=, =prod=, and
 =sum=. The difference is that the first group yields elements of
-=Prop=, and the second yields elements of =Type i= for =i= greater
-than 0. In a similar way, =∃ x : α, p= is a =Prop=-valued variant of
-=Σ x : α, p=.
+=Prop=, and the second yields elements of =Type u= for some =u=. In a
+similar way, =∃ x : α, p= is a =Prop=-valued variant of =Σ x : α, p=.
 
 This is a good place to mention another inductive type, denoted ={x :
 α | p}=, which is sort of a hybrid between =∃ x : α, P= and =Σ x : α, P=.
@@ -694,15 +717,34 @@ namespace hide
 
 -- BEGIN
 inductive subtype {α : Type u} (p : α → Prop)
-| tag : Π x : α, p x → subtype
+| mk : Π x : α, p x → subtype
 -- END
 
 end hide
 #+END_SRC
-The notation ={x : α | p}= is syntactic sugar for =subtype (λ x : α,
-p)=. It is modeled after subset notation in set theory: the idea is
-that ={x : α | p}= denotes the collection of elements of =α= that have
-property =p=.
+In fact, in Lean, =subtype= is defined using the structure command:
+#+BEGIN_SRC lean
+universe u
+namespace hide
+
+-- BEGIN
+structure subtype {α : Sort u} (p : α → Prop) :=
+(val : α) (property : p val)
+
+section
+variables {α : Type u} (p : α → Prop)
+
+#check subtype p
+#check { x : α // p x}
+end
+-- END
+
+end hide
+#+END_SRC
+The notation ={x : α // p x}= is syntactic sugar for =subtype (λ x :
+α, p x)=. It is modeled after subset notation in set theory: the idea
+is that ={x : α // p x}= denotes the collection of elements of =α=
+that have property =p=.
 
 ** Defining the Natural Numbers
 
@@ -760,12 +802,12 @@ we find the following:
     C nat.zero → (Π (a : nat), C a → C (nat.succ a)) → C n
 #+END_SRC
 The implicit argument, =C=, is the codomain of the function being
-defined. In type theory it is common to say =C= is the =motive= for
-the elimination/recursion.  The next argument, =n : nat=, is the input
-to the function. It is also known as the =major premise=. Finally, the
-two arguments after specify how to compute the zero and successor
-cases, as described above. They are also known as the =minor
-premises=.
+defined. In type theory it is common to say =C= is the /motive/ for
+the elimination/recursion, since it describes the kind of object we
+wish to construct.  The next argument, =n : nat=, is the input to the
+function. It is also known as the =major premise=. Finally, the two
+arguments after specify how to compute the zero and successor cases,
+as described above. They are also known as the =minor premises=.
 
 Consider, for example, the addition function =add m n= on the natural
 numbers. Fixing =m=, we can define addition by recursion on =n=. In
@@ -1102,7 +1144,7 @@ end list
 
 end hide
 #+END_SRC
-Try also defining the function =length : Π α : Type, list α → nat=
+Try also defining the function =length : Π {α : Type u}, list α → nat=
 that returns the length of a list, and prove that it behaves as
 expected (for example, =length (s ++ t) = length s + length t=).
 
@@ -1498,262 +1540,353 @@ solve the third goal, while =injections= does.
 
 # TODO(Jeremy): discuss =constructor=, =left=, =right=, etc.
 
-# ** Inductive Families
+# TODO(Jeremy): describe mk_dec_eq
 
-# A more powerful generalization is given by the possibility of defining
-# inductive type =families=. There are indexed families of types defined
-# by a simultaneous induction of the following form:
-# #+BEGIN_SRC text
-# inductive foo : ... → Type :=
-# | constructor₁ : ... → foo ...
-# | constructor₂ : ... → foo ...
-# ...
-# | constructorₙ : ... → foo ...
-# #+END_SRC
-# In contrast to ordinary inductive definition, which construct an
-# element of =Type=, the more general version constructs a function
-# =... → Type=, where "=...=" denotes a sequence of argument types, also
-# known as /indices/. Each constructor then constructs an element of some
-# type in the family. One example is the definition of =vector α n=, the
-# type of vectors of elements of =α= of length =n=:
-# #+BEGIN_SRC lean
-# open nat
-# namespace hide
+** Inductive Families
 
-# -- BEGIN
-# inductive vector (α : Type) : nat → Type :=
-# | nil {} : vector α zero
-# | cons   : Π {n}, α → vector α n → vector α (succ n)
-# -- END
+We are almost done describing the full range of inductive definitions
+accepted by Lean. So far, you have seen that Lean allows you to introduce
+inductive types with any number of recursive constructors. In fact,
+a single inductive definition can introduce an indexed /family/ of
+inductive types, in a manner we now describe.
 
-# end hide
-# #+END_SRC
-# Notice that the =cons= constructor takes an element of =vector α n=,
-# and returns an element of =vector α (succ n)=, thereby using an
-# element of one member of the family to build an element of another.
+An inductive family is an indexed family of types defined by a
+simultaneous induction of the following form:
+#+BEGIN_SRC text
+inductive foo : ... → Sort u :=
+| constructor₁ : ... → foo ...
+| constructor₂ : ... → foo ...
+...
+| constructorₙ : ... → foo ...
+#+END_SRC
+In contrast to ordinary inductive definition, which constructs an
+element of some =Sort u=, the more general version constructs a function
+=... → Sort u=, where "=...=" denotes a sequence of argument types, also
+known as /indices/. Each constructor then constructs an element of some
+member of the family. One example is the definition of =vector α n=, the
+type of vectors of elements of =α= of length =n=:
+#+BEGIN_SRC lean
+open nat
+universe u
+namespace hide
 
-# Another example is given by the family of types =fin n=. For each =n=,
-# =fin n= is supposed to denote a generic type of =n= elements:
-# #+BEGIN_SRC lean
-# namespace hide
+-- BEGIN
+inductive vector (α : Type u) : nat → Type u
+| nil {}                              : vector zero
+| cons {n : ℕ} (a : α) (v : vector n) : vector (succ n)
+-- END
 
-# -- BEGIN
-# inductive fin : nat → Type :=
-# | fz : Π n, fin (nat.succ n)
-# | fs : Π {n}, fin n → fin (nat.succ n)
-# -- END
+end hide
+#+END_SRC
+Notice that the =cons= constructor takes an element of =vector α n=
+and returns an element of =vector α (succ n)=, thereby using an
+element of one member of the family to build an element of another.
 
-# end hide
-# #+END_SRC
-# This example may be hard to understand, so you should take the time to
-# think about how it works.
+A more exotic example is given by the definition of the equality type in
+Lean:
+#+BEGIN_SRC lean
+universe u
+namespace hide
 
-# Yet another example is given by the definition of the equality type in
-# the library:
-# #+BEGIN_SRC lean
-# namespace hide
+-- BEGIN
+inductive eq {α : Sort u} (a : α) : α → Prop
+| refl : eq a
+-- END
 
-# -- BEGIN
-# inductive eq {α : Type} (a : α) : α → Prop :=
-# refl : eq a a
-# -- END
+end hide
+#+END_SRC
+For each fixed =α : Sort u= and =a : α=, this definition constructs a
+family of types =eq a x=, indexed by =x : α=. Notably, however, there
+is only one constructor, =refl=, which is an element of =eq a
+a=. Intuitively, the only way to construct a proof of =eq a x= is to
+use reflexivity, in the case where =x= is =a=.  Note that =eq a a= is
+the only inhabited type in the family of types =eq a x=.  The
+elimination principle generated by Lean is as follows:
+#+BEGIN_SRC lean
+universes u v
 
-# end hide
-# #+END_SRC
-# For each fixed =α : Type= and =a : α=, this definition constructs a
-# family of types =eq a x=, indexed by =x : α=. Notably, however, there
-# is only one constructor, =refl=, which is an element of =eq a
-# a=. Intuitively, the only way to construct a proof of =eq a x= is to
-# use reflexivity, in the case where =x= is =a=.  Note that =eq a a= is
-# the only inhabited type in the family of types =eq a x=.  The
-# elimination principle generated by Lean says that =eq= is the /least/
-# reflexive relation on =α=. The eliminator/recursor for =eq= is of the
-# following form:
-# #+BEGIN_SRC text
-# eq.rec_on : Π {α : Type} {a : α} {C : α → Type} {b : α}, a = b → C a → C b
-# #+END_SRC
-# It is a remarkable fact that all the basic axioms for equality follow
-# from the constructor, =refl=, and the eliminator, =eq.rec_on=.
+#check (@eq.rec_on : 
+  Π {α : Sort u} {a : α} {C : α → Sort v} {b : α}, a = b → C a → C b)
+#+END_SRC
+It is a remarkable fact that all the basic axioms for equality follow
+from the constructor, =refl=, and the eliminator, =eq.rec_on=. The
+definition of equality is atypical, however; see the discussion in the
+next section.
 
-# This eliminator illustrates the exception to the fact
-# that inductive definitions living in =Prop= can only eliminate to
-# =Prop=. Because there is only one constructor to =eq=, it carries no
-# information, other than the type is inhabited, and Lean's internal
-# logic allows us to eliminate to an arbitrary =Type=. This is how we
-# define a /cast/ operation that casts an element from type =α= into =β=
-# when a proof =p : eq α β= is provided:
-# #+BEGIN_SRC lean
-# namespace hide
+The recursor =eq.rec_on= is also used to define substitution:
+#+BEGIN_SRC lean
+namespace hide
+universe u
 
-# inductive eq {α : Type} (a : α) : α → Prop :=
-# refl : eq a a
+inductive eq {α : Type u} (a : α) : α → Prop
+| refl : eq a
 
-# -- BEGIN
-# theorem cast {α β : Type} (p : eq α β) (a : α) : β :=
-# eq.rec_on p a
-# -- END
+-- BEGIN
+@[elab_as_eliminator]
+theorem subst {α : Type u} {a b : α} {p : α → Prop}
+  (h₁ : eq a b) (h₂ : p a) : p b :=
+eq.rec h₂ h₁
+-- END
 
-# end hide
-# #+END_SRC
+end hide
+#+END_SRC
+Using the recursor with =h₁ : a = b=, we may assume =a= and =b= are
+the same, in which case, =p b= and =p a= are the same. The definition
+of =subst= is marked with an elaboration hint, as described in
+[[file:06_Interacting_with_Lean.org::#Elaboration_Hints][Section 6.10]].
 
-# The recursor =eq.rec_on= is also used to define substitution:
-# #+BEGIN_SRC lean
-# namespace hide
+It is not hard to prove that =eq= is symmetric and transitive.
+In the following example, we prove =symm= and leave as exercise
+the theorems =trans= and =congr= (congruence).
 
-# inductive eq {α : Type} (a : α) : α → Prop :=
-# refl : eq a a
+#+BEGIN_SRC lean
+namespace hide
+universe u
 
-# -- BEGIN
-# theorem subst {α : Type} {a b : α} {P : α → Prop}
-#   (H₁ : eq a b) (H₂ : P a) : P b :=
-# eq.rec H₂ H₁
-# -- END
+inductive eq {α : Type u} (a : α) : α → Prop
+| refl : eq a
 
-# end hide
-# #+END_SRC
-# Using the recursor with =H₁ : a = b=, we may assume =a= and =b= are
-# the same, in which case, =P b= and =P a= are the same.
-
-# It is not hard to prove that =eq= is symmetric and transitive.
-# In the following example, we prove =symm= and leave as exercise
-# the theorems =trans= and =congr= (congruence).
-
-# #+BEGIN_SRC lean
-# namespace hide
-
-# inductive eq {α : Type} (a : α) : α → Prop :=
-# refl : eq a a
-
-# theorem subst {α : Type} {a b : α} {P : α → Prop}
-#   (H₁ : eq a b) (H₂ : P a) : P b :=
-# eq.rec H₂ H₁
-
-# -- BEGIN
-# theorem symm {α : Type} {a b : α} (H : eq a b) : eq b a :=
-# subst H (eq.refl a)
-
-# theorem trans {α : Type} {a b c : α} (H₁ : eq a b) (H₂ : eq b c) : eq a c :=
-# sorry
-
-# theorem congr {α β : Type} {a b : α} (f : α → β) (H : eq a b) : eq (f a) (f b) :=
-# sorry
-# -- END
-
-# end hide
-# #+END_SRC
-
-# In the type theory literature, there are further generalizations of
-# inductive definitions, for example, the principles of
-# /induction-recursion/ and /induction-induction/.  These are not
-# supported by Lean.
-
-# ** Mutual and Nested Types
-
-# We now consider two generalizations of inductive types that
-# are sometimes useful. First, Lean supports /mutually defined inductive
-# types/. The idea is that we can define two (or more) inductive types
-# at the same time, where each one refers to the other.
-
-# #+BEGIN_SRC lean
-# inductive tree (α : Type) : Type :=
-# | node : α → forest α → tree α
-# with forest : Type :=
-# | nil  : forest α
-# | cons : tree α → forest α → forest α
-# #+END_SRC
-# In this example, a =tree= with elements labeled from =α= is of the
-# form =node a f=, where =a= is an element of =α= (the label), and =f= a
-# forest. At the same time, a =forest= of trees with elements labeled
-# from =α= is essentially defined to be a list of trees.
+@[elab_as_eliminator]
+theorem subst {α : Type u} {a b : α} {P : α → Prop}
+  (h₁ : eq a b) (h₂ : P a) : P b :=
+eq.rec h₂ h₁
 
 
-# ** Axiomatic Details
+-- BEGIN
+theorem symm {α : Type u} {a b : α} (h : eq a b) : eq b a :=
+subst h (eq.refl a)
 
-# # TODO: add reference to Dybjer article
+ theorem trans {α : Type u} {a b c : α} (h₁ : eq a b) (h₂ : eq b c) : eq a c :=
+sorry
 
-# We have described inductive types and their syntax through
-# examples. This section provides additional information for those
-# interested in the axiomatic foundations.
+theorem congr {α β : Type u} {a b : α} (f : α → β) (h : eq a b) : eq (f a) (f b) :=
+sorry
+-- END
 
-# We have seen that the constructor to an inductive type takes
-# /parameters/ --- intuitively, the arguments that remain fixed
-# throughout the inductive construction --- and /indices/, intuitively,
-# the arguments parameterizing the family of types that is
-# simultaneously under construction. Each constructor should have a Pi
-# type, where the arugment types are built up from previously defined
-# types, the parameter and index types, and the inductive family
-# currently being defined. The requirement is that if the latter is
-# there at all, it occurs /strongly positively/, which is to say [***
-# fill in ***]
+end hide
+#+END_SRC
 
-# Since an inductive type lives in =Type.{i}= for some =i=, it is
-# reasonable to ask /which/ universe levels =i= can be instantiated
-# to. The goal of this section is to explain the relevant constraints.
+In the type theory literature, there are further generalizations of
+inductive definitions, for example, the principles of
+/induction-recursion/ and /induction-induction/.  These are not
+supported by Lean.
 
-# In the standard library, there are two cases, depending on whether the
-# inductive type is specified to land in =Prop=. Let us first consider
-# the case where the inductive type is not specified to land in =Prop=,
-# which is the only case that arises in the homotopy type theory
-# instantiation of the kernel. Recall that each constructor =c= in the
-# definition of a family =C= of inductive types is of the form
-# #+BEGIN_SRC text
-# c : Π (a : α) (b : β[a]), C a p[a,b]
-# #+END_SRC
-# where =a= is a sequence of data type parameters, =b= is the sequence of
-# arguments to the constructors, and =p[a, b]= are the indices, which
-# determine which element of the inductive family the construction
-# inhabits. Then the universe level =i= of =C= is constrained to satisfy
-# the following:
-# #+BEGIN_QUOTE
-# For each constructor =c= as above, and each =βk[a]= in the sequence
-# =β[a]=, if =βk[a] : Type.{j}=, we have =i= ≥ =j=.
-# #+END_QUOTE
-# In other words, the universe level =i= is required to be at least as
-# large as the universe level of each type that represents an argument
-# to a constructor.
+** Axiomatic Details
 
-# When the inductive type =C= is specified to land in =Prop=, there are
-# no constraints on the universe levels of the constructor
-# arguments. But these universe levels do have a bearing on the
-# elimination rule. Generally speaking, for an inductive type in =Prop=,
-# the motive of the elimination rule is required to be in =Prop=. The
-# exception we alluded to in the discussion of equality above is this:
-# we are allowed to eliminate to an arbitrary =Type= when there is only
-# one constructor, and each constructor argument is either in =Prop= or
-# an index. This exception, which makes it possible to treat ordinary
-# equality and heterogeneous equality as inductive types, can be
-# justified by the fact that the elimination rule cannot take advantage
-# of any "hidden" information.
+# TODO: add reference to Dybjer article
 
-# Because inductive types can be polymorphic over universe levels,
-# whether an inductive definition lands in =Prop= could, in principle,
-# depend on how the universe levels are instantiated. To simplify the
-# generation of the recursors, Lean adopts a convention that rules out
-# this ambiguity: if you do not specify that the inductive type is an
-# element of =Prop=, Lean requires the universe level to be at least
-# one. Hence, a type specified by single inductive definition is either
-# always in =Prop= or never in =Prop=. For example, if =α= and =β= are
-# elements of =Prop=, =α × β= is assumed to have universe level at least
-# one, representing a data type rather than a proposition. The analogous
-# definition of =α × β=, where =α= and =β= are restricted to =Prop= and
-# the resulting type is declared to be an element of =Prop= instead of
-# =Type=, is exactly the definition of =α ∧ β=.
+We have described inductive types and their syntax through
+examples. This section provides additional information for those
+interested in the axiomatic foundations.
 
-# # TODO: singleton elimination
+We have seen that the constructor to an inductive type takes
+/parameters/ --- intuitively, the arguments that remain fixed
+throughout the inductive construction --- and /indices/, the arguments
+parameterizing the family of types that is simultaneously under
+construction. Each constructor should have a Pi type, where the
+arugment types are built up from previously defined types, the
+parameter and index types, and the inductive family currently being
+defined. The requirement is that if the latter is present at all, it
+occurs only /strongly positively/. This means simply that any argument
+to the constructor in which it occurs is a Pi type in which the
+inductive type under definition occurs only as the resulting type,
+where the indices are given in terms of constants and previous
+arguments.
 
+Since an inductive type lives in =Sort u= for some =u=, it is
+reasonable to ask /which/ universe levels =u= can be instantiated
+to. Each constructor =c= in the definition of a family
+=C= of inductive types is of the form
+#+BEGIN_SRC text
+c : Π (a : α) (b : β[a]), C a p[a,b]
+#+END_SRC
+where =a= is a sequence of data type parameters, =b= is the sequence
+of arguments to the constructors, and =p[a, b]= are the indices, which
+determine which element of the inductive family the construction
+inhabits. (Note that this description is somewhat misleading, in that
+the arguments to the constructor can appear in any order as long as
+the dependencies make sense.) The constraints on the universe level of
+=C= fall into two cases, depending on whether or not the inductive
+type is specified to land in =Prop= (that is, =Sort 0=).
 
-# ** Exercises
+Let us first consider the case where the inductive type is /not/
+specified to land in =Prop=. Then the universe level =u= of =C= is
+constrained to satisfy the following:
+#+BEGIN_QUOTE
+For each constructor =c= as above, and each =βk[a]= in the sequence
+=β[a]=, if =βk[a] : Sort v=, we have =u= ≥ =v=.
+#+END_QUOTE
+In other words, the universe level =u= is required to be at least as
+large as the universe level of each type that represents an argument
+to a constructor.
 
-# As an exercise, try defining other operations on the natural numbers,
-# such as multiplication, the predecessor function (with =pred 0 = 0=),
-# truncated subtraction (with =n - m = 0= when =m= is greater than or
-# equal to =n=), and exponentiation. Then try proving some of their
-# basic properties, building on the theorems we have already proved.
+When the inductive type =C= is specified to land in =Prop=, there are
+no constraints on the universe levels of the constructor
+arguments. But these universe levels do have a bearing on the
+elimination rule. Generally speaking, for an inductive type in =Prop=,
+the motive of the elimination rule is required to be in =Prop=. 
 
+There is an exception to this last rule: we are allowed to eliminate
+from an inductively defined =Prop= to an arbitrary =Sort= when there
+is only one constructor and each constructor argument is either in
+=Prop= or an index. The intuition is that in this case the
+elimination does not make use of any information that is not already
+given by the mere fact that the type of argument is inhabited. This
+special case is known as /singleton elimination/.
 
-# Operations on natural numbers. Exponentiation.
+We have already seen singleton elimination at play in applications of
+=eq.rec=, the eliminator for the inductively defined equality type. We
+can use an element =h : eq a b= to cast an element =t' : p a= to =p b=
+even when =p a= and =p b= are arbitrary types, because the cast does
+not produce new data; it only reinterprets the data we already
+have. Singleton elimination is also used with heterogeneous equality
+and well-founded recursion, which will be discussed in a later
+chapter.
 
-# Operations on lists. Length. Etc.
+** Mutual and Nested Inductive Types
+:PROPERTIES:
+  :CUSTOM_ID: Mutual_and_Nested_Inductive_Types
+:END:
 
-# Syntactic types and terms. Truth assignments.
+We now consider two generalizations of inductive types that are often
+useful, which Lean supports by "compiling" them down to the more
+primitive kinds of inductive types described above. In other words,
+Lean parses the more general definitions, defines auxiliary inductive
+types based on them, and then uses the auxiliary types to define the
+ones we really want. Lean's equation compiler, described in the next
+chapter, is need to make use of these types effectively. Nonetheless,
+it makes sense to describe the declarations here, because they are
+straightforward variations on ordinary inductive definitions.
+
+First, Lean supports /mutually defined/ inductive types. The idea is
+that we can define two (or more) inductive types at the same time,
+where each one to the other(s).
+#+BEGIN_SRC lean
+mutual inductive even, odd
+with even : ℕ → Prop
+| even_zero : even 0
+| even_succ : ∀ n, odd n → even (n + 1)
+with odd : ℕ → Prop
+| odd_succ : ∀ n, even n → odd (n + 1)
+#+END_SRC
+In this example, two types are defined simulatenously: a natural
+number =n= is =even= if it is =0= or one more than an =odd= number,
+and =odd= if it is one more than an even number. Under the hood, this
+definition is compiled down to a single inductive type with an index
+=i= in a two-valued type (such as =bool=), where =i= encodes which of
+=even= or =odd= is intended. In the exercises below, you are asked to
+spell out the details.
+
+A mutual inductive definition can also be used to define the notation
+of a finite tree with nodes labeled by elements of =α=:
+#+BEGIN_SRC lean
+universe u
+
+mutual inductive tree, list_tree (α : Type u)
+with tree : Type u
+| node : α → list_tree → tree
+with list_tree : Type u
+| nil {} : list_tree
+| cons    : tree → list_tree → list_tree
+#+END_SRC
+With this definition, one can construct an element of =tree α= by
+giving an element of =α= together with a list of subtrees, possibly
+empty. The list of subtrees is represented by the type =list_tree α=,
+which is defined to be either the empty list, =nil=, or the =cons= of
+a tree and an element of =list_tree α=.
+
+This definition is inconvenient to work with, however. It would be
+much nicer if the list of subtrees were given by the type =list (tree
+α)=, especially since Lean's library contains a number of functions
+and theorems for working with lists. One can show that the type
+=list_tree α= is /isomorphic/ to =list (tree α)=, but translating
+results back and forth along this isomorphism is tedious.
+
+In fact, Lean allows us to define the inductive type we really want:
+#+BEGIN_SRC lean
+universe u
+
+-- BEGIN
+inductive tree (α : Type u)
+| mk : α → list tree → tree
+-- END
+#+END_SRC
+This is known as a /nested/ inductive type. It falls outside the
+strict specification of an inductive type given in the last
+section because =tree= does not occur strictly positively among the
+arugments to make, but, rather, nested inside the =list= type
+constructor. Under the hood, Lean compiles this down to the mutual
+inductive type described above, which, in turn, is compiled down to
+an ordinary inductive type. Lean then automatically builds the
+isomorphism between =list_tree α= and =list (tree  α)=, and defines
+the constructors for =tree= in terms of the isomorphism.
+
+The types of the constructors for mutual and nested inductive types
+can be read off from the definitions. Defining functions /from/ such
+types is more complicated, because these also have to be compiled down
+to more basic operations, making use of the primitive recursors that
+are associated to the inductive types that are declared under the
+hood. Lean does its best to hide the details from users, allowing them
+to use the equation compiler, described in the next section, to define
+such functions in natural ways.
+
+# TODO(Jeremy): in the next section, we can use this example:
+
+  # \begin{lstlisting}
+  # inductive term
+  # | const : string → term
+  # | app   : string → list term → term
+
+  # open term
+
+  # mutual def num_consts, num_consts_lst
+  # with num_consts : term → nat
+  # | (term.const n)  := 1
+  # | (term.app n ts) := num_consts_lst ts
+  # with num_consts_lst : list term → nat
+  # | []      := 0
+  # | (t::ts) := num_consts t + num_consts_lst ts
+
+  # def sample_term := app "f" [app "g" [const "x"], const "y"]
+
+** Exercises
+
+1. Try defining other operations on the natural numbers,
+   such as multiplication, the predecessor function (with =pred 0 = 0=),
+   truncated subtraction (with =n - m = 0= when =m= is greater than or
+   equal to =n=), and exponentiation. Then try proving some of their
+   basic properties, building on the theorems we have already proved.
+
+   Since many of these are already defined in Lean's core library, you
+   should work within a namespace named =hide=, or something like
+   that, in order to avoid name clashes.
+
+2. Define some operations on lists, like a =length= function or the
+   =reverse= function. Prove some properties, such as the following:
+
+   a. =length (s ++ t) = length s + length t=
+
+   b. =length (reverse t) = length t=
+
+   c. =reverse (reverse t) = t=
+
+3. Define an inductive data type consisting of terms built up from the
+   following constructors:
+
+   - =const n=, a constant denoting the natural number =n=
+   - =var n=, a variable, numbered =n=
+   - =plus s t=, denoting the sum of =s= and =t=
+   - =times s t=, denoting the product of =s= and =t=
+
+   Recursively define a function that evaluates any such term with
+   respect to an assignment of values to the variables.
+
+4. Similarly, define the type of propositional formulas, as well as
+   functions on the type of such formulas: an evaluation function, 
+   functions that measure the complexity of a formula, and a function
+   that substitutes another formula for a given variable.
+
+4. Simulate the mutual inductive definition of =even= and =odd=
+   described in [[#Mutual_and_Nested_Inductive_Types][Section 7.9]] with an ordinary inductive type, using an
+   index to encode the choice between them in the target type.
 
