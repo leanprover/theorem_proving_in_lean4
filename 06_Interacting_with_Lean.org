@@ -237,7 +237,7 @@ end
 #check t1
 #check t2
 #+END_SRC
-As with variables, the parameters =α=, =r=, and =transR= are inserted
+As with variables, the parameters =α=, =r=, and =transr= are inserted
 as arguments to definitions and theorems as needed. But there is a
 difference: within the section, =t1= is an abbreviation for =@t1 α r
 transr=, which is to say, these arguments are held fixed until the

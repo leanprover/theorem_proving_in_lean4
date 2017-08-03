@@ -291,7 +291,7 @@ The rule =eq.subst= is used to define the following auxiliary rules,
 which carry out more explicit substitutions. They are designed to deal
 with applicative terms, that is, terms of form =s t=. Specifically,
 =congr_arg= can be used to replace the argument, =congr_fun= can be
-used to replace the terms that is being applied, and =congr= can be
+used to replace the term that is being applied, and =congr= can be
 used to replace both at once.
 #+BEGIN_SRC lean
 variable α : Type
@@ -645,7 +645,7 @@ match h with ⟨w, hw⟩ :=
 end
 #+END_SRC
 The =match= statement is part of Lean's function definition system,
-which provides a convenient and expressive ways of defining complex
+which provides convenient and expressive ways of defining complex
 functions. Once again, it is the Curry-Howard isomorphism that allows
 us to co-opt this mechanism for writing proofs as well. The =match=
 statement "destructs" the existential assertion into the components

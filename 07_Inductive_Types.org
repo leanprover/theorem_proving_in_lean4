@@ -374,16 +374,14 @@ represents the familiar boolean values. As an exercise, you should
 think about what the introduction and elimination rules for these
 types do. As a further exercise, we suggest defining boolean
 operations =band=, =bor=, =bnot= on the boolean, and verifying common
-identities. Note that defining a binary operation like =band= will
-require nested cases splits:
+identities. Note that you can define a binary operation like =band=
+using a case split:
 #+BEGIN_SRC lean
 namespace hide
 
 -- BEGIN
 def band (b1 b2 : bool) : bool :=
-bool.cases_on b1
-  ff
-  (bool.cases_on b2 ff tt)
+bool.cases_on b1 ff b2
 -- END
 
 end hide

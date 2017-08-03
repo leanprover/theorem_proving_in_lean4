@@ -148,7 +148,7 @@ begin
   apply and.intro hp; exact and.intro hq hp
 end
 #+END_SRC
-See [[#Tactic_Combinators][Section 5.4]] for a more precise description of the semantics of the
+See [[#Tactic_Combinators][Section 5.5]] for a more precise description of the semantics of the
 semicolon. When a single tactic step can be used to dispell a goal,
 you can use the =by= keyword instead of using a =begin...end= block.
 #+BEGIN_SRC lean
@@ -579,8 +579,8 @@ end
 Here, the =constructor= tactic leaves the first component of the
 existential assertion, the value of =x=, implicit. It is represented
 by a metavariable, which should be instantiated later on. In the
-previous example, the proper value of the metavariable is determine by
-the tactic =exact px=, since =px= has type =p x=. If you want to
+previous example, the proper value of the metavariable is determined
+by the tactic =exact px=, since =px= has type =p x=. If you want to
 specify a witness to the existential quantifier explicitly, you can
 use the =existsi= tactic instead:
 #+BEGIN_SRC lean
@@ -591,6 +591,20 @@ begin
   existsi x, left, exact px
 end
 #+END_SRC
+Here is another example:
+#+BEGIN_SRC lean
+example (p q : ℕ → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
+begin
+  intro h,
+  cases h with x hpq,
+  cases hpq with hp hq,
+  existsi x,
+  split; assumption
+end
+#+END_SRC
+Here the semicolon after =split= tells Lean to apply the =assumption=
+tactic to both of the goals that are introduced by splitting the
+conjunction; see [[#Tactic_Combinators][Section 5.5]] for more information.
 
 These tactics can be used on data just as well as propositions. In the
 next two example, they are used to define functions which swap the
@@ -839,10 +853,9 @@ end
 #+END_SRC
 Here, we have introduced a new =begin..end= block whenever a tactic
 leaves more than one subgoal. You can check (using =C-c C-g= in Emacs
-mode, for example) that every line in this proof, there is only one
+mode, for example) that at every line in this proof, there is only one
 goal visible. Notice that you still need to use a comma after a
-=begin...end= block when there are remaining goals to be
-discharged.
+=begin...end= block when there are remaining goals to be discharged.
 
 Within a =begin...end= block, you can abbreviate nested occurrences of
 =begin= and =end= with curly braces:
