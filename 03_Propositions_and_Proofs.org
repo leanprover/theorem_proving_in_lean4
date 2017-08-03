@@ -583,11 +583,11 @@ abbreviations enhance or diminish readability.
 
 *** Negation and Falsity
 
-Negation, =¬p= is actually defined to be =p → false=, so we obtain
+Negation, =¬p=, is actually defined to be =p → false=, so we obtain
 =¬p= by deriving a contradiction from =p=. Similarly, the expression
 =hnp hp= produces a proof of =false= from =hp : p= and =hnp : ¬p=. The
 next example uses both these rules to produce a proof of =(p → q) → ¬q
-→ ¬p=.
+→ ¬p=. (The symbol =¬= is produced by typing =\not= or =\neg=.)
 #+BEGIN_SRC lean
 variables p q : Prop
 -- BEGIN
@@ -636,7 +636,7 @@ canonical proof, =trivial=.
 The expression =iff.intro h1 h2= produces a proof of =p ↔ q= from
 =h1 : p → q= and =h2 : q → p=. The expression =iff.elim_left H=
 produces a proof of =p → q= from =h : p ↔ q=. Similarly,
-=iff.elim_right H= produces a proof of =q → p= from =h : p ↔ q=.  Here
+=iff.elim_right h= produces a proof of =q → p= from =h : p ↔ q=.  Here
 is a proof of =p ∧ q ↔ q ∧ p=:
 #+BEGIN_SRC lean
 variables p q : Prop
@@ -766,7 +766,7 @@ out a proof by contradiction, something which is not generally
 possible in constructive logic. As an exercise, you might try proving
 the converse, that is, showing that =em= can be proved from =dne=.
 
-The classical axioms also gives you access to additional
+The classical axioms also give you access to additional
 patterns of proof that can be justified by appeal to =em=. For
 example, one can carry out a proof by cases:
 #+BEGIN_SRC lean
