@@ -634,7 +634,7 @@ canonical proof, =trivial=.
 *** Logical Equivalence
 
 The expression =iff.intro h1 h2= produces a proof of =p ↔ q= from
-=h1 : p → q= and =h2 : q → p=. The expression =iff.elim_left H=
+=h1 : p → q= and =h2 : q → p=. The expression =iff.elim_left h=
 produces a proof of =p → q= from =h : p ↔ q=. Similarly,
 =iff.elim_right h= produces a proof of =q → p= from =h : p ↔ q=.  Here
 is a proof of =p ∧ q ↔ q ∧ p=:
