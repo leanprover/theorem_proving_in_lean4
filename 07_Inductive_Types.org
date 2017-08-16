@@ -21,7 +21,7 @@ everything else follows from those.
 Intuitively, an inductive type is built up from a specified list of
 constructors. In Lean, the syntax for specifying such a type is as follows:
 #+BEGIN_SRC text
-inductive foo : Type
+inductive foo : Sort u
 | constructor₁ : ... → foo
 | constructor₂ : ... → foo
 ...
@@ -1708,7 +1708,7 @@ the dependencies make sense.) The constraints on the universe level of
 type is specified to land in =Prop= (that is, =Sort 0=).
 
 Let us first consider the case where the inductive type is /not/
-specified to land in =Prop=. Then the universe level =u= of =C= is
+specified to land in =Prop=. Then the universe level =u= is
 constrained to satisfy the following:
 #+BEGIN_QUOTE
 For each constructor =c= as above, and each =βk[a]= in the sequence
@@ -1718,7 +1718,7 @@ In other words, the universe level =u= is required to be at least as
 large as the universe level of each type that represents an argument
 to a constructor.
 
-When the inductive type =C= is specified to land in =Prop=, there are
+When the inductive type is specified to land in =Prop=, there are
 no constraints on the universe levels of the constructor
 arguments. But these universe levels do have a bearing on the
 elimination rule. Generally speaking, for an inductive type in =Prop=,
