@@ -1,12 +1,2 @@
-/*.html
-/*.aux
-/_minted*
-/theorem_proving_in_lean.*
-/gitHeadInfo.gin
-/pygments-main
-/node_modules
-/css
-/fonts
-/images
-/js
-.cask/
+_build/
+*.pyc

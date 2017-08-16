@@ -1,0 +1,455 @@
+.. _induction_and_recursion:
+
+Induction and Recursion
+=======================
+
+Other than the type universes and Pi types, inductively defined types provide the only means of defining new types in the the version of Calculus of Constructions that has been implemented in Lean. We have also seen that, fundamentally, the constructors and the recursors provide the only means of defining functions on these types. By the propositions-as-types correspondence, this means that induction is the fundamental method of proof for these
+types.
+
+Since working with induction and recursion is so fundamental, Lean provides more natural ways of defining recursive functions, performing pattern matching, and writing inductive proofs. Behind the scenes, these are "compiled" down to recursors.
+
+Thus, the function definition package, which performs this reduction, is
+not part of the trusted code base.
+
+Pattern Matching
+----------------
+
+The ``cases_on`` recursor can be used to define functions and prove theorems by cases. But complicated definitions may use several nested ``cases_on`` applications, and may be hard to read and understand. Pattern matching provides a more convenient and standard way of defining functions and proving theorems. Lean supports a very general form of pattern matching called *dependent pattern matching*.
+
+A pattern-matching definition is of the following form:
+
+.. code-block:: text
+
+    definition [name] [parameters] : [domain] → [codomain]
+    | [patterns_1] := [value_1]
+    ...
+    | [patterns_n] := [value_n]
+
+The parameters are fixed, and each assignment defines the value of the function for a different case specified by the given pattern. As a first example, we define the function ``sub2`` for natural numbers:
+
+.. code-block:: lean
+
+    open nat
+
+    def sub2 : nat → nat
+    | 0     := 0
+    | 1     := 0
+    | (a+2) := a
+
+    example : sub2 5 = 3 := rfl
+
+The default compilation method guarantees that the pattern matching equations hold definitionally.
+
+.. code-block:: lean
+
+    open nat
+
+    def sub2 : nat → nat
+    | 0     := 0
+    | 1     := 0
+    | (a+2) := a
+
+    -- BEGIN
+    example : sub2 0 = 0 := rfl
+
+    example : sub2 1 = 0 := rfl
+
+    example (a : nat) : sub2 (a + 2) = a := rfl
+    -- END
+
+We can use the command ``#print sub2`` to see how our definition was compiled into recursors.
+
+.. code-block:: lean
+
+    open nat
+
+    def sub2 : nat → nat
+    | 0     := 0
+    | 1     := 0
+    | (a+2) := a
+
+    -- BEGIN
+    #print sub2
+    -- END
+
+We will say a term is a *constructor application* if it is of the form ``c a_1 ... a_n`` where ``c`` is the constructor of some inductive data type. Note that in the definition ``sub2``, the terms ``1`` and ``a+2`` are not constructor applications. However, the compiler normalizes them at compilation time, and obtains the constructor applications ``succ zero`` and ``succ (succ a)`` respectively. This normalization step is just a convenience that allows us to write definitions resembling the ones found in textbooks. There is no magic here: the compiler simply uses the kernel's ordinary evaluation mechanism. If we had written ``2+a``, the definition would be rejected since ``2+a`` does not normalize into a constructor application.
+
+In the next example, we use pattern-matching to define Boolean negation ``bnot``, and proving ``bnot (bnot b) = b``.
+
+.. code-block:: lean
+
+    namespace hide
+    -- BEGIN
+    def bnot : bool → bool
+    | tt := ff
+    | ff := tt
+
+    theorem bnot_bnot : ∀ (b : bool), bnot (bnot b) = b
+    | tt := rfl    -- proof that bnot (bnot tt) = tt
+    | ff := rfl    -- proof that bnot (bnot ff) = ff
+    -- END
+    end hide
+
+As described in :numref:`Chapter %s <inductive_types>`, Lean inductive data types can be parametric. The following example defines the ``tail`` function using pattern matching. The argument ``α : Type`` is a parameter and occurs before the colon to indicate it does not participate in the pattern matching. Lean allows parameters to occur after ``:``, but it cannot pattern match on them.
+
+.. code-block:: lean
+
+    open list
+
+    def tail1 {α : Type} : list α → list α
+    | nil      := nil
+    | (h :: t) := t
+
+    -- Parameter α may occur after ':'
+    def tail2 : Π {α : Type}, list α → list α
+    | α nil      := nil
+    | α (h :: t) := t
+
+Structural Recursion and Induction
+----------------------------------
+The function definition package supports structural recursion, that is, recursive applications where one of the arguments is a subterm of the corresponding term on the left-hand-side. Later, we describe how to compile recursive equations using well-founded recursion. The main advantage of the default compilation method is that the recursive equations hold definitionally.
+
+Here are some examples from the last chapter, written in the new style:
+
+.. code-block:: lean
+
+    namespace hide
+
+    inductive nat : Type
+    | zero : nat
+    | succ : nat → nat
+
+    namespace nat
+
+    -- BEGIN
+    def add : nat → nat → nat
+    | m zero     := m
+    | m (succ n) := succ (add m n)
+
+    local infix `+` := add
+
+    theorem add_zero (m : nat) : m + zero = m := rfl
+    theorem add_succ (m n : nat) : m + succ n = succ (m + n) := rfl
+
+    theorem zero_add : ∀ n, zero + n = n
+    | zero     := rfl
+    | (succ n) := congr_arg succ (zero_add n)
+
+    def mul : nat → nat → nat
+    | n zero     := zero
+    | n (succ m) := mul n m + m
+    -- END
+
+    end nat
+    end hide
+
+The "definition" of ``zero_add`` makes it clear that proof by induction is really a form of induction in Lean.
+
+As with definition by pattern matching, parameters to a structural recursion or induction may appear before the colon. Such parameters are simply added to the local context before the definition is processed. For example, the definition of addition may be written as follows:
+
+.. code-block:: lean
+
+    namespace hide
+
+    inductive nat : Type
+    | zero : nat
+    | succ : nat → nat
+
+    namespace nat
+
+    -- BEGIN
+    def add (m : nat) : nat → nat
+    | zero     := m
+    | (succ n) := succ (add n)
+    -- END
+
+    end nat
+    end hide
+
+This may seem a little odd, but you should read the definition as follows: "Fix ``m``, and define the function which adds something to ``m`` recursively, as follows. To add zero, return ``m``. To add the successor of ``n``, first add ``n``, and then take the successor." The mechanism for adding parameters to the local context is what makes it possible to process match expressions within terms, as described below.
+
+A more interesting example of structural recursion is given by the Fibonacci function ``fib``.
+
+.. code-block:: lean
+
+    def fib : nat → nat
+    | 0     := 1
+    | 1     := 1
+    | (a+2) := fib (a+1) + fib a
+
+    -- the defining equations hold definitionally
+    example : fib 0 = 1 := rfl
+    example : fib 1 = 1 := rfl
+    example (a : nat) : fib (a+2) = fib (a+1) + fib a := rfl
+
+Another classic example is the list ``append`` function.
+
+.. code-block:: lean
+
+    namespace hide
+    -- BEGIN
+    def append {α : Type} : list α → list α → list α
+    | []     l := l
+    | (h::t) l := h :: append t l
+
+    example : append [(1 : ℕ), 2, 3] [4, 5] = [1, 2, 3, 4, 5] := rfl
+    -- END
+    end hide
+
+Dependent Pattern-Matching
+--------------------------
+
+All the examples we have seen so far can be easily written using ``cases_on`` and ``rec_on``. However, this is not the case with indexed inductive families, such as ``vector α n``. A lot of boilerplate code needs to be written to define very simple functions such as ``map``, ``zip``, and ``unzip`` using recursors.
+
+To understand the difficulty, consider what it would take to define a function ``tail`` which takes a vector ``v : vector α (succ n)`` and deletes the first element. A first thought might be to use the ``cases_on`` function:
+
+.. code-block:: lean
+
+    namespace hide
+    -- BEGIN
+    open nat
+
+    inductive vector (α : Type) : nat → Type
+    | nil {} : vector 0
+    | cons   : Π {n}, α → vector n → vector (succ n)
+
+    open vector
+    local notation h :: t := cons h t
+
+    #check @vector.cases_on
+    -- Π {α : Type}
+    --   {C : Π (a : ℕ), vector α a → Type}
+    --   {a : ℕ}
+    --   (n : vector α a),
+    --   (e1 : C 0 nil)
+    --   (e2 : Π {n : ℕ} (a : α) (a_1 : vector α n), 
+    --           C (succ n) (cons a a_1)),
+    --   C a n
+    -- END
+
+    end hide
+
+But what value should we return in the ``nil`` case? Something funny is going on: if ``v`` has type ``vector α (succ n)``, it *can't* be nil, but it is not clear how to tell that to ``cases_on``.
+
+One standard solution is to define an auxiliary function:
+
+.. code-block:: lean
+
+    namespace hide
+    open nat
+
+    inductive vector (α : Type) : nat → Type
+    | nil {} : vector 0
+    | cons   : Π {n}, α → vector n → vector (succ n)
+
+    open vector
+
+    -- BEGIN
+    def tail_aux {α : Type} {n m : nat} (v : vector α m) :
+        m = succ n → vector α n :=
+    vector.cases_on v
+      (assume H : 0 = succ n, nat.no_confusion H)
+      (take m (a : α) w : vector α m,
+        assume H : succ m = succ n,
+          nat.no_confusion H (λ H1 : m = n, eq.rec_on H1 w))
+
+    def tail {α : Type} {n : nat} (v : vector α (succ n)) : 
+      vector α n :=
+    tail_aux v rfl
+    -- END
+    end hide
+
+In the ``nil`` case, ``m`` is instantiated to ``0``, and ``no_confusion`` makes use of the fact that ``0 = succ n`` cannot occur. Otherwise, ``v`` is of the form ``a :: w``, and we can simply return ``w``, after casting it from a vector of length ``m`` to a vector of length ``n``.
+
+The difficulty in defining ``tail`` is to maintain the relationships between the indices. The hypothesis ``e : m = succ n`` in ``tail_aux`` is used to "communicate" the relationship between ``n`` and the index associated with the minor premise. Moreover, the ``zero = succ n`` case is "unreachable," and the canonical way to discard such a case is to use ``no_confusion``.
+
+The ``tail`` function is, however, easy to define using recursive equations, and the function definition package generates all the boilerplate code automatically for us.
+
+Here are a number of examples:
+
+.. code-block:: lean
+
+    namespace hide
+    open nat
+
+    inductive vector (α : Type) : nat → Type
+    | nil {} : vector 0
+    | cons   : Π {n}, α → vector n → vector (succ n)
+
+    open vector
+    local notation h :: t := cons h t
+
+    -- BEGIN
+    def head {α : Type} : Π {n}, vector α (succ n) → α
+    | n (h :: t) := h
+
+    def tail {α : Type} : Π {n}, vector α (succ n) → vector α n
+    | n (h :: t) := t
+
+    lemma eta {α : Type} : 
+      ∀ {n} (v : vector α (succ n)), head v :: tail v = v
+    | n (h::t) := rfl
+
+    def map {α β γ : Type} (f : α → β → γ)
+                   : Π {n : nat}, vector α n → vector β n → vector γ n
+    | 0        nil     nil     := nil
+    | (succ n) (a::va) (b::vb) := f a b :: map va vb
+
+    def zip {α β : Type} : 
+      Π {n}, vector α n → vector β n → vector (α × β) n
+    | 0        nil nil         := nil
+    | (succ n) (a::va) (b::vb) := (a, b) :: zip va vb
+    -- END
+    end hide
+
+Note that we can omit recursive equations for "unreachable" cases such as ``head nil``. The automatically generated definitions for indexed families are far from straightforward. For example:
+
+.. code-block:: lean
+
+    namespace hide
+    open nat
+
+    inductive vector (α : Type) : nat → Type
+    | nil {} : vector 0
+    | cons   : Π {n}, α → vector n → vector (succ n)
+
+    open vector
+    local notation h :: t := cons h t
+
+    def map {α β γ : Type} (f : α → β → γ)
+            : Π {n : nat}, vector α n → vector β n → vector γ n
+    | 0        nil     nil     := nil
+    | (succ n) (a::va) (b::vb) := f a b :: map va vb
+
+    -- BEGIN
+    #print map
+    #print map._main
+    -- END
+    end hide
+
+The ``map`` function is even more tedious to define by hand than the ``tail`` function. We encourage you to try it, using ``rec_on``, ``cases_on`` and ``no_confusion``.
+
+Variations on Pattern Matching
+------------------------------
+
+We say that a set of recursive equations *overlaps* when there is an input that more than one left-hand-side can match. In the following definition the input ``0 0`` matches the left-hand-side of the first two equations. Should the function return ``1`` or ``2``?
+
+.. code-block:: lean
+
+    def f : nat → nat → nat
+    | 0     y     := 1
+    | x     0     := 2
+    | (x+1) (y+1) := 3
+
+Overlapping patterns are often used to succinctly express complex patterns in data, and they are allowed in Lean. Lean handles the ambiguity by using the first applicable equation. In the example above, the following equations hold definitionally:
+
+.. code-block:: lean
+
+    def f : nat → nat → nat
+    | 0     y     := 1
+    | x     0     := 2
+    | (x+1) (y+1) := 3
+
+    -- BEGIN
+    variables (a b : nat)
+
+    example : f 0     0     = 1 := rfl
+    example : f 0     (a+1) = 1 := rfl
+    example : f (a+1) 0     = 2 := rfl
+    example : f (a+1) (b+1) = 3 := rfl
+    -- END
+
+Lean also supports *wildcard patterns*, also known as *anonymous variables*. They are used to create patterns where we don't care about the value of a specific argument. In the function ``f`` defined above, the values of ``x`` and ``y`` are not used in the right-hand-side. Here is the same example using wildcards:
+
+.. code-block:: lean
+
+    def f : nat → nat → nat
+    | 0  _  := 1
+    | _  0  := 2
+    | _  _  := 3
+    variables (a b : nat)
+    example : f 0     0     = 1 := rfl
+    example : f 0     (a+1) = 1 := rfl
+    example : f (a+1) 0     = 2 := rfl
+    example : f (a+1) (b+1) = 3 := rfl
+
+Some functional languages support *incomplete patterns*. In these languages, the interpreter produces an exception or returns an arbitrary value for incomplete cases. We can simulate the arbitrary value approach using the ``inhabited`` type class._ Roughly, an element of ``inhabited α`` is simply a witness to the fact that there is an element of ``α``; in :numref:`Chapter %s <type_classes>` we will see that Lean can be instructed that suitable base types are inhabited, and can automatically infer that other constructed types are inhabited on that basis. On this basis, the standard library provides an arbitrary element, ``arbitrary α``, of any inhabited type.
+
+We can also use the type ``option α`` to simulate incomplete patterns. The idea is to return ``some a`` for the provided patterns, and use ``none`` for the incomplete cases. The following example demonstrates both approaches.
+
+.. code-block:: lean
+
+    def f1 : nat → nat → nat
+    | 0  _  := 1
+    | _  0  := 2
+    | _  _  := arbitrary nat   -- the "incomplete" case
+
+    variables (a b : nat)
+
+    example : f1 0     0     = 1 := rfl
+    example : f1 0     (a+1) = 1 := rfl
+    example : f1 (a+1) 0     = 2 := rfl
+    example : f1 (a+1) (b+1) = arbitrary nat := rfl
+
+    def f2 : nat → nat → option nat
+    | 0  _  := some 1
+    | _  0  := some 2
+    | _  _  := none            -- the "incomplete" case
+
+    example : f2 0     0     = some 1 := rfl
+    example : f2 0     (a+1) = some 1 := rfl
+    example : f2 (a+1) 0     = some 2 := rfl
+    example : f2 (a+1) (b+1) = none   := rfl
+
+Inaccessible Terms
+------------------
+
+Sometimes an argument in a dependent matching pattern is not essential to the definition, but nonetheless has to be included to specialize the type of the expression appropriately. Lean allows users to mark such subterms as *inaccessible* for pattern matching. These annotations are essential, for example, when a term occurring in the left-hand side is neither a variable nor a constructor application, because these are not suitable targets for pattern matching. We can view such inaccessible terms as "don't care" components of the patterns. You can declare a subterm inaccessible by writing ``.(t)``. If the inaccessible term can be inferred, you can also write ``._``.
+
+The following example can be found in [GoMM06]_. We declare an inductive type that defines the property of "being in the image of ``f``". You can view an element of the type ``image_of f b`` as evidence that ``b`` is in the image of ``f``, whereby the constructor ``imf`` is used to build such evidence. We can then define any function ``f`` with an "inverse" which takes anything in the image of ``f`` to an element that is mapped to it. The typing rules forces us to write ``f a`` for the first argument, but this term is neither a variable nor a constructor application, and plays no role in the pattern-matching definition. To define the function ``inverse`` below, we *have to* mark ``f a`` inaccessible.
+
+.. code-block:: lean
+
+    variables {α β : Type}
+    inductive image_of (f : α → β) : β → Type
+    | imf : Π a, image_of (f a)
+
+    open image_of
+
+    def inverse {f : α → β} : Π b, image_of f b → α
+    | .(f a) (imf .(f) a) := a
+
+In the example above, the inaccessible annotation makes it clear that
+``f`` is *not* a pattern matching variable.
+
+Match Expressions
+-----------------
+
+Lean also provides a compiler for *match-with* expressions found in many functional languages. It uses essentially the same infrastructure used to compile recursive equations.
+
+.. code-block:: lean
+
+    -- BEGIN
+    def is_not_zero (a : nat) : bool :=
+    match a with
+    | 0     := ff
+    | (n+1) := tt
+    end
+
+    -- We can use recursive equations and match
+    variable {α : Type}
+    variable p : α → bool
+
+    def filter : list α → list α
+    | []       := []
+    | (a :: l) :=
+      match p a with
+      |  tt := a :: filter l
+      |  ff := filter l
+      end
+
+    example : filter is_not_zero [1, 0, 0, 3, 0] = [1, 3] := rfl
+    -- END
+
+
+.. [GoMM06] Healfdene Goguen, Conor McBride, and James McKinna. Eliminating dependent pattern matching. In Kokichi Futatsugi, Jean-Pierre Jouannaud, and José Meseguer, editors, Algebra, Meaning, and Computation, Essays Dedicated to Joseph A. Goguen on the Occasion of His 65th Birthday, volume 4060 of Lecture Notes in Computer Science, pages 521–540. Springer, 2006.
