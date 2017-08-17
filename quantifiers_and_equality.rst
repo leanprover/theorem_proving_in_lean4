@@ -295,7 +295,7 @@ A calculational proof is just a chain of intermediate results that are meant to 
          ...
         '...'   'op_n'  <expr>_n  ':'  <proof>_n
 
-Each ``<proof>_i`` is a proof for ``<expr>_{i-1} op_i <expr>_i``. The ``<proof>_i`` may also be of the form ``{ <pr> }``, where ``<pr>`` is a proof for some equality ``a = b``. The form ``{ <pr> }`` is just syntactic sugar for ``eq.subst <pr> (eq.refl <expr>_{i-1})`` In other words, we are claiming we can obtain ``<expr>_i`` by replacing ``a`` with ``b`` in ``<expr>_{i-1}``.
+Each ``<proof>_i`` is a proof for ``<expr>_{i-1} op_i <expr>_i``.
 
 Here is an example:
 

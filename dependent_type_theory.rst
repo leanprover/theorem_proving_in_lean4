@@ -511,7 +511,7 @@ We will see in :numref:`Chapter %s <interacting_with_lean>` that, as a scoping m
 Namespaces
 ----------
 
-Lean provides us with the ability to group definitions, notation, and other information into nested, hierarchical *namespaces*:
+Lean provides us with the ability to group definitions into nested, hierarchical *namespaces*:
 
 .. code-block:: lean
 
@@ -551,7 +551,7 @@ Lean provides us with the ability to group definitions, notation, and other info
 
 When we declare that we are working in the namespace ``foo``, every identifier we declare has a full name with prefix "``foo.``" Within the namespace, we can refer to identifiers by their shorter names, but once we end the namespace, we have to use the longer names.
 
-The ``open`` command brings the shorter names into the current context. Often, when we import a theory file, we will want to open one or more of the namespaces it contains, to have access to the short identifiers, notations, and so on. But sometimes we will want to leave this information hidden, for example, when they conflict with identifiers and notations in another namespace we want to use. Thus namespaces give us a way to manage our working environment.
+The ``open`` command brings the shorter names into the current context. Often, when we import a theory file, we will want to open one or more of the namespaces it contains, to have access to the short identifiers. But sometimes we will want to leave this information hidden, for example, when they conflict with identifiers in another namespace we want to use. Thus namespaces give us a way to manage our working environment.
 
 For example, Lean groups definitions and theorems involving lists into a namespace ``list``.
 
