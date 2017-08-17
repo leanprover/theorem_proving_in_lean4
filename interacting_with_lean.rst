@@ -620,7 +620,7 @@ There are other useful ``#print`` commands:
     #print prefix <namespace>     : display all declarations in the namespace
     #print classes                : display all classes
     #print instances <class name> : display all instances of the given class
-    #print fields <structure>     : display all "fields" of a structure
+    #print fields <structure>     : display all fields of a structure
 
 We will discuss inductive types, structures, classes, instances in the next four chapters. Here are examples of how these commands are used:
 
