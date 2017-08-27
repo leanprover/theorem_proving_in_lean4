@@ -112,6 +112,8 @@ html_static_path = ['_static']
 
 html_favicon = '_static/favicon.ico'
 
+html_output_encoding = 'ascii'
+
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
