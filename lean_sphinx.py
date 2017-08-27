@@ -26,7 +26,6 @@ def mk_try_it_uri(code):
     return uri
 
 def process_lean_nodes(app, doctree, fromdocname):
-    env = app.builder.env
     for node in doctree.traverse(nodes.literal_block):
         if node['language'] != 'lean': continue
 
@@ -40,6 +39,9 @@ def process_lean_nodes(app, doctree, fromdocname):
             node = nodes.literal_block(m.group(1), m.group(1))
             node['language'] = 'lean'
         new_node += node
+
+        if app.builder.name.startswith('epub'):
+            new_node.replace_self([node])
 
 def html_visit_lean_code_goodies(self, node):
     self.body.append(self.starttag(node, 'div', style='position: relative'))
