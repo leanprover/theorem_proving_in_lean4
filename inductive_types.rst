@@ -1499,7 +1499,7 @@ First, Lean supports *mutually defined* inductive types. The idea is that we can
     with odd : ℕ → Prop
     | odd_succ : ∀ n, even n → odd (n + 1)
 
-In this example, two types are defined simulatenously: a natural number ``n`` is ``even`` if it is ``0`` or one more than an ``odd`` number, and ``odd`` if it is one more than an even number. Under the hood, this definition is compiled down to a single inductive type with an index ``i`` in a two-valued type (such as ``bool``), where ``i`` encodes which of ``even`` or ``odd`` is intended. In the exercises below, you are asked to spell out the details.
+In this example, two types are defined simultaneously: a natural number ``n`` is ``even`` if it is ``0`` or one more than an ``odd`` number, and ``odd`` if it is one more than an even number. Under the hood, this definition is compiled down to a single inductive type with an index ``i`` in a two-valued type (such as ``bool``), where ``i`` encodes which of ``even`` or ``odd`` is intended. In the exercises below, you are asked to spell out the details.
 
 A mutual inductive definition can also be used to define the notation of a finite tree with nodes labeled by elements of ``α``:
 

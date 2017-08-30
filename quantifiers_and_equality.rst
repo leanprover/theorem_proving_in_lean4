@@ -137,7 +137,7 @@ We can make the output easier to read by telling Lean not to the insert implicit
     #check @eq.refl.{u}   -- ∀ {α : Sort u} (a : α), a = a
     #check @eq.symm.{u}   -- ∀ {α : Sort u} {a b : α}, a = b → b = a
     #check @eq.trans.{u}  -- ∀ {α : Sort u} {a b c : α}, 
-                               a = b → b = c → a = c
+                          --   a = b → b = c → a = c
 
 The inscription ``.{u}`` tells Lean to instantiate the constants at the universe ``u``.
 

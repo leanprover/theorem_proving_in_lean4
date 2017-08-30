@@ -16,7 +16,7 @@ The structure command is essentially a "front end" for defining inductive data t
 
 .. code-block:: text
 
-    structure <name> <parameters> <parent-structures> : Type :=
+    structure <name> <parameters> <parent-structures> : Sort u :=
       <constructor> :: <fields>
 
 Most parts are optional. Here is an example:
