@@ -1033,33 +1033,33 @@ The second definition also illustrates the fact that in a match with a single pa
 Exercises
 ---------
 
-- Use pattern matching to prove that the composition of surjective functions is surjective:
+#. Use pattern matching to prove that the composition of surjective functions is surjective:
 
-.. code-block:: lean
+   .. code-block:: lean
 
-    open function
+      open function
 
-    #print surjective
+      #print surjective
 
-    universes u v w
-    variables {α : Type u} {β : Type v} {γ : Type w}
-    open function
+      universes u v w
+      variables {α : Type u} {β : Type v} {γ : Type w}
+      open function
 
-    lemma surjective_comp {g : β → γ} {f : α → β} 
+      lemma surjective_comp {g : β → γ} {f : α → β} 
         (hg : surjective g) (hf : surjective f) : 
-    surjective (g ∘ f) := sorry
+      surjective (g ∘ f) := sorry
 
-- Open a namespace ``hide`` to avoid naming conflicts, and use the equation compiler to define addition, multiplication, and exponentiation on the natural numbers. Then use the equation compiler to derive some of their basic properties.
+#. Open a namespace ``hide`` to avoid naming conflicts, and use the equation compiler to define addition, multiplication, and exponentiation on the natural numbers. Then use the equation compiler to derive some of their basic properties.
 
-- Similarly, use the equation compiler to define some basic operations on lists (like the ``reverse`` function) and prove theorems about lists by induction (such as the fact that ``reverse (reverse l) = l`` for any list ``l``).
+#. Similarly, use the equation compiler to define some basic operations on lists (like the ``reverse`` function) and prove theorems about lists by induction (such as the fact that ``reverse (reverse l) = l`` for any list ``l``).
 
-- Define your own function to carry out course-of-value recursion on the natural numbers. Similarly, see if you can figure out how to define ``well_founded.fix`` on your own.
+#. Define your own function to carry out course-of-value recursion on the natural numbers. Similarly, see if you can figure out how to define ``well_founded.fix`` on your own.
 
-- Following the examples in :numref:`dependent_pattern_matching`, define a function that will append two vectors. This is tricky; you will have to define an auxiliary function.
+#. Following the examples in :numref:`dependent_pattern_matching`, define a function that will append two vectors. This is tricky; you will have to define an auxiliary function.
 
-- Consider the following type of arithmetic expressions. The idea is that ``var n`` is a variable, ``vₙ``, and ``const n`` is the constant whose value is ``n``.
+#. Consider the following type of arithmetic expressions. The idea is that ``var n`` is a variable, ``vₙ``, and ``const n`` is the constant whose value is ``n``.
 
-  .. code-block:: lean
+   .. code-block:: lean
 
       inductive aexpr : Type
       | const : ℕ → aexpr
@@ -1072,9 +1072,11 @@ Exercises
       def sample_aexpr : aexpr := 
       plus (times (var 0) (const 7)) (times (const 2) (var 1))
 
-  Here ``sample_aexpr`` represents ``(v₀ + 7) * (2 + v₁)``. Write a function that evaluates such an expression, evaluating each ``var n`` to ``v n``. 
+   Here ``sample_aexpr`` represents ``(v₀ + 7) * (2 + v₁)``. 
+   
+   Write a function that evaluates such an expression, evaluating each ``var n`` to ``v n``. 
 
-  .. code-block:: lean
+   .. code-block:: lean
 
       inductive aexpr : Type
       | const : ℕ → aexpr
@@ -1103,10 +1105,9 @@ Exercises
       -- #eval aeval sample_val sample_aexpr
       -- END
 
-  Implement "constant fusion," a procedure that simplifies subterms like
-  ``4 + 7`` to ``12``. Using the auxiliary function ``simp_const``, define a function "fuse": to simplify a plus or a times, first simplify the arguments recursively, and then apply ``simp_const`` to try to simplify the result.
+   Implement "constant fusion," a procedure that simplifies subterms like ``4 + 7`` to ``12``. Using the auxiliary function ``simp_const``, define a function "fuse": to simplify a plus or a times, first simplify the arguments recursively, and then apply ``simp_const`` to try to simplify the result.
 
-  .. code-block:: lean
+   .. code-block:: lean
 
       inductive aexpr : Type
       | const : ℕ → aexpr
@@ -1139,6 +1140,6 @@ Exercises
       sorry
       -- END
 
-  The last two theorems show that the definitions preserve the value.
+   The last two theorems show that the definitions preserve the value.
 
 .. [GoMM06] Healfdene Goguen, Conor McBride, and James McKinna. Eliminating dependent pattern matching. In Kokichi Futatsugi, Jean-Pierre Jouannaud, and José Meseguer, editors, Algebra, Meaning, and Computation, Essays Dedicated to Joseph A. Goguen on the Occasion of His 65th Birthday, volume 4060 of Lecture Notes in Computer Science, pages 521–540. Springer, 2006.
