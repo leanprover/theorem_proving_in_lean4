@@ -779,8 +779,8 @@ We can then use a mutual recursive definition to count the number of constants o
 
 .. _dependent_pattern_matching:
 
-Dependent Pattern Matching and Inaccessible Terms
--------------------------------------------------
+Dependent Pattern Matching
+--------------------------
 
 All the examples of pattern matching we considered in :numref:`pattern_matching` can easily be written using ``cases_on`` and ``rec_on``. However, this is often not the case with indexed inductive families such as ``vector α n``, since case splits impose constraints on the values of the indices. Without the equation compiler, we would need a lot of boilerplate code to define very simple functions such as ``map``, ``zip``, and ``unzip`` using recursors. To understand the difficulty, consider what it would take to define a function ``tail`` which takes a vector ``v : vector α (succ n)`` and deletes the first element. A first thought might be to use the ``cases_on`` function:
 
