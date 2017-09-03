@@ -786,15 +786,13 @@ All the examples of pattern matching we considered in :numref:`pattern_matching`
 
 .. code-block:: lean
 
-    namespace hide
-    -- BEGIN
-    open nat
+    universe u
 
-    inductive vector (α : Type) : nat → Type
+    inductive vector (α : Type u) : nat → Type u
     | nil {} : vector 0
-    | cons   : Π {n}, α → vector n → vector (succ n)
+    | cons   : Π {n}, α → vector n → vector (n+1)
 
-    open vector
+    namespace vector
     local notation h :: t := cons h t
 
     #check @vector.cases_on
@@ -804,11 +802,10 @@ All the examples of pattern matching we considered in :numref:`pattern_matching`
     --   (n : vector α a),
     --   (e1 : C 0 nil)
     --   (e2 : Π {n : ℕ} (a : α) (a_1 : vector α n), 
-    --           C (succ n) (cons a a_1)),
+    --           C (n + 1) (cons a a_1)),
     --   C a n
-    -- END
-
-    end hide
+    
+    end vector
 
 But what value should we return in the ``nil`` case? Something funny is going on: if ``v`` has type ``vector α (succ n)``, it *can't* be nil, but it is not clear how to tell that to ``cases_on``.
 
@@ -816,95 +813,96 @@ One solution is to define an auxiliary function:
 
 .. code-block:: lean
 
-    namespace hide
-    open nat
+    universe u
 
-    inductive vector (α : Type) : nat → Type
+    inductive vector (α : Type u) : ℕ → Type u
     | nil {} : vector 0
-    | cons   : Π {n}, α → vector n → vector (succ n)
+    | cons   : Π {n}, α → vector n → vector (n+1)
 
-    open vector
+    namespace vector
+    local notation h :: t := cons h t
 
     -- BEGIN
-    def tail_aux {α : Type} {n m : nat} (v : vector α m) :
-        m = succ n → vector α n :=
+    def tail_aux {α : Type} {n m : ℕ} (v : vector α m) :
+        m = n + 1 → vector α n :=
     vector.cases_on v
-      (assume H : 0 = succ n, nat.no_confusion H)
-      (take m (a : α) w : vector α m,
-        assume H : succ m = succ n,
+      (assume H : 0 = n + 1, nat.no_confusion H)
+      (assume m (a : α) w : vector α m,
+        assume H : m + 1 = n + 1,
           nat.no_confusion H (λ H1 : m = n, eq.rec_on H1 w))
 
-    def tail {α : Type} {n : nat} (v : vector α (succ n)) : 
+    def tail {α : Type} {n : ℕ} (v : vector α (n+1)) : 
       vector α n :=
     tail_aux v rfl
     -- END
-    end hide
+
+    end vector
 
 In the ``nil`` case, ``m`` is instantiated to ``0``, and ``no_confusion`` makes use of the fact that ``0 = succ n`` cannot occur. Otherwise, ``v`` is of the form ``a :: w``, and we can simply return ``w``, after casting it from a vector of length ``m`` to a vector of length ``n``.
 
-The difficulty in defining ``tail`` is to maintain the relationships between the indices. The hypothesis ``e : m = succ n`` in ``tail_aux`` is used to "communicate" the relationship between ``n`` and the index associated with the minor premise. Moreover, the ``zero = succ n`` case is "unreachable," and the canonical way to discard such a case is to use ``no_confusion``.
+The difficulty in defining ``tail`` is to maintain the relationships between the indices. The hypothesis ``e : m = n + 1`` in ``tail_aux`` is used to communicate the relationship between ``n`` and the index associated with the minor premise. Moreover, the ``zero = n + 1`` case is unreachable, and the canonical way to discard such a case is to use ``no_confusion``.
 
 The ``tail`` function is, however, easy to define using recursive equations, and the equation compiler generates all the boilerplate code automatically for us. Here are a number of similar examples:
 
 .. code-block:: lean
 
-    namespace hide
-    open nat
+    universe u
 
-    inductive vector (α : Type) : nat → Type
+    inductive vector (α : Type u) : ℕ → Type u
     | nil {} : vector 0
-    | cons   : Π {n}, α → vector n → vector (succ n)
+    | cons   : Π {n}, α → vector n → vector (n+1)
 
-    open vector
+    namespace vector
     local notation h :: t := cons h t
 
     -- BEGIN
-    def head {α : Type} : Π {n}, vector α (succ n) → α
+    def head {α : Type} : Π {n}, vector α (n+1) → α
     | n (h :: t) := h
 
-    def tail {α : Type} : Π {n}, vector α (succ n) → vector α n
+    def tail {α : Type} : Π {n}, vector α (n+1) → vector α n
     | n (h :: t) := t
 
     lemma eta {α : Type} : 
-      ∀ {n} (v : vector α (succ n)), head v :: tail v = v
-    | n (h::t) := rfl
+      ∀ {n} (v : vector α (n+1)), head v :: tail v = v
+    | n (h :: t) := rfl
 
     def map {α β γ : Type} (f : α → β → γ) :
-      Π {n : nat}, vector α n → vector β n → vector γ n
-    | 0        nil     nil     := nil
-    | (succ n) (a::va) (b::vb) := f a b :: map va vb
+      Π {n}, vector α n → vector β n → vector γ n
+    | 0     nil       nil       := nil
+    | (n+1) (a :: va) (b :: vb) := f a b :: map va vb
 
     def zip {α β : Type} : 
       Π {n}, vector α n → vector β n → vector (α × β) n
-    | 0        nil nil         := nil
-    | (succ n) (a::va) (b::vb) := (a, b) :: zip va vb
+    | 0     nil       nil       := nil
+    | (n+1) (a :: va) (b :: vb) := (a, b) :: zip va vb
     -- END
-    end hide
+
+    end vector
 
 Note that we can omit recursive equations for "unreachable" cases such as ``head nil``. The automatically generated definitions for indexed families are far from straightforward. For example:
 
 .. code-block:: lean
 
-    namespace hide
-    open nat
+    universe u
 
-    inductive vector (α : Type) : nat → Type
+    inductive vector (α : Type u) : ℕ → Type u
     | nil {} : vector 0
-    | cons   : Π {n}, α → vector n → vector (succ n)
+    | cons   : Π {n}, α → vector n → vector (n+1)
 
-    open vector
+    namespace vector
     local notation h :: t := cons h t
 
     def map {α β γ : Type} (f : α → β → γ)
             : Π {n : nat}, vector α n → vector β n → vector γ n
-    | 0        nil     nil     := nil
-    | (succ n) (a::va) (b::vb) := f a b :: map va vb
+    | 0     nil     nil     := nil
+    | (n+1) (a::va) (b::vb) := f a b :: map va vb
 
     -- BEGIN
     #print map
     #print map._main
     -- END
-    end hide
+
+    end vector
 
 The ``map`` function is even more tedious to define by hand than the ``tail`` function. We encourage you to try it, using ``rec_on``, ``cases_on`` and ``no_confusion``.
 
@@ -929,6 +927,81 @@ The following example can be found in [GoMM06]_. We declare an inductive type th
     | .(f a) (imf .(f) a) := a
 
 In the example above, the inaccessible annotation makes it clear that ``f`` is *not* a pattern matching variable.
+
+Inaccessible terms can be used to clarify and control definitions that make use of dependent pattern matching. Consider the function defining the addition of any two vectors of elements of a type that has an associated addition function:
+
+.. code-block:: lean
+
+    universe u
+
+    inductive vector (α : Type u) : ℕ → Type u
+    | nil {} : vector 0
+    | cons   : Π {n}, α → vector n → vector (n+1)
+
+    namespace vector
+    local notation h :: t := cons h t
+
+    variable {α : Type u}
+
+    -- BEGIN
+    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n 
+    | 0     nil        nil        := nil
+    | (n+1) (cons a v) (cons b w) := cons (a + b) (add v w)
+    -- END
+
+    end vector
+
+The argument ``{n : ℕ}`` has to appear after the colon, because it cannot be held fixed throughout the definition. When implementing this definition, the equation compiler starts with a case distinction as to whether the first argument is ``0`` or of the form ``n+1``. This is followed by nested case splits on the next two arguments, and in each case the equation compiler rules out the cases are not compatible with the first pattern.
+
+But, in fact, a case split is not required on the first argument; the ``cases_on`` eliminator for ``vector`` automatically abstracts this argument and replaces it by ``0`` and ``n + 1`` when we do a case split on the second argument. Using inaccessible terms, we can prompt the equation compiler to avoid the case split on ``n``:
+
+.. code-block:: lean
+
+    universe u
+
+    inductive vector (α : Type u) : ℕ → Type u
+    | nil {} : vector 0
+    | cons   : Π {n}, α → vector n → vector (n+1)
+
+    namespace vector
+    local notation h :: t := cons h t
+
+    variable {α : Type u}
+
+    -- BEGIN
+    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n 
+    | ._ nil        nil        := nil
+    | ._ (cons a v) (cons b w) := cons (a + b) (add v w)
+    -- END
+
+    end vector
+
+Marking the position as an inaccessible implicit argument tells the equation compiler first, that the form of the argument should be inferred from the constraints posed by the other arguments, and, second, that the first argument should *not* participate in pattern matching. 
+
+Using explicit inaccessible terms makes it even clearer what is going on.
+
+.. code-block:: lean
+
+    universe u
+
+    inductive vector (α : Type u) : ℕ → Type u
+    | nil {} : vector 0
+    | cons   : Π {n}, α → vector n → vector (n+1)
+
+    namespace vector
+    local notation h :: t := cons h t
+
+    variable {α : Type u}
+
+    -- BEGIN
+    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n 
+    | .(0)   nil                nil        := nil
+    | .(n+1) (@cons .(α) n a v) (cons b w) := cons (a + b) (add v w)
+    -- END
+
+    end vector
+
+We have to introduce the variable ``n`` in the pattern ``@cons .(α) n a v``, since it is involved in the pattern match over that argument. In contrast, the parameter ``α`` is held fixed; we could have left it implicit by writing ``._`` instead. The advantage to naming the variable there is that we can now use inaccessible terms in the first position to display the values that were inferred implicitly in the previous example.
 
 .. _match_expressions:
 
