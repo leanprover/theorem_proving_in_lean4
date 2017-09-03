@@ -396,7 +396,7 @@ The standard library also contains a variant of ``ite`` called ``dite``, the dep
 
 That is, in ``dite c t e``, we can assume ``hc : c`` in the "then" branch, and ``hnc : ¬ c`` in the "else" branch. To make ``dite`` more convenient to use, Lean allows us to write ``if h : c then t else e`` instead of ``dite c (λ h : c, t) (λ h : ¬ c, e)``.
 
-In the standard library, we cannot prove that every proposition is decidable. But we can prove that *certain* propositions are decidable. For example, we can prove that basic operations like equality and comparisons on the natural numbers and the integers are decidable. Moreover, decidability is preserved under propositional connectives:
+In the standard library, we cannot prove that every proposition is decidable. But we can prove that *certain* propositions are decidable. For example, we can prove the decidability of basic operations like equality and comparisons on the natural numbers and the integers. Moreover, decidability is preserved under propositional connectives:
 
 .. code-block:: lean
 
@@ -422,7 +422,37 @@ Thus we can carry out definitions by cases on decidable predicates on the natura
 
 Turning on implicit arguments shows that the elaborator has inferred the decidability of the proposition ``x < a ∨ x > b``, simply by applying appropriate instances.
 
-With the classical axioms, we can prove that every proposition is decidable. When you import the classical axioms, then, ``decidable p`` has an instance for every ``p``, and the elaborator infers that value quickly. Thus all theorems in the standard library that rely on decidability assumptions are freely available in the classical library.
+With the classical axioms, we can prove that every proposition is decidable. When you import the classical axioms, then, ``decidable p`` has an instance for every ``p``, and the elaborator infers that value quickly. Thus all theorems in the library that rely on decidability assumptions are freely available when you want to reason classically.
+
+The ``decidable`` type class also provides a bit of small-scale automation for proving theorems. The standard library introduces the following definitions and notation:
+
+.. code-block:: lean
+
+    namespace hide
+
+    -- BEGIN
+    def as_true (c : Prop) [decidable c] : Prop :=
+    if c then true else false
+
+    def of_as_true {c : Prop} [h₁ : decidable c] (h₂ : as_true c) : 
+      c :=
+    match h₁, h₂ with
+    | (is_true h_c),  h₂ := h_c
+    | (is_false h_c), h₂ := false.elim h₂
+    end
+
+    notation `dec_trivial` := of_as_true (by tactic.triv)
+    -- END
+
+    end hide
+
+They work as follows. The expression ``as_true c`` tries to infer a decision procedure for ``c``, and, if it is successful, evaluates to either ``true`` or ``false``. In particular, if ``c`` is a true closed expression, ``as_true c`` will reduce definitionally to ``true``. On the assumption that ``as_true c`` holds, ``of_as_true`` produces a proof of ``c``. The notation ``dec_trivial`` puts it all together: it tries to prove a target ``c`` by applying ``of_as_true`` and using the ``triv`` tactic to prove ``as_true c``. By the previous observations, it will succeed any time the inferred decision procedure for ``c`` has enough information to evaluate, definitionally, to the ``is_true`` case. Here is an example of how ``dec_trivial`` can be used:
+
+.. code-block:: lean
+
+    example : 1 ≠ 0 ∧ (5 < 2 ∨ 3 < 7) := dec_trivial
+
+Try changing the ``3`` to ``10``, thereby rendering the expression false. The resulting error message complains that ``of_as_true (1 ≠ 0 ∧ (5 < 2 ∨ 10 < 7))`` is not definitionally equal to ``true``.
 
 Overloading with Type Classes
 -----------------------------
