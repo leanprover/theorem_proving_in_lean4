@@ -28,7 +28,7 @@ The elimination rule states:
 
 In the case where ``p x`` has type ``Prop``, if we replace ``Π x : α, β x`` with ``∀ x : α, p x``, we can read these as the correct rules for building proofs involving the universal quantifier.
 
-The Calculus of Constructions therefore identifies ``Π`` and ``∀`` in this way. If ``p`` is any expression, ``∀ x : α, p`` is nothing more than alternative notation for ``Π x : α, p``, with the idea that the former is more natural than the latter in cases where where ``p`` is a proposition. Typically, the expression ``p`` will depend on ``x : α``. Recall that, in the case of ordinary function spaces, we could interpret ``α → β`` as the special case of ``Π x : α, β`` in which ``β`` does not depend on ``x``. Similarly, we can think of an implication ``p → q`` between propositions as the special case of ``∀ x : p, q`` in which the expression ``q`` does not depend on ``x``.
+The Calculus of Constructions therefore identifies ``Π`` and ``∀`` in this way. If ``p`` is any expression, ``∀ x : α, p`` is nothing more than alternative notation for ``Π x : α, p``, with the idea that the former is more natural than the latter in cases where ``p`` is a proposition. Typically, the expression ``p`` will depend on ``x : α``. Recall that, in the case of ordinary function spaces, we could interpret ``α → β`` as the special case of ``Π x : α, β`` in which ``β`` does not depend on ``x``. Similarly, we can think of an implication ``p → q`` between propositions as the special case of ``∀ x : p, q`` in which the expression ``q`` does not depend on ``x``.
 
 Here is an example of how the propositions-as-types correspondence gets put into practice.
 
@@ -265,7 +265,7 @@ Here is an example of a calculation in the natural numbers that uses substitutio
     variables x y z : ℤ
 
     example (x y z : ℕ) : x * (y + z) = x * y + x * z := mul_add x y z
-    example (x y z : ℕ) : x * (y + z) = x * y + x * z := mul_add x y z
+    example (x y z : ℕ) : (x + y) * z = x * z + y * z := add_mul x y z
     example (x y z : ℕ) : x + y + z = x + (y + z) := add_assoc x y z
 
     example (x y : ℕ) : 
@@ -334,7 +334,7 @@ The style of writing proofs is most effective when it is used in conjunction wit
         ... = 1 + d  : by rw add_comm
         ... =  e     : by rw h4
 
-In the next chapter, we will see that hypotheses can be introduced, renamed, and modified by tactics, so it is not always clear what the names in ``rw h1`` refer to (though, in this case, it is). For that reason, section variables and variables that only appear in a tactic command or block are not automatically add to the context. The ``include`` command takes care of that. Essentially, the ``rewrite`` tactic uses a given equality (which can be a hypothesis, a theorem name, or a complex term) to "rewrite" the goal. If doing so reduces the goal to an identity ``t = t``, the tactic applies reflexivity to prove it.
+In the next chapter, we will see that hypotheses can be introduced, renamed, and modified by tactics, so it is not always clear what the names in ``rw h1`` refer to (though, in this case, it is). For that reason, section variables and variables that only appear in a tactic command or block are not automatically added to the context. The ``include`` command takes care of that. Essentially, the ``rewrite`` tactic uses a given equality (which can be a hypothesis, a theorem name, or a complex term) to "rewrite" the goal. If doing so reduces the goal to an identity ``t = t``, the tactic applies reflexivity to prove it.
 
 Rewrites can applied sequentially, so that the proof above can be shortened to this:
 

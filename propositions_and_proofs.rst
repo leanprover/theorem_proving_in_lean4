@@ -67,8 +67,8 @@ We could represent this as follows:
     constant Proof : Prop → Type
 
     -- BEGIN
-    constant modus_ponens (p q : Prop) : 
-      Proof (implies p q) →  Proof p → Proof q
+    constant modus_ponens : 
+      Π p q : Prop, Proof (implies p q) →  Proof p → Proof q
     -- END
 
     end hide
@@ -87,8 +87,8 @@ We could render this as follows:
     constant Proof : Prop → Type
 
     -- BEGIN
-    constant implies_intro (p q : Prop) : 
-      (Proof p → Proof q) → Proof (implies p q).
+    constant implies_intro : 
+      Π p q : Prop, (Proof p → Proof q) → Proof (implies p q).
     -- END
 
     end hide
@@ -181,7 +181,7 @@ Adding such extra information can improve the clarity of a proof and help detect
     show p, from hp
     -- END
 
-As with ordinary definitions, one can move the lambda-abstracted variables to the left of the colon:
+As with ordinary definitions, we can move the lambda-abstracted variables to the left of the colon:
 
 .. code-block:: lean
 
@@ -214,12 +214,36 @@ Notice, by the way, that the original theorem ``t1`` is true for *any* propositi
 .. code-block:: lean
 
     theorem t1 (p q : Prop) (hp : p) (hq : q) : p := hp
+
     #check t1
 
-The type of ``t1`` is now ``∀ p q : Prop, p → q → p``. We can read this as the assertion "for every pair of propositions ``p q``, we have ``p → q → p``." The symbol ``∀`` is alternate syntax for ``Π``, and later we will see how Pi types let us model universal quantifiers more generally. For the moment, however, we will focus on theorems in propositional logic, generalized over the propositions. We will tend to work in sections with variables over the propositions, so that they are generalized for us
-automatically.
+The type of ``t1`` is now ``∀ p q : Prop, p → q → p``. We can read this as the assertion "for every pair of propositions ``p q``, we have ``p → q → p``." The symbol ``∀`` is alternate syntax for ``Π``, and later we will see how Pi types let us model universal quantifiers more generally. For example, we can move all parameters to the right of the colon:
 
-When we generalize ``t1`` in that way, we can then apply it to different pairs of propositions, to obtain different instances of the general theorem.
+.. code-block:: lean
+
+    theorem t1 : ∀ (p q : Prop), p → q → p := 
+    λ (p q : Prop) (hp : p) (hq : q), hp
+
+If ``p`` and ``q`` have been declared as variables, Lean will generalize them for us automatically:
+
+.. code-block:: lean
+
+    variables p q : Prop
+
+    theorem t1 : p → q → p := λ (hp : p) (hq : q), hp
+
+In fact, by the propositions-as-types correspondence, we can declare the assumption ``hp`` that ``p`` holds, as another variable:
+
+.. code-block:: lean
+
+    variables p q : Prop
+    variable  hp : p
+
+    theorem t1 : q → p := λ (hq : q), hp
+
+Lean detects that the proof uses ``hp`` and automatically adds ``hp : p`` as a premise. In all cases, the command ``#check t1`` still yields ``∀ p q : Prop, p → q → p``. Remember the this type can just as well be written ``∀ (p q : Prop) (hp : p) (hq :q), p``, since the arrow denotes nothing more than a Pi type in which the target does not depend on the bound variable.
+
+When we generalize ``t1`` in such a way, we can then apply it to different pairs of propositions, to obtain different instances of the general theorem.
 
 .. code-block:: lean
 
@@ -234,7 +258,7 @@ When we generalize ``t1`` in that way, we can then apply it to different pairs o
     variable h : r → s
     #check t1 (r → s) (s → r) h  -- (s → r) → r → s
 
-Remember that under the propositions-as-types correspondence, a variable ``h`` of type ``r → s`` can be viewed as the hypothesis, or premise, that ``r → s`` holds.
+Once again, using the propositions-as-types correspondence, the variable ``h`` of type ``r → s`` can be viewed as the hypothesis, or premise, that ``r → s`` holds.
 
 As another example, let us consider the composition function discussed in the last chapter, now with propositions instead of types.
 
@@ -246,7 +270,9 @@ As another example, let us consider the composition function discussed in the la
     assume h₃ : p,
     show r, from h₁ (h₂ h₃)
 
-As a theorem of propositional logic, what does ``t2`` say? Note that it is often useful to use numeric unicode subscripts, entered as ``\0``, ``\1``, ``\2``, ..., for hypotheses, as we did in this example.
+As a theorem of propositional logic, what does ``t2`` say? 
+
+Note that it is often useful to use numeric unicode subscripts, entered as ``\0``, ``\1``, ``\2``, ..., for hypotheses, as we did in this example.
 
 Propositional Logic
 -------------------
@@ -543,7 +569,7 @@ This is a good place to introduce another device Lean offers to help structure l
 
 Internally, the expression ``have h : p, from s, t`` produces the term ``(λ (h : p), t) s``. In other words, ``s`` is a proof of ``p``, ``t`` is a proof of the desired conclusion assuming ``h : p``, and the two are combined by a lambda abstraction and application. This simple device is extremely useful when it comes to structuring long proofs, since we can use intermediate ``have``'s as stepping stones leading to the final goal.
 
-Lean also supports a structured way of reasoning backwards from a goal, which models the "suffices to show" construction in ordinary mathematics. The next example simply permutes that last two lines in the previous proof.
+Lean also supports a structured way of reasoning backwards from a goal, which models the "suffices to show" construction in ordinary mathematics. The next example simply permutes the last two lines in the previous proof.
 
 .. code-block:: lean
 
@@ -626,7 +652,7 @@ If you are not used to thinking constructively, it may take some time for you to
     variables p q : Prop
 
     -- BEGIN
-    example (h : ¬ (p ∧ q)) : ¬ p ∨ ¬ q :=
+    example (h : ¬(p ∧ q)) : ¬p ∨ ¬q :=
     or.elim (em p)
       (assume hp : p,
         or.inr
@@ -671,7 +697,7 @@ Lean's standard library contains proofs of many valid statements of propositiona
     example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
     example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
     example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
-    example : ¬(p ∧ ¬ p) := sorry
+    example : ¬(p ∧ ¬p) := sorry
     example : p ∧ ¬q → ¬(p → q) := sorry
     example : ¬p → (p → q) := sorry
     example : (¬p ∨ q) → (p → q) := sorry

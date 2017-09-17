@@ -67,9 +67,9 @@ What makes simple type theory powerful is that one can build new types out of ot
     #check (p.1, n)        -- ℕ × ℕ
     #check F f             -- ℕ
 
-Once again, you should try come examples on your own.
+Once again, you should try some examples on your own.
 
-Let us dispense with some basic syntax. You can enter the unicode arrow ``→`` by typing ``\to`` or "``\r``. You can also use the ASCII alternative ``->``, so that the expression ``nat -> nat`` and ``nat → nat`` mean the same thing. Both expressions denote the type of functions that take a natural number as input and return a natural number as output. The symbol ``ℕ`` is alternative unicode notation for ``nat``; you can enter it by typing ``\nat``. The unicode symbol ``×`` for the cartesian product is entered ``\times``. We will generally use lower-case greek letters like ``α``, ``β``, and ``γ`` to range over types. You can enter these particular ones with ``\a``, ``\b``, and ``\g``.
+Let us dispense with some basic syntax. You can enter the unicode arrow ``→`` by typing ``\to`` or ``\r``. You can also use the ASCII alternative ``->``, so that the expression ``nat -> nat`` and ``nat → nat`` mean the same thing. Both expressions denote the type of functions that take a natural number as input and return a natural number as output. The symbol ``ℕ`` is alternative unicode notation for ``nat``; you can enter it by typing ``\nat``. The unicode symbol ``×`` for the cartesian product is entered ``\times``. We will generally use lower-case greek letters like ``α``, ``β``, and ``γ`` to range over types. You can enter these particular ones with ``\a``, ``\b``, and ``\g``.
 
 There are a few more things to notice here. First, the application of a function ``f`` to a value ``x`` is denoted ``f x``. Second, when writing type expressions, arrows associate to the *right*; for example, the type of ``g`` is ``nat → (nat → nat)``. Thus we can view ``g`` as a function that takes natural numbers and returns another function that takes a natural number and returns a natural number. In type theory, this is generally more convenient than writing ``g`` as a function that takes a pair of natural numbers as input, and returns a natural number as output. For example, it allows us to "partially apply" the function ``g``. The example above shows that ``g m`` has type ``nat → nat``, that is, the function that "waits" for a second argument, ``n``, and then returns ``g m n``. Taking a function ``h`` of type ``nat × nat → nat`` and "redefining" it to look like ``g`` is a process known as *currying*, something we will come back to below.
 
@@ -708,7 +708,7 @@ Just as Pi types ``Π x : α, β x`` generalize the notion of a function type ``
     #reduce  (sigma.mk a b).1  -- a
     #reduce  (sigma.mk a b).2  -- b
 
-Notice that when ``p`` is a dependent pair the expressions ``(sigma.mk a b).1`` and ``(sigma.mk a b).2`` are short for ``sigma.fst (sigma.mk a b)`` and ``sigma.snd (sigma.mk a b)``, respectively, and that these reduce to ``a`` and ``b``, respectively.
+Notice that the expressions ``(sigma.mk a b).1`` and ``(sigma.mk a b).2`` are short for ``sigma.fst (sigma.mk a b)`` and ``sigma.snd (sigma.mk a b)``, respectively, and that these reduce to ``a`` and ``b``, respectively.
 
 .. _implicit_arguments:
 
