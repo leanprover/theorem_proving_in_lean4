@@ -1217,7 +1217,7 @@ A common idiom is to simplify a goal using local hypotheses:
     example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 :=
     by simp [h₁, h₂]
 
-The tactic ``simph`` is a variant of ``simp`` that conveniently uses all the hypotheses in the local context:
+To use all the hypotheses present in the local context when simplifying, we can use the wildcard symbol, ``*``:
 
 .. code-block:: lean
 
@@ -1225,7 +1225,7 @@ The tactic ``simph`` is a variant of ``simp`` that conveniently uses all the hyp
 
     -- BEGIN
     example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 :=
-    by simph
+    by simp *
     -- END
 
 Here is another example:
@@ -1234,7 +1234,7 @@ Here is another example:
 
     example (u w x y z : ℕ) (h₁ : x = y + z) (h₂ : w = u + x) : 
       w = z + y + u :=
-    by simph
+    by simp *
 
 The simplifier will also do propositional rewriting. For example, using the hypothesis ``p``, it rewrites ``p ∧ q`` to ``q`` and ``p ∨ q`` to ``true``, which it then proves trivially. Iterating such rewrites produces nontrivial propositional reasoning.
 
@@ -1243,13 +1243,13 @@ The simplifier will also do propositional rewriting. For example, using the hypo
     variables (p q r : Prop)
 
     example (hp : p) : p ∧ q ↔ q :=
-    by simph
+    by simp *
 
     example (hp : p) : p ∨ q :=
-    by simph
+    by simp *
 
     example (hp : p) (hq : q) : p ∧ (q ∨ r) :=
-    by simph
+    by simp *
 
 The next two examples simplify all the hypotheses, and then use them to prove the goal.
 
@@ -1260,11 +1260,11 @@ The next two examples simplify all the hypotheses, and then use them to prove th
 
     example (h₁ : x + 0 = x') (h₂ : y + 0 = y') : 
       x + y + 0 = x' + y' :=
-    by { simp at *, simph }
+    by { simp at *, simp * }
 
     example (h₁ : x = y + z) (h₂ : w = u + x) (h₃ : p (z + y + u)) :
       p w  :=
-    by { simp at *, simph }
+    by { simp at *, simp * }
 
     end
 

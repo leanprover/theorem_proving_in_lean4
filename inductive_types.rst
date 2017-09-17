@@ -1267,17 +1267,17 @@ Once again, we can reduce the proofs of these, as well as the proof of associati
 
     -- BEGIN
     theorem zero_add (n : ℕ) : 0 + n = n :=
-    by induction n; simph only [add_zero, add_succ]
+    by induction n; simp only [*, add_zero, add_succ]
 
     theorem succ_add (m n : ℕ) : succ m + n = succ (m + n) :=
-    by induction n; simph only [add_zero, add_succ]
+    by induction n; simp only [*, add_zero, add_succ]
 
     theorem add_comm (m n : ℕ) : m + n = n + m :=
     by induction n; 
-         simph only [add_zero, add_succ, succ_add, zero_add]
+         simp only [*, add_zero, add_succ, succ_add, zero_add]
 
     theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
-    by induction k; simph only [add_zero, add_succ]
+    by induction k; simp only [*, add_zero, add_succ]
     -- END
 
     end hide
@@ -1319,7 +1319,7 @@ The first instance of the tactic adds ``h' : succ m = succ n`` to the context, a
 
     example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) : 
       n + k = m + k :=
-    by injections; simph
+    by injections; simp *
     -- END
 
 The ``injection`` and ``injections`` tactics will also detect contradictions that arise when different constructors are set equal to one another, and use them to close the goal.
