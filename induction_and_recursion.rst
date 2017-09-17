@@ -495,11 +495,11 @@ To handle such  definitions, the equation compiler uses *course-of-values* recur
     variable (C : ℕ → Type)
 
     #check (@nat.below C : ℕ → Type)
-    
+
     #reduce @nat.below C (3 : nat)
 
     #check (@nat.brec_on C : 
-      Π (n : ℕ), (Π (n : ℕ), nat.below n → C n) → C n)
+      Π (n : ℕ), (Π (n : ℕ), nat.below C n → C n) → C n)
 
 The type ``@nat.below C (3 : nat)`` is a data structure that stores elements of ``C 0``, ``C 1``, and ``C 2``. The course-of-values recursion is implemented by ``nat.brec_on``. It enables us to define the value of a dependent function of type ``Π n : ℕ, C n`` at a particular input ``n`` in terms of all the previous values of the function, presented as an element of ``@nat_below C n``.
 

@@ -296,8 +296,6 @@ enumerated types.
 
 .. code-block:: lean
 
-    import standard
-
     namespace hide
 
     -- BEGIN
@@ -1142,8 +1140,7 @@ Think of this as saying "split on cases as to whether ``m + 3 * k`` is zero or t
     example (hz : p 0) (hs : ∀ n, p (succ n)) (m k : ℕ) : 
       p (m + 3 * k) :=
     begin
-      generalize (m + 3 * k) n,
-      intro n,
+      generalize : m + 3 * k = n,
       cases n,
       { exact hz },  -- goal is p 0
       apply hs       -- goal is a : ℕ ⊢ p (succ a)
@@ -1152,7 +1149,7 @@ Think of this as saying "split on cases as to whether ``m + 3 * k`` is zero or t
 
 Notice that the expression ``m + 3 * k`` is erased by generalize; all that matters is whether it is of the form ``0`` or ``succ a``. This form of ``cases`` will *not* revert any hypotheses that also mention the expression in equation (in this case, ``m + 3 * k``). If such a term appears in a hypothesis and you want to generalize over that as well, you need to ``revert`` it explicitly.
 
-If the expression you case on does not appear in the goal, the ``cases`` tactic uses ``assert`` to put the type of the expression into the context. Here is an example:
+If the expression you case on does not appear in the goal, the ``cases`` tactic uses ``have`` to put the type of the expression into the context. Here is an example:
 
 .. code-block:: lean
 
@@ -1171,7 +1168,7 @@ The theorem ``lt_or_ge m n`` says ``m < n ∨ m ≥ n``, and it is natural to th
     example (p : Prop) (m n : ℕ) 
       (h₁ : m < n → p) (h₂ : m ≥ n → p) : p :=
     begin
-      assert h : m < n ∨ m ≥ n,
+      have h : m < n ∨ m ≥ n,
       { exact lt_or_ge m n },
       cases h with hlt hge,
       { exact h₁ hlt },
@@ -1303,13 +1300,6 @@ The first instance of the tactic adds ``h' : succ m = succ n`` to the context, a
     open nat
 
     -- BEGIN
-    example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) : 
-      n + k = m + k :=
-    begin
-      injections,
-      rw h
-    end
-
     example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) : 
       n + k = m + k :=
     begin

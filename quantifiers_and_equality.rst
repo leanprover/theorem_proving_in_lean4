@@ -411,15 +411,15 @@ With ``calc``, we can write the proof in the last section in a more natural and 
       (x + y) * (x + y) = (x + y) * x + (x + y) * y  : by rw mul_add
         ... = x * x + y * x + (x + y) * y            : by rw add_mul
         ... = x * x + y * x + (x * y + y * y)        : by rw add_mul
-        ... = x * x + y * x + x * y + y * y          : by rw -add_assoc
+        ... = x * x + y * x + x * y + y * y          : by rw ←add_assoc
 
-Here the negation before ``add_assoc`` tells rewrite to use the identity in the opposite direction. If brevity is what we are after, both ``rw`` and ``simp`` can do the job on their own:
+Here the left arrow before ``add_assoc`` tells rewrite to use the identity in the opposite direction. (You can enter it with ``\l`` or use the ascii equivalent, ``<-``.) If brevity is what we are after, both ``rw`` and ``simp`` can do the job on their own:
 
 .. code-block:: lean
 
     example (x y : ℕ) : 
       (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-    by rw [mul_add, add_mul, add_mul, -add_assoc]
+    by rw [mul_add, add_mul, add_mul, ←add_assoc]
 
     example (x y : ℕ) : 
       (x + y) * (x + y) = x * x + y * x + x * y + y * y :=

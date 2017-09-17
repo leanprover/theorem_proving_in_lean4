@@ -358,59 +358,7 @@ There is variant of ``apply`` called ``fapply`` that is more aggressive in creat
 
 Here, the command ``fapply exists.intro`` creates two goals. The first is to provide a natural number, ``a``, and the second is to prove that ``a = a``. Notice that the second goal depends on the first; solving the first goal instantiates a metavariable in the second.
 
-Another tactic that is sometimes useful is the ``generalize`` tactic, which is, in a sense, an inverse to ``intro``.
-
-.. code-block:: lean
-
-    variables x y z : ℕ
-
-    example : x = x :=
-    begin
-      generalize x z, 
-      -- goal is x : ℕ ⊢ ∀ (z : ℕ), z = z
-      intro y,        
-      -- goal is x y : ℕ ⊢ y = y
-      reflexivity
-    end
-
-The ``generalize`` tactic generalizes the conclusion over the variable ``x`` using a universal quantifier over ``z``. We can generalize any term, not just a variable:
-
-.. code-block:: lean
-
-    variables x y z : ℕ
-
-    -- BEGIN
-    example : x + y + z = x + y + z :=
-    begin
-      generalize (x + y + z) w, 
-      -- goal is x y z : ℕ ⊢ ∀ (w : ℕ), w = w
-      intro u,                  
-      -- goal is x y z u : ℕ ⊢ u = u
-      reflexivity
-    end
-    -- END
-
-If the expression passed as the first argument to ``generalize`` is not found in the goal, ``generalize`` raises an error.
-
-Notice that once we generalize over ``x + y + z``, the variables ``x y z : ℕ`` in the context become irrelevant. The ``clear`` tactic throws away elements of the context, when it is safe to do so:
-
-.. code-block:: lean
-
-    variables x y z : ℕ
-
-    -- BEGIN
-    example : x + y + z = x + y + z :=
-    begin
-      generalize (x + y + z) w, 
-      -- goal is x y z : ℕ ⊢ ∀ (w : ℕ), w = w
-      clear x y z,
-      intro u,                  
-      -- goal is u : ℕ ⊢ u = u
-      reflexivity
-    end
-    -- END
-
-Another useful tactic is the ``revert`` tactic, which moves an element of the context into the goal. When applied to a variable that occurs in the goal, it has the same effect as ``generalize`` and ``clear``:
+Another tactic that is sometimes useful is the ``revert`` tactic, which is, in a sense, an inverse to ``intro``.
 
 .. code-block:: lean
 
@@ -462,6 +410,44 @@ You can also revert multiple elements of the context at once:
       symmetry,
       assumption
     end
+
+You can only ``revert`` an element of the local context, that is, a local variable or hypothesis. But you can replace an arbitrary expression in the goal by a fresh variable using the ``generalize`` tactic.
+
+.. code-block:: lean
+
+    example : 3 = 3 :=
+    begin
+      generalize : 3 = x,
+      -- goal is x : ℕ ⊢ x = x,
+      revert x,
+      -- goal is ⊢ ∀ (x : ℕ), x = x
+      intro y, reflexivity
+    end 
+
+The mnemonic in the notation above is that you are generalizing the goal by setting ``3`` to an arbitrary variable ``x``. Be careful: not every generalization preserves the validity of the goal. Here, ``generalize`` replaces a goal that could be proved using ``reflexivity`` with one that is not provable:
+
+.. code-block:: lean
+
+    example : 2 + 3 = 5 :=
+    begin
+      generalize : 3 = x,
+      -- goal is x : ℕ ⊢ 2 + x = 5,
+      admit
+    end
+
+In this example, ``admit`` is nothing more than the tactic version of ``sorry``. It closes the current goal, producing the usual warning that ``sorry`` has been used. To preserve the validity of the previous goal, the ``generalize`` tactic allows us to record the fact that ``3`` has been replaced by ``x``. All we need to do is to provide a label, and ``generalize`` uses it to store the assignment in the local context:
+
+.. code-block:: lean
+
+    example : 2 + 3 = 5 :=
+    begin
+      generalize h : 3 = x,
+      -- goal is x : ℕ, h : 3 = x ⊢ 2 + x = 5,
+      rw ←h
+    end
+
+Here the ``rewrite`` tactic, abbreviated ``rw``, uses ``h`` to replace ``x`` by ``3`` again. The ``rewrite`` tactic will be discussed below.   
+
 
 More Tactics
 ------------
@@ -593,15 +579,6 @@ The ``contradiction`` tactic searches for a contradiction among the hypotheses o
       intro h, cases h, contradiction
     end
 
-And, finally, it is worth mentioning the tactic version of ``sorry``:
-
-.. code-block:: lean
-
-    example (p : Prop) : p :=
-    by admit
-
-The ``admit`` tactic simply closes the current goal, producing the usual warning that ``sorry`` has been used.
-
 .. _structuring_tactic_proofs:
 
 Structuring Tactic Proofs
@@ -636,22 +613,15 @@ The following is a more natural example:
       apply iff.intro,
         intro h,
         cases h.right with hq hr,
-          exact
-            show (p ∧ q) ∨ (p ∧ r),
-              from or.inl ⟨h.left, hq⟩,
-        exact
-          show (p ∧ q) ∨ (p ∧ r),
-            from or.inr ⟨h.left, hr⟩,
+          exact or.inl ⟨h.left, hq⟩,
+        exact or.inr ⟨h.left, hr⟩,
       intro h,
       cases h with hpq hpr,
-        exact
-          show p ∧ (q ∨ r),
-            from ⟨hpq.left, or.inl hpq.right⟩,
-      exact show p ∧ (q ∨ r),
-        from ⟨hpr.left, or.inr hpr.right⟩
+        exact ⟨hpq.left, or.inl hpq.right⟩,
+      exact ⟨hpr.left, or.inr hpr.right⟩
     end
 
-In fact, there is a ``show`` tactic, which is the analog of the ``show`` keyword in a proof term: it simply declares the type of the goal that is about to be solved, while remaining in tactic mode. With this tactic, the previous proof could we written as follows:
+In fact, there is a ``show`` tactic, which is the analog of the ``show`` keyword in a proof term. It simply declares the type of the goal that is about to be solved, while remaining in tactic mode. Moreover, in tactic mode, ``from`` is an alternative name for ``exact``. With the ``show`` and ``from`` tactics, the previous proof can be written more perspicuously as follows:
 
 .. code-block:: lean
 
@@ -661,15 +631,36 @@ In fact, there is a ``show`` tactic, which is the analog of the ``show`` keyword
         intro h,
         cases h.right with hq hr,
           show (p ∧ q) ∨ (p ∧ r),
-            exact or.inl ⟨h.left, hq⟩,
+            from or.inl ⟨h.left, hq⟩,
           show (p ∧ q) ∨ (p ∧ r),
-            exact or.inr ⟨h.left, hr⟩,
+            from or.inr ⟨h.left, hr⟩,
       intro h,
       cases h with hpq hpr,
         show p ∧ (q ∨ r),
-          exact ⟨hpq.left, or.inl hpq.right⟩,
+          from ⟨hpq.left, or.inl hpq.right⟩,
         show p ∧ (q ∨ r),
-          exact ⟨hpr.left, or.inr hpr.right⟩
+          from ⟨hpr.left, or.inr hpr.right⟩
+    end
+
+Alternatively, you can leave off the ``from`` and remain in tactic mode:
+
+.. code-block:: lean
+
+    example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+    begin
+      apply iff.intro,
+        intro h,
+        cases h.right with hq hr,
+          show (p ∧ q) ∨ (p ∧ r),
+            { left, split, exact h.left, assumption },
+          show (p ∧ q) ∨ (p ∧ r),
+            { right, split, exact h.left, assumption },
+      intro h,
+      cases h with hpq hpr,
+        show p ∧ (q ∨ r),
+          { cases hpq, split, assumption, left, assumption },
+        show p ∧ (q ∨ r),
+          { cases hpr, split, assumption, right, assumption }
     end
 
 The ``show`` tactic can actually be used to rewrite a goal to something definitionally equivalent:
@@ -691,8 +682,8 @@ In fact, ``show`` does a little more work. When there are multiple goals, you ca
       intro h,
       cases h with hp hq,
       split,
-      show q, exact hq,
-      show p, exact hp
+      show q, from hq,
+      show p, from hp
     end
 
     example (p q : Prop) : p ∧ q → q ∧ p :=
@@ -700,56 +691,93 @@ In fact, ``show`` does a little more work. When there are multiple goals, you ca
       intro h,
       cases h with hp hq,
       split,
-      show p, exact hp,
-      show q, exact hq
+      show p, from hp,
+      show q, from hq
     end
 
-The analogue of ``have`` in a tactic script is the ``assert`` tactic, which introduces a new subgoal, and then names the result of that subgoal for use in the rest of the proof. For example, the two instances of ``assert`` below open goals for ``p`` and ``q ∨ r``, respectively, and then add ``hp : p`` and ``hqr : q ∨ r`` to the context for subsequent use.
+There is also a ``have`` tactic, which introduces a new subgoal, just as when writing proof terms:
+
+.. code-block:: lean
+
+    example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
+    begin
+      intro h, 
+      cases h with hp hqr,
+      show (p ∧ q) ∨ (p ∧ r),
+      cases hqr with hq hr,
+        have hpq : p ∧ q,
+          from and.intro hp hq,
+        left, exact hpq,
+      have hpr : p ∧ r,
+        from and.intro hp hr,
+      right, exact hpr
+    end
+
+As with ``show``, you can omit the ``from`` and stay in tactic mode:
+
+.. code-block:: lean
+
+    example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
+    begin
+      intro h, 
+      cases h with hp hqr,
+      show (p ∧ q) ∨ (p ∧ r),
+      cases hqr with hq hr,
+        have hpq : p ∧ q,
+          split; assumption,
+        left, exact hpq,
+      have hpr : p ∧ r,
+        split; assumption,
+      right, exact hpr
+    end
+
+As with proof terms, you can omit the label in the ``have`` tactic, in which case, the default label ``this`` is used:
+
+.. code-block:: lean
+
+    example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
+    begin
+      intro h, 
+      cases h with hp hqr,
+      show (p ∧ q) ∨ (p ∧ r),
+      cases hqr with hq hr,
+        have : p ∧ q,
+          split; assumption,
+        left, exact this,
+      have : p ∧ r,
+        split; assumption,
+      right, exact this
+    end
+
+You can also use the ``have`` tactic with the ``:=`` token, which has the same effect as ``from``:
 
 .. code-block:: lean
 
     example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
     begin
       intro h,
-      assert hp : p, 
-        exact h.left,
-      assert hqr : q ∨ r,
-        exact h.right,
+      have hp : p := h.left,
+      have hqr : q ∨ r := h.right,
       show (p ∧ q) ∨ (p ∧ r),
       cases hqr with hq hr,
         exact or.inl ⟨hp, hq⟩,
       exact or.inr ⟨hp, hr⟩
     end
 
-You can use any sequence of tactics to dispatch the subgoal introduced by ``assert``. Lean also provides a ``note`` tactic, which combines the effects of an ``assert`` and subsequent ``exact``:
+In this case, the types can be omitted, so we can write ``have hp := h.left`` and ``have hqr := h.right``. In fact, with this notation, you can even omit both the type and the label, in which case the new fact is introduced with the label ``this``.
 
-.. code-block:: lean
-
-    example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
-    begin
-      intro h,
-      note hp : p := h.left,
-      note hqr : q ∨ r := h.right,
-      show (p ∧ q) ∨ (p ∧ r),
-      cases hqr with hq hr,
-        exact or.inl ⟨hp, hq⟩,
-      exact or.inr ⟨hp, hr⟩
-    end
-
-Here the types can be omitted, so we can write ``note hp := h.left`` and ``note hqr := h.right``. Even the labels ``hp`` and ``hq`` can be ommitted, in which case, the new facts are introduced with the label ``this``.
-
-Lean also has a ``pose`` tactic, similar to the ``note`` tactic, which is used to introduce local definitions.
+Lean also has a ``let`` tactic, which is similar to the ``have`` tactic, but is used to introduce local definitions instead of auxiliary facts. It is the tactic analogue of a ``let`` in a proof term.
 
 .. code-block:: lean
 
     example : ∃ x, x + 2 = 8 :=
     begin
-      pose a : ℕ := 3 * 2,
+      let a : ℕ := 3 * 2,
       existsi a, 
       reflexivity
     end
 
-As we ``note``, you can make the type explicit by writing ``pose a : ℕ := 3 * 2``. The difference between ``pose`` and ``have`` is that ``pose`` introduces a local "let" definition, so that the definition of the local constant can be unfolded in the proof.
+As with ``have``, you can make the type explicit by writing ``let a : ℕ := 3 * 2``. The difference between ``let`` and ``have`` is that ``let`` introduces a local definition in the context, so that the definition of the local constant can be unfolded in the proof.
 
 For even more structured proofs, you can nest ``begin...end`` blocks within other ``begin...end`` blocks. In a nested block, Lean focuses on the first goal, and generates an error if it has not been fully solved at the end of the block. This can be helpful in indicating the separate proofs of multiple subgoals introduced by a tactic.
 
@@ -856,13 +884,13 @@ Combining these various mechanisms makes for nicely structured tactic proofs:
     begin
       apply iff.intro,
       { intro h,
-        note hp : p := h.left,
-        note hq : q := h.right,
+        have hp : p := h.left,
+        have hq : q := h.right,
         show q ∧ p, 
           exact ⟨hq, hp⟩ },
       intro h,
-      note hp : p := h.right,
-      note hq : q := h.left,
+      have hp : p := h.right,
+      have hq : q := h.left,
       show p ∧ q, 
         exact ⟨hp, hq⟩
     end
@@ -1034,7 +1062,7 @@ Multiple rewrites can be combined using the notation ``rw [t_1, ..., t_n]``, whi
     example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 :=
     by rw [h₂, h₁]
 
-By default, ``rw`` uses an equation in the forward direction, matching the left-hand side with an expression, and replacing it with the right-hand side. The notation ``-t`` can be used to instruct the tactic to use the equality ``t`` in the reverse direction.
+By default, ``rw`` uses an equation in the forward direction, matching the left-hand side with an expression, and replacing it with the right-hand side. The notation ``←t`` can be used to instruct the tactic to use the equality ``t`` in the reverse direction.
 
 .. code-block:: lean
 
@@ -1042,10 +1070,10 @@ By default, ``rw`` uses an equation in the forward direction, matching the left-
 
     example (h₁ : a = b) (h₂ : f a = 0) : f b = 0 :=
     begin
-      rw [-h₁, h₂]
+      rw [←h₁, h₂]
     end
 
-In this example, the term ``-h₁`` instructs the rewriter to replace ``b`` with ``a``.
+In this example, the term ``←h₁`` instructs the rewriter to replace ``b`` with ``a``. In the editors, you can type the backwards arrow as ``\l``. You can also use the ascii equivalent, ``<-``.
 
 Sometimes the left-hand side of an identity can match more than one subterm in the pattern, in which case the ``rewrite`` tactic chooses the first match it finds when traversing the term. If that is not the one you want, you can use additional arguments to specify the appropriate subterm.
 
@@ -1053,7 +1081,7 @@ Sometimes the left-hand side of an identity can match more than one subterm in t
 
     example (a b c : ℕ) : a + b + c = a + c + b :=
     begin
-      rw [add_assoc, add_comm b, -add_assoc]
+      rw [add_assoc, add_comm b, ←add_assoc]
     end
 
     example (a b c : ℕ) : a + b + c = a + c + b :=
@@ -1111,7 +1139,7 @@ Note that the rewrite tactic can carry out generic calculations in any algebraic
 
     example {α : Type u} [group α] {a b : α} (h : a * b = 1) : 
       a⁻¹ = b :=
-    by rw [-(mul_one a⁻¹), -h, inv_mul_cancel_left]
+    by rw [←(mul_one a⁻¹), ←h, inv_mul_cancel_left]
 
 Using the type class mechanism described in :numref:`Chapter %s <type_classes>`, Lean identifies both abstract and concrete instances of the relevant algebraic structures, and instantiates the relevant facts accordingly.
 
@@ -1138,6 +1166,7 @@ In the first example, the left-hand side of the equality in the goal is simplifi
 
 .. code-block:: lean
 
+    import data.list.basic
     universe u
     variable {α : Type}
     open list
@@ -1149,6 +1178,8 @@ In the first example, the left-hand side of the equality in the goal is simplifi
     example (xs ys : list α) : 
       length (reverse (xs ++ ys)) = length xs + length ys :=
     by simp
+
+This example uses facts about lists that are found in Lean's `mathematics library <https://github.com/leanprover/mathlib>`_, which we need to explicitly `import`.
 
 As with ``rw``, you can use the keyword ``at`` to simplify a hypothesis:
 
@@ -1272,6 +1303,7 @@ One thing that makes the simplifier especially useful its capabilities can grow 
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1282,6 +1314,7 @@ Then for any list ``xs``, ``reverse (mk_symm xs)`` is equal to ``xs``, which can
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1298,6 +1331,7 @@ Or even more simply,
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1314,6 +1348,7 @@ We can now use this theorem to prove new results:
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1339,6 +1374,7 @@ But using ``reverse_mk_symm`` is generally the right thing to do, and it would b
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1364,6 +1400,7 @@ The notation ``@[simp]`` declares ``reverse_mk_symm`` to have the ``[simp]`` att
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1389,6 +1426,7 @@ The attribute can also be applied any time after the theorem is declared:
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1416,6 +1454,7 @@ Once the attribute is applied, however, there is no way to remove it; it persist
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1448,6 +1487,7 @@ You can even create your own sets of simplifier rules, to be applied in special 
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1477,10 +1517,11 @@ The command ``run_cmd mk_simp_attr `my_simps`` creates a new attribute ``[my_sim
 
 Note that the various ``simp`` options we have discussed --- giving an explicit list of rules, using ``at`` to specify the location, and using ``with`` to add additional simplifier rules --- can be combined, but the order they are listed is rigid. You can see the correct order in an editor by placing the cursor on the ``simp`` identifier to see the documentation string that is associated with it.
 
-There are two additional modifiers that are useful. By default, ``simp`` includes all theorems that have been marked with the attribute ``[simp]``. Writing ``simp only`` excludes these defaults, allowing you to use a more explicitly crafted list of rules. Alternatively, writing ``simp without t`` filters ``t`` and removes it from the set of simplification rules. In the examples below, ``without`` and ``only`` are used to block the application of ``reverse_mk_symm``.
+There are two additional modifiers that are useful. By default, ``simp`` includes all theorems that have been marked with the attribute ``[simp]``. Writing ``simp only`` excludes these defaults, allowing you to use a more explicitly crafted list of rules. Alternatively, writing ``simp without t`` filters ``t`` and removes it from the set of simplification rules. In the examples below, the minus sign and ``only`` are used to block the application of ``reverse_mk_symm``.
 
 .. code-block:: lean
 
+    import data.list.basic
     open list
     universe u  
     variables {α : Type} (x y z : α) (xs ys zs : list α)
@@ -1502,7 +1543,7 @@ There are two additional modifiers that are useful. By default, ``simp`` include
     example (xs ys : list ℕ) (p : list ℕ → Prop)
         (h : p (reverse (xs ++ (mk_symm ys)))) : 
       p (reverse (mk_symm ys) ++ reverse xs) :=
-    by { simp without reverse_mk_symm at h, assumption }
+    by { simp [-reverse_mk_symm] at h, assumption }
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
         (h : p (reverse (xs ++ (mk_symm ys)))) : 
