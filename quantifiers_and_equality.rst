@@ -723,8 +723,8 @@ We can also ask Lean to fill in the proof by writing ``‹p›``, where ``p`` is
 
     -- BEGIN
     example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
-    suppose f 0 ≥ f 1,
-    suppose f 1 ≥ f 2,
+    assume : f 0 ≥ f 1,
+    assume : f 1 ≥ f 2,
     have f 0 ≥ f 2, from le_trans this ‹f 0 ≥ f 1›,
     have f 0 ≤ f 2, from le_trans (h 0) (h 1),
     show f 0 = f 2, from le_antisymm this ‹f 0 ≥ f 2›
@@ -758,7 +758,7 @@ Keep in mind that use can use the French quotation marks in this way to refer to
 
     example (n : ℕ) : ℕ := ‹ℕ›
 
-The ``suppose`` keyword acts as an anonymous assume:
+We can also ``assume`` a hypothesis without giving it a label:
 
 .. code-block:: lean
 
@@ -767,13 +767,13 @@ The ``suppose`` keyword acts as an anonymous assume:
 
     -- BEGIN
     example : f 0 ≥ f 1 → f 0 = f 1 :=
-    suppose f 0 ≥ f 1,
+    assume : f 0 ≥ f 1,
     show f 0 = f 1, from le_antisymm (h 0) this
     -- END
 
-Notice that there is an asymmetry: you can use ``have`` with or without a label, but if you do not wish to name the assumption, you must use ``suppose`` rather than ``assume``. The reason is that Lean allows us to write ``assume h`` to introduce a hypothesis without specifying it, leaving it to the system to infer to relevant assumption. An anonymous ``assume`` would thus lead to ambiguities when parsing expressions.
+In contrast to the usage with ``have``, an anonymous ``assume`` needs an extra colon. The reason is that Lean allows us to write ``assume h`` to introduce a hypothesis without specifying it, and without the colon it would be ambiguous as to whether the ``h`` here is meant as the label or the assumption.
 
-As with the anonymous ``have``, when you use ``suppose`` to introduce an assumption, that assumption can also be invoked later in the proof by enclosing it in French quotes.
+As with the anonymous ``have``, when you use an anonymous``assume`` to introduce an assumption, that assumption can also be invoked later in the proof by enclosing it in French quotes.
 
 .. code-block:: lean
 
@@ -782,8 +782,8 @@ As with the anonymous ``have``, when you use ``suppose`` to introduce an assumpt
 
     -- BEGIN
     example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
-    suppose f 0 ≥ f 1,
-    suppose f 1 ≥ f 2,
+    assume : f 0 ≥ f 1,
+    assume : f 1 ≥ f 2,
     have f 0 ≥ f 2, from le_trans ‹f 2 ≤ f 1› ‹f 1 ≤ f 0›,
     have f 0 ≤ f 2, from le_trans (h 0) (h 1),
     show f 0 = f 2, from le_antisymm this ‹f 0 ≥ f 2›

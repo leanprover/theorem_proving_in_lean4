@@ -395,7 +395,7 @@ To illustrate the difference, consider the following example, which shows that a
 
     theorem th1 (reflr : reflexive r) (euclr : euclidean r) : 
       symmetric r :=
-    assume a b : α, suppose r a b,
+    assume a b : α, assume : r a b,
     show r b a, from euclr this (reflr _)
 
     theorem th2 (symmr : symmetric r) (euclr : euclidean r) : 
@@ -435,7 +435,7 @@ The results are broken down into small steps: ``th1`` shows that a relation that
 
     theorem th1 (reflr : reflexive r) (euclr : euclidean r) : 
       symmetric r :=
-    assume a b : α, suppose r a b,
+    assume a b : α, assume : r a b,
     show r b a, from euclr this (reflr _)
 
     theorem th2 (symmr : symmetric r) (euclr : euclidean r) : 
