@@ -872,7 +872,7 @@ Combining these various mechanisms makes for nicely structured tactic proofs:
 Tactic Combinators
 ------------------
 
-*Tactic combinatorics* are operations that form new tactics from old ones. A sequencing combinator is already implicit in the comma that appear in a ``begin...end`` block:
+*Tactic combinators* are operations that form new tactics from old ones. A sequencing combinator is already implicit in the comma that appear in a ``begin...end`` block:
 
 .. code-block:: lean
 
@@ -940,7 +940,7 @@ Incidentally, a tactic expressions is really formal terms in Lean, of type ``tac
 
 With a ``begin...end`` block or after a ``by``, Lean's parser uses special mechanisms to parse these expressions, but they are similar to ordinary expressions in Lean like ``x + 2`` and ``list α``. (The annotation ```[...]`` in the definition of ``my_tac`` above invokes the special parsing mechanism here, too.) The book `Programming in Lean <https://leanprover.github.io/programming_in_lean/>`__ provides a fuller introduction to writing tactics and installing them for interactive use. The tactic combinators were discussing here serve as casual entry points to the tactic programming language.
 
-You will have no doubt noticed by now that tactics can fail. Indeed, it is the "failure" state that causes the *orelse* combinator to backtrack and try the next tactic. The ``try`` combinator builds a tactic that always succeeds, though possibly in a trival way: ``try t`` executes ``t`` and reports success, even if ``t`` fails. It is equivalent to ``t <|> skip``, where ``skip`` is a tactic that does nothing (and succeeds in doing so). In the next example, the second ``split`` succeeds on the right conjunct ``q ∧ r`` (remember that disjunction and conjunction associate to the right) but fails on the first. The ``try`` tactic ensures that the sequential composition succeeds.
+You will have no doubt noticed by now that tactics can fail. Indeed, it is the "failure" state that causes the *orelse* combinator to backtrack and try the next tactic. The ``try`` combinator builds a tactic that always succeeds, though possibly in a trivial way: ``try t`` executes ``t`` and reports success, even if ``t`` fails. It is equivalent to ``t <|> skip``, where ``skip`` is a tactic that does nothing (and succeeds in doing so). In the next example, the second ``split`` succeeds on the right conjunct ``q ∧ r`` (remember that disjunction and conjunction associate to the right) but fails on the first. The ``try`` tactic ensures that the sequential composition succeeds.
 
 .. code-block:: lean
 
@@ -996,14 +996,7 @@ In fact, we can compress the full tactic down to one line:
       p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) :=
     by repeat { any_goals { split <|> assumption} }
 
-The combinators ``focus`` and ``solve1`` go in the other direction.
-Specifically, ``focus t`` ensures that ``t`` only effects the current
-goal, temporarily hiding the others from the scope. So, if ``t``
-ordinarly only effects the current goal, ``focus { all_goals {t} }`` has
-the same effect as ``t``. The tactic ``solve1 t`` is similar, except
-that it fails unless ``t`` succeeds in solving the goal entirely. The
-``done`` tactic is also sometimes useful to direct the flow of control;
-it succeeds only if there are no goals left to be solved.
+The combinators ``focus`` and ``solve1`` go in the other direction. Specifically, ``focus t`` ensures that ``t`` only effects the current goal, temporarily hiding the others from the scope. So, if ``t`` ordinarily only effects the current goal, ``focus { all_goals {t} }`` has the same effect as ``t``. The tactic ``solve1 t`` is similar, except that it fails unless ``t`` succeeds in solving the goal entirely. The ``done`` tactic is also sometimes useful to direct the flow of control; it succeeds only if there are no goals left to be solved.
 
 Rewriting
 ---------
@@ -1182,7 +1175,7 @@ Moreover, you can use a "wildcard" asterisk to simplify all the hypotheses and t
       p (y + 0 + x) ∧ p (z * x) :=
     by { simp at *, split; assumption }
 
-For operations that are commutative and associative, like addition on the natural numbers, the simplifier uses these two facts to rewrite an expression, as well as *left commutativity*. In the case of additition the latter is expressed as follows: ``x + (y + z) = y + (x + z)``. It may seem that commutativity and left-commutativity are problematic, in that repeated application of either causes looping. But the simplifier detects identities that permute their arguments, and uses a technique known as *ordered rewriting*. This means that that the system maintains an internal ordering of terms, and only applies the identity if doing so decreases the order. With the three identities mentioned above, this has the effect that all the parentheses in an expression are associated to the right, and the expressions are ordered in a canonical (though somewhat arbitrary) way. Two expressions that are equivalent up to associativity and commutativity are then rewritten to the same canonical form.
+For operations that are commutative and associative, like addition on the natural numbers, the simplifier uses these two facts to rewrite an expression, as well as *left commutativity*. In the case of addition the latter is expressed as follows: ``x + (y + z) = y + (x + z)``. It may seem that commutativity and left-commutativity are problematic, in that repeated application of either causes looping. But the simplifier detects identities that permute their arguments, and uses a technique known as *ordered rewriting*. This means that that the system maintains an internal ordering of terms, and only applies the identity if doing so decreases the order. With the three identities mentioned above, this has the effect that all the parentheses in an expression are associated to the right, and the expressions are ordered in a canonical (though somewhat arbitrary) way. Two expressions that are equivalent up to associativity and commutativity are then rewritten to the same canonical form.
 
 .. code-block:: lean
 

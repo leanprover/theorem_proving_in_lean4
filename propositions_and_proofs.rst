@@ -433,7 +433,7 @@ The *or-elimination* rule is slightly more complicated. The idea is that we can 
         show q ∨ p, from or.intro_left p hq)
     -- END
 
-In most cases, the first argument of ``or.intro_right`` and ``or.intro_left`` can be inferred automatically by Lean. Lean therefore provides ``or.inr`` and ``or.inl`` as shorthands for ``or.intro_right _`` and ``or.intro_left _``. Thus the proof term above could be written more concisely:
+In most cases, the first argument of ``or.intro_right`` and ``or.intro_left`` can be inferred automatically by Lean. Lean therefore provides ``or.inr`` and ``or.inl`` as shorthand for ``or.intro_right _`` and ``or.intro_left _``. Thus the proof term above could be written more concisely:
 
 .. code-block:: lean
 
