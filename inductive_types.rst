@@ -708,7 +708,7 @@ Proving a fact like ``0 + m = m``, however, requires a proof by induction. As ob
     theorem zero_add (n : ℕ) : 0 + n = n :=
     nat.rec_on n
       (show 0 + 0 = 0, from rfl)
-      (take n,
+      (assume n,
         assume ih : 0 + n = n,
         show 0 + succ n = succ n, from
           calc
@@ -747,7 +747,7 @@ For another example, let us prove the associativity of addition, ``∀ m n k, m 
     theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
     nat.rec_on k
       (show m + n + 0 = m + (n + 0), from rfl)
-      (take k,
+      (assume k,
         assume ih : m + n + k = m + (n + k),
         show m + n + succ k = m + (n + succ k), from
           calc
@@ -783,7 +783,7 @@ Suppose we try to prove the commutativity of addition. Choosing induction on the
     theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
     nat.rec_on k
       (show m + n + 0 = m + (n + 0), from rfl)
-      (take k,
+      (assume k,
         assume ih : m + n + k = m + (n + k),
         show m + n + succ k = m + (n + succ k), from
           calc
@@ -796,7 +796,7 @@ Suppose we try to prove the commutativity of addition. Choosing induction on the
     theorem add_comm (m n : nat) : m + n = n + m :=
     nat.rec_on n
       (show m + 0 = 0 + m, by rw [nat.zero_add, nat.add_zero])
-      (take n,
+      (assume n,
         assume ih : m + n = n + m,
         calc
           m + succ n = succ (m + n) : rfl
@@ -816,7 +816,7 @@ At this point, we see that we need another supporting fact, namely, that ``succ 
     theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
     nat.rec_on k
       (show m + n + 0 = m + (n + 0), from rfl)
-      (take k,
+      (assume k,
         assume ih : m + n + k = m + (n + k),
         show m + n + succ k = m + (n + succ k), from
           calc
@@ -829,7 +829,7 @@ At this point, we see that we need another supporting fact, namely, that ``succ 
     theorem succ_add (m n : nat) : succ m + n = succ (m + n) :=
     nat.rec_on n
       (show succ m + 0 = succ (m + 0), from rfl)
-      (take n,
+      (assume n,
         assume ih : succ m + n = succ (m + n),
         show succ m + succ n = succ (m + succ n), from
           calc

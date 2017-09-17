@@ -38,7 +38,7 @@ Here is an example of how the propositions-as-types correspondence gets put into
 
     example : (∀ x : α, p x ∧ q x) → ∀ y : α, p y  :=
     assume h : ∀ x : α, p x ∧ q x,
-    take y : α,
+    assume y : α,
     show p y, from (h y).left
 
 As a notational convention, we give the universal quantifier the widest scope possible, so parentheses are needed to limit the quantifier over ``x`` to the hypothesis in the example above. The canonical way to prove ``∀ y : α, p y`` is to take an arbitrary ``y``, and prove ``p y``. This is the introduction rule. Now, given that ``h`` has type ``∀ x : α, p x ∧ q x``, the expression ``h y`` has type ``p y ∧ q y``. This is the elimination rule. Taking the left conjunct gives the desired conclusion, ``p y``.
@@ -52,7 +52,7 @@ Remember that expressions which differ up to renaming of bound variables are con
     -- BEGIN
     example : (∀ x : α, p x ∧ q x) → ∀ x : α, p x  :=
     assume h : ∀ x : α, p x ∧ q x,
-    take z : α,
+    assume z : α,
     show p z, from and.elim_left (h z)
     -- END
 
@@ -495,7 +495,7 @@ We can view ``exists.intro`` as an information-hiding operation, since it hides 
 
     example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
     exists.elim h
-      (take w,
+      (assume w,
         assume hw : p w ∧ q w,
         show ∃ x, q x ∧ p x, from ⟨w, hw.right, hw.left⟩)
 
@@ -572,8 +572,8 @@ In the following example, we define ``even a`` as ``∃ b, a = 2*b``, and then w
 
     theorem even_plus_even {a b : nat} 
       (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
-    exists.elim h1 (take w1, assume hw1 : a = 2 * w1,
-    exists.elim h2 (take w2, assume hw2 : b = 2 * w2,
+    exists.elim h1 (assume w1, assume hw1 : a = 2 * w1,
+    exists.elim h2 (assume w2, assume hw2 : b = 2 * w2,
       exists.intro (w1 + w2)
         (calc
           a + b = 2 * w1 + 2 * w2  : by rw [hw1, hw2]
@@ -605,7 +605,7 @@ Just as the constructive "or" is stronger than the classical "or," so, too, is t
     by_contradiction
       (assume h1 : ¬ ∃ x, p x,
         have h2 : ∀ x, ¬ p x, from
-          take x,
+          assume x,
           assume h3 : p x,
           have h4 : ∃ x, p x, from  ⟨x, h3⟩,
           show false, from h1 h4,
@@ -672,7 +672,7 @@ Here are solutions to two of the more difficult ones:
               by_contradiction
                 (assume hnex : ¬ ∃ x, p x → r,
                   have hap : ∀ x, p x, from
-                    take x,
+                    assume x,
                     by_contradiction
                       (assume hnp : ¬ p x,
                         have hex : ∃ x, p x → r,
@@ -684,7 +684,7 @@ Here are solutions to two of the more difficult ones:
 More on the Proof Language
 --------------------------
 
-We have seen that keywords like ``assume``, ``take``, ``have``, and ``show`` make it possible to write formal proof terms that mirror the structure of informal mathematical proofs. In this section, we discuss some additional features of the proof language that are often convenient.
+We have seen that keywords like ``assume``, ``have``, and ``show`` make it possible to write formal proof terms that mirror the structure of informal mathematical proofs. In this section, we discuss some additional features of the proof language that are often convenient.
 
 To start with, we can use anonymous "have" expressions to introduce an auxiliary goal without having to label it. We can refer to the last expression introduced in this way using the keyword ``this``:
 

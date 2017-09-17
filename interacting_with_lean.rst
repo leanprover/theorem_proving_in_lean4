@@ -395,12 +395,12 @@ To illustrate the difference, consider the following example, which shows that a
 
     theorem th1 (reflr : reflexive r) (euclr : euclidean r) : 
       symmetric r :=
-    take a b : α, suppose r a b,
+    assume a b : α, suppose r a b,
     show r b a, from euclr this (reflr _)
 
     theorem th2 (symmr : symmetric r) (euclr : euclidean r) : 
       transitive r :=
-    take (a b c : α), assume (rab : r a b) (rbc : r b c),
+    assume (a b c : α), assume (rab : r a b) (rbc : r b c),
     euclr (symmr rab) rbc
 
     -- error:
@@ -435,12 +435,12 @@ The results are broken down into small steps: ``th1`` shows that a relation that
 
     theorem th1 (reflr : reflexive r) (euclr : euclidean r) : 
       symmetric r :=
-    take a b : α, suppose r a b,
+    assume a b : α, suppose r a b,
     show r b a, from euclr this (reflr _)
 
     theorem th2 (symmr : symmetric r) (euclr : euclidean r) : 
       transitive r :=
-    take (a b c : α), assume (rab : r a b) (rbc : r b c),
+    assume (a b c : α), assume (rab : r a b) (rbc : r b c),
     euclr (symmr rab) rbc
 
     theorem th3 (reflr : reflexive r) (euclr : euclidean r) : 

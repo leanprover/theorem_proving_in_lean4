@@ -122,7 +122,7 @@ Suppose that for ``α : Type`` we define the ``set α := α → Prop`` to denote
     notation e ∈ a := mem e a 
 
     theorem setext {a b : set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
-    funext (take x, propext (h x))
+    funext (assume x, propext (h x))
 
     end set
     -- END
@@ -147,7 +147,7 @@ We can then proceed to define the empty set and set intersection, for example, a
     instance has_mem_set (α : Type u) : has_mem α (set α) := ⟨mem⟩
 
     theorem setext {a b : set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
-    funext (take x, propext (h x))
+    funext (assume x, propext (h x))
 
     -- BEGIN
     definition empty : set α := λ x, false
@@ -157,16 +157,16 @@ We can then proceed to define the empty set and set intersection, for example, a
     notation a ∩ b := inter a b
 
     theorem inter_self (a : set α) : a ∩ a = a :=
-    setext (take x, and_self _)
+    setext (assume x, and_self _)
 
     theorem inter_empty (a : set α) : a ∩ ∅ = ∅ :=
-    setext (take x, and_false _)
+    setext (assume x, and_false _)
 
     theorem empty_inter (a : set α) : ∅ ∩ a = ∅ :=
-    setext (take x, false_and _)
+    setext (assume x, false_and _)
 
     theorem inter.comm (a b : set α) : a ∩ b = b ∩ a :=
-    setext (take x, and_comm _ _)
+    setext (assume x, and_comm _ _)
     -- END
 
     end set
@@ -179,7 +179,7 @@ The following is an example of how function extensionality blocks computation in
     def f₁  (x : ℕ) := x
     def f₂ (x : ℕ) := 0 + x
 
-    theorem feq : f₁ = f₂ := funext (take x, (zero_add x).symm)
+    theorem feq : f₁ = f₂ := funext (assume x, (zero_add x).symm)
 
     def val : ℕ := eq.rec_on feq (0 : ℕ)
 
@@ -401,7 +401,7 @@ conclusion.
 
     private theorem eqv.refl {α : Type u} : 
       ∀ p : α × α, p ~ p :=
-    take p, inl ⟨rfl, rfl⟩
+    assume p, inl ⟨rfl, rfl⟩
 
     private theorem eqv.symm {α : Type u} : 
       ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
@@ -447,7 +447,7 @@ Now that we have proved that ``eqv`` is an equivalence relation, we can construc
     open or eq
 
     private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
-    take p, inl ⟨rfl, rfl⟩
+    assume p, inl ⟨rfl, rfl⟩
 
     private theorem eqv.symm {α : Type u} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
     | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
@@ -501,7 +501,7 @@ since we have ``(a₁, a₂) ~ (a₂, a₁)``.
     open or eq
 
     private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
-    take p, inl ⟨rfl, rfl⟩
+    assume p, inl ⟨rfl, rfl⟩
 
     private theorem eqv.symm {α : Type u} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
     | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
@@ -559,7 +559,7 @@ standard library.
     open or eq
 
     private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
-    take p, inl ⟨rfl, rfl⟩
+    assume p, inl ⟨rfl, rfl⟩
 
     private theorem eqv.symm {α : Type u} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
     | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
@@ -899,7 +899,7 @@ definition of ``u`` and ``v``, this implies that they are equal as well.
     lemma p_implies_uv : p → u = v :=
     assume hp : p,
     have hpred : U = V, from
-      funext (take x : Prop,
+      funext (assume x : Prop,
         have hl : (x = true ∨ p) → (x = false ∨ p), from
           assume a, or.inr hp,
         have hr : (x = false ∨ p) → (x = true ∨ p), from
@@ -946,7 +946,7 @@ Putting these last two facts together yields the desired conclusion:
     lemma p_implies_uv : p → u = v :=
     assume hp : p,
     have hpred : U = V, from
-      funext (take x : Prop,
+      funext (assume x : Prop,
         have hl : (x = true ∨ p) → (x = false ∨ p), from
           assume a, or.inr hp,
         have hr : (x = false ∨ p) → (x = true ∨ p), from
@@ -1015,7 +1015,7 @@ As an example of classical reasoning, we use ``some`` to show that if ``f : α �
     theorem linv_comp_self {α β : Type} {f : α → β}
         [inhabited α] (inj : injective f) :
       linv f ∘ f = id :=
-    funext (take a,
+    funext (assume a,
       have ex  : ∃ a₁ : α, f a₁ = f a, from exists.intro a rfl,
       have   feq : f (some ex) = f a, from some_spec ex,
       calc linv f (f a) = some ex :  dif_pos ex
