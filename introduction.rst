@@ -51,7 +51,7 @@ Throughout the text you will find examples of Lean code like the one below:
     show q ∧ p, from and.intro hq hp
     -- END
 
-If you are reading the book online, you will see a button that reads "try it yourself." Pressing the button opens up a tab with a Lean editor, and copies the example with enough surrounding context to make the example compile correctly. You can type things into the editor and modify the examples, and Lean will check the results and provide feedback continuously as you type. We recommend running the examples and experimenting with the code on your own as you work through the chapters that follow.
+If you are reading the book online, you will see a button that reads "try it!" Pressing the button opens up a tab with a Lean editor, and copies the example with enough surrounding context to make the example compile correctly. You can type things into the editor and modify the examples, and Lean will check the results and provide feedback continuously as you type. We recommend running the examples and experimenting with the code on your own as you work through the chapters that follow.
 
 Acknowledgments
 ---------------
