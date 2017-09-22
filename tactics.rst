@@ -50,7 +50,7 @@ The ``apply`` tactic applies an expression, viewed as denoting a function with z
 
     ⊢ q ∧ p
 
-For brevity, Lean only displays the context for the first goal, which is the one addressed by the next tactic command. The first goal is met with the command ``exact hp``. The ``exact`` command is just a variant of ``apply`` which signals that the expression given should fill the goal exactly. It is good form to use it in a tactic proof, since its failure signals that something has gone wrong; but otherwise ``apply`` would work just as well.
+For brevity, Lean only displays the context for the first goal, which is the one addressed by the next tactic command. The first goal is met with the command ``exact hp``. The ``exact`` command is just a variant of ``apply`` which signals that the expression given should fill the goal exactly. It is good form to use it in a tactic proof, since its failure signals that something has gone wrong. It is also more robust than ``apply``, since the elaborator takes the expected type, given by the target of the goal, into account when processing the expression that is being applied. In this case, however, ``apply`` would work just as well.
 
 You can see the resulting proof term with the ``#print`` command:
 
