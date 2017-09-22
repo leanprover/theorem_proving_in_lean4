@@ -98,6 +98,7 @@ html_theme_options = {
     'logo_name': True,
     'font_family': 'Times New Roman, Times, serif',
     'head_font_family': 'Times New Roman, Times, serif',
+    'code_bg': 'white',
     'extra_nav_links': {'PDF version':'theorem_proving_in_lean.pdf',
                        'Lean Home':'https://leanprover.github.io/'},
     'sidebar_width' : '230px',
