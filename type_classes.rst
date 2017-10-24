@@ -64,7 +64,7 @@ It is tempting to think of ``foo`` as defined to be equal to ``1``, but that is 
 
 Now the "same" expression ``foo`` evaluates to ``2``. Whereas before we could prove ``foo = 1``, now we can prove ``foo ≠ 1``, because the inferred implicit argument has changed. When searching for a suitable instance of a type class, the elaborator tries the most recent instance declaration first, by default. We will see below, however, that it is possible to give individual instances higher or lower priority.
 
-As with other attributes, you can assign the ``class`` or ``instance`` attributes in a definition, or after the fact, with an ``attribute`` command. As usual, the assignments ``attribute [class] foo`` and ``attribute [instance] foo``. To limit the scope of an assignment to the current file, use the ``local attribute`` variant.
+As with other attributes, you can assign the ``class`` or ``instance`` attributes in a definition, or after the fact, with an ``attribute`` command. To limit the scope of an assignment to the current file, use the ``local attribute`` variant.
 
 The reason the example is frivolous is that there is rarely a need to "infer" a natural number; we can just hard-code the choice of ``1`` or ``2`` into the definition of ``foo``. Type classes become useful when they depend on parameters, in which case, the value that is inferred depends on these parameters.
 
@@ -565,7 +565,7 @@ We can similarly define pointwise addition of functions:
     -- END
     end hide
 
-As an exercise, try defining instances of ``has_add`` for lists, and show that they have the work as expected.
+As an exercise, try defining instances of ``has_add`` for lists, and show that they work as expected.
 
 Managing Type Class Inference
 -----------------------------
@@ -698,7 +698,7 @@ Coercions are only considered if the given and expected types do not contain met
     -- #check s ∪ [3, 2]
     -- END
 
-We can workaround this issue by using a type ascription.
+We can work around this issue by using a type ascription.
 
 .. code-block:: lean
 
@@ -720,7 +720,7 @@ We can workaround this issue by using a type ascription.
     #check s ∪ ([3, 2] : list nat)
     -- END
 
-In the examples above, you may have noticed the symbol ``↑`` produced by the ``#check`` commands. It is the lift operator, ``↑t`` is notation for ``coe t``. We can use this operator to force a coercion to be introduced in a particular place. It is also helpful to make our intent clear, and workaround limitations of the coercion resolution system.
+In the examples above, you may have noticed the symbol ``↑`` produced by the ``#check`` commands. It is the lift operator, ``↑t`` is notation for ``coe t``. We can use this operator to force a coercion to be introduced in a particular place. It is also helpful to make our intent clear, and work around limitations of the coercion resolution system.
 
 .. code-block:: lean
 

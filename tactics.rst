@@ -202,7 +202,7 @@ In addition to ``apply`` and ``exact``, another useful tactic is ``intro``, whic
         intro hr,
         apply or.inr,
         apply and.intro,
-        exact and.left h,
+          exact and.left h,
         exact hr,
       intro h,
       apply or.elim h,

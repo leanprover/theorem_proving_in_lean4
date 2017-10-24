@@ -175,7 +175,7 @@ If the value of a field is not specified, Lean tries to infer it. If the unspeci
 
     { record-obj with (<field-name> := <expr>)* }
 
-The semantics is simple: record objects ``<record-obj>`` provide the values for the unspecified fields. If more than one record object is provided, then they are visited in order until Lean finds one the contains the unspecified field. Lean raises an error if any of the field names remain unspecified after all the objects are visited.
+The semantics are straightforward: record objects ``<record-obj>`` provide the values for the unspecified fields. If more than one record object is provided, then they are visited in order until Lean finds one the contains the unspecified field. Lean raises an error if any of the field names remain unspecified after all the objects are visited.
 
 .. code-block:: lean
 

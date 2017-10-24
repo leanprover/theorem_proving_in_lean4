@@ -408,7 +408,7 @@ Notice that the product type depends on parameters ``α β : Type`` which are ar
 
     end hide
 
-αs a result, the argument ``α`` to ``inl`` and the argument ``β`` to
+as a result, the argument ``α`` to ``inl`` and the argument ``β`` to
 ``inr`` are left implicit.
 
 In the section after next we will see what happens when the constructor of an inductive type takes arguments from the inductive type itself. What characterizes the examples we consider in this section is that this is not the case: each constructor relies only on previously specified types.
@@ -1072,8 +1072,8 @@ If there are multiple constructors with arguments, you can provide ``cases`` wit
     def silly (x : foo) : ℕ :=
     begin
       cases x with a b c d e,
-      exact b,    -- a, b, c are in the context
-      exact e     -- d, e    are in the context
+      exact b,    -- a, b    are in the context
+      exact e     -- c, d, e are in the context
     end
 
 The syntax of the ``with`` is unfortunate, in that we have to list the arguments to all the constructors sequentially, making it hard to remember what the constructors are, or what the arguments are supposed to be. For that reason, Lean provides a complementary ``case`` tactic, which allows one to assign variable names after the fact:
@@ -1476,7 +1476,7 @@ We have already seen singleton elimination at play in applications of ``eq.rec``
 Mutual and Nested Inductive Types
 ---------------------------------
 
-We now consider two generalizations of inductive types that are often useful, which Lean supports by "compiling" them down to the more primitive kinds of inductive types described above. In other words, Lean parses the more general definitions, defines auxiliary inductive types based on them, and then uses the auxiliary types to define the ones we really want. Lean's equation compiler, described in the next chapter, is need to make use of these types effectively. Nonetheless, it makes sense to describe the declarations here, because they are straightforward variations on ordinary inductive definitions.
+We now consider two generalizations of inductive types that are often useful, which Lean supports by "compiling" them down to the more primitive kinds of inductive types described above. In other words, Lean parses the more general definitions, defines auxiliary inductive types based on them, and then uses the auxiliary types to define the ones we really want. Lean's equation compiler, described in the next chapter, is needed to make use of these types effectively. Nonetheless, it makes sense to describe the declarations here, because they are straightforward variations on ordinary inductive definitions.
 
 First, Lean supports *mutually defined* inductive types. The idea is that we can define two (or more) inductive types at the same time, where each one to the other(s).
 

@@ -56,7 +56,7 @@ If you are reading the book online, you will see a button that reads "try it!" P
 Acknowledgments
 ---------------
 
-This tutorial is an open access project maintained on Github. Many people have contributed to the effort, providing corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Nathan Carter, Amine Chaieb, William DeMeo, Floris van Doorn, Anthony Hart, Sean Leather, Christopher John Mazey, Assia Mahboubi, Sebastian Ullrich, Daniel Velleman, and Théo Zimmerman for their contributions, and we apologize to those whose names we have inadvertently omitted.
+This tutorial is an open access project maintained on Github. Many people have contributed to the effort, providing corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Nathan Carter, Amine Chaieb, William DeMeo, Floris van Doorn, Anthony Hart, Sean Leather, Christopher John Mazey, Assia Mahboubi, Sebastian Ullrich, Daniel Velleman, and Théo Zimmerman for their contributions, and we apologize to those whose names we have inadvertently omitted.
 
 .. [CoHu88] Thierry Coquand and Gerard Huet. The calculus of constructions. Inf. Comput., 76(2-3):95–120, February 1988.
 
