@@ -392,7 +392,7 @@ In contrast, the sum type has *two* constructors, ``inl`` and ``inr`` (for "inse
 
 This example is similar to the previous one, but now an input to ``sum_example`` is implicitly either of the form ``inl n`` or ``inr n``. In the first case, the function returns ``2 * n``, and the second case, it returns ``2 * n + 1``. You can enter the symbol for the sum by typing ``\oplus``.
 
-Notice that the product type depends on parameters ``α β : Type`` which are arguments to the constructors as well as ``prod``. Lean detects when these arguments can be inferred from later arguments to a constructor, and makes them implicit in that case. Sometimes an argument can only be inferred from the return type, which means that it could not be inferred by parsing the expression from bottom up, but may be inferrable from context. In that case, Lean does not make the argument implicit by default, but will do so if we add the annotation ``{}`` after the constructor. We used that option, for example, in the definition of ``sum``:
+Notice that the product type depends on parameters ``α β : Type`` which are arguments to the constructors as well as ``prod``. Lean detects when these arguments can be inferred from later arguments to a constructor, and makes them implicit in that case. Sometimes an argument can only be inferred from the return type, which means that it could not be inferred by parsing the expression from bottom up, but may be inferable from context. In that case, Lean does not make the argument implicit by default, but will do so if we add the annotation ``{}`` after the constructor. We used that option, for example, in the definition of ``sum``:
 
 .. code-block:: lean
 
@@ -1519,7 +1519,7 @@ In fact, Lean allows us to define the inductive type we really want:
     | mk : α → list tree → tree
     -- END
 
-This is known as a *nested* inductive type. It falls outside the strict specification of an inductive type given in the last section because ``tree`` does not occur strictly positively among the arugments to make, but, rather, nested inside the ``list`` type constructor. Under the hood, Lean compiles this down to the mutual inductive type described above, which, in turn, is compiled down to an ordinary inductive type. Lean then automatically builds the isomorphism between ``list_tree α`` and ``list (tree  α)``, and defines the constructors for ``tree`` in terms of the isomorphism.
+This is known as a *nested* inductive type. It falls outside the strict specification of an inductive type given in the last section because ``tree`` does not occur strictly positively among the arguments to ``mk``, but, rather, nested inside the ``list`` type constructor. Under the hood, Lean compiles this down to the mutual inductive type described above, which, in turn, is compiled down to an ordinary inductive type. Lean then automatically builds the isomorphism between ``list_tree α`` and ``list (tree  α)``, and defines the constructors for ``tree`` in terms of the isomorphism.
 
 The types of the constructors for mutual and nested inductive types can be read off from the definitions. Defining functions *from* such types is more complicated, because these also have to be compiled down to more basic operations, making use of the primitive recursors that are associated to the inductive types that are declared under the hood. Lean does its best to hide the details from users, allowing them to use the equation compiler, described in the next section, to define such functions in natural ways.
 
