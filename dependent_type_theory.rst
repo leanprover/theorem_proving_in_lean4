@@ -891,7 +891,7 @@ Notice that now the first ``#check`` command gives the type of the identifier, `
 Exercises
 ---------
 
-#. Define the function ``Do_twice``, as described in :numref:`introducing_definitions`.
+#. Define the function ``Do_Twice``, as described in :numref:`introducing_definitions`.
 
 #. Define the functions ``curry`` and ``uncurry``, as described in :numref:`introducing_definitions`.
 
