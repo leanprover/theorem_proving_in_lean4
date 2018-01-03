@@ -482,10 +482,10 @@ Note that ``exists.intro`` has implicit arguments: Lean has to infer the predica
     theorem gex4 : ∃ x, g x x = 0 := ⟨0, hg⟩
 
     set_option pp.implicit true  -- display implicit arguments
-    #check gex1
-    #check gex2
-    #check gex3
-    #check gex4
+    #print gex1
+    #print gex2
+    #print gex3
+    #print gex4
 
 We can view ``exists.intro`` as an information-hiding operation, since it hides the witness to the body of the assertion. The existential elimination rule, ``exists.elim``, performs the opposite operation. It allows us to prove a proposition ``q`` from ``∃ x : α, p x``, by showing that ``q`` follows from ``p w`` for an arbitrary value ``w``. Roughly speaking, since we know there is an ``x`` satisfying ``p x``, we can give it a name, say, ``w``. If ``q`` does not mention ``w``, then showing that ``q`` follows from ``p w`` is tantamount to showing the ``q`` follows from the existence of any such ``x``. Here is an example:
 

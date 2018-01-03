@@ -223,7 +223,7 @@ We can prevent the shorter alias from being created by using the ``protected`` k
     -- #check bar -- error
     #check foo.bar
 
-This is often used for names like ``nat.rec_on`` and ``nat.induction_on``, to prevent overloading of common names.
+This is often used for names like ``nat.rec`` and ``nat.rec_on``, to prevent overloading of common names.
 
 The ``open`` command admits variations. The command
 
@@ -604,7 +604,7 @@ There are a number of ways in which you can query Lean for information about its
     #check foo
     #check @foo
     #reduce foo
-    #reduce (foo @nat.zero)
+    #reduce (foo nat.zero)
     #print foo
 
 There are other useful ``#print`` commands:
@@ -787,7 +787,7 @@ We can also use the word "self" to indicate a repeated argument:
     #check mul_inv_self
     #check neg_add_self
 
-Remember that identifiers in Lean can be organized into hierarchical namespaces. For example, the theorem named ``lt_of_succ_le`` in the namespace ``nat`` has full name ``nat.lt_of_succ_le``, but the shorter name is made available by the command ``open nat``. We will see in :numref:`Chapter %s <inductive_types>` and :numref:`Chapter % s <structures_and_records>` that defining structures and inductive data types in Lean generates associated operations, and these are stored in a namespace with the same name as the type under definition. For example, the product type comes with the following opens:
+Remember that identifiers in Lean can be organized into hierarchical namespaces. For example, the theorem named ``lt_of_succ_le`` in the namespace ``nat`` has full name ``nat.lt_of_succ_le``, but the shorter name is made available by the command ``open nat``. We will see in :numref:`Chapter %s <inductive_types>` and :numref:`Chapter %s <structures_and_records>` that defining structures and inductive data types in Lean generates associated operations, and these are stored in a namespace with the same name as the type under definition. For example, the product type comes with the following opens:
 
 .. code-block:: lean
 

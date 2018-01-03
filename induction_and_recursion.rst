@@ -1178,7 +1178,7 @@ Exercises
       -- #eval aeval sample_val sample_aexpr
       -- END
 
-   Implement "constant fusion," a procedure that simplifies subterms like ``4 + 7`` to ``12``. Using the auxiliary function ``simp_const``, define a function "fuse": to simplify a plus or a times, first simplify the arguments recursively, and then apply ``simp_const`` to try to simplify the result.
+   Implement "constant fusion," a procedure that simplifies subterms like ``5 + 7`` to ``12``. Using the auxiliary function ``simp_const``, define a function "fuse": to simplify a plus or a times, first simplify the arguments recursively, and then apply ``simp_const`` to try to simplify the result.
 
    .. code-block:: lean
 
