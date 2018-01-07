@@ -290,7 +290,7 @@ What makes the ``quot`` construction into a bona fide quotient is the following 
     -- END
     end hide
 
-This is the axiom that asserts that any two element of ``α`` that are related by ``r`` become identified in the quotient. If a theorem or definition makes use of ``quot.sound``, it will show up in the ``#print axioms`` command.
+This is the axiom that asserts that any two elements of ``α`` that are related by ``r`` become identified in the quotient. If a theorem or definition makes use of ``quot.sound``, it will show up in the ``#print axioms`` command.
 
 Of course, the quotient construction is most commonly used in situations when ``r`` is an equivalence relation. Given ``r`` as above, it is not hard to see that the relation ``r' a b`` defined by ``quot.mk r a = quot.mk r b`` is an equivalence relation. The axiom ``quot.sound`` says that ``r a b`` implies ``r' a b``. Using ``quot.lift`` and ``quot.ind``, we can show that the latter is the smallest equivalence relation containing ``r``, in the sense that if ``r'' a b`` is any equivalence relation containing ``r``, then ``r' a b`` implies ``r'' a b``. In particular, if ``r`` was an equivalence relation to start with, then ``r a b`` holds iff ``r' a b`` for every ``a`` and ``b``.
 
