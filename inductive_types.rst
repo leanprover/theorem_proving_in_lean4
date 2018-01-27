@@ -376,7 +376,7 @@ Here is another example:
     #reduce prod_example (tt, 3)
     #reduce prod_example (ff, 3)
 
-The ``cond`` function is a boolean conditional: ``cond b t1 t2`` return ``t1`` if ``b`` is true, and ``t2`` otherwise. (It has the same effect as ``bool.rec_on b t2 t1``.) The function ``prod_example`` takes a pair consisting of a boolean, ``b``, and a number, ``n``, and returns either ``2 * n`` or ``2 * n + 1`` according to whether ``b`` is true or false.
+The ``cond`` function is a boolean conditional: ``cond b t1 t2`` returns ``t1`` if ``b`` is true, and ``t2`` otherwise. (It has the same effect as ``bool.rec_on b t2 t1``.) The function ``prod_example`` takes a pair consisting of a boolean, ``b``, and a number, ``n``, and returns either ``2 * n`` or ``2 * n + 1`` according to whether ``b`` is true or false.
 
 In contrast, the sum type has *two* constructors, ``inl`` and ``inr`` (for "insert left" and "insert right"), each of which takes *one* (explicit) argument. To define a function on ``sum α β``, we have to handle two cases: either the input is of the form ``inl a``, in which case we have to specify an output value in terms of ``a``, or the input is of the form ``inr b``, in which case we have to specify an output value in terms of ``b``.
 
@@ -408,8 +408,7 @@ Notice that the product type depends on parameters ``α β : Type`` which are ar
 
     end hide
 
-as a result, the argument ``α`` to ``inl`` and the argument ``β`` to
-``inr`` are left implicit.
+As a result, the argument ``α`` to ``inl`` and the argument ``β`` to ``inr`` are left implicit.
 
 In the section after next we will see what happens when the constructor of an inductive type takes arguments from the inductive type itself. What characterizes the examples we consider in this section is that this is not the case: each constructor relies only on previously specified types.
 
@@ -997,7 +996,7 @@ In fact, we can even define the type of countably branching trees:
 Tactics for Inductive Types
 ---------------------------
 
-Given the fundamental importance of inductive types in Lean, it should not be surprising that there are a number of tactics described to work with them effectively. We describe some of them here.
+Given the fundamental importance of inductive types in Lean, it should not be surprising that there are a number of tactics designed to work with them effectively. We describe some of them here.
 
 The ``cases`` tactic works on elements of an inductively defined type, and does what the name suggests: it decomposes the element according to each of the possible constructors. In its most basic form, it is applied to an element ``x`` in the local context. It then reduces the goal to cases in which ``x`` is replaced by each of the constructions.
 
@@ -1205,7 +1204,7 @@ Remember that if you ``open classical``, you can use the law of the excluded mid
 
 Aspects of computability will be discussed in :numref:`Chapter %s <axioms_and_computation>`.
 
-Just as the ``cases`` tactic can be used to carry out proof by cases, the ``induction`` tactic can be used for to carry out proofs by induction. The syntax is similar to that of ``cases``, except that the argument can only be a term in the local context. Here is an example:
+Just as the ``cases`` tactic can be used to carry out proof by cases, the ``induction`` tactic can be used to carry out proofs by induction. The syntax is similar to that of ``cases``, except that the argument can only be a term in the local context. Here is an example:
 
 .. code-block:: lean
 

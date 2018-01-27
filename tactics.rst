@@ -305,7 +305,7 @@ There are tactics ``reflexivity``, ``symmetry``, and ``transitivity``, which app
       refl
     end
 
-With these tactics, the preceding proof can be written more elegantly as follows:
+With these tactics, the transitivity proof above can be written more elegantly as follows:
 
 .. code-block:: lean
 
@@ -368,7 +368,7 @@ Sometimes, however, we want to synthesize the necessary arguments in the order t
       reflexivity
     end
 
-Here, the command ``fapply exists.intro`` leave two goals. The first requires us to provide a natural number, ``a``, and the second requires us to prove that ``a = a``. The second goal depends on the first, so solving the first goal instantiates a metavariable in the second goal, which we then prove with ``reflexivity``.
+Here, the command ``fapply exists.intro`` leaves two goals. The first requires us to provide a natural number, ``a``, and the second requires us to prove that ``a = a``. The second goal depends on the first, so solving the first goal instantiates a metavariable in the second goal, which we then prove with ``reflexivity``.
 
 Another tactic that is sometimes useful is the ``revert`` tactic, which is, in a sense, an inverse to ``intro``.
 

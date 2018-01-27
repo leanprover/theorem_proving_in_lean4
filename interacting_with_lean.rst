@@ -374,7 +374,7 @@ More on Implicit Arguments
 
 In :numref:`implicit_arguments`, we saw that if Lean displays the type of a term ``t`` as ``Π {x : α}, β x``, then the curly brackets indicate that ``x`` has been marked as an *implicit argument* to ``t``. This means that whenever you write ``t``, a placeholder, or "hole," is inserted, so that ``t`` is replaced by ``@t _``. If you don't want that to happen, you have to write ``@t`` instead.
 
-Notice that implicit arguments are inserted eagerly. Suppose we define a function ``f (x : ℕ) {y : ℕ} (z : ℕ)`` with the arguments shown. Then, when we write the expression ``f 7`` without further arguments, it parsed as ``f 7 _``. Lean offers a weaker annotation, ``{{y : ℕ}}``, which specifies that a placeholder should only be added *before* a subsequent explicit argument. This annotation can also be written using as ``⦃y : ℕ⦄``, where the unicode brackets are entered as ``\{{`` and ``\}}``, respectively. With this annotation, the expression ``f 7`` would be parsed as is, whereas ``f 7 3`` would be parsed as ``f 7 _ 3``, just as it would be with the strong annotation.
+Notice that implicit arguments are inserted eagerly. Suppose we define a function ``f (x : ℕ) {y : ℕ} (z : ℕ)`` with the arguments shown. Then, when we write the expression ``f 7`` without further arguments, it is parsed as ``f 7 _``. Lean offers a weaker annotation, ``{{y : ℕ}}``, which specifies that a placeholder should only be added *before* a subsequent explicit argument. This annotation can also be written using as ``⦃y : ℕ⦄``, where the unicode brackets are entered as ``\{{`` and ``\}}``, respectively. With this annotation, the expression ``f 7`` would be parsed as is, whereas ``f 7 3`` would be parsed as ``f 7 _ 3``, just as it would be with the strong annotation.
 
 To illustrate the difference, consider the following example, which shows that a reflexive euclidean relation is both symmetric and transitive.
 
@@ -787,7 +787,7 @@ We can also use the word "self" to indicate a repeated argument:
     #check mul_inv_self
     #check neg_add_self
 
-Remember that identifiers in Lean can be organized into hierarchical namespaces. For example, the theorem named ``lt_of_succ_le`` in the namespace ``nat`` has full name ``nat.lt_of_succ_le``, but the shorter name is made available by the command ``open nat``. We will see in :numref:`Chapter %s <inductive_types>` and :numref:`Chapter %s <structures_and_records>` that defining structures and inductive data types in Lean generates associated operations, and these are stored in a namespace with the same name as the type under definition. For example, the product type comes with the following opens:
+Remember that identifiers in Lean can be organized into hierarchical namespaces. For example, the theorem named ``lt_of_succ_le`` in the namespace ``nat`` has full name ``nat.lt_of_succ_le``, but the shorter name is made available by the command ``open nat``. We will see in :numref:`Chapter %s <inductive_types>` and :numref:`Chapter %s <structures_and_records>` that defining structures and inductive data types in Lean generates associated operations, and these are stored in a namespace with the same name as the type under definition. For example, the product type comes with the following operations:
 
 .. code-block:: lean
 
