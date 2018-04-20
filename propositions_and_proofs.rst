@@ -14,7 +14,7 @@ For example, we could introduce a new type, ``Prop``, to represent propositions,
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     constant and : Prop → Prop → Prop
@@ -28,13 +28,13 @@ For example, we could introduce a new type, ``Prop``, to represent propositions,
     #check implies (and p q) (and q p)  -- Prop
     -- END
 
-    end hide
+    end hidden
 
 We could then introduce, for each element ``p : Prop``, another type ``Proof p``, for the type of proofs of ``p``. An "axiom" would be a constant of such a type.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     constant and : Prop → Prop → Prop
     constant or : Prop → Prop → Prop
@@ -51,7 +51,7 @@ We could then introduce, for each element ``p : Prop``, another type ``Proof p``
     #check and_comm p q      -- Proof (implies (and p q) (and q p))
     -- END
 
-    end hide
+    end hidden
 
 In addition to axioms, however, we would also need rules to build new proofs from old ones. For example, in many proof systems for propositional logic, we have the rule of modus ponens:
 
@@ -61,7 +61,7 @@ We could represent this as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     constant implies : Prop → Prop → Prop
     constant Proof : Prop → Type
@@ -71,7 +71,7 @@ We could represent this as follows:
       Π p q : Prop, Proof (implies p q) →  Proof p → Proof q
     -- END
 
-    end hide
+    end hidden
 
 Systems of natural deduction for propositional logic also typically rely on the following rule:
 
@@ -81,7 +81,7 @@ We could render this as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     constant implies : Prop → Prop → Prop
     constant Proof : Prop → Type
@@ -91,7 +91,7 @@ We could render this as follows:
       Π p q : Prop, (Proof p → Proof q) → Proof (implies p q).
     -- END
 
-    end hide
+    end hidden
 
 This approach would provide us with a reasonable way of building assertions and proofs. Determining that an expression ``t`` is a correct proof of assertion ``p`` would then simply be a matter of checking that ``t`` has type ``Proof p``.
 

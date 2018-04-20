@@ -296,7 +296,7 @@ enumerated types.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive empty : Type
@@ -309,7 +309,7 @@ enumerated types.
     | tt : bool
     -- END
 
-    end hide
+    end hidden
 
 (To run these examples, we put them in a namespace called ``hide``, so that a name like ``bool`` does not conflict with the ``bool`` in the standard library. This is necessary because these types are part of the Lean "prelude" that is automatically imported when the system is started.)
 
@@ -317,14 +317,14 @@ The type ``empty`` is an inductive data type with no constructors. The type ``un
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     def band (b1 b2 : bool) : bool :=
     bool.cases_on b1 ff b2
     -- END
 
-    end hide
+    end hidden
 
 Similarly, most identities can be proved by introducing suitable case splits, and then using ``rfl``.
 
@@ -335,7 +335,7 @@ Enumerated types are a very special case of inductive types, in which the constr
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     universes u v
@@ -348,7 +348,7 @@ Enumerated types are a very special case of inductive types, in which the constr
     | inr {} : β → sum
     -- END
 
-    end hide
+    end hidden
 
 Notice that we do not include the types ``α`` and ``β`` in the target of the constructors. For the moment, ignore the annotation ``{}`` after the constructors ``inl`` and ``inr``; we will explain that below. In the meanwhile, think about what is going on in these examples. The product type has one constructor, ``prod.mk``, which takes two arguments. To define a function on ``prod α β``, we can assume the input is of the form ``prod.mk a b``, and we have to specify the output, in terms of ``a`` and ``b``. We can use this to define the two projections for prod. Remember that the standard library defines notation ``α × β`` for ``prod α β`` and ``(a, b)`` for ``prod.mk a b``.
 
@@ -398,7 +398,7 @@ Notice that the product type depends on parameters ``α β : Type`` which are ar
 
     universes u v
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive sum (α : Type u) (β : Type v)
@@ -406,7 +406,7 @@ Notice that the product type depends on parameters ``α β : Type`` which are ar
     | inr {} : β → sum
     -- END
 
-    end hide
+    end hidden
 
 As a result, the argument ``α`` to ``inl`` and the argument ``β`` to ``inr`` are left implicit.
 
@@ -418,7 +418,7 @@ As with function definitions, Lean's inductive definition syntax will let you pu
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     universes u v
@@ -431,7 +431,7 @@ As with function definitions, Lean's inductive definition syntax will let you pu
     | inr {} (b : β) : sum
     -- END
 
-    end hide
+    end hidden
 
 The results of these definitions are essentially the same as the ones given earlier in this section. Note that in the definition of ``sum``, the annotation ``{}`` refers to the parameters, ``α`` and ``β``. As with function definitions, you can use curly braces to specify which arguments are meant to be left implicit.
 
@@ -439,14 +439,14 @@ A type, like ``prod``, that has only one constructor is purely conjunctive: the 
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     structure prod (α β : Type) :=
     mk :: (fst : α) (snd : β)
     -- END
 
-    end hide
+    end hidden
 
 This example simultaneously introduces the inductive type, ``prod``, its constructor, ``mk``, the usual eliminators (``rec`` and ``rec_on``), as well as the projections, ``fst`` and ``snd``, as defined above.
 
@@ -481,14 +481,14 @@ We have already discussed sigma types, also known as the dependent product:
 
     universes u v
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive sigma {α : Type u} (β : α → Type v)
     | dpair : Π a : α, β a → sigma
     -- END
 
-    end hide
+    end hidden
 
 Two more examples of inductive types in the library are the following:
 
@@ -496,7 +496,7 @@ Two more examples of inductive types in the library are the following:
 
     universe u
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive option (α : Type u)
@@ -507,7 +507,7 @@ Two more examples of inductive types in the library are the following:
     | mk : α → inhabited
     -- END
 
-    end hide
+    end hidden
 
 In the semantics of dependent type theory, there is no built-in notion of a partial function. Every element of a function type ``α → β`` or a Pi type ``Π x : α, β`` is assumed to have a value at every input. The ``option`` type provides a way of representing partial functions. An element of ``option β`` is either ``none`` or of the form ``some b``, for some value ``b : β``. Thus we can think of an element ``f`` of the type ``α → option β`` as being a partial function from ``α`` to ``β``: for every ``a : α``, ``f a`` either returns ``none``, indicating the ``f a`` is "undefined", or ``some b``.
 
@@ -522,7 +522,7 @@ Inductively defined types can live in any type universe, including the bottom-mo
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive false : Prop
@@ -538,7 +538,7 @@ Inductively defined types can live in any type universe, including the bottom-mo
     | intro_right : b → or
     -- END
 
-    end hide
+    end hidden
 
 You should think about how these give rise to the introduction and elimination rules that you have already seen. There are rules that govern what the eliminator of an inductive type can eliminate *to*, that is, what kinds of types can be the target of a recursor. Roughly speaking, what characterizes inductive types in ``Prop`` is that one can only eliminate to other types in ``Prop``. This is consistent with the understanding that if ``p : Prop``, an element ``hp : p`` carries no data. There is a small exception to this rule, however, which we will discuss below, in the section on inductive families.
 
@@ -548,7 +548,7 @@ Even the existential quantifier is inductively defined:
 
     universe u
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive Exists {α : Type u} (p : α → Prop) : Prop
@@ -557,7 +557,7 @@ Even the existential quantifier is inductively defined:
      def exists.intro := @Exists.intro
     -- END
 
-    end hide
+    end hidden
 
 Keep in mind that the notation ``∃ x : α, p`` is syntactic sugar for ``Exists (λ x : α, p)``.
 
@@ -569,21 +569,21 @@ This is a good place to mention another inductive type, denoted ``{x : α // p}`
 
     universe u
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive subtype {α : Type u} (p : α → Prop)
     | mk : Π x : α, p x → subtype
     -- END
 
-    end hide
+    end hidden
 
 In fact, in Lean, ``subtype`` is defined using the structure command:
 
 .. code-block:: lean
 
     universe u
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     structure subtype {α : Sort u} (p : α → Prop) :=
@@ -597,7 +597,7 @@ In fact, in Lean, ``subtype`` is defined using the structure command:
     end
     -- END
 
-    end hide
+    end hidden
 
 The notation ``{x : α // p x}`` is syntactic sugar for ``subtype (λ x : α, p x)``. It is modeled after subset notation in set theory: the idea is that ``{x : α // p x}`` denotes the collection of elements of ``α`` that have property ``p``.
 
@@ -608,7 +608,7 @@ The inductively defined types we have seen so far are "flat": constructors wrap 
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive nat : Type
@@ -616,7 +616,7 @@ The inductively defined types we have seen so far are "flat": constructors wrap 
     | succ : nat → nat
     -- END
 
-    end hide
+    end hidden
 
 There are two constructors. We start with ``zero : nat``; it takes no arguments, so we have it from the start. In contrast, the constructor ``succ`` can only be applied to a previously constructed ``nat``. Applying it to ``zero`` yields ``succ zero : nat``. Applying it again yields ``succ (succ zero) : nat``, and so on. Intuitively, ``nat`` is the "smallest" type with these constructors, meaning that it is exhaustively (and freely) generated by starting with ``zero`` and applying ``succ`` repeatedly.
 
@@ -624,7 +624,7 @@ As before, the recursor for ``nat`` is designed to define a dependent function `
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     inductive nat : Type
     | zero : nat
@@ -633,7 +633,7 @@ As before, the recursor for ``nat`` is designed to define a dependent function `
     #check @nat.rec_on
     -- END
 
-    end hide
+    end hidden
 
 we find the following:
 
@@ -648,7 +648,7 @@ Consider, for example, the addition function ``add m n`` on the natural numbers.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     inductive nat : Type
     | zero : nat
@@ -665,13 +665,13 @@ Consider, for example, the addition function ``add m n`` on the natural numbers.
     end nat
     -- END
 
-    end hide
+    end hidden
 
 It is useful to put such definitions into a namespace, ``nat``. We can then go on to define familiar notation in that namespace. The two defining equations for addition now hold definitionally:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     inductive nat : Type
     | zero : nat
@@ -690,7 +690,7 @@ It is useful to put such definitions into a namespace, ``nat``. We can then go o
     -- END
     end nat
 
-    end hide
+    end hidden
 
 We will explain how the ``instance`` command works in :numref:`Chapter %s <type_classes>`. In the examples below, we will henceforth use Lean's version of the natural numbers.
 
@@ -698,7 +698,7 @@ Proving a fact like ``0 + m = m``, however, requires a proof by induction. As ob
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -713,13 +713,13 @@ Proving a fact like ``0 + m = m``, however, requires a proof by induction. As ob
               ... = succ n : by rw ih)
 
     -- END
-    end hide
+    end hidden
 
 Notice that, once again, when ``nat.rec_on`` is used in the context of a proof, it is really the induction principle in disguise. The ``rewrite`` and ``simp`` tactics tend to be very effective in proofs like these. In this case, each can be used to reduce the proof to a one-liner:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -729,7 +729,7 @@ Notice that, once again, when ``nat.rec_on`` is used in the context of a proof, 
     theorem zero_add' (n : ℕ) : 0 + n = n :=
     nat.rec_on n rfl (λ n ih, by simp only [add_succ, ih])
     -- END
-    end hide
+    end hidden
 
 The second example would be misleading without the ``only`` modifier, because ``zero_add`` is in fact declared to be a simplification rule in the standard library. Using ``only`` guarantees that ``simp`` only uses the identities listed.
 
@@ -737,7 +737,7 @@ For another example, let us prove the associativity of addition, ``∀ m n k, m 
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -754,13 +754,13 @@ For another example, let us prove the associativity of addition, ``∀ m n k, m 
               ... = m + (n + succ k) : rfl)
     -- END
 
-    end hide
+    end hidden
 
 One again, there is a one-line proof:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -768,13 +768,13 @@ One again, there is a one-line proof:
     nat.rec_on k rfl (λ k ih, by simp only [add_succ, ih])
     -- END
 
-    end hide
+    end hidden
 
 Suppose we try to prove the commutativity of addition. Choosing induction on the second argument, we might begin as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
@@ -801,13 +801,13 @@ Suppose we try to prove the commutativity of addition. Choosing induction on the
             ... = succ n + m : sorry)
     -- END
 
-    end hide
+    end hidden
 
 At this point, we see that we need another supporting fact, namely, that ``succ (n + m) = succ n + m``. We can prove this by induction on ``m``:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
@@ -834,13 +834,13 @@ At this point, we see that we need another supporting fact, namely, that ``succ 
               ... = succ (succ (m + n)) : by rw ih
               ... = succ (m + succ n) : rfl)
     -- END
-    end hide
+    end hidden
 
 We can then replace the ``sorry`` in the previous proof with ``succ_add``. Yet again, the proofs can be compressed:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -855,7 +855,7 @@ We can then replace the ``sorry`` in the previous proof with ``succ_add``. Yet a
       (by simp only [zero_add, add_zero])
       (λ n ih, by simp only [add_succ, ih, succ_add])
     -- END
-    end hide
+    end hidden
 
 Other Recursive Data Types
 --------------------------
@@ -866,7 +866,7 @@ Let us consider some more examples of inductively defined types. For any type, `
 
     universe u
 
-    namespace hide
+    namespace hidden
     -- BEGIN
     inductive list (α : Type u)
     | nil {} : list
@@ -890,7 +890,7 @@ Let us consider some more examples of inductively defined types. For any type, `
 
     end list
     -- END
-    end hide
+    end hidden
 
 A list of elements of type ``α`` is either the empty list, ``nil``, or an element ``h : α`` followed by a list ``t : list α``. We define the notation ``h :: t`` to represent the latter. The first element, ``h``, is commonly known as the "head" of the list, and the remainder, ``t``, is known as the "tail." Recall that the notation ``{}`` in the definition of the inductive type ensures that the argument to ``nil`` is implicit. In most cases, it can be inferred from context. When it cannot, we have to write ``@nil α`` to specify the type ``α``.
 
@@ -900,7 +900,7 @@ Lean allows us to define iterative notation for lists:
 
     universe u
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive list (α : Type u)
@@ -920,7 +920,7 @@ Lean allows us to define iterative notation for lists:
     end list
     -- END
 
-    end hide
+    end hidden
 
 In the first ``#check``, Lean assumes that ``[1, 2, 3, 4, 5]`` is a list of natural numbers. The ``(t : list int)`` expression forces Lean to interpret ``t`` as a list of integers.
 
@@ -929,7 +929,7 @@ As an exercise, prove the following:
 .. code-block:: lean
 
     universe u
-    namespace hide
+    namespace hidden
 
     inductive list (α : Type u)
     | nil {} : list
@@ -961,7 +961,7 @@ As an exercise, prove the following:
 
     end list
 
-    end hide
+    end hidden
 
 Try also defining the function ``length : Π {α : Type u}, list α → nat`` that returns the length of a list, and prove that it behaves as expected (for example, ``length (s ++ t) = length s + length t``).
 
@@ -1208,7 +1208,7 @@ Just as the ``cases`` tactic can be used to carry out proof by cases, the ``indu
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -1220,13 +1220,13 @@ Just as the ``cases`` tactic can be used to carry out proof by cases, the ``indu
     end
     -- END
 
-    end hide
+    end hidden
 
 As with ``cases``, we can use the ``case`` tactic to identify one case at a time and name the arguments:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -1252,13 +1252,13 @@ As with ``cases``, we can use the ``case`` tactic to identify one case at a time
     end
     -- END
 
-    end hide
+    end hidden
 
 Once again, we can reduce the proofs of these, as well as the proof of associativity, to one-liners.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -1276,7 +1276,7 @@ Once again, we can reduce the proofs of these, as well as the proof of associati
     by induction k; simp only [*, add_zero, add_succ]
     -- END
 
-    end hide
+    end hidden
 
 We close this section with one last tactic that is designed to facilitate working with inductive types, namely, the ``injection`` tactic. By design, the elements of an inductive type are freely generated, which is to say, the constructors are injective and have disjoint ranges. The ``injection`` tactic is designed to make use of this fact:
 
@@ -1351,7 +1351,7 @@ In contrast to ordinary inductive definition, which constructs an element of som
 
     open nat
     universe u
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive vector (α : Type u) : nat → Type u
@@ -1359,7 +1359,7 @@ In contrast to ordinary inductive definition, which constructs an element of som
     | cons {n : ℕ} (a : α) (v : vector n) : vector (succ n)
     -- END
 
-    end hide
+    end hidden
 
 Notice that the ``cons`` constructor takes an element of ``vector α n`` and returns an element of ``vector α (succ n)``, thereby using an element of one member of the family to build an element of another.
 
@@ -1368,14 +1368,14 @@ A more exotic example is given by the definition of the equality type in Lean:
 .. code-block:: lean
 
     universe u
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     inductive eq {α : Sort u} (a : α) : α → Prop
     | refl : eq a
     -- END
 
-    end hide
+    end hidden
 
 For each fixed ``α : Sort u`` and ``a : α``, this definition constructs a family of types ``eq a x``, indexed by ``x : α``. Notably, however, there is only one constructor, ``refl``, which is an element of ``eq a a``. Intuitively, the only way to construct a proof of ``eq a x`` is to use reflexivity, in the case where ``x`` is ``a``. Note that ``eq a a`` is the only inhabited type in the family of types ``eq a x``. The elimination principle generated by Lean is as follows:
 
@@ -1393,7 +1393,7 @@ The recursor ``eq.rec_on`` is also used to define substitution:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
 
     inductive eq {α : Type u} (a : α) : α → Prop
@@ -1406,7 +1406,7 @@ The recursor ``eq.rec_on`` is also used to define substitution:
     eq.rec h₂ h₁
     -- END
 
-    end hide
+    end hidden
 
 Using the recursor with ``h₁ : a = b``, we may assume ``a`` and ``b`` are the same, in which case, ``p b`` and ``p a`` are the same. The definition of ``subst`` is marked with an elaboration hint, as described in :numref:`elaboration_hints`.
 
@@ -1414,7 +1414,7 @@ It is not hard to prove that ``eq`` is symmetric and transitive. In the followin
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
 
     inductive eq {α : Type u} (a : α) : α → Prop
@@ -1439,7 +1439,7 @@ It is not hard to prove that ``eq`` is symmetric and transitive. In the followin
     sorry
     -- END
 
-    end hide
+    end hidden
 
 In the type theory literature, there are further generalizations of inductive definitions, for example, the principles of *induction-recursion* and *induction-induction*. These are not supported by Lean.
 

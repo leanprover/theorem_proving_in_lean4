@@ -90,20 +90,20 @@ If the constructor is not provided, then a constructor is named ``mk`` by defaul
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     -- BEGIN
     structure prod (α : Type) (β : Type) :=
     (pr1 : α) (pr2 : β)
 
     #check prod.mk
     -- END
-    end hide
+    end hidden
 
 You can provide universe levels explicitly. The annotations in the next example force the parameters ``α`` and ``β`` to be types from the same universe, and set the return type to also be in the same universe.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     -- BEGIN
     structure {u} prod (α : Type u) (β : Type u) : 
       Type (max 1 u) :=
@@ -112,7 +112,7 @@ You can provide universe levels explicitly. The annotations in the next example 
     set_option pp.universes true
     #check prod.mk
     -- END
-    end hide
+    end hidden
 
 The ``set_option`` command above instructs Lean to display the universe levels.
 
@@ -122,7 +122,7 @@ We can use the anonymous constructor notation to build structure values whenever
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     -- BEGIN
     structure {u} prod (α : Type u) (β : Type u) : 
       Type (max 1 u) :=
@@ -133,7 +133,7 @@ We can use the anonymous constructor notation to build structure values whenever
 
     #check (⟨1, 2⟩ : prod nat nat)
     -- END
-    end hide
+    end hidden
 
 Objects
 -------

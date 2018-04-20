@@ -639,11 +639,11 @@ This is an instance of a *Pi type*, or *dependent function type*. Given ``α : T
 
 Notice that ``Π x : α, β`` makes sense for any expression ``β : Type``. When the value of ``β`` depends on ``x`` (as does, for example, the expression ``β x`` in the previous paragraph), ``Π x : α, β`` denotes a dependent function type. When ``β`` doesn't depend on ``x``, ``Π x : α, β`` is no different from the type ``α → β``. Indeed, in dependent type theory (and in Lean), the Pi construction is fundamental, and ``α → β`` is just notation for ``Π x : α, β`` when ``β`` does not depend on ``x``.
 
-Returning to the example of lists, we can model some basic list operations as follows. We use ``namespace hide`` to avoid a naming conflict with the ``list`` type defined in the standard library.
+Returning to the example of lists, we can model some basic list operations as follows. We use ``namespace hidden`` to avoid a naming conflict with the ``list`` type defined in the standard library.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     universe u
 
@@ -655,7 +655,7 @@ Returning to the example of lists, we can model some basic list operations as fo
     constant tail   : Π α : Type u, list α → list α
     constant append : Π α : Type u, list α → list α → list α
 
-    end hide
+    end hidden
 
 You can enter the symbol ``Π`` by typing ``\Pi``. Here, ``nil`` is intended to denote the empty list, ``head`` and ``tail`` return the first element of a list and the remainder, respectively. The constant ``append`` is intended to denote the function that concatenates two lists.
 
@@ -719,7 +719,7 @@ Suppose we have an implementation of lists as described above.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
     constant list : Type u → Type u
 
@@ -728,13 +728,13 @@ Suppose we have an implementation of lists as described above.
       constant nil    : Π α : Type u, list α
       constant append : Π α : Type u, list α → list α → list α
     end list
-    end hide
+    end hidden
 
 Then, given a type ``α``, some elements of ``α``, and some lists of elements of ``α``, we can construct new lists using the constructors.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
     constant list : Type u → Type u
 
@@ -755,7 +755,7 @@ Then, given a type ``α``, some elements of ``α``, and some lists of elements o
     #check append α (cons α a (nil α)) l1
     #check append α (append α (cons α a (nil α)) l1) l2
     -- END
-    end hide
+    end hidden
 
 Because the constructors are polymorphic over types, we have to insert the type ``α`` as an argument repeatedly. But this information is redundant: one can infer the argument ``α`` in ``cons α a (nil α)`` from the fact that the second argument, ``a``, has type ``α``. One can similarly infer the argument in ``nil α``, not from anything else in that expression, but from the fact that it is sent as an argument to the function ``cons``, which expects an element of type ``list α`` in that position.
 
@@ -763,7 +763,7 @@ This is a central feature of dependent type theory: terms carry a lot of informa
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
     constant list : Type u → Type u
 
@@ -784,13 +784,13 @@ This is a central feature of dependent type theory: terms carry a lot of informa
     #check append _ (cons _ a (nil _)) l1
     #check append _ (append _ (cons _ a (nil _)) l1) l2
     -- END
-    end hide
+    end hidden
 
 It is still tedious, however, to type all these underscores. When a function takes an argument that can generally be inferred from context, Lean allows us to specify that this argument should, by default, be left implicit. This is done by putting the arguments in curly braces, as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
     constant list : Type u → Type u
 
@@ -811,7 +811,7 @@ It is still tedious, however, to type all these underscores. When a function tak
     #check append (cons a nil) l1
     #check append (append (cons a nil) l1) l2
     -- END
-    end hide
+    end hidden
 
 All that has changed are the braces around ``α : Type u`` in the declaration of the variables. We can also use this device in function definitions:
 

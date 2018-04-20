@@ -76,7 +76,7 @@ Let us start with the first step of the program above, declaring an appropriate 
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     class inhabited (α : Type) :=
@@ -88,7 +88,7 @@ Let us start with the first step of the program above, declaring an appropriate 
     -/
     -- END
 
-    end hide
+    end hidden
 
 An element of the class ``inhabited α`` is simply an expression of the form ``inhabited.mk a``, for some element ``a : α``. The projection ``inhabited.value`` will allow us to "extract" such an element of ``α`` from an element of ``inhabited α``.
 
@@ -96,7 +96,7 @@ The second step of the program is to populate the class with some instances:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     class inhabited (α : Type) :=
     (value : α)
@@ -114,13 +114,13 @@ The second step of the program is to populate the class with some instances:
     instance unit_inhabited : inhabited unit :=
     inhabited.mk ()
     -- END
-    end hide
+    end hidden
 
 In the Lean standard library, we regularly use the anonymous constructor when defining instances. It is particularly useful when the class name is long.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     class inhabited (α : Type) :=
     (value : α)
@@ -138,7 +138,7 @@ In the Lean standard library, we regularly use the anonymous constructor when de
     instance unit_inhabited : inhabited unit :=
     ⟨()⟩
     -- END
-    end hide
+    end hidden
 
 This arranges things so that when type class inference is asked to infer an element ``?M : Prop``, it can find the element ``true`` to assign to ``?M``, and similarly for the elements ``tt``, ``0``, and ``()`` of the types ``bool``, ``nat``, and ``unit``, respectively.
 
@@ -146,7 +146,7 @@ The final step of the program is to define a function that infers an element ``s
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     class inhabited (α : Type) :=
     (value : α)
@@ -166,13 +166,13 @@ The final step of the program is to define a function that infers an element ``s
     definition default (α : Type) [s : inhabited α] : α :=
     @inhabited.value α s
     -- END
-    end hide
+    end hidden
 
 This has the effect that given a type expression ``α``, whenever we write ``default α``, we are really writing ``default α ?s``, leaving the elaborator to find a suitable value for the metavariable ``?s``. When the elaborator succeeds in finding such a value, it has effectively produced an element of type ``α``, as though by magic.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     class inhabited (α : Type) :=
     (value : α)
@@ -197,7 +197,7 @@ This has the effect that given a type expression ``α``, whenever we write ``def
     #check default bool    -- bool
     #check default unit    -- unit
     -- END
-    end hide
+    end hidden
 
 In general, whenever we write ``default α``, we are asking the elaborator to synthesize an element of type ``α``.
 
@@ -205,7 +205,7 @@ Notice that we can "see" the value that is synthesized with ``#reduce``:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     class inhabited (α : Type) :=
     (value : α)
@@ -230,7 +230,7 @@ Notice that we can "see" the value that is synthesized with ``#reduce``:
     #reduce default bool    -- tt
     #reduce default unit    -- ()
     -- END
-    end hide
+    end hidden
 
 Sometimes we want to think of the default element of a type as being an *arbitrary* element, whose specific value should not play a role in our proofs. For that purpose, we can write ``arbitrary α`` instead of ``default α``. The definition of ``arbitrary`` is the same as that of default, but is marked ``irreducible`` to discourage the elaborator from unfolding it. This does not preclude proofs from making use of the value, however, so the use of ``arbitrary`` rather than ``default`` functions primarily to signal intent.
 
@@ -243,7 +243,7 @@ For example, the following definition shows that if two types ``α`` and ``β`` 
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     class inhabited (α : Type) :=
     (value : α)
@@ -267,13 +267,13 @@ For example, the following definition shows that if two types ``α`` and ``β`` 
                             : inhabited (prod α β) :=
     ⟨(default α, default β)⟩
     -- END
-    end hide
+    end hidden
 
 With this added to the earlier instance declarations, type class instance can infer, for example, a default element of ``nat × bool × unit``:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     class inhabited (α : Type) :=
     (value : α)
@@ -302,7 +302,7 @@ With this added to the earlier instance declarations, type class instance can in
     #check default (nat × bool)
     #reduce default (nat × bool)
     -- END
-    end hide
+    end hidden
 
 Given the expression ``default (nat × bool)``, the elaborator is called on to infer an implicit argument ``?M : inhabited (nat × bool)``. The instance ``prod_inhabited`` reduces this to inferring ``?M1 : inhabited nat`` and ``?M2 : inhabited bool``. The first one is solved by the instance ``nat_inhabited``. The second uses ``bool_inhabited``.
 
@@ -310,7 +310,7 @@ Similarly, we can inhabit function spaces with suitable constant functions:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     class inhabited (α : Type) :=
     (value : α)
@@ -343,7 +343,7 @@ Similarly, we can inhabit function spaces with suitable constant functions:
     #check default (nat → nat × bool)
     #reduce default (nat → nat × bool)
     -- END
-    end hide
+    end hidden
 
 In this case, type class inference finds the default element
 ``λ (a : nat), (0, tt)``.
@@ -359,40 +359,40 @@ In the standard library, ``decidable`` is defined formally as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     class inductive decidable (p : Prop) : Type
     | is_false : ¬p → decidable
     | is_true  :  p → decidable
     -- END
-    end hide
+    end hidden
 
 Logically speaking, having an element ``t : decidable p`` is stronger than having an element ``t : p ∨ ¬p``; it enables us to define values of an arbitrary type depending on the truth value of ``p``. For example, for the expression ``if p then a else b`` to make sense, we need to know that ``p`` is decidable. That expression is syntactic sugar for ``ite p a b``, where ``ite`` is defined as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     def ite (c : Prop) [d : decidable c] {α : Type} 
       (t e : α) : α :=
     decidable.rec_on d (λ hnc, e) (λ hc, t)
     -- END
-    end hide
+    end hidden
 
 The standard library also contains a variant of ``ite`` called ``dite``, the dependent if-then-else expression. It is defined as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     def dite (c : Prop) [d : decidable c] {α : Type} 
       (t : c → α) (e : ¬ c → α) : α :=
     decidable.rec_on d (λ hnc : ¬ c, e hnc) (λ hc : c, t hc)
     -- END
-    end hide
+    end hidden
 
 That is, in ``dite c t e``, we can assume ``hc : c`` in the "then" branch, and ``hnc : ¬ c`` in the "else" branch. To make ``dite`` more convenient to use, Lean allows us to write ``if h : c then t else e`` instead of ``dite c (λ h : c, t) (λ h : ¬ c, e)``.
 
@@ -428,7 +428,7 @@ The ``decidable`` type class also provides a bit of small-scale automation for p
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     def as_true (c : Prop) [decidable c] : Prop :=
@@ -444,7 +444,7 @@ The ``decidable`` type class also provides a bit of small-scale automation for p
     notation `dec_trivial` := of_as_true (by tactic.triv)
     -- END
 
-    end hide
+    end hidden
 
 They work as follows. The expression ``as_true c`` tries to infer a decision procedure for ``c``, and, if it is successful, evaluates to either ``true`` or ``false``. In particular, if ``c`` is a true closed expression, ``as_true c`` will reduce definitionally to ``true``. On the assumption that ``as_true c`` holds, ``of_as_true`` produces a proof of ``c``. The notation ``dec_trivial`` puts it all together: to prove a target ``c``, it applies ``of_as_true`` and then using the ``triv`` tactic to prove ``as_true c``. By the previous observations, it will succeed any time the inferred decision procedure for ``c`` has enough information to evaluate, definitionally, to the ``is_true`` case. Here is an example of how ``dec_trivial`` can be used:
 
@@ -463,7 +463,7 @@ We can declare a type class ``has_add α`` as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     -- BEGIN
     universes u
 
@@ -474,13 +474,13 @@ We can declare a type class ``has_add α`` as follows:
 
     local notation a `+` b := add a b
     -- END
-    end hide
+    end hidden
 
 The class ``has_add α`` is supposed to be inhabited exactly when there is an appropriate addition function for ``α``. The ``add`` function is designed to find an instance of ``has_add α`` for the given type, ``α``, and apply the corresponding binary addition function. The notation ``a + b`` thus refers to the addition that is appropriate to the type of ``a`` and ``b``. We can then declare instances for ``nat``, and ``bool``:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universes u
 
     class has_add (α : Type u) :=
@@ -500,13 +500,13 @@ The class ``has_add α`` is supposed to be inhabited exactly when there is an ap
     #check 2 + 2    -- nat
     #check tt + ff  -- bool
     -- END
-    end hide
+    end hidden
 
 As with ``inhabited`` and ``decidable``, the power of type class inference stems not only from the fact that the class enables the elaborator to look up appropriate instances, but also from the fact that it can chain instances to infer complex addition operations. For example, assuming that there are appropriate addition functions for types ``α`` and ``β``, we can define addition on ``α × β`` pointwise:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universes u v
     class has_add (α : Type u) :=
     (add : α → α → α)
@@ -530,13 +530,13 @@ As with ``inhabited`` and ``decidable``, the power of type class inference stems
     #check (1, 2) + (3, 4)    -- ℕ × ℕ
     #reduce  (1, 2) + (3, 4)  -- (4, 6)
     -- END
-    end hide
+    end hidden
 
 We can similarly define pointwise addition of functions:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universes u v
     class has_add (α : Type u) :=
     (add : α → α → α)
@@ -563,7 +563,7 @@ We can similarly define pointwise addition of functions:
     #check (λ x : nat, 1) + (λ x, 2)   -- ℕ → ℕ
     #reduce (λ x : nat, 1) + (λ x, 2)    -- λ (x : ℕ), 3
     -- END
-    end hide
+    end hidden
 
 As an exercise, try defining instances of ``has_add`` for lists, and show that they work as expected.
 
@@ -752,20 +752,20 @@ The standard library defines a coercion from subtype ``{x : α // p x}`` to ``α
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
     -- BEGIN
     instance coe_subtype {α : Type u} {p : α → Prop} : 
       has_coe {x // p x} α :=
     ⟨λ s, subtype.val s⟩
     -- END
-    end hide
+    end hidden
 
 Lean will also chain coercions as necessary. Actually, the type class ``has_coe_t`` is the transitive closure of ``has_coe``. You may have noticed that the type of ``coe`` depends on ``has_lift_t``, the transitive closure of the type class ``has_lift``, instead of ``has_coe_t``. Every instance of ``has_coe_t`` is also an instance of ``has_lift_t``, but the elaborator only introduces automatically instances of ``has_coe_t``. That is, to be able to coerce using an instance of ``has_lift_t``, we must use the operator ``↑``. In the standard library, we have the following instance:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universes u v
 
     instance lift_list {a : Type u} {b : Type v} [has_lift_t a b] : 
@@ -776,7 +776,7 @@ Lean will also chain coercions as necessary. Actually, the type class ``has_coe_
     variables r : list int
     #check ↑s ++ r
 
-    end hide
+    end hidden
 
 It is not an instance of ``has_coe`` because lists are frequently used for writing programs, and we do not want a linear-time operation to be silently introduced by Lean, and potentially mask mistakes performed by the user. By forcing the user to write ``↑``, she is making her intent clear to Lean.
 

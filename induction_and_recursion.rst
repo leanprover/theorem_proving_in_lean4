@@ -90,7 +90,7 @@ Here we use it not only to define a function, but also carry out a proof by case
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     -- BEGIN
     def bnot : bool → bool
     | tt := ff
@@ -100,7 +100,7 @@ Here we use it not only to define a function, but also carry out a proof by case
     | tt := rfl    -- proof that bnot (bnot tt) = tt
     | ff := rfl    -- proof that bnot (bnot ff) = ff
     -- END
-    end hide
+    end hidden
 
 Pattern matching can also be used to destruct inductively defined propositions:
 
@@ -184,7 +184,7 @@ In each of the following examples, splitting occurs on only the first argument, 
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     def band : bool → bool → bool
@@ -200,7 +200,7 @@ In each of the following examples, splitting occurs on only the first argument, 
     | ff x y := y
     -- END
 
-    end hide
+    end hidden
 
 Notice also that, when the value of an argument is not needed in the definition, you can use an underscore instead. This underscore is known as a *wildcard pattern*, or an *anonymous variable*. In contrast to usage outside the equation compiler, here the underscore does *not* indicate an implicit argument. The use of underscores for wildcards is common in functional programming languages, and so Lean adopts that notation. :numref:`wildcards_and_overlapping_patterns` expands on the notion of a wildcard, and :numref:`inaccessible_terms` explains how you can use implicit arguments in patterns as well.
 
@@ -353,7 +353,7 @@ As we saw in the last section, the terms ``t₁, ..., tₙ`` can make use of any
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     inductive nat : Type
     | zero : nat
@@ -381,7 +381,7 @@ As we saw in the last section, the terms ``t₁, ..., tₙ`` can make use of any
     -- END
 
     end nat
-    end hide
+    end hidden
 
 The proof of ``zero_add`` makes it clear that proof by induction is really a form of induction in Lean.
 
@@ -389,7 +389,7 @@ The example above shows that the defining equations for ``add`` hold definitiona
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     inductive nat : Type
     | zero : nat
@@ -414,13 +414,13 @@ The example above shows that the defining equations for ``add`` hold definitiona
     -- END
 
     end nat
-    end hide
+    end hidden
 
 In fact, because in this case the defining equations hold definitionally, we can use `dsimp`, the simplifier that uses definitional reductions only, to carry out the first step.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     inductive nat : Type
     | zero : nat
@@ -441,13 +441,13 @@ In fact, because in this case the defining equations hold definitionally, we can
     -- END
 
     end nat
-    end hide
+    end hidden
 
 As with definition by pattern matching, parameters to a structural recursion or induction may appear before the colon. Such parameters are simply added to the local context before the definition is processed. For example, the definition of addition may also be written as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     inductive nat : Type
     | zero : nat
@@ -462,7 +462,7 @@ As with definition by pattern matching, parameters to a structural recursion or 
     -- END
 
     end nat
-    end hide
+    end hidden
 
 This may seem a little odd, but you should read the definition as follows: "Fix ``m``, and define the function which adds something to ``m`` recursively, as follows. To add zero, return ``m``. To add the successor of ``n``, first add ``n``, and then take the successor." The mechanism for adding parameters to the local context is what makes it possible to process match expressions within terms, as described in :numref:`match_expressions`.
 
@@ -509,7 +509,7 @@ Another good example of a recursive definition is the list ``append`` function.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     -- BEGIN
     def append {α : Type} : list α → list α → list α
     | []     l := l
@@ -517,7 +517,7 @@ Another good example of a recursive definition is the list ``append`` function.
 
     example : append [(1 : ℕ), 2, 3] [4, 5] = [1, 2, 3, 4, 5] := rfl
     -- END
-    end hide
+    end hidden
 
 Here is another: it adds elements of the first list to elements of the second list, until one of the two lists runs out.
 
@@ -576,7 +576,7 @@ Lean knows that the usual order ``<`` on the natural numbers is well founded. It
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     open nat
@@ -593,7 +593,7 @@ Lean knows that the usual order ``<`` on the natural numbers is well founded. It
     def div := well_founded.fix lt_wf div.F
     -- END
 
-    end hide
+    end hidden
 
 The definition is somewhat inscrutable. Here the recursion is on ``x``, and ``div.F x f : ℕ → ℕ`` returns the "divide by ``y``" function for that fixed ``x``. You have to remember that the second argument to ``div.F``, the recipe for the recursion, is a function that is supposed to return the divide by ``y`` function for all values ``x₁`` smaller than ``x``.
 
@@ -601,7 +601,7 @@ The equation compiler is designed to make definitions like this more convenient.
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     -- BEGIN
@@ -615,7 +615,7 @@ The equation compiler is designed to make definitions like this more convenient.
         0
     -- END
         
-    end hide
+    end hidden
 
 When the equation compiler encounters a recursive definition, it first tries structural recursion, and only when that fails, does it fall back on well-founded recursion. In this case, detecting the possibility of well-founded recursion on the natural numbers, it uses the usual lexicographic ordering on the pair ``(x, y)``. The equation compiler in and of itself is not clever enough to derive that ``x - y`` is less than ``x`` under the given hypotheses, but we can help it out by putting this fact in the local context. The equation compiler looks in the local context for such information, and, when it finds it, puts it to good use. 
 
@@ -623,7 +623,7 @@ The defining equation for ``div`` does *not* hold definitionally, but the equati
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     open nat
 
     def div : ℕ → ℕ → ℕ
@@ -649,7 +649,7 @@ The defining equation for ``div`` does *not* hold definitionally, but the equati
     by rw [div, if_pos h]
     -- END
         
-    end hide
+    end hidden
 
 The following example is similar: it converts any natural number to a binary expression, represented as a list of 0's and 1's. We have to provide the equation compiler with evidence that the recursive call is decreasing, which we do here with a ``sorry``. The ``sorry`` does not prevent the bytecode evaluator from evaluating the function successfully.
 

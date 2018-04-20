@@ -43,13 +43,13 @@ Propositional extensionality is the following axiom:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     axiom propext {a b : Prop} : (a ↔ b) → a = b
     -- END
 
-    end hide
+    end hidden
 
 It asserts that when two propositions imply one another, they are actually equal. This is consistent with set-theoretic interpretations in which any element ``a : Prop`` is either empty or the singleton set ``{*}``, for some distinguished element ``*``. The axiom has the effect that equivalent propositions can be substituted for one another in any context:
 
@@ -107,7 +107,7 @@ Suppose that for ``α : Type`` we define the ``set α := α → Prop`` to denote
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     universe u
@@ -126,13 +126,13 @@ Suppose that for ``α : Type`` we define the ``set α := α → Prop`` to denote
 
     end set
     -- END
-    end hide
+    end hidden
 
 We can then proceed to define the empty set and set intersection, for example, and prove set identities:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     universe u
 
@@ -170,7 +170,7 @@ We can then proceed to define the empty set and set intersection, for example, a
     -- END
 
     end set
-    end hide
+    end hidden
 
 The following is an example of how function extensionality blocks computation inside the Lean kernel.
 
@@ -216,7 +216,7 @@ In its most basic form, the quotient construction does not even require ``r`` to
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     -- BEGIN
     universes u v
 
@@ -234,7 +234,7 @@ In its most basic form, the quotient construction does not even require ``r`` to
         (∀ a b, r a b → f a = f b) → quot r → β
 
     -- END
-    end hide
+    end hidden
 
 The first one forms a type ``quot r`` given a type ``α`` by any binary relation ``r`` on ``α``. The second maps ``α`` to ``quot α``, so that for any ``a : α``, ``quot.mk a`` is an element of ``quot r``. The third principle, ``quot.ind``, says that every element of ``quot.mk a`` is of this form. Given any function ``f`` and a proof ``h`` that respects the relation ``r``, ``quot.lift f h`` is the corresponding function on ``quot r``. The idea is that for any element ``a`` in ``α``, ``quot.lift f h`` is the function which maps ``quot.mk r a`` to ``f a``, wherein ``h`` shows that this function is well defined. In fact, the computation principle is declared as a reduction rule, as the proof below makes clear.
 
@@ -280,7 +280,7 @@ What makes the ``quot`` construction into a bona fide quotient is the following 
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
 
     -- BEGIN
@@ -288,7 +288,7 @@ What makes the ``quot`` construction into a bona fide quotient is the following 
       ∀ {α : Type u} {r : α → α → Prop} {a b : α},
         r a b → quot.mk r a = quot.mk r b
     -- END
-    end hide
+    end hidden
 
 This is the axiom that asserts that any two elements of ``α`` that are related by ``r`` become identified in the quotient. If a theorem or definition makes use of ``quot.sound``, it will show up in the ``#print axioms`` command.
 
@@ -299,7 +299,7 @@ To support this common use case, the standard library defines the notion of a *s
 .. code-block:: lean
 
     universe u
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     class setoid (α : Type u) :=
@@ -323,21 +323,21 @@ To support this common use case, the standard library defines the notion of a *s
     end setoid
     -- END
 
-    end hide
+    end hidden
 
 Given a type ``α``, a relation ``r`` on ``α``, and a proof ``p`` that ``r`` is an equivalence relation, we can define ``setoid.mk p`` as an instance of the setoid class.
 
 .. code-block:: lean
 
     universe u
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     def quotient {α : Type u} (s : setoid α) :=
     @quot α setoid.r
     -- END
 
-    end hide
+    end hidden
 
 The constants ``quotient.mk``, ``quotient.ind``, ``quotient.lift``, and ``quotient.sound`` are nothing more than the specializations of the corresponding elements of ``quot``. The fact that type class inference can find the setoid associated to a type ``α`` brings a number of benefits. First, we can use the notation ``a ≈ b`` (entered with ``\eq`` in Emacs) for ``setoid.r a b``, where the instance of ``setoid`` is implicit in the notation ``setoid.r``. We can use the generic theorems ``setoid.refl``, ``setoid.symm``, ``setoid.trans`` to reason about the relation. Specifically with quotients we can use the generic notation ``⟦a⟧`` for ``quot.mk setoid.r`` where the instance of ``setoid`` is implicit in the notation ``setoid.r``, as well as the theorem ``quotient.exact``:
 
@@ -621,14 +621,14 @@ To state the final axiom defined in the standard library, we need the ``nonempty
 .. code-block:: lean
 
     universe u
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     class inductive nonempty (α : Sort u) : Prop
     | intro : α → nonempty
     -- END
 
-    end hide
+    end hidden
 
 Because ``nonempty α`` has type ``Prop`` and its constructor contains data, it can only eliminate to ``Prop``. In fact, ``nonempty α`` is equivalent to ``∃ x : α, true``:
 
@@ -645,14 +645,14 @@ Our axiom of choice is now expressed simply as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
 
     -- BEGIN
     axiom choice {α : Sort u} : nonempty α → α
     -- END
 
-    end hide
+    end hidden
 
 Given only the assertion ``h`` that ``α`` is nonempty, ``choice h`` magically produces an element of ``α``. Of course, this blocks any meaningful computation: by the interpretation of ``Prop``, ``h`` contains no information at all as to how to find such an element.
 
@@ -660,7 +660,7 @@ This is found in the ``classical`` namespace, so the full name of the theorem is
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
     universe u
 
     axiom choice {α : Sort u} : nonempty α → α
@@ -671,14 +671,14 @@ This is found in the ``classical`` namespace, so the full name of the theorem is
     λ h, choice (let ⟨x, px⟩ := h in ⟨⟨x, px⟩⟩)
     -- END
 
-    end hide
+    end hidden
 
 Because it depends on ``choice``, Lean cannot generate bytecode for ``indefinite_description``, and so requires us to mark the definition as ``noncomputable``. Also in the ``classical`` namespace, the function ``some`` and the property ``some_spec`` decompose the two parts of the output of ``indefinite_description``:
 
 .. code-block:: lean
 
     open classical
-    namespace hide
+    namespace hidden
     universe u
 
     -- BEGIN
@@ -691,7 +691,7 @@ Because it depends on ``choice``, Lean cannot generate bytecode for ``indefinite
     subtype.property (indefinite_description p h)
     -- END
 
-    end hide
+    end hidden
 
 The ``choice`` principle also erases the distinction between the property of being ``nonempty`` and the more constructive property of being ``inhabited``:
 
@@ -743,11 +743,11 @@ The law of the excluded middle is the following
 .. code-block:: lean
 
     open classical
-    namespace hide
+    namespace hidden
     -- BEGIN
     #check (@em : ∀ (p : Prop), p ∨ ¬p)
     -- END
-    end hide
+    end hidden
 
 `Diaconescu's theorem <http://en.wikipedia.org/wiki/Diaconescu%27s_theorem>`__ states that the axiom of choice is sufficient to derive the law of excluded middle. More precisely, it shows that the law of the excluded middle follows from ``classical.choice``, ``propext``, and ``funext``. We sketch the proof that is found in the standard library.
 
@@ -941,7 +941,7 @@ Consequences of excluded middle include double-negation elimination, proof by ca
 .. code-block:: lean
 
     open classical
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     theorem prop_complete (a : Prop) : a = true ∨ a = false :=
@@ -951,13 +951,13 @@ Consequences of excluded middle include double-negation elimination, proof by ca
                                        (λ h, false.elim h))))
     -- END
 
-    end hide
+    end hidden
 
 Together with choice, we also get the stronger principle that every proposition is decidable. Recall that the class of ``decidable`` propositions is defined as follows:
 
 .. code-block:: lean
 
-    namespace hide
+    namespace hidden
 
     -- BEGIN
     class inductive decidable (p : Prop)
@@ -965,7 +965,7 @@ Together with choice, we also get the stronger principle that every proposition 
     | is_true :  p → decidable
     -- END
 
-    end hide
+    end hidden
 
 In contrast to ``p ∨ ¬ p``, which can only eliminate to ``Prop``, the type ``decidable p`` is equivalent to the sum type ``p ⊕ ¬ p``, which can eliminate to any type. It is this data that is needed to write an if-then-else expression.
 

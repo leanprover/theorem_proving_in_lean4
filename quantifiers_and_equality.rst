@@ -831,7 +831,7 @@ Exercises
 
    .. code-block:: lean
 
-       namespace hide
+       namespace hidden
 
        def divides (m n : ℕ) : Prop := ∃ k, m * k = n
 
@@ -847,13 +847,13 @@ Exercises
          #check even (m^n +3)
        end
 
-       end hide
+       end hidden
 
    Remember that, without any parameters, an expression of type ``Prop`` is just an assertion. Fill in the definitions of ``prime`` and ``Fermat_prime`` below, and construct the given assertion. For example, you can say that there are infinitely many primes by asserting that for every natural number ``n``, there is a prime number greater than ``n``. Goldbach's weak conjecture states that every odd number greater than 5 is the sum of three primes. Look up the definition of a Fermat prime or any of the other statements, if necessary.
 
    .. code-block:: lean
 
-       namespace hide
+       namespace hidden
 
        def divides (m n : ℕ) : Prop := ∃ k, m * k = n
 
@@ -877,7 +877,7 @@ Exercises
        def Fermat's_last_theorem : Prop := sorry
        -- END
 
-       end hide
+       end hidden
 
 #. Prove as many of the identities listed in :numref:`the_existential_quantifier` as you can.
 
