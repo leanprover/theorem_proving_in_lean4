@@ -54,7 +54,7 @@ Lean provides various sectioning mechanisms to help structure a theory. We saw i
       #check t1 (2 * x)
 
       theorem t2 : double (x * y) = double x * y := 
-      by simp [double, mul_add]
+      by simp [double, add_mul]
     end
 
 The definition of ``double`` does not have to declare ``x`` as an argument; Lean detects the dependence and inserts it automatically. Similarly, Lean detects the occurrence of ``x`` in ``t1`` and ``t2``, and inserts it automatically there, too.
