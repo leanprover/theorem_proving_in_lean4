@@ -152,20 +152,6 @@ Thus, for example, we can specialize the example from the previous section to th
     example : a = d :=
     eq.trans (eq.trans hab (eq.symm hcb)) hcd
 
-If we "open" the ``eq`` namespace, the names become shorter:
-
-.. code-block:: lean
-
-    universe u
-    variables (α : Type u) (a b c d : α)
-    variables (hab : a = b) (hcb : c = b) (hcd : c = d)
-
-    -- BEGIN
-    open eq
-
-    example : a = d := trans (trans hab (symm hcb)) hcd
-    -- END
-
 We can also use the projection notation:
 
 .. code-block:: lean
