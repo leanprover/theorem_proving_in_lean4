@@ -375,7 +375,7 @@ The next step is to prove that ``eqv`` is in fact an equivalence relation, which
     local infix `~` := eqv
 
     -- BEGIN
-    open or eq
+    open or
 
     private theorem eqv.refl {α : Type u} : 
       ∀ p : α × α, p ~ p :=
@@ -422,7 +422,7 @@ Now that we have proved that ``eqv`` is an equivalence relation, we can construc
 
     local infix `~` := eqv
 
-    open or eq
+    open or
 
     private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
     assume p, inl ⟨rfl, rfl⟩
@@ -472,7 +472,7 @@ We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``, s
 
     local infix `~` := eqv
 
-    open or eq
+    open or
 
     private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
     assume p, inl ⟨rfl, rfl⟩
@@ -524,7 +524,7 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
 
     local infix `~` := eqv
 
-    open or eq
+    open or
 
     private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
     assume p, inl ⟨rfl, rfl⟩
