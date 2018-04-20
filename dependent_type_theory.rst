@@ -745,7 +745,7 @@ Then, given a type ``α``, some elements of ``α``, and some lists of elements o
     end list
 
     -- BEGIN
-    open hide.list
+    open hidden.list
 
     variable  α : Type
     variable  a : α
@@ -773,7 +773,7 @@ This is a central feature of dependent type theory: terms carry a lot of informa
       constant append : Π α : Type u, list α → list α → list α
     end list
 
-    open hide.list
+    open hidden.list
 
     variable  α : Type
     variable  a : α
@@ -801,7 +801,7 @@ It is still tedious, however, to type all these underscores. When a function tak
       constant append : Π {α : Type u}, list α → list α → list α
     end list
 
-    open hide.list
+    open hidden.list
 
     variable  α : Type
     variable  a : α
