@@ -603,7 +603,7 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
 
 For convenience, the standard library also defines ``quotient.lift₂`` for lifting binary functions, and ``quotient.ind₂`` for induction on two variables.
 
-We close this section with some hints as to why the quotient construction implies function extenionality. It is not hard to show that extensional equality on the ``Π x : α, β x`` is an equivalence relation, and so we can consider the type ``extfun α β`` of functions "up to equivalence." Of course, application respects that equivalence in the sense that if ``f₁`` is equivalent to ``f₂``, then ``f₁ a`` is equal to ``f₂ a``. Thus application gives rise to a function ``extfun_app : extfun α β → Π x : α, β x``. But for every ``f``, ``extfun_app ⟦f⟧`` is definitionally equal to ``λ x, f x``, which is in turn definitionally equal to ``f``. So, when ``f₁`` and ``f₂`` are extenionally equal, we have the following chain of equalities:
+We close this section with some hints as to why the quotient construction implies function extenionality. It is not hard to show that extensional equality on the ``Π x : α, β x`` is an equivalence relation, and so we can consider the type ``extfun α β`` of functions "up to equivalence." Of course, application respects that equivalence in the sense that if ``f₁`` is equivalent to ``f₂``, then ``f₁ a`` is equal to ``f₂ a``. Thus application gives rise to a function ``extfun_app : extfun α β → Π x : α, β x``. But for every ``f``, ``extfun_app ⟦f⟧`` is definitionally equal to ``λ x, f x``, which is in turn definitionally equal to ``f``. So, when ``f₁`` and ``f₂`` are extensionally equal, we have the following chain of equalities:
 
 .. code-block:: text
 

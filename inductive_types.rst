@@ -1088,9 +1088,9 @@ The syntax of the ``with`` is unfortunate, in that we have to list the arguments
     def silly (x : foo) : ℕ :=
     begin
       cases x,
-        case bar1 a b 
+        case bar1 : a b 
           { exact b },
-        case bar2 c d e 
+        case bar2 : c d e 
           { exact e }
     end
 
@@ -1107,9 +1107,9 @@ The ``case`` tactic is clever, in that it will match the constructor to the appr
     def silly (x : foo) : ℕ :=
     begin
       cases x,
-        case bar2 c d e 
+        case bar2 : c d e 
           { exact e },
-        case bar1 a b 
+        case bar1 : a b 
           { exact b }
     end
 
@@ -1222,7 +1222,7 @@ Just as the ``cases`` tactic can be used to carry out proof by cases, the ``indu
 
     end hidden
 
-As with ``cases``, we can use the ``case`` tactic to identify one case at a time and name the arguments:
+As with ``cases``, we can use the ``case`` tactic instead to identify one case at a time and name the arguments:
 
 .. code-block:: lean
 
@@ -1233,28 +1233,28 @@ As with ``cases``, we can use the ``case`` tactic to identify one case at a time
     theorem zero_add (n : ℕ) : 0 + n = n :=
     begin
       induction n,
-      case zero { refl },
-      case succ n ih { rw [add_succ, ih]}
+      case zero : { refl },
+      case succ : n ih { rw [add_succ, ih]}
     end
 
     theorem succ_add (m n : ℕ) : succ m + n = succ (m + n) :=
     begin
       induction n,
-      case zero { refl },
-      case succ n ih { rw [add_succ, ih] }
+      case zero : { refl },
+      case succ : n ih { rw [add_succ, ih] }
     end
 
     theorem add_comm (m n : ℕ) : m + n = n + m :=
     begin
       induction n,
-      case zero { rw zero_add, refl },
-      case succ n ih { rw [add_succ, ih, succ_add] }
+      case zero : { rw zero_add, refl },
+      case succ : n ih { rw [add_succ, ih, succ_add] }
     end
     -- END
 
     end hidden
 
-Once again, we can reduce the proofs of these, as well as the proof of associativity, to one-liners.
+The name before the colon corresponds to the constructor of the associated inductive type. The cases can appear in any order, and when there are no parameters to rename (for example, as in the ``zero`` cases above) the colon can be omitted. Once again, we can reduce the proofs of these, as well as the proof of associativity, to one-liners.
 
 .. code-block:: lean
 
