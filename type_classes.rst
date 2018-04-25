@@ -5,12 +5,12 @@ Type Classes
 
 We have seen that Lean's elaborator provides helpful automation, filling in information that is tedious to enter by hand. In this section we will explore a simple but powerful technical device known as *type class inference*, which provides yet another mechanism for the elaborator to supply missing information.
 
-The notion of a *type class* originated with the *Haskell* programming language. Many of the original uses carry over, but, as we will see, the realm of interactive theorem proving raises even more possibilities for their use.
+The notion of a *type class* originated with the *Haskell* programming language. In that context, it is often used to associate operations, like a canonical addition or multiplication operation, to a data type. Many of the original uses carry over, but, as we will see, the realm of interactive theorem proving raises even more possibilities for their use.
 
 Type Classes and Instances
 --------------------------
 
-Any family of types can be marked as a *type class*. Then we can declare particular elements of a type class to be *instances*. These provide hints to the elaborator: any time the elaborator is looking for an element of a type class, it can consult a table of declared instances to find a suitable element.
+Any family of types can be marked as a *type class*. We can then declare particular elements of a type class to be *instances*. These provide hints to the elaborator: any time the elaborator is looking for an element of a type class, it can consult a table of declared instances to find a suitable element.
 
 More precisely, there are three steps involved:
 
@@ -18,89 +18,39 @@ More precisely, there are three steps involved:
 -  Second, we declare instances of the type class.
 -  Finally, we mark some implicit arguments with square brackets instead of curly brackets, to inform the elaborator that these arguments should be inferred by the type class mechanism.
 
-Here is a somewhat frivolous example:
+Let us start with a simple example. Many theorems hold under the additional assumption that a type is inhabited, which is to say, it has at least one element. For example, if ``α`` is a type, ``∃ x : α, x = x`` is true only if ``α`` is inhabited. Similarly, it often happens that we would like a definition to return a default element in a "corner case." For example, we would like the expression ``head l`` to be of type ``α`` when ``l`` is of type ``list α``; but then we are faced with the problem that ``head l`` needs to return an "arbitrary" element of ``α`` in the case where ``l`` is the empty list, ``nil``.
 
-.. code-block:: lean
-
-    attribute [class] nat
-
-    instance nat_one : ℕ := 1
-    /- The command instance is syntax sugar for
-    def nat_one : ℕ := 1
-    attribute [instance, reducible] nat_one
-    -/
-
-    def foo [x : ℕ] : nat := x
-
-    #check @foo
-    #reduce foo
-
-    example : foo = 1 := rfl
-
-Here we declare ``nat`` to be a class with a "canonical" instance ``1``. Then we declare ``foo`` to be, essentially, the identity function on the natural numbers, but we mark the argument implicit, and indicate that it should be inferred by type class inference. When we write ``foo``, the preprocessor interprets it as ``foo ?x``, where ``?x`` is an implicit argument. But when the elaborator gets hold of the expression, it sees that ``?x : ℕ`` is supposed to be solved by type class inference. It looks for a suitable element of the class, and it finds the instance ``one``. Thus, when we evaluate ``foo``, we simply get ``1``.
-
-It is tempting to think of ``foo`` as defined to be equal to ``1``, but that is misleading. Every time we write ``foo``, the elaborator searches for a value. If we declare other instances of the class, that can change the value that is assigned to the implicit argument. This can result in seemingly paradoxical behavior. For example, we might continue the development above as follows:
-
-.. code-block:: lean
-
-    attribute [class] nat
-
-    instance nat_one : ℕ := 1
-
-    def foo [x : ℕ] : nat := x
-
-    #reduce foo
-
-    example : foo = 1 := rfl
-
-    -- BEGIN
-    instance nat_two : ℕ := 2
-
-    #reduce foo
-
-    example : foo ≠ 1 :=
-    λ h : 2 = 1, nat.no_confusion h (λ h : 1 = 0, nat.no_confusion h)
-    -- END
-
-Now the "same" expression ``foo`` evaluates to ``2``. Whereas before we could prove ``foo = 1``, now we can prove ``foo ≠ 1``, because the inferred implicit argument has changed. When searching for a suitable instance of a type class, the elaborator tries the most recent instance declaration first, by default. We will see below, however, that it is possible to give individual instances higher or lower priority.
-
-As with other attributes, you can assign the ``class`` or ``instance`` attributes in a definition, or after the fact, with an ``attribute`` command. To limit the scope of an assignment to the current file, use the ``local attribute`` variant.
-
-The reason the example is frivolous is that there is rarely a need to "infer" a natural number; we can just hard-code the choice of ``1`` or ``2`` into the definition of ``foo``. Type classes become useful when they depend on parameters, in which case, the value that is inferred depends on these parameters.
-
-Let us work through a simple example. Many theorems hold under the additional assumption that a type is inhabited, which is to say, it has at least one element. For example, if ``α`` is a type, ``∃ x : α, x = x`` is true only if ``α`` is inhabited. Similarly, it often happens that we would like a definition to return a default element in a "corner case." For example, we would like the expression ``head l`` to be of type ``α`` when ``l`` is of type ``list α``; but then we are faced with the problem that ``head l`` needs to return an "arbitrary" element of ``α`` in the case where ``l`` is the empty list, ``nil``.
-
-For purposes like this, the standard library defines a type class ``inhabited : Type → Type``, to enable type class inference to infer a "default" or "arbitrary" element of an inhabited type. We will carry out a similar development in the examples that follow, using a namespace ``hide`` to avoid conflicting with the definitions in the standard library.
+The standard library defines a type class ``inhabited : Type → Type`` to enable type class inference to infer a "default" or "arbitrary" element of an inhabited type. In the example below, we use a namespace ``hidden`` as usual to avoid conflicting with the definitions in the standard library.
 
 Let us start with the first step of the program above, declaring an appropriate class:
 
 .. code-block:: lean
 
     namespace hidden
-
     -- BEGIN
-    class inhabited (α : Type) :=
-    (value : α)
-    /- The command 'class' above is shorthand for
-
-    @[class] structure inhabited (α : Type) :=
-    (value : α)
-    -/
+    class inhabited (α : Type _) :=
+    (default : α)
     -- END
-
     end hidden
 
-An element of the class ``inhabited α`` is simply an expression of the form ``inhabited.mk a``, for some element ``a : α``. The projection ``inhabited.value`` will allow us to "extract" such an element of ``α`` from an element of ``inhabited α``.
+The command ``class`` above is shorthand for
+
+.. code-block:: lean
+
+    namespace hidden
+    -- BEGIN
+    @[class] structure inhabited (α : Type _) :=
+    (default : α)
+    -- END
+    end hidden
+
+An element of the class ``inhabited α`` is simply an expression of the form ``inhabited.mk a``, for some element ``a : α``. The projection ``inhabited.default`` will allow us to "extract" such an element of ``α`` from an element of ``inhabited α``.
 
 The second step of the program is to populate the class with some instances:
 
 .. code-block:: lean
 
     namespace hidden
-
-    class inhabited (α : Type) :=
-    (value : α)
-
     -- BEGIN
     instance Prop_inhabited : inhabited Prop :=
     inhabited.mk true
@@ -121,10 +71,6 @@ In the Lean standard library, we regularly use the anonymous constructor when de
 .. code-block:: lean
 
     namespace hidden
-
-    class inhabited (α : Type) :=
-    (value : α)
-
     -- BEGIN
     instance Prop_inhabited : inhabited Prop :=
     ⟨true⟩
@@ -140,31 +86,16 @@ In the Lean standard library, we regularly use the anonymous constructor when de
     -- END
     end hidden
 
-This arranges things so that when type class inference is asked to infer an element ``?M : Prop``, it can find the element ``true`` to assign to ``?M``, and similarly for the elements ``tt``, ``0``, and ``()`` of the types ``bool``, ``nat``, and ``unit``, respectively.
+These declarations simply record the definitions ``Prop_inhabited``, ``bool_inhabited``, ``nat_inhabited``, and ``unit_inhabited`` on a list of instances. Whenever the elaborator is looking for a value to assign to an argument ``?M`` of type ``inhabited α`` for some ``α``, it can check the list for a suitable instance. For example, if it looking for an instance of ``inhabited Prop``, it will find ``Prop_inhabited``.
 
 The final step of the program is to define a function that infers an element ``s : inhabited α`` and puts it to good use. The following function simply extracts the corresponding element ``a : α``:
 
 .. code-block:: lean
 
     namespace hidden
-
-    class inhabited (α : Type) :=
-    (value : α)
-
-    instance Prop_inhabited : inhabited Prop :=
-    ⟨true⟩
-
-    instance bool_inhabited : inhabited bool :=
-    ⟨tt⟩
-
-    instance nat_inhabited : inhabited nat :=
-    ⟨0⟩
-
-    instance unit_inhabited : inhabited unit :=
-    ⟨()⟩
     -- BEGIN
-    definition default (α : Type) [s : inhabited α] : α :=
-    @inhabited.value α s
+    def default (α : Type) [s : inhabited α] : α :=
+    @inhabited.default α s
     -- END
     end hidden
 
@@ -172,32 +103,10 @@ This has the effect that given a type expression ``α``, whenever we write ``def
 
 .. code-block:: lean
 
-    namespace hidden
-
-    class inhabited (α : Type) :=
-    (value : α)
-
-    instance Prop_inhabited : inhabited Prop :=
-    ⟨true⟩
-
-    instance bool_inhabited : inhabited bool :=
-    ⟨tt⟩
-
-    instance nat_inhabited : inhabited nat :=
-    ⟨0⟩
-
-    instance unit_inhabited : inhabited unit :=
-    ⟨()⟩
-
-    def default (α : Type) [s : inhabited α] : α :=
-    @inhabited.value α s
-    -- BEGIN
-    #check default Prop    -- Prop
-    #check default nat     -- ℕ
-    #check default bool    -- bool
-    #check default unit    -- unit
-    -- END
-    end hidden
+    #check default Prop  -- Prop
+    #check default nat   -- ℕ
+    #check default bool  -- bool
+    #check default unit  -- unit
 
 In general, whenever we write ``default α``, we are asking the elaborator to synthesize an element of type ``α``.
 
@@ -205,32 +114,10 @@ Notice that we can "see" the value that is synthesized with ``#reduce``:
 
 .. code-block:: lean
 
-    namespace hidden
-
-    class inhabited (α : Type) :=
-    (value : α)
-
-    instance Prop_inhabited : inhabited Prop :=
-    ⟨true⟩
-
-    instance bool_inhabited : inhabited bool :=
-    ⟨tt⟩
-
-    instance nat_inhabited : inhabited nat :=
-    ⟨0⟩
-
-    instance unit_inhabited : inhabited unit :=
-    ⟨()⟩
-
-    def default (α : Type) [s : inhabited α] : α :=
-    @inhabited.value α s
-    -- BEGIN
-    #reduce default Prop    -- true
-    #reduce default nat     -- 0
-    #reduce default bool    -- tt
-    #reduce default unit    -- ()
-    -- END
-    end hidden
+    #reduce default Prop  -- true
+    #reduce default nat   -- 0
+    #reduce default bool  -- tt
+    #reduce default unit  -- ()
 
 Sometimes we want to think of the default element of a type as being an *arbitrary* element, whose specific value should not play a role in our proofs. For that purpose, we can write ``arbitrary α`` instead of ``default α``. The definition of ``arbitrary`` is the same as that of default, but is marked ``irreducible`` to discourage the elaborator from unfolding it. This does not preclude proofs from making use of the value, however, so the use of ``arbitrary`` rather than ``default`` functions primarily to signal intent.
 
@@ -244,27 +131,10 @@ For example, the following definition shows that if two types ``α`` and ``β`` 
 .. code-block:: lean
 
     namespace hidden
-
-    class inhabited (α : Type) :=
-    (value : α)
-
-    instance Prop_inhabited : inhabited Prop :=
-    ⟨true⟩
-
-    instance bool_inhabited : inhabited bool :=
-    ⟨tt⟩
-
-    instance nat_inhabited : inhabited nat :=
-    ⟨0⟩
-
-    instance unit_inhabited : inhabited unit :=
-    ⟨()⟩
-
-    def default (α : Type) [s : inhabited α] : α :=
-    @inhabited.value α s
     -- BEGIN
-    instance prod_inhabited {α β : Type} [inhabited α] [inhabited β]
-                            : inhabited (prod α β) :=
+    instance prod_inhabited 
+        {α β : Type} [inhabited α] [inhabited β] : 
+      inhabited (prod α β) :=
     ⟨(default α, default β)⟩
     -- END
     end hidden
@@ -273,36 +143,8 @@ With this added to the earlier instance declarations, type class instance can in
 
 .. code-block:: lean
 
-    namespace hidden
-
-    class inhabited (α : Type) :=
-    (value : α)
-
-    instance Prop_inhabited : inhabited Prop :=
-    ⟨true⟩
-
-    instance bool_inhabited : inhabited bool :=
-    ⟨tt⟩
-
-    instance nat_inhabited : inhabited nat :=
-    ⟨0⟩
-
-    instance unit_inhabited : inhabited unit :=
-    ⟨()⟩
-
-    def default (α : Type) [s : inhabited α] : α :=
-    @inhabited.value α s
-
-    instance prod_inhabited {α β : Type} 
-        [inhabited α] [inhabited β] : 
-      inhabited (prod α β) :=
-    ⟨(default α, default β)⟩
-
-    -- BEGIN
     #check default (nat × bool)
     #reduce default (nat × bool)
-    -- END
-    end hidden
 
 Given the expression ``default (nat × bool)``, the elaborator is called on to infer an implicit argument ``?M : inhabited (nat × bool)``. The instance ``prod_inhabited`` reduces this to inferring ``?M1 : inhabited nat`` and ``?M2 : inhabited bool``. The first one is solved by the instance ``nat_inhabited``. The second uses ``bool_inhabited``.
 
@@ -311,29 +153,6 @@ Similarly, we can inhabit function spaces with suitable constant functions:
 .. code-block:: lean
 
     namespace hidden
-
-    class inhabited (α : Type) :=
-    (value : α)
-
-    instance Prop_inhabited : inhabited Prop :=
-    ⟨true⟩
-
-    instance bool_inhabited : inhabited bool :=
-    ⟨tt⟩
-
-    instance nat_inhabited : inhabited nat :=
-    ⟨0⟩
-
-    instance unit_inhabited : inhabited unit :=
-    ⟨()⟩
-
-    def default (α : Type) [s : inhabited α] : α :=
-    @inhabited.value α s
-
-    instance prod_inhabited {α β : Type} 
-        [inhabited α] [inhabited β] :
-      inhabited (prod α β) :=
-    ⟨(default α, default β)⟩
 
     -- BEGIN
     instance inhabited_fun (α : Type) {β : Type} [inhabited β] : 
@@ -350,10 +169,84 @@ In this case, type class inference finds the default element
 
 As an exercise, try defining default instances for other types, such as sum types and the list type.
 
+Inferring Notation
+------------------
+
+We now consider the application of type classes that motivates their use in functional programming languages like Haskell, namely, to overload notation in a principled way. In Lean, a symbol like ``+`` can be given entirely unrelated meanings, a phenomenon that is sometimes called "ad-hoc" overloading. Typically, however, we use the ``+`` symbol to denote a binary function from a type to itself, that is, a function of type ``α → α → α`` for some type ``α``. We can use type classes to infer an appropriate addition function for suitable types ``α``. We will see in the next section that this is especially useful for developing algebraic hierarchies of structures in a formal setting.
+
+The standard library declares a type class ``has_add α`` as follows:
+
+.. code-block:: lean
+
+    namespace hidden
+    -- BEGIN
+    universes u
+
+    class has_add (α : Type u) :=
+    (add : α → α → α)
+
+    def add {α : Type u} [has_add α] : α → α → α := has_add.add
+
+    notation a ` + ` b := add a b
+    -- END
+    end hidden
+
+The class ``has_add α`` is supposed to be inhabited exactly when there is an appropriate addition function for ``α``. The ``add`` function is designed to find an instance of ``has_add α`` for the given type, ``α``, and apply the corresponding binary addition function. The notation ``a + b`` thus refers to the addition that is appropriate to the type of ``a`` and ``b``. We can then declare instances for ``nat``, and ``bool``:
+
+.. code-block:: lean
+
+    namespace hidden
+    -- BEGIN
+    instance nat_has_add : has_add nat :=
+    ⟨nat.add⟩
+
+    instance bool_has_add : has_add bool :=
+    ⟨bor⟩
+
+    #check 2 + 2    -- nat
+    #check tt + ff  -- bool
+    -- END
+    end hidden
+
+As with ``inhabited``, the power of type class inference stems not only from the fact that the class enables the elaborator to look up appropriate instances, but also from the fact that it can chain instances to infer complex addition operations. For example, assuming that there are appropriate addition functions for types ``α`` and ``β``, we can define addition on ``α × β`` pointwise:
+
+.. code-block:: lean
+
+    namespace hidden
+    universes u v
+    -- BEGIN
+    instance prod_has_add {α : Type u} {β : Type v} 
+        [has_add α] [has_add β] : 
+      has_add (α × β) :=
+    ⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
+
+    #check (1, 2) + (3, 4)    -- ℕ × ℕ
+    #reduce  (1, 2) + (3, 4)  -- (4, 6)
+    -- END
+    end hidden
+
+We can similarly define pointwise addition of functions:
+
+.. code-block:: lean
+
+    namespace hidden
+    universes u v
+    -- BEGIN
+    instance fun_has_add {α : Type u} {β : Type v} [has_add β] : 
+      has_add (α → β) :=
+    ⟨λ f g x, f x + g x⟩
+
+    #check (λ x : nat, 1) + (λ x, 2)   -- ℕ → ℕ
+    #reduce (λ x : nat, 1) + (λ x, 2)    -- λ (x : ℕ), 3
+    -- END
+    end hidden
+
+As an exercise, try defining instances of ``has_add`` for lists, and show that they work as expected.
+
 Decidable Propositions
 ----------------------
 
-Let us consider another example of a type class defined in the standard library, namely the type class of ``decidable`` propositions. Roughly speaking, an element of ``Prop`` is said to be decidable if we can decide whether it is true or false. The distinction is only useful in constructive mathematics; classically, every proposition is decidable. Nonetheless, as we will see, the implementation of the type class allows for a smooth transition between constructive and classical logic.
+Let us consider another example of a type class defined in the standard library, namely the type class of ``decidable`` propositions. Roughly speaking, an element of ``Prop`` is said to be decidable if we can decide whether it is true or false. The distinction is only useful in constructive mathematics; classically, every proposition is decidable. But if we use the classical principle, say, to define a function by cases, that function will not be computable. Algorithmically speaking, the ``decidable`` type class can be used to infer a procedure that effectively determines whether or not the proposition is true. As a result, the type class supports such computational definitions when they are possible while at the same time allowing a smooth transition to the use of classical definitions and classical reasoning.
 
 In the standard library, ``decidable`` is defined formally as follows:
 
@@ -396,7 +289,7 @@ The standard library also contains a variant of ``ite`` called ``dite``, the dep
 
 That is, in ``dite c t e``, we can assume ``hc : c`` in the "then" branch, and ``hnc : ¬ c`` in the "else" branch. To make ``dite`` more convenient to use, Lean allows us to write ``if h : c then t else e`` instead of ``dite c (λ h : c, t) (λ h : ¬ c, e)``.
 
-In the standard library, we cannot prove that every proposition is decidable. But we can prove that *certain* propositions are decidable. For example, we can prove the decidability of basic operations like equality and comparisons on the natural numbers and the integers. Moreover, decidability is preserved under propositional connectives:
+Without classical logic, we cannot prove that every proposition is decidable. But we can prove that *certain* propositions are decidable. For example, we can prove the decidability of basic operations like equality and comparisons on the natural numbers and the integers. Moreover, decidability is preserved under propositional connectives:
 
 .. code-block:: lean
 
@@ -422,7 +315,14 @@ Thus we can carry out definitions by cases on decidable predicates on the natura
 
 Turning on implicit arguments shows that the elaborator has inferred the decidability of the proposition ``x < a ∨ x > b``, simply by applying appropriate instances.
 
-With the classical axioms, we can prove that every proposition is decidable. When you import the classical axioms, then, ``decidable p`` has an instance for every ``p``, and the elaborator infers that value quickly. Thus all theorems in the library that rely on decidability assumptions are freely available when you want to reason classically.
+With the classical axioms, we can prove that every proposition is decidable. You can import the classical axioms and make the generic instance of decidability available by including this at the type of your file:
+
+.. code-block:: lean
+
+    open classical
+    local attribute [instance] prop_decidable
+
+Thereafter ``decidable p`` has an instance for every ``p``, and the elaborator infers that value quickly. Thus all theorems in the library that rely on decidability assumptions are freely available when you want to reason classically.
 
 The ``decidable`` type class also provides a bit of small-scale automation for proving theorems. The standard library introduces the following definitions and notation:
 
@@ -454,118 +354,6 @@ They work as follows. The expression ``as_true c`` tries to infer a decision pro
 
 Try changing the ``3`` to ``10``, thereby rendering the expression false. The resulting error message complains that ``of_as_true (1 ≠ 0 ∧ (5 < 2 ∨ 10 < 7))`` is not definitionally equal to ``true``.
 
-Overloading with Type Classes
------------------------------
-
-We now consider the application of type classes that motivates their use in functional programming languages like Haskell, namely, to overload notation in a principled way. In Lean, a symbol like ``+`` can be given entirely unrelated meanings, a phenomenon that is sometimes called "ad-hoc" overloading. Typically, however, we use the ``+`` symbol to denote a binary function from a type to itself, that is, a function of type ``α → α → α`` for some type ``α``. We can use type classes to infer an appropriate addition function for suitable types ``α``. We will see in the next section that this is especially useful for developing algebraic hierarchies of structures in a formal setting.
-
-We can declare a type class ``has_add α`` as follows:
-
-.. code-block:: lean
-
-    namespace hidden
-    -- BEGIN
-    universes u
-
-    class has_add (α : Type u) :=
-    (add : α → α → α)
-
-    def add {α : Type u} [has_add α] : α → α → α := has_add.add
-
-    local notation a `+` b := add a b
-    -- END
-    end hidden
-
-The class ``has_add α`` is supposed to be inhabited exactly when there is an appropriate addition function for ``α``. The ``add`` function is designed to find an instance of ``has_add α`` for the given type, ``α``, and apply the corresponding binary addition function. The notation ``a + b`` thus refers to the addition that is appropriate to the type of ``a`` and ``b``. We can then declare instances for ``nat``, and ``bool``:
-
-.. code-block:: lean
-
-    namespace hidden
-    universes u
-
-    class has_add (α : Type u) :=
-    (add : α → α → α)
-
-    def add {α : Type u} [has_add α] : α → α → α := has_add.add
-
-    local notation a `+` b := add a b
-
-    -- BEGIN
-    instance nat_has_add : has_add nat :=
-    ⟨nat.add⟩
-
-    instance bool_has_add : has_add bool :=
-    ⟨bor⟩
-
-    #check 2 + 2    -- nat
-    #check tt + ff  -- bool
-    -- END
-    end hidden
-
-As with ``inhabited`` and ``decidable``, the power of type class inference stems not only from the fact that the class enables the elaborator to look up appropriate instances, but also from the fact that it can chain instances to infer complex addition operations. For example, assuming that there are appropriate addition functions for types ``α`` and ``β``, we can define addition on ``α × β`` pointwise:
-
-.. code-block:: lean
-
-    namespace hidden
-    universes u v
-    class has_add (α : Type u) :=
-    (add : α → α → α)
-
-    def add {α : Type u} [has_add α] : α → α → α := has_add.add
-
-    local notation a `+` b := add a b
-
-    instance nat_has_add : has_add nat :=
-    ⟨nat.add⟩
-
-    instance bool_has_add : has_add bool :=
-    ⟨bor⟩
-
-    -- BEGIN
-    instance prod_has_add {α : Type u} {β : Type v} 
-        [has_add α] [has_add β] : 
-      has_add (α × β) :=
-    ⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
-
-    #check (1, 2) + (3, 4)    -- ℕ × ℕ
-    #reduce  (1, 2) + (3, 4)  -- (4, 6)
-    -- END
-    end hidden
-
-We can similarly define pointwise addition of functions:
-
-.. code-block:: lean
-
-    namespace hidden
-    universes u v
-    class has_add (α : Type u) :=
-    (add : α → α → α)
-
-    def add {α : Type u} [has_add α] : α → α → α := has_add.add
-
-    local notation a `+` b := add a b
-
-    instance nat_has_add : has_add nat :=
-    ⟨nat.add⟩
-
-    instance bool_has_add : has_add bool :=
-    ⟨bor⟩
-
-    instance prod_has_add {α : Type u} {β : Type v} 
-      [has_add α] [has_add β] : has_add (α × β) :=
-    ⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
-
-    -- BEGIN
-    instance fun_has_add {α : Type u} {β : Type v} [has_add β] : 
-      has_add (α → β) :=
-    ⟨λ f g x, f x + g x⟩
-
-    #check (λ x : nat, 1) + (λ x, 2)   -- ℕ → ℕ
-    #reduce (λ x : nat, 1) + (λ x, 2)    -- λ (x : ℕ), 3
-    -- END
-    end hidden
-
-As an exercise, try defining instances of ``has_add`` for lists, and show that they work as expected.
 
 Managing Type Class Inference
 -----------------------------
