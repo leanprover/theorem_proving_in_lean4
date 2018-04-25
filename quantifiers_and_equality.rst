@@ -262,9 +262,9 @@ Here is an example of a calculation in the natural numbers that uses substitutio
       from (add_mul x y x) ▸ (add_mul x y y) ▸ h1,
     h2.trans (add_assoc (x * x + y * x) (x * y) (y * y)).symm
 
-Notice that the second implicit parameter to ``eq.subst``, which provides the context in which the substitution is to occur, has type ``α → Prop``. Inferring this predicate therefore requires an instance of *higher-order unification*. In full generally, the problem of determining whether a higher-order unifier exists is undecidable, and Lean can at best provide imperfect and approximate solutions to the problem. As a result, ``eq.subst`` doesn't always do what you want it to. This issue is discussed in greater detail in :numref:`elaboration_hints`..
+Notice that the second implicit parameter to ``eq.subst``, which provides the context in which the substitution is to occur, has type ``α → Prop``. Inferring this predicate therefore requires an instance of *higher-order unification*. In full generally, the problem of determining whether a higher-order unifier exists is undecidable, and Lean can at best provide imperfect and approximate solutions to the problem. As a result, ``eq.subst`` doesn't always do what you want it to. This issue is discussed in greater detail in :numref:`elaboration_hints`.
 
-Because equational reasoning is so common and important, Lean provides a number of mechanisms to carry it out more effectively. The next section offers syntax that allow you to write calculational proofs in a more natural and perspicuous way. But, more importantly, equational reasoning is supported by a term rewriter, a simplifier, and other kinds of automation. The term rewriter and simplifier are described briefly in the next setion, and then in greater detail in the next chapter.
+Because equational reasoning is so common and important, Lean provides a number of mechanisms to carry it out more effectively. The next section offers syntax that allow you to write calculational proofs in a more natural and perspicuous way. But, more importantly, equational reasoning is supported by a term rewriter, a simplifier, and other kinds of automation. The term rewriter and simplifier are described briefly in the next section, and then in greater detail in the next chapter.
 
 .. _calculational_proofs:
 

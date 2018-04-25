@@ -274,6 +274,8 @@ As a theorem of propositional logic, what does ``t2`` say?
 
 Note that it is often useful to use numeric unicode subscripts, entered as ``\0``, ``\1``, ``\2``, ..., for hypotheses, as we did in this example.
 
+.. _propositional_logic:
+
 Propositional Logic
 -------------------
 
@@ -310,6 +312,8 @@ They all take values in ``Prop``.
 The order of operations is as follows: unary negation ``¬`` binds most strongly, then ``∧``, then ``∨``, then ``→``, and finally ``↔``. For example, ``a ∧ b → c ∨ d ∧ e`` means ``(a ∧ b) → (c ∨ (d ∧ e))``. Remember that ``→`` associates to the right (nothing changes now that the arguments are elements of ``Prop``, instead of some other ``Type``), as do the other binary connectives. So if we have ``p q r : Prop``, the expression ``p → q → r`` reads "if ``p``, then if ``q``, then ``r``." This is just the "curried" form of ``p ∧ q → r``.
 
 In the last chapter we observed that lambda abstraction can be viewed as an "introduction rule" for ``→``. In the current setting, it shows how to "introduce" or establish an implication. Application can be viewed as an "elimination rule," showing how to "eliminate" or use an implication in a proof. The other propositional connectives are defined in Lean's library in the file ``init.core`` (see :numref:`importing_files` for more information on the library hierarchy), and each connective comes with its canonical introduction and elimination rules.
+
+.. _conjunction:
 
 Conjunction
 ~~~~~~~~~~~

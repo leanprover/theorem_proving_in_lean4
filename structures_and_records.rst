@@ -81,9 +81,9 @@ Given ``p : point nat``, the notation ``p.x`` is shorthand for ``point.x p``. Th
     -- BEGIN
     def p := point.mk 10 20
 
-    #check p.x -- nat
-    #reduce  p.x -- 10
-    #reduce  p.y -- 20
+    #check p.x  -- nat
+    #reduce p.x  -- 10
+    #reduce p.y  -- 20
     -- END
 
 If the constructor is not provided, then a constructor is named ``mk`` by default.
@@ -99,7 +99,74 @@ If the constructor is not provided, then a constructor is named ``mk`` by defaul
     -- END
     end hidden
 
-You can provide universe levels explicitly. The annotations in the next example force the parameters ``α`` and ``β`` to be types from the same universe, and set the return type to also be in the same universe.
+The dot notation is convenient not just for accessing the projections of a record, but also for applying functions defined in a namespace with the same name. Recall from :numref:`conjunction` that if ``p`` has type ``point``, the expression ``p.foo`` is interpreted as ``point.foo p``, assuming that the first non-implicit argument to ``foo`` has type ``point``. The expression ``p.add q`` is therefore shorthand for ``point.add p q`` in the example below.
+
+.. code-block:: lean
+
+    structure point (α : Type) :=
+    mk :: (x : α) (y : α)
+
+    namespace point
+
+    def add (p q : point ℕ) := mk (p.x + q.x) (p.y + q.y)
+
+    end point
+
+    def p : point ℕ := point.mk 1 2
+    def q : point ℕ := point.mk 3 4
+
+    #reduce p.add q  -- {x := 4, y := 6}
+
+In the next chapter, you will learn how to define a function like ``add`` so that it works generically for elements of ``point α`` rather than just ``point ℕ``, assuming ``α`` has an associated addition operation.
+
+More generally, given an expression ``p.foo x y z``, Lean will insert ``p`` at the first non-implicit argument to ``foo`` of type ``point``. For example, with the definition of scalar multiplication below, ``p.smul 3`` is interpreted as ``point.smul 3 p``.
+
+.. code-block:: lean
+
+    structure point (α : Type) :=
+    mk :: (x : α) (y : α)
+
+    def point.smul (n : ℕ) (p : point ℕ) := 
+    point.mk (n * p.x) (n * p.y)
+
+    def p : point ℕ := point.mk 1 2
+
+    #reduce p.smul 3  -- {x := 3, y := 6}
+
+It is common to use a similar trick with the ``list.map`` function, which takes a list as its second non-implicit argument:
+
+.. code-block:: lean
+
+    #check @list.map  
+    -- Π {α : Type u_1} {β : Type u_2}, (α → β) → list α → list β
+
+    def l : list nat := [1, 2, 3]
+    def f : nat → nat := λ x, x * x
+
+    #eval l.map f  -- [1, 4, 9]
+
+Here ``l.map f`` is interpreted as ``list.map f l``.
+
+If you have a structure definition that depends on a type, you can make it polymorphic over universe levels using a previously declared universe variable, declaring a universe variable on the fly, or using an underscore:
+
+.. code-block:: lean
+
+    universe u
+
+    structure point (α : Type u) :=
+    mk :: (x : α) (y : α)
+    
+    structure {v} point2 (α : Type v) :=
+    mk :: (x : α) (y : α)
+
+    structure point3 (α : Type _) :=
+    mk :: (x : α) (y : α)
+
+    #check @point
+    #check @point2
+    #check @point3
+
+The three variations have the same net effect. The annotations in the next example force the parameters ``α`` and ``β`` to be types from the same universe, and set the return type to also be in the same universe.
 
 .. code-block:: lean
 
@@ -114,9 +181,7 @@ You can provide universe levels explicitly. The annotations in the next example 
     -- END
     end hidden
 
-The ``set_option`` command above instructs Lean to display the universe levels.
-
-We use ``max 1 l`` as the resultant universe level to ensure the universe level is never ``0`` even when the parameter ``α`` and ``β`` are propositions. Recall that in Lean, ``Type 0`` is ``Prop``, which is impredicative and proof irrelevant.
+The ``set_option`` command above instructs Lean to display the universe levels. Here we have used ``max 1 l`` as the resultant universe level to ensure the universe level is never ``0`` even when the parameter ``α`` and ``β`` are propositions. Recall that in Lean, ``Type 0`` is ``Prop``, which is impredicative and proof irrelevant.
 
 We can use the anonymous constructor notation to build structure values whenever the expected type is known.
 
@@ -153,7 +218,7 @@ The prefix ``structure-name .`` can be omitted whenever the name of the structur
     structure point (α : Type) :=
     mk :: (x : α) (y : α)
 
-    #check { point . x := 10, y := 20 }   -- point ℕ
+    #check { point . x := 10, y := 20 }  -- point ℕ
     #check { point . y := 20, x := 10 }
     #check ({x := 10, y := 20} : point nat)
 
@@ -169,13 +234,7 @@ If the value of a field is not specified, Lean tries to infer it. If the unspeci
 
     #check { my_struct . a := 10, b := true }
 
-*Record update* is another common operation. It consists in creating a new record object by modifying the value of one or more fields. Lean provides a variation of the notation described above for record updates.
-
-.. code-block:: text
-
-    { record-obj with (<field-name> := <expr>)* }
-
-The semantics are straightforward: record objects ``<record-obj>`` provide the values for the unspecified fields. If more than one record object is provided, then they are visited in order until Lean finds one the contains the unspecified field. Lean raises an error if any of the field names remain unspecified after all the objects are visited.
+*Record update* is another common operation which amounts to creating a new record object by modifying the value of one or more fields in an old one. Lean allows you to specify that unassigned fields in the specification of a record should be taken from a previous defined record  object ``r`` by adding the annotation ``..r`` after the field assignments. If more than one record object is provided, then they are visited in order until Lean finds one the contains the unspecified field. Lean raises an error if any of the field names remain unspecified after all the objects are visited.
 
 .. code-block:: lean
 
@@ -185,8 +244,19 @@ The semantics are straightforward: record objects ``<record-obj>`` provide the v
     def p : point nat :=
     {x := 1, y := 2}
 
-    #reduce {p with y := 3}
-    #reduce {p with x := 3}
+    #reduce {y := 3, ..p}  -- {x := 1, y := 3}
+    #reduce {x := 4, ..p}  -- {x := 4, y := 2}
+
+    structure point3 (α : Type) :=
+    mk :: (x : α) (y : α) (z : α)
+
+    def q : point3 nat :=
+    {x := 5, y := 5, z := 5}
+
+    def r : point3 nat := {x := 6, ..p, ..q}
+
+    #print r  -- {x := 6, y := p.y, z := q.z}
+    #reduce r  -- {x := 6, y := 2, z := 5}
 
 Inheritance
 -----------
