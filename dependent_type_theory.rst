@@ -637,7 +637,7 @@ It is clear that ``cons α`` should have type ``α → list α → list α``. Bu
 
 This is an instance of a *Pi type*, or *dependent function type*. Given ``α : Type`` and ``β : α → Type``, think of ``β`` as a family of types over ``α``, that is, a type ``β a`` for each ``a : α``. In that case, the type ``Π x : α, β x`` denotes the type of functions ``f`` with the property that, for each ``a : α``, ``f a`` is an element of ``β a``. In other words, the type of the value returned by ``f`` depends on its input.
 
-Notice that ``Π x : α, β`` makes sense for any expression ``β : Type``. When the value of ``β`` depends on ``x`` (as does, for example, the expression ``β x`` in the previous paragraph), ``Π x : α, β`` denotes a dependent function type. When ``β`` doesn't depend on ``x``, ``Π x : α, β`` is no different from the type ``α → β``. Indeed, in dependent type theory (and in Lean), the Pi construction is fundamental, and ``α → β`` is just notation for ``Π x : α, β`` when ``β`` does not depend on ``α``.
+Notice that ``Π x : α, β`` makes sense for any expression ``β : Type``. When the value of ``β`` depends on ``x`` (as does, for example, the expression ``β x`` in the previous paragraph), ``Π x : α, β`` denotes a dependent function type. When ``β`` doesn't depend on ``x``, ``Π x : α, β`` is no different from the type ``α → β``. Indeed, in dependent type theory (and in Lean), the Pi construction is fundamental, and ``α → β`` is just notation for ``Π x : α, β`` when ``β`` does not depend on ``x``.
 
 Returning to the example of lists, we can model some basic list operations as follows. We use ``namespace hide`` to avoid a naming conflict with the ``list`` type defined in the standard library.
 
