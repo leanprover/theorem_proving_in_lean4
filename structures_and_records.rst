@@ -289,7 +289,7 @@ In the next example, we define a structure using multiple inheritance, and then 
 
     def p   : point nat := {x := 10, y := 10, z := 20}
     def rgp : red_green_point nat :=
-    {p with red := 200, green := 40, blue := 0, no_blue := rfl}
+    {red := 200, green := 40, blue := 0, no_blue := rfl, ..p}
 
     example : rgp.x   = 10 := rfl
     example : rgp.red = 200 := rfl
