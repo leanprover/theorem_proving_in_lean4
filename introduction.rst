@@ -56,9 +56,8 @@ If you are reading the book online, you will see a button that reads "try it!" P
 Acknowledgments
 ---------------
 
-This tutorial is an open access project maintained on Github. Many people have contributed to the effort, providing corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Nathan Carter, Amine Chaieb, William DeMeo, Floris van Doorn, Anthony Hart, Sean Leather, Assia Mahboubi, Patrick Massot, Christopher John Mazey, Sebastian Ullrich, Daniel Velleman, and Théo Zimmerman for their contributions, and we apologize to those whose names we have inadvertently omitted.
+This tutorial is an open access project maintained on Github. Many people have contributed to the effort, providing corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Mario Carneiro, Nathan Carter, Amine Chaieb, William DeMeo, Floris van Doorn, Gabriel Ebner, Anthony Hart, Simon Hudon, Sean Leather, Assia Mahboubi, Patrick Massot, Christopher John Mazey, Sebastian Ullrich, Daniel Velleman, and Théo Zimmerman for their contributions, and we apologize to those whose names we have inadvertently omitted.
 
 .. [CoHu88] Thierry Coquand and Gerard Huet. The calculus of constructions. Inf. Comput., 76(2-3):95–120, February 1988.
 
 .. [Dybj94] Peter Dybjer. Inductive families. Formal Asp. Comput., 6(4):440–465, 1994.
-
