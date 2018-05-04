@@ -1248,7 +1248,7 @@ As with the rewriter, the simplifier behaves appropriately in algebraic structur
     example (x y z w : α) : x * y + z * w  * x = x * w * z + y * x :=
     by simp
 
-As with ``rewrite``, you can send ``simp`` a list of facts to use, including general lemmas, local hypotheses, definitions to unfold, and compound expressions. The ``simp`` tactic does not recognize the ``-t`` syntax, so to use an identity in the other direction you need to use ``eq.symm`` explicitly. In any case, the additional rules are added to the collection of identities that are used to simplify a term.
+As with ``rewrite``, you can send ``simp`` a list of facts to use, including general lemmas, local hypotheses, definitions to unfold, and compound expressions. The ``simp`` tactic does not recognize the ``←t`` syntax that ``rewrite`` does, so to use an identity in the other direction you need to use ``eq.symm`` explicitly. In any case, the additional rules are added to the collection of identities that are used to simplify a term.
 
 .. code-block:: lean
 
