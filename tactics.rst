@@ -444,10 +444,10 @@ The mnemonic in the notation above is that you are generalizing the goal by sett
     begin
       generalize : 3 = x,
       -- goal is x : ℕ ⊢ 2 + x = 5,
-      admit
+      sorry
     end
 
-In this example, ``admit`` is nothing more than the tactic version of ``sorry``. It closes the current goal, producing the usual warning that ``sorry`` has been used. To preserve the validity of the previous goal, the ``generalize`` tactic allows us to record the fact that ``3`` has been replaced by ``x``. All we need to do is to provide a label, and ``generalize`` uses it to store the assignment in the local context:
+In this example, the ``sorry`` tactic is the analogue of the ``sorry`` proof term. It closes the current goal, producing the usual warning that ``sorry`` has been used. To preserve the validity of the previous goal, the ``generalize`` tactic allows us to record the fact that ``3`` has been replaced by ``x``. All we need to do is to provide a label, and ``generalize`` uses it to store the assignment in the local context:
 
 .. code-block:: lean
 
@@ -1580,4 +1580,4 @@ Exercises
 
        example (p q r : Prop) (hp : p) : 
        (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) :=
-       by admit
+       by sorry
