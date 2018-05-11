@@ -552,7 +552,7 @@ Lean's standard library defines two predicates, ``acc r a`` and ``well_founded r
  
     #check (well_founded r : Prop)
 
-The first, ``acc``, is an inductively defined predicate. According to its definition, ``acc r x`` is equivalent to ``∀ y, r y x → acc y``. If you think of ``r y x`` as denoting a kind of order relation ``y ≺ x``, then ``acc r x`` says that ``x`` is accessible from below, in the sense that all its predecessors are accessible. In particular, if ``x`` has no predecessors, it is accessible. Given any type ``α``, we should be able to assign a value to each accessible element of ``α``, recursively, by assigning values to all its predecessors first.
+The first, ``acc``, is an inductively defined predicate. According to its definition, ``acc r x`` is equivalent to ``∀ y, r y x → acc r y``. If you think of ``r y x`` as denoting a kind of order relation ``y ≺ x``, then ``acc r x`` says that ``x`` is accessible from below, in the sense that all its predecessors are accessible. In particular, if ``x`` has no predecessors, it is accessible. Given any type ``α``, we should be able to assign a value to each accessible element of ``α``, recursively, by assigning values to all its predecessors first.
 
 The statement that ``r`` is well founded, denoted ``well_founded r``, is exactly the statement that every element of the type is accessible. By the above considerations, if ``r`` is a well-founded relation on a type ``α``, we should have a principle of well-founded recursion on ``α``, with respect to the relation ``r``. And, indeed, we do: the standard library defines ``well_founded.fix``, which serves exactly that purpose.
 
@@ -570,7 +570,7 @@ The statement that ``r`` is well founded, denoted ``well_founded r``, is exactly
 
 There is a long cast of characters here, but the first block we have already seen: the type, ``α``, the relation, ``r``, and the assumption, ``h``, that ``r`` is well founded. The variable ``C`` represents the motive of the recursive definition: for each element ``x : α``, we would like to construct an element of ``C x``. The function ``F`` provides the inductive recipe for doing that: it tells us how to construct an element ``C x``, given elements of ``C y`` for each predecessor ``y`` of ``x``.
 
-Note that ``well_founded.fix`` works equally well as an induction principle. It says that if ``≺`` is well founded and you want to prove ``∀ x, C x``, it suffices to show that for an arbitrary ``x``, if we have ``∀ y ≺ x, C x``, then we have ``C x``.
+Note that ``well_founded.fix`` works equally well as an induction principle. It says that if ``≺`` is well founded and you want to prove ``∀ x, C x``, it suffices to show that for an arbitrary ``x``, if we have ``∀ y ≺ x, C y``, then we have ``C x``.
 
 Lean knows that the usual order ``<`` on the natural numbers is well founded. It also knows a number of ways of constructing new well founded orders from others, for example, using lexicographic order. For example, here is essentially the definition of division on the natural numbers that is found in the standard library.
 
