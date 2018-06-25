@@ -59,10 +59,10 @@ It asserts that when two propositions imply one another, they are actually equal
       variables a b c d e : Prop
       variable p : Prop → Prop
 
-      example (h : a ↔ b) : (c ∧ a ∧ d → e) ↔ (c ∧ b ∧ d → e) :=
+      theorem thm₁ (h : a ↔ b) : (c ∧ a ∧ d → e) ↔ (c ∧ b ∧ d → e) :=
       propext h ▸ iff.refl _
 
-      example (h : a ↔ b) (h₁ : p a) : p b :=
+      theorem thm₂ (h : a ↔ b) (h₁ : p a) : p b :=
       propext h ▸ h₁
     end
 
@@ -236,7 +236,7 @@ In its most basic form, the quotient construction does not even require ``r`` to
     -- END
     end hidden
 
-The first one forms a type ``quot r`` given a type ``α`` by any binary relation ``r`` on ``α``. The second maps ``α`` to ``quot α``, so that for any ``a : α``, ``quot.mk a`` is an element of ``quot r``. The third principle, ``quot.ind``, says that every element of ``quot.mk a`` is of this form. Given any function ``f`` and a proof ``h`` that respects the relation ``r``, ``quot.lift f h`` is the corresponding function on ``quot r``. The idea is that for any element ``a`` in ``α``, ``quot.lift f h`` is the function which maps ``quot.mk r a`` to ``f a``, wherein ``h`` shows that this function is well defined. In fact, the computation principle is declared as a reduction rule, as the proof below makes clear.
+The first one forms a type ``quot r`` given a type ``α`` by any binary relation ``r`` on ``α``. The second maps ``α`` to ``quot α``, so that if ``r : α → α → Prop`` and ``a : α``, then ``quot.mk r a`` is an element of ``quot r``. The third principle, ``quot.ind``, says that every element of ``quot.mk r a`` is of this form.  As for ``quot.lift``, given a function ``f : α → β``, if ``h`` is a proof that ``f`` respects the relation ``r``, then ``quot.lift f h`` is the corresponding function on ``quot r``. The idea is that for each element ``a`` in ``α``, the function ``quot.lift f h`` maps ``quot.mk r a`` (the ``r``-class containing ``a``) to ``f a``, wherein ``h`` shows that this function is well defined. In fact, the computation principle is declared as a reduction rule, as the proof below makes clear.
 
 .. code-block:: lean
 
@@ -292,7 +292,7 @@ What makes the ``quot`` construction into a bona fide quotient is the following 
 
 This is the axiom that asserts that any two elements of ``α`` that are related by ``r`` become identified in the quotient. If a theorem or definition makes use of ``quot.sound``, it will show up in the ``#print axioms`` command.
 
-Of course, the quotient construction is most commonly used in situations when ``r`` is an equivalence relation. Given ``r`` as above, it is not hard to see that the relation ``r' a b`` defined by ``quot.mk r a = quot.mk r b`` is an equivalence relation. The axiom ``quot.sound`` says that ``r a b`` implies ``r' a b``. Using ``quot.lift`` and ``quot.ind``, we can show that the latter is the smallest equivalence relation containing ``r``, in the sense that if ``r'' a b`` is any equivalence relation containing ``r``, then ``r' a b`` implies ``r'' a b``. In particular, if ``r`` was an equivalence relation to start with, then ``r a b`` holds iff ``r' a b`` for every ``a`` and ``b``.
+Of course, the quotient construction is most commonly used in situations when ``r`` is an equivalence relation. Given ``r`` as above, if we define `r'` according to the rule `r' a b` iff `quot.mk r a = quot.mk r b`, then it's clear that `r'` is an equivalence relation. Indeed, `r'` is the *kernel* of the function ``a ↦ quot.mk r``.  The axiom ``quot.sound`` says that ``r a b`` implies ``r' a b``. Using ``quot.lift`` and ``quot.ind``, we can show that ``r'`` is the smallest equivalence relation containing ``r``, in the sense that if ``r''`` is any equivalence relation containing ``r``, then ``r' a b`` implies ``r'' a b``. In particular, if ``r`` was an equivalence relation to start with, then for all ``a`` and ``b`` we have ``r a b`` iff ``r' a b``.
 
 To support this common use case, the standard library defines the notion of a *setoid*, which is simply a type with an associated equivalence relation:
 
