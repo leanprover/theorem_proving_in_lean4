@@ -86,7 +86,7 @@ Pattern matching works with any inductive type, such as products and option type
     | (some n) := n + 1
     | none     := 0
 
-Here we use it not only to define a function, but also carry out a proof by cases:
+Here we use it not only to define a function, but also to carry out a proof by cases:
 
 .. code-block:: lean
 
@@ -347,7 +347,7 @@ Generally speaking, the equation compiler processes input of the following form:
     ...
     | [patternsₙ] := tₙ 
 
-Here ``(a : α)`` is a sequence of parameters, ``(b : β)`` is the sequence of arguments on which pattern matching takes place, and ``γ`` is any type, which can depend on ``a`` and ``b``. Each line should contain the same number of patterns, one for each element of ``b``. As we have seen, a pattern is either a variable, a constructor applied to other patterns, or an expression that normalizes to something of that form (where the non-constructors are marked with the ``[pattern]`` attribute). The appearance of constructors prompt case splits, with the arguments to the constructors represented by the given variables. In :numref:`dependent_pattern_matching`, we will see that it is sometimes necessary to include explicit terms in patterns that are needed to make an expression type check, though they do not play a role in pattern matching. These are called "inaccessible terms," for that reason. But we will not need to use such inaccessible terms before :numref:`dependent_pattern_matching`.
+Here ``(a : α)`` is a sequence of parameters, ``(b : β)`` is the sequence of arguments on which pattern matching takes place, and ``γ`` is any type, which can depend on ``a`` and ``b``. Each line should contain the same number of patterns, one for each element of β. As we have seen, a pattern is either a variable, a constructor applied to other patterns, or an expression that normalizes to something of that form (where the non-constructors are marked with the ``[pattern]`` attribute). The appearances of constructors prompt case splits, with the arguments to the constructors represented by the given variables. In :numref:`dependent_pattern_matching`, we will see that it is sometimes necessary to include explicit terms in patterns that are needed to make an expression type check, though they do not play a role in pattern matching. These are called "inaccessible terms," for that reason. But we will not need to use such inaccessible terms before :numref:`dependent_pattern_matching`.
 
 As we saw in the last section, the terms ``t₁, ..., tₙ`` can make use of any of the parameters ``a``, as well as any of the variables that are introduced in the corresponding patterns. What makes recursion and induction possible is that they can also involve recursive calls to ``foo``. In this section, we will deal with *structural recursion*, in which the arguments to ``foo`` occurring on the right-hand side of the ``:=`` are subterms of the patterns on the left-hand side. The idea is that they are structurally smaller, and hence appear in the inductive type at an earlier stage. Here are some examples of structural recursion from the last chapter, now defined using the equation compiler:
 
@@ -540,7 +540,7 @@ Well-Founded Recursion and Induction
 
 Dependent type theory is powerful enough to encode and justify well-founded recursion. Let us start with the logical background that is needed to understand how it works.
 
-Lean's standard library defines two predicates, ``acc r a`` and ``well_founded r``, where ``r`` is a binary relation on a type ``α`` and an element ``x`` of ``α``.
+Lean's standard library defines two predicates, ``acc r a`` and ``well_founded r``, where ``r`` is a binary relation on a type ``α``, and ``a`` is an element of type ``α``.
 
 .. code-block:: lean
 
@@ -572,7 +572,9 @@ There is a long cast of characters here, but the first block we have already see
 
 Note that ``well_founded.fix`` works equally well as an induction principle. It says that if ``≺`` is well founded and you want to prove ``∀ x, C x``, it suffices to show that for an arbitrary ``x``, if we have ``∀ y ≺ x, C y``, then we have ``C x``.
 
-Lean knows that the usual order ``<`` on the natural numbers is well founded. It also knows a number of ways of constructing new well founded orders from others, for example, using lexicographic order. For example, here is essentially the definition of division on the natural numbers that is found in the standard library.
+Lean knows that the usual order ``<`` on the natural numbers is well founded. It also knows a number of ways of constructing new well founded orders from others, for example, using lexicographic order. 
+
+Here is essentially the definition of division on the natural numbers that is found in the standard library.
 
 .. code-block:: lean
 
@@ -619,7 +621,7 @@ The equation compiler is designed to make definitions like this more convenient.
 
 When the equation compiler encounters a recursive definition, it first tries structural recursion, and only when that fails, does it fall back on well-founded recursion. In this case, detecting the possibility of well-founded recursion on the natural numbers, it uses the usual lexicographic ordering on the pair ``(x, y)``. The equation compiler in and of itself is not clever enough to derive that ``x - y`` is less than ``x`` under the given hypotheses, but we can help it out by putting this fact in the local context. The equation compiler looks in the local context for such information, and, when it finds it, puts it to good use. 
 
-The defining equation for ``div`` does *not* hold definitionally, but the equation is available to ``rewrite`` and ``simp``. The simplifier will loop if you apply it blindly, by ``rewrite`` will do the trick.
+The defining equation for ``div`` does *not* hold definitionally, but the equation is available to ``rewrite`` and ``simp``. The simplifier will loop if you apply it blindly, but ``rewrite`` will do the trick.
 
 .. code-block:: lean
 
@@ -639,10 +641,6 @@ The defining equation for ``div`` does *not* hold definitionally, but the equati
     example (x y : ℕ) :  
       div x y = if 0 < y ∧ y ≤ x then div (x - y) y + 1 else 0 :=
     by rw [div]
-
-    example (x y : ℕ) (h : 0 < y ∧ y ≤ x) : 
-      div x y = div (x - y) y + 1 :=
-    by rw [div, if_pos h]
 
     example (x y : ℕ) (h : 0 < y ∧ y ≤ x) : 
       div x y = div (x - y) y + 1 :=
