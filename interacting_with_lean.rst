@@ -261,7 +261,7 @@ Attributes
 
 The main function of Lean is to translate user input to formal expressions that are checked by the kernel for correctness and then stored in the environment for later use. But some commands have other effects on the environment, either assigning attributes to objects in the environment, defining notation, or declaring instances of type classes, as described in :numref:`Chapter %s <type_classes>`. Most of these commands have global effects, which is to say, that they remain in effect not only in the current file, but also in any file that imports it. However, such commands can often be prefixed with the ``local`` modifier, which indicates that they only have effect until the current ``section`` or ``namespace`` is closed, or until the end of the current file.
 
-In :numref:`using_the_simplifier`, we saw that theorems can be annotated with the ``[simp]`` attribute, which makes them available for use by the simplifier. The following example defines divisibility on the natural numbers, uses it to make the natural numbers an instance of a type for which the divisibility notation ``\|`` is available (the ``instance`` command will be explained in :numref:`Chapter %s <type_classes>`), and assign the ``[simp]`` attribute.
+In :numref:`using_the_simplifier`, we saw that theorems can be annotated with the ``[simp]`` attribute, which makes them available for use by the simplifier. The following example defines divisibility on the natural numbers, uses it to make the natural numbers an instance of a type for which the divisibility notation ``\|`` is available (the ``instance`` command will be explained in :numref:`Chapter %s <type_classes>`), and assigns the ``[simp]`` attribute.
 
 .. code-block:: lean
 
