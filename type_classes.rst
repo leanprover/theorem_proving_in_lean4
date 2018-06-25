@@ -124,7 +124,7 @@ Sometimes we want to think of the default element of a type as being an *arbitra
 Chaining Instances
 ------------------
 
-If that were the extent of type class inference, it would not be all the impressive; it would be simply a mechanism of storing a list of instances for the elaborator to find in a lookup table. What makes type class inference powerful is that one can *chain* instances. That is, an instance declaration can in turn depend on an implicit instance of a type class. This causes class inference to chain through instances recursively, backtracking when necessary, in a Prolog-like search.
+If that were the extent of type class inference, it would not be all that impressive; it would be simply a mechanism of storing a list of instances for the elaborator to find in a lookup table. What makes type class inference powerful is that one can *chain* instances. That is, an instance declaration can in turn depend on an implicit instance of a type class. This causes class inference to chain through instances recursively, backtracking when necessary, in a Prolog-like search.
 
 For example, the following definition shows that if two types ``α`` and ``β`` are inhabited, then so is their product:
 
@@ -139,7 +139,7 @@ For example, the following definition shows that if two types ``α`` and ``β`` 
     -- END
     end hidden
 
-With this added to the earlier instance declarations, type class instance can infer, for example, a default element of ``nat × bool × unit``:
+With this added to the earlier instance declarations, type class instance can infer, for example, a default element of ``nat × bool``:
 
 .. code-block:: lean
 
@@ -315,7 +315,7 @@ Thus we can carry out definitions by cases on decidable predicates on the natura
 
 Turning on implicit arguments shows that the elaborator has inferred the decidability of the proposition ``x < a ∨ x > b``, simply by applying appropriate instances.
 
-With the classical axioms, we can prove that every proposition is decidable. You can import the classical axioms and make the generic instance of decidability available by including this at the type of your file:
+With the classical axioms, we can prove that every proposition is decidable. You can import the classical axioms and make the generic instance of decidability available by including this at the top of your file:
 
 .. code-block:: lean
 
@@ -346,7 +346,7 @@ The ``decidable`` type class also provides a bit of small-scale automation for p
 
     end hidden
 
-They work as follows. The expression ``as_true c`` tries to infer a decision procedure for ``c``, and, if it is successful, evaluates to either ``true`` or ``false``. In particular, if ``c`` is a true closed expression, ``as_true c`` will reduce definitionally to ``true``. On the assumption that ``as_true c`` holds, ``of_as_true`` produces a proof of ``c``. The notation ``dec_trivial`` puts it all together: to prove a target ``c``, it applies ``of_as_true`` and then using the ``triv`` tactic to prove ``as_true c``. By the previous observations, it will succeed any time the inferred decision procedure for ``c`` has enough information to evaluate, definitionally, to the ``is_true`` case. Here is an example of how ``dec_trivial`` can be used:
+They work as follows. The expression ``as_true c`` tries to infer a decision procedure for ``c``, and, if it is successful, evaluates to either ``true`` or ``false``. In particular, if ``c`` is a true closed expression, ``as_true c`` will reduce definitionally to ``true``. On the assumption that ``as_true c`` holds, ``of_as_true`` produces a proof of ``c``. The notation ``dec_trivial`` puts it all together: to prove a target ``c``, it applies ``of_as_true`` and then uses the ``triv`` tactic to prove ``as_true c``. By the previous observations, ``dec_trivial`` will succeed any time the inferred decision procedure for ``c`` has enough information to evaluate, definitionally, to the ``is_true`` case. Here is an example of how ``dec_trivial`` can be used:
 
 .. code-block:: lean
 
@@ -704,7 +704,7 @@ As a result, it is a prime candidate for the third type of coercion.
                 ... = f a * f a * f a : by rw [resp_mul f]
     -- END
 
-With the coercion in place, we can write ``f (a * a * a)`` instead of ``morphism.mor f (a * a * a)``. When the ``morphism``, ``f``, is used where a function is expected, Lean inserts the coercion. Similar to ``has_coe_to_sort``, we have yet another class ``has_coe_to_fun`` for the this class of coercions. The field ``F`` is used to specify function type we are coercing too. This type may depend on the type we are coercing from.
+With the coercion in place, we can write ``f (a * a * a)`` instead of ``morphism.mor f (a * a * a)``. When the ``morphism``, ``f``, is used where a function is expected, Lean inserts the coercion. Similar to ``has_coe_to_sort``, we have yet another class ``has_coe_to_fun`` for this class of coercions. The field ``F`` is used to specify the function type we are coercing to. This type may depend on the type we are coercing from.
 
 Finally, ``⇑f`` and ``↥S`` are notations for ``coe_fn f`` and ``coe_sort S``. They are the coercion operators for the function and sort classes.
 
