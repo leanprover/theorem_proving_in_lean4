@@ -241,7 +241,7 @@ In fact, by the propositions-as-types correspondence, we can declare the assumpt
 
     theorem t1 : q → p := λ (hq : q), hp
 
-Lean detects that the proof uses ``hp`` and automatically adds ``hp : p`` as a premise. In all cases, the command ``#check t1`` still yields ``∀ p q : Prop, p → q → p``. Remember the this type can just as well be written ``∀ (p q : Prop) (hp : p) (hq :q), p``, since the arrow denotes nothing more than a Pi type in which the target does not depend on the bound variable.
+Lean detects that the proof uses ``hp`` and automatically adds ``hp : p`` as a premise. In all cases, the command ``#check t1`` still yields ``∀ p q : Prop, p → q → p``. Remember that this type can just as well be written ``∀ (p q : Prop) (hp : p) (hq :q), p``, since the arrow denotes nothing more than a Pi type in which the target does not depend on the bound variable.
 
 When we generalize ``t1`` in such a way, we can then apply it to different pairs of propositions, to obtain different instances of the general theorem.
 
