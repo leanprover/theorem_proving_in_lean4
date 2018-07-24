@@ -146,7 +146,7 @@ Thus, for example, we can specialize the example from the previous section to th
 .. code-block:: lean
 
     universe u
-    variables (α : Type) (a b c d : α)
+    variables (α : Type u) (a b c d : α)
     variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
     example : a = d :=
