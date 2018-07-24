@@ -322,7 +322,7 @@ The style of writing proofs is most effective when it is used in conjunction wit
 
 In the next chapter, we will see that hypotheses can be introduced, renamed, and modified by tactics, so it is not always clear what the names in ``rw h1`` refer to (though, in this case, it is). For that reason, section variables and variables that only appear in a tactic command or block are not automatically added to the context. The ``include`` command takes care of that. Essentially, the ``rewrite`` tactic uses a given equality (which can be a hypothesis, a theorem name, or a complex term) to "rewrite" the goal. If doing so reduces the goal to an identity ``t = t``, the tactic applies reflexivity to prove it.
 
-Rewrites can applied sequentially, so that the proof above can be shortened to this:
+Rewrites can be applied sequentially, so that the proof above can be shortened to this:
 
 .. code-block:: lean
 
