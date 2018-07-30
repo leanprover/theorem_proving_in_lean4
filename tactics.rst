@@ -1328,7 +1328,7 @@ One thing that makes the simplifier especially useful its capabilities can grow 
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
-Then for any list ``xs``, ``reverse (mk_symm xs)`` is equal to ``xs``, which can easily be proved by unfolding the definition:
+Then for any list ``xs``, ``reverse (mk_symm xs)`` is equal to ``mk_symm xs``, which can easily be proved by unfolding the definition:
 
 .. code-block:: lean
 
