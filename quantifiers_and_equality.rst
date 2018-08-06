@@ -759,7 +759,7 @@ We can also ``assume`` a hypothesis without giving it a label:
 
 In contrast to the usage with ``have``, an anonymous ``assume`` needs an extra colon. The reason is that Lean allows us to write ``assume h`` to introduce a hypothesis without specifying it, and without the colon it would be ambiguous as to whether the ``h`` here is meant as the label or the assumption.
 
-As with the anonymous ``have``, when you use an anonymous``assume`` to introduce an assumption, that assumption can also be invoked later in the proof by enclosing it in French quotes.
+As with the anonymous ``have``, when you use an anonymous ``assume`` to introduce an assumption, that assumption can also be invoked later in the proof by enclosing it in French quotes.
 
 .. code-block:: lean
 
