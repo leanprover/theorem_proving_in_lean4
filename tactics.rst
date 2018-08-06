@@ -250,9 +250,9 @@ The ``assumption`` tactic looks through the assumptions in context of the curren
 
 .. code-block:: lean
 
+    -- BEGIN
     variables x y z w : ℕ
 
-    -- BEGIN
     example (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w :=
     begin
       apply eq.trans h₁,
