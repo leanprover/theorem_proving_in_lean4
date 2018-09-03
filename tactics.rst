@@ -1466,7 +1466,7 @@ The attribute can also be applied any time after the theorem is declared:
     by simp at h; assumption
     -- END
 
-Once the attribute is applied, however, there is no way to remove it; it persists in any file that imports the one where the attribute is assigned. As we will see in :numref:`attributes`, one can limit the scope of an attribute to the current file or section using the ``local attribute`` command:
+Once the attribute is applied, however, there is no way to remove it; it persists in any file that imports the one where the attribute is assigned. As we will discuss further in :numref:`attributes`, one can limit the scope of an attribute to the current file or section using the ``local attribute`` command:
 
 .. code-block:: lean
 
