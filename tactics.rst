@@ -547,7 +547,7 @@ Here is another example:
 
 Here the semicolon after ``split`` tells Lean to apply the ``assumption`` tactic to both of the goals that are introduced by splitting the conjunction; see :numref:`tactic_combinators` for more information.
 
-These tactics can be used on data just as well as propositions. In the next two example, they are used to define functions which swap the components of the product and sum types:
+These tactics can be used on data just as well as propositions. In the next two examples, they are used to define functions which swap the components of the product and sum types:
 
 .. code-block:: lean
 
