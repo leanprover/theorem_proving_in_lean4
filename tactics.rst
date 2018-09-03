@@ -1197,9 +1197,9 @@ As with ``rw``, you can use the keyword ``at`` to simplify a hypothesis:
 
 .. code-block:: lean
 
+    -- BEGIN
     variables (x y z : ℕ) (p : ℕ → Prop)
 
-    -- BEGIN
     example (h : p ((x + 0) * (0 + y * 1 + z * 0))) : 
       p (x * y) :=
     by { simp at h, assumption }
