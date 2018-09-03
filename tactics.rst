@@ -789,7 +789,7 @@ Lean also has a ``let`` tactic, which is similar to the ``have`` tactic, but is 
       reflexivity
     end
 
-As with ``have``, you can leave the type implicit by writing ``let a : ℕ := 3 * 2``. The difference between ``let`` and ``have`` is that ``let`` introduces a local definition in the context, so that the definition of the local constant can be unfolded in the proof.
+As with ``have``, you can leave the type implicit by writing ``let a := 3 * 2``. The difference between ``let`` and ``have`` is that ``let`` introduces a local definition in the context, so that the definition of the local constant can be unfolded in the proof.
 
 For even more structured proofs, you can nest ``begin...end`` blocks within other ``begin...end`` blocks. In a nested block, Lean focuses on the first goal, and generates an error if it has not been fully solved at the end of the block. This can be helpful in indicating the separate proofs of multiple subgoals introduced by a tactic.
 
