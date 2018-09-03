@@ -478,7 +478,7 @@ Some additional tactics are useful for constructing and destructing propositions
       left, exact hq
     end
 
-After ``cases h`` is applied, there are two goals. In the first, the hypothesis ``h : p ∨ q`` is replaced by ``hp : p``, and in the second, it is replaced by ``hq : q``. The ``cases`` can also be used to decompose a conjunction.
+After ``cases h`` is applied, there are two goals. In the first, the hypothesis ``h : p ∨ q`` is replaced by ``hp : p``, and in the second, it is replaced by ``hq : q``. The ``cases`` tactic can also be used to decompose a conjunction.
 
 .. code-block:: lean
 
