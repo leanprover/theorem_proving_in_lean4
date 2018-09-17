@@ -380,8 +380,8 @@ To illustrate the difference, consider the following example, which shows that a
 
 .. code-block:: lean
 
-    namespace hidden
     -- BEGIN
+    namespace hidden
     variables {α : Type} (r : α → α → Prop)
 
     definition reflexive  : Prop := ∀ (a : α), r a a
@@ -413,8 +413,8 @@ To illustrate the difference, consider the following example, which shows that a
     theorem th3 (reflr : reflexive r) (euclr : euclidean r) : 
       transitive r :=
     @th2 _ _ (@th1 _ _ reflr @euclr) @euclr
-    -- END
     end hidden
+    -- END
 
 The results are broken down into small steps: ``th1`` shows that a relation that is reflexive and euclidean is symmetric, and ``th2`` shows that a relation that is symmetric and euclidean is transitive. Then ``th3`` combines the two results. But notice that we have to manually disable the implicit arguments in ``th1``, ``th2``, and ``euclr``, because otherwise too many implicit arguments are inserted. The problem goes away if we use weak implicit arguments:
 
