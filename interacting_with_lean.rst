@@ -237,7 +237,7 @@ creates aliases for only the identifiers listed. The command
 
     open nat (hiding succ add sub)
 
-creates aliases for everything in the ``nat`` namespace *except* the identifiers lists. The command
+creates aliases for everything in the ``nat`` namespace *except* the identifiers listed. The command
 
 .. code-block:: lean
 
