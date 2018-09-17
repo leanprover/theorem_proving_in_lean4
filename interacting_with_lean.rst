@@ -552,7 +552,7 @@ The possibility of declaring parameters in a section also makes it possible to d
 Coercions
 ---------
 
-In Lean, the type of natural numbers, ``nat``, is different from the type of integers, ``int``. But there is a function ``int.of_nat`` that embeds the natural numbers in the integers, meaning that we can view any natural numbers as an integer, when needed. Lean has mechanisms to detect and insert *coercions* of this sort.
+In Lean, the type of natural numbers, ``nat``, is different from the type of integers, ``int``. But there is a function ``int.of_nat`` that embeds the natural numbers in the integers, meaning that we can view any natural number as an integer, when needed. Lean has mechanisms to detect and insert *coercions* of this sort.
 
 .. code-block:: lean
 
