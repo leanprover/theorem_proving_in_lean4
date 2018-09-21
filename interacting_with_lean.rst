@@ -84,7 +84,7 @@ Note that double does *not* have ``y`` as argument. Variables are only included 
       #check @baz
     end
 
-The ``omit`` command simply undoes the effect of the ``include``; it does not prevent the arguments from being included automatically in subsequent theorems that mention them. The scope of the ``include`` statement can also be delimited by enclosing it in a section.
+The ``omit`` command simply undoes the effect of the ``include``. It does not, however, prevent the arguments from being included automatically in subsequent theorems that mention them. The scope of the ``include`` statement can also be delimited by enclosing it in a section.
 
 .. code-block:: lean
 
