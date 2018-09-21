@@ -244,7 +244,7 @@ creates aliases for everything in the ``nat`` namespace *except* the identifiers
     open nat (renaming mul → times) (renaming add → plus) 
       (hiding succ sub)
 
-creates aliases for everything in the ``nat`` namespace except ``succ`` and ``sub``, renaming ``nat.add`` to ``plus``, and renaming the protected definition ``nat.induction_on`` to ``induction_on``.
+creates aliases for everything in the ``nat`` namespace except ``succ`` and ``sub``, renaming ``nat.add`` to ``plus``.
 
 It is sometimes useful to ``export`` aliases from one namespace to another, or to the top level. The command
 
