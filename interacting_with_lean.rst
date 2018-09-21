@@ -517,7 +517,6 @@ The possibility of declaring parameters in a section also makes it possible to d
 
     open int
 
-    -- BEGIN
     section mod_m
       parameter (m : ℤ)
       variables (a b c : ℤ)
@@ -547,7 +546,6 @@ The possibility of declaring parameters in a section also makes it possible to d
 
     #check (mod_trans :  ∀ (m a b c : ℤ), mod_equiv m a b → 
                            mod_equiv m b c → mod_equiv m a c)
-    -- END
 
 Coercions
 ---------
