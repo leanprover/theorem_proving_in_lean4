@@ -1529,7 +1529,7 @@ You can even create your own sets of simplifier rules, to be applied in special 
     by simp with my_simps at h; assumption
     -- END
 
-The command ``run_cmd mk_simp_attr `my_simps`` creates a new attribute ``[my_simps]``. (The backtick is used to indicate that ``my_simps`` is a new name, something that is explained more fully in `Programming in Lean <https://leanprover.github.io/programming_in_lean/>`__.) The command ``simp with my_simps`` then adds all the theorems that have been marked with attribute ``[my_simps]`` to the default set of theorems marked with attribute ``[simp]`` before applying ``[simp]``, and similarly with ``simp at h with my_simps``.
+The command ``run_cmd mk_simp_attr `my_simps`` creates a new attribute ``[my_simps]``. (The backtick is used to indicate that ``my_simps`` is a new name, something that is explained more fully in `Programming in Lean <https://leanprover.github.io/programming_in_lean/>`__.) The command ``simp with my_simps`` then adds all the theorems that have been marked with attribute ``[my_simps]`` to the default set of theorems marked with attribute ``[simp]`` before applying ``[simp]``, and similarly with ``simp with my_simps at h``.
 
 Note that the various ``simp`` options we have discussed --- giving an explicit list of rules, using ``at`` to specify the location, and using ``with`` to add additional simplifier rules --- can be combined, but the order they are listed is rigid. You can see the correct order in an editor by placing the cursor on the ``simp`` identifier to see the documentation string that is associated with it.
 
