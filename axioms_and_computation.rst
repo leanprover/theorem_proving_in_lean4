@@ -969,7 +969,7 @@ Together with choice, we also get the stronger principle that every proposition 
 
 In contrast to ``p ∨ ¬ p``, which can only eliminate to ``Prop``, the type ``decidable p`` is equivalent to the sum type ``p ⊕ ¬ p``, which can eliminate to any type. It is this data that is needed to write an if-then-else expression.
 
-As an example of classical reasoning, we use ``some`` to show that if ``f : α → β`` is injective and ``α`` is inhabited, then ``f`` has a left inverse. To define the left inverse ``linv``, we use a dependent if-then-else expression. Recall that ``if h : c then t else e`` is notation for ``dite c (λ h : c, t) (λ h : ¬ c, e)``. In the definition of ``linv``, choice is used twice: first, to show that ``(∃ a : A, f a = b)`` is "decidable," and then to choose an ``a`` such that ``f a = b``. Notice that we make ``prop_decidable`` a local instance to justify the if-then-else expression.
+As an example of classical reasoning, we use ``some`` to show that if ``f : α → β`` is injective and ``α`` is inhabited, then ``f`` has a left inverse. To define the left inverse ``linv``, we use a dependent if-then-else expression. Recall that ``if h : c then t else e`` is notation for ``dite c (λ h : c, t) (λ h : ¬ c, e)``. In the definition of ``linv``, choice is used twice: first, to show that ``(∃ a : A, f a = b)`` is "decidable," and then to choose an ``a`` such that ``f a = b``. Notice that we make ``prop_decidable`` a local instance to justify the if-then-else expression. (See also the discussion in :numref:`decidable_propositions`.)
 
 .. code-block:: lean
 

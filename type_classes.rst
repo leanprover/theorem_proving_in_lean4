@@ -243,6 +243,8 @@ We can similarly define pointwise addition of functions:
 
 As an exercise, try defining instances of ``has_add`` for lists, and show that they work as expected.
 
+.. _decidable_propositions:
+
 Decidable Propositions
 ----------------------
 
@@ -322,7 +324,14 @@ With the classical axioms, we can prove that every proposition is decidable. You
     open classical
     local attribute [instance] prop_decidable
 
-Thereafter ``decidable p`` has an instance for every ``p``, and the elaborator infers that value quickly. Thus all theorems in the library that rely on decidability assumptions are freely available when you want to reason classically.
+Thereafter ``decidable p`` has an instance for every ``p``, and the elaborator infers that value quickly. Thus all theorems in the library that rely on decidability assumptions are freely available when you want to reason classically. In :numref:`Chapter %s <axioms_and_computation>`, we will see that using the law of the excluded middle to define functions can prevent them from being used computationally. If that is important to you, it is best to use sections to limit the use of ``prop_decidable`` to places where it is really needed. Alternatively, you can can assign ``prop_decidable`` a low priority: 
+
+.. code-block:: lean
+
+    open classical
+    local attribute [instance, priority 0] prop_decidable
+
+The means that Lean will only use ``prop_decidable`` as a last resort, after other attempts to infer decidability have failed.
 
 The ``decidable`` type class also provides a bit of small-scale automation for proving theorems. The standard library introduces the following definitions and notation:
 
