@@ -69,7 +69,7 @@ You can see the resulting proof term with the ``#print`` command:
     #print test
     -- END
 
-You can write a tactic script incrementally. If you run Lean on an incomplete tactic proof bracketed by ``begin`` and ``end``, the system reports all the unsolved goals that remain. If you are running Lean with its Emacs interface, you can see this information by putting your cursor on the ``end`` symbol, which should be underlined. In the Emacs interface, there is another extremely useful trick: if you put your cursor on a line of a tactic proof and press "C-c C-g", Lean will show you the goal that remains at the end of the line.
+You can write a tactic script incrementally. In VS Code, you can open a window to display messages by pressing ``Ctrl-Shift-Enter``, and that window will then show you the current goal whenever the cursor in is a tactic block. In Emacs, you can see the goal at the end of any line by pressing ``C-c C-g``, or see the remaining goal in an incomplete proof by putting the cursor on the ``end`` symbol.
 
 Tactic commands can take compound expressions, not just single identifiers. The following is a shorter version of the preceding proof:
 
@@ -113,7 +113,7 @@ See :numref:`tactic_combinators` for a more precise description of the semantics
     theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
     by exact and.intro hp (and.intro hq hp)
 
-In the Lean Emacs mode, if you put your cursor on the "b" in ``by`` and press ``C-c C-g``, Lean shows you the goal that the tactic is supposed to meet. In VS Code, you can open a window with the goals by pressing ``Ctrl-Shift-Enter``.
+In VS Code, the tactic state will appear in the messages window whenever the cursor is within the contexts of the ``by``. In the Lean Emacs mode, if you put your cursor on the "b" in ``by`` and press ``C-c C-g``, Lean shows you the goal that the tactic is supposed to meet.
 
 We will see below that hypotheses can be introduced, reverted, modified, and renamed over the course of a tactic block. As a result, it is impossible for the Lean parser to detect when an identifier that occurs in a tactic block refers to a section variable that should therefore be added to the context. As a result, you need to explicitly tell Lean to include the relevant entities:
 
@@ -818,7 +818,7 @@ For even more structured proofs, you can nest ``begin...end`` blocks within othe
         exact ⟨hpr.left, or.inr hpr.right⟩
     end
 
-Here, we have introduced a new ``begin..end`` block whenever a tactic leaves more than one subgoal. You can check (using ``C-c C-g`` in Emacs mode, for example) that at every line in this proof, there is only one goal visible. Notice that you still need to use a comma after a ``begin...end`` block when there are remaining goals to be discharged.
+Here, we have introduced a new ``begin..end`` block whenever a tactic leaves more than one subgoal. You can check that at every line in this proof, there is only one goal visible. Notice that you still need to use a comma after a ``begin...end`` block when there are remaining goals to be discharged.
 
 Within a ``begin...end`` block, you can abbreviate nested occurrences of ``begin`` and ``end`` with curly braces:
 

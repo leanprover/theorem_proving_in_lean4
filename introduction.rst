@@ -25,7 +25,7 @@ The *Lean* project was launched by Leonardo de Moura at Microsoft Research Redmo
 
 There are currently two ways to use Lean. The first is to run it from the web: a Javascript version of Lean, a standard library of definitions and theorems, and an editor are actually downloaded to your browser and run there. This provides a quick and convenient way to begin experimenting with the system.
 
-The second way to use Lean is to install and run it natively on your computer. The native version is much faster than the web version, and is more flexible in other ways, too. Special modes in Emacs and Visual Studio Code offer powerful support for writing and debugging proofs, and is much better suited for serious use. The source code, and instructions for building Lean, are available at https://github.com/leanprover/lean/.
+The second way to use Lean is to install and run it natively on your computer. The native version is much faster than the web version, and is more flexible in other ways, too. Special modes in Visual Studio Code (VS Code for short) and Emacs offer powerful support for writing and debugging proofs, and is much better suited for serious use. The source code, and instructions for building Lean, are available at https://github.com/leanprover/lean/.
 
 This tutorial describes the current version of Lean, known as Lean 3. A prior version, Lean 2, had special support for homotopy type theory. You can find Lean 2 and the HoTT library at https://github.com/leanprover/lean2/. The tutorial for that version of Lean is at https://leanprover.github.io/tutorial/.
 

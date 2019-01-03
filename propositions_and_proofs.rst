@@ -282,7 +282,7 @@ Propositional Logic
 Lean defines all the standard logical connectives and notation. The propositional connectives come with the following notation:
 
 +-------------------+-----------+------------------------------+--------------+
-| Ascii             | Unicode   | Emacs shortcut for unicode   | Definition   |
+| Ascii             | Unicode   | Editor shortcut              | Definition   |
 +-------------------+-----------+------------------------------+--------------+
 | true              |           |                              | true         |
 +-------------------+-----------+------------------------------+--------------+

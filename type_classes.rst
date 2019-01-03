@@ -444,7 +444,7 @@ You can also limit the search depth (the default is 32):
 
     set_option class.instance_max_depth 5
 
-Remember also that in the Emacs Lean mode, tab completion works in ``set_option``, to help you find suitable options.
+Remember also that in both the VS Code and Emacs editor modes, tab completion works in ``set_option``, to help you find suitable options.
 
 As noted above, the type class instances in a given context represent a Prolog-like program, which gives rise to a backtracking search. Both the efficiency of the program and the solutions that are found can depend on the order in which the system tries the instance. Instances which are declared last are tried first. Moreover, if instances are declared in other modules, the order in which they are tried depends on the order in which namespaces are opened. Instances declared in namespaces which are opened later are tried earlier.
 
