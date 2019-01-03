@@ -408,7 +408,7 @@ Notice that the product type depends on parameters ``α β : Type`` which are ar
 
     end hidden
 
-As a result, the argument ``α`` to ``inl`` and the argument ``β`` to ``inr`` are left implicit.
+As a result, the argument ``β`` to ``inl`` and the argument ``α`` to ``inr`` are also left implicit.
 
 In the section after next we will see what happens when the constructor of an inductive type takes arguments from the inductive type itself. What characterizes the examples we consider in this section is that this is not the case: each constructor relies only on previously specified types.
 
