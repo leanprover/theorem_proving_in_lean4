@@ -436,7 +436,7 @@ At times, you may find that the type class inference fails to find an expected i
 
     set_option trace.class_instances true
 
-If you add this to your file in Emacs mode and use ``C-c C-x`` to run an independent Lean process on your file, the output buffer will show a trace every time the type class resolution procedure is subsequently triggered.
+If you are using VS Code, you can read the results by hovering over the relevant theorem or definition, or opening the messages window with ``Ctrl-Shift-Enter``. In Emacs, you can use ``C-c C-x`` to run an independent Lean process on your file, and the output buffer will show a trace every time the type class resolution procedure is subsequently triggered.
 
 You can also limit the search depth (the default is 32):
 
