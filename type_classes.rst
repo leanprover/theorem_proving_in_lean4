@@ -374,6 +374,62 @@ You can ask Lean for information about the classes and instances that are curren
     #print classes
     #print instances inhabited
 
+If you are ever in a situation where you need to supply an expression that Lean can infer by type class inference, you can ask Lean to carry out the inference using the tactic ``apply_instance`` or the expression ``infer_instance``:
+
+.. code-block:: lean
+
+    def foo : has_add nat := by apply_instance
+    def bar : inhabited (nat → nat) := by apply_instance
+
+    def baz : has_add nat := infer_instance
+    def bla : inhabited (nat → nat) := infer_instance
+
+    #print foo    -- nat.has_add
+    #reduce foo   -- (unreadable)
+
+    #print bar    -- pi.inhabited ℕ
+    #reduce bar   -- {default := λ (a : ℕ), 0}
+
+    #print baz    -- infer_instance
+    #reduce baz   -- (same as for #reduce foo)
+
+    #print bla    -- infer_instance
+    #reduce bla   -- {default := λ (a : ℕ), 0}
+
+In fact, you can use Lean's ``(t : T)`` notation to specify the class whose instance you are looking for, in a concise manner:
+
+.. code-block:: lean
+
+    #reduce (by apply_instance : inhabited ℕ)
+    #reduce (infer_instance : inhabited ℕ)
+
+Sometimes Lean can't find an instance because the class is buried under a definition. For example, with the core library, Lean cannot find an instance of ``inhabited (set α)``. We can declare one explicitly:
+
+.. code-block:: lean
+
+    -- fails
+    -- example {α : Type*} : inhabited (set α) := 
+    -- by apply_instance
+
+    def inhabited.set (α : Type*) : inhabited (set α) := ⟨∅⟩
+
+    #print inhabited.set     -- λ {α : Type u}, {default := ∅}
+    #reduce inhabited.set ℕ  -- {default := λ (a : ℕ), false}
+
+Alternatively, we can help Lean out by unfolding the definition. The type ``set α`` is defined to be ``α → Prop``. Lean knows that ``Prop`` is inhabited, and this is enough for it to be able to infer an element of the function type.
+
+.. code-block:: lean
+
+    def inhabited.set (α : Type*) : inhabited (set α) :=
+    by unfold set; apply_instance
+
+    #print inhabited.set     
+      -- λ (α : Type u), eq.mpr _ (pi.inhabited α)
+    #reduce inhabited.set ℕ  
+      -- {default := λ (a : ℕ), true}
+
+Using the ``dunfold`` tactic instead of ``unfold`` yields a slightly different expression (try it!), since ``dunfold`` uses definitional reduction to unfold the definition, rather than an explicit rewrite.
+  
 At times, you may find that the type class inference fails to find an expected instance, or, worse, falls into an infinite loop and times out. To help debug in these situations, Lean enables you to request a trace of the search:
 
 .. code-block:: lean
