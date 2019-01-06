@@ -296,9 +296,8 @@ enumerated types.
 
 .. code-block:: lean
 
-    namespace hidden
-
     -- BEGIN
+    namespace hidden
     inductive empty : Type
 
     inductive unit : Type
@@ -307,11 +306,10 @@ enumerated types.
     inductive bool : Type
     | ff : bool
     | tt : bool
+    end hidden
     -- END
 
-    end hidden
-
-(To run these examples, we put them in a namespace called ``hide``, so that a name like ``bool`` does not conflict with the ``bool`` in the standard library. This is necessary because these types are part of the Lean "prelude" that is automatically imported when the system is started.)
+(To run these examples, we put them in a namespace called ``hidden``, so that a name like ``bool`` does not conflict with the ``bool`` in the standard library. This is necessary because these types are part of the Lean "prelude" that is automatically imported when the system is started.)
 
 The type ``empty`` is an inductive data type with no constructors. The type ``unit`` has a single element, ``star``, and the type ``bool`` represents the familiar boolean values. As an exercise, you should think about what the introduction and elimination rules for these types do. As a further exercise, we suggest defining boolean operations ``band``, ``bor``, ``bnot`` on the boolean, and verifying common identities. Note that you can define a binary operation like ``band`` using a case split:
 
