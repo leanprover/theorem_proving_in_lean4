@@ -926,10 +926,11 @@ The following example can be found in [GoMM06]_. We declare an inductive type th
 
 In the example above, the inaccessible annotation makes it clear that ``f`` is *not* a pattern matching variable.
 
-Inaccessible terms can be used to clarify and control definitions that make use of dependent pattern matching. Consider the function defining the addition of any two vectors of elements of a type that has an associated addition function:
+Inaccessible terms can be used to clarify and control definitions that make use of dependent pattern matching. Consider the function ``add`` defining the addition of any two vectors of elements of a type that has an associated addition function:
 
 .. code-block:: lean
 
+    -- BEGIN
     universe u
 
     inductive vector (α : Type u) : ℕ → Type u
@@ -940,14 +941,13 @@ Inaccessible terms can be used to clarify and control definitions that make use 
     local notation h :: t := cons h t
 
     variable {α : Type u}
-
-    -- BEGIN
+    
     def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n 
     | 0     nil        nil        := nil
     | (n+1) (cons a v) (cons b w) := cons (a + b) (add v w)
-    -- END
 
     end vector
+    -- END
 
 The argument ``{n : ℕ}`` has to appear after the colon, because it cannot be held fixed throughout the definition. When implementing this definition, the equation compiler starts with a case distinction as to whether the first argument is ``0`` or of the form ``n+1``. This is followed by nested case splits on the next two arguments, and in each case the equation compiler rules out the cases are not compatible with the first pattern.
 
