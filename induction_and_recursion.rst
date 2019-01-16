@@ -1059,7 +1059,7 @@ Here is another example:
 
 Notice that with multiple arguments, the syntax for the match statement is markedly different from that used for pattern matching in an ordinary recursive definition. Because arbitrary terms are allowed in the ``match``, parentheses are not enough to set the arguments apart; if we wrote ``(n - 5) (b && c)``, it would be interpreted as the result of applying ``n - 5`` to ``b && c``. Instead, the arguments are separated by commas. Then, for consistency, the patterns on each line are separated by commas as well.
 
-Lean uses the ``match`` construct internally to implemented a pattern-matching ``assume``, as well as a pattern-matching ``let``. Thus, all four of these definitions have the same net effect.
+Lean uses the ``match`` construct internally to implement a pattern-matching ``assume``, as well as a pattern-matching ``let``. Thus, all four of these definitions have the same net effect.
 
 .. code-block:: lean
 
