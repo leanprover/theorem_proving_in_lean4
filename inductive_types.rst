@@ -1477,7 +1477,7 @@ Mutual and Nested Inductive Types
 
 We now consider two generalizations of inductive types that are often useful, which Lean supports by "compiling" them down to the more primitive kinds of inductive types described above. In other words, Lean parses the more general definitions, defines auxiliary inductive types based on them, and then uses the auxiliary types to define the ones we really want. Lean's equation compiler, described in the next chapter, is needed to make use of these types effectively. Nonetheless, it makes sense to describe the declarations here, because they are straightforward variations on ordinary inductive definitions.
 
-First, Lean supports *mutually defined* inductive types. The idea is that we can define two (or more) inductive types at the same time, where each one to the other(s).
+First, Lean supports *mutually defined* inductive types. The idea is that we can define two (or more) inductive types at the same time, where each one refers to the other(s).
 
 .. code-block:: lean
 
