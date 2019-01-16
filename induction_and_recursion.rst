@@ -731,9 +731,9 @@ The constructors, ``even_zero``, ``even_succ``, and ``odd_succ`` provide positiv
     with odd : ℕ → Prop
     | odd_succ : ∀ n, even n → odd (n + 1)
 
+    -- BEGIN
     open even odd
 
-    -- BEGIN
     theorem not_odd_zero : ¬ odd 0.
 
     mutual theorem even_of_odd_succ, odd_of_even_succ
