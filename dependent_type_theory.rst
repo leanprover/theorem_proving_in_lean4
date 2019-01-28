@@ -426,7 +426,7 @@ Here, ``t`` is definitionally equal to the term ``(x + x) * (x + x)``. You can c
     #check   let y := 2 + 2, z := y + y in z * z   -- ℕ
     #reduce  let y := 2 + 2, z := y + y in z * z   -- 64
 
-Notice that the meaning of the expression ``let a := t1 in t2`` is very similar to the meaning of ``(λ a, t2) t1``, but the two are not the same. In the first expression, you should think of every instance of ``a`` in ``t2`` as a syntactic abbreviation for ``t1``. In the second expression, ``a`` is a variable, and the expression ``λ a, t2`` has to make sense independently of the value of ``a``. The ``let`` construct is a stronger means of abbreviation, and there are expressions of the form ``let a := t1 in t2`` that cannot be expressed as ``(λ a, t2) t1``. As an exercise, try to understand why the definition of ``foo`` below type #checks, but the definition of ``bar`` does not.
+Notice that the meaning of the expression ``let a := t1 in t2`` is very similar to the meaning of ``(λ a, t2) t1``, but the two are not the same. In the first expression, you should think of every instance of ``a`` in ``t2`` as a syntactic abbreviation for ``t1``. In the second expression, ``a`` is a variable, and the expression ``λ a, t2`` has to make sense independently of the value of ``a``. The ``let`` construct is a stronger means of abbreviation, and there are expressions of the form ``let a := t1 in t2`` that cannot be expressed as ``(λ a, t2) t1``. As an exercise, try to understand why the definition of ``foo`` below type checks, but the definition of ``bar`` does not.
 
 .. code-block:: lean
 
