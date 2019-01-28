@@ -618,7 +618,7 @@ Namespaces that have been closed can later be reopened, even in another file:
       def ffa : ℕ := f (f a)
     end foo
 
-Like sections, nested namespaces have to be closed in the order they are opened. Also, a namespace cannot be opened within a section; namespaces have to live on the outer levels.
+Like sections, nested namespaces have to be closed in the order they are opened. Also, a namespace cannot be declared within a section; namespaces have to live on the outer levels.
 
 Namespaces and sections serve different purposes: namespaces organize data and sections declare variables for insertion in theorems. In many respects, however, a ``namespace ... end`` block behaves the same as a ``section ... end`` block. In particular, if you use the ``variable`` command within a namespace, its scope is limited to the namespace. Similarly, if you use an ``open`` command within a namespace, its effects disappear when the namespace is closed.
 
