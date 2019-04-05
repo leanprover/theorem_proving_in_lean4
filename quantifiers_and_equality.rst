@@ -738,7 +738,7 @@ This approach is more robust than using ``by assumption``, because the type of t
                            (le_trans ‹f 1 ≤ f 2› ‹f 2 ≤ f 3›)
     -- END
 
-Keep in mind that use can use the French quotation marks in this way to refer to *anything* in the context, not just things that were introduced anonymously. Its use is also not limited to propositions, though using it for data is somewhat odd:
+Keep in mind that you can use the French quotation marks in this way to refer to *anything* in the context, not just things that were introduced anonymously. Its use is also not limited to propositions, though using it for data is somewhat odd:
 
 .. code-block:: lean
 
