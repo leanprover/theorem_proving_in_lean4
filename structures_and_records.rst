@@ -181,7 +181,7 @@ The three variations have the same net effect. The annotations in the next examp
     -- END
     end hidden
 
-The ``set_option`` command above instructs Lean to display the universe levels. Here we have used ``max 1 l`` as the resultant universe level to ensure the universe level is never ``0`` even when the parameter ``α`` and ``β`` are propositions. Recall that in Lean, ``Type 0`` is ``Prop``, which is impredicative and proof irrelevant.
+The ``set_option`` command above instructs Lean to display the universe levels. Here we have used ``max 1 u`` as the resultant universe level to ensure the universe level is never ``0`` even when the parameter ``α`` and ``β`` are propositions. Recall that in Lean, ``Type 0`` is ``Prop``, which is impredicative and proof irrelevant.
 
 We can use the anonymous constructor notation to build structure values whenever the expected type is known.
 
