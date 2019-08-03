@@ -242,7 +242,7 @@ Lean's library contains a large number of common identities, such as these:
     example : a * (b - c) = a * b - a * c := mul_sub a b c
     example : (a - b) * c = a * c - b * c := sub_mul a b c
 
-Note that ``mul_add`` and ``add_mul`` are alternative names for ``left_distrib`` and ``right_distrib``, respectively. The properties above are stated for the integers; the type ``ℤ`` can be entered as ``\int``, though we can also use the ascii equivalent ``int``. Identities likes these are designed to work in arbitrary instances of the relevant algebraic structures, using the type class mechanism that is described in :numref:`Chapter %s <type_classes>`. In particular, all these facts hold in any commutative ring, of which Lean recognizes the integers to be an instance. :numref:`Chapter %s <interacting_with_lean>` provides some pointers as to how to find theorems like this in the library.
+Note that ``mul_add`` and ``add_mul`` are alternative names for ``left_distrib`` and ``right_distrib``, respectively. The properties above are stated for the integers; the type ``ℤ`` can be entered as ``\int``, though we can also use the ascii equivalent ``int``. Identities like these are designed to work in arbitrary instances of the relevant algebraic structures, using the type class mechanism that is described in :numref:`Chapter %s <type_classes>`. In particular, all these facts hold in any commutative ring, of which Lean recognizes the integers to be an instance. :numref:`Chapter %s <interacting_with_lean>` provides some pointers as to how to find theorems like this in the library.
 
 Here is an example of a calculation in the natural numbers that uses substitution combined with associativity, commutativity, and distributivity of the integers.
 
