@@ -335,7 +335,7 @@ It is this computational behavior that makes it possible to use Lean as a progra
 
     #eval 12345 * 54321
 
-In contrast, the ``#reduce`` command relies on Lean's trusted kernel, the part of Lean that is responsible for checking and verifying the correctness of expressions and proofs. As such, the ``#reduce`` command is more trustworthy, but far less efficient. We will have more to say about ``#eval`` in :numref:`Chapter %s <axioms_and_computation>`, and it will plays a central role in `Programming in Lean <https://leanprover.github.io/programming_in_lean>`__. In this tutorial, however, we will generally rely on ``#reduce`` instead.
+In contrast, the ``#reduce`` command relies on Lean's trusted kernel, the part of Lean that is responsible for checking and verifying the correctness of expressions and proofs. As such, the ``#reduce`` command is more trustworthy, but far less efficient. We will have more to say about ``#eval`` in :numref:`Chapter %s <axioms_and_computation>`, and it will play a central role in `Programming in Lean <https://leanprover.github.io/programming_in_lean>`__. In this tutorial, however, we will generally rely on ``#reduce`` instead.
 
 .. _introducing_definitions:
 
