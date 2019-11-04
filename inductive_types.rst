@@ -846,7 +846,7 @@ We can then replace the ``sorry`` in the previous proof with ``succ_add``. Yet a
     nat.rec_on k rfl (λ k ih, by simp only [add_succ, ih])
 
     theorem succ_add (m n : nat) : succ m + n = succ (m + n) :=
-    nat.rec_on n rfl (λ n ih, by simp only [succ_add, ih])
+    nat.rec_on n rfl (λ n ih, by simp only [add_succ, ih])
 
     theorem add_comm (m n : nat) : m + n = n + m :=
     nat.rec_on n
