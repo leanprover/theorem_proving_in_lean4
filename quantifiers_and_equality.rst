@@ -823,7 +823,7 @@ Exercises
 
        instance : has_dvd nat := ⟨divides⟩
 
-       def even (n : ℕ) : Prop := 2 ∣ n
+       def even (n : ℕ) : Prop := 2 ∣ n -- You can enter the '∣' character by typing \mid
 
        section
          variables m n : ℕ
