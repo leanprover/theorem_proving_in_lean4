@@ -813,7 +813,7 @@ Exercises
        example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : 
          false := sorry
 
-#. Below, we have put definitions of ``divides`` and ``even`` in a special namespace to avoid conflicts with definitions in the library. The ``instance`` declaration make it possible to use the notation ``m | n`` for ``divides m n``. Don't worry about how it works; you will learn about that later.
+#. Below, we have put definitions of ``divides`` and ``even`` in a special namespace to avoid conflicts with definitions in the library. The ``instance`` declaration makes it possible to use the notation ``m | n`` for ``divides m n``. Don't worry about how it works; you will learn about that later.
 
    .. code-block:: lean
 
