@@ -912,7 +912,7 @@ Combining these various mechanisms makes for nicely structured tactic proofs:
 Tactic Combinators
 ------------------
 
-*Tactic combinators* are operations that form new tactics from old ones. A sequencing combinator is already implicit in the comma that appear in a ``begin...end`` block:
+*Tactic combinators* are operations that form new tactics from old ones. A sequencing combinator is already implicit in the commas that appear in a ``begin...end`` block:
 
 .. code-block:: lean
 
