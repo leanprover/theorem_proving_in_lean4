@@ -947,7 +947,7 @@ The *orelse* combinator, denoted ``<|>``, applies one tactic, and then backtrack
     example (p q : Prop) (hq : q) : p ∨ q :=
     by { left, assumption } <|> { right, assumption}
 
-In the first example, the left branch succeeds, whereas in the second one, it is the right one succeeds. In the next three examples, the same compound tactic succeeds in each case.
+In the first example, the left branch succeeds, whereas in the second one, it is the right one that succeeds. In the next three examples, the same compound tactic succeeds in each case.
 
 .. code-block:: lean
 
