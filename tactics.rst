@@ -1254,9 +1254,9 @@ As with ``rewrite``, you can send ``simp`` a list of facts to use, including gen
 
     def f (m n : ℕ) : ℕ := m + n + m
 
-    example {m n : ℕ} (h : n = 1) (h' : 0 = m) : (f m n) * m = m :=
+    example {m n : ℕ} (h : n = 1) (h' : 0 = m) : (f m n) = n :=
     by simp [h, h'.symm, f]
-
+    
 A common idiom is to simplify a goal using local hypotheses:
 
 .. code-block:: lean
