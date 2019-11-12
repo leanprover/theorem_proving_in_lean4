@@ -1317,7 +1317,7 @@ The next two examples simplify all the hypotheses, and then use them to prove th
 
     end
 
-One thing that makes the simplifier especially useful its capabilities can grow as a library develops. For example, suppose we define a list operation that symmetrizes its input by appending its reversal:
+One thing that makes the simplifier especially useful is that its capabilities can grow as a library develops. For example, suppose we define a list operation that symmetrizes its input by appending its reversal:
 
 .. code-block:: lean
 
