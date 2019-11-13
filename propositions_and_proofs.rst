@@ -44,7 +44,7 @@ We could then introduce, for each element ``p : Prop``, another type ``Proof p``
     -- BEGIN
     constant Proof : Prop → Type
 
-    constant and_comm : Π p q : Prop, 
+    constant and_comm : Π p q : Prop,
       Proof (implies (and p q) (and q p))
 
     variables p q : Prop
@@ -67,7 +67,7 @@ We could represent this as follows:
     constant Proof : Prop → Type
 
     -- BEGIN
-    constant modus_ponens : 
+    constant modus_ponens :
       Π p q : Prop, Proof (implies p q) →  Proof p → Proof q
     -- END
 
@@ -87,7 +87,7 @@ We could render this as follows:
     constant Proof : Prop → Type
 
     -- BEGIN
-    constant implies_intro : 
+    constant implies_intro :
       Π p q : Prop, (Proof p → Proof q) → Proof (implies p q).
     -- END
 
@@ -221,7 +221,7 @@ The type of ``t1`` is now ``∀ p q : Prop, p → q → p``. We can read this as
 
 .. code-block:: lean
 
-    theorem t1 : ∀ (p q : Prop), p → q → p := 
+    theorem t1 : ∀ (p q : Prop), p → q → p :=
     λ (p q : Prop) (hp : p) (hq : q), hp
 
 If ``p`` and ``q`` have been declared as variables, Lean will generalize them for us automatically:
@@ -270,7 +270,7 @@ As another example, let us consider the composition function discussed in the la
     assume h₃ : p,
     show r, from h₁ (h₂ h₃)
 
-As a theorem of propositional logic, what does ``t2`` say? 
+As a theorem of propositional logic, what does ``t2`` say?
 
 Note that it is often useful to use numeric unicode subscripts, entered as ``\0``, ``\1``, ``\2``, ..., for hypotheses, as we did in this example.
 
@@ -443,7 +443,7 @@ In most cases, the first argument of ``or.intro_right`` and ``or.intro_left`` ca
 
     variables p q r: Prop
     -- BEGIN
-    example (h : p ∨ q) : q ∨ p := 
+    example (h : p ∨ q) : q ∨ p :=
     or.elim h (λ hp, or.inr hp) (λ hq, or.inl hq)
     -- END
 
@@ -676,48 +676,47 @@ The full list of axioms that are used in Lean to support classical reasoning are
 Examples of Propositional Validities
 ------------------------------------
 
-Lean's standard library contains proofs of many valid statements of propositional logic, all of which you are free to use in proofs of your own. The following list includes a number of common identities. The ones that require classical reasoning are grouped together at the end, while the rest are constructively valid.
+Lean's standard library contains proofs of many valid statements of propositional logic, all of which you are free to use in proofs of your own. The following list includes a number of common identities.
 
-.. code-block:: lean
+Commutativity:
 
-    open classical
+#. ``p ∧ q ↔ q ∧ p``
+#. ``p ∨ q ↔ q ∨ p``
 
-    variables p q r s : Prop
+Associativity:
 
-    -- commutativity of ∧ and ∨
-    example : p ∧ q ↔ q ∧ p := sorry
-    example : p ∨ q ↔ q ∨ p := sorry
+3. ``(p ∧ q) ∧ r ↔ p ∧ (q ∧ r)``
+#. ``(p ∨ q) ∨ r ↔ p ∨ (q ∨ r)``
 
-    -- associativity of ∧ and ∨
-    example : (p ∧ q) ∧ r ↔ p ∧ (q ∧ r) := sorry
-    example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) := sorry
+Distributivity:
 
-    -- distributivity
-    example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := sorry
-    example : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) := sorry
+5. ``p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r)``
+#. ``p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r)``
 
-    -- other properties
-    example : (p → (q → r)) ↔ (p ∧ q → r) := sorry
-    example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
-    example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
-    example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
-    example : ¬(p ∧ ¬p) := sorry
-    example : p ∧ ¬q → ¬(p → q) := sorry
-    example : ¬p → (p → q) := sorry
-    example : (¬p ∨ q) → (p → q) := sorry
-    example : p ∨ false ↔ p := sorry
-    example : p ∧ false ↔ false := sorry
-    example : ¬(p ↔ ¬p) := sorry
-    example : (p → q) → (¬q → ¬p) := sorry
+Other properties:
 
-    -- these require classical reasoning
-    example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
-    example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
-    example : ¬(p → q) → p ∧ ¬q := sorry
-    example : (p → q) → (¬p ∨ q) := sorry
-    example : (¬q → ¬p) → (p → q) := sorry
-    example : p ∨ ¬p := sorry
-    example : (((p → q) → p) → p) := sorry
+7. ``(p → (q → r)) ↔ (p ∧ q → r)``
+#. ``((p ∨ q) → r) ↔ (p → r) ∧ (q → r)``
+#. ``¬(p ∨ q) ↔ ¬p ∧ ¬q``
+#. ``¬p ∨ ¬q → ¬(p ∧ q)``
+#. ``¬(p ∧ ¬p)``
+#. ``p ∧ ¬q → ¬(p → q)``
+#. ``¬p → (p → q)``
+#. ``(¬p ∨ q) → (p → q)``
+#. ``p ∨ false ↔ p``
+#. ``p ∧ false ↔ false``
+#. ``¬(p ↔ ¬p)``
+#. ``(p → q) → (¬q → ¬p)``
+
+These require classical reasoning:
+
+19. ``(p → r ∨ s) → ((p → r) ∨ (p → s))``
+#. ``¬(p ∧ q) → ¬p ∨ ¬q``
+#. ``¬(p → q) → p ∧ ¬q``
+#. ``(p → q) → (¬p ∨ q)``
+#. ``(¬q → ¬p) → (p → q)``
+#. ``p ∨ ¬p``
+#. ``(((p → q) → p) → p)``
 
 The ``sorry`` identifier magically produces a proof of anything, or provides an object of any data type at all. Of course, it is unsound as a proof method -- for example, you can use it to prove ``false`` -- and Lean produces severe warnings when files use or import theorems which depend on it. But it is very useful for building long proofs incrementally. Start writing the proof from the top down, using ``sorry`` to fill in subproofs. Make sure Lean accepts the term with all the ``sorry``'s; if not, there are errors that you need to correct. Then go back and replace each ``sorry`` with an actual proof, until no more remain.
 
@@ -764,6 +763,52 @@ For reference, here are two sample proofs of validities taken from the list abov
 Exercises
 ---------
 
-#. Prove as many identities from the previous section as you can, replacing the "sorry" placeholders with actual proofs.
+#. Prove the following identities, replacing the "sorry" placeholders with actual proofs.
+
+    .. code-block:: lean
+
+        variables p q r : Prop
+
+        -- commutativity of ∧ and ∨
+        example : p ∧ q ↔ q ∧ p := sorry
+        example : p ∨ q ↔ q ∨ p := sorry
+
+        -- associativity of ∧ and ∨
+        example : (p ∧ q) ∧ r ↔ p ∧ (q ∧ r) := sorry
+        example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) := sorry
+
+        -- distributivity
+        example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := sorry
+        example : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) := sorry
+
+        -- other properties
+        example : (p → (q → r)) ↔ (p ∧ q → r) := sorry
+        example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
+        example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
+        example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
+        example : ¬(p ∧ ¬p) := sorry
+        example : p ∧ ¬q → ¬(p → q) := sorry
+        example : ¬p → (p → q) := sorry
+        example : (¬p ∨ q) → (p → q) := sorry
+        example : p ∨ false ↔ p := sorry
+        example : p ∧ false ↔ false := sorry
+        example : ¬(p ↔ ¬p) := sorry
+        example : (p → q) → (¬q → ¬p) := sorry
+
+#. Prove the following identities, replacing the "sorry" placeholders with actual proofs. These require classical reasoning.
+
+    .. code-block:: lean
+
+        open classical
+
+        variables p q r s : Prop
+
+        example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
+        example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
+        example : ¬(p → q) → p ∧ ¬q := sorry
+        example : (p → q) → (¬p ∨ q) := sorry
+        example : (¬q → ¬p) → (p → q) := sorry
+        example : p ∨ ¬p := sorry
+        example : (((p → q) → p) → p) := sorry
 
 #. Prove ``¬(p ↔ ¬p)`` without using classical logic.
