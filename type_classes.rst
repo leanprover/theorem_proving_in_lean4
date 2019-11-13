@@ -132,8 +132,8 @@ For example, the following definition shows that if two types ``α`` and ``β`` 
 
     namespace hidden
     -- BEGIN
-    instance prod_inhabited 
-        {α β : Type} [inhabited α] [inhabited β] : 
+    instance prod_inhabited
+        {α β : Type} [inhabited α] [inhabited β] :
       inhabited (prod α β) :=
     ⟨(default α, default β)⟩
     -- END
@@ -155,7 +155,7 @@ Similarly, we can inhabit function spaces with suitable constant functions:
     namespace hidden
 
     -- BEGIN
-    instance inhabited_fun (α : Type) {β : Type} [inhabited β] : 
+    instance inhabited_fun (α : Type) {β : Type} [inhabited β] :
       inhabited (α → β) :=
     ⟨(λ a : α, default β)⟩
 
@@ -215,8 +215,8 @@ As with ``inhabited``, the power of type class inference stems not only from the
     namespace hidden
     universes u v
     -- BEGIN
-    instance prod_has_add {α : Type u} {β : Type v} 
-        [has_add α] [has_add β] : 
+    instance prod_has_add {α : Type u} {β : Type v}
+        [has_add α] [has_add β] :
       has_add (α × β) :=
     ⟨λ ⟨a₁, b₁⟩ ⟨a₂, b₂⟩, ⟨a₁+a₂, b₁+b₂⟩⟩
 
@@ -232,7 +232,7 @@ We can similarly define pointwise addition of functions:
     namespace hidden
     universes u v
     -- BEGIN
-    instance fun_has_add {α : Type u} {β : Type v} [has_add β] : 
+    instance fun_has_add {α : Type u} {β : Type v} [has_add β] :
       has_add (α → β) :=
     ⟨λ f g x, f x + g x⟩
 
@@ -270,7 +270,7 @@ Logically speaking, having an element ``t : decidable p`` is stronger than havin
     namespace hidden
 
     -- BEGIN
-    def ite (c : Prop) [d : decidable c] {α : Type} 
+    def ite (c : Prop) [d : decidable c] {α : Type}
       (t e : α) : α :=
     decidable.rec_on d (λ hnc, e) (λ hc, t)
     -- END
@@ -283,7 +283,7 @@ The standard library also contains a variant of ``ite`` called ``dite``, the dep
     namespace hidden
 
     -- BEGIN
-    def dite (c : Prop) [d : decidable c] {α : Type} 
+    def dite (c : Prop) [d : decidable c] {α : Type}
       (t : c → α) (e : ¬ c → α) : α :=
     decidable.rec_on d (λ hnc : ¬ c, e hnc) (λ hc : c, t hc)
     -- END
@@ -296,7 +296,7 @@ Without classical logic, we cannot prove that every proposition is decidable. Bu
 .. code-block:: lean
 
     #check @and.decidable
-    -- Π {p q : Prop} [hp : decidable p] [hq : decidable q], 
+    -- Π {p q : Prop} [hp : decidable p] [hq : decidable q],
     --   decidable (p ∧ q)
 
     #check @or.decidable
@@ -324,14 +324,14 @@ With the classical axioms, we can prove that every proposition is decidable. You
     open classical
     local attribute [instance] prop_decidable
 
-Thereafter ``decidable p`` has an instance for every ``p``, and the elaborator infers that value quickly. Thus all theorems in the library that rely on decidability assumptions are freely available when you want to reason classically. In :numref:`Chapter %s <axioms_and_computation>`, we will see that using the law of the excluded middle to define functions can prevent them from being used computationally. If that is important to you, it is best to use sections to limit the use of ``prop_decidable`` to places where it is really needed. Alternatively, you can can assign ``prop_decidable`` a low priority: 
+Thereafter ``decidable p`` has an instance for every ``p``, and the elaborator infers that value quickly. Thus all theorems in the library that rely on decidability assumptions are freely available when you want to reason classically. In :numref:`Chapter %s <axioms_and_computation>`, we will see that using the law of the excluded middle to define functions can prevent them from being used computationally. If that is important to you, it is best to use sections to limit the use of ``prop_decidable`` to places where it is really needed. Alternatively, you can can assign ``prop_decidable`` a low priority:
 
 .. code-block:: lean
 
     open classical
-    local attribute [instance, priority 0] prop_decidable
+    local attribute [instance, priority 10] prop_decidable
 
-The means that Lean will only use ``prop_decidable`` as a last resort, after other attempts to infer decidability have failed.
+The guarantees that Lean will favor other instances and fall back on ``prop_decidable`` only after other attempts to infer decidability have failed.
 
 The ``decidable`` type class also provides a bit of small-scale automation for proving theorems. The standard library introduces the following definitions and notation:
 
@@ -343,7 +343,7 @@ The ``decidable`` type class also provides a bit of small-scale automation for p
     def as_true (c : Prop) [decidable c] : Prop :=
     if c then true else false
 
-    def of_as_true {c : Prop} [h₁ : decidable c] (h₂ : as_true c) : 
+    def of_as_true {c : Prop} [h₁ : decidable c] (h₂ : as_true c) :
       c :=
     match h₁, h₂ with
     | (is_true h_c),  h₂ := h_c
@@ -408,7 +408,7 @@ Sometimes Lean can't find an instance because the class is buried under a defini
 .. code-block:: lean
 
     -- fails
-    -- example {α : Type*} : inhabited (set α) := 
+    -- example {α : Type*} : inhabited (set α) :=
     -- by apply_instance
 
     def inhabited.set (α : Type*) : inhabited (set α) := ⟨∅⟩
@@ -423,13 +423,13 @@ Alternatively, we can help Lean out by unfolding the definition. The type ``set 
     def inhabited.set (α : Type*) : inhabited (set α) :=
     by unfold set; apply_instance
 
-    #print inhabited.set     
+    #print inhabited.set
       -- λ (α : Type u), eq.mpr _ (pi.inhabited α)
-    #reduce inhabited.set ℕ  
+    #reduce inhabited.set ℕ
       -- {default := λ (a : ℕ), true}
 
 Using the ``dunfold`` tactic instead of ``unfold`` yields a slightly different expression (try it!), since ``dunfold`` uses definitional reduction to unfold the definition, rather than an explicit rewrite.
-  
+
 At times, you may find that the type class inference fails to find an expected instance, or, worse, falls into an infinite loop and times out. To help debug in these situations, Lean enables you to request a trace of the search:
 
 .. code-block:: lean
@@ -521,7 +521,7 @@ We can define a coercion from ``list α`` to ``set α`` as follows:
     | []     := ∅
     | (h::t) := {h} ∪ list.to_set t
 
-    instance list_to_set_coe (α : Type u) : 
+    instance list_to_set_coe (α : Type u) :
       has_coe (list α) (set α) :=
     ⟨list.to_set⟩
 
@@ -540,7 +540,7 @@ Coercions are only considered if the given and expected types do not contain met
     | []     := ∅
     | (h::t) := {h} ∪ list.to_set t
 
-    instance list_to_set_coe (α : Type u) : 
+    instance list_to_set_coe (α : Type u) :
       has_coe (list α) (set α) :=
     ⟨list.to_set⟩
 
@@ -561,7 +561,7 @@ We can work around this issue by using a type ascription.
     | []     := ∅
     | (h::t) := {h} ∪ list.to_set t
 
-    instance list_to_set_coe (α : Type u) : 
+    instance list_to_set_coe (α : Type u) :
       has_coe (list α) (set α) :=
     ⟨list.to_set⟩
 
@@ -583,7 +583,7 @@ In the examples above, you may have noticed the symbol ``↑`` produced by the `
     | []     := ∅
     | (h::t) := {h} ∪ list.to_set t
 
-    instance list_to_set_coe (α : Type u) : 
+    instance list_to_set_coe (α : Type u) :
       has_coe (list α) (set α) :=
     ⟨list.to_set⟩
 
@@ -599,7 +599,7 @@ In the examples above, you may have noticed the symbol ``↑`` produced by the `
     #check ↑n + i
     -- END
 
-In the first two examples, the coercions are not strictly necessary since Lean will insert implicit nat → int coercions. However, ``#check n + i`` would raise an error, because the expected type of ``i`` is nat in order to match the type of n, and no int → nat coercion exists). In the third example, we therefore insert an explicit ``↑`` to coerce ``n`` to ``int``. 
+In the first two examples, the coercions are not strictly necessary since Lean will insert implicit nat → int coercions. However, ``#check n + i`` would raise an error, because the expected type of ``i`` is nat in order to match the type of n, and no int → nat coercion exists). In the third example, we therefore insert an explicit ``↑`` to coerce ``n`` to ``int``.
 
 The standard library defines a coercion from subtype ``{x : α // p x}`` to ``α`` as follows:
 
@@ -608,7 +608,7 @@ The standard library defines a coercion from subtype ``{x : α // p x}`` to ``α
     namespace hidden
     universe u
     -- BEGIN
-    instance coe_subtype {α : Type u} {p : α → Prop} : 
+    instance coe_subtype {α : Type u} {p : α → Prop} :
       has_coe {x // p x} α :=
     ⟨λ s, subtype.val s⟩
     -- END
@@ -621,7 +621,7 @@ Lean will also chain coercions as necessary. Actually, the type class ``has_coe_
     namespace hidden
     universes u v
 
-    instance lift_list {a : Type u} {b : Type v} [has_lift_t a b] : 
+    instance lift_list {a : Type u} {b : Type v} [has_lift_t a b] :
       has_lift (list a) (list b) :=
     ⟨λ l, list.map (@coe a b _) l⟩
 
@@ -648,10 +648,10 @@ where ``F`` is a family of types as above. This allows us to write ``s : t`` whe
     structure Semigroup : Type (u+1) :=
     (carrier : Type u)
     (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c : carrier, 
+    (mul_assoc : ∀ a b c : carrier,
                    mul (mul a b) c = mul a (mul b c))
 
-    instance Semigroup_has_mul (S : Semigroup) : 
+    instance Semigroup_has_mul (S : Semigroup) :
       has_mul (S.carrier) :=
     ⟨S.mul⟩
 
@@ -664,7 +664,7 @@ In other words, a semigroup consists of a type, ``carrier``, and a multiplicatio
     structure Semigroup : Type (u+1) :=
     (carrier : Type u)
     (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c : carrier, 
+    (mul_assoc : ∀ a b c : carrier,
                    mul (mul a b) c = mul a (mul b c))
 
     instance Semigroup_has_mul (S : Semigroup) : has_mul (S.carrier) :=
@@ -691,7 +691,7 @@ If we declare this function to be a coercion, then whenever we have a semigroup 
     instance Semigroup_to_sort : has_coe_to_sort Semigroup :=
     {S := Type u, coe := λ S, S.carrier}
 
-    example (S : Semigroup) (a b c : S) : 
+    example (S : Semigroup) (a b c : S) :
       (a * b) * c = a * (b * c) :=
     Semigroup.mul_assoc _ a b c
     -- END
@@ -752,13 +752,13 @@ As a result, it is a prime candidate for the third type of coercion.
     (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
 
     -- BEGIN
-    instance morphism_to_fun (S1 S2 : Semigroup) : 
+    instance morphism_to_fun (S1 S2 : Semigroup) :
       has_coe_to_fun (morphism S1 S2) :=
     { F   := λ _, S1 → S2,
       coe := λ m, m.mor }
 
-    lemma resp_mul {S1 S2 : Semigroup} 
-        (f : morphism S1 S2) (a b : S1) : 
+    lemma resp_mul {S1 S2 : Semigroup}
+        (f : morphism S1 S2) (a b : S1) :
       f (a * b) = f a * f b :=
     f.resp_mul a b
 
@@ -802,7 +802,7 @@ We can instruct Lean's pretty-printer to hide the operators ``↑`` and ``⇑`` 
     f.resp_mul a b
 
     -- BEGIN
-    theorem test (S1 S2 : Semigroup) 
+    theorem test (S1 S2 : Semigroup)
         (f : morphism S1 S2) (a : S1) :
       f (a * a * a) = f a * f a * f a :=
     calc
