@@ -116,7 +116,7 @@ Notice that we can "see" the value that is synthesized with ``#reduce``:
 
     #reduce default Prop  -- true
     #reduce default nat   -- 0
-    #reduce default bool  -- tt
+    #reduce default bool  -- ff
     #reduce default unit  -- ()
 
 Sometimes we want to think of the default element of a type as being an *arbitrary* element, whose specific value should not play a role in our proofs. For that purpose, we can write ``arbitrary α`` instead of ``default α``. The definition of ``arbitrary`` is the same as that of default, but is marked ``irreducible`` to discourage the elaborator from unfolding it. This does not preclude proofs from making use of the value, however, so the use of ``arbitrary`` rather than ``default`` functions primarily to signal intent.
