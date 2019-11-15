@@ -1043,7 +1043,7 @@ Rewriting
 
 The ``rewrite`` tactic (abbreviated ``rw``) and the ``simp`` tactic were introduced briefly in :numref:`calculational_proofs`. In this section and the next, we discuss them in greater detail.
 
-The ``rewrite`` tactic provide a basic mechanism for applying substitutions to goals and hypotheses, providing a convenient and efficient way of working with equality. The most basic form of the tactic is ``rewrite t``, where ``t`` is a term whose type asserts an equality. For example, ``t`` can be a hypothesis ``h : x = y`` in the context; it can be a general lemma, like ``add_comm : ∀ x y, x + y = y + x``, in which the rewrite tactic tries to find suitable instantiations of ``x`` and ``y``; or it can be any compound term asserting a concrete or general equation. In the following example, we use this basic form to rewrite the goal using a hypothesis.
+The ``rewrite`` tactic provides a basic mechanism for applying substitutions to goals and hypotheses, providing a convenient and efficient way of working with equality. The most basic form of the tactic is ``rewrite t``, where ``t`` is a term whose type asserts an equality. For example, ``t`` can be a hypothesis ``h : x = y`` in the context; it can be a general lemma, like ``add_comm : ∀ x y, x + y = y + x``, in which the rewrite tactic tries to find suitable instantiations of ``x`` and ``y``; or it can be any compound term asserting a concrete or general equation. In the following example, we use this basic form to rewrite the goal using a hypothesis.
 
 .. code-block:: lean
 
