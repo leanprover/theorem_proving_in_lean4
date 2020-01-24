@@ -377,7 +377,7 @@ As we saw in the last section, the terms ``t₁, ..., tₙ`` can make use of any
 
     def mul : nat → nat → nat
     | n zero     := zero
-    | n (succ m) := mul n m + m
+    | n (succ m) := mul n m + n
     -- END
 
     end nat
