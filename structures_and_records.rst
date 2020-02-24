@@ -126,7 +126,7 @@ More generally, given an expression ``p.foo x y z``, Lean will insert ``p`` at t
     structure point (α : Type) :=
     mk :: (x : α) (y : α)
 
-    def point.smul (n : ℕ) (p : point ℕ) := 
+    def point.smul (n : ℕ) (p : point ℕ) :=
     point.mk (n * p.x) (n * p.y)
 
     def p : point ℕ := point.mk 1 2
@@ -137,7 +137,7 @@ It is common to use a similar trick with the ``list.map`` function, which takes 
 
 .. code-block:: lean
 
-    #check @list.map  
+    #check @list.map
     -- Π {α : Type u_1} {β : Type u_2}, (α → β) → list α → list β
 
     def l : list nat := [1, 2, 3]
@@ -155,7 +155,7 @@ If you have a structure definition that depends on a type, you can make it polym
 
     structure point (α : Type u) :=
     mk :: (x : α) (y : α)
-    
+
     structure {v} point2 (α : Type v) :=
     mk :: (x : α) (y : α)
 
@@ -172,8 +172,8 @@ The three variations have the same net effect. The annotations in the next examp
 
     namespace hidden
     -- BEGIN
-    structure {u} prod (α : Type u) (β : Type u) : 
-      Type (max 1 u) :=
+    structure {u} prod (α : Type u) (β : Type u) :
+      Type u :=
     (pr1 : α) (pr2 : β)
 
     set_option pp.universes true
@@ -181,16 +181,14 @@ The three variations have the same net effect. The annotations in the next examp
     -- END
     end hidden
 
-The ``set_option`` command above instructs Lean to display the universe levels. Here we have used ``max 1 u`` as the resultant universe level to ensure the universe level is never ``0`` even when the parameter ``α`` and ``β`` are propositions. Recall that in Lean, ``Type 0`` is ``Prop``, which is impredicative and proof irrelevant.
-
-We can use the anonymous constructor notation to build structure values whenever the expected type is known.
+The ``set_option`` command above instructs Lean to display the universe levels. We can use the anonymous constructor notation to build structure values whenever the expected type is known.
 
 .. code-block:: lean
 
     namespace hidden
     -- BEGIN
-    structure {u} prod (α : Type u) (β : Type u) : 
-      Type (max 1 u) :=
+    structure {u} prod (α : Type u) (β : Type u) :
+      Type u :=
     (pr1 : α) (pr2 : β)
 
     example : prod nat nat :=
@@ -293,4 +291,3 @@ In the next example, we define a structure using multiple inheritance, and then 
 
     example : rgp.x   = 10 := rfl
     example : rgp.red = 200 := rfl
-
