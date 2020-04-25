@@ -69,7 +69,7 @@ You can see the resulting proof term with the ``#print`` command:
     #print test
     -- END
 
-You can write a tactic script incrementally. In VS Code, you can open a window to display messages by pressing ``Ctrl-Shift-Enter``, and that window will then show you the current goal whenever the cursor in is a tactic block. In Emacs, you can see the goal at the end of any line by pressing ``C-c C-g``, or see the remaining goal in an incomplete proof by putting the cursor on the ``end`` symbol.
+You can write a tactic script incrementally. In VS Code, you can open a window to display messages by pressing ``Ctrl-Shift-Enter``, and that window will then show you the current goal whenever the cursor is in a tactic block. In Emacs, you can see the goal at the end of any line by pressing ``C-c C-g``, or see the remaining goal in an incomplete proof by putting the cursor on the ``end`` symbol.
 
 Tactic commands can take compound expressions, not just single identifiers. The following is a shorter version of the preceding proof:
 
