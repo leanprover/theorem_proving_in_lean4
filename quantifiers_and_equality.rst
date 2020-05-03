@@ -106,7 +106,7 @@ Here is an example of how we can carry out elementary reasoning with an equivale
 
 To get used to using universal quantifiers, you should try some of the exercises at the end of this section.
 
-It is the typing rule for Pi types, and the universal quantifier in particular, that distinguishes ``Prop`` from other types. Suppose we have ``α : Sort i`` and ``β : Sort j``, where the expression ``β`` may depend on a variable ``x : α``. Then ``Π x : α, β`` is an element of ``Type (imax i j)``, where ``imax i j`` is the maximum of ``i`` and ``j`` if ``j`` is not 0, and 0 otherwise.
+It is the typing rule for Pi types, and the universal quantifier in particular, that distinguishes ``Prop`` from other types. Suppose we have ``α : Sort i`` and ``β : Sort j``, where the expression ``β`` may depend on a variable ``x : α``. Then ``Π x : α, β`` is an element of ``Sort (imax i j)``, where ``imax i j`` is the maximum of ``i`` and ``j`` if ``j`` is not 0, and 0 otherwise.
 
 The idea is as follows. If ``j`` is not ``0``, then ``Π x : α, β`` is an element of ``Sort (max i j)``. In other words, the type of dependent functions from ``α`` to ``β`` "lives" in the universe whose index is the maximum of ``i`` and ``j``. Suppose, however, that ``β`` is of ``Sort 0``, that is, an element of ``Prop``. In that case, ``Π x : α, β`` is an element of ``Sort 0`` as well, no matter which type universe ``α`` lives in. In other words, if ``β`` is a proposition depending on ``α``, then ``∀ x : α, β`` is again a proposition. This reflects the interpretation of ``Prop`` as the type of propositions rather than data, and it is what makes ``Prop`` *impredicative*.
 
