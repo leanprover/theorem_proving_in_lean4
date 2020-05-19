@@ -2,7 +2,7 @@
 #
 # Theorem Proving in Lean documentation build configuration file, created by
 # Jeremy Avigad on Saturday, August 12 (adapting other documentation setups).
-# 
+#
 # This file is execfile()d with the current directory set to its
 # containing dir.
 #
@@ -99,6 +99,7 @@ html_theme_options = {
     'font_family': 'Times New Roman, Times, serif',
     'head_font_family': 'Times New Roman, Times, serif',
     'code_bg': 'white',
+    'code_font_size': '10pt',
     'extra_nav_links': {'PDF version':'theorem_proving_in_lean.pdf',
                        'Lean Home':'https://leanprover.github.io/'},
     'sidebar_width' : '230px',
