@@ -792,7 +792,6 @@ Exercises
         example : (¬p ∨ q) → (p → q) := sorry
         example : p ∨ false ↔ p := sorry
         example : p ∧ false ↔ false := sorry
-        example : ¬(p ↔ ¬p) := sorry
         example : (p → q) → (¬q → ¬p) := sorry
 
 #. Prove the following identities, replacing the "sorry" placeholders with actual proofs. These require classical reasoning.
