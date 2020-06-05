@@ -922,7 +922,7 @@ The following example can be found in [GoMM06]_. We declare an inductive type th
     open image_of
 
     def inverse {f : α → β} : Π b, image_of f b → α
-    | .(f a) (imf .(f) a) := a
+    | .(f a) (imf a) := a
 
 In the example above, the inaccessible annotation makes it clear that ``f`` is *not* a pattern matching variable.
 
