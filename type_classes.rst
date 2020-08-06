@@ -180,12 +180,10 @@ The standard library declares a type class ``has_add α`` as follows:
 
     namespace hidden
     -- BEGIN
-    universes u
-
-    class has_add (α : Type u) :=
+    class has_add (α : Type*) :=
     (add : α → α → α)
 
-    def add {α : Type u} [has_add α] : α → α → α := has_add.add
+    def add {α : Type*} [has_add α] : α → α → α := has_add.add
 
     notation a ` + ` b := add a b
     -- END
@@ -270,7 +268,7 @@ Logically speaking, having an element ``t : decidable p`` is stronger than havin
     namespace hidden
 
     -- BEGIN
-    def ite (c : Prop) [d : decidable c] {α : Type}
+    def ite (c : Prop) [d : decidable c] {α : Type*}
       (t e : α) : α :=
     decidable.rec_on d (λ hnc, e) (λ hc, t)
     -- END
@@ -283,7 +281,7 @@ The standard library also contains a variant of ``ite`` called ``dite``, the dep
     namespace hidden
 
     -- BEGIN
-    def dite (c : Prop) [d : decidable c] {α : Type}
+    def dite (c : Prop) [d : decidable c] {α : Type*}
       (t : c → α) (e : ¬ c → α) : α :=
     decidable.rec_on d (λ hnc : ¬ c, e hnc) (λ hc : c, t hc)
     -- END
@@ -515,13 +513,11 @@ We can define a coercion from ``list α`` to ``set α`` as follows:
 
 .. code-block:: lean
 
-    universe u
-
-    def list.to_set {α : Type u} : list α → set α
+    def list.to_set {α : Type*} : list α → set α
     | []     := ∅
     | (h::t) := {h} ∪ list.to_set t
 
-    instance list_to_set_coe (α : Type u) :
+    instance list_to_set_coe (α : Type*) :
       has_coe (list α) (set α) :=
     ⟨list.to_set⟩
 
@@ -534,13 +530,11 @@ Coercions are only considered if the given and expected types do not contain met
 
 .. code-block:: lean
 
-    universe u
-
-    def list.to_set {α : Type u} : list α → set α
+    def list.to_set {α : Type*} : list α → set α
     | []     := ∅
     | (h::t) := {h} ∪ list.to_set t
 
-    instance list_to_set_coe (α : Type u) :
+    instance list_to_set_coe (α : Type*) :
       has_coe (list α) (set α) :=
     ⟨list.to_set⟩
 
@@ -555,13 +549,11 @@ We can work around this issue by using a type ascription.
 
 .. code-block:: lean
 
-    universe u
-
-    def list.to_set {α : Type u} : list α → set α
+    def list.to_set {α : Type*} : list α → set α
     | []     := ∅
     | (h::t) := {h} ∪ list.to_set t
 
-    instance list_to_set_coe (α : Type u) :
+    instance list_to_set_coe (α : Type*) :
       has_coe (list α) (set α) :=
     ⟨list.to_set⟩
 
@@ -577,13 +569,11 @@ In the examples above, you may have noticed the symbol ``↑`` produced by the `
 
 .. code-block:: lean
 
-    universe u
-
-    def list.to_set {α : Type u} : list α → set α
+    def list.to_set {α : Type*} : list α → set α
     | []     := ∅
     | (h::t) := {h} ∪ list.to_set t
 
-    instance list_to_set_coe (α : Type u) :
+    instance list_to_set_coe (α : Type*) :
       has_coe (list α) (set α) :=
     ⟨list.to_set⟩
 
@@ -606,9 +596,8 @@ The standard library defines a coercion from subtype ``{x : α // p x}`` to ``α
 .. code-block:: lean
 
     namespace hidden
-    universe u
     -- BEGIN
-    instance coe_subtype {α : Type u} {p : α → Prop} :
+    instance coe_subtype {α : Type*} {p : α → Prop} :
       has_coe {x // p x} α :=
     ⟨λ s, subtype.val s⟩
     -- END

@@ -110,13 +110,11 @@ Suppose that for ``α : Type`` we define the ``set α := α → Prop`` to denote
     namespace hidden
 
     -- BEGIN
-    universe u
-
-    def set (α : Type u) := α → Prop
+    def set (α : Type*) := α → Prop
 
     namespace set
 
-    variable {α : Type u}
+    variable {α : Type*}
 
     definition mem (x : α) (a : set α) := a x
     notation e ∈ a := mem e a
@@ -134,17 +132,15 @@ We can then proceed to define the empty set and set intersection, for example, a
 
     namespace hidden
 
-    universe u
-
-    definition set (α : Type u) := α → Prop
+    definition set (α : Type*) := α → Prop
 
     namespace set
 
-    variable {α : Type u}
+    variable {α : Type*}
 
     def mem (x : α) (a : set α) := a x
 
-    instance has_mem_set (α : Type u) : has_mem α (set α) := ⟨mem⟩
+    instance has_mem_set (α : Type*) : has_mem α (set α) := ⟨mem⟩
 
     theorem setext {a b : set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
     funext (assume x, propext (h x))
@@ -283,11 +279,10 @@ What makes the ``quot`` construction into a bona fide quotient is the following 
 .. code-block:: lean
 
     namespace hidden
-    universe u
 
     -- BEGIN
     axiom quot.sound :
-      ∀ {α : Type u} {r : α → α → Prop} {a b : α},
+      ∀ {α : Type*} {r : α → α → Prop} {a b : α},
         r a b → quot.mk r a = quot.mk r b
     -- END
     end hidden
@@ -300,17 +295,16 @@ To support this common use case, the standard library defines the notion of a *s
 
 .. code-block:: lean
 
-    universe u
     namespace hidden
 
     -- BEGIN
-    class setoid (α : Type u) :=
+    class setoid (α : Type*) :=
     (r : α → α → Prop) (iseqv : equivalence r)
 
     namespace setoid
       infix `≈` := setoid.r
 
-      variable {α : Type u}
+      variable {α : Type*}
       variable [s : setoid α]
       include s
 
@@ -331,11 +325,10 @@ Given a type ``α``, a relation ``r`` on ``α``, and a proof ``p`` that ``r`` is
 
 .. code-block:: lean
 
-    universe u
     namespace hidden
 
     -- BEGIN
-    def quotient {α : Type u} (s : setoid α) :=
+    def quotient {α : Type*} (s : setoid α) :=
     @quot α setoid.r
     -- END
 
@@ -355,9 +348,7 @@ Recall that in the standard library, ``α × β`` represents the Cartesian produ
 
 .. code-block:: lean
 
-    universe u
-
-    private definition eqv {α : Type u} (p₁ p₂ : α × α) : Prop :=
+    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
     (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 
     infix `~` := eqv
@@ -366,9 +357,7 @@ The next step is to prove that ``eqv`` is in fact an equivalence relation, which
 
 .. code-block:: lean
 
-    universe u
-
-    private definition eqv {α : Type u} (p₁ p₂ : α × α) : Prop :=
+    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
     (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 
     local infix `~` := eqv
@@ -376,18 +365,18 @@ The next step is to prove that ``eqv`` is in fact an equivalence relation, which
     -- BEGIN
     open or
 
-    private theorem eqv.refl {α : Type u} :
+    private theorem eqv.refl {α : Type*} :
       ∀ p : α × α, p ~ p :=
     assume p, inl ⟨rfl, rfl⟩
 
-    private theorem eqv.symm {α : Type u} :
+    private theorem eqv.symm {α : Type*} :
       ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
     | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) :=
         inl ⟨symm a₁b₁, symm a₂b₂⟩
     | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) :=
         inr ⟨symm a₂b₁, symm a₁b₂⟩
 
-    private theorem eqv.trans {α : Type u} :
+    private theorem eqv.trans {α : Type*} :
       ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
     | (a₁, a₂) (b₁, b₂) (c₁, c₂)
         (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
@@ -402,7 +391,7 @@ The next step is to prove that ``eqv`` is in fact an equivalence relation, which
         (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
       inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
 
-    private theorem is_equivalence (α : Type u) :
+    private theorem is_equivalence (α : Type*) :
       equivalence (@eqv α) :=
     mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α)
       (@eqv.trans α)
@@ -414,23 +403,21 @@ Now that we have proved that ``eqv`` is an equivalence relation, we can construc
 
 .. code-block:: lean
 
-    universe u
-
-    private definition eqv {α : Type u} (p₁ p₂ : α × α) : Prop :=
+    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
     (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 
     local infix `~` := eqv
 
     open or
 
-    private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
+    private theorem eqv.refl {α : Type*} : ∀ p : α × α, p ~ p :=
     assume p, inl ⟨rfl, rfl⟩
 
-    private theorem eqv.symm {α : Type u} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
+    private theorem eqv.symm {α : Type*} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
     | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
     | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) := inr ⟨symm a₂b₁, symm a₁b₂⟩
 
-    private theorem eqv.trans {α : Type u} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+    private theorem eqv.trans {α : Type*} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
       inl ⟨trans a₁b₁ b₁c₁, trans a₂b₂ b₂c₂⟩
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
@@ -440,18 +427,18 @@ Now that we have proved that ``eqv`` is an equivalence relation, we can construc
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
       inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
 
-    private theorem is_equivalence (α : Type u) : equivalence (@eqv α) :=
+    private theorem is_equivalence (α : Type*) : equivalence (@eqv α) :=
     mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α) (@eqv.trans α)
 
     -- BEGIN
-    instance uprod.setoid (α : Type u) : setoid (α × α) :=
+    instance uprod.setoid (α : Type*) : setoid (α × α) :=
     setoid.mk (@eqv α) (is_equivalence α)
 
-    definition uprod (α : Type u) : Type u :=
+    definition uprod (α : Type*) : Type* :=
     quotient (uprod.setoid α)
 
     namespace uprod
-      definition mk {α : Type u} (a₁ a₂ : α) : uprod α :=
+      definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
       ⟦(a₁, a₂)⟧
 
       local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
@@ -464,23 +451,21 @@ We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``, s
 
 .. code-block:: lean
 
-    universe u
-
-    private definition eqv {α : Type u} (p₁ p₂ : α × α) : Prop :=
+    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
     (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 
     local infix `~` := eqv
 
     open or
 
-    private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
+    private theorem eqv.refl {α : Type*} : ∀ p : α × α, p ~ p :=
     assume p, inl ⟨rfl, rfl⟩
 
-    private theorem eqv.symm {α : Type u} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
+    private theorem eqv.symm {α : Type*} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
     | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
     | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) := inr ⟨symm a₂b₁, symm a₁b₂⟩
 
-    private theorem eqv.trans {α : Type u} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+    private theorem eqv.trans {α : Type*} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
       inl ⟨trans a₁b₁ b₁c₁, trans a₂b₂ b₂c₂⟩
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
@@ -490,17 +475,17 @@ We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``, s
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
       inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
 
-    private theorem is_equivalence (α : Type u) : equivalence (@eqv α) :=
+    private theorem is_equivalence (α : Type*) : equivalence (@eqv α) :=
     mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α) (@eqv.trans α)
 
-    instance uprod.setoid (α : Type u) : setoid (α × α) :=
+    instance uprod.setoid (α : Type*) : setoid (α × α) :=
     setoid.mk (@eqv α) (is_equivalence α)
 
-    definition uprod (α : Type u) : Type u :=
+    definition uprod (α : Type*) :=
     quotient (uprod.setoid α)
 
     namespace uprod
-      definition mk {α : Type u} (a₁ a₂ : α) : uprod α :=
+      definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
       ⟦(a₁, a₂)⟧
 
       local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
@@ -516,23 +501,21 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
 
 .. code-block:: lean
 
-    universe u
-
-    private definition eqv {α : Type u} (p₁ p₂ : α × α) : Prop :=
+    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
     (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 
     local infix `~` := eqv
 
     open or
 
-    private theorem eqv.refl {α : Type u} : ∀ p : α × α, p ~ p :=
+    private theorem eqv.refl {α : Type*} : ∀ p : α × α, p ~ p :=
     assume p, inl ⟨rfl, rfl⟩
 
-    private theorem eqv.symm {α : Type u} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
+    private theorem eqv.symm {α : Type*} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
     | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
     | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) := inr ⟨symm a₂b₁, symm a₁b₂⟩
 
-    private theorem eqv.trans {α : Type u} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+    private theorem eqv.trans {α : Type*} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
       inl ⟨trans a₁b₁ b₁c₁, trans a₂b₂ b₂c₂⟩
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
@@ -542,17 +525,17 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
     | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
       inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
 
-    private theorem is_equivalence (α : Type u) : equivalence (@eqv α) :=
+    private theorem is_equivalence (α : Type*) : equivalence (@eqv α) :=
     mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α) (@eqv.trans α)
 
-    instance uprod.setoid (α : Type u) : setoid (α × α) :=
+    instance uprod.setoid (α : Type*) : setoid (α × α) :=
     setoid.mk (@eqv α) (is_equivalence α)
 
-    definition uprod (α : Type u) : Type u :=
+    definition uprod (α : Type*) :=
     quotient (uprod.setoid α)
 
     namespace uprod
-      definition mk {α : Type u} (a₁ a₂ : α) : uprod α :=
+      definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
       ⟦(a₁, a₂)⟧
 
       local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
@@ -619,11 +602,10 @@ To state the final axiom defined in the standard library, we need the ``nonempty
 
 .. code-block:: lean
 
-    universe u
     namespace hidden
 
     -- BEGIN
-    class inductive nonempty (α : Sort u) : Prop
+    class inductive nonempty (α : Sort*) : Prop
     | intro : α → nonempty
     -- END
 
@@ -633,10 +615,8 @@ Because ``nonempty α`` has type ``Prop`` and its constructor contains data, it 
 
 .. code-block:: lean
 
-    universe u
-
     -- BEGIN
-    example (α : Type u) : nonempty α ↔ ∃ x : α, true :=
+    example (α : Type*) : nonempty α ↔ ∃ x : α, true :=
     iff.intro (λ ⟨a⟩, ⟨a, trivial⟩) (λ ⟨a, h⟩, ⟨a⟩)
     -- END
 
@@ -645,10 +625,9 @@ Our axiom of choice is now expressed simply as follows:
 .. code-block:: lean
 
     namespace hidden
-    universe u
 
     -- BEGIN
-    axiom choice {α : Sort u} : nonempty α → α
+    axiom choice {α : Sort*} : nonempty α → α
     -- END
 
     end hidden
@@ -660,12 +639,11 @@ This is found in the ``classical`` namespace, so the full name of the theorem is
 .. code-block:: lean
 
     namespace hidden
-    universe u
 
-    axiom choice {α : Sort u} : nonempty α → α
+    axiom choice {α : Sort*} : nonempty α → α
     -- BEGIN
     noncomputable theorem indefinite_description
-        {α : Sort u} (p : α → Prop) :
+        {α : Sort*} (p : α → Prop) :
       (∃ x, p x) → {x // p x} :=
     λ h, choice (let ⟨x, px⟩ := h in ⟨⟨x, px⟩⟩)
     -- END
@@ -678,14 +656,13 @@ Because it depends on ``choice``, Lean cannot generate bytecode for ``indefinite
 
     open classical
     namespace hidden
-    universe u
 
     -- BEGIN
-    noncomputable def some {a : Sort u} {p : a → Prop}
+    noncomputable def some {a : Sort*} {p : a → Prop}
       (h : ∃ x, p x) : a :=
     subtype.val (indefinite_description p h)
 
-    theorem some_spec {a : Sort u} {p : a → Prop}
+    theorem some_spec {a : Sort*} {p : a → Prop}
       (h : ∃ x, p x) : p (some h) :=
     subtype.property (indefinite_description p h)
     -- END
@@ -696,11 +673,10 @@ The ``choice`` principle also erases the distinction between the property of bei
 
 .. code-block:: lean
 
-    universe u
     open classical
 
     -- BEGIN
-    noncomputable theorem inhabited_of_nonempty {α : Type u} :
+    noncomputable theorem inhabited_of_nonempty {α : Type*} :
       nonempty α → inhabited α :=
     λ h, choice (let ⟨a⟩ := h in ⟨⟨a⟩⟩)
     -- END
@@ -709,12 +685,11 @@ In the next section, we will see that ``propext``, ``funext``, and ``choice``, t
 
 .. code-block:: lean
 
-    universe u
     open classical
 
     -- BEGIN
     #check (@strong_indefinite_description :
-            Π {α : Sort u} (p : α → Prop),
+            Π {α : Sort*} (p : α → Prop),
               nonempty α → {x // (∃ (y : α), p y) → p x})
     -- END
 
@@ -722,14 +697,13 @@ Assuming the ambient type ``α`` is nonempty, ``strong_indefinite_description p`
 
 .. code-block:: lean
 
-    universe u
     open classical
 
     -- BEGIN
-    #check (@epsilon : Π {α : Sort u} [nonempty α],
+    #check (@epsilon : Π {α : Sort*} [nonempty α],
                          (α → Prop) → α)
 
-    #check (@epsilon_spec : ∀ {a : Sort u} {p : a → Prop}
+    #check (@epsilon_spec : ∀ {a : Sort*} {p : a → Prop}
                (hex : ∃ (y : a), p y),
              p (@epsilon _ (nonempty_of_exists hex) p))
     -- END

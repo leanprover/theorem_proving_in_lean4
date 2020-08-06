@@ -1129,12 +1129,10 @@ The ``rewrite`` tactic is not restricted to propositions. In the following examp
 
 .. code-block:: lean
 
-    universe u
-
-    def tuple (α : Type u) (n : ℕ) :=
+    def tuple (α : Type*) (n : ℕ) :=
       { l : list α // list.length l = n }
 
-    variables {α : Type u} {n : ℕ}
+    variables {α : Type*} {n : ℕ}
 
     example (h : n = 0) (t : tuple α n) : tuple α 0 :=
     begin

@@ -73,7 +73,7 @@ Pattern matching works with any inductive type, such as products and option type
 
 .. code-block:: lean
 
-    universes u v 
+    universes u v
     variables {α : Type u}  {β : Type v}
 
     def swap_pair : α × β → β × α
@@ -82,7 +82,7 @@ Pattern matching works with any inductive type, such as products and option type
     def foo : ℕ × ℕ → ℕ
     | (m, n) := m + n
 
-    def bar : option ℕ → ℕ 
+    def bar : option ℕ → ℕ
     | (some n) := n + 1
     | none     := 0
 
@@ -106,10 +106,10 @@ Pattern matching can also be used to destruct inductively defined propositions:
 
 .. code-block:: lean
 
-    example (p q : Prop) : p ∧ q → q ∧ p 
-    | (and.intro h₁ h₂) := and.intro h₂ h₁ 
+    example (p q : Prop) : p ∧ q → q ∧ p
+    | (and.intro h₁ h₂) := and.intro h₂ h₁
 
-    example (p q : Prop) : p ∨ q → q ∨ p 
+    example (p q : Prop) : p ∨ q → q ∨ p
     | (or.inl hp) := or.inr hp
     | (or.inr hq) := or.inl hq
 
@@ -138,7 +138,7 @@ The equation compiler first splits on cases as to whether the input is ``zero`` 
     example : sub2 0 = 0 := rfl
     example : sub2 1 = 0 := rfl
     example (a : nat) : sub2 (a + 2) = a := rfl
-    
+
     example : sub2 5 = 3 := rfl
 
 You can write ``#print sub2`` to see how the function was compiled to recursors. (Lean will tell you that ``sub2`` has been defined in terms of an internal auxiliary function, ``sub2._main``, but you can print that out too.)
@@ -147,12 +147,10 @@ Here are some more examples of nested pattern matching:
 
 .. code-block:: lean
 
-    universe u
-
-    example {α : Type u} (p q : α → Prop) : 
+    example {α : Type*} (p q : α → Prop) :
       (∃ x, p x ∨ q x) → (∃ x, p x) ∨ (∃ x, q x)
-    | (exists.intro x (or.inl px)) := or.inl (exists.intro x px) 
-    | (exists.intro x (or.inr qx)) := or.inr (exists.intro x qx) 
+    | (exists.intro x (or.inl px)) := or.inl (exists.intro x px)
+    | (exists.intro x (or.inr qx)) := or.inr (exists.intro x qx)
 
     def foo : ℕ × ℕ → ℕ
     | (0, n)     := 0
@@ -172,13 +170,13 @@ Here is another example:
 
 .. code-block:: lean
 
-    def bar : list ℕ → list ℕ → ℕ 
+    def bar : list ℕ → list ℕ → ℕ
     | []       []       := 0
     | (a :: l) []       := a
     | []       (b :: l) := b
-    | (a :: l) (b :: m) := a + b 
+    | (a :: l) (b :: m) := a + b
 
-Note that, with compound expressions, parentheses are used to separate the arguments. 
+Note that, with compound expressions, parentheses are used to separate the arguments.
 
 In each of the following examples, splitting occurs on only the first argument, even though the others are included among the list of patterns.
 
@@ -208,14 +206,12 @@ As described in :numref:`Chapter %s <inductive_types>`, inductive data types can
 
 .. code-block:: lean
 
-    universe u
-
     -- BEGIN
-    def tail1 {α : Type u} : list α → list α
+    def tail1 {α : Type*} : list α → list α
     | []       := []
     | (h :: t) := t
 
-    def tail2 : Π {α : Type u}, list α → list α
+    def tail2 : Π {α : Type*}, list α → list α
     | α []       := []
     | α (h :: t) := t
     -- END
@@ -320,7 +316,7 @@ It will also use an "if ... then ... else" instead of a ``cases_on`` in appropri
 
 .. code-block:: lean
 
-    def foo : char → ℕ 
+    def foo : char → ℕ
     | 'A' := 1
     | 'B' := 2
     | _   := 3
@@ -345,7 +341,7 @@ Generally speaking, the equation compiler processes input of the following form:
     def foo (a : α) : Π (b : β), γ
     | [patterns₁] := t₁
     ...
-    | [patternsₙ] := tₙ 
+    | [patternsₙ] := tₙ
 
 Here ``(a : α)`` is a sequence of parameters, ``(b : β)`` is the sequence of arguments on which pattern matching takes place, and ``γ`` is any type, which can depend on ``a`` and ``b``. Each line should contain the same number of patterns, one for each element of β. As we have seen, a pattern is either a variable, a constructor applied to other patterns, or an expression that normalizes to something of that form (where the non-constructors are marked with the ``[pattern]`` attribute). The appearances of constructors prompt case splits, with the arguments to the constructors represented by the given variables. In :numref:`dependent_pattern_matching`, we will see that it is sometimes necessary to include explicit terms in patterns that are needed to make an expression type check, though they do not play a role in pattern matching. These are called "inaccessible terms," for that reason. But we will not need to use such inaccessible terms before :numref:`dependent_pattern_matching`.
 
@@ -498,12 +494,12 @@ To handle such  definitions, the equation compiler uses *course-of-values* recur
 
     #reduce @nat.below C (3 : nat)
 
-    #check (@nat.brec_on C : 
+    #check (@nat.brec_on C :
       Π (n : ℕ), (Π (n : ℕ), nat.below C n → C n) → C n)
 
 The type ``@nat.below C (3 : nat)`` is a data structure that stores elements of ``C 0``, ``C 1``, and ``C 2``. The course-of-values recursion is implemented by ``nat.brec_on``. It enables us to define the value of a dependent function of type ``Π n : ℕ, C n`` at a particular input ``n`` in terms of all the previous values of the function, presented as an element of ``@nat_below C n``.
 
-The use of course-of-values recursion is a design choice. Sometimes it works extremely well; for example, it provides an efficient implementation of ``fib``, avoiding the exponential blowup that would arise from evaluating each recursive call independently. (You can call the bytecode evaluator to evaluate ``fib 10000`` by writing ``#eval (fib 10000)`` to confirm that it has no problem doing that.) In other situations, the choice may be less optimal. In any case, keep in mind that this behavior may change in the future, as better compilation strategies are developed for Lean. 
+The use of course-of-values recursion is a design choice. Sometimes it works extremely well; for example, it provides an efficient implementation of ``fib``, avoiding the exponential blowup that would arise from evaluating each recursive call independently. (You can call the bytecode evaluator to evaluate ``fib 10000`` by writing ``#eval (fib 10000)`` to confirm that it has no problem doing that.) In other situations, the choice may be less optimal. In any case, keep in mind that this behavior may change in the future, as better compilation strategies are developed for Lean.
 
 Another good example of a recursive definition is the list ``append`` function.
 
@@ -549,7 +545,7 @@ Lean's standard library defines two predicates, ``acc r a`` and ``well_founded r
     variable r : α → α → Prop
 
     #check (acc r : α → Prop)
- 
+
     #check (well_founded r : Prop)
 
 The first, ``acc``, is an inductively defined predicate. According to its definition, ``acc r x`` is equivalent to ``∀ y, r y x → acc r y``. If you think of ``r y x`` as denoting a kind of order relation ``y ≺ x``, then ``acc r x`` says that ``x`` is accessible from below, in the sense that all its predecessors are accessible. In particular, if ``x`` has no predecessors, it is accessible. Given any type ``α``, we should be able to assign a value to each accessible element of ``α``, recursively, by assigning values to all its predecessors first.
@@ -561,7 +557,7 @@ The statement that ``r`` is well founded, denoted ``well_founded r``, is exactly
     universes u v
     variable α : Sort u
     variable r : α → α → Prop
-    variable h : well_founded r 
+    variable h : well_founded r
 
     variable C : α → Sort v
     variable F : Π x, (Π (y : α), r y x → C y) → C x
@@ -572,7 +568,7 @@ There is a long cast of characters here, but the first block we have already see
 
 Note that ``well_founded.fix`` works equally well as an induction principle. It says that if ``≺`` is well founded and you want to prove ``∀ x, C x``, it suffices to show that for an arbitrary ``x``, if we have ``∀ y ≺ x, C y``, then we have ``C x``.
 
-Lean knows that the usual order ``<`` on the natural numbers is well founded. It also knows a number of ways of constructing new well founded orders from others, for example, using lexicographic order. 
+Lean knows that the usual order ``<`` on the natural numbers is well founded. It also knows a number of ways of constructing new well founded orders from others, for example, using lexicographic order.
 
 Here is essentially the definition of division on the natural numbers that is found in the standard library.
 
@@ -587,9 +583,9 @@ Here is essentially the definition of division on the natural numbers that is fo
     λ h, sub_lt (lt_of_lt_of_le h.left h.right) h.left
 
     def div.F (x : ℕ) (f : Π x₁, x₁ < x → ℕ → ℕ) (y : ℕ) : ℕ :=
-    if h : 0 < y ∧ y ≤ x then 
-      f (x - y) (div_rec_lemma h) y + 1 
-    else 
+    if h : 0 < y ∧ y ≤ x then
+      f (x - y) (div_rec_lemma h) y + 1
+    else
       zero
 
     def div := well_founded.fix lt_wf div.F
@@ -608,18 +604,18 @@ The equation compiler is designed to make definitions like this more convenient.
 
     -- BEGIN
     def div : ℕ → ℕ → ℕ
-    | x y := 
+    | x y :=
       if h : 0 < y ∧ y ≤ x then
-        have x - y < x, 
+        have x - y < x,
           from sub_lt (lt_of_lt_of_le h.left h.right) h.left,
         div (x - y) y + 1
       else
         0
     -- END
-        
+
     end hidden
 
-When the equation compiler encounters a recursive definition, it first tries structural recursion, and only when that fails, does it fall back on well-founded recursion. In this case, detecting the possibility of well-founded recursion on the natural numbers, it uses the usual lexicographic ordering on the pair ``(x, y)``. The equation compiler in and of itself is not clever enough to derive that ``x - y`` is less than ``x`` under the given hypotheses, but we can help it out by putting this fact in the local context. The equation compiler looks in the local context for such information, and, when it finds it, puts it to good use. 
+When the equation compiler encounters a recursive definition, it first tries structural recursion, and only when that fails, does it fall back on well-founded recursion. In this case, detecting the possibility of well-founded recursion on the natural numbers, it uses the usual lexicographic ordering on the pair ``(x, y)``. The equation compiler in and of itself is not clever enough to derive that ``x - y`` is less than ``x`` under the given hypotheses, but we can help it out by putting this fact in the local context. The equation compiler looks in the local context for such information, and, when it finds it, puts it to good use.
 
 The defining equation for ``div`` does *not* hold definitionally, but the equation is available to ``rewrite`` and ``simp``. The simplifier will loop if you apply it blindly, but ``rewrite`` will do the trick.
 
@@ -631,22 +627,22 @@ The defining equation for ``div`` does *not* hold definitionally, but the equati
     def div : ℕ → ℕ → ℕ
     | x y :=
       if h : 0 < y ∧ y ≤ x then
-        have x - y < x, 
+        have x - y < x,
           from sub_lt (lt_of_lt_of_le h.left h.right) h.left,
         div (x - y) y + 1
       else
         0
 
     -- BEGIN
-    example (x y : ℕ) :  
+    example (x y : ℕ) :
       div x y = if 0 < y ∧ y ≤ x then div (x - y) y + 1 else 0 :=
     by rw [div]
 
-    example (x y : ℕ) (h : 0 < y ∧ y ≤ x) : 
+    example (x y : ℕ) (h : 0 < y ∧ y ≤ x) :
       div x y = div (x - y) y + 1 :=
     by rw [div, if_pos h]
     -- END
-        
+
     end hidden
 
 The following example is similar: it converts any natural number to a binary expression, represented as a list of 0's and 1's. We have to provide the equation compiler with evidence that the recursive call is decreasing, which we do here with a ``sorry``. The ``sorry`` does not prevent the bytecode evaluator from evaluating the function successfully.
@@ -656,7 +652,7 @@ The following example is similar: it converts any natural number to a binary exp
     def nat_to_bin : ℕ → list ℕ
     | 0       := [0]
     | 1       := [1]
-    | (n + 2) := 
+    | (n + 2) :=
       have (n + 2) / 2 < n + 2, from sorry,
       nat_to_bin ((n + 2) / 2) ++ [n % 2]
 
@@ -673,7 +669,7 @@ As a final example, we observe that Ackermann's function can be defined directly
 
     #eval ack 3 5
 
-Lean's mechanisms for guessing a well-founded relation and then proving that recursive calls decrease are still in a rudimentary state. They will be improved over time. When they work, they provide a much more convenient way of defining functions than using ``well_founded.fix`` manually. When they don't, the latter is always available as a backup. 
+Lean's mechanisms for guessing a well-founded relation and then proving that recursive calls decrease are still in a rudimentary state. They will be improved over time. When they work, they provide a much more convenient way of defining functions than using ``well_founded.fix`` manually. When they don't, the latter is always available as a backup.
 
 .. TO DO: eventually, describe using_well_founded.
 
@@ -799,10 +795,10 @@ All the examples of pattern matching we considered in :numref:`pattern_matching`
     --   {a : ℕ}
     --   (n : vector α a),
     --   (e1 : C 0 nil)
-    --   (e2 : Π {n : ℕ} (a : α) (a_1 : vector α n), 
+    --   (e2 : Π {n : ℕ} (a : α) (a_1 : vector α n),
     --           C (n + 1) (cons a a_1)),
     --   C a n
-    
+
     end vector
 
 But what value should we return in the ``nil`` case? Something funny is going on: if ``v`` has type ``vector α (succ n)``, it *can't* be nil, but it is not clear how to tell that to ``cases_on``.
@@ -821,7 +817,7 @@ One solution is to define an auxiliary function:
     local notation h :: t := cons h t
 
     -- BEGIN
-    def tail_aux {α : Type} {n m : ℕ} (v : vector α m) :
+    def tail_aux {α : Type*} {n m : ℕ} (v : vector α m) :
         m = n + 1 → vector α n :=
     vector.cases_on v
       (assume H : 0 = n + 1, nat.no_confusion H)
@@ -829,7 +825,7 @@ One solution is to define an auxiliary function:
         assume H : m + 1 = n + 1,
           nat.no_confusion H (λ H1 : m = n, eq.rec_on H1 w))
 
-    def tail {α : Type} {n : ℕ} (v : vector α (n+1)) : 
+    def tail {α : Type*} {n : ℕ} (v : vector α (n+1)) :
       vector α n :=
     tail_aux v rfl
     -- END
@@ -854,22 +850,22 @@ The ``tail`` function is, however, easy to define using recursive equations, and
     local notation h :: t := cons h t
 
     -- BEGIN
-    def head {α : Type} : Π {n}, vector α (n+1) → α
+    def head {α : Type*} : Π {n}, vector α (n+1) → α
     | n (h :: t) := h
 
-    def tail {α : Type} : Π {n}, vector α (n+1) → vector α n
+    def tail {α : Type*} : Π {n}, vector α (n+1) → vector α n
     | n (h :: t) := t
 
-    lemma eta {α : Type} : 
+    lemma eta {α : Type*} :
       ∀ {n} (v : vector α (n+1)), head v :: tail v = v
     | n (h :: t) := rfl
 
-    def map {α β γ : Type} (f : α → β → γ) :
+    def map {α β γ : Type*} (f : α → β → γ) :
       Π {n}, vector α n → vector β n → vector γ n
     | 0     nil       nil       := nil
     | (n+1) (a :: va) (b :: vb) := f a b :: map va vb
 
-    def zip {α β : Type} : 
+    def zip {α β : Type*} :
       Π {n}, vector α n → vector β n → vector (α × β) n
     | 0     nil       nil       := nil
     | (n+1) (a :: va) (b :: vb) := (a, b) :: zip va vb
@@ -890,7 +886,7 @@ Note that we can omit recursive equations for "unreachable" cases such as ``head
     namespace vector
     local notation h :: t := cons h t
 
-    def map {α β γ : Type} (f : α → β → γ)
+    def map {α β γ : Type*} (f : α → β → γ)
             : Π {n : nat}, vector α n → vector β n → vector γ n
     | 0     nil     nil     := nil
     | (n+1) (a::va) (b::vb) := f a b :: map va vb
@@ -941,8 +937,8 @@ Inaccessible terms can be used to clarify and control definitions that make use 
     local notation h :: t := cons h t
 
     variable {α : Type u}
-    
-    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n 
+
+    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n
     | 0     nil        nil        := nil
     | (n+1) (cons a v) (cons b w) := cons (a + b) (add v w)
 
@@ -967,14 +963,14 @@ But, in fact, a case split is not required on the first argument; the ``cases_on
     variable {α : Type u}
 
     -- BEGIN
-    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n 
+    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n
     | ._ nil        nil        := nil
     | ._ (cons a v) (cons b w) := cons (a + b) (add v w)
     -- END
 
     end vector
 
-Marking the position as an inaccessible implicit argument tells the equation compiler first, that the form of the argument should be inferred from the constraints posed by the other arguments, and, second, that the first argument should *not* participate in pattern matching. 
+Marking the position as an inaccessible implicit argument tells the equation compiler first, that the form of the argument should be inferred from the constraints posed by the other arguments, and, second, that the first argument should *not* participate in pattern matching.
 
 Using explicit inaccessible terms makes it even clearer what is going on.
 
@@ -992,7 +988,7 @@ Using explicit inaccessible terms makes it even clearer what is going on.
     variable {α : Type u}
 
     -- BEGIN
-    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n 
+    def add [has_add α] : Π {n : ℕ}, vector α n → vector α n → vector α n
     | .(0)   nil                nil        := nil
     | .(n+1) (@cons .(α) n a v) (cons b w) := cons (a + b) (add v w)
     -- END
@@ -1025,7 +1021,7 @@ This does not look very different from an ordinary pattern matching definition, 
     | 0     := ff
     | (n+1) := tt
     end
-    
+
     -- BEGIN
     variable {α : Type}
     variable p : α → bool
@@ -1063,13 +1059,13 @@ Lean uses the ``match`` construct internally to implement a pattern-matching ``a
 
 .. code-block:: lean
 
-    def bar₁ : ℕ × ℕ → ℕ 
+    def bar₁ : ℕ × ℕ → ℕ
     | (m, n) := m + n
 
     def bar₂ (p : ℕ × ℕ) : ℕ :=
     match p with (m, n) := m + n end
 
-    def bar₃ : ℕ × ℕ → ℕ := 
+    def bar₃ : ℕ × ℕ → ℕ :=
     λ ⟨m, n⟩, m + n
 
     def bar₄ (p : ℕ × ℕ) : ℕ :=
@@ -1081,21 +1077,21 @@ The second definition also illustrates the fact that in a match with a single pa
 
     variables p q : ℕ → Prop
 
-    example : (∃ x, p x) → (∃ y, q y) → 
+    example : (∃ x, p x) → (∃ y, q y) →
       ∃ x y, p x ∧ q y
-    | ⟨x, px⟩ ⟨y, qy⟩ := ⟨x, y, px, qy⟩ 
+    | ⟨x, px⟩ ⟨y, qy⟩ := ⟨x, y, px, qy⟩
 
-    example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y) : 
+    example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y) :
       ∃ x y, p x ∧ q y :=
-    match h₀, h₁ with 
-    ⟨x, px⟩, ⟨y, qy⟩ := ⟨x, y, px, qy⟩ 
+    match h₀, h₁ with
+    ⟨x, px⟩, ⟨y, qy⟩ := ⟨x, y, px, qy⟩
     end
 
-    example : (∃ x, p x) → (∃ y, q y) → 
+    example : (∃ x, p x) → (∃ y, q y) →
       ∃ x y, p x ∧ q y :=
     λ ⟨x, px⟩ ⟨y, qy⟩, ⟨x, y, px, qy⟩
 
-    example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y) : 
+    example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y) :
       ∃ x y, p x ∧ q y :=
     let ⟨x, px⟩ := h₀,
         ⟨y, qy⟩ := h₁ in
@@ -1116,8 +1112,8 @@ Exercises
       variables {α : Type u} {β : Type v} {γ : Type w}
       open function
 
-      lemma surjective_comp {g : β → γ} {f : α → β} 
-        (hg : surjective g) (hf : surjective f) : 
+      lemma surjective_comp {g : β → γ} {f : α → β}
+        (hg : surjective g) (hf : surjective f) :
       surjective (g ∘ f) := sorry
 
 #. Open a namespace ``hidden`` to avoid naming conflicts, and use the equation compiler to define addition, multiplication, and exponentiation on the natural numbers. Then use the equation compiler to derive some of their basic properties.
@@ -1140,12 +1136,12 @@ Exercises
 
       open aexpr
 
-      def sample_aexpr : aexpr := 
+      def sample_aexpr : aexpr :=
       plus (times (var 0) (const 7)) (times (const 2) (var 1))
 
-   Here ``sample_aexpr`` represents ``(v₀ + 7) * (2 + v₁)``. 
-   
-   Write a function that evaluates such an expression, evaluating each ``var n`` to ``v n``. 
+   Here ``sample_aexpr`` represents ``(v₀ + 7) * (2 + v₁)``.
+
+   Write a function that evaluates such an expression, evaluating each ``var n`` to ``v n``.
 
    .. code-block:: lean
 
@@ -1157,7 +1153,7 @@ Exercises
 
       open aexpr
 
-      def sample_aexpr : aexpr := 
+      def sample_aexpr : aexpr :=
       plus (times (var 0) (const 7)) (times (const 2) (var 1))
 
       -- BEGIN
@@ -1202,11 +1198,11 @@ Exercises
 
       def fuse : aexpr → aexpr := sorry
 
-      theorem simp_const_eq (v : ℕ → ℕ) : 
+      theorem simp_const_eq (v : ℕ → ℕ) :
         ∀ e : aexpr, aeval v (simp_const e) = aeval v e :=
       sorry
 
-      theorem fuse_eq (v : ℕ → ℕ) : 
+      theorem fuse_eq (v : ℕ → ℕ) :
         ∀ e : aexpr, aeval v (fuse e) = aeval v e :=
       sorry
       -- END

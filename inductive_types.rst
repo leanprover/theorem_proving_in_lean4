@@ -492,16 +492,14 @@ Two more examples of inductive types in the library are the following:
 
 .. code-block:: lean
 
-    universe u
-
     namespace hidden
 
     -- BEGIN
-    inductive option (α : Type u)
+    inductive option (α : Type*)
     | none {} : option
     | some    : α → option
 
-    inductive inhabited (α : Type u)
+    inductive inhabited (α : Type*)
     | mk : α → inhabited
     -- END
 
@@ -544,12 +542,10 @@ Even the existential quantifier is inductively defined:
 
 .. code-block:: lean
 
-    universe u
-
     namespace hidden
 
     -- BEGIN
-    inductive Exists {α : Type u} (p : α → Prop) : Prop
+    inductive Exists {α : Type*} (p : α → Prop) : Prop
     | intro : ∀ (a : α), p a → Exists
 
      def exists.intro := @Exists.intro
@@ -565,12 +561,10 @@ This is a good place to mention another inductive type, denoted ``{x : α // p}`
 
 .. code-block:: lean
 
-    universe u
-
     namespace hidden
 
     -- BEGIN
-    inductive subtype {α : Type u} (p : α → Prop)
+    inductive subtype {α : Type*} (p : α → Prop)
     | mk : Π x : α, p x → subtype
     -- END
 
@@ -867,11 +861,9 @@ Let us consider some more examples of inductively defined types. For any type, `
 
 .. code-block:: lean
 
-    universe u
-
     namespace hidden
     -- BEGIN
-    inductive list (α : Type u)
+    inductive list (α : Type*)
     | nil {} : list
     | cons : α → list → list
 
@@ -901,12 +893,10 @@ Lean allows us to define iterative notation for lists:
 
 .. code-block:: lean
 
-    universe u
-
     namespace hidden
 
     -- BEGIN
-    inductive list (α : Type u)
+    inductive list (α : Type*)
     | nil {} : list
     | cons : α → list → list
 
@@ -931,10 +921,9 @@ As an exercise, prove the following:
 
 .. code-block:: lean
 
-    universe u
     namespace hidden
 
-    inductive list (α : Type u)
+    inductive list (α : Type*)
     | nil {} : list
     | cons : α → list → list
 
@@ -966,7 +955,7 @@ As an exercise, prove the following:
 
     end hidden
 
-Try also defining the function ``length : Π {α : Type u}, list α → nat`` that returns the length of a list, and prove that it behaves as expected (for example, ``length (s ++ t) = length s + length t``).
+Try also defining the function ``length : Π {α : Type*}, list α → nat`` that returns the length of a list, and prove that it behaves as expected (for example, ``length (s ++ t) = length s + length t``).
 
 For another example, we can define the type of binary trees:
 
@@ -1047,12 +1036,10 @@ Once again, cases will revert, split, and then reintroduce depedencies in the co
 
 .. code-block:: lean
 
-    universe u
-
-    def tuple (α : Type u) (n : ℕ) :=
+    def tuple (α : Type*) (n : ℕ) :=
       { l : list α // list.length l = n }
 
-    variables {α : Type u} {n : ℕ}
+    variables {α : Type*} {n : ℕ}
 
     def f {n : ℕ} (t : tuple α n) : ℕ :=
     begin

@@ -177,7 +177,17 @@ To define polymorphic constants and variables, Lean allows us to declare univers
     constant α : Type u
     #check α
 
-Throughout this book, we will do this in examples when we want type constructions to have as much generality as possible. We will come to learn that the ability to treat type constructors as instances of ordinary mathematical functions is a powerful feature of dependent type theory.
+Equivalently, we can write ``Type _`` or ``Type*`` to avoid giving the arbitrary universe a name:
+
+.. code-block:: lean
+
+    constant α : Type _
+    #check α
+
+    constant β : Type*
+    #check β
+
+Throughout this book, we will generally use ``Type*`` in examples when we want type constructions to have as much generality as possible. We will come to learn that the ability to treat type constructors as instances of ordinary mathematical functions is a powerful feature of dependent type theory.
 
 Function Abstraction and Evaluation
 -----------------------------------
@@ -389,7 +399,7 @@ We can even use this approach to specify arguments that are types:
 
 .. code-block:: lean
 
-    def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : 
+    def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) :
       γ :=
     g (f x)
 

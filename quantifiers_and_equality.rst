@@ -77,8 +77,7 @@ In situations like this, it can be tedious to supply the arguments ``a b c``, wh
 
 .. code-block:: lean
 
-    universe u
-    variables (α : Type u) (r : α → α → Prop)
+    variables (α : Type*) (r : α → α → Prop)
     variable  trans_r : ∀ {x y z}, r x y → r y z → r x z
 
     variables (a b c : α)
@@ -145,8 +144,7 @@ Thus, for example, we can specialize the example from the previous section to th
 
 .. code-block:: lean
 
-    universe u
-    variables (α : Type u) (a b c d : α)
+    variables (α : Type*) (a b c d : α)
     variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
     example : a = d :=
@@ -156,8 +154,7 @@ We can also use the projection notation:
 
 .. code-block:: lean
 
-    universe u
-    variables (α : Type u) (a b c d : α)
+    variables (α : Type*) (a b c d : α)
     variables (hab : a = b) (hcb : c = b) (hcd : c = d)
 
     -- BEGIN
@@ -168,8 +165,7 @@ Reflexivity is more powerful than it looks. Recall that terms in the Calculus of
 
 .. code-block:: lean
 
-    universe u
-    variables (α β : Type u)
+    variables (α β : Type*)
 
     example (f : α → β) (a : α) : (λ x, f x) a = f a := eq.refl _
     example (a : α) (b : α) : (a, b).1 = a := eq.refl _
@@ -179,8 +175,7 @@ This feature of the framework is so important that the library defines a notatio
 
 .. code-block:: lean
 
-    universe u
-    variables (α β : Type u)
+    variables (α β : Type*)
 
     -- BEGIN
     example (f : α → β) (a : α) : (λ x, f x) a = f a := rfl
@@ -192,13 +187,11 @@ Equality is much more than an equivalence relation, however. It has the importan
 
 .. code-block:: lean
 
-    universe u
-
-    example (α : Type u) (a b : α) (p : α → Prop)
+    example (α : Type*) (a b : α) (p : α → Prop)
       (h1 : a = b) (h2 : p a) : p b :=
     eq.subst h1 h2
 
-    example (α : Type u) (a b : α) (p : α → Prop)
+    example (α : Type*) (a b : α) (p : α → Prop)
       (h1 : a = b) (h2 : p a) : p b :=
     h1 ▸ h2
 
@@ -504,7 +497,7 @@ We can view ``exists.intro`` as an information-hiding operation, since it hides 
 
 .. code-block:: lean
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
 
     example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
     exists.elim h
@@ -520,7 +513,7 @@ Lean provides a more convenient way to eliminate from an existential quantifier 
 
 .. code-block:: lean
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
 
     example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
     match h with ⟨w, hw⟩ :=
@@ -531,7 +524,7 @@ The ``match`` statement is part of Lean's function definition system, which prov
 
 .. code-block:: lean
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
 
     -- BEGIN
     example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
@@ -544,7 +537,7 @@ We can even use the match statement to decompose the conjunction at the same tim
 
 .. code-block:: lean
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
 
     -- BEGIN
     example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
@@ -557,7 +550,7 @@ Lean also provides a pattern-matching ``let`` expression:
 
 .. code-block:: lean
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
 
     -- BEGIN
     example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
@@ -568,7 +561,7 @@ This is essentially just alternative notation for the ``match`` construct above.
 
 .. code-block:: lean
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
 
     -- BEGIN
     example : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
@@ -616,7 +609,7 @@ Just as the constructive "or" is stronger than the classical "or," so, too, is t
 
     open classical
 
-    variables (α : Type) (p : α → Prop)
+    variables (α : Type*) (p : α → Prop)
 
     example (h : ¬ ∀ x, ¬ p x) : ∃ x, p x :=
     by_contradiction
@@ -634,7 +627,7 @@ What follows are some common identities involving the existential quantifier. In
 
     open classical
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
     variable a : α
     variable r : Prop
 
@@ -660,7 +653,7 @@ Here are solutions to two of the more difficult ones:
 
     open classical
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
     variable a : α
     variable r : Prop
 
@@ -815,7 +808,7 @@ Exercises
 
    .. code-block:: lean
 
-       variables (α : Type) (p q : α → Prop)
+       variables (α : Type*) (p q : α → Prop)
 
        example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
        example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
@@ -827,7 +820,7 @@ Exercises
 
    .. code-block:: lean
 
-       variables (α : Type) (p q : α → Prop)
+       variables (α : Type*) (p q : α → Prop)
        variable r : Prop
 
        example : α → ((∀ x : α, r) ↔ r) := sorry
@@ -838,7 +831,7 @@ Exercises
 
    .. code-block:: lean
 
-       variables (men : Type) (barber : men)
+       variables (men : Type*) (barber : men)
        variable  (shaves : men → men → Prop)
 
        example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) :
