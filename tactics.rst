@@ -355,7 +355,7 @@ If some of the goals that are needed to complete the result of an ``apply`` depe
       reflexivity
     end
 
-The first ``apply`` requires us to construct two values, namely, a value of ``a`` and a proof that ``5 = a``. But the ``apply`` tactic takes the second goal to be the more important one, and places it first. Solving it with reflexivity forces ``a`` to be instantiated to ``5``, at which point, the second goal is solved automatically. 
+The first ``apply`` requires us to construct two values, namely, a value of ``a`` and a proof that ``5 = a``. But the ``apply`` tactic takes the second goal to be the more important one, and places it first. Solving it with reflexivity forces ``a`` to be instantiated to ``5``, at which point, the second goal is solved automatically.
 
 Sometimes, however, we want to synthesize the necessary arguments in the order that they appear. For that purpose there is a variant of ``apply`` called ``fapply``:
 
@@ -376,9 +376,9 @@ Another tactic that is sometimes useful is the ``revert`` tactic, which is, in a
 
     example (x : ℕ) : x = x :=
     begin
-      revert x,     
+      revert x,
       -- goal is ⊢ ∀ (x : ℕ), x = x
-      intro y,      
+      intro y,
       -- goal is y : ℕ ⊢ y = y
       reflexivity
     end
@@ -389,9 +389,9 @@ Moving a hypothesis into the goal yields an implication:
 
     example (x y : ℕ) (h : x = y) : y = x :=
     begin
-      revert h,     
+      revert h,
       -- goal is x y : ℕ ⊢ x = y → y = x
-      intro h₁,     
+      intro h₁,
       -- goal is x y : ℕ, h₁ : x = y ⊢ y = x
       symmetry,
       assumption
@@ -403,7 +403,7 @@ But ``revert`` is even more clever, in that it will revert not only an element o
 
     example (x y : ℕ) (h : x = y) : y = x :=
     begin
-      revert x,     
+      revert x,
       -- goal is y : ℕ ⊢ ∀ (x : ℕ), x = y → y = x
       intros,
       symmetry,
@@ -416,7 +416,7 @@ You can also revert multiple elements of the context at once:
 
     example (x y : ℕ) (h : x = y) : y = x :=
     begin
-      revert x y,     
+      revert x y,
       -- goal is ⊢ ∀ (x y : ℕ), x = y → y = x
       intros,
       symmetry,
@@ -434,7 +434,7 @@ You can only ``revert`` an element of the local context, that is, a local variab
       revert x,
       -- goal is ⊢ ∀ (x : ℕ), x = x
       intro y, reflexivity
-    end 
+    end
 
 The mnemonic in the notation above is that you are generalizing the goal by setting ``3`` to an arbitrary variable ``x``. Be careful: not every generalization preserves the validity of the goal. Here, ``generalize`` replaces a goal that could be proved using ``reflexivity`` with one that is not provable:
 
@@ -458,7 +458,7 @@ In this example, the ``sorry`` tactic is the analogue of the ``sorry`` proof ter
       rw ←h
     end
 
-Here the ``rewrite`` tactic, abbreviated ``rw``, uses ``h`` to replace ``x`` by ``3`` again. The ``rewrite`` tactic will be discussed below.   
+Here the ``rewrite`` tactic, abbreviated ``rw``, uses ``h`` to replace ``x`` by ``3`` again. The ``rewrite`` tactic will be discussed below.
 
 
 More Tactics
@@ -535,7 +535,7 @@ Here is another example:
 
 .. code-block:: lean
 
-    example (p q : ℕ → Prop) : 
+    example (p q : ℕ → Prop) :
       (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
     begin
       intro h,
@@ -574,7 +574,7 @@ Note that up to the names we have chosen for the variables, the definitions are 
 
     open nat
 
-    example (P : ℕ → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : ℕ) : 
+    example (P : ℕ → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : ℕ) :
       P m :=
     begin
       cases m with m', exact h₀, exact h₁ m'
@@ -713,7 +713,7 @@ There is also a ``have`` tactic, which introduces a new subgoal, just as when wr
 
     example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
     begin
-      intro h, 
+      intro h,
       cases h with hp hqr,
       show (p ∧ q) ∨ (p ∧ r),
       cases hqr with hq hr,
@@ -731,7 +731,7 @@ As with ``show``, you can omit the ``from`` and stay in tactic mode:
 
     example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
     begin
-      intro h, 
+      intro h,
       cases h with hp hqr,
       show (p ∧ q) ∨ (p ∧ r),
       cases hqr with hq hr,
@@ -749,7 +749,7 @@ As with proof terms, you can omit the label in the ``have`` tactic, in which cas
 
     example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) :=
     begin
-      intro h, 
+      intro h,
       cases h with hp hqr,
       show (p ∧ q) ∨ (p ∧ r),
       cases hqr with hq hr,
@@ -785,7 +785,7 @@ Lean also has a ``let`` tactic, which is similar to the ``have`` tactic, but is 
     example : ∃ x, x + 2 = 8 :=
     begin
       let a : ℕ := 3 * 2,
-      existsi a, 
+      existsi a,
       reflexivity
     end
 
@@ -898,12 +898,12 @@ Combining these various mechanisms makes for nicely structured tactic proofs:
       { intro h,
         have hp : p := h.left,
         have hq : q := h.right,
-        show q ∧ p, 
+        show q ∧ p,
           exact ⟨hq, hp⟩ },
       intro h,
       have hp : p := h.right,
       have hq : q := h.left,
-      show p ∧ q, 
+      show p ∧ q,
         exact ⟨hp, hq⟩
     end
 
@@ -984,7 +984,7 @@ You will have no doubt noticed by now that tactics can fail. Indeed, it is the "
 
 .. code-block:: lean
 
-    example (p q r : Prop) (hp : p) (hq : q) (hr : r) : 
+    example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ q ∧ r :=
     by split; try {split}; assumption
 
@@ -994,9 +994,9 @@ In a proof, there are often multiple goals outstanding. Parallel sequencing is o
 
 .. code-block:: lean
 
-    example (p q r : Prop) (hp : p) (hq : q) (hr : r) : 
+    example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ q ∧ r :=
-    begin 
+    begin
       split,
       all_goals { try {split} },
       all_goals { assumption }
@@ -1008,9 +1008,9 @@ succeeds on at least one goal.
 
 .. code-block:: lean
 
-    example (p q r : Prop) (hp : p) (hq : q) (hr : r) : 
+    example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ q ∧ r :=
-    begin 
+    begin
       split,
       any_goals { split },
       any_goals { assumption }
@@ -1021,7 +1021,7 @@ conjunctions:
 
 .. code-block:: lean
 
-    example (p q r : Prop) (hp : p) (hq : q) (hr : r) : 
+    example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) :=
     begin
       repeat { any_goals { split }},
@@ -1032,7 +1032,7 @@ In fact, we can compress the full tactic down to one line:
 
 .. code-block:: lean
 
-    example (p q r : Prop) (hp : p) (hq : q) (hr : r) : 
+    example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) :=
     by repeat { any_goals { split <|> assumption} }
 
@@ -1059,7 +1059,7 @@ In the example above, the first use of ``rw`` replaces ``k`` with ``0`` in the g
 
 .. code-block:: lean
 
-    example (x y : ℕ) (p : ℕ → Prop) (q : Prop) (h : q → x = y) 
+    example (x y : ℕ) (p : ℕ → Prop) (q : Prop) (h : q → x = y)
       (h' : p y) (hq : q) : p x :=
     by { rw (h hq), assumption }
 
@@ -1091,6 +1091,8 @@ Sometimes the left-hand side of an identity can match more than one subterm in t
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     example (a b c : ℕ) : a + b + c = a + c + b :=
     begin
       rw [add_assoc, add_comm b, ←add_assoc]
@@ -1112,10 +1114,14 @@ By default, the ``rewrite`` tactic affects only the goal. The notation ``rw t at
 
 .. code-block:: lean
 
+    import data.nat.basic
+
+    -- BEGIN
     variables (f : ℕ → ℕ) (a : ℕ)
 
     example (h : a + 0 = 0) : f a = f 0 :=
     by { rw add_zero at h, rw h }
+    -- END
 
 The first step, ``rw add_zero at h``, rewrites the hypothesis ``a + 0 = 0`` to ``a = 0``. Then the new hypothesis ``a = 0`` is used to rewrite the goal to ``f 0 = f 0``.
 
@@ -1125,7 +1131,7 @@ The ``rewrite`` tactic is not restricted to propositions. In the following examp
 
     universe u
 
-    def tuple (α : Type u) (n : ℕ) := 
+    def tuple (α : Type u) (n : ℕ) :=
       { l : list α // list.length l = n }
 
     variables {α : Type u} {n : ℕ}
@@ -1140,16 +1146,16 @@ Note that the rewrite tactic can carry out generic calculations in any algebraic
 
 .. code-block:: lean
 
-    universe u
+    import algebra.ring
 
-    example {α : Type u} [ring α] (a b c : α) : 
+    example {α : Type*} [ring α] (a b c : α) :
       a * 0 + 0 * b + c * 0 + 0 * a = 0 :=
     begin
       rw [mul_zero, mul_zero, zero_mul, zero_mul],
       repeat { rw add_zero }
     end
 
-    example {α : Type u} [group α] {a b : α} (h : a * b = 1) : 
+    example {α : Type*} [group α] {a b : α} (h : a * b = 1) :
       a⁻¹ = b :=
     by rw [←(mul_one a⁻¹), ←h, inv_mul_cancel_left]
 
@@ -1163,6 +1169,8 @@ Using the Simplifier
 Whereas ``rewrite`` is designed as a surgical tool for manipulating a goal, the simplifier offers a more powerful form of automation. A number of identities in Lean's library have been tagged with the ``[simp]`` attribute, and the ``simp`` tactic uses them to iteratively rewrite subterms in an expression.
 
 .. code-block:: lean
+
+    import data.nat.basic
 
     variables (x y z : ℕ) (p : ℕ → Prop)
     variable  (h : p (x * y))
@@ -1179,17 +1187,18 @@ In the first example, the left-hand side of the equality in the goal is simplifi
 .. code-block:: lean
 
     import data.list.basic
-    universe u
+
     variable {α : Type}
+
     open list
 
-    example (xs : list ℕ) : 
+    example (xs : list ℕ) :
       reverse (xs ++ [1, 2, 3]) = [3, 2, 1] ++ reverse xs :=
     by simp
 
-    example (xs ys : list α) : 
+    example (xs ys : list α) :
       length (reverse (xs ++ ys)) = length xs + length ys :=
-    by simp
+    by simp [add_comm]
 
 This example uses facts about lists that are found in Lean's `mathematics library <https://github.com/leanprover/mathlib>`_, which we need to explicitly `import`.
 
@@ -1197,10 +1206,12 @@ As with ``rw``, you can use the keyword ``at`` to simplify a hypothesis:
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     -- BEGIN
     variables (x y z : ℕ) (p : ℕ → Prop)
 
-    example (h : p ((x + 0) * (0 + y * 1 + z * 0))) : 
+    example (h : p ((x + 0) * (0 + y * 1 + z * 0))) :
       p (x * y) :=
     by { simp at h, assumption }
     -- END
@@ -1209,38 +1220,51 @@ Moreover, you can use a "wildcard" asterisk to simplify all the hypotheses and t
 
 .. code-block:: lean
 
+    import data.nat.basic
+
+    -- BEGIN
     variables (w x y z : ℕ) (p : ℕ → Prop)
 
     local attribute [simp] mul_comm mul_assoc mul_left_comm
+    local attribute [simp] add_assoc add_comm add_left_comm
 
     example (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) :=
     by { simp at *, assumption }
 
-    example (h₁ : p (1 * x + y)) (h₂ : p  (x * z * 1)) : 
+    example (h₁ : p (1 * x + y)) (h₂ : p  (x * z * 1)) :
       p (y + 0 + x) ∧ p (z * x) :=
     by { simp at *, split; assumption }
+    -- END
 
 For operations that are commutative and associative, like multiplication on the natural numbers, the simplifier uses these two facts to rewrite an expression, as well as *left commutativity*. In the case of multiplication the latter is expressed as follows: ``x * (y * z) = y * (x * z)``. The ``local attribute`` command tells the simplifier to use these rules in the current file (or section or namespace, as the case may be). It may seem that commutativity and left-commutativity are problematic, in that repeated application of either causes looping. But the simplifier detects identities that permute their arguments, and uses a technique known as *ordered rewriting*. This means that the system maintains an internal ordering of terms, and only applies the identity if doing so decreases the order. With the three identities mentioned above, this has the effect that all the parentheses in an expression are associated to the right, and the expressions are ordered in a canonical (though somewhat arbitrary) way. Two expressions that are equivalent up to associativity and commutativity are then rewritten to the same canonical form.
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     variables (x y z w : ℕ) (p : ℕ → Prop)
 
     local attribute [simp] mul_comm mul_assoc mul_left_comm
+    local attribute [simp] add_assoc add_comm add_left_comm
 
+    -- BEGIN
     example : x * y + z * w  * x = x * w * z + y * x :=
     by simp
 
     example (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) :=
     begin simp, simp at h, assumption end
+    -- END
 
 As with the rewriter, the simplifier behaves appropriately in algebraic structures:
 
 .. code-block:: lean
 
-    variables {α : Type} [comm_ring α]
+    import algebra.ring
+
+    variables {α : Type*} [comm_ring α]
 
     local attribute [simp] mul_comm mul_assoc mul_left_comm
+    local attribute [simp] add_assoc add_comm add_left_comm
 
     example (x y z : α) : (x - x) * y + z = z :=
     begin simp end
@@ -1256,7 +1280,7 @@ As with ``rewrite``, you can send ``simp`` a list of facts to use, including gen
 
     example {m n : ℕ} (h : n = 1) (h' : 0 = m) : (f m n) = n :=
     by simp [h, h'.symm, f]
-    
+
 A common idiom is to simplify a goal using local hypotheses:
 
 .. code-block:: lean
@@ -1281,9 +1305,11 @@ Here is another example:
 
 .. code-block:: lean
 
-    example (u w x y z : ℕ) (h₁ : x = y + z) (h₂ : w = u + x) : 
+    import data.nat.basic
+
+    example (u w x y z : ℕ) (h₁ : x = y + z) (h₂ : w = u + x) :
       w = z + y + u :=
-    by simp *
+    by simp [*, add_assoc, add_comm, add_left_comm]
 
 The simplifier will also do propositional rewriting. For example, using the hypothesis ``p``, it rewrites ``p ∧ q`` to ``q`` and ``p ∨ q`` to ``true``, which it then proves trivially. Iterating such rewrites produces nontrivial propositional reasoning.
 
@@ -1300,31 +1326,27 @@ The simplifier will also do propositional rewriting. For example, using the hypo
     example (hp : p) (hq : q) : p ∧ (q ∨ r) :=
     by simp *
 
-The next two examples simplify all the hypotheses, and then use them to prove the goal.
+The next example simplifies all the hypotheses, and then uses them to prove the goal.
 
 .. code-block:: lean
 
-    section
+    import data.nat.basic
+
     variables (u w x x' y y' z : ℕ) (p : ℕ → Prop)
 
-    example (h₁ : x + 0 = x') (h₂ : y + 0 = y') : 
+    example (h₁ : x + 0 = x') (h₂ : y + 0 = y') :
       x + y + 0 = x' + y' :=
     by { simp at *, simp * }
-
-    example (h₁ : x = y + z) (h₂ : w = u + x) (h₃ : p (z + y + u)) :
-      p w  :=
-    by { simp at *, simp * }
-
-    end
 
 One thing that makes the simplifier especially useful is that its capabilities can grow as a library develops. For example, suppose we define a list operation that symmetrizes its input by appending its reversal:
 
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
@@ -1333,13 +1355,15 @@ Then for any list ``xs``, ``reverse (mk_symm xs)`` is equal to ``mk_symm xs``, w
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
+
     def mk_symm (xs : list α) := xs ++ reverse xs
 
     -- BEGIN
-    theorem reverse_mk_symm (xs : list α) : 
+    theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     by { unfold mk_symm, simp }
     -- END
@@ -1349,13 +1373,15 @@ Or even more simply,
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
+
     def mk_symm (xs : list α) := xs ++ reverse xs
 
     -- BEGIN
-    theorem reverse_mk_symm (xs : list α) : 
+    theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     by simp [mk_symm]
     -- END
@@ -1365,23 +1391,24 @@ We can now use this theorem to prove new results:
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
-    theorem reverse_mk_symm (xs : list α) : 
+    theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     by simp [mk_symm]
 
     -- BEGIN
-    example (xs ys : list ℕ) : 
+    example (xs ys : list ℕ) :
       reverse (xs ++ mk_symm ys) = mk_symm ys ++ reverse xs :=
     by simp [reverse_mk_symm]
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-        (h : p (reverse (xs ++ (mk_symm ys)))) : 
+        (h : p (reverse (xs ++ (mk_symm ys)))) :
       p (mk_symm ys ++ reverse xs) :=
     by simp [reverse_mk_symm] at h; assumption
     -- END
@@ -1391,23 +1418,24 @@ But using ``reverse_mk_symm`` is generally the right thing to do, and it would b
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
     -- BEGIN
-    @[simp] theorem reverse_mk_symm (xs : list α) : 
+    @[simp] theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     by simp [mk_symm]
 
-    example (xs ys : list ℕ) : 
+    example (xs ys : list ℕ) :
       reverse (xs ++ mk_symm ys) = mk_symm ys ++ reverse xs :=
     by simp
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-        (h : p (reverse (xs ++ (mk_symm ys)))) : 
+        (h : p (reverse (xs ++ (mk_symm ys)))) :
       p (mk_symm ys ++ reverse xs) :=
     by simp at h; assumption
     -- END
@@ -1417,15 +1445,16 @@ The notation ``@[simp]`` declares ``reverse_mk_symm`` to have the ``[simp]`` att
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
     -- BEGIN
-    attribute [simp] 
-    theorem reverse_mk_symm (xs : list α) : 
+    attribute [simp]
+    theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     by simp [mk_symm]
     -- END
@@ -1434,7 +1463,7 @@ The notation ``@[simp]`` declares ``reverse_mk_symm`` to have the ``[simp]`` att
     by simp
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-        (h : p (reverse (xs ++ (mk_symm ys)))) : 
+        (h : p (reverse (xs ++ (mk_symm ys)))) :
       p (mk_symm ys ++ reverse xs) :=
     by simp at h; assumption
 
@@ -1443,25 +1472,26 @@ The attribute can also be applied any time after the theorem is declared:
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
     -- BEGIN
-    theorem reverse_mk_symm (xs : list α) : 
+    theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     by simp [mk_symm]
 
     attribute [simp] reverse_mk_symm
 
-    example (xs ys : list ℕ) : 
+    example (xs ys : list ℕ) :
       reverse (xs ++ mk_symm ys) = mk_symm ys ++ reverse xs :=
     by simp
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-        (h : p (reverse (xs ++ (mk_symm ys)))) : 
+        (h : p (reverse (xs ++ (mk_symm ys)))) :
       p (mk_symm ys ++ reverse xs) :=
     by simp at h; assumption
     -- END
@@ -1471,13 +1501,14 @@ Once the attribute is applied, however, there is no way to remove it; it persist
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
-    theorem reverse_mk_symm (xs : list α) : 
+    theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     by simp [mk_symm]
 
@@ -1485,12 +1516,12 @@ Once the attribute is applied, however, there is no way to remove it; it persist
     section
     local attribute [simp] reverse_mk_symm
 
-    example (xs ys : list ℕ) : 
+    example (xs ys : list ℕ) :
       reverse (xs ++ mk_symm ys) = mk_symm ys ++ reverse xs :=
     by simp
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-        (h : p (reverse (xs ++ (mk_symm ys)))) : 
+        (h : p (reverse (xs ++ (mk_symm ys)))) :
       p (mk_symm ys ++ reverse xs) :=
     by simp at h; assumption
 
@@ -1504,13 +1535,14 @@ You can even create your own sets of simplifier rules, to be applied in special 
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
-    theorem reverse_mk_symm (xs : list α) : 
+    theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     by simp [mk_symm]
 
@@ -1519,12 +1551,12 @@ You can even create your own sets of simplifier rules, to be applied in special 
 
     attribute [my_simps] reverse_mk_symm
 
-    example (xs ys : list ℕ) : 
+    example (xs ys : list ℕ) :
       reverse (xs ++ mk_symm ys) = mk_symm ys ++ reverse xs :=
     by simp with my_simps
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-      (h : p (reverse (xs ++ (mk_symm ys)))) : 
+      (h : p (reverse (xs ++ (mk_symm ys)))) :
         p (mk_symm ys ++ reverse xs) :=
     by simp with my_simps at h; assumption
     -- END
@@ -1538,13 +1570,14 @@ There are two additional modifiers that are useful. By default, ``simp`` include
 .. code-block:: lean
 
     import data.list.basic
+
     open list
-    universe u  
-    variables {α : Type} (x y z : α) (xs ys zs : list α)
+
+    variables {α : Type*} (x y z : α) (xs ys zs : list α)
 
     def mk_symm (xs : list α) := xs ++ reverse xs
 
-    theorem reverse_mk_symm (xs : list α) : 
+    theorem reverse_mk_symm (xs : list α) :
       reverse (mk_symm xs) = mk_symm xs :=
     begin unfold mk_symm, simp end
 
@@ -1552,17 +1585,17 @@ There are two additional modifiers that are useful. By default, ``simp`` include
     attribute [simp] reverse_mk_symm
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-        (h : p (reverse (xs ++ (mk_symm ys)))) : 
+        (h : p (reverse (xs ++ (mk_symm ys)))) :
       p (mk_symm ys ++ reverse xs) :=
     by { simp at h, assumption }
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-        (h : p (reverse (xs ++ (mk_symm ys)))) : 
+        (h : p (reverse (xs ++ (mk_symm ys)))) :
       p (reverse (mk_symm ys) ++ reverse xs) :=
     by { simp [-reverse_mk_symm] at h, assumption }
 
     example (xs ys : list ℕ) (p : list ℕ → Prop)
-        (h : p (reverse (xs ++ (mk_symm ys)))) : 
+        (h : p (reverse (xs ++ (mk_symm ys)))) :
       p (reverse (mk_symm ys) ++ reverse xs) :=
     by { simp only [reverse_append] at h, assumption }
     -- END
@@ -1576,6 +1609,6 @@ Exercises
 
    .. code-block:: lean
 
-       example (p q r : Prop) (hp : p) : 
+       example (p q r : Prop) (hp : p) :
        (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) :=
        by sorry

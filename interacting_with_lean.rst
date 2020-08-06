@@ -39,6 +39,8 @@ Lean provides various sectioning mechanisms to help structure a theory. We saw i
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     section
       variables x y : ℕ
 
@@ -47,13 +49,15 @@ Lean provides various sectioning mechanisms to help structure a theory. We saw i
       #check double y
       #check double (2 * x)
 
+      local attribute [simp] add_assoc add_comm add_left_comm
+
       theorem t1 : double (x + y) = double x + double y :=
       by simp [double]
 
       #check t1 y
       #check t1 (2 * x)
 
-      theorem t2 : double (x * y) = double x * y := 
+      theorem t2 : double (x * y) = double x * y :=
       by simp [double, add_mul]
     end
 
@@ -161,7 +165,7 @@ Sometimes, however, we wish to *fix* a value in a section. For example, followin
       theorem t1 (h₁ : r a b) (h₂ : r b c) (h₃ : r c d) : r a d :=
       transr (transr h₁ h₂) h₃
 
-      theorem t2 (h₁ : r a b) (h₂ : r b c) (h₃ : r c d) 
+      theorem t2 (h₁ : r a b) (h₂ : r b c) (h₃ : r c d)
           (h₄ : r d e) :
         r a e :=
       transr h₁ (t1 h₂ h₃ h₄)
@@ -206,6 +210,8 @@ Although the names of theorems and definitions have to be unique, the aliases th
 
 .. code-block:: lean
 
+    import algebra.ordered_ring
+
     #check add_sub_cancel
     #check nat.add_sub_cancel
     #check _root_.add_sub_cancel
@@ -241,7 +247,7 @@ creates aliases for everything in the ``nat`` namespace *except* the identifiers
 
 .. code-block:: lean
 
-    open nat (renaming mul → times) (renaming add → plus) 
+    open nat (renaming mul → times) (renaming add → plus)
       (hiding succ sub)
 
 creates aliases for everything in the ``nat`` namespace except ``succ`` and ``sub``, renaming ``nat.add`` to ``plus``.
@@ -267,7 +273,7 @@ In :numref:`using_the_simplifier`, we saw that theorems can be annotated with th
 
     variable {α : Type*}
 
-    def is_prefix (l₁ : list α) (l₂ : list α) : Prop := 
+    def is_prefix (l₁ : list α) (l₂ : list α) : Prop :=
     ∃ t, l₁ ++ t = l₂
 
     infix ` <+: `:50 := is_prefix
@@ -330,7 +336,7 @@ In all these cases, the attribute remains in effect in any file that imports the
     example : [1, 2, 3] <+: [1, 2, 3] := by simp
     end
 
-    -- error: 
+    -- error:
     -- example : [1, 2, 3] <+: [1, 2, 3] := by simp
     -- END
 
@@ -346,7 +352,7 @@ For another example, we can use the ``instance`` command to assign the notation 
     instance list_has_le : has_le (list α) := ⟨is_prefix⟩
 
     theorem list.is_prefix_refl (l : list α) : l ≤ l :=
-    ⟨[], by simp⟩    
+    ⟨[], by simp⟩
     -- END
 
 That assignment can also be made local:
@@ -409,31 +415,31 @@ To illustrate the difference, consider the following example, which shows that a
 
     definition reflexive  : Prop := ∀ (a : α), r a a
     definition symmetric  : Prop := ∀ {a b : α}, r a b → r b a
-    definition transitive : Prop := 
+    definition transitive : Prop :=
       ∀ {a b c : α}, r a b → r b c → r a c
-    definition euclidean  : Prop := 
+    definition euclidean  : Prop :=
       ∀ {a b c : α}, r a b → r a c → r b c
 
     variable {r}
 
-    theorem th1 (reflr : reflexive r) (euclr : euclidean r) : 
+    theorem th1 (reflr : reflexive r) (euclr : euclidean r) :
       symmetric r :=
     assume a b : α, assume : r a b,
     show r b a, from euclr this (reflr _)
 
-    theorem th2 (symmr : symmetric r) (euclr : euclidean r) : 
+    theorem th2 (symmr : symmetric r) (euclr : euclidean r) :
       transitive r :=
     assume (a b c : α), assume (rab : r a b) (rbc : r b c),
     euclr (symmr rab) rbc
 
     -- error:
     /-
-    theorem th3 (reflr : reflexive r) (euclr : euclidean r) : 
+    theorem th3 (reflr : reflexive r) (euclr : euclidean r) :
       transitive r :=
     th2 (th1 reflr euclr) euclr
     -/
 
-    theorem th3 (reflr : reflexive r) (euclr : euclidean r) : 
+    theorem th3 (reflr : reflexive r) (euclr : euclidean r) :
       transitive r :=
     @th2 _ _ (@th1 _ _ reflr @euclr) @euclr
     end hidden
@@ -449,24 +455,24 @@ The results are broken down into small steps: ``th1`` shows that a relation that
 
     definition reflexive  : Prop := ∀ (a : α), r a a
     definition symmetric  : Prop := ∀ ⦃a b : α⦄, r a b → r b a
-    definition transitive : Prop := 
+    definition transitive : Prop :=
       ∀ ⦃a b c : α⦄, r a b → r b c → r a c
-    definition euclidean  : Prop := 
+    definition euclidean  : Prop :=
       ∀ ⦃a b c : α⦄, r a b → r a c → r b c
 
     variable {r}
 
-    theorem th1 (reflr : reflexive r) (euclr : euclidean r) : 
+    theorem th1 (reflr : reflexive r) (euclr : euclidean r) :
       symmetric r :=
     assume a b : α, assume : r a b,
     show r b a, from euclr this (reflr _)
 
-    theorem th2 (symmr : symmetric r) (euclr : euclidean r) : 
+    theorem th2 (symmr : symmetric r) (euclr : euclidean r) :
       transitive r :=
     assume (a b c : α), assume (rab : r a b) (rbc : r b c),
     euclr (symmr rab) rbc
 
-    theorem th3 (reflr : reflexive r) (euclr : euclidean r) : 
+    theorem th3 (reflr : reflexive r) (euclr : euclidean r) :
       transitive r :=
     th2 (th1 reflr euclr) euclr
     -- END
@@ -524,6 +530,8 @@ The possibility of declaring parameters in a section also makes it possible to d
 
 .. code-block:: lean
 
+    import data.int.basic
+
     namespace int
 
     def dvd (m n : ℤ) : Prop := ∃ k, n = m * k
@@ -554,20 +562,22 @@ The possibility of declaring parameters in a section also makes it possible to d
       theorem mod_symm (h : a ≡ b) : b ≡ a :=
       by cases h with c hc; apply dvd_intro (-c); simp [eq.symm hc]
 
+      local attribute [simp] add_assoc add_comm add_left_comm
+
       theorem mod_trans (h₁ : a ≡ b) (h₂ : b ≡ c) : a ≡ c :=
       begin
-        cases h₁ with d hd, cases h₂ with e he, 
+        cases h₁ with d hd, cases h₂ with e he,
         apply dvd_intro (d + e),
-        simp [mul_add, eq.symm hd, eq.symm he]
+        simp [mul_add, eq.symm hd, eq.symm he, sub_eq_add_neg]
       end
     end mod_m
 
     #check (mod_refl : ∀ (m a : ℤ), mod_equiv m a a)
 
-    #check (mod_symm : ∀ (m a b : ℤ), mod_equiv m a b → 
+    #check (mod_symm : ∀ (m a b : ℤ), mod_equiv m a b →
                          mod_equiv m b a)
 
-    #check (mod_trans :  ∀ (m a b c : ℤ), mod_equiv m a b → 
+    #check (mod_trans :  ∀ (m a b c : ℤ), mod_equiv m a b →
                            mod_equiv m b c → mod_equiv m a c)
 
 Coercions
@@ -647,6 +657,8 @@ We will discuss inductive types, structures, classes, instances in the next four
 
 .. code-block:: lean
 
+    import algebra.ring
+
     #print notation
     #print notation + * -
     #print axioms
@@ -660,6 +672,8 @@ We will discuss inductive types, structures, classes, instances in the next four
 The behavior of the generic print command is determined by its argument, so that the following pairs of commands all do the same thing.
 
 .. code-block:: lean
+
+    import algebra.group
 
     #print list.append
     #print definition list.append
@@ -729,7 +743,7 @@ Inferring some implicit arguments is straightforward. For example, suppose a fun
 
 .. code-block:: text
 
-    eq.subst : ∀ {α : Sort u} {p : α → Prop} {a b : α}, 
+    eq.subst : ∀ {α : Sort u} {p : α → Prop} {a b : α},
                  a = b → p a → p b
 
 Now suppose we are given ``a b : ℕ`` and ``h₁ : a = b`` and ``h₂ : a * b > a``. Then, in the expression ``eq.subst h₁ h₂``, ``P`` could be any of the following:
@@ -766,6 +780,8 @@ Lean's library developers follow general naming guidelines to make it easier to 
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     open nat
 
     #check succ_ne_zero
@@ -778,6 +794,8 @@ If only a prefix of the description is enough to convey the meaning, the name ma
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     open nat
 
     -- BEGIN
@@ -789,6 +807,8 @@ Sometimes, to disambiguate the name of theorem or better convey the intended ref
 
 .. code-block:: lean
 
+    import algebra.ordered_ring
+
     #check @nat.lt_of_succ_le
     #check @lt_of_not_ge
     #check @lt_of_le_of_ne
@@ -798,12 +818,16 @@ Sometimes the word "left" or "right" is helpful to describe variants of a theore
 
 .. code-block:: lean
 
+    import algebra.ordered_ring
+
     #check @add_le_add_left
     #check @add_le_add_right
 
 We can also use the word "self" to indicate a repeated argument:
 
 .. code-block:: lean
+
+    import algebra.group
 
     #check mul_inv_self
     #check neg_add_self

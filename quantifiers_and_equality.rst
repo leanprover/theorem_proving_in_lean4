@@ -100,7 +100,7 @@ Here is an example of how we can carry out elementary reasoning with an equivale
     variable symm_r : ∀ {x y}, r x y → r y x
     variable trans_r : ∀ {x y z}, r x y → r y z → r x z
 
-    example (a b c d : α) (hab : r a b) (hcb : r c b) (hcd : r c d) : 
+    example (a b c d : α) (hab : r a b) (hcb : r c b) (hcd : r c d) :
       r a d :=
     trans_r (trans_r hab (symm_r hcb)) hcd
 
@@ -136,7 +136,7 @@ We can make the output easier to read by telling Lean not to insert the implicit
 
     #check @eq.refl.{u}   -- ∀ {α : Sort u} (a : α), a = a
     #check @eq.symm.{u}   -- ∀ {α : Sort u} {a b : α}, a = b → b = a
-    #check @eq.trans.{u}  -- ∀ {α : Sort u} {a b c : α}, 
+    #check @eq.trans.{u}  -- ∀ {α : Sort u} {a b c : α},
                           --   a = b → b = c → a = c
 
 The inscription ``.{u}`` tells Lean to instantiate the constants at the universe ``u``.
@@ -194,11 +194,11 @@ Equality is much more than an equivalence relation, however. It has the importan
 
     universe u
 
-    example (α : Type u) (a b : α) (p : α → Prop) 
+    example (α : Type u) (a b : α) (p : α → Prop)
       (h1 : a = b) (h2 : p a) : p b :=
     eq.subst h1 h2
 
-    example (α : Type u) (a b : α) (p : α → Prop) 
+    example (α : Type u) (a b : α) (p : α → Prop)
       (h1 : a = b) (h2 : p a) : p b :=
     h1 ▸ h2
 
@@ -221,6 +221,8 @@ The rule ``eq.subst`` is used to define the following auxiliary rules, which car
 Lean's library contains a large number of common identities, such as these:
 
 .. code-block:: lean
+
+    import data.int.basic
 
     variables a b c d : ℤ
 
@@ -248,19 +250,23 @@ Here is an example of a calculation in the natural numbers that uses substitutio
 
 .. code-block:: lean
 
+    import data.int.basic
+
+    -- BEGIN
     variables x y z : ℤ
 
     example (x y z : ℕ) : x * (y + z) = x * y + x * z := mul_add x y z
     example (x y z : ℕ) : (x + y) * z = x * z + y * z := add_mul x y z
     example (x y z : ℕ) : x + y + z = x + (y + z) := add_assoc x y z
 
-    example (x y : ℕ) : 
+    example (x y : ℕ) :
       (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-    have h1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y, 
+    have h1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y,
       from mul_add (x + y) x y,
     have h2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y),
       from (add_mul x y x) ▸ (add_mul x y y) ▸ h1,
     h2.trans (add_assoc (x * x + y * x) (x * y) (y * y)).symm
+    -- END
 
 Notice that the second implicit parameter to ``eq.subst``, which provides the context in which the substitution is to occur, has type ``α → Prop``. Inferring this predicate therefore requires an instance of *higher-order unification*. In full generality, the problem of determining whether a higher-order unifier exists is undecidable, and Lean can at best provide imperfect and approximate solutions to the problem. As a result, ``eq.subst`` doesn't always do what you want it to. This issue is discussed in greater detail in :numref:`elaboration_hints`.
 
@@ -287,6 +293,8 @@ Here is an example:
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     variables (a b c d e : ℕ)
     variable h1 : a = b
     variable h2 : b = c + 1
@@ -305,12 +313,15 @@ The style of writing proofs is most effective when it is used in conjunction wit
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     variables (a b c d e : ℕ)
     variable h1 : a = b
     variable h2 : b = c + 1
     variable h3 : c = d
     variable h4 : e = 1 + d
 
+    -- BEGIN
     include h1 h2 h3 h4
     theorem T : a = e :=
     calc
@@ -319,12 +330,15 @@ The style of writing proofs is most effective when it is used in conjunction wit
         ... = d + 1  : by rw h3
         ... = 1 + d  : by rw add_comm
         ... =  e     : by rw h4
+    -- END
 
 In the next chapter, we will see that hypotheses can be introduced, renamed, and modified by tactics, so it is not always clear what the names in ``rw h1`` refer to (though, in this case, it is). For that reason, section variables and variables that only appear in a tactic command or block are not automatically added to the context. The ``include`` command takes care of that. Essentially, the ``rewrite`` tactic uses a given equality (which can be a hypothesis, a theorem name, or a complex term) to "rewrite" the goal. If doing so reduces the goal to an identity ``t = t``, the tactic applies reflexivity to prove it.
 
 Rewrites can be applied sequentially, so that the proof above can be shortened to this:
 
 .. code-block:: lean
+
+    import data.nat.basic
 
     variables (a b c d e : ℕ)
     variable h1 : a = b
@@ -338,12 +352,14 @@ Rewrites can be applied sequentially, so that the proof above can be shortened t
     calc
       a     = d + 1  : by rw [h1, h2, h3]
         ... = 1 + d  : by rw add_comm
-        ... =  e     : by rw h4
+        ... = e      : by rw h4
     -- END
 
 Or even this:
 
 .. code-block:: lean
+
+    import data.nat.basic
 
     variables (a b c d e : ℕ)
     variable h1 : a = b
@@ -357,9 +373,11 @@ Or even this:
     by rw [h1, h2, h3, add_comm, h4]
     -- END
 
-The ``simp`` tactic, instead, rewrites the goal by applying the given identities repeatedly, in any order, anywhere they are applicable in a term. It also uses other rules that have been previously declared to the system, and applies associativity and commutativity wisely to put expressions in canonical forms. As a result, we can also prove the theorem as follows:
+The ``simp`` tactic, instead, rewrites the goal by applying the given identities repeatedly, in any order, anywhere they are applicable in a term. It also uses other rules that have been previously declared to the system, and applies commutativity wisely to avoid looping. As a result, we can also prove the theorem as follows:
 
 .. code-block:: lean
+
+    import data.nat.basic
 
     variables (a b c d e : ℕ)
     variable h1 : a = b
@@ -370,7 +388,7 @@ The ``simp`` tactic, instead, rewrites the goal by applying the given identities
     include h1 h2 h3 h4
     -- BEGIN
     theorem T : a = e :=
-    by simp [h1, h2, h3, h4]
+    by simp [h1, h2, h3, h4, add_comm]
     -- END
 
 We will discuss variations of ``rw`` and ``simp`` in the next chapter.
@@ -391,25 +409,34 @@ With ``calc``, we can write the proof in the last section in a more natural and 
 
 .. code-block:: lean
 
-    example (x y : ℕ) : 
+    import data.nat.basic
+
+    -- BEGIN
+    example (x y : ℕ) :
       (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
     calc
       (x + y) * (x + y) = (x + y) * x + (x + y) * y  : by rw mul_add
         ... = x * x + y * x + (x + y) * y            : by rw add_mul
         ... = x * x + y * x + (x * y + y * y)        : by rw add_mul
         ... = x * x + y * x + x * y + y * y          : by rw ←add_assoc
+    -- END
 
 Here the left arrow before ``add_assoc`` tells rewrite to use the identity in the opposite direction. (You can enter it with ``\l`` or use the ascii equivalent, ``<-``.) If brevity is what we are after, both ``rw`` and ``simp`` can do the job on their own:
 
 .. code-block:: lean
 
-    example (x y : ℕ) : 
+    import data.nat.basic
+
+    -- BEGIN
+    example (x y : ℕ) :
       (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
     by rw [mul_add, add_mul, add_mul, ←add_assoc]
 
-    example (x y : ℕ) : 
+    example (x y : ℕ) :
       (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-    by simp [mul_add, add_mul]
+    by simp [mul_add, add_mul, add_assoc, add_left_comm]
+    -- END
+
 
 .. _the_existential_quantifier:
 
@@ -431,7 +458,7 @@ As you should by now expect, the library includes both an introduction rule and 
     example (x : ℕ) (h : x > 0) : ∃ y, y < x :=
     exists.intro 0 h
 
-    example (x y z : ℕ) (hxy : x < y) (hyz : y < z) : 
+    example (x y z : ℕ) (hxy : x < y) (hyz : y < z) :
       ∃ w, x < w ∧ w < z :=
     exists.intro y (and.intro hxy hyz)
 
@@ -450,7 +477,7 @@ We can use the anonymous constructor notation ``⟨t, h⟩`` for ``exists.intro 
     example (x : ℕ) (h : x > 0) : ∃ y, y < x :=
     ⟨0, h⟩
 
-    example (x y z : ℕ) (hxy : x < y) (hyz : y < z) : 
+    example (x y z : ℕ) (hxy : x < y) (hyz : y < z) :
       ∃ w, x < w ∧ w < z :=
     ⟨y, hxy, hyz⟩
     -- END
@@ -554,9 +581,11 @@ In the following example, we define ``even a`` as ``∃ b, a = 2*b``, and then w
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     def is_even (a : nat) := ∃ b, a = 2 * b
 
-    theorem even_plus_even {a b : nat} 
+    theorem even_plus_even {a b : nat}
       (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
     exists.elim h1 (assume w1, assume hw1 : a = 2 * w1,
     exists.elim h2 (assume w2, assume hw2 : b = 2 * w2,
@@ -569,10 +598,12 @@ Using the various gadgets described in this chapter --- the match statement, ano
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     def is_even (a : nat) := ∃ b, a = 2 * b
 
     -- BEGIN
-    theorem even_plus_even {a b : nat} 
+    theorem even_plus_even {a b : nat}
       (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
     match h1, h2 with
       ⟨w1, hw1⟩, ⟨w2, hw2⟩ := ⟨w1 + w2, by rw [hw1, hw2, mul_add]⟩
@@ -807,10 +838,10 @@ Exercises
 
    .. code-block:: lean
 
-       variables (men : Type) (barber : men) 
+       variables (men : Type) (barber : men)
        variable  (shaves : men → men → Prop)
 
-       example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : 
+       example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) :
          false := sorry
 
 #. Below, we have put definitions of ``divides`` and ``even`` in a special namespace to avoid conflicts with definitions in the library. The ``instance`` declaration makes it possible to use the notation ``m | n`` for ``divides m n``. Don't worry about how it works; you will learn about that later.
@@ -871,8 +902,9 @@ Exercises
 
    .. code-block:: lean
 
-       variables (real : Type) [ordered_ring real]
-       variables (log exp : real → real)
+       import data.real.basic
+
+       variables log exp     : real → real
        variable  log_exp_eq : ∀ x, log (exp x) = x
        variable  exp_log_eq : ∀ {x}, x > 0 → exp (log x) = x
        variable  exp_pos    : ∀ x, exp x > 0
@@ -881,20 +913,22 @@ Exercises
        -- this ensures the assumptions are available in tactic proofs
        include log_exp_eq exp_log_eq exp_pos exp_add
 
-       example (x y z : real) : 
+       example (x y z : real) :
          exp (x + y + z) = exp x * exp y * exp z :=
        by rw [exp_add, exp_add]
 
-       example (y : real) (h : y > 0)  : exp (log y) = y := 
+       example (y : real) (h : y > 0)  : exp (log y) = y :=
        exp_log_eq h
 
-       theorem log_mul {x y : real} (hx : x > 0) (hy : y > 0) : 
+       theorem log_mul {x y : real} (hx : x > 0) (hy : y > 0) :
          log (x * y) = log x + log y :=
        sorry
 
 #. Prove the theorem below, using only the ring properties of ``ℤ`` enumerated in :numref:`equality` and the theorem ``sub_self``.
 
    .. code-block:: lean
+
+       import data.int.basic
 
        #check sub_self
 

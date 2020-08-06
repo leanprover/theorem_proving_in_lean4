@@ -1,6 +1,3 @@
-/_build
-.*.sw?
-*.pyc
-__pycache__
-/.vscode
-/.venv
+*.olean
+/_target
+/leanpkg.path

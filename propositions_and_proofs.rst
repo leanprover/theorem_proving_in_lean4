@@ -365,14 +365,7 @@ We will see in :numref:`Chapter %s <structures_and_records>` that certain types 
 
     #check (⟨hp, hq⟩ : p ∧ q)
 
-These angle brackets are obtained by typing ``\<`` and ``\>``, respectively. Alternatively, you can use ASCII equivalents ``(|`` and ``|)``:
-
-.. code-block:: lean
-
-    variables p q : Prop
-    variables  (hp : p) (hq : q)
-
-    example : p ∧ q := (|hp, hq|)
+These angle brackets are obtained by typing ``\<`` and ``\>``, respectively.
 
 Lean provides another useful syntactic gadget. Given an expression ``e`` of an inductive type ``foo`` (possibly applied to some arguments), the notation ``e.bar`` is shorthand for ``foo.bar e``. This provides a convenient way of accessing functions without opening a namespace. For example, the following two expressions mean the same thing:
 

@@ -95,7 +95,7 @@ Similar to propositional extensionality, function extensionality asserts that an
 
     universes u₁ u₂
 
-    #check (@funext : ∀ {α : Type u₁} {β : α → Type u₂} 
+    #check (@funext : ∀ {α : Type u₁} {β : α → Type u₂}
                {f₁ f₂ : Π (x : α), β x},
              (∀ (x : α), f₁ x = f₂ x) → f₁ = f₂)
 
@@ -119,7 +119,7 @@ Suppose that for ``α : Type`` we define the ``set α := α → Prop`` to denote
     variable {α : Type u}
 
     definition mem (x : α) (a : set α) := a x
-    notation e ∈ a := mem e a 
+    notation e ∈ a := mem e a
 
     theorem setext {a b : set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
     funext (assume x, propext (h x))
@@ -176,6 +176,8 @@ The following is an example of how function extensionality blocks computation in
 
 .. code-block:: lean
 
+    import data.nat.basic
+
     def f₁  (x : ℕ) := x
     def f₂ (x : ℕ) := 0 + x
 
@@ -221,15 +223,15 @@ In its most basic form, the quotient construction does not even require ``r`` to
     universes u v
 
     constant quot : Π {α : Sort u}, (α → α → Prop) → Sort u
-    
-    constant quot.mk : 
+
+    constant quot.mk :
       Π {α : Sort u} (r : α → α → Prop), α → quot r
 
-    axiom quot.ind : 
+    axiom quot.ind :
       ∀ {α : Sort u} {r : α → α → Prop} {β : quot r → Prop},
         (∀ a, β (quot.mk r a)) → ∀ (q : quot r), β q
 
-    constant quot.lift : 
+    constant quot.lift :
       Π {α : Sort u} {r : α → α → Prop} {β : Sort u} (f : α → β),
         (∀ a b, r a b → f a = f b) → quot r → β
 
@@ -251,7 +253,7 @@ The first one forms a type ``quot r`` given a type ``α`` by any binary relation
     #check (quot.mk r a : quot r)
 
     variable  f : α → β
-    variable   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂ 
+    variable   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂
 
     -- the corresponding function on quot r
     #check (quot.lift f h : quot r → β)
@@ -267,7 +269,7 @@ The four constants, ``quot``, ``quot.mk``, ``quot.ind``, and ``quot.lift`` in an
     variable  r : α → α → Prop
     variable  a : α
     variable  f : α → β
-    variable   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂ 
+    variable   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂
     theorem thm : quot.lift f h (quot.mk r a) = f a := rfl
 
     -- BEGIN
@@ -284,7 +286,7 @@ What makes the ``quot`` construction into a bona fide quotient is the following 
     universe u
 
     -- BEGIN
-    axiom quot.sound : 
+    axiom quot.sound :
       ∀ {α : Type u} {r : α → α → Prop} {a b : α},
         r a b → quot.mk r a = quot.mk r b
     -- END
@@ -343,12 +345,9 @@ The constants ``quotient.mk``, ``quotient.ind``, ``quotient.lift``, and ``quotie
 
 .. code-block:: lean
 
-    universe u
+    variables {α : Type*} [setoid α] (a b : α)
 
-    -- BEGIN
-    #check (@quotient.exact : 
-      ∀ {α : Type u} [setoid α] {a b : α}, ⟦a⟧ = ⟦b⟧ → a ≈ b)
-    -- END
+    #check (quotient.exact : ⟦a⟧ = ⟦b⟧ → a ≈ b)
 
 Together with ``quotient.sound``, this implies that the elements of the quotient correspond exactly to the equivalence classes of elements in ``α``.
 
@@ -377,35 +376,35 @@ The next step is to prove that ``eqv`` is in fact an equivalence relation, which
     -- BEGIN
     open or
 
-    private theorem eqv.refl {α : Type u} : 
+    private theorem eqv.refl {α : Type u} :
       ∀ p : α × α, p ~ p :=
     assume p, inl ⟨rfl, rfl⟩
 
-    private theorem eqv.symm {α : Type u} : 
+    private theorem eqv.symm {α : Type u} :
       ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
-    | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := 
+    | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) :=
         inl ⟨symm a₁b₁, symm a₂b₂⟩
-    | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) := 
+    | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) :=
         inr ⟨symm a₂b₁, symm a₁b₂⟩
 
-    private theorem eqv.trans {α : Type u} : 
+    private theorem eqv.trans {α : Type u} :
       ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) 
+    | (a₁, a₂) (b₁, b₂) (c₁, c₂)
         (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
       inl ⟨trans a₁b₁ b₁c₁, trans a₂b₂ b₂c₂⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) 
+    | (a₁, a₂) (b₁, b₂) (c₁, c₂)
         (inl ⟨a₁b₁, a₂b₂⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
       inr ⟨trans a₁b₁ b₁c₂, trans a₂b₂ b₂c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) 
+    | (a₁, a₂) (b₁, b₂) (c₁, c₂)
         (inr ⟨a₁b₂, a₂b₁⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
       inr ⟨trans a₁b₂ b₂c₂, trans a₂b₁ b₁c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) 
+    | (a₁, a₂) (b₁, b₂) (c₁, c₂)
         (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
       inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
 
-    private theorem is_equivalence (α : Type u) : 
+    private theorem is_equivalence (α : Type u) :
       equivalence (@eqv α) :=
-    mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α) 
+    mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α)
       (@eqv.trans α)
     -- END
 
@@ -455,7 +454,7 @@ Now that we have proved that ``eqv`` is an equivalence relation, we can construc
       definition mk {α : Type u} (a₁ a₂ : α) : uprod α :=
       ⟦(a₁, a₂)⟧
 
-      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂ 
+      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
     end uprod
     -- END
 
@@ -504,10 +503,10 @@ We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``, s
       definition mk {α : Type u} (a₁ a₂ : α) : uprod α :=
       ⟦(a₁, a₂)⟧
 
-      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂  
+      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
 
     -- BEGIN
-      theorem mk_eq_mk {α : Type} (a₁ a₂ : α) : 
+      theorem mk_eq_mk {α : Type} (a₁ a₂ : α) :
         {a₁, a₂} = {a₂, a₁} :=
       quot.sound (inr ⟨rfl, rfl⟩)
     -- END
@@ -556,32 +555,32 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
       definition mk {α : Type u} (a₁ a₂ : α) : uprod α :=
       ⟦(a₁, a₂)⟧
 
-      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂  
+      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
 
       theorem mk_eq_mk {α : Type} (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
       quot.sound (inr ⟨rfl, rfl⟩)
 
     -- BEGIN
-      private definition mem_fn {α : Type} (a : α) : 
+      private definition mem_fn {α : Type} (a : α) :
         α × α → Prop
       | (a₁, a₂) := a = a₁ ∨ a = a₂
 
       -- auxiliary lemma for proving mem_respects
-      private lemma mem_swap {α : Type} {a : α} : 
+      private lemma mem_swap {α : Type} {a : α} :
         ∀ {p : α × α}, mem_fn a p = mem_fn a (⟨p.2, p.1⟩)
       | (a₁, a₂) := propext (iff.intro
-          (λ l : a = a₁ ∨ a = a₂, 
+          (λ l : a = a₁ ∨ a = a₂,
             or.elim l (λ h₁, inr h₁) (λ h₂, inl h₂))
-          (λ r : a = a₂ ∨ a = a₁, 
+          (λ r : a = a₂ ∨ a = a₁,
             or.elim r (λ h₁, inr h₁) (λ h₂, inl h₂)))
 
-      private lemma mem_respects {α : Type} : 
-        ∀ {p₁ p₂ : α × α} (a : α), 
+      private lemma mem_respects {α : Type} :
+        ∀ {p₁ p₂ : α × α} (a : α),
           p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
       | (a₁, a₂) (b₁, b₂) a (inl ⟨a₁b₁, a₂b₂⟩) :=
         by { dsimp at a₁b₁, dsimp at a₂b₂, rw [a₁b₁, a₂b₂] }
       | (a₁, a₂) (b₁, b₂) a (inr ⟨a₁b₂, a₂b₁⟩) :=
-        by { dsimp at a₁b₂, dsimp at a₂b₁, rw [a₁b₂, a₂b₁], 
+        by { dsimp at a₁b₂, dsimp at a₂b₁, rw [a₁b₂, a₂b₁],
               apply mem_swap }
 
       def mem {α : Type} (a : α) (u : uprod α) : Prop :=
@@ -595,7 +594,7 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
       theorem mem_mk_right {α : Type} (a b : α) : b ∈ {a, b} :=
       inr rfl
 
-      theorem mem_or_mem_of_mem_mk {α : Type} {a b c : α} : 
+      theorem mem_or_mem_of_mem_mk {α : Type} {a b c : α} :
         c ∈ {a, b} → c = a ∨ c = b :=
       λ h, h
     -- END
@@ -665,8 +664,8 @@ This is found in the ``classical`` namespace, so the full name of the theorem is
 
     axiom choice {α : Sort u} : nonempty α → α
     -- BEGIN
-    noncomputable theorem indefinite_description 
-        {α : Sort u} (p : α → Prop) : 
+    noncomputable theorem indefinite_description
+        {α : Sort u} (p : α → Prop) :
       (∃ x, p x) → {x // p x} :=
     λ h, choice (let ⟨x, px⟩ := h in ⟨⟨x, px⟩⟩)
     -- END
@@ -682,11 +681,11 @@ Because it depends on ``choice``, Lean cannot generate bytecode for ``indefinite
     universe u
 
     -- BEGIN
-    noncomputable def some {a : Sort u} {p : a → Prop} 
+    noncomputable def some {a : Sort u} {p : a → Prop}
       (h : ∃ x, p x) : a :=
     subtype.val (indefinite_description p h)
 
-    theorem some_spec {a : Sort u} {p : a → Prop} 
+    theorem some_spec {a : Sort u} {p : a → Prop}
       (h : ∃ x, p x) : p (some h) :=
     subtype.property (indefinite_description p h)
     -- END
@@ -701,7 +700,7 @@ The ``choice`` principle also erases the distinction between the property of bei
     open classical
 
     -- BEGIN
-    noncomputable theorem inhabited_of_nonempty {α : Type u} : 
+    noncomputable theorem inhabited_of_nonempty {α : Type u} :
       nonempty α → inhabited α :=
     λ h, choice (let ⟨a⟩ := h in ⟨⟨a⟩⟩)
     -- END
@@ -715,7 +714,7 @@ In the next section, we will see that ``propext``, ``funext``, and ``choice``, t
 
     -- BEGIN
     #check (@strong_indefinite_description :
-            Π {α : Sort u} (p : α → Prop), 
+            Π {α : Sort u} (p : α → Prop),
               nonempty α → {x // (∃ (y : α), p y) → p x})
     -- END
 
@@ -727,11 +726,11 @@ Assuming the ambient type ``α`` is nonempty, ``strong_indefinite_description p`
     open classical
 
     -- BEGIN
-    #check (@epsilon : Π {α : Sort u} [nonempty α], 
+    #check (@epsilon : Π {α : Sort u} [nonempty α],
                          (α → Prop) → α)
 
-    #check (@epsilon_spec : ∀ {a : Sort u} {p : a → Prop} 
-               (hex : ∃ (y : a), p y), 
+    #check (@epsilon_spec : ∀ {a : Sort u} {p : a → Prop}
+               (hex : ∃ (y : a), p y),
              p (@epsilon _ (nonempty_of_exists hex) p))
     -- END
 
@@ -821,7 +820,7 @@ Each of ``U`` and ``V`` is a disjunction, so ``u_def`` and ``v_def`` represent f
       (assume hut : u = true,
         or.elim v_def
           (assume hvf : v = false,
-            have hne : u ≠ v, 
+            have hne : u ≠ v,
               from eq.symm hvf ▸ eq.symm hut ▸ true_ne_false,
             or.inl hne)
           (assume hp : p, or.inr hp))
@@ -857,7 +856,7 @@ definition of ``u`` and ``v``, this implies that they are equal as well.
       (assume hut : u = true,
         or.elim v_def
           (assume hvf : v = false,
-            have hne : u ≠ v, 
+            have hne : u ≠ v,
               from eq.symm hvf ▸ eq.symm hut ▸ true_ne_false,
             or.inl hne)
           (assume hp : p, or.inr hp))
@@ -947,7 +946,7 @@ Consequences of excluded middle include double-negation elimination, proof by ca
     theorem prop_complete (a : Prop) : a = true ∨ a = false :=
     or.elim (em a)
       (λ t, or.inl (propext (iff.intro (λ h, trivial) (λ h, t))))
-      (λ f, or.inr (propext (iff.intro (λ h, absurd h f) 
+      (λ f, or.inr (propext (iff.intro (λ h, absurd h f)
                                        (λ h, false.elim h))))
     -- END
 
@@ -976,7 +975,7 @@ As an example of classical reasoning, we use ``some`` to show that if ``f : α �
     open classical function
     local attribute [instance] prop_decidable
 
-    noncomputable definition linv {α β : Type} [h : inhabited α] 
+    noncomputable definition linv {α β : Type} [h : inhabited α]
       (f : α → β) : β → α :=
     λ b : β, if ex : (∃ a : α, f a = b) then some ex else arbitrary α
 

@@ -156,11 +156,11 @@ We can define functions from ``weekday`` to ``weekday``:
     -- BEGIN
     namespace weekday
       def next (d : weekday) : weekday :=
-      weekday.cases_on d monday tuesday wednesday thursday friday 
+      weekday.cases_on d monday tuesday wednesday thursday friday
         saturday sunday
 
       def previous (d : weekday) : weekday :=
-      weekday.cases_on d saturday sunday monday tuesday wednesday 
+      weekday.cases_on d saturday sunday monday tuesday wednesday
         thursday friday
 
       #reduce next (next tuesday)
@@ -185,15 +185,15 @@ How can we prove the general theorem that ``next (previous d) = d`` for any week
 
     namespace weekday
       def next (d : weekday) : weekday :=
-      weekday.cases_on d monday tuesday wednesday thursday friday 
+      weekday.cases_on d monday tuesday wednesday thursday friday
         saturday sunday
 
       def previous (d : weekday) : weekday :=
-      weekday.cases_on d saturday sunday monday tuesday wednesday 
+      weekday.cases_on d saturday sunday monday tuesday wednesday
         thursday friday
 
     -- BEGIN
-      theorem next_previous (d: weekday) : 
+      theorem next_previous (d: weekday) :
         next (previous d) = d :=
       weekday.cases_on d
         (show next (previous sunday) = sunday, from rfl)
@@ -227,7 +227,7 @@ While the ``show`` commands make the proof clearer and more readable, they are n
       weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
     -- BEGIN
-      theorem next_previous (d: weekday) : 
+      theorem next_previous (d: weekday) :
         next (previous d) = d :=
       weekday.cases_on d rfl rfl rfl rfl rfl rfl rfl
     -- END
@@ -254,7 +254,7 @@ Using a tactic proof, we can be even more concise:
       weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
     -- BEGIN
-      theorem next_previous (d: weekday) : 
+      theorem next_previous (d: weekday) :
         next (previous d) = d :=
       by apply weekday.cases_on d; refl
     -- END
@@ -283,7 +283,7 @@ Notice that, under the propositions-as-types correspondence, we can use ``cases_
       weekday.cases_on d saturday sunday monday tuesday wednesday thursday friday
 
     -- BEGIN
-      theorem next_previous (d: weekday) : 
+      theorem next_previous (d: weekday) :
         next (previous d) = d :=
       by apply weekday.rec_on d; refl
     -- END
@@ -841,6 +841,11 @@ We can then replace the ``sorry`` in the previous proof with ``succ_add``. Yet a
     namespace hidden
     open nat
 
+    theorem add_zero (m : nat) : m + 0 = m := rfl
+
+    theorem zero_add (n : ℕ) : 0 + n = n :=
+    nat.rec_on n rfl (λ n ih, by rw [add_succ, ih])
+
     -- BEGIN
     theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
     nat.rec_on k rfl (λ k ih, by simp only [add_succ, ih])
@@ -883,7 +888,7 @@ Let us consider some more examples of inductively defined types. For any type, `
 
     theorem nil_append (t : list α) : nil ++ t = t := rfl
 
-    theorem cons_append (x : α) (s t : list α) : 
+    theorem cons_append (x : α) (s t : list α) :
       x::s ++ t = x::(s ++ t) := rfl
 
     end list
@@ -953,7 +958,7 @@ As an exercise, prove the following:
     -- BEGIN
     theorem append_nil (t : list α) : t ++ nil = t := sorry
 
-    theorem append_assoc (r s t : list α) : 
+    theorem append_assoc (r s t : list α) :
       r ++ s ++ t = r ++ (s ++ t) := sorry
     -- END
 
@@ -1044,7 +1049,7 @@ Once again, cases will revert, split, and then reintroduce depedencies in the co
 
     universe u
 
-    def tuple (α : Type u) (n : ℕ) := 
+    def tuple (α : Type u) (n : ℕ) :=
       { l : list α // list.length l = n }
 
     variables {α : Type u} {n : ℕ}
@@ -1086,9 +1091,9 @@ The syntax of the ``with`` is unfortunate, in that we have to list the arguments
     def silly (x : foo) : ℕ :=
     begin
       cases x,
-        case bar1 : a b 
+        case bar1 : a b
           { exact b },
-        case bar2 : c d e 
+        case bar2 : c d e
           { exact e }
     end
 
@@ -1105,9 +1110,9 @@ The ``case`` tactic is clever, in that it will match the constructor to the appr
     def silly (x : foo) : ℕ :=
     begin
       cases x,
-        case bar2 : c d e 
+        case bar2 : c d e
           { exact e },
-        case bar1 : a b 
+        case bar1 : a b
           { exact b }
     end
 
@@ -1118,7 +1123,7 @@ You can also use ``cases`` with an arbitrary expression. Assuming that expressio
     open nat
     variable p : ℕ → Prop
 
-    example (hz : p 0) (hs : ∀ n, p (succ n)) (m k : ℕ) : 
+    example (hz : p 0) (hs : ∀ n, p (succ n)) (m k : ℕ) :
       p (m + 3 * k) :=
     begin
       cases (m + 3 * k),
@@ -1134,7 +1139,7 @@ Think of this as saying "split on cases as to whether ``m + 3 * k`` is zero or t
     variable p : ℕ → Prop
 
     -- BEGIN
-    example (hz : p 0) (hs : ∀ n, p (succ n)) (m k : ℕ) : 
+    example (hz : p 0) (hs : ∀ n, p (succ n)) (m k : ℕ) :
       p (m + 3 * k) :=
     begin
       generalize : m + 3 * k = n,
@@ -1150,7 +1155,7 @@ If the expression you case on does not appear in the goal, the ``cases`` tactic 
 
 .. code-block:: lean
 
-    example (p : Prop) (m n : ℕ) 
+    example (p : Prop) (m n : ℕ)
       (h₁ : m < n → p) (h₂ : m ≥ n → p) : p :=
     begin
       cases lt_or_ge m n with hlt hge,
@@ -1162,7 +1167,7 @@ The theorem ``lt_or_ge m n`` says ``m < n ∨ m ≥ n``, and it is natural to th
 
 .. code-block:: lean
 
-    example (p : Prop) (m n : ℕ) 
+    example (p : Prop) (m n : ℕ)
       (h₁ : m < n → p) (h₂ : m ≥ n → p) : p :=
     begin
       have h : m < n ∨ m ≥ n,
@@ -1259,6 +1264,8 @@ The name before the colon corresponds to the constructor of the associated induc
     namespace hidden
     open nat
 
+    theorem add_zero (m : nat) : m + 0 = m := rfl
+
     -- BEGIN
     theorem zero_add (n : ℕ) : 0 + n = n :=
     by induction n; simp only [*, add_zero, add_succ]
@@ -1267,7 +1274,7 @@ The name before the colon corresponds to the constructor of the associated induc
     by induction n; simp only [*, add_zero, add_succ]
 
     theorem add_comm (m n : ℕ) : m + n = n + m :=
-    by induction n; 
+    by induction n;
          simp only [*, add_zero, add_succ, succ_add, zero_add]
 
     theorem add_assoc (m n k : ℕ) : m + n + k = m + (n + k) :=
@@ -1282,7 +1289,7 @@ We close this section with one last tactic that is designed to facilitate workin
 
     open nat
 
-    example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) : 
+    example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) :
       n + k = m + k :=
     begin
       injection h with h',
@@ -1297,14 +1304,14 @@ The first instance of the tactic adds ``h' : succ m = succ n`` to the context, a
     open nat
 
     -- BEGIN
-    example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) : 
+    example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) :
       n + k = m + k :=
     begin
       injections with h' h'',
       rw h''
     end
 
-    example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) : 
+    example (m n k : ℕ) (h : succ (succ m) = succ (succ n)) :
       n + k = m + k :=
     by injections; simp *
     -- END
@@ -1370,19 +1377,19 @@ A more exotic example is given by the definition of the equality type in Lean:
 
     -- BEGIN
     inductive eq {α : Sort u} (a : α) : α → Prop
-    | refl : eq a
+    | refl [] : eq a
     -- END
 
     end hidden
 
-For each fixed ``α : Sort u`` and ``a : α``, this definition constructs a family of types ``eq a x``, indexed by ``x : α``. Notably, however, there is only one constructor, ``refl``, which is an element of ``eq a a``. Intuitively, the only way to construct a proof of ``eq a x`` is to use reflexivity, in the case where ``x`` is ``a``. Note that ``eq a a`` is the only inhabited type in the family of types ``eq a x``. The elimination principle generated by Lean is as follows:
+For each fixed ``α : Sort u`` and ``a : α``, this definition constructs a family of types ``eq a x``, indexed by ``x : α``. Notably, however, there is only one constructor, ``refl``, which is an element of ``eq a a``, and the square brackets after the constructor tell Lean to make the argument to ``refl`` explicit. Intuitively, the only way to construct a proof of ``eq a x`` is to use reflexivity, in the case where ``x`` is ``a``. Note that ``eq a a`` is the only inhabited type in the family of types ``eq a x``. The elimination principle generated by Lean is as follows:
 
 .. code-block:: lean
 
     universes u v
 
-    #check (@eq.rec_on : 
-      Π {α : Sort u} {a : α} {C : α → Sort v} {b : α}, 
+    #check (@eq.rec_on :
+      Π {α : Sort u} {a : α} {C : α → Sort v} {b : α},
         a = b → C a → C b)
 
 It is a remarkable fact that all the basic axioms for equality follow from the constructor, ``refl``, and the eliminator, ``eq.rec_on``. The definition of equality is atypical, however; see the discussion in the next section.
@@ -1395,7 +1402,7 @@ The recursor ``eq.rec_on`` is also used to define substitution:
     universe u
 
     inductive eq {α : Type u} (a : α) : α → Prop
-    | refl : eq a
+    | refl [] : eq a
 
     -- BEGIN
     @[elab_as_eliminator]
@@ -1416,7 +1423,7 @@ It is not hard to prove that ``eq`` is symmetric and transitive. In the followin
     universe u
 
     inductive eq {α : Type u} (a : α) : α → Prop
-    | refl : eq a
+    | refl [] : eq a
 
     @[elab_as_eliminator]
     theorem subst {α : Type u} {a b : α} {P : α → Prop}
@@ -1428,11 +1435,11 @@ It is not hard to prove that ``eq`` is symmetric and transitive. In the followin
     theorem symm {α : Type u} {a b : α} (h : eq a b) : eq b a :=
     subst h (eq.refl a)
 
-    theorem trans {α : Type u} {a b c : α} 
+    theorem trans {α : Type u} {a b c : α}
       (h₁ : eq a b) (h₂ : eq b c) : eq a c :=
     sorry
 
-    theorem congr {α β : Type u} {a b : α} (f : α → β) 
+    theorem congr {α β : Type u} {a b : α} (f : α → β)
       (h : eq a b) : eq (f a) (f b) :=
     sorry
     -- END
