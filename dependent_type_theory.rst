@@ -713,7 +713,7 @@ Just as Pi types ``Π x : α, β x`` generalize the notion of a function type ``
 
     #check sigma.mk a b      -- Σ (a : α), β a
     #check (sigma.mk a b).1  -- α
-    #check (sigma.mk a b).2  -- β (sigma.snd (sigma.mk a b))
+    #check (sigma.mk a b).2  -- β (sigma.fst (sigma.mk a b))
 
     #reduce  (sigma.mk a b).1  -- a
     #reduce  (sigma.mk a b).2  -- b
