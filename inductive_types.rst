@@ -440,7 +440,7 @@ A type, like ``prod``, that has only one constructor is purely conjunctive: the 
     namespace hidden
 
     -- BEGIN
-    structure prod (α β : Type) :=
+    structure prod (α β : Type*) :=
     mk :: (fst : α) (snd : β)
     -- END
 
@@ -631,7 +631,7 @@ we find the following:
 
 .. code-block:: text
 
-    Π {C : nat → Type} (n : nat),
+    Π {C : nat → Type*} (n : nat),
       C nat.zero → (Π (a : nat), C a → C (nat.succ a)) → C n
 
 The implicit argument, ``C``, is the codomain of the function being defined. In type theory it is common to say ``C`` is the *motive* for the elimination/recursion, since it describes the kind of object we wish to construct. The next argument, ``n : nat``, is the input to the function. It is also known as the ``major premise``. Finally, the two arguments after specify how to compute the zero and successor cases, as described above. They are also known as the ``minor premises``.
@@ -869,7 +869,7 @@ Let us consider some more examples of inductively defined types. For any type, `
 
     namespace list
 
-    variable {α : Type}
+    variable {α : Type*}
 
     notation h :: t  := cons h t
 
@@ -931,7 +931,7 @@ As an exercise, prove the following:
 
     notation `[` l:(foldr `,` (h t, cons h t) nil) `]` := l
 
-    variable {α : Type}
+    variable {α : Type*}
 
     notation h :: t  := cons h t
 

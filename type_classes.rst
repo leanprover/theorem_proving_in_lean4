@@ -94,7 +94,7 @@ The final step of the program is to define a function that infers an element ``s
 
     namespace hidden
     -- BEGIN
-    def default (α : Type) [s : inhabited α] : α :=
+    def default (α : Type*) [s : inhabited α] : α :=
     @inhabited.default α s
     -- END
     end hidden
@@ -133,7 +133,7 @@ For example, the following definition shows that if two types ``α`` and ``β`` 
     namespace hidden
     -- BEGIN
     instance prod_inhabited
-        {α β : Type} [inhabited α] [inhabited β] :
+        {α β : Type*} [inhabited α] [inhabited β] :
       inhabited (prod α β) :=
     ⟨(default α, default β)⟩
     -- END
@@ -155,7 +155,7 @@ Similarly, we can inhabit function spaces with suitable constant functions:
     namespace hidden
 
     -- BEGIN
-    instance inhabited_fun (α : Type) {β : Type} [inhabited β] :
+    instance inhabited_fun (α : Type*) {β : Type*} [inhabited β] :
       inhabited (α → β) :=
     ⟨(λ a : α, default β)⟩
 

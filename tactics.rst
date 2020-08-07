@@ -222,13 +222,13 @@ The ``intro`` command can more generally be used to introduce a variable of any 
 
 .. code-block:: lean
 
-    example (α : Type) : α → α :=
+    example (α : Type*) : α → α :=
     begin
       intro a,
       exact a
     end
 
-    example (α : Type) : ∀ x : α, x = x :=
+    example (α : Type*) : ∀ x : α, x = x :=
     begin
       intro x,
       exact eq.refl x
@@ -1186,7 +1186,7 @@ In the first example, the left-hand side of the equality in the goal is simplifi
 
     import data.list.basic
 
-    variable {α : Type}
+    variable {α : Type*}
 
     open list
 

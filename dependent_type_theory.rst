@@ -270,8 +270,8 @@ Lean lets us combine lambdas, so the second example is equivalent to the first. 
     constant b : β
 
     -- BEGIN
-    #check λ (α β : Type) (b : β) (x : α), x
-    #check λ (α β γ : Type) (g : β → γ) (f : α → β) (x : α), g (f x)
+    #check λ (α β : Type*) (b : β) (x : α), x
+    #check λ (α β γ : Type*) (g : β → γ) (f : α → β) (x : α), g (f x)
     -- END
 
 The last expression, for example, denotes the function that takes three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ`` and ``f : α → β``, and returns the composition of ``g`` and ``f``. (Making sense of the type of this function requires an understanding of dependent products, which we will explain below.) Within a lambda expression ``λ x : α, t``, the variable ``x`` is a "bound variable": it is really a placeholder, whose "scope" does not extend beyond ``t``. For example, the variable ``b`` in the expression ``λ (b : β) (x : α), x`` has nothing to do with the constant ``b`` declared earlier. In fact, the expression denotes the same function as ``λ (u : β) (z : α), z``. Formally, the expressions that are the same up to a renaming of bound variables are called *alpha equivalent*, and are considered "the same." Lean recognizes this equivalence.
@@ -293,7 +293,7 @@ Notice that applying a term ``t : α → β`` to a term ``s : α`` yields an exp
 
     #check (λ (v : β → γ) (u : α → β) x, v (u x)) g f a   -- γ
 
-    #check (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
+    #check (λ (Q R S : Type*) (v : R → S) (u : Q → R) (x : Q),
             v (u x)) α β γ g f a        -- γ
 
 As expected, the expression ``(λ x : α, x) a`` has type ``α``. In fact, more should be true: applying the expression ``(λ x : α, x)`` to ``a`` should "return" the value ``a``. And, indeed, it does:
@@ -313,7 +313,7 @@ As expected, the expression ``(λ x : α, x) a`` has type ``α``. In fact, more 
 
     #reduce (λ (v : β → γ) (u : α → β) x, v (u x)) g f a   -- g (f a)
 
-    #reduce (λ (Q R S : Type) (v : R → S) (u : Q → R) (x : Q),
+    #reduce (λ (Q R S : Type*) (v : R → S) (u : Q → R) (x : Q),
            v (u x)) α β γ g f a        -- g (f a)
 
 The command ``#reduce`` tells Lean to evaluate an expression by *reducing* it to normal form, which is to say, carrying out all the computational reductions that are sanctioned by the underlying logic. The process of simplifying an expression ``(λ x, t)s`` to ``t[s/x]`` -- that is, ``t`` with ``s`` substituted for the variable ``x`` -- is known as *beta reduction*, and two terms that beta reduce to a common term are called *beta equivalent*. But the ``#reduce`` command carries out other forms of reduction as well:
@@ -399,7 +399,7 @@ We can even use this approach to specify arguments that are types:
 
 .. code-block:: lean
 
-    def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) :
+    def compose (α β γ : Type*) (g : β → γ) (f : α → β) (x : α) :
       γ :=
     g (f x)
 
@@ -410,9 +410,9 @@ function.
 
 .. code-block:: lean
 
-    def curry (α β γ : Type) (f : α × β → γ) : α → β → γ := sorry
+    def curry (α β γ : Type*) (f : α × β → γ) : α → β → γ := sorry
 
-    def uncurry (α β γ : Type) (f : α → β → γ) : α × β → γ := sorry
+    def uncurry (α β γ : Type*) (f : α → β → γ) : α × β → γ := sorry
 
 Local Definitions
 -----------------
@@ -459,18 +459,18 @@ So far, in this tutorial, we have used the ``constant`` command to create "arbit
 
 .. code-block:: lean
 
-    def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) :
+    def compose (α β γ : Type*) (g : β → γ) (f : α → β) (x : α) :
       γ := g (f x)
 
-    def do_twice (α : Type) (h : α → α) (x : α) : α := h (h x)
+    def do_twice (α : Type*) (h : α → α) (x : α) : α := h (h x)
 
-    def do_thrice (α : Type) (h : α → α) (x : α) : α := h (h (h x))
+    def do_thrice (α : Type*) (h : α → α) (x : α) : α := h (h (h x))
 
 Repeating declarations in this way can be tedious, however. Lean provides us with the ``variable`` and ``variables`` commands to make such declarations look global:
 
 .. code-block:: lean
 
-    variables (α β γ : Type)
+    variables (α β γ : Type*)
 
     def compose (g : β → γ) (f : α → β) (x : α) : γ := g (f x)
     def do_twice (h : α → α) (x : α) : α := h (h x)
@@ -480,7 +480,7 @@ We can declare variables of any type, not just ``Type`` itself:
 
 .. code-block:: lean
 
-    variables (α β γ : Type)
+    variables (α β γ : Type*)
     variables (g : β → γ) (f : α → β) (h : α → α)
     variable x : α
 
@@ -501,7 +501,7 @@ When declared in this way, a variable stays in scope until the end of the file w
 .. code-block:: lean
 
     section useful
-      variables (α β γ : Type)
+      variables (α β γ : Type*)
       variables (g : β → γ) (f : α → β) (h : α → α)
       variable x : α
 

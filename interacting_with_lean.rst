@@ -157,7 +157,7 @@ Sometimes, however, we wish to *fix* a value in a section. For example, followin
 .. code-block:: lean
 
     section
-      parameters {α : Type} (r : α → α → Type)
+      parameters {α : Type*} (r : α → α → Prop)
       parameter  transr : ∀ {x y z}, r x y → r y z → r x z
 
       variables {a b c d e : α}
@@ -411,7 +411,7 @@ To illustrate the difference, consider the following example, which shows that a
 
     -- BEGIN
     namespace hidden
-    variables {α : Type} (r : α → α → Prop)
+    variables {α : Type*} (r : α → α → Prop)
 
     definition reflexive  : Prop := ∀ (a : α), r a a
     definition symmetric  : Prop := ∀ {a b : α}, r a b → r b a
@@ -451,7 +451,7 @@ The results are broken down into small steps: ``th1`` shows that a relation that
 
     namespace hidden
     -- BEGIN
-    variables {α : Type} (r : α → α → Prop)
+    variables {α : Type*} (r : α → α → Prop)
 
     definition reflexive  : Prop := ∀ (a : α), r a a
     definition symmetric  : Prop := ∀ ⦃a b : α⦄, r a b → r b a
@@ -630,7 +630,7 @@ There are a number of ways in which you can query Lean for information about its
     #check @and.intro
 
     -- a user-defined function
-    def foo {α : Type} (x : α) : α := x
+    def foo {α : Type*} (x : α) : α := x
 
     #check foo
     #check @foo
@@ -739,7 +739,7 @@ Elaboration Hints
 
 When you ask Lean to process an expression like ``λ x y z, f (x + y) z``, you are leaving information implicit. For example, the types of ``x``, ``y``, and ``z`` have to be inferred from the context, the notation ``+`` may be overloaded, and there may be implicit arguments to ``f`` that need to be filled in as well. Moreover, we will see in :numref:`Chapter %s <type_classes>` that some implicit arguments are synthesized by a process known as *type class resolution*. And we have also already seen in the last chapter that some parts of an expression can be constructed by the tactic framework.
 
-Inferring some implicit arguments is straightforward. For example, suppose a function ``f`` has type ``Π {α : Type}, α → α → α`` and Lean is trying to parse the expression ``f n``, where ``n`` can be inferred to have type ``nat``. Then it is clear that the implicit argument ``α`` has to be ``nat``. However, some inference problems are *higher order*. For example, the substitution operation for equality, ``eq.subst``, has the following type:
+Inferring some implicit arguments is straightforward. For example, suppose a function ``f`` has type ``Π {α : Type*}, α → α → α`` and Lean is trying to parse the expression ``f n``, where ``n`` can be inferred to have type ``nat``. Then it is clear that the implicit argument ``α`` has to be ``nat``. However, some inference problems are *higher order*. For example, the substitution operation for equality, ``eq.subst``, has the following type:
 
 .. code-block:: text
 

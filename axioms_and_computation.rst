@@ -238,12 +238,12 @@ The first one forms a type ``quot r`` given a type ``α`` by any binary relation
 
 .. code-block:: lean
 
-    variables α β : Type
+    variables α β : Type*
     variable  r : α → α → Prop
     variable  a : α
 
     -- the quotient type
-    #check (quot r : Type)
+    #check (quot r : Type*)
 
     -- the class of a
     #check (quot.mk r a : quot r)
@@ -491,7 +491,7 @@ We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``, s
       local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
 
     -- BEGIN
-      theorem mk_eq_mk {α : Type} (a₁ a₂ : α) :
+      theorem mk_eq_mk {α : Type*} (a₁ a₂ : α) :
         {a₁, a₂} = {a₂, a₁} :=
       quot.sound (inr ⟨rfl, rfl⟩)
     -- END
@@ -540,16 +540,16 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
 
       local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
 
-      theorem mk_eq_mk {α : Type} (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
+      theorem mk_eq_mk {α : Type*} (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
       quot.sound (inr ⟨rfl, rfl⟩)
 
     -- BEGIN
-      private definition mem_fn {α : Type} (a : α) :
+      private definition mem_fn {α : Type*} (a : α) :
         α × α → Prop
       | (a₁, a₂) := a = a₁ ∨ a = a₂
 
       -- auxiliary lemma for proving mem_respects
-      private lemma mem_swap {α : Type} {a : α} :
+      private lemma mem_swap {α : Type*} {a : α} :
         ∀ {p : α × α}, mem_fn a p = mem_fn a (⟨p.2, p.1⟩)
       | (a₁, a₂) := propext (iff.intro
           (λ l : a = a₁ ∨ a = a₂,
@@ -557,7 +557,7 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
           (λ r : a = a₂ ∨ a = a₁,
             or.elim r (λ h₁, inr h₁) (λ h₂, inl h₂)))
 
-      private lemma mem_respects {α : Type} :
+      private lemma mem_respects {α : Type*} :
         ∀ {p₁ p₂ : α × α} (a : α),
           p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
       | (a₁, a₂) (b₁, b₂) a (inl ⟨a₁b₁, a₂b₂⟩) :=
@@ -566,18 +566,18 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
         by { dsimp at a₁b₂, dsimp at a₂b₁, rw [a₁b₂, a₂b₁],
               apply mem_swap }
 
-      def mem {α : Type} (a : α) (u : uprod α) : Prop :=
+      def mem {α : Type*} (a : α) (u : uprod α) : Prop :=
       quot.lift_on u (λ p, mem_fn a p) (λ p₁ p₂ e, mem_respects a e)
 
       local infix `∈` := mem
 
-      theorem mem_mk_left {α : Type} (a b : α) : a ∈ {a, b} :=
+      theorem mem_mk_left {α : Type*} (a b : α) : a ∈ {a, b} :=
       inl rfl
 
-      theorem mem_mk_right {α : Type} (a b : α) : b ∈ {a, b} :=
+      theorem mem_mk_right {α : Type*} (a b : α) : b ∈ {a, b} :=
       inr rfl
 
-      theorem mem_or_mem_of_mem_mk {α : Type} {a b c : α} :
+      theorem mem_or_mem_of_mem_mk {α : Type*} {a b c : α} :
         c ∈ {a, b} → c = a ∨ c = b :=
       λ h, h
     -- END
@@ -949,11 +949,11 @@ As an example of classical reasoning, we use ``some`` to show that if ``f : α �
     open classical function
     local attribute [instance] prop_decidable
 
-    noncomputable definition linv {α β : Type} [h : inhabited α]
+    noncomputable definition linv {α β : Type*} [h : inhabited α]
       (f : α → β) : β → α :=
     λ b : β, if ex : (∃ a : α, f a = b) then some ex else arbitrary α
 
-    theorem linv_comp_self {α β : Type} {f : α → β}
+    theorem linv_comp_self {α β : Type*} {f : α → β}
         [inhabited α] (inj : injective f) :
       linv f ∘ f = id :=
     funext (assume a,

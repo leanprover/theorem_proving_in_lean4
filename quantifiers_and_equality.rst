@@ -34,7 +34,7 @@ Here is an example of how the propositions-as-types correspondence gets put into
 
 .. code-block:: lean
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
 
     example : (∀ x : α, p x ∧ q x) → ∀ y : α, p y  :=
     assume h : ∀ x : α, p x ∧ q x,
@@ -47,7 +47,7 @@ Remember that expressions which differ up to renaming of bound variables are con
 
 .. code-block:: lean
 
-    variables (α : Type) (p q : α → Prop)
+    variables (α : Type*) (p q : α → Prop)
 
     -- BEGIN
     example : (∀ x : α, p x ∧ q x) → ∀ x : α, p x  :=
@@ -60,7 +60,7 @@ As another example, here is how we can express the fact that a relation, ``r``, 
 
 .. code-block:: lean
 
-    variables (α : Type) (r : α → α → Prop)
+    variables (α : Type*) (r : α → α → Prop)
     variable  trans_r : ∀ x y z, r x y → r y z → r x z
 
     variables a b c : α
@@ -93,7 +93,7 @@ Here is an example of how we can carry out elementary reasoning with an equivale
 
 .. code-block:: lean
 
-    variables (α : Type) (r : α → α → Prop)
+    variables (α : Type*) (r : α → α → Prop)
 
     variable refl_r : ∀ x, r x x
     variable symm_r : ∀ {x y}, r x y → r y x

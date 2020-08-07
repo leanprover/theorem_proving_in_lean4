@@ -23,14 +23,14 @@ Most parts are optional. Here is an example:
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
 Values of type ``point`` are created using ``point.mk a b``, and the fields of a point ``p`` are accessed using ``point.x p`` and ``point.y p``. The structure command also generates useful recursors and theorems. Here are some of the constructions generated for the declaration above.
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     -- BEGIN
@@ -44,7 +44,7 @@ You can obtain the complete list of generated constructions using the command ``
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     -- BEGIN
@@ -55,7 +55,7 @@ Here are some simple theorems and expressions that use the generated constructio
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     -- BEGIN
@@ -64,10 +64,10 @@ Here are some simple theorems and expressions that use the generated constructio
 
     open point
 
-    example (α : Type) (a b : α) : x (mk a b) = a :=
+    example (α : Type*) (a b : α) : x (mk a b) = a :=
     rfl
 
-    example (α : Type) (a b : α) : y (mk a b) = b :=
+    example (α : Type*) (a b : α) : y (mk a b) = b :=
     rfl
     -- END
 
@@ -75,7 +75,7 @@ Given ``p : point nat``, the notation ``p.x`` is shorthand for ``point.x p``. Th
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     -- BEGIN
@@ -92,7 +92,7 @@ If the constructor is not provided, then a constructor is named ``mk`` by defaul
 
     namespace hidden
     -- BEGIN
-    structure prod (α : Type) (β : Type) :=
+    structure prod (α : Type*) (β : Type*) :=
     (pr1 : α) (pr2 : β)
 
     #check prod.mk
@@ -103,7 +103,7 @@ The dot notation is convenient not just for accessing the projections of a recor
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     namespace point
@@ -123,7 +123,7 @@ More generally, given an expression ``p.foo x y z``, Lean will insert ``p`` at t
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     def point.smul (n : ℕ) (p : point ℕ) :=
@@ -213,7 +213,7 @@ The prefix ``structure-name .`` can be omitted whenever the name of the structur
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     #check { point . x := 10, y := 20 }  -- point ℕ
@@ -228,7 +228,7 @@ If the value of a field is not specified, Lean tries to infer it. If the unspeci
 .. code-block:: lean
 
     structure my_struct :=
-    mk :: {α : Type} {β : Type} (a : α) (b : β)
+    mk :: {α : Type*} {β : Type*} (a : α) (b : β)
 
     #check { my_struct . a := 10, b := true }
 
@@ -236,7 +236,7 @@ If the value of a field is not specified, Lean tries to infer it. If the unspeci
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     def p : point nat :=
@@ -245,7 +245,7 @@ If the value of a field is not specified, Lean tries to infer it. If the unspeci
     #reduce {y := 3, ..p}  -- {x := 1, y := 3}
     #reduce {x := 4, ..p}  -- {x := 4, y := 2}
 
-    structure point3 (α : Type) :=
+    structure point3 (α : Type*) :=
     mk :: (x : α) (y : α) (z : α)
 
     def q : point3 nat :=
@@ -263,26 +263,26 @@ We can *extend* existing structures by adding new fields. This feature allow us 
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     mk :: (x : α) (y : α)
 
     inductive color
     | red | green | blue
 
-    structure color_point (α : Type) extends point α :=
+    structure color_point (α : Type*) extends point α :=
     mk :: (c : color)
 
 In the next example, we define a structure using multiple inheritance, and then define an object using objects of the parent structures.
 
 .. code-block:: lean
 
-    structure point (α : Type) :=
+    structure point (α : Type*) :=
     (x : α) (y : α) (z : α)
 
     structure rgb_val :=
     (red : nat) (green : nat) (blue : nat)
 
-    structure red_green_point (α : Type) extends point α, rgb_val :=
+    structure red_green_point (α : Type*) extends point α, rgb_val :=
     (no_blue : blue = 0)
 
     def p   : point nat := {x := 10, y := 10, z := 20}

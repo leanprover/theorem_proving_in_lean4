@@ -488,9 +488,9 @@ To handle such  definitions, the equation compiler uses *course-of-values* recur
 
 .. code-block:: lean
 
-    variable (C : ℕ → Type)
+    variable (C : ℕ → Type*)
 
-    #check (@nat.below C : ℕ → Type)
+    #check (@nat.below C : ℕ → Type*)
 
     #reduce @nat.below C (3 : nat)
 
@@ -507,7 +507,7 @@ Another good example of a recursive definition is the list ``append`` function.
 
     namespace hidden
     -- BEGIN
-    def append {α : Type} : list α → list α → list α
+    def append {α : Type*} : list α → list α → list α
     | []     l := l
     | (h::t) l := h :: append t l
 
@@ -790,8 +790,8 @@ All the examples of pattern matching we considered in :numref:`pattern_matching`
     local notation h :: t := cons h t
 
     #check @vector.cases_on
-    -- Π {α : Type}
-    --   {C : Π (a : ℕ), vector α a → Type}
+    -- Π {α : Type*}
+    --   {C : Π (a : ℕ), vector α a → Type*}
     --   {a : ℕ}
     --   (n : vector α a),
     --   (e1 : C 0 nil)
@@ -911,8 +911,10 @@ The following example can be found in [GoMM06]_. We declare an inductive type th
 
 .. code-block:: lean
 
-    variables {α β : Type}
-    inductive image_of (f : α → β) : β → Type
+    universe u
+    variables {α β : Type u}
+
+    inductive image_of (f : α → β) : β → Type u
     | imf : Π a, image_of (f a)
 
     open image_of
@@ -1023,7 +1025,7 @@ This does not look very different from an ordinary pattern matching definition, 
     end
 
     -- BEGIN
-    variable {α : Type}
+    variable {α : Type*}
     variable p : α → bool
 
     def filter : list α → list α
