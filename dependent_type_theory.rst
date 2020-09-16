@@ -501,13 +501,13 @@ When declared in this way, a variable stays in scope until the end of the file w
 .. code-block:: lean
 
     section useful
-      variables (α β γ : Type*)
-      variables (g : β → γ) (f : α → β) (h : α → α)
-      variable x : α
+    variables (α β γ : Type*)
+    variables (g : β → γ) (f : α → β) (h : α → α)
+    variable x : α
 
-      def compose := g (f x)
-      def do_twice := h (h x)
-      def do_thrice := h (h (h x))
+    def compose := g (f x)
+    def do_twice := h (h x)
+    def do_thrice := h (h (h x))
     end useful
 
 When the section is closed, the variables go out of scope, and become nothing more than a distant memory.
@@ -526,19 +526,19 @@ Lean provides us with the ability to group definitions into nested, hierarchical
 .. code-block:: lean
 
     namespace foo
-      def a : ℕ := 5
-      def f (x : ℕ) : ℕ := x + 7
+    def a : ℕ := 5
+    def f (x : ℕ) : ℕ := x + 7
 
-      def fa : ℕ := f a
-      def ffa : ℕ := f (f a)
+    def fa : ℕ := f a
+    def ffa : ℕ := f (f a)
 
-      #print "inside foo"
+    #print "inside foo"
 
-      #check a
-      #check f
-      #check fa
-      #check ffa
-      #check foo.fa
+    #check a
+    #check f
+    #check fa
+    #check ffa
+    #check foo.fa
     end foo
 
     #print "outside the namespace"
@@ -586,20 +586,20 @@ Like sections, namespaces can be nested:
 .. code-block:: lean
 
     namespace foo
-      def a : ℕ := 5
-      def f (x : ℕ) : ℕ := x + 7
+    def a : ℕ := 5
+    def f (x : ℕ) : ℕ := x + 7
 
-      def fa : ℕ := f a
+    def fa : ℕ := f a
 
-      namespace bar
-        def ffa : ℕ := f (f a)
+    namespace bar
+    def ffa : ℕ := f (f a)
 
-        #check fa
-        #check ffa
-      end bar
+    #check fa
+    #check ffa
+    end bar
 
-      #check fa
-      #check bar.ffa
+    #check fa
+    #check bar.ffa
     end foo
 
     #check foo.fa
@@ -615,17 +615,17 @@ Namespaces that have been closed can later be reopened, even in another file:
 .. code-block:: lean
 
     namespace foo
-      def a : ℕ := 5
-      def f (x : ℕ) : ℕ := x + 7
+    def a : ℕ := 5
+    def f (x : ℕ) : ℕ := x + 7
 
-      def fa : ℕ := f a
+    def fa : ℕ := f a
     end foo
 
     #check foo.a
     #check foo.f
 
     namespace foo
-      def ffa : ℕ := f (f a)
+    def ffa : ℕ := f (f a)
     end foo
 
 Like sections, nested namespaces have to be closed in the order they are opened. Also, a namespace cannot be declared within a section; namespaces have to live on the outer levels.
@@ -693,11 +693,11 @@ Vector operations are handled similarly:
     constant vec : Type u → ℕ → Type u
 
     namespace vec
-      constant empty : Π α : Type u, vec α 0
-      constant cons :
-        Π (α : Type u) (n : ℕ), α → vec α n → vec α (n + 1)
-      constant append :
-        Π (α : Type u) (n m : ℕ),  vec α m → vec α n → vec α (n + m)
+    constant empty : Π α : Type u, vec α 0
+    constant cons :
+      Π (α : Type u) (n : ℕ), α → vec α n → vec α (n + 1)
+    constant append :
+      Π (α : Type u) (n m : ℕ),  vec α m → vec α n → vec α (n + m)
     end vec
 
 In the coming chapters, you will come across many instances of dependent types. Here we will mention just one more important and illustrative example, the *Sigma types*, ``Σ x : α, β x``, sometimes also known as *dependent products*. These are, in a sense, companions to the Pi types. The type ``Σ x : α, β x`` denotes the type of pairs ``sigma.mk a b`` where ``a : α`` and ``b : β a``.
@@ -734,9 +734,9 @@ Suppose we have an implementation of lists as described above.
     constant list : Type u → Type u
 
     namespace list
-      constant cons   : Π α : Type u, α → list α → list α
-      constant nil    : Π α : Type u, list α
-      constant append : Π α : Type u, list α → list α → list α
+    constant cons   : Π α : Type u, α → list α → list α
+    constant nil    : Π α : Type u, list α
+    constant append : Π α : Type u, list α → list α → list α
     end list
     end hidden
 
@@ -749,9 +749,9 @@ Then, given a type ``α``, some elements of ``α``, and some lists of elements o
     constant list : Type u → Type u
 
     namespace list
-      constant cons   : Π α : Type u, α → list α → list α
-      constant nil    : Π α : Type u, list α
-      constant append : Π α : Type u, list α → list α → list α
+    constant cons   : Π α : Type u, α → list α → list α
+    constant nil    : Π α : Type u, list α
+    constant append : Π α : Type u, list α → list α → list α
     end list
 
     -- BEGIN
@@ -778,9 +778,9 @@ This is a central feature of dependent type theory: terms carry a lot of informa
     constant list : Type u → Type u
 
     namespace list
-      constant cons   : Π α : Type u, α → list α → list α
-      constant nil    : Π α : Type u, list α
-      constant append : Π α : Type u, list α → list α → list α
+    constant cons   : Π α : Type u, α → list α → list α
+    constant nil    : Π α : Type u, list α
+    constant append : Π α : Type u, list α → list α → list α
     end list
 
     open hidden.list
@@ -806,9 +806,9 @@ It is still tedious, however, to type all these underscores. When a function tak
 
     -- BEGIN
     namespace list
-      constant cons   : Π {α : Type u}, α → list α → list α
-      constant nil    : Π {α : Type u}, list α
-      constant append : Π {α : Type u}, list α → list α → list α
+    constant cons   : Π {α : Type u}, α → list α → list α
+    constant nil    : Π {α : Type u}, list α
+    constant append : Π {α : Type u}, list α → list α → list α
     end list
 
     open hidden.list
@@ -847,9 +847,9 @@ the ``variables`` command:
     universe u
 
     section
-      variable {α : Type u}
-      variable x : α
-      def ident := x
+    variable {α : Type u}
+    variable x : α
+    def ident := x
     end
 
     variables α β : Type u

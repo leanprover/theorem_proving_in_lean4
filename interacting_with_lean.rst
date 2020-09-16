@@ -42,23 +42,23 @@ Lean provides various sectioning mechanisms to help structure a theory. We saw i
     import data.nat.basic
 
     section
-      variables x y : ℕ
+    variables x y : ℕ
 
-      def double := x + x
+    def double := x + x
 
-      #check double y
-      #check double (2 * x)
+    #check double y
+    #check double (2 * x)
 
-      local attribute [simp] add_assoc add_comm add_left_comm
+    local attribute [simp] add_assoc add_comm add_left_comm
 
-      theorem t1 : double (x + y) = double x + double y :=
-      by simp [double]
+    theorem t1 : double (x + y) = double x + double y :=
+    by simp [double]
 
-      #check t1 y
-      #check t1 (2 * x)
+    #check t1 y
+    #check t1 (2 * x)
 
-      theorem t2 : double (x * y) = double x * y :=
-      by simp [double, add_mul]
+    theorem t2 : double (x * y) = double x * y :=
+    by simp [double, add_mul]
     end
 
 The definition of ``double`` does not have to declare ``x`` as an argument; Lean detects the dependence and inserts it automatically. Similarly, Lean detects the occurrence of ``x`` in ``t1`` and ``t2``, and inserts it automatically there, too.
@@ -68,24 +68,24 @@ Note that double does *not* have ``y`` as argument. Variables are only included 
 .. code-block:: lean
 
     section
-      variables (x y z : ℕ)
-      variables (h₁ : x = y) (h₂ : y = z)
+    variables (x y z : ℕ)
+    variables (h₁ : x = y) (h₂ : y = z)
 
-      include h₁ h₂
-      theorem foo : x = z :=
-      begin
-        rw [h₁, h₂]
-      end
-      omit h₁ h₂
+    include h₁ h₂
+    theorem foo : x = z :=
+    begin
+      rw [h₁, h₂]
+    end
+    omit h₁ h₂
 
-      theorem bar : x = z :=
-      eq.trans h₁ h₂
+    theorem bar : x = z :=
+    eq.trans h₁ h₂
 
-      theorem baz : x = x := rfl
+    theorem baz : x = x := rfl
 
-      #check @foo
-      #check @bar
-      #check @baz
+    #check @foo
+    #check @bar
+    #check @baz
     end
 
 The ``omit`` command simply undoes the effect of the ``include``. It does not, however, prevent the arguments from being included automatically in subsequent theorems that mention them. The scope of the ``include`` statement can also be delimited by enclosing it in a section.
@@ -93,29 +93,29 @@ The ``omit`` command simply undoes the effect of the ``include``. It does not, h
 .. code-block:: lean
 
     section
-      variables (x y z : ℕ)
-      variables (h₁ : x = y) (h₂ : y = z)
+    variables (x y z : ℕ)
+    variables (h₁ : x = y) (h₂ : y = z)
 
     -- BEGIN
-      section include_hs
-      include h₁ h₂
+    section include_hs
+    include h₁ h₂
 
-      theorem foo : x = z :=
-      begin
-        rw [h₁, h₂]
-      end
+    theorem foo : x = z :=
+    begin
+      rw [h₁, h₂]
+    end
 
-      end include_hs
+    end include_hs
     -- END
 
-      theorem bar : x = z :=
-      eq.trans h₁ h₂
+    theorem bar : x = z :=
+    eq.trans h₁ h₂
 
-      theorem baz : x = x := rfl
+    theorem baz : x = x := rfl
 
-      #check @foo
-      #check @bar
-      #check @baz
+    #check @foo
+    #check @bar
+    #check @baz
     end
 
 The include command is often useful with structures that are not mentioned explicitly but meant to be inferred by type class inference, as described in :numref:`Chapter %s <type_classes>`.
@@ -125,27 +125,27 @@ It is often the case that we want to declare section variables as explicit varia
 .. code-block:: lean
 
     section
-      variables (x y z : ℕ)
-      variables (h₁ : x = y) (h₂ : y = z)
+    variables (x y z : ℕ)
+    variables (h₁ : x = y) (h₂ : y = z)
 
-      section
-        variables {x y z}
-        include h₁ h₂
-        theorem foo : x = z :=
-        begin
-          rw [h₁, h₂]
-        end
-      end
+    section
+    variables {x y z}
+    include h₁ h₂
+    theorem foo : x = z :=
+    begin
+      rw [h₁, h₂]
+    end
+    end
 
-      theorem bar : x = z :=
-      eq.trans h₁ h₂
+    theorem bar : x = z :=
+    eq.trans h₁ h₂
 
-      variable {x}
-      theorem baz : x = x := rfl
+    variable {x}
+    theorem baz : x = x := rfl
 
-      #check @foo
-      #check @bar
-      #check @baz
+    #check @foo
+    #check @bar
+    #check @baz
     end
 
 Using these subsequent ``variables`` commands does not change the order in which variables are inserted. It only changes the explicit / implicit annotations.
@@ -157,21 +157,21 @@ Sometimes, however, we wish to *fix* a value in a section. For example, followin
 .. code-block:: lean
 
     section
-      parameters {α : Type*} (r : α → α → Prop)
-      parameter  transr : ∀ {x y z}, r x y → r y z → r x z
+    parameters {α : Type*} (r : α → α → Prop)
+    parameter  transr : ∀ {x y z}, r x y → r y z → r x z
 
-      variables {a b c d e : α}
+    variables {a b c d e : α}
 
-      theorem t1 (h₁ : r a b) (h₂ : r b c) (h₃ : r c d) : r a d :=
-      transr (transr h₁ h₂) h₃
+    theorem t1 (h₁ : r a b) (h₂ : r b c) (h₃ : r c d) : r a d :=
+    transr (transr h₁ h₂) h₃
 
-      theorem t2 (h₁ : r a b) (h₂ : r b c) (h₃ : r c d)
-          (h₄ : r d e) :
-        r a e :=
-      transr h₁ (t1 h₂ h₃ h₄)
+    theorem t2 (h₁ : r a b) (h₂ : r b c) (h₃ : r c d)
+        (h₄ : r d e) :
+      r a e :=
+    transr h₁ (t1 h₂ h₃ h₄)
 
-      #check t1
-      #check t2
+    #check t1
+    #check t2
     end
 
     #check t1
@@ -549,27 +549,27 @@ The possibility of declaring parameters in a section also makes it possible to d
     open int
 
     section mod_m
-      parameter (m : ℤ)
-      variables (a b c : ℤ)
+    parameter (m : ℤ)
+    variables (a b c : ℤ)
 
-      definition mod_equiv := (m ∣ b - a)
+    definition mod_equiv := (m ∣ b - a)
 
-      local infix ≡ := mod_equiv
+    local infix ≡ := mod_equiv
 
-      theorem mod_refl : a ≡ a :=
-      show m ∣ a - a, by simp
+    theorem mod_refl : a ≡ a :=
+    show m ∣ a - a, by simp
 
-      theorem mod_symm (h : a ≡ b) : b ≡ a :=
-      by cases h with c hc; apply dvd_intro (-c); simp [eq.symm hc]
+    theorem mod_symm (h : a ≡ b) : b ≡ a :=
+    by cases h with c hc; apply dvd_intro (-c); simp [eq.symm hc]
 
-      local attribute [simp] add_assoc add_comm add_left_comm
+    local attribute [simp] add_assoc add_comm add_left_comm
 
-      theorem mod_trans (h₁ : a ≡ b) (h₂ : b ≡ c) : a ≡ c :=
-      begin
-        cases h₁ with d hd, cases h₂ with e he,
-        apply dvd_intro (d + e),
-        simp [mul_add, eq.symm hd, eq.symm he, sub_eq_add_neg]
-      end
+    theorem mod_trans (h₁ : a ≡ b) (h₂ : b ≡ c) : a ≡ c :=
+    begin
+      cases h₁ with d hd, cases h₂ with e he,
+      apply dvd_intro (d + e),
+      simp [mul_add, eq.symm hd, eq.symm he, sub_eq_add_neg]
+    end
     end mod_m
 
     #check (mod_refl : ∀ (m a : ℤ), mod_equiv m a a)

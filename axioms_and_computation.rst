@@ -56,14 +56,14 @@ It asserts that when two propositions imply one another, they are actually equal
 .. code-block:: lean
 
     section
-      variables a b c d e : Prop
-      variable p : Prop → Prop
+    variables a b c d e : Prop
+    variable p : Prop → Prop
 
-      theorem thm₁ (h : a ↔ b) : (c ∧ a ∧ d → e) ↔ (c ∧ b ∧ d → e) :=
-      propext h ▸ iff.refl _
+    theorem thm₁ (h : a ↔ b) : (c ∧ a ∧ d → e) ↔ (c ∧ b ∧ d → e) :=
+    propext h ▸ iff.refl _
 
-      theorem thm₂ (h : a ↔ b) (h₁ : p a) : p b :=
-      propext h ▸ h₁
+    theorem thm₂ (h : a ↔ b) (h₁ : p a) : p b :=
+    propext h ▸ h₁
     end
 
 The first example could be proved more laboriously without ``propext`` using the fact that the propositional connectives respect propositional equivalence. The second example represents a more essential use of ``propext``. In fact, it is equivalent to ``propext`` itself, a fact which we encourage you to prove.
@@ -302,20 +302,20 @@ To support this common use case, the standard library defines the notion of a *s
     (r : α → α → Prop) (iseqv : equivalence r)
 
     namespace setoid
-      infix `≈` := setoid.r
+    infix `≈` := setoid.r
 
-      variable {α : Type*}
-      variable [s : setoid α]
-      include s
+    variable {α : Type*}
+    variable [s : setoid α]
+    include s
 
-      theorem refl (a : α) : a ≈ a :=
-      (@setoid.iseqv α s).left a
+    theorem refl (a : α) : a ≈ a :=
+    (@setoid.iseqv α s).left a
 
-      theorem symm {a b : α} : a ≈ b → b ≈ a :=
-      λ h, (@setoid.iseqv α s).right.left h
+    theorem symm {a b : α} : a ≈ b → b ≈ a :=
+    λ h, (@setoid.iseqv α s).right.left h
 
-      theorem trans {a b c : α} : a ≈ b → b ≈ c → a ≈ c :=
-      λ h₁ h₂, (@setoid.iseqv α s).right.right h₁ h₂
+    theorem trans {a b c : α} : a ≈ b → b ≈ c → a ≈ c :=
+    λ h₁ h₂, (@setoid.iseqv α s).right.right h₁ h₂
     end setoid
     -- END
 
@@ -438,10 +438,10 @@ Now that we have proved that ``eqv`` is an equivalence relation, we can construc
     quotient (uprod.setoid α)
 
     namespace uprod
-      definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
-      ⟦(a₁, a₂)⟧
+    definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
+    ⟦(a₁, a₂)⟧
 
-      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
+    local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
     end uprod
     -- END
 
@@ -485,15 +485,15 @@ We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``, s
     quotient (uprod.setoid α)
 
     namespace uprod
-      definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
-      ⟦(a₁, a₂)⟧
+    definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
+    ⟦(a₁, a₂)⟧
 
-      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
+    local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
 
     -- BEGIN
-      theorem mk_eq_mk {α : Type*} (a₁ a₂ : α) :
-        {a₁, a₂} = {a₂, a₁} :=
-      quot.sound (inr ⟨rfl, rfl⟩)
+    theorem mk_eq_mk {α : Type*} (a₁ a₂ : α) :
+      {a₁, a₂} = {a₂, a₁} :=
+    quot.sound (inr ⟨rfl, rfl⟩)
     -- END
     end uprod
 
@@ -535,51 +535,51 @@ To complete the example, given ``a : α`` and ``u : uprod α``, we define the pr
     quotient (uprod.setoid α)
 
     namespace uprod
-      definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
-      ⟦(a₁, a₂)⟧
+    definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
+    ⟦(a₁, a₂)⟧
 
-      local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
+    local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
 
-      theorem mk_eq_mk {α : Type*} (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
-      quot.sound (inr ⟨rfl, rfl⟩)
+    theorem mk_eq_mk {α : Type*} (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
+    quot.sound (inr ⟨rfl, rfl⟩)
 
     -- BEGIN
-      private definition mem_fn {α : Type*} (a : α) :
-        α × α → Prop
-      | (a₁, a₂) := a = a₁ ∨ a = a₂
+    private definition mem_fn {α : Type*} (a : α) :
+      α × α → Prop
+    | (a₁, a₂) := a = a₁ ∨ a = a₂
 
-      -- auxiliary lemma for proving mem_respects
-      private lemma mem_swap {α : Type*} {a : α} :
-        ∀ {p : α × α}, mem_fn a p = mem_fn a (⟨p.2, p.1⟩)
-      | (a₁, a₂) := propext (iff.intro
-          (λ l : a = a₁ ∨ a = a₂,
-            or.elim l (λ h₁, inr h₁) (λ h₂, inl h₂))
-          (λ r : a = a₂ ∨ a = a₁,
-            or.elim r (λ h₁, inr h₁) (λ h₂, inl h₂)))
+    -- auxiliary lemma for proving mem_respects
+    private lemma mem_swap {α : Type*} {a : α} :
+      ∀ {p : α × α}, mem_fn a p = mem_fn a (⟨p.2, p.1⟩)
+    | (a₁, a₂) := propext (iff.intro
+        (λ l : a = a₁ ∨ a = a₂,
+          or.elim l (λ h₁, inr h₁) (λ h₂, inl h₂))
+        (λ r : a = a₂ ∨ a = a₁,
+          or.elim r (λ h₁, inr h₁) (λ h₂, inl h₂)))
 
-      private lemma mem_respects {α : Type*} :
-        ∀ {p₁ p₂ : α × α} (a : α),
-          p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
-      | (a₁, a₂) (b₁, b₂) a (inl ⟨a₁b₁, a₂b₂⟩) :=
-        by { dsimp at a₁b₁, dsimp at a₂b₂, rw [a₁b₁, a₂b₂] }
-      | (a₁, a₂) (b₁, b₂) a (inr ⟨a₁b₂, a₂b₁⟩) :=
-        by { dsimp at a₁b₂, dsimp at a₂b₁, rw [a₁b₂, a₂b₁],
-              apply mem_swap }
+    private lemma mem_respects {α : Type*} :
+      ∀ {p₁ p₂ : α × α} (a : α),
+        p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
+    | (a₁, a₂) (b₁, b₂) a (inl ⟨a₁b₁, a₂b₂⟩) :=
+      by { dsimp at a₁b₁, dsimp at a₂b₂, rw [a₁b₁, a₂b₂] }
+    | (a₁, a₂) (b₁, b₂) a (inr ⟨a₁b₂, a₂b₁⟩) :=
+      by { dsimp at a₁b₂, dsimp at a₂b₁, rw [a₁b₂, a₂b₁],
+            apply mem_swap }
 
-      def mem {α : Type*} (a : α) (u : uprod α) : Prop :=
-      quot.lift_on u (λ p, mem_fn a p) (λ p₁ p₂ e, mem_respects a e)
+    def mem {α : Type*} (a : α) (u : uprod α) : Prop :=
+    quot.lift_on u (λ p, mem_fn a p) (λ p₁ p₂ e, mem_respects a e)
 
-      local infix `∈` := mem
+    local infix `∈` := mem
 
-      theorem mem_mk_left {α : Type*} (a b : α) : a ∈ {a, b} :=
-      inl rfl
+    theorem mem_mk_left {α : Type*} (a b : α) : a ∈ {a, b} :=
+    inl rfl
 
-      theorem mem_mk_right {α : Type*} (a b : α) : b ∈ {a, b} :=
-      inr rfl
+    theorem mem_mk_right {α : Type*} (a b : α) : b ∈ {a, b} :=
+    inr rfl
 
-      theorem mem_or_mem_of_mem_mk {α : Type*} {a b c : α} :
-        c ∈ {a, b} → c = a ∨ c = b :=
-      λ h, h
+    theorem mem_or_mem_of_mem_mk {α : Type*} {a b c : α} :
+      c ∈ {a, b} → c = a ∨ c = b :=
+    λ h, h
     -- END
     end uprod
 
