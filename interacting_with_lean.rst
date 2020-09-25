@@ -513,7 +513,7 @@ Lean's core library declares the left-binding powers of a number of common symbo
 
     https://github.com/leanprover/lean/blob/master/library/init/core.lean
 
-You are welcome to overload these symbols for your own use, but you cannot change their binding power.
+You are welcome to overload these symbols for your own use.
 
 You can direct the pretty-printer to suppress notation with the command ``set_option pp.notation false``. You can also declare notation to be used for input purposes only with the ``[parsing_only]`` attribute:
 
