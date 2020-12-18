@@ -3,7 +3,7 @@
 Inductive Types
 ===============
 
-We have seen that Lean's formal foundation includes basic types, ``Prop, Type 0, Type 1, Type 2, ...``, and allows for the formation of dependent function types, ``Π x : α. β``. In the examples, we have also made use of additional types like ``bool``, ``nat``, and ``int``, and type constructors, like ``list``, and product, ``×``. In fact, in Lean's library, every concrete type other than the universes and every type constructor other than Pi is an instance of a general family of type constructions known as *inductive types*. It is remarkable that it is possible to construct a substantial edifice of mathematics based on nothing more than the type universes, Pi types, and inductive types; everything else follows from those.
+We have seen that Lean's formal foundation includes basic types, ``Prop, Type 0, Type 1, Type 2, ...``, and allows for the formation of dependent function types, ``Π x : α, β``. In the examples, we have also made use of additional types like ``bool``, ``nat``, and ``int``, and type constructors, like ``list``, and product, ``×``. In fact, in Lean's library, every concrete type other than the universes and every type constructor other than Pi is an instance of a general family of type constructions known as *inductive types*. It is remarkable that it is possible to construct a substantial edifice of mathematics based on nothing more than the type universes, Pi types, and inductive types; everything else follows from those.
 
 Intuitively, an inductive type is built up from a specified list of constructors. In Lean, the syntax for specifying such a type is as follows:
 
