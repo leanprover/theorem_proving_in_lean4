@@ -545,8 +545,8 @@ Even the existential quantifier is inductively defined:
     namespace hidden
 
     -- BEGIN
-    inductive Exists {α : Type*} (p : α → Prop) : Prop
-    | intro : ∀ (a : α), p a → Exists
+    inductive Exists {α : Type*} (q : α → Prop) : Prop
+    | intro : ∀ (a : α), q a → Exists
 
      def exists.intro := @Exists.intro
     -- END
