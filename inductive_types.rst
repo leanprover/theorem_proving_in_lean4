@@ -1016,7 +1016,7 @@ There are extra bells and whistles. For one thing, ``cases`` allows you to choos
       cases n with m,
       -- first goal: h : 0 ≠ 0 ⊢ succ (pred 0) = 0
         { apply (absurd rfl h) },
-      -- second goal: h : succ m ≠ 0 ⊢ succ (pred (succ a)) = succ a
+      -- second goal: h : succ m ≠ 0 ⊢ succ (pred (succ m)) = succ m
       reflexivity
     end
 
