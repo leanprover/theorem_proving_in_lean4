@@ -5,6 +5,12 @@ Built using Sphinx and restructured text.
 
 # How to build
 
+Make sure you have Lean installed. Use
+```
+leanproject get git@github.com:leanprover/theorem_proving_in_lean.git
+```
+to clone the repository and install the `mathlib` library. 
+
 The build requires python 3 (install `python3-venv` on ubuntu).
 
 ```
