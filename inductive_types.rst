@@ -342,13 +342,13 @@ Enumerated types are a very special case of inductive types, in which the constr
     | mk : α → β → prod
 
     inductive sum (α : Type u) (β : Type v)
-    | inl {} : α → sum
-    | inr {} : β → sum
+    | inl : α → sum
+    | inr : β → sum
     -- END
 
     end hidden
 
-Notice that we do not include the types ``α`` and ``β`` in the target of the constructors. For the moment, ignore the annotation ``{}`` after the constructors ``inl`` and ``inr``; we will explain that below. In the meanwhile, think about what is going on in these examples. The product type has one constructor, ``prod.mk``, which takes two arguments. To define a function on ``prod α β``, we can assume the input is of the form ``prod.mk a b``, and we have to specify the output, in terms of ``a`` and ``b``. We can use this to define the two projections for prod. Remember that the standard library defines notation ``α × β`` for ``prod α β`` and ``(a, b)`` for ``prod.mk a b``.
+Notice that we do not include the types ``α`` and ``β`` in the target of the constructors. In the meanwhile, think about what is going on in these examples. The product type has one constructor, ``prod.mk``, which takes two arguments. To define a function on ``prod α β``, we can assume the input is of the form ``prod.mk a b``, and we have to specify the output, in terms of ``a`` and ``b``. We can use this to define the two projections for prod. Remember that the standard library defines notation ``α × β`` for ``prod α β`` and ``(a, b)`` for ``prod.mk a b``.
 
 .. code-block:: lean
 
@@ -390,23 +390,7 @@ In contrast, the sum type has *two* constructors, ``inl`` and ``inr`` (for "inse
 
 This example is similar to the previous one, but now an input to ``sum_example`` is implicitly either of the form ``inl n`` or ``inr n``. In the first case, the function returns ``2 * n``, and the second case, it returns ``2 * n + 1``. You can enter the symbol for the sum by typing ``\oplus``.
 
-Notice that the product type depends on parameters ``α β : Type`` which are arguments to the constructors as well as ``prod``. Lean detects when these arguments can be inferred from later arguments to a constructor, and makes them implicit in that case. Sometimes an argument can only be inferred from the return type, which means that it could not be inferred by parsing the expression from bottom up, but may be inferable from context. In that case, Lean does not make the argument implicit by default, but will do so if we add the annotation ``{}`` after the constructor. We used that option, for example, in the definition of ``sum``:
-
-.. code-block:: lean
-
-    universes u v
-
-    namespace hidden
-
-    -- BEGIN
-    inductive sum (α : Type u) (β : Type v)
-    | inl {} : α → sum
-    | inr {} : β → sum
-    -- END
-
-    end hidden
-
-As a result, the argument ``β`` to ``inl`` and the argument ``α`` to ``inr`` are also left implicit.
+Notice that the product type depends on parameters ``α β : Type`` which are arguments to the constructors as well as ``prod``. Lean detects when these arguments can be inferred from later arguments to a constructor or the return type, and makes them implicit in that case.
 
 In the section after next we will see what happens when the constructor of an inductive type takes arguments from the inductive type itself. What characterizes the examples we consider in this section is that this is not the case: each constructor relies only on previously specified types.
 
