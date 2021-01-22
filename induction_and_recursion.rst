@@ -482,24 +482,34 @@ A more interesting example of structural recursion is given by the Fibonacci fun
       reflexivity
     end
 
-Here, the value of the ``fib`` function at ``n + 2`` (which is definitionally equal to ``succ (succ n)``) is defined in terms of the values at ``n + 1`` (which is definitionally equivalent to ``succ n``) and the value at ``n``.
-
-To handle such  definitions, the equation compiler uses *course-of-values* recursion, using constants ``below`` and ``brec_on`` that are automatically generated with each inductively defined type. You can get a sense of how it works by looking at the types of ``nat.below`` and ``nat.brec_on``:
+Here, the value of the ``fib`` function at ``n + 2`` (which is definitionally equal to ``succ (succ n)``) is defined in terms of the values at ``n + 1`` (which is definitionally equivalent to ``succ n``) and the value at ``n``. This is a notoriously inefficient way of computing the fibonacci function, however, with an execution time that is exponential in ``n``. Here is a better way:
 
 .. code-block:: lean
 
-    variable (C : ℕ → Type*)
+    def fib_aux : nat → nat × nat 
+    | 0       := (0, 1)
+    | (n + 1) := let p := fib_aux n in (p.2, p.1 + p.2)
 
-    #check (@nat.below C : ℕ → Type*)
+    def fib (n : nat) := (fib_aux n).1
 
-    #reduce @nat.below C (3 : nat)
+    #eval fib 100
 
-    #check (@nat.brec_on C :
-      Π (n : ℕ), (Π (n : ℕ), nat.below C n → C n) → C n)
+.. To handle such  definitions, the equation compiler uses *course-of-values* recursion, using constants ``below`` and ``brec_on`` that are automatically generated with each inductively defined type. You can get a sense of how it works by looking at the types of ``nat.below`` and ``nat.brec_on``:
 
-The type ``@nat.below C (3 : nat)`` is a data structure that stores elements of ``C 0``, ``C 1``, and ``C 2``. The course-of-values recursion is implemented by ``nat.brec_on``. It enables us to define the value of a dependent function of type ``Π n : ℕ, C n`` at a particular input ``n`` in terms of all the previous values of the function, presented as an element of ``@nat_below C n``.
+.. .. code-block:: lean
 
-The use of course-of-values recursion is a design choice. Sometimes it works extremely well; for example, it provides an efficient implementation of ``fib``, avoiding the exponential blowup that would arise from evaluating each recursive call independently. (You can call the bytecode evaluator to evaluate ``fib 10000`` by writing ``#eval (fib 10000)`` to confirm that it has no problem doing that.) In other situations, the choice may be less optimal. In any case, keep in mind that this behavior may change in the future, as better compilation strategies are developed for Lean.
+..     variable (C : ℕ → Type*)
+
+..     #check (@nat.below C : ℕ → Type*)
+
+..     #reduce @nat.below C (3 : nat)
+
+..     #check (@nat.brec_on C :
+..       Π (n : ℕ), (Π (n : ℕ), nat.below C n → C n) → C n)
+
+.. The type ``@nat.below C (3 : nat)`` is a data structure that stores elements of ``C 0``, ``C 1``, and ``C 2``. The course-of-values recursion is implemented by ``nat.brec_on``. It enables us to define the value of a dependent function of type ``Π n : ℕ, C n`` at a particular input ``n`` in terms of all the previous values of the function, presented as an element of ``@nat_below C n``.
+
+.. The use of course-of-values recursion is a design choice. Sometimes it works extremely well; for example, it provides an efficient implementation of ``fib``, avoiding the exponential blowup that would arise from evaluating each recursive call independently. (You can call the bytecode evaluator to evaluate ``fib 10000`` by writing ``#eval (fib 10000)`` to confirm that it has no problem doing that.) In other situations, the choice may be less optimal. In any case, keep in mind that this behavior may change in the future, as better compilation strategies are developed for Lean.
 
 Another good example of a recursive definition is the list ``append`` function.
 
