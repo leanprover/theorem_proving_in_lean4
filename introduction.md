@@ -1,5 +1,3 @@
-.. _introduction:
-
 Introduction
 ============
 
@@ -16,7 +14,7 @@ Automated reasoning systems strive for power and efficiency, often at the expens
 
 The *Lean Theorem Prover* aims to bridge the gap between interactive and automated theorem proving, by situating automated tools and methods in a framework that supports user interaction and the construction of fully specified axiomatic proofs. The goal is to support both mathematical reasoning and reasoning about complex systems, and to verify claims in both domains.
 
-Lean's underlying logic has a computational interpretation, and Lean can be viewed equally well as a programming language. More to the point, it can be viewed as a system for writing programs with a precise semantics, as well as reasoning about the functions that the programs compute. Lean also has mechanisms to serve as its own *metaprogramming language*, which means that one can implement automation and extend the functionality of Lean using Lean itself. These aspects of Lean are explored in a companion tutorial to this one, `Programming in Lean <https://leanprover.github.io/programming_in_lean>`__, though computational aspects of the system will make an appearance here.
+Lean's underlying logic has a computational interpretation, and Lean can be viewed equally well as a programming language. More to the point, it can be viewed as a system for writing programs with a precise semantics, as well as reasoning about the functions that the programs compute. Lean also has mechanisms to serve as its own *metaprogramming language*, which means that one can implement automation and extend the functionality of Lean using Lean itself. These aspects of Lean are explored in a companion tutorial to this one, Programming in Lean 4, though computational aspects of the system will make an appearance here.
 
 About Lean
 ----------
@@ -25,14 +23,14 @@ The *Lean* project was launched by Leonardo de Moura at Microsoft Research Redmo
 
 There are currently two ways to use Lean. The first is to run it from the web: a Javascript version of Lean, a standard library of definitions and theorems, and an editor are actually downloaded to your browser and run there. This provides a quick and convenient way to begin experimenting with the system.
 
-The second way to use Lean is to install and run it natively on your computer. The native version is much faster than the web version, and is more flexible in other ways, too. Special modes in Visual Studio Code (VS Code for short) and Emacs offer powerful support for writing and debugging proofs, and is much better suited for serious use. The source code, and instructions for building Lean, are available at https://github.com/leanprover/lean/.
+The second way to use Lean is to install and run it natively on your computer. The native version is much faster than the web version, and is more flexible in other ways, too. Special modes in Visual Studio Code (VS Code for short) and Emacs offer powerful support for writing and debugging proofs, and is much better suited for serious use. The source code, and instructions for building Lean, are available at [https://github.com/leanprover/lean4/](https://github.com/leanprover/lean4/).
 
-This tutorial describes the current version of Lean, known as Lean 3. A prior version, Lean 2, had special support for homotopy type theory. You can find Lean 2 and the HoTT library at https://github.com/leanprover/lean2/. The tutorial for that version of Lean is at https://leanprover.github.io/tutorial/.
+This tutorial describes the current version of Lean, known as Lean 4.
 
 About this Book
 ---------------
 
-This book is designed to teach you to develop and verify proofs in Lean. Much of the background information you will need in order to do this is not specific to Lean at all. To start with, we will explain the logical system that Lean is based on, a version of *dependent type theory* that is powerful enough to prove almost any conventional mathematical theorem, and expressive enough to do it in a natural way. More specifically, Lean is based on a version of a system known as the *Calculus of Constructions* [CoHu88]_ with *inductive types* [Dybj94]_. We will explain not only how to define mathematical objects and express mathematical assertions in dependent type theory, but also how to use it as a language for writing proofs.
+This book is designed to teach you to develop and verify proofs in Lean. Much of the background information you will need in order to do this is not specific to Lean at all. To start with, we will explain the logical system that Lean is based on, a version of *dependent type theory* that is powerful enough to prove almost any conventional mathematical theorem, and expressive enough to do it in a natural way. More specifically, Lean is based on a version of a system known as the Calculus of Constructions with inductive types. We will explain not only how to define mathematical objects and express mathematical assertions in dependent type theory, but also how to use it as a language for writing proofs.
 
 Because fully detailed axiomatic proofs are so complicated, the challenge of theorem proving is to have the computer fill in as many of the details as possible. We will describe various methods to support this in dependent type theory. For example, we will discuss term rewriting, and Lean's automated methods for simplifying terms and expressions automatically. Similarly, we will discuss methods of *elaboration* and *type inference*, which can be used to support flexible forms of algebraic reasoning.
 
@@ -40,15 +38,13 @@ Finally, of course, we will discuss features that are specific to Lean, includin
 
 Throughout the text you will find examples of Lean code like the one below:
 
-.. code-block:: lean
-
-    -- BEGIN
-    theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=
-    assume hpq : p ∧ q,
-    have hp : p, from and.left hpq,
-    have hq : q, from and.right hpq,
-    show q ∧ p, from and.intro hq hp
-    -- END
+```lean
+theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=
+fun hpq : p ∧ q =>
+have hp : p := And.left hpq
+have hq : q := And.right hpq
+show q ∧ p from And.intro hq hp
+```
 
 If you are reading the book online, you will see a button that reads "try it!" Pressing the button opens up a tab with a Lean editor, and copies the example with enough surrounding context to make the example compile correctly. You can type things into the editor and modify the examples, and Lean will check the results and provide feedback continuously as you type. We recommend running the examples and experimenting with the code on your own as you work through the chapters that follow.
 
@@ -56,7 +52,3 @@ Acknowledgments
 ---------------
 
 This tutorial is an open access project maintained on Github. Many people have contributed to the effort, providing corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Mario Carneiro, Nathan Carter, Eduardo Cavazos, Amine Chaieb, Joe Corneli, William DeMeo, Marcus Klaas de Vries, Ben Dyer, Gabriel Ebner, Anthony Hart, Simon Hudon, Sean Leather, Assia Mahboubi, Gihan Marasingha, Patrick Massot, Christopher John Mazey, Sebastian Ullrich, Floris van Doorn, Daniel Velleman, and Théo Zimmerman for their contributions, and we apologize to those whose names we have inadvertently omitted.
-
-.. [CoHu88] Thierry Coquand and Gerard Huet. The calculus of constructions. Inf. Comput., 76(2-3):95–120, February 1988.
-
-.. [Dybj94] Peter Dybjer. Inductive families. Formal Asp. Comput., 6(4):440–465, 1994.
