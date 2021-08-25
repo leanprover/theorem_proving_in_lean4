@@ -1,4 +1,5 @@
 - [Introduction](./introduction.md)
 - [Dependent Type Theory](./dependent_type_theory.md)
 - [Propositions and Proofs](./propositions_and_proofs.md)
+- [Quantifiers and Equality](./quantifiers_and_equality.md)
 - [Building This Manual](./mdbook.md)
