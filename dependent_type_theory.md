@@ -110,20 +110,12 @@ another function that takes a natural number and returns a natural
 number. In type theory, this is generally more convenient than
 writing ``g`` as a function that takes a pair of natural numbers as
 input and returns a natural number as output. For example, it allows
-you to "partially apply" the function ``g``. The example above shows
-that ``g m`` has type ``Nat → Nat``, that is, the function that
-"waits" for a second argument, ``n``, and then returns ``g m n``.
-
-[chris] I don't understand "then returns ``g m n``", I would
-understand "which is then equivalent to writing `g m n` or
-something...
-
-Side note: Taking a function ``h`` of type ``Nat × Nat → Nat`` and
-"redefining" it to look like ``g`` is a process known as *currying*,
-more on this later.
-
-[chris] do we need to forward declare `currying`, I do not see the
-term used again in this page...
+you to "partially apply" the function ``g``.  The example above shows
+that ``g m`` has type ``Nat → Nat``, that is, ``g m`` returns a
+function that "waits" for a second argument, ``n``, which is then
+equivalent to writing ``g m n``. Taking a function ``h`` of type ``Nat
+× Nat → Nat`` and "redefining" it to look like ``g`` is a process
+known as *currying*.
 
 By now you may also have guessed that, in Lean, ``(m, n)`` denotes the
 ordered pair of ``m`` and ``n``, which has the *Cartesian product*
