@@ -1130,7 +1130,7 @@ hljs.registerLanguage("lean", function(hljs) {
       'induction rename assumption revert generalize specialize clear ' +
       'contradiction by_contradiction by_contra trivial exfalso ' +
       'symmetry transitivity destruct constructor econstructor ' +
-      'left right split injection injections ' +
+      'left right split injection injections exists ' +
       'repeat skip swap solve1 abstract all_goals any_goals done ' +
       'fail_if_success success_if_fail guard_target guard_hyp ' +
       'have replace at suffices show from ' +

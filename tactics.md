@@ -465,136 +465,245 @@ Here the ``rewrite`` tactic, abbreviated ``rw``, uses ``h`` to replace
 More Tactics
 ------------
 
-Some additional tactics are useful for constructing and destructing propositions and data. For example, when applied to a goal of the form ``p ∨ q``, the tactics ``left`` and ``right`` are equivalent to ``apply or.inl`` and ``apply or.inr``, respectively. Conversely, the ``cases`` tactic can be used to decompose a disjunction.
+Some additional tactics are useful for constructing and destructing
+propositions and data. For example, when applied to a goal of the form
+``p ∨ q``, we use tactics such as ``apply or.inl`` and ``apply
+or.inr``.  Conversely, the ``cases`` tactic can be used to decompose a
+disjunction.
 
-.. code-block:: lean
+```lean
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h with
+  | inl hp => apply Or.inr; exact hp
+  | inr hq => apply Or.inl; exact hq
+```
 
-    example (p q : Prop) : p ∨ q → q ∨ p :=
-    begin
-      intro h,
-      cases h with hp hq,
-      -- case hp : p
-      right, exact hp,
-      -- case hq : q
-      left, exact hq
-    end
+Note that the syntax is similar to the one used in `match` expressions.
+The new subgoals can be solved in any order.
 
-After ``cases h`` is applied, there are two goals. In the first, the hypothesis ``h : p ∨ q`` is replaced by ``hp : p``, and in the second, it is replaced by ``hq : q``. The ``cases`` tactic can also be used to decompose a conjunction.
+```lean
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h with
+  | inr hq => apply Or.inl; exact hq
+  | inl hp => apply Or.inr; exact hp
+```
 
-.. code-block:: lean
+You can also use a (unstructured) ``cases`` without the ``with`` and a tactic
+for each alternative.
 
-    example (p q : Prop) : p ∧ q → q ∧ p :=
-    begin
-      intro h,
-      cases h with hp hq,
-      constructor, exact hq, exact hp
-    end
+```lean
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h
+  apply Or.inr
+  assumption
+  apply Or.inl
+  assumption
+```
 
-In this example, there is only one goal after the ``cases`` tactic is applied, with ``h : p ∧ q`` replaced by a pair of assumptions, ``hp : p`` and ``hq : q``. The ``constructor`` tactic applies the unique constructor for conjunction, ``and.intro``. With these tactics, an example from the previous section can be rewritten as follows:
+The (unstructured) ``cases`` is particularly useful when you can close several
+subgoals using the same tactic.
 
-.. code-block:: lean
+```lean
+example (p : Prop) : p ∨ p → p := by
+  intro h
+  cases h
+  repeat assumption
+```
 
-    example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
-    begin
-      apply iff.intro,
-      intro h,
-       cases h with hp hqr,
-       cases hqr with hq hr,
-         left, constructor, repeat { assumption },
-         right, constructor, repeat { assumption },
-      intro h,
-        cases h with hpq hpr,
-          cases hpq with hp hq,
-            constructor, exact hp, left, exact hq,
-          cases hpr with hp hr,
-            constructor, exact hp, right, exact hr
-    end
+You can also use the combinator ``tac1 <;> tac2`` to apply ``tac2`` to each
+subgoal produced by tactic ``tac1``
 
-We will see in :numref:`Chapter %s <inductive_types>` that these tactics are quite general. The ``cases`` tactic can be used to decompose any element of an inductively defined type; ``constructor`` always applies the first constructor of an inductively defined type, and ``left`` and ``right`` can be used with inductively defined types with exactly ``two`` constructors. For example, we can use ``cases`` and ``constructor`` with an existential quantifier:
+```lean
+example (p : Prop) : p ∨ p → p := by
+  intro h
+  cases h <;> assumption
+```
 
-.. code-block:: lean
+You can combine the unstructured ``cases`` tactic with the ``case`` and ``.`` notation.
 
-    example (p q : ℕ → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x :=
-    begin
-      intro h,
-      cases h with x px,
-      constructor, left, exact px
-    end
+```lean
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h
+  . apply Or.inr
+    assumption
+  . apply Or.inl
+    assumption
 
-Here, the ``constructor`` tactic leaves the first component of the existential assertion, the value of ``x``, implicit. It is represented by a metavariable, which should be instantiated later on. In the previous example, the proper value of the metavariable is determined by the tactic ``exact px``, since ``px`` has type ``p x``. If you want to specify a witness to the existential quantifier explicitly, you can use the ``existsi`` tactic instead:
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h
+  case inr h =>
+    apply Or.inl
+    assumption
+  case inl h =>
+    apply Or.inr
+    assumption
 
-.. code-block:: lean
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h
+  case inr h =>
+    apply Or.inl
+    assumption
+  . apply Or.inr
+    assumption
+```
 
-    example (p q : ℕ → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x :=
-    begin
-      intro h,
-      cases h with x px,
-      existsi x, left, exact px
-    end
+
+The ``cases`` tactic can also be used to
+decompose a conjunction.
+
+```lean
+example (p q : Prop) : p ∧ q → q ∧ p := by
+  intro h
+  cases h with
+  | intro hp hq => constructor; exact hq; exact hp
+```
+
+In this example, there is only one goal after the ``cases`` tactic is
+applied, with ``h : p ∧ q`` replaced by a pair of assumptions,
+``hp : p`` and ``hq : q``. The ``constructor`` tactic applies the unique
+constructor for conjunction, ``And.intro``. With these tactics, an
+example from the previous section can be rewritten as follows:
+
+```lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro h
+    cases h with
+    | intro hp hqr =>
+      cases hqr
+      . apply Or.inl; constructor <;> assumption
+      . apply Or.inr; constructor <;> assumption
+  . intro h
+    cases h with
+    | inl hpq =>
+      cases hpq with
+      | intro hp hq => constructor; exact hp; apply Or.inl; exact hq
+    | inr hpr =>
+      cases hpr with
+      | intro hp hr => constructor; exact hp; apply Or.inr; exact hr
+```
+
+We will see in [Chapter Inductive Types](./inductive_types.md) that
+these tactics are quite general. The ``cases`` tactic can be used to
+decompose any element of an inductively defined type; ``constructor``
+always applies the first applicable constructor of an inductively defined type,
+For example, we can use ``cases`` and ``constructor`` with an existential quantifier:
+
+```lean
+example (p q : Nat → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x := by
+  intro h
+  cases h with
+  | intro x px => constructor; apply Or.inl; exact px
+```
+
+Here, the ``constructor`` tactic leaves the first component of the
+existential assertion, the value of ``x``, implicit. It is represented
+by a metavariable, which should be instantiated later on. In the
+previous example, the proper value of the metavariable is determined
+by the tactic ``exact px``, since ``px`` has type ``p x``. If you want
+to specify a witness to the existential quantifier explicitly, you can
+use the ``exists`` tactic instead:
+
+```lean
+example (p q : Nat → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x := by
+  intro h
+  cases h with
+  | intro x px => exists x; apply Or.inl; exact px
+```
 
 Here is another example:
 
-.. code-block:: lean
+```lean
+example (p q : Nat → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
+  intro h
+  cases h with
+  | intro x hpq =>
+    cases hpq with
+    | intro hp hq =>
+      exists x
+      constructor <;> assumption
+```
 
-    example (p q : ℕ → Prop) :
-      (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
-    begin
-      intro h,
-      cases h with x hpq,
-      cases hpq with hp hq,
-      existsi x,
-      split; assumption
-    end
+These tactics can be used on data just as well as propositions. In the
+next two examples, they are used to define functions which swap the
+components of the product and sum types:
 
-Here the semicolon after ``split`` tells Lean to apply the ``assumption`` tactic to both of the goals that are introduced by splitting the conjunction; see :numref:`tactic_combinators` for more information.
+```lean
+def swap_pair : α × β → β × α := by
+  intro p
+  cases p
+  constructor <;> assumption
+```
 
-These tactics can be used on data just as well as propositions. In the next two examples, they are used to define functions which swap the components of the product and sum types:
+```lean
+def swap_sum : Sum α β → Sum β α := by
+  intro p
+  cases p
+  . apply Sum.inr; assumption
+  . apply Sum.inl; assumption
+```
 
-.. code-block:: lean
+Note that up to the names we have chosen for the variables, the
+definitions are identical to the proofs of the analogous propositions
+for conjunction and disjunction. The ``cases`` tactic will also do a
+case distinction on a natural number:
 
-    universes u v
+```lean
+open Nat
+example (P : Nat → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : Nat) : P m := by
+ cases m with
+ | zero    => exact h₀
+ | succ m' => exact h₁ m'
+```
 
-    def swap_pair {α : Type u} {β : Type v} : α × β → β × α :=
-    begin
-      intro p,
-      cases p with ha hb,
-      constructor, exact hb, exact ha
-    end
-
-    def swap_sum {α : Type u} {β : Type v} : α ⊕ β → β ⊕ α :=
-    begin
-      intro p,
-      cases p with ha hb,
-        right, exact ha,
-        left, exact hb
-    end
-
-Note that up to the names we have chosen for the variables, the definitions are identical to the proofs of the analogous propositions for conjunction and disjunction. The ``cases`` tactic will also do a case distinction on a natural number:
-
-.. code-block:: lean
-
-    open nat
-
-    example (P : ℕ → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : ℕ) :
-      P m :=
-    begin
-      cases m with m', exact h₀, exact h₁ m'
-    end
-
-The ``cases`` tactic, and its companion, the ``induction`` tactic, are discussed in greater detail in :numref:`tactics_for_inductive_types`.
+The ``cases`` tactic, and its companion, the ``induction`` tactic, are discussed in greater detail in
+the [Tactics for Inductive Types](TBD) section.
 
 The ``contradiction`` tactic searches for a contradiction among the hypotheses of the current goal:
 
-.. code-block:: lean
+```lean
+example (p q : Prop) : p ∧ ¬ p → q := by
+  intro h
+  cases h
+  contradiction
+```
 
-    example (p q : Prop) : p ∧ ¬ p → q :=
-    begin
-      intro h, cases h, contradiction
-    end
+You can also use ``match`` in tactic blocks.
 
-.. _structuring_tactic_proofs:
+```lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro h
+    match h with
+    | ⟨_, Or.inl _⟩ => apply Or.inl; constructor <;> assumption
+    | ⟨_, Or.inr _⟩ => apply Or.inr; constructor <;> assumption
+  . intro h
+    match h with
+    | Or.inl ⟨hp, hq⟩ => constructor; exact hp; apply Or.inl; exact hq
+    | Or.inr ⟨hp, hr⟩ => constructor; exact hp; apply Or.inr; exact hr
+```
 
-Structuring Tactic Proofs
+You can "combine" ``intro h`` with ``match h ...`` and write the previous examples as follows
+
+```lean
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro
+     | ⟨hp, Or.inl hq⟩ => apply Or.inl; constructor <;> assumption
+     | ⟨hp, Or.inr hr⟩ => apply Or.inr; constructor <;> assumption
+  . intro
+     | Or.inl ⟨hp, hq⟩ => constructor; assumption; apply Or.inl; assumption
+     | Or.inr ⟨hp, hr⟩ => constructor; assumption; apply Or.inr; assumption
+
+```
+
+<a name="structuring_tactic_proofs"></a>Structuring Tactic Proofs
 -------------------------
 
 Tactics often provide an efficient way of building a proof, but long sequences of instructions can obscure the structure of the argument. In this section, we describe some means that help provide structure to a tactic-style proof, making such proofs more readable and robust.
