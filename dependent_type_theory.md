@@ -223,7 +223,7 @@ properties.
 #check Prop -- Type
 ```
 
-You will lean more about ``Prop`` in [Propositions and Proofs](propositions_and_proofs.md).
+You will learn more about ``Prop`` in [Propositions and Proofs](propositions_and_proofs.md).
 
 Some operations, however, need to be *polymorphic* over type
 universes. For example, ``List α`` should make sense for any type
