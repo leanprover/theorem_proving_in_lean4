@@ -14,8 +14,8 @@ of this chapter, you will understand much of what this means.
 "Type theory" gets its name from the fact that every expression has an
 associated *type*.  For example, in a given context, ``x + 0`` may
 denote a natural number and ``f`` may denote a function on the natural
-numbers. For those that don't like math, a Lean natural number is an
-arbitrary-precision unsigned integer.
+numbers. For those who like precise definitions, a Lean natural number
+is an arbitrary-precision unsigned integer.
 
 Here are some examples of how you can declare objects in Lean and
 check their types.
@@ -263,56 +263,26 @@ constant α : Type _
 #check α
 ```
 
-Several Lean 3 users use the shorthand `Type*` for `Type _`. The
-`Type*` notation is not builtin in Lean 4, but you can easily define
-it using a `macro`.
-```lean
-macro "Type*" : term => `(Type _)
-
-def f (α : Type*) (a : α) := a
-
-def g (α : Type _) (a : α) := a
-
-#check f
-#check g
-```
-
-The `macro` command will be explained more later.
-
-[chris] again, really don't like dumping so many new concepts in one
-doc, does *macro* really need to be covered here? I understand the
-need to help Lean3 users, but I'd prefer that to be in a separate doc,
-so brand new Lean 4 users don't need to get bogged down in all this
-stuff...
-
 ## Function Abstraction and Evaluation
 
-You have seen that if you have ``m n : Nat``, then you have ``(m, n) :
-Nat × Nat``. This gives you a way of creating pairs of natural
-numbers. Conversely, if you have ``p : Nat × Nat``, then you have
-``p.1 : Nat`` and ``p.2 : Nat``. This gives you a way of "using" a
-pair, by extracting its two components.
+You have seen that if you have ``m : Nat`` and ``n : Nat``, then you
+have ``(m, n) : Nat × Nat``. This gives you a way of creating pairs of
+natural numbers. Conversely, if you have ``p : Nat × Nat``, then you
+have ``p.1 : Nat`` and ``p.2 : Nat``. This gives you a way of "using"
+a pair, by extracting its two components.
 
 [chris] this paragraph seems redundant with the one on line 103.
-
-[chris] I can't seem to write ``m n : Nat`` anywhere except in
-lambdas, so might want to write that out as [``m`` and ``n`` of type
-``Nat``]
 
 You already know how to "use" a function ``f : α → β``, namely, you
 can apply it to an element ``a : α`` to obtain ``f a : β``. But how do
 you create a function from another expression?
 
-The companion to application is a process known as "lambda
-abstraction." Suppose you have the variable ``x : α`` you can
+Creating a function from another expression is a process known as
+"lambda abstraction." Suppose you have the variable ``x : α`` you can
 construct an expression ``t : β``. Then the expression ``fun (x : α)
 => t``, or, equivalently, ``λ (x : α) => t``, is an object of type ``α
 → β``. Think of this as the function from ``α`` to ``β`` which maps
 any value ``x`` to the value ``t``, which may depend on ``x``.
-
-[chris] "companion to application" is not parsing in my head...
-Perhaps it can just say "Creating a function from another expression
-is a process known as "lambda abstraction."
 
 [chris] again, what is a "variable" ? that concept has not been
 covered yet... Also "you can construct an expression" seems like an
