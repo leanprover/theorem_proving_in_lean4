@@ -506,16 +506,15 @@ def double (x : Nat) : Nat :=
   x + x
 ```
 
-[chris] which might look more familiar to you if you know how
-functions work in other programming languages. The name `double` is
-defined as a function that takes an input parameter `x` of type `Nat`,
-where the result of the call is `x + x`, so it is returning type `Nat`
-also. You can then invoke this function using:
+This might look more familiar to you if you know how functions work in
+other programming languages. The name `double` is defined as a
+function that takes an input parameter `x` of type `Nat`, where the
+result of the call is `x + x`, so it is returning type `Nat` also. You
+can then invoke this function using:
 
 ```lean
 #eval double 3    -- 6
 
-#eval double 3    -- 6
 #print double
 #check double 3   -- Nat
 #reduce double 3  -- 6
@@ -543,7 +542,8 @@ def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
 #eval doTwice double 2   -- 8
 ```
 
-These definitions are equivalent to the following:
+These definitions are equivalent to the following, which shows
+how `def` is really built on lambdas:
 
 ```lean
 def double : Nat → Nat :=
@@ -556,12 +556,54 @@ def doTwice : (Nat → Nat) → Nat → Nat :=
   fun f x => f (f x)
 ```
 
-You can even use this approach to specify arguments that are types:
+You can also specify arguments that are types:
 
 ```lean
 def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
 ```
+
+This means `compose` is a function that takes any 2 functions as input
+arguments, so long as those functions match the types `β → γ` and
+`α → β` respectively.  It also takes a 3rd argument of type `α` which
+it uses to invoke the second function (locally named `f`) and it
+passes the result of that function (which is type `β`) as input to the
+first function (locally named `g`).  The first function returns a type
+`γ` so that is also the return type of the `compose` function.
+`compose` is also very abstract in that it works over any Type
+`α β γ`.  This means `compose` can compose just about any 2 functions
+so long as they each take one parameter, and so long as the type of
+output of the second matches the input of the first.  For example:
+
+```lean
+def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+
+def stringify (x : Nat) : String :=
+  toString x
+
+def intify (x : Bool) : Nat :=
+   if (x = true) then 1
+   else 0
+
+#eval compose stringify intify true
+```
+
+[chris] why doesn't this work?  I get this error.  Perhaps I greatly
+misunderstood what `(α β γ : Type)` means...?
+
+```
+application type mismatch
+  compose stringify
+argument
+  stringify
+has type
+  Nat → String : Type
+but is expected to have type
+  Type : Type 1
+```
+
 
 Local Definitions
 -----------------
@@ -588,16 +630,13 @@ more `let` commands...
 #check let y := 2 + 2; y * y   -- Nat
 #eval  let y := 2 + 2; y * y   -- 16
 
-def t (x : Nat) : Nat :=
+def twice_double (x : Nat) : Nat :=
   let y := x + x; y * y
 
-#eval t 2   -- 16
+#eval twice_double 2   -- 16
 ```
 
-Here, ``t`` is definitionally equal to the term ``(x + x) * (x + x)``.
-
-[chris] `t` is a bit obscure, the name `twice_double` would be more
-consistent with previous examples.
+Here, ``twice_double`` is definitionally equal to the term ``(x + x) * (x + x)``.
 
 You can combine multiple assignments in a single ``let`` statement:
 
@@ -817,8 +856,6 @@ open Foo
 #check Bar.ffa
 ```
 Namespaces that have been closed can later be reopened, even in another file:
-
-[chris] in the same package?  Should packages be mentioned here?
 
 ```lean
 namespace Foo
