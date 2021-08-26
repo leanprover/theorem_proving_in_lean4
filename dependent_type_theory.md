@@ -12,7 +12,7 @@ of this chapter, you will understand much of what this means.
 ## Simple Type Theory
 
 "Type theory" gets its name from the fact that every expression has an
-associated *type*. For example, in a given context, ``x + 0`` may
+associated *type*.  For example, in a given context, ``x + 0`` may
 denote a natural number and ``f`` may denote a function on the natural
 numbers. For those that don't like math, a Lean natural number is an
 arbitrary-precision unsigned integer.
@@ -55,10 +55,10 @@ own. Declaring new objects in this way is a good way to experiment
 with the system.
 
 What makes simple type theory powerful is that you can build new types
-out of others. For example, if ``a`` and ``b`` are types, ``a -> b``
+out of others.  For example, if ``a`` and ``b`` are types, ``a -> b``
 denotes the type of functions from ``a`` to ``b``, and ``a × b``
 denotes the type of pairs consisting of an element of ``a`` paired
-with an element of ``b``, also known as the *Cartesian product*. Note
+with an element of ``b``, also known as the *Cartesian product*.  Note
 that `×` is a Unicode symbol. The judicious use of Unicode improves
 legibility, and all modern editors have great support for it. In the
 Lean standard library, you often see Greek letters to denote types,
@@ -92,27 +92,30 @@ constant F  : (Nat → Nat) → Nat -- a "functional"
 Once again, you should try some examples on your own.
 
 Let's take a look at some basic syntax. You can enter the unicode
-arrow ``→`` by typing ``\to`` or ``\r``. You can also use the ASCII
+arrow ``→`` by typing ``\to`` or ``\r``.  You can also use the ASCII
 alternative ``->``, so the expressions ``Nat -> Nat`` and ``Nat →
-Nat`` mean the same thing. Both expressions denote the type of
+Nat`` mean the same thing.  Both expressions denote the type of
 functions that take a natural number as input and return a natural
-number as output. The unicode symbol ``×`` for the Cartesian product
-is entered as ``\times``. You will generally use lower-case Greek
-letters like ``α``, ``β``, and ``γ`` to range over types. You can
+number as output.  The unicode symbol ``×`` for the Cartesian product
+is entered as ``\times``.  You will generally use lower-case Greek
+letters like ``α``, ``β``, and ``γ`` to range over types.  You can
 enter these particular ones with ``\a``, ``\b``, and ``\g``.
 
 There are a few more things to notice here. First, the application of
 a function ``f`` to a value ``x`` is denoted ``f x``. Second, when
 writing type expressions, arrows associate to the *right*; for
-example, the type of ``g`` is ``Nat → (Nat → Nat)``. Thus you can
+example, the type of ``g`` is ``Nat → (Nat → Nat)``.  Thus you can
 view ``g`` as a function that takes natural numbers and returns
 another function that takes a natural number and returns a natural
-number. In type theory, this is generally more convenient than
+number.  In type theory, this is generally more convenient than
 writing ``g`` as a function that takes a pair of natural numbers as
 input and returns a natural number as output. For example, it allows
-you to "partially apply" the function ``g``. The example above shows
+you to "partially apply" the function ``g``.  The example above shows
 that ``g m`` has type ``Nat → Nat``, that is, the function that
 "waits" for a second argument, ``n``, and then returns ``g m n``.
+Taking a function ``h`` of type ``Nat × Nat → Nat`` and "redefining"
+it to look like ``g`` is a process known as *currying*, something we
+will come back to below.
 
 [chris] I don't understand "then returns ``g m n``", I would
 understand "which is then equivalent to writing `g m n` or
@@ -126,9 +129,9 @@ more on this later.
 term used again in this page...
 
 By now you may also have guessed that, in Lean, ``(m, n)`` denotes the
-ordered pair of ``m`` and ``n``, which has the *Cartesian product*
-type ``Nat × Nat``, (assuming ``m`` and ``n`` have type ``Nat``) and
-if ``p`` is a pair, ``p.1`` and ``p.2`` denote the two projections.
+ordered pair of ``m`` and ``n``, and if ``p`` is a pair, ``p.1`` and
+``p.2`` denote the two projections extracting ``m`` and ``n`` from the
+pair respectively.
 
 ## Types as objects
 
@@ -430,8 +433,8 @@ Think about what these expressions mean. The expression ``fun x : Nat
 => x`` denotes the identity function on ``Nat``, the expression
 ``fun x : α => b`` denotes the constant function that always returns ``b``,
 and ``fun x : Nat => g (f x)``, denotes the composition of ``f`` and
-``g``. You can, in general, leave off the type annotation on a
-variable and let Lean infer it for you. So, for example, you can write
+``g``.  You can, in general, leave off the type annotation on a
+variable and let Lean infer it for you.  So, for example, you can write
 ``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
 
 [chris] I'm not seeing the expression ``fun x : α => b`` anywhere in
@@ -464,7 +467,7 @@ and ``f : α → β``, and returns the composition of ``g`` and ``f``.
 of dependent products, which will be explained below.) Within a lambda
 expression ``fun x : α => t``, the variable ``x`` is a "bound
 variable": it is really a placeholder, whose "scope" does not extend
-beyond ``t``. For example, the variable ``b`` in the expression ``fun
+beyond ``t``.  For example, the variable ``b`` in the expression ``fun
 (b : β) (x : α) => b`` has nothing to do with the constant ``b``
 declared earlier.  In fact, the expression denotes the same function
 as ``fun (u : β) (z : α), u``. Formally, the expressions that are the
@@ -573,8 +576,8 @@ to binary executable, or is it a transpiler to "C" ?
 In contrast, the ``#reduce`` command relies on a reduction engine
 similar to the one used in Lean's trusted kernel, the part of Lean
 that is responsible for checking and verifying the correctness of
-expressions and proofs. It is less efficient than ``#eval``, and
-treats all foreign functions as opaque constants. You will learn later
+expressions and proofs.  It is less efficient than ``#eval``, and
+treats all foreign functions as opaque constants.  You will learn later
 that there are some other differences between the two commands.
 
 ## Introducing Definitions
@@ -633,6 +636,7 @@ also. You can then invoke this function using:
 ```lean
 #eval double 3    -- 6
 
+#eval double 3    -- 6
 #print double
 #check double 3   -- Nat
 #reduce double 3  -- 6
@@ -738,7 +742,7 @@ second expression, ``a`` is a variable, and the expression
 ``fun a => t2`` has to make sense independently of the value of ``a``.
 The ``let`` construct is a stronger means of abbreviation, and there
 are expressions of the form ``let a := t1; t2`` that cannot be
-expressed as ``(fun a => t2) t1``. As an exercise, try to understand
+expressed as ``(fun a => t2) t1``.  As an exercise, try to understand
 why the definition of ``foo`` below type checks, but the definition of
 ``bar`` does not.
 
@@ -804,14 +808,14 @@ exactly the same effect.
 
 The ``variable`` command instructs Lean to insert the declared
 variables as bound variables in definitions that refer to them by
-name. Lean is smart enough to figure out which variables are used
+name.  Lean is smart enough to figure out which variables are used
 explicitly or implicitly in a definition. You can therefore proceed as
 though ``α``, ``β``, ``γ``, ``g``, ``f``, ``h``, and ``x`` are fixed
 objects when you write your definitions, and let Lean abstract the
 definitions for you automatically.
 
 When declared in this way, a variable stays in scope until the end of
-the file you are working on. Sometimes, however, it is useful to limit
+the file you are working on.  Sometimes, however, it is useful to limit
 the scope of a variable. For that purpose, Lean provides the notion of
 a ``section``:
 
@@ -886,7 +890,7 @@ anonymous namespace at the root level.
 The ``open`` command brings the shorter names into the current
 context. Often, when you import a module, you will want to open one or
 more of the namespaces it contains, to have access to the short
-identifiers. But sometimes you will want to leave this information
+identifiers.  But sometimes you will want to leave this information
 protected by a fully qualified name, for example, when they conflict
 with identifiers in another namespace you want to use. Thus namespaces
 give you a way to manage names in your working environment.
@@ -971,17 +975,17 @@ so isn't it redundant?
 
 ## What makes dependent type theory dependent?
 
-The short explanation is that types can depend on parameters. You
+The short explanation is that types can depend on parameters.  You
 have already seen a nice example of this: the type ``List α`` depends
 on the argument ``α``, and this dependence is what distinguishes
-``List Nat`` and ``List Bool``. For another example, consider the
+``List Nat`` and ``List Bool``.  For another example, consider the
 type ``Vector α n``, the type of vectors of elements of ``α`` of
 length ``n``.  This type depends on *two* parameters: the type of the
 elements in the vector (``α : Type``) and the length of the vector
 ``n : Nat``.
 
 Suppose you wish to write a function ``cons`` which inserts a new
-element at the head of a list. What type should ``cons`` have? Such a
+element at the head of a list.  What type should ``cons`` have? Such a
 function is *polymorphic*: you expect the ``cons`` function for
 ``Nat``, ``Bool``, or an arbitrary type ``α`` to behave the same way.
 So it makes sense to take the type to be the first argument to
