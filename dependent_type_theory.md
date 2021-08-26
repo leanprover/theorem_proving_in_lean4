@@ -195,15 +195,6 @@ You have actually come up against one of the most subtle aspects of
 Lean's typing system. Lean's underlying foundation has an infinite
 hierarchy of types:
 
-[chris] can I think of these as going more meta, "meta types" and
-"meta meta types" ?  "type universe" raises lots more questions in my
-head...? Like can things cross universes?  if so, that seems
-unnatural... need a worm hole or something?...  if it's just a russian
-doll nesting as "hierarchy" implies, then that's fine too, but I
-wouldn't use "universe" for that either, more like "space", i guess
-you are trying hard not to use the word Set.  is "Type 0" a "subset"
-of "Type 1" ?
-
 ```lean
 #check Type     -- Type 1
 #check Type 1   -- Type 2
@@ -218,9 +209,6 @@ Think of ``Type 0`` as a universe of "small" or "ordinary" types.
 which contains ``Type 1`` as an element. The list is indefinite, so
 that there is a ``Type n`` for every natural number ``n``. ``Type`` is
 an abbreviation for ``Type 0``:
-
-[chris] when you say "larger universe" it kind of implies Type 1 is a
-superset of Type 0... is that right?
 
 ```lean
 #check Type
@@ -246,16 +234,6 @@ universes. For example, ``List α`` should make sense for any type
 ``α``, no matter which type universe ``α`` lives in. This explains the
 type annotation of the function ``List``:
 
-[chris] is polymorphic the right term? in OO programming this has a
-very specific meaning.  Here it seams more like types of an expression
-is promoted to live in the biggest universe found in its terms.  That
-seems very different from polymorphism.  It's a bit more like
-"covariance", isn't it where each expression is promoted to "Type n"
-so that all terms can be reasoned about in one universe?  This
-"promotion" also implies type 0 is indeed a subset of Type 1,
-otherwise it would not be possible to promote terms in Type 0 to Type
-1...
-
 ```lean
 #check List    -- Type u_1 → Type u_1
 ```
@@ -265,29 +243,12 @@ Here ``u_1`` is a variable ranging over type levels. The output of the
 ``List α`` also has type ``Type n``. The function ``Prod`` is
 similarly polymorphic:
 
-[chris] this is the first time you've hinted that ``Prod`` is just a
-function.  Previously it was called *Cartesian product*. Is it really
-just a function?  A function with 2 arguments and magic short hand
-syntax involving ``×`` ?  Are there lots of other functions that have
-2 forms then like And (&&), Or (||), Mod (%), Div (/), Mul (*), etc?
-Might have been good to call it the *Cartesian product function* from
-the get go then...
-
 ```lean
 #check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 ```
 
 To define polymorphic constants and variables, Lean allows you to
 declare universe variables explicitly using the `universe` command:
-
-[chris] whoah, there's a whole new concept "universe variables", first
-"variables" has not been discussed at all, let alone "universe
-variables". The minute I saw "constant" I was expecting "variable" or
-"var" to be nearby... but not yet...? and this is the first time it
-shows up... wow... Oh, I assume it's saying the "variable" thing is
-"which universe" the type belongs to, so "u" being a variable means we
-don't know which universe, the universe itself is variable.  wow...  I
-see I can't write `universe u := 1`, why is that?
 
 ```lean
 universe u
@@ -296,9 +257,6 @@ constant α : Type u
 ```
 Equivalently, you can write ``Type _`` to avoid giving the arbitrary
 universe a name:
-
-[chris] Why do you need "universe u" when you can just write "Type _"
-?  Also perhaps "_" could be introduced earlier also...
 
 ```lean
 constant α : Type _
