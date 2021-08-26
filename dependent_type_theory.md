@@ -144,16 +144,7 @@ type.
 ```
 
 You can see that each one of the expressions above is an object of
-type ``Type``. You can also declare new constants and constructors for
-types:
-
-[chris] "constants and constructors" is confusing, I only see
-constants below.  Some are simple types some are constant functional
-types.  I guess you could say all functions are "constructors" in that
-they return something, so they "build" that return type... but still
-not very clear... always like to reduce as much as possible the number
-of "unique terms" used to define things... so far it seems like the
-Lean vocabulary is huge compared to other languages.
+type ``Type``. You can also declare new constants for types:
 
 ```lean
 constant α : Type
@@ -1090,7 +1081,6 @@ expanded on...
 - defs
 - parameters, returns
 - ordered pairs, cartesian products
-- constructors
 - List
 - type hierarchies
 - Prop
