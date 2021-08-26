@@ -1075,3 +1075,59 @@ The function `f` and `g` above denote the same function.
 minute, from @ (which was not explained) to sigma to the new special
 syntax `⟨a, b⟩`... wow.  Seems this is too condensed and should all be
 expanded on...
+
+[chris] summary of new terms introduced by this document:
+- Dependent type theory
+- mathematical assertions
+- specifications
+- type universes
+- inductive types
+- Type theory
+- expression
+- natural number
+- objects
+- constant
+- #check
+- #eval
+- #print
+- #reduce
+- block and line comments
+- greek unicode symbols
+- functions
+- defs
+- parameters, returns
+- ordered pairs, cartesian products
+- constructors
+- List
+- type hierarchies
+- Prop
+- currying
+- polymorphism
+- universe variables
+- macros
+- lambda abstraction
+- fun
+- "abstract over" something
+- dependent products
+- scope
+- bound variables
+- computational reductions
+- substituted variables
+- beta reduction
+- beta equivalent
+- normalization
+- definitionally equal
+- compiler
+- interpreter
+- verifying the correctness of expressions and proofs
+- foreign functions
+- type inference
+- abstracted variables
+- let - local definitions
+- variable
+- section
+- namespace
+- nesting
+- sigma types
+
+That's a lot.
