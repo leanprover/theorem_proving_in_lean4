@@ -1,15 +1,24 @@
 Dependent Type Theory
 =====================
 
-Dependent type theory is a powerful and expressive language, allowing us to express complex mathematical assertions, write complex hardware and software specifications, and reason about both of these in a natural and uniform way. Lean is based on a version of dependent type theory known as the *Calculus of Constructions*, with a countable hierarchy of non-cumulative universes and inductive types. By the end of this chapter, you will understand much of what this means.
+Dependent type theory is a powerful and expressive language, allowing
+us to express complex mathematical assertions, write complex hardware
+and software specifications, and reason about both of these in a
+natural and uniform way. Lean is based on a version of dependent type
+theory known as the *Calculus of Constructions*, with a countable
+hierarchy of non-cumulative universes and inductive types. By the end
+of this chapter, you will understand much of what this means.
 
 ## Simple Type Theory
 
-"Type theory" gets its name from the fact that every expression has an associated *type*.
-For example, in a given context, ``x + 0`` may denote a natural number and ``f`` may denote a function on the natural numbers.
-For those that don't like math, a Lean natural number is an arbitrary-precision unsigned integer.
+"Type theory" gets its name, from the fact that every expression has
+an associated *type*.  For example, in a given context, ``x + 0`` may
+denote a natural number and ``f`` may denote a function on the natural
+numbers.  For those that don't like math, a Lean natural number is an
+arbitrary-precision unsigned integer.
 
-Here are some examples of how we can declare objects in Lean and check their types.
+Here are some examples of how we can declare objects in Lean and check
+their types.
 
 ```lean
 /- Declare some constants. -/
@@ -31,22 +40,29 @@ constant b2 : Bool
 #check true         -- Boolean "true"
 ```
 
-Any text between ``/-`` and ``-/`` constitutes a comment block that is ignored by Lean.
-Similarly, two dashes `--` indicate that the rest of the line contains a comment that is also ignored.
-Comment blocks can be nested, making it possible to "comment out" chunks of code, just as in many programming languages.
+Any text between ``/-`` and ``-/`` constitutes a comment block that is
+ignored by Lean.  Similarly, two dashes `--` indicate that the rest of
+the line contains a comment that is also ignored.  Comment blocks can
+be nested, making it possible to "comment out" chunks of code, just as
+in many programming languages.
 
-The ``constant`` command introduce new constant symbols into the working environment.
-The ``#check`` command asks Lean to report their types; in Lean, auxiliary commands that query the system for
-information typically begin with the hash symbol. You should try declaring some constants and type checking
-some expressions on your own. Declaring new objects in this way is a good way to experiment with the system.
+The ``constant`` command introduce new constant symbols into the
+working environment.  The ``#check`` command asks Lean to report their
+types; in Lean, auxiliary commands that query the system for
+information typically begin with the hash symbol. You should try
+declaring some constants and type checking some expressions on your
+own. Declaring new objects in this way is a good way to experiment
+with the system.
 
-What makes simple type theory powerful is that one can build new types out of others.
-For example, if ``a`` and ``b`` are types, ``a -> b`` denotes the type of functions from ``a`` to ``b``,
-and ``a × b`` denotes the type of pairs consisting of an element of ``a``
-paired with an element of ``b``, also known as the *Cartesian product*.
-Note that `×` is a Unicode symbol. We believe that judicious use of Unicode improves legibility,
-and all modern editors have great support for it. In the Lean standard library, we often use
-Greek letters to denote types, and the Unicode symbol `→` as a more compact version of `->`.
+What makes simple type theory powerful is that one can build new types
+out of others.  For example, if ``a`` and ``b`` are types, ``a -> b``
+denotes the type of functions from ``a`` to ``b``, and ``a × b``
+denotes the type of pairs consisting of an element of ``a`` paired
+with an element of ``b``, also known as the *Cartesian product*.  Note
+that `×` is a Unicode symbol. We believe that judicious use of Unicode
+improves legibility, and all modern editors have great support for
+it. In the Lean standard library, we often use Greek letters to denote
+types, and the Unicode symbol `→` as a more compact version of `->`.
 
 ```lean
 constant m : Nat
@@ -75,30 +91,42 @@ constant F  : (Nat → Nat) → Nat -- a "functional"
 
 Once again, you should try some examples on your own.
 
-Let us dispense with some basic syntax. You can enter the unicode arrow ``→`` by typing ``\to`` or ``\r``.
-You can also use the ASCII alternative ``->``, so the expressions ``Nat -> Nat`` and ``Nat → Nat`` mean the same thing.
-Both expressions denote the type of functions that take a natural number as input and return a natural number as output.
-The unicode symbol ``×`` for the Cartesian product is entered as ``\times``.
-We will generally use lower-case Greek letters like ``α``, ``β``, and ``γ`` to range over types.
-You can enter these particular ones with ``\a``, ``\b``, and ``\g``.
+Let us dispense with some basic syntax. You can enter the unicode
+arrow ``→`` by typing ``\to`` or ``\r``.  You can also use the ASCII
+alternative ``->``, so the expressions ``Nat -> Nat`` and
+``Nat → Nat`` mean the same thing.  Both expressions denote the type of
+functions that take a natural number as input and return a natural
+number as output.  The unicode symbol ``×`` for the Cartesian product
+is entered as ``\times``.  We will generally use lower-case Greek
+letters like ``α``, ``β``, and ``γ`` to range over types.  You can
+enter these particular ones with ``\a``, ``\b``, and ``\g``.
 
-There are a few more things to notice here. First, the application of a function ``f`` to a value ``x`` is denoted ``f x``.
-Second, when writing type expressions, arrows associate to the *right*; for example, the type of ``g`` is ``Nat → (Nat → Nat)``.
-Thus we can view ``g`` as a function that takes natural numbers and returns another function that takes a natural number and
-returns a natural number.
-In type theory, this is generally more convenient than writing ``g`` as a function that takes a pair of natural numbers as input
-and returns a natural number as output. For example, it allows us to "partially apply" the function ``g``.
-The example above shows that ``g m`` has type ``Nat → Nat``, that is, the function that "waits" for a second argument, ``n``,
-and then returns ``g m n``. Taking a function ``h`` of type ``Nat × Nat → Nat`` and "redefining" it to look like ``g`` is a process
-known as *currying*, something we will come back to below.
+There are a few more things to notice here. First, the application of
+a function ``f`` to a value ``x`` is denoted ``f x``.  Second, when
+writing type expressions, arrows associate to the *right*; for
+example, the type of ``g`` is ``Nat → (Nat → Nat)``.  Thus we can view
+``g`` as a function that takes natural numbers and returns another
+function that takes a natural number and returns a natural number.  In
+type theory, this is generally more convenient than writing ``g`` as a
+function that takes a pair of natural numbers as input and returns a
+natural number as output. For example, it allows us to "partially
+apply" the function ``g``.  The example above shows that ``g m`` has
+type ``Nat → Nat``, that is, the function that "waits" for a second
+argument, ``n``, and then returns ``g m n``. Taking a function ``h``
+of type ``Nat × Nat → Nat`` and "redefining" it to look like ``g`` is
+a process known as *currying*, something we will come back to below.
 
-By now you may also have guessed that, in Lean, ``(m, n)`` denotes the ordered pair of ``m`` and ``n``,
-and if ``p`` is a pair, ``p.1`` and ``p.2`` denote the two projections.
+By now you may also have guessed that, in Lean, ``(m, n)`` denotes the
+ordered pair of ``m`` and ``n``, and if ``p`` is a pair, ``p.1`` and
+``p.2`` denote the two projections.
 
 ## Types as objects
 
-One way in which Lean's dependent type theory extends simple type theory is that types themselves --- entities like ``Nat`` and ``Bool`` ---
-are first-class citizens, which is to say that they themselves are objects. For that to be the case, each of them also has to have a type.
+One way in which Lean's dependent type theory extends simple type
+theory is that types themselves --- entities like ``Nat`` and ``Bool``
+--- are first-class citizens, which is to say that they themselves are
+objects. For that to be the case, each of them also has to have a
+type.
 
 ```lean
 #check Nat               -- Type
@@ -113,7 +141,9 @@ are first-class citizens, which is to say that they themselves are objects. For 
 #check (Nat → Nat) → Nat
 ```
 
-We see that each one of the expressions above is an object of type ``Type``. We can also declare new constants and constructors for types:
+We see that each one of the expressions above is an object of type
+``Type``. We can also declare new constants and constructors for
+types:
 
 ```lean
 constant α : Type
@@ -129,7 +159,8 @@ constant G : Type → Type → Type
 #check G α Nat  -- Type
 ```
 
-Indeed, we have already seen an example of a function of type ``Type → Type → Type``, namely, the Cartesian product.
+Indeed, we have already seen an example of a function of type
+``Type → Type → Type``, namely, the Cartesian product.
 
 ```lean
 constant α : Type
@@ -139,7 +170,8 @@ constant β : Type
 #check Prod Nat Nat   -- Type
 ```
 
-Here is another example: given any type ``α``, the type ``List α`` denotes the type of lists of elements of type ``α``.
+Here is another example: given any type ``α``, the type ``List α``
+denotes the type of lists of elements of type ``α``.
 
 ```lean
 constant α : Type
@@ -184,20 +216,26 @@ There is also another type universe, ``Prop``, which has special properties.
 
 We will discuss ``Prop`` later.
 
-We want some operations, however, to be *polymorphic* over type universes. For example, ``List α`` should
-make sense for any type ``α``, no matter which type universe ``α`` lives in. This explains the type annotation of the function ``List``:
+We want some operations, however, to be *polymorphic* over type
+universes. For example, ``List α`` should make sense for any type
+``α``, no matter which type universe ``α`` lives in. This explains the
+type annotation of the function ``List``:
 
 ```lean
 #check List    -- Type u_1 → Type u_1
 ```
 
-Here ``u_1`` is a variable ranging over type levels. The output of the ``#check`` command means that whenever ``α`` has type ``Type n``, ``List α`` also has type ``Type n``. The function ``Prod`` is similarly polymorphic:
+Here ``u_1`` is a variable ranging over type levels. The output of the
+``#check`` command means that whenever ``α`` has type ``Type n``,
+``List α`` also has type ``Type n``. The function ``Prod`` is
+similarly polymorphic:
 
 ```lean
 #check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 ```
 
-To define polymorphic constants and variables, Lean allows us to declare universe variables explicitly using the `universe` command:
+To define polymorphic constants and variables, Lean allows us to
+declare universe variables explicitly using the `universe` command:
 
 ```lean
 universe u
@@ -211,7 +249,10 @@ constant α : Type _
 #check α
 ```
 
-Several Lean 3 users use the shorthand `Type*` for `Type _`. The `Type*` notation is not builtin in Lean 4, but you can easily define it using a `macro`.
+Several Lean 3 users use the shorthand `Type*` for `Type _`. The
+`Type*` notation is not builtin in Lean 4, but you can easily define
+it using a `macro`.
+
 ```lean
 macro "Type*" : term => `(Type _)
 
@@ -261,10 +302,12 @@ constant h : Nat → Bool → Nat
 #check fun x y => h (f x) y                       -- Nat → Bool → Nat
 ```
 
-Lean interprets the final three examples as the same expression; in the last expression,
-Lean infers the type of ``x`` and ``y`` from the types of ``f`` and ``h``.
+Lean interprets the final three examples as the same expression; in
+the last expression, Lean infers the type of ``x`` and ``y`` from the
+types of ``f`` and ``h``.
 
-Some mathematically common examples of operations of functions can be described in terms of lambda abstraction:
+Some mathematically common examples of operations of functions can be
+described in terms of lambda abstraction:
 
 ```lean
 constant f : Nat → String
@@ -277,11 +320,13 @@ constant b : Bool
 #check fun x => g (f x)        -- Nat → Bool
 ```
 
-Think about what these expressions mean. The expression ``fun x : Nat => x`` denotes the identity function on ``Nat``,
-the expression ``fun x : α => b`` denotes the constant function that always returns ``b``,
-and ``fun x : Nat => g (f x)``, denotes the composition of ``f`` and ``g``.
-We can, in general, leave off the type annotation on a variable and let Lean infer it for us.
-So, for example, we can write ``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
+Think about what these expressions mean. The expression ``fun x : Nat
+=> x`` denotes the identity function on ``Nat``, the expression
+``fun x : α => b`` denotes the constant function that always returns ``b``,
+and ``fun x : Nat => g (f x)``, denotes the composition of ``f`` and
+``g``.  We can, in general, leave off the type annotation on a
+variable and let Lean infer it for us.  So, for example, we can write
+``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
 
 We can abstract over the constants `f` and `g` in the previous definitions:
 
@@ -295,12 +340,26 @@ We can also abstract over types:
 ```lean
 #check fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)
 ```
-The last expression, for example, denotes the function that takes three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ`` and ``f : α → β``, and returns the composition of ``g`` and ``f``. (Making sense of the type of this function requires an understanding of dependent products, which we will explain below.) Within a lambda expression ``fun x : α => t``, the variable ``x`` is a "bound variable": it is really a placeholder, whose "scope" does not extend beyond ``t``.
-For example, the variable ``b`` in the expression ``fun (b : β) (x : α) => b`` has nothing to do with the constant ``b`` declared earlier.
-In fact, the expression denotes the same function as ``fun (u : β) (z : α), u``. Formally, the expressions that are the same up to a renaming of bound variables are called *alpha equivalent*, and are considered "the same." Lean recognizes this equivalence.
 
-Notice that applying a term ``t : α → β`` to a term ``s : α`` yields an expression ``t s : β``.
-Returning to the previous example and renaming bound variables for clarity, notice the types of the following expressions:
+The last expression, for example, denotes the function that takes
+three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ``
+and ``f : α → β``, and returns the composition of ``g`` and
+``f``. (Making sense of the type of this function requires an
+understanding of dependent products, which we will explain below.)
+Within a lambda expression ``fun x : α => t``, the variable ``x`` is a
+"bound variable": it is really a placeholder, whose "scope" does not
+extend beyond ``t``.  For example, the variable ``b`` in the
+expression ``fun (b : β) (x : α) => b`` has nothing to do with the
+constant ``b`` declared earlier.  In fact, the expression denotes the
+same function as ``fun (u : β) (z : α), u``. Formally, the expressions
+that are the same up to a renaming of bound variables are called
+*alpha equivalent*, and are considered "the same." Lean recognizes
+this equivalence.
+
+Notice that applying a term ``t : α → β`` to a term ``s : α`` yields
+an expression ``t s : β``.  Returning to the previous example and
+renaming bound variables for clarity, notice the types of the
+following expressions:
 
 ```lean
 #check (fun x : Nat => x) 1     -- Nat
@@ -314,8 +373,10 @@ constant g : String → Bool
   -- Bool
 ```
 
-As expected, the expression ``(fun x : Nat =>  x) 1`` has type ``Nat``.
-In fact, more should be true: applying the expression ``(fun x : Nat => x)`` to ``1`` should "return" the value ``1``. And, indeed, it does:
+As expected, the expression ``(fun x : Nat => x) 1`` has type ``Nat``.
+In fact, more should be true: applying the expression
+``(fun x : Nat => x)`` to ``1`` should "return" the value ``1``. And, indeed, it
+does:
 
 ```lean
 #reduce (fun x : Nat => x) 1     -- 1
@@ -329,11 +390,14 @@ constant g : String → Bool
   -- g (f 0)
 ```
 
-The command ``#reduce`` tells Lean to evaluate an expression by *reducing* it to its normal form,
-which is to say, carrying out all the computational reductions that are sanctioned by its kernel.
-The process of simplifying an expression ``(fun x => t) s`` to ``t[s/x]`` -- that is, ``t`` with ``s`` substituted for the variable ``x`` --
-is known as *beta reduction*, and two terms that beta reduce to a common term are called *beta equivalent*.
-But the ``#reduce`` command carries out other forms of reduction as well:
+The command ``#reduce`` tells Lean to evaluate an expression by
+*reducing* it to its normal form, which is to say, carrying out all
+the computational reductions that are sanctioned by its kernel.  The
+process of simplifying an expression ``(fun x => t) s`` to ``t[s/x]``
+-- that is, ``t`` with ``s`` substituted for the variable ``x`` -- is
+known as *beta reduction*, and two terms that beta reduce to a common
+term are called *beta equivalent*.  But the ``#reduce`` command
+carries out other forms of reduction as well:
 
 ```lean
 constant m : Nat
@@ -352,24 +416,31 @@ constant b : Bool
 #reduce 2 + 3           -- 5
 ```
 
-We explain later how these terms are evaluated.
-For now, we only wish to emphasize that this is an important feature of dependent type theory:
-every term has a computational behavior, and supports a notion of reduction, or *normalization*.
-In principle, two terms that reduce to the same value are called *definitionally equal*.
-They are considered "the same" by Lean's type checker, and Lean does its best to recognize and support these identifications.
-The `#reduce` command is mainly useful to understand why two terms are considered the same.
+We explain later how these terms are evaluated.  For now, we only wish
+to emphasize that this is an important feature of dependent type
+theory: every term has a computational behavior, and supports a notion
+of reduction, or *normalization*.  In principle, two terms that reduce
+to the same value are called *definitionally equal*.  They are
+considered "the same" by Lean's type checker, and Lean does its best
+to recognize and support these identifications.  The `#reduce` command
+is mainly useful to understand why two terms are considered the same.
 
-Lean is also a programming language. It has a compiler to native code and an interpreter.
-You can use the command `#eval` to execute expressions, and it is the preferred way of testing your functions.
-Note that `#eval` and `#reduce` are *not* equivalent. The command `#eval` first compiles Lean expressions
-into an intermediate representation (IR) and then uses an interpreter to execute the generated IR.
-Some builtin types (e.g., `Nat`, `String`, `Array`) have a more efficient representation in the IR.
-The IR has support for using foreign functions that are opaque to Lean.
+Lean is also a programming language. It has a compiler to native code
+and an interpreter.  You can use the command `#eval` to execute
+expressions, and it is the preferred way of testing your functions.
+Note that `#eval` and `#reduce` are *not* equivalent. The command
+`#eval` first compiles Lean expressions into an intermediate
+representation (IR) and then uses an interpreter to execute the
+generated IR.  Some builtin types (e.g., `Nat`, `String`, `Array`)
+have a more efficient representation in the IR.  The IR has support
+for using foreign functions that are opaque to Lean.
 
-In contrast, the ``#reduce`` command relies on a reduction engine similar to the one used in Lean's trusted kernel,
-the part of Lean that is responsible for checking and verifying the correctness of expressions and proofs.
-It is less efficient than ``#eval``, and treats all foreign functions as opaque constants.
-We later discuss other differences between the two commands.
+In contrast, the ``#reduce`` command relies on a reduction engine
+similar to the one used in Lean's trusted kernel, the part of Lean
+that is responsible for checking and verifying the correctness of
+expressions and proofs.  It is less efficient than ``#eval``, and
+treats all foreign functions as opaque constants.  We later discuss
+other differences between the two commands.
 
 ## Introducing Definitions
 
@@ -391,10 +462,15 @@ def foo :=
   fun (f : Nat → Nat) => f 0
 ```
 
-The general form of a definition is ``def foo : α := bar``. Lean can usually infer the type ``α``, but it is often a good idea to write it explicitly.
-This clarifies your intention, and Lean will flag an error if the right-hand side of the definition does not have the right type.
+The general form of a definition is ``def foo : α := bar``. Lean can
+usually infer the type ``α``, but it is often a good idea to write it
+explicitly.  This clarifies your intention, and Lean will flag an
+error if the right-hand side of the definition does not have the right
+type.
 
-Lean also allows us to use an alternative format that puts the abstracted variables before the colon and omits the lambda:
+Lean also allows us to use an alternative format that puts the
+abstracted variables before the colon and omits the lambda:
+
 ```lean
 def double (x : Nat) : Nat :=
   x + x
@@ -441,7 +517,10 @@ def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
 Local Definitions
 -----------------
 
-Lean also allows you to introduce "local" definitions using the ``let`` construct. The expression ``let a := t1; t2`` is definitionally equal to the result of replacing every occurrence of ``a`` in ``t2`` by ``t1``.
+Lean also allows you to introduce "local" definitions using the
+``let`` construct. The expression ``let a := t1; t2`` is
+definitionally equal to the result of replacing every occurrence of
+``a`` in ``t2`` by ``t1``.
 
 ```lean
 
@@ -469,12 +548,17 @@ def t (x : Nat) : Nat :=
   y * y
 ```
 
-Notice that the meaning of the expression ``let a := t1; t2`` is very similar to the meaning of ``(fun a => t2) t1``,
-but the two are not the same. In the first expression, you should think of every instance of ``a`` in ``t2`` as a
-syntactic abbreviation for ``t1``. In the second expression, ``a`` is a variable, and the expression ``fun a => t2``
-has to make sense independently of the value of ``a``. The ``let`` construct is a stronger means of abbreviation,
-and there are expressions of the form ``let a := t1; t2`` that cannot be expressed as ``(fun a => t2) t1``.
-As an exercise, try to understand why the definition of ``foo`` below type checks, but the definition of ``bar`` does not.
+Notice that the meaning of the expression ``let a := t1; t2`` is very
+similar to the meaning of ``(fun a => t2) t1``, but the two are not
+the same. In the first expression, you should think of every instance
+of ``a`` in ``t2`` as a syntactic abbreviation for ``t1``. In the
+second expression, ``a`` is a variable, and the expression
+``fun a => t2`` has to make sense independently of the value of ``a``. The
+``let`` construct is a stronger means of abbreviation, and there are
+expressions of the form ``let a := t1; t2`` that cannot be expressed
+as ``(fun a => t2) t1``.  As an exercise, try to understand why the
+definition of ``foo`` below type checks, but the definition of ``bar``
+does not.
 
 
 ```lean
@@ -527,13 +611,18 @@ def doThrice := h (h (h x))
 ```
 Printing them out shows that all three groups of definitions have exactly the same effect.
 
-The ``variable`` command instructs Lean to insert the declared variables as bound variables in definitions that refer to them.
-Lean is smart enough to figure out which variables are used explicitly or implicitly in a definition. We can therefore proceed as
-though ``α``, ``β``, ``γ``, ``g``, ``f``, ``h``, and ``x`` are fixed objects when we write our definitions, and let Lean abstract
-the definitions for us automatically.
+The ``variable`` command instructs Lean to insert the declared
+variables as bound variables in definitions that refer to them.  Lean
+is smart enough to figure out which variables are used explicitly or
+implicitly in a definition. We can therefore proceed as though ``α``,
+``β``, ``γ``, ``g``, ``f``, ``h``, and ``x`` are fixed objects when we
+write our definitions, and let Lean abstract the definitions for us
+automatically.
 
-When declared in this way, a variable stays in scope until the end of the file we are working on.
-Sometimes, however, it is useful to limit the scope of a variable. For that purpose, Lean provides the notion of a ``section``:
+When declared in this way, a variable stays in scope until the end of
+the file we are working on.  Sometimes, however, it is useful to limit
+the scope of a variable. For that purpose, Lean provides the notion of
+a ``section``:
 
 ```lean
 section useful
@@ -547,12 +636,14 @@ section useful
 end useful
 ```
 
-When the section is closed, the variables go out of scope, and become nothing more than a distant memory.
+When the section is closed, the variables go out of scope, and become
+nothing more than a distant memory.
 
-You do not have to indent the lines within a section. Nor do you have to name a section, which is to say,
-you can use an anonymous ``section`` / ``end`` pair.
-If you do name a section, however, you have to close it using the same name.
-Sections can also be nested, which allows you to declare new variables incrementally.
+You do not have to indent the lines within a section. Nor do you have
+to name a section, which is to say, you can use an anonymous
+``section`` / ``end`` pair.  If you do name a section, however, you
+have to close it using the same name.  Sections can also be nested,
+which allows you to declare new variables incrementally.
 
 # Namespaces
 
@@ -588,14 +679,18 @@ open Foo
 #check Foo.fa
 ```
 
-When we declare that we are working in the namespace ``Foo``, every identifier we declare has
-a full name with prefix "``Foo.``" Within the namespace, we can refer to identifiers
-by their shorter names, but once we end the namespace, we have to use the longer names.
+When we declare that we are working in the namespace ``Foo``, every
+identifier we declare has a full name with prefix "``Foo.``" Within
+the namespace, we can refer to identifiers by their shorter names, but
+once we end the namespace, we have to use the longer names.
 
-The ``open`` command brings the shorter names into the current context. Often, when we import a
-module, we will want to open one or more of the namespaces it contains, to have access to the short identifiers.
-But sometimes we will want to leave this information hidden, for example, when they conflict with
-identifiers in another namespace we want to use. Thus namespaces give us a way to manage our working environment.
+The ``open`` command brings the shorter names into the current
+context. Often, when we import a module, we will want to open one or
+more of the namespaces it contains, to have access to the short
+identifiers.  But sometimes we will want to leave this information
+hidden, for example, when they conflict with identifiers in another
+namespace we want to use. Thus namespaces give us a way to manage our
+working environment.
 
 For example, Lean groups definitions and theorems involving lists into a namespace ``List``.
 ```lean
@@ -655,47 +750,68 @@ namespace Foo
 end Foo
 ```
 
-Like sections, nested namespaces have to be closed in the order they are opened.
-Namespaces and sections serve different purposes: namespaces organize data and sections declare variables for insertion in definitions.
-Sections are also useful for delimiting the scope of commands such as ``set_option`` and ``open``.
+Like sections, nested namespaces have to be closed in the order they
+are opened.  Namespaces and sections serve different purposes:
+namespaces organize data and sections declare variables for insertion
+in definitions.  Sections are also useful for delimiting the scope of
+commands such as ``set_option`` and ``open``.
 
-In many respects, however, a ``namespace ... end`` block behaves the same as a ``section ... end`` block.
-In particular, if you use the ``variable`` command within a namespace, its scope is limited to the namespace.
-Similarly, if you use an ``open`` command within a namespace, its effects disappear when the namespace is closed.
+In many respects, however, a ``namespace ... end`` block behaves the
+same as a ``section ... end`` block.  In particular, if you use the
+``variable`` command within a namespace, its scope is limited to the
+namespace.  Similarly, if you use an ``open`` command within a
+namespace, its effects disappear when the namespace is closed.
 
 ## What makes dependent type theory dependent?
 
-The short explanation is that what makes dependent type theory dependent is that types can depend on parameters.
-You have already seen a nice example of this: the type ``List α`` depends on the argument ``α``, and
-this dependence is what distinguishes ``List Nat`` and ``List Bool``.
-For another example, consider the type ``Vector α n``, the type of vectors of elements of ``α`` of length ``n``.
-This type depends on *two* parameters: the type ``α : Type`` of the elements in the vector and the length ``n : Nat``.
+The short explanation is that what makes dependent type theory
+dependent is that types can depend on parameters.  You have already
+seen a nice example of this: the type ``List α`` depends on the
+argument ``α``, and this dependence is what distinguishes ``List Nat``
+and ``List Bool``.  For another example, consider the type
+``Vector α n``, the type of vectors of elements of ``α`` of length ``n``.  This
+type depends on *two* parameters: the type ``α : Type`` of the
+elements in the vector and the length ``n : Nat``.
 
-Suppose we wish to write a function ``cons`` which inserts a new element at the head of a list.
-What type should ``cons`` have? Such a function is *polymorphic*: we expect the ``cons`` function for ``Nat``, ``Bool``,
-or an arbitrary type ``α`` to behave the same way.
-So it makes sense to take the type to be the first argument to ``cons``, so that for any type, ``α``, ``cons α``
-is the insertion function for lists of type ``α``. In other words, for every ``α``, ``cons α`` is the function that takes an element ``a : α``
-and a list ``as : List α``, and returns a new list, so we have ``cons α a as : list α``.
+Suppose we wish to write a function ``cons`` which inserts a new
+element at the head of a list.  What type should ``cons`` have? Such a
+function is *polymorphic*: we expect the ``cons`` function for
+``Nat``, ``Bool``, or an arbitrary type ``α`` to behave the same way.
+So it makes sense to take the type to be the first argument to
+``cons``, so that for any type, ``α``, ``cons α`` is the insertion
+function for lists of type ``α``. In other words, for every ``α``,
+``cons α`` is the function that takes an element ``a : α`` and a list
+``as : List α``, and returns a new list, so we have ``cons α a as : List α``.
 
-It is clear that ``cons α`` should have type ``α → List α → List α``. But what type should ``cons`` have?
-A first guess might be ``Type → α → list α → list α``, but, on reflection, this does not make sense:
-the ``α`` in this expression does not refer to anything, whereas it should refer to the argument of type ``Type``.
-In other words, *assuming* ``α : Type`` is the first argument to the function, the type of the next two elements are ``α`` and ``List α``.
-These types vary depending on the first argument, ``α``.
+It is clear that ``cons α`` should have type ``α → List α → List α``.
+But what type should ``cons`` have?  A first guess might be
+``Type → α → list α → list α``, but, on reflection, this does not make
+sense: the ``α`` in this expression does not refer to anything,
+whereas it should refer to the argument of type ``Type``.  In other
+words, *assuming* ``α : Type`` is the first argument to the function,
+the type of the next two elements are ``α`` and ``List α``.  These
+types vary depending on the first argument, ``α``.
 
-This is an instance of a *dependent function type*, or *dependent arrow type*. Given ``α : Type`` and ``β : α → Type``,
-think of ``β`` as a family of types over ``α``, that is, a type ``β a`` for each ``a : α``.
-In that case, the type ``(a : α) → β a`` denotes the type of functions ``f`` with the property that,
-for each ``a : α``, ``f a`` is an element of ``β a``. In other words, the type of the value returned by ``f`` depends on its input.
+This is an instance of a *dependent function type*, or *dependent
+arrow type*. Given ``α : Type`` and ``β : α → Type``, think of ``β``
+as a family of types over ``α``, that is, a type ``β a`` for each
+``a : α``.  In that case, the type ``(a : α) → β a`` denotes the type
+of functions ``f`` with the property that, for each ``a : α``, ``f a``
+is an element of ``β a``. In other words, the type of the value
+returned by ``f`` depends on its input.
 
-Notice that ``(a : α) → β`` makes sense for any expression ``β : Type``. When the value of ``β`` depends on ``a``
-(as does, for example, the expression ``β a`` in the previous paragraph), ``(a : α) → β`` denotes a dependent function type.
-When ``β`` doesn't depend on ``a``, ``(a : α) → β`` is no different from the type ``α → β``.
-Indeed, in dependent type theory (and in Lean), ``α → β`` is just notation for ``(a : α) → β`` when ``β`` does not depend on ``a``.
+Notice that ``(a : α) → β`` makes sense for any expression ``β :
+Type``. When the value of ``β`` depends on ``a`` (as does, for
+example, the expression ``β a`` in the previous paragraph),
+``(a : α) → β`` denotes a dependent function type.  When ``β`` doesn't depend on
+``a``, ``(a : α) → β`` is no different from the type ``α → β``.
+Indeed, in dependent type theory (and in Lean), ``α → β`` is just
+notation for ``(a : α) → β`` when ``β`` does not depend on ``a``.
 
-Returning to the example of lists, we can use the command `#check` to inspect the type of the following `List` functions
-We will explain the ``@`` symbol and the difference between the round and curly braces momentarily.
+Returning to the example of lists, we can use the command `#check` to
+inspect the type of the following `List` functions We will explain the
+``@`` symbol and the difference between the round and curly braces
+momentarily.
 
 ```lean
 #check @List.cons    -- {α : Type u_1} → α → List α → List α
@@ -704,9 +820,13 @@ We will explain the ``@`` symbol and the difference between the round and curly 
 #check @List.append  -- {α : Type u_1} → List α → List α → List α
 ```
 
-Just as dependent function types ``(a : α) → β a`` generalize the notion of a function type ``α → β`` by allowing ``β`` to depend on ``α``,
-dependent Cartesian product types ``(a : α) × β a`` generalize the Cartesian product ``α × β`` in the same way. Dependent products are also
-called *sigma* types, and you can also write them as `Σ a : α, β a`. You can use `⟨a, b⟩` or `Sigma.mk a b` to create a dependent pair.
+Just as dependent function types ``(a : α) → β a`` generalize the
+notion of a function type ``α → β`` by allowing ``β`` to depend on
+``α``, dependent Cartesian product types ``(a : α) × β a`` generalize
+the Cartesian product ``α × β`` in the same way. Dependent products
+are also called *sigma* types, and you can also write them as
+`Σ a : α, β a`. You can use `⟨a, b⟩` or `Sigma.mk a b` to create a dependent
+pair.
 
 ```lean
 universe u v
