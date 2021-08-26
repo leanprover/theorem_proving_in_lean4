@@ -215,20 +215,6 @@ an abbreviation for ``Type 0``:
 #check Type 0
 ```
 
-There is also another type universe, ``Prop``, which has special
-properties.
-
-[chris] Whoah, ``Prop`` is a type universe?  or is it just a thing
-like def, list, fun, ... ?
-
-```lean
-#check Prop -- Type
-```
-
-``Prop`` is covered in more detail later.
-
-[chris] Hmmm, then why bring it up at all?  Just added confusion...
-
 Some operations, however, need to be *polymorphic* over type
 universes. For example, ``List α`` should make sense for any type
 ``α``, no matter which type universe ``α`` lives in. This explains the
@@ -1011,11 +997,9 @@ expanded on...
 - ordered pairs, cartesian products
 - List
 - type hierarchies
-- Prop
 - currying
 - polymorphism
 - universe variables
-- macros
 - lambda abstraction
 - fun
 - "abstract over" something
