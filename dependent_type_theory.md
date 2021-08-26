@@ -268,7 +268,7 @@ Creating a function from another expression is a process known as
 construct an expression ``t : β``. Then the expression ``fun (x : α)
 => t``, or, equivalently, ``λ (x : α) => t``, is an object of type ``α
 → β``. Think of this as the function from ``α`` to ``β`` which maps
-any value ``x`` to the value ``t``, which may depend on ``x``.
+any value ``x`` to the value ``t``.
 
 [chris] again, what is a "variable" ? that concept has not been
 covered yet... Also "you can construct an expression" seems like an
@@ -281,11 +281,6 @@ any of this, so why talk about `fun` so abstractly before diving into
 concrete examples, it doesn't help me... ?  Perhaps "``fun x : α =>
 t``" is the abstract definition of all lambda functions?  if so we
 should say that...
-
-[chris] "which may depend on ``x``." is dangling and complicated, is
-it really needed?  Surely a function can compute things that depend on
-it inputs, that's a given and obvious, and sometimes stating the
-obvious adds confusion...
 
 ```lean
 #check fun (x : Nat) => x + 5   -- Nat → Nat
@@ -325,14 +320,11 @@ constant b : Bool
 
 Think about what these expressions mean. The expression ``fun x : Nat
 => x`` denotes the identity function on ``Nat``, the expression
-``fun x : α => b`` denotes the constant function that always returns ``b``,
+``fun x : Nat => b`` denotes the constant function that always returns ``b``,
 and ``fun x : Nat => g (f x)``, denotes the composition of ``f`` and
 ``g``.  You can, in general, leave off the type annotation on a
 variable and let Lean infer it for you.  So, for example, you can write
 ``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
-
-[chris] I'm not seeing the expression ``fun x : α => b`` anywhere in
-the code block? I think you meant `fun x : Nat => b` ?
 
 You can abstract over the constants `f` and `g` in the previous
 definitions:
@@ -389,13 +381,9 @@ constant f : Nat → String
 constant g : String → Bool
 
 #check
-  (fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)) Nat String Bool g f 0
+  (fun (α β γ : Type) (u : β → γ) (v : α → β) (x : α) => u (v x)) Nat String Bool g f 0
   -- Bool
 ```
-
-[chris] this would be less confusing if you renamed bound variables
-"g" and "f" in this lambda to be different from the constants "g" and
-"f"...
 
 As expected, the expression ``(fun x : Nat =>  x) 1`` has type ``Nat``.
 In fact, more should be true: applying the expression ``(fun x : Nat
@@ -454,18 +442,15 @@ Lean's type checker, and Lean does its best to recognize and support
 these identifications. The `#reduce` command is mainly useful to
 understand why two terms are considered the same.
 
-Lean is also a programming language. It has a compiler to native code
-and an interpreter. You can use the command `#eval` to execute
-expressions, and it is the preferred way of testing your functions.
-Note that `#eval` and `#reduce` are *not* equivalent. The command
-`#eval` first compiles Lean expressions into an intermediate
-representation (IR) and then uses an interpreter to execute the
-generated IR. Some builtin types (e.g., `Nat`, `String`, `Array`)
-have a more efficient representation in the IR. The IR has support
-for using foreign functions that are opaque to Lean.
-
-[chris] what is "compiler to native code" ?  DO you mean compiles
-to binary executable, or is it a transpiler to "C" ?
+Lean is also a programming language. It has a compiler that generates
+a binary executable and an interactive interpreter. You can use the
+command `#eval` to execute expressions, and it is the preferred way of
+testing your functions. Note that `#eval` and `#reduce` are *not*
+equivalent. The command `#eval` first compiles Lean expressions into
+an intermediate representation (IR) and then uses an interpreter to
+execute the generated IR. Some builtin types (e.g., `Nat`, `String`,
+`Array`) have a more efficient representation in the IR. The IR has
+support for using foreign functions that are opaque to Lean.
 
 In contrast, the ``#reduce`` command relies on a reduction engine
 similar to the one used in Lean's trusted kernel, the part of Lean
@@ -972,7 +957,8 @@ The function `f` and `g` above denote the same function.
 [chris] holy cow, lots of new stuff just dumped out here at the last
 minute, from @ (which was not explained) to sigma to the new special
 syntax `⟨a, b⟩`... wow.  Seems this is too condensed and should all be
-expanded on...
+expanded on... especially since this last section seems to be addressing
+the main reason for this chapter...
 
 [chris] summary of new terms introduced by this document:
 - Dependent type theory
