@@ -253,28 +253,8 @@ constant α : Type _
 
 ## Function Abstraction and Evaluation
 
-You already know how to "use" a function ``f : α → β``, namely, you
-can apply it to an element ``a : α`` to obtain ``f a : β``. But how do
-you create a function from another expression?
-
-Creating a function from another expression is a process known as
-"lambda abstraction." Suppose you have the variable ``x : α`` you can
-construct an expression ``t : β``. Then the expression ``fun (x : α)
-=> t``, or, equivalently, ``λ (x : α) => t``, is an object of type ``α
-→ β``. Think of this as the function from ``α`` to ``β`` which maps
-any value ``x`` to the value ``t``.
-
-[chris] again, what is a "variable" ? that concept has not been
-covered yet... Also "you can construct an expression" seems like an
-incomplete sentence... How do I "construct an expression ``t : β``."
-??? "constant t : β" doesn't work... I get the error "failed to
-synthesize instance Inhabited β"
-
-[chris] this paragraph is abstract and the examples below don't show
-any of this, so why talk about `fun` so abstractly before diving into
-concrete examples, it doesn't help me... ?  Perhaps "``fun x : α =>
-t``" is the abstract definition of all lambda functions?  if so we
-should just say that...
+Lean provides a `fun` (or `λ`) keyword to create a function
+from an expression as follows:
 
 ```lean
 #check fun (x : Nat) => x + 5   -- Nat → Nat
@@ -282,6 +262,19 @@ should just say that...
 #check fun x : Nat => x + 5     -- Nat inferred
 #check λ x : Nat => x + 5       -- Nat inferred
 ```
+
+You can evaluate a lamda function by passing the required parameters:
+
+```lean
+#eval (λ x : Nat => x + 5) 10    -- 15
+```
+
+Creating a function from another expression is a process known as
+*lambda abstraction*. Suppose you have the variable ``x : α`` you can
+construct an expression ``t : β``. Then the expression ``fun (x : α)
+=> t``, or, equivalently, ``λ (x : α) => t``, is an object of type ``α
+→ β``. Think of this as the function from ``α`` to ``β`` which maps
+any value ``x`` to the value ``t``.
 
 Here are some more examples:
 
@@ -312,17 +305,16 @@ constant b : Bool
 #check fun x => g (f x)        -- Nat → Bool
 ```
 
-Think about what these expressions mean. The expression ``fun x : Nat
-=> x`` denotes the identity function on ``Nat``, the expression
-``fun x : Nat => b`` denotes the constant function that always returns ``b``,
-and ``fun x : Nat => g (f x)``, denotes the composition of ``f`` and
-``g``.  You can, in general, leave off the type annotation and let Lean
-infer it for you.  So, for example, you can write
-``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
+Think about what these expressions mean. The expression
+``fun x : Nat => x`` denotes the identity function on ``Nat``, the
+expression ``fun x : Nat => b`` denotes the constant function that
+always returns ``b``, and ``fun x : Nat => g (f x)``, denotes the
+composition of ``f`` and ``g``.  You can, in general, leave off the
+type annotation and let Lean infer it for you.  So, for example, you
+can write ``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
 
 You can pass functions as parameters and by giving them names `f`
-and `g` you can then use those functions in the implementation of
-this function:
+and `g` you can then use those functions in the implementation:
 
 ```lean
 #check fun (g : String → Bool) (f : Nat → String) (x : Nat) => g (f x)
@@ -451,9 +443,6 @@ explicitly.  This clarifies your intention, and Lean will flag an
 error if the right-hand side of the definition does not have a matching
 type.
 
-[chris] I like "The general form of a definition", you should use that
-language when introducing `fun` earlier.
-
 The right hand side `bar` can be any expression, not just a lambda.
 So `def` can also be used to simply name a value like this:
 
@@ -543,21 +532,9 @@ Local Definitions
 -----------------
 
 Lean also allows you to introduce "local" definitions using the
-``let`` construct. The expression ``let a := t1; t2`` is
+``let`` keyword. The expression ``let a := t1; t2`` is
 definitionally equal to the result of replacing every occurrence of
 ``a`` in ``t2`` by ``t1``.
-
-[chris] is `let` a "construct" or a "command", previously, "def", and
-"constant" and all those things were called "commands" so why the new
-terminology "construct" ?  What is a "construct" ?
-
-[chris] this definition is overly complicated, the `; t2` part is not
-necessary to explain `let`.  Just `let a := b` would be sufficient,
-the fact that you can then use `a` in subsequent expressions is just a
-side effect that `let` defines a new named object that can be used in
-subsequent expressions and you can explain semicolon as a way of
-separating the `let` command from subsequent expressions, including
-more `let` commands...
 
 ```lean
 
@@ -598,8 +575,6 @@ expressed as ``(fun a => t2) t1``.  As an exercise, try to understand
 why the definition of ``foo`` below type checks, but the definition of
 ``bar`` does not.
 
-[chris] so is `let` really then just a type of macro?
-
 ```lean
 def foo := let a := Nat; fun x : a => x + 2
 /-
@@ -622,12 +597,6 @@ def doThrice (α : Type) (h : α → α) (x : α) : α :=
 
 Lean provides you with the ``variable`` command to make such
 declarations look more compact:
-
-[chris] yay, finally we get to `variable` but it is not at all what I
-was expecting... seems to be a very subtle difference between
-`constant` and `variable` which is confusing... Also interesting that
-`variable` can define multiple variables `variable (α β γ : Type)` but
-`constant` cannot...
 
 ```lean
 variable (α β γ : Type)
@@ -691,11 +660,6 @@ to name a section, which is to say, you can use an anonymous
 ``section`` / ``end`` pair. If you do name a section, however, you
 have to close it using the same name. Sections can also be nested,
 which allows you to declare new variables incrementally.
-
-[chris] what about indenting lines of a `def` is that also
-unnecessary?  I think more of this syntax info would be handy up
-front.  lean3 has "begin" and "end" on theorems, what is the "block
-delimiter" in "lean 4" ?
 
 # Namespaces
 
@@ -819,10 +783,6 @@ same as a ``section ... end`` block. In particular, if you use the
 namespace. Similarly, if you use an ``open`` command within a
 namespace, its effects disappear when the namespace is closed.
 
-[chris] so why do we need both `namespace` and `section` ?  One can
-obviously get the same effect `section` using `namespace` and `open`,
-so isn't it redundant?
-
 ## What makes dependent type theory dependent?
 
 The short explanation is that types can depend on parameters.  You
@@ -844,8 +804,6 @@ function for lists of type ``α``. In other words, for every ``α``,
 ``cons α`` is the function that takes an element ``a : α`` and a list
 ``as : List α``, and returns a new list, so you have ``cons α a as : list α``.
 
-[chris] this seems like a more correct use of the term *polymorphic*
-
 It is clear that ``cons α`` should have type ``α → List α → List α``.
 But what type should ``cons`` have?  A first guess might be
 ``Type → α → list α → list α``, but, on reflection, this does not make
@@ -855,7 +813,6 @@ words, *assuming* ``α : Type`` is the first argument to the function,
 the type of the next two elements are ``α`` and ``List α``. These
 types vary depending on the first argument, ``α``.
 
-[chris] actually, I'm seeing something different from ``α → List α → List α``:
 ```
 constant α : Type
 #check cons α           -- List Type → List Type
@@ -877,11 +834,6 @@ example, the expression ``β a`` in the previous paragraph),
 depend on ``a``, ``(a : α) → β`` is no different from the type
 ``α → β``.  Indeed, in dependent type theory (and in Lean), ``α → β``
 is just notation for ``(a : α) → β`` when ``β`` does not depend on ``a``.
-
-[chris] these previous 2 paragraphs are complete gobldegook to me, i
-read them 6 times, nothing.  To start with previously I was told ``β :
-α → Type`` is a function from `α` to `Type` now you are telling me
-it's a a family of types over ``α``???
 
 Returning to the example of lists, you can use the command `#check` to
 inspect the type of the following `List` functions.  The ``@`` symbol
@@ -924,62 +876,3 @@ def g (α : Type u) (β : α → Type v) (a : α) (b : β a) : Σ a : α, β a :
 #reduce (g Type (fun α => α) Nat 10).2 -- 10
 ```
 The function `f` and `g` above denote the same function.
-
-[chris] holy cow, lots of new stuff just dumped out here at the last
-minute, from @ (which was not explained) to sigma to the new special
-syntax `⟨a, b⟩`... wow.  Seems this is too condensed and should all be
-expanded on... especially since this last section seems to be addressing
-the main reason for this chapter...
-
-[chris] summary of new terms introduced by this document:
-- Dependent type theory
-- mathematical assertions
-- specifications
-- type universes
-- inductive types
-- Type theory
-- expression
-- natural number
-- objects
-- constant
-- #check
-- #eval
-- #print
-- #reduce
-- block and line comments
-- greek unicode symbols
-- functions
-- defs
-- parameters, returns
-- ordered pairs, cartesian products
-- List
-- type hierarchies
-- currying
-- polymorphism
-- universe variables
-- lambda abstraction
-- fun
-- "abstract over" something
-- dependent products
-- scope
-- bound variables
-- computational reductions
-- substituted variables
-- beta reduction
-- beta equivalent
-- normalization
-- definitionally equal
-- compiler
-- interpreter
-- verifying the correctness of expressions and proofs
-- foreign functions
-- type inference
-- abstracted variables
-- let - local definitions
-- variable
-- section
-- namespace
-- nesting
-- sigma types
-
-That's a lot.
