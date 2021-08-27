@@ -91,10 +91,10 @@ Throughout the text you will find examples of Lean code like the one below:
 
 ```lean
 theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=
-fun hpq : p ∧ q =>
-have hp : p := And.left hpq
-have hq : q := And.right hpq
-show q ∧ p from And.intro hq hp
+  fun hpq : p ∧ q =>
+  have hp : p := And.left hpq
+  have hq : q := And.right hpq
+  show q ∧ p from And.intro hq hp
 ```
 
 If you are reading the book online, you will see a button that reads "try it!" Pressing the button opens up a tab with a
