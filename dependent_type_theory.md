@@ -117,10 +117,12 @@ equivalent to writing ``g m n``. Taking a function ``h`` of type ``Nat
 × Nat → Nat`` and "redefining" it to look like ``g`` is a process
 known as *currying*.
 
-By now you may also have guessed that, in Lean, ``(m, n)`` denotes the
-ordered pair of ``m`` and ``n``, which has the *Cartesian product*
-type ``Nat × Nat``, (assuming ``m`` and ``n`` have type ``Nat``) and
-if ``p`` is a pair, ``p.1`` and ``p.2`` denote the two projections.
+You have seen that if you have ``m : Nat`` and ``n : Nat``, then
+``(m, n)`` denotes the ordered pair of ``m`` and ``n`` which is of
+type ``Nat × Nat``. This gives you a way of creating pairs of natural
+numbers. Conversely, if you have ``p : Nat × Nat``, then you can write
+``p.1 : Nat`` and ``p.2 : Nat``. This gives you a way of extracting
+its two components.
 
 ## Types as objects
 
@@ -251,15 +253,6 @@ constant α : Type _
 
 ## Function Abstraction and Evaluation
 
-You have seen that if you have ``m : Nat`` and ``n : Nat``, then you
-have ``(m, n) : Nat × Nat``. This gives you a way of creating pairs of
-natural numbers. Conversely, if you have ``p : Nat × Nat``, then you
-have ``p.1 : Nat`` and ``p.2 : Nat``. This gives you a way of "using"
-a pair, by extracting its two components.
-
-[chris] this paragraph seems redundant with the one on line 103
-and what does this have to do with functions?
-
 You already know how to "use" a function ``f : α → β``, namely, you
 can apply it to an element ``a : α`` to obtain ``f a : β``. But how do
 you create a function from another expression?
@@ -345,23 +338,18 @@ The last expression, for example, denotes the function that takes
 three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ``
 and ``f : α → β``, and returns the composition of ``g`` and ``f``.
 (Making sense of the type of this function requires an understanding
-of dependent products, which will be explained below.) Within a lambda
-expression ``fun x : α => t``, the variable ``x`` is a "bound
-variable": it is really a placeholder, whose "scope" does not extend
-beyond ``t``. For example, the variable ``b`` in the expression ``fun
-(b : β) (x : α) => b`` has nothing to do with the constant ``b``
-declared earlier.  In fact, the expression denotes the same function
-as ``fun (u : β) (z : α), u``. Formally, the expressions that are the
-same up to a renaming of bound variables are called *alpha
-equivalent*, and are considered "the same." Lean recognizes this
-equivalence.
+of dependent products, which will be explained below.)
 
-[chris] Within a lambda expression ``fun x : α => t``, the variable
-``x`` is a "bound variable": it is really a placeholder, whose "scope"
-does not extend beyond ``t`` --- so it looks like ``fun x : α => t``
-is the abstract form for all lamda expressions, ans so this should be
-moved up to the first introduction of lambda expressions, it is a
-useful definition.
+The general form of a lambda expression is ``fun x : α => t``, where
+the variable ``x`` is a "bound variable": it is really a placeholder,
+whose "scope" does not extend beyond the expression ``t``.  For
+example, the variable ``b`` in the expression ``fun (b : β) (x : α) => b``
+has nothing to do with the constant ``b`` declared earlier.  In fact,
+the expression denotes the same function as ``fun (u : β) (z : α), u``.
+
+Formally, the expressions that are the same up to a renaming of bound
+variables are called *alpha equivalent*, and are considered "the
+same." Lean recognizes this equivalence.
 
 Notice that applying a term ``t : α → β`` to a term ``s : α`` yields
 an expression ``t s : β``. Returning to the previous example and
@@ -385,67 +373,31 @@ In fact, more should be true: applying the expression ``(fun x : Nat
 => x)`` to ``1`` should "return" the value ``1``. And, indeed, it does:
 
 ```lean
-#reduce (fun x : Nat => x) 1     -- 1
-#reduce (fun x : Nat => true) 1  -- true
+#eval (fun x : Nat => x) 1     -- 1
+#eval (fun x : Nat => true) 1  -- true
 
 constant f : Nat → String
 constant g : String → Bool
-
-#reduce
-  (fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)) Nat String Bool g f 0
-  -- g (f 0)
 ```
-
-The command ``#reduce`` tells Lean to evaluate an expression by
-*reducing* it to its normal form, which is to say, carrying out all
-the computational reductions that are sanctioned by its kernel. The
-process of simplifying an expression ``(fun x => t) s`` to ``t[s/x]``
--- that is, ``t`` with ``s`` substituted for the variable ``x`` -- is
-known as *beta reduction*, and two terms that beta reduce to a common
-term are called *beta equivalent*.  But the ``#reduce`` command
-carries out other forms of reduction as well:
-
-[chris] This is really cool.  Lean actually tells you how to simplify
-your programs with guaranteed correctness!
-
-```lean
-constant m : Nat
-constant n : Nat
-constant b : Bool
-
-#reduce (m, n).1        -- m
-#reduce (m, n).2        -- n
-
-#reduce true && false   -- false
-#reduce false && b      -- false
-#reduce b && false      -- Bool.rec false false b
-
-#reduce n + 0           -- n
-#reduce n + 2           -- Nat.succ (Nat.succ n)
-#reduce 2 + 3           -- 5
-```
-
-[chris] why isn't `#reduce b && false` able to reduce to false? when
-`false && b` can?  Really weird...
 
 You will see later how these terms are evaluated. For now, notice that
 this is an important feature of dependent type theory: every term has
-a computational behavior, and supports a notion of reduction, or
-*normalization*. In principle, two terms that reduce to the same value
-are called *definitionally equal*. They are considered "the same" by
-Lean's type checker, and Lean does its best to recognize and support
-these identifications. The `#reduce` command is mainly useful to
-understand why two terms are considered the same.
+a computational behavior, and supports a notion of *normalization*. In
+principle, two terms that reduce to the same value are called
+*definitionally equal*. They are considered "the same" by Lean's type
+checker, and Lean does its best to recognize and support these
+identifications.
 
-Lean is also a programming language. It has a compiler that generates
-a binary executable and an interactive interpreter. You can use the
-command `#eval` to execute expressions, and it is the preferred way of
-testing your functions. Note that `#eval` and `#reduce` are *not*
-equivalent. The command `#eval` first compiles Lean expressions into
-an intermediate representation (IR) and then uses an interpreter to
-execute the generated IR. Some builtin types (e.g., `Nat`, `String`,
-`Array`) have a more efficient representation in the IR. The IR has
-support for using foreign functions that are opaque to Lean.
+Lean is a complete programming language. It has a compiler that
+generates a binary executable and an interactive interpreter. You can
+use the command `#eval` to execute expressions, and it is the
+preferred way of testing your functions. Note that `#eval` and
+`#reduce` are *not* equivalent. The command `#eval` first compiles
+Lean expressions into an intermediate representation (IR) and then
+uses an interpreter to execute the generated IR. Some builtin types
+(e.g., `Nat`, `String`, `Array`) have a more efficient representation
+in the IR. The IR has support for using foreign functions that are
+opaque to Lean.
 
 In contrast, the ``#reduce`` command relies on a reduction engine
 similar to the one used in Lean's trusted kernel, the part of Lean
@@ -622,7 +574,7 @@ You can combine multiple assignments in a single ``let`` statement:
 
 ```lean
 #check   let y := 2 + 2; let z := y + y; z * z   -- Nat
-#reduce  let y := 2 + 2; let z := y + y; z * z   -- 64
+#eval  let y := 2 + 2; let z := y + y; z * z     -- 64
 ```
 
 The ``;`` can be omitted when a line break is used.
