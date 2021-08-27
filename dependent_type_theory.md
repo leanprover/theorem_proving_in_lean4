@@ -584,34 +584,11 @@ so long as they each take one parameter, and so long as the type of
 output of the second matches the input of the first.  For example:
 
 ```lean
-def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
-  g (f x)
+def square (x : Nat) : Nat :=
+  x * x
 
-
-def stringify (x : Nat) : String :=
-  toString x
-
-def intify (x : Bool) : Nat :=
-   if (x = true) then 1
-   else 0
-
-#eval compose stringify intify true
+#eval compose Nat Nat Nat double square 3  -- 18
 ```
-
-[chris] why doesn't this work?  I get this error.  Perhaps I greatly
-misunderstood what `(α β γ : Type)` means...?
-
-```
-application type mismatch
-  compose stringify
-argument
-  stringify
-has type
-  Nat → String : Type
-but is expected to have type
-  Type : Type 1
-```
-
 
 Local Definitions
 -----------------
