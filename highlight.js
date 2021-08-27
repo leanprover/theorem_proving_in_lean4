@@ -1107,7 +1107,7 @@ hljs.registerLanguage("lean", function(hljs) {
     $pattern: /#?\w+/,
     keyword:
       'theorem|10 def class structure instance set_option ' +
-      'example inductive coinductive ' +
+      'example inductive coinductive attribute ' +
       'axiom constant ' +
       'partial unsafe private protected ' +
       'if then else ' +

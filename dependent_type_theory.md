@@ -588,7 +588,7 @@ def foo := let a := Nat; fun x : a => x + 2
   def bar := (fun a => fun x : a => x + 2) Nat
 -/
 ```
-# Variables and Sections
+# <a name="_variables_and_sections"></a>Variables and Sections
 
 Consider the following three function definitions:
 ```lean
@@ -668,7 +668,7 @@ to name a section, which is to say, you can use an anonymous
 have to close it using the same name. Sections can also be nested,
 which allows you to declare new variables incrementally.
 
-# Namespaces
+# <a name="_namespaces"></a>Namespaces
 
 Lean provides you with the ability to group definitions into nested,
 hierarchical *namespaces*:
