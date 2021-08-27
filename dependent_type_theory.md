@@ -490,12 +490,10 @@ def double (x : Nat) : Nat :=
 #print double
 #check double 3
 #reduce double 3  -- 6
-
 ```
 
 Let's define a function that computes the square of any natural number:
-```
-
+```lean
 def square (x : Nat) :=
   x * x
 
@@ -509,7 +507,8 @@ Let's define a function that invokes a given function twice passing
 the output of the first invocation to the second:
 
 ```lean
-
+# def double (x : Nat) : Nat :=
+#  x + x
 def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
   f (f x)
 
