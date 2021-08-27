@@ -1130,11 +1130,11 @@ hljs.registerLanguage("lean", function(hljs) {
       'induction rename assumption revert generalize specialize clear ' +
       'contradiction by_contradiction by_contra trivial exfalso ' +
       'symmetry transitivity destruct constructor econstructor ' +
-      'left right split injection injections exists ' +
-      'repeat skip swap solve1 abstract all_goals any_goals done ' +
+      'split injection injections exists admit ' +
+      'repeat skip swap solve1 abstract allGoals anyGoals done ' +
       'fail_if_success success_if_fail guard_target guard_hyp ' +
-      'have replace at suffices show from ' +
-      'congr congr_n congr_arg norm_num ring ',
+      'have replace at suffices show from first ' +
+      'congr congr_n congrArg norm_num ring ',
     literal:
       'true false',
     meta:
