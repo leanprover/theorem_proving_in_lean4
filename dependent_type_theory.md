@@ -276,7 +276,7 @@ construct an expression ``t : β``. Then the expression ``fun (x : α)
 → β``. Think of this as the function from ``α`` to ``β`` which maps
 any value ``x`` to the value ``t``.
 
-Here are some more examples:
+Here are some more examples
 
 ```lean
 constant f : Nat → Nat
@@ -552,8 +552,8 @@ Here, ``twice_double`` is definitionally equal to the term ``(x + x) * (x + x)``
 You can combine multiple assignments in a single ``let`` statement:
 
 ```lean
-#check   let y := 2 + 2; let z := y + y; z * z   -- Nat
-#eval  let y := 2 + 2; let z := y + y; z * z     -- 64
+#check let y := 2 + 2; let z := y + y; z * z   -- Nat
+#eval  let y := 2 + 2; let z := y + y; z * z   -- 64
 ```
 
 The ``;`` can be omitted when a line break is used.
