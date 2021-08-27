@@ -415,6 +415,8 @@ result of the call is `x + x`, so it is returning type `Nat`. You
 can then invoke this function using:
 
 ```lean
+# def double (x : Nat) : Nat :=
+#  x + x
 #eval double 3    -- 6
 ```
 
@@ -463,6 +465,8 @@ def add (x y : Nat) :=
 The parameter list can be separated like this:
 
 ```lean
+# def double (x : Nat) : Nat :=
+#  x + x
 def add (x : Nat) (y : Nat) :=
   x + y
 
@@ -487,6 +491,8 @@ The following calls a given function twice passing the output of the
 first invocation to the second:
 
 ```lean
+# def double (x : Nat) : Nat :=
+#  x + x
 def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
   f (f x)
 
@@ -520,6 +526,10 @@ so long as they each take one parameter, and so long as the type of
 output of the second matches the input of the first.  For example:
 
 ```lean
+# def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
+#  g (f x)
+# def double (x : Nat) : Nat :=
+#  x + x
 def square (x : Nat) : Nat :=
   x * x
 
@@ -535,7 +545,6 @@ definitionally equal to the result of replacing every occurrence of
 ``a`` in ``t2`` by ``t1``.
 
 ```lean
-
 #check let y := 2 + 2; y * y   -- Nat
 #eval  let y := 2 + 2; y * y   -- 16
 
