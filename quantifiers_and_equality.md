@@ -57,9 +57,7 @@ depend on ``x``.
 Here is an example of how the propositions-as-types correspondence gets put into practice.
 
 ```lean
-variable (α : Type) (p q : α → Prop)
-
-example : (∀ x : α, p x ∧ q x) → ∀ y : α, p y  :=
+example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ y : α, p y  :=
   fun h : ∀ x : α, p x ∧ q x =>
   fun y : α =>
   show p y from (h y).left
@@ -81,9 +79,7 @@ conclusion, and instantiated it by a different variable, ``z``, in the
 proof:
 
 ```lean
-variable (α : Type) (p q : α → Prop)
-
-example : (∀ x : α, p x ∧ q x) → ∀ x : α, p x  :=
+example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ x : α, p x  :=
   fun h : ∀ x : α, p x ∧ q x =>
   fun z : α =>
   show p z from And.left (h z)

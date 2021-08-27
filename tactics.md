@@ -267,8 +267,7 @@ form ``fun x => e``).  As the lambda abstraction notation, the
 ``intro`` tactic allows us to use an implicit ``match``.
 
 ```lean
-variable (α : Type) (p q : α → Prop)
-example : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
+example (α : Type) (p q : α → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
   intro ⟨w, hpw, hqw⟩
   exact ⟨w, hqw, hpw⟩
 ```
@@ -276,8 +275,7 @@ example : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
 You can also provide multiple alternatives like in the ``match`` expression.
 
 ```lean
-variable (α : Type) (p q : α → Prop)
-example : (∃ x, p x ∨ q x) → ∃ x, q x ∨ p x := by
+example (α : Type) (p q : α → Prop) : (∃ x, p x ∨ q x) → ∃ x, q x ∨ p x := by
   intro
     | ⟨w, Or.inl h⟩ => exact ⟨w, Or.inr h⟩
     | ⟨w, Or.inr h⟩ => exact ⟨w, Or.inl h⟩
@@ -292,9 +290,7 @@ the current goal, and if there is one matching the conclusion, it
 applies it.
 
 ```lean
-variable (x y z w : Nat)
-
-example (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
+example (x y z w : Nat) (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
   apply Eq.trans h₁
   apply Eq.trans h₂
   assumption   -- applied h₃
@@ -303,8 +299,7 @@ example (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
 It will unify metavariables in the conclusion if necessary:
 
 ```lean
-# variable (x y z w : Nat)
-example (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
+example (x y z w : Nat) (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
   apply Eq.trans
   assumption      -- solves x = ?b with h₁
   apply Eq.trans
@@ -848,7 +843,7 @@ example : ∃ x, x + 2 = 8 := by
 As with ``have``, you can leave the type implicit by writing ``let a
 := 3 * 2``. The difference between ``let`` and ``have`` is that
 ``let`` introduces a local definition in the context, so that the
-definition of the local constant can be unfolded in the proof.
+definition of the local declaration can be unfolded in the proof.
 
 We have used ``.`` to create nested tactic blocks.  In a nested block,
 Lean focuses on the first goal, and generates an error if it has not
@@ -1048,9 +1043,7 @@ asserting a concrete or general equation. In the following example, we
 use this basic form to rewrite the goal using a hypothesis.
 
 ```lean
-variable (f : Nat → Nat) (k : Nat)
-
-example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
   rw [h₂] -- replace k with 0
   rw [h₁] -- replace f 0 with 0
 ```
@@ -1073,9 +1066,7 @@ Multiple rewrites can be combined using the notation ``rw [t_1, ..., t_n]``,
 which is just shorthand for ``rw t_1; ...; rw t_n``. The previous example can be written as follows:
 
 ```lean
-variable (f : Nat → Nat) (k : Nat)
-
-example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
   rw [h₂, h₁]
 ```
 
@@ -1085,9 +1076,7 @@ right-hand side. The notation ``←t`` can be used to instruct the
 tactic to use the equality ``t`` in the reverse direction.
 
 ```lean
-variable (f : Nat → Nat) (a b : Nat)
-
-example (h₁ : a = b) (h₂ : f a = 0) : f b = 0 := by
+example (f : Nat → Nat) (a b : Nat) (h₁ : a = b) (h₂ : f a = 0) : f b = 0 := by
   rw [←h₁, h₂]
 ```
 
@@ -1127,9 +1116,7 @@ By default, the ``rewrite`` tactic affects only the goal. The notation
 ``rw [t] at h`` applies the rewrite ``t`` at hypothesis ``h``.
 
 ```lean
-variable (f : Nat → Nat) (a : Nat)
-
-example (h : a + 0 = 0) : f a = f 0 := by
+example (f : Nat → Nat) (a : Nat) (h : a + 0 = 0) : f a = f 0 := by
   rw [Nat.add_zero] at h
   rw [h]
 ```
@@ -1144,9 +1131,7 @@ In the following example, we use ``rw [h] at t`` to rewrite the hypothesis ``t :
 def Tuple (α : Type) (n : Nat) :=
   { as : List α // as.length = n }
 
-variable {α : Type} {n : Nat}
-
-example (h : n = 0) (t : Tuple α n) : Tuple α 0 := by
+example (n : Nat) (h : n = 0) (t : Tuple α n) : Tuple α 0 := by
   rw [h] at t
   exact t
 ```
@@ -1161,13 +1146,12 @@ number of identities in Lean's library have been tagged with the
 rewrite subterms in an expression.
 
 ```lean
-variable (x y z : Nat) (p : Nat → Prop)
-variable  (h : p (x * y))
-
-example : (x + 0) * (0 + y * 1 + z * 0) = x * y := by
+example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
+        : (x + 0) * (0 + y * 1 + z * 0) = x * y := by
   simp
 
-example : p ((x + 0) * (0 + y * 1 + z * 0)) := by
+example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
+        : p ((x + 0) * (0 + y * 1 + z * 0)) := by
   simp; assumption
 ```
 
@@ -1194,24 +1178,23 @@ example (xs ys : List α)
 As with ``rw``, you can use the keyword ``at`` to simplify a hypothesis:
 
 ```lean
-variable (x y z : Nat) (p : Nat → Prop)
-
-example (h : p ((x + 0) * (0 + y * 1 + z * 0))) : p (x * y) := by
+example (x y z : Nat) (p : Nat → Prop)
+        (h : p ((x + 0) * (0 + y * 1 + z * 0))) : p (x * y) := by
   simp at h; assumption
 ```
 
 Moreover, you can use a "wildcard" asterisk to simplify all the hypotheses and the goal:
 
 ```lean
-variable (w x y z : Nat) (p : Nat → Prop)
-
 attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
 attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
 
-example (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) := by
+example (w x y z : Nat) (p : Nat → Prop)
+        (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) := by
   simp at *; assumption
 
-example (h₁ : p (1 * x + y)) (h₂ : p  (x * z * 1))
+example (x y z : Nat) (p : Nat → Prop)
+        (h₁ : p (1 * x + y)) (h₂ : p  (x * z * 1))
         : p (y + 0 + x) ∧ p (z * x) := by
   simp at * <;> constructor <;> assumption
 ```
@@ -1236,13 +1219,14 @@ associativity and commutativity are then rewritten to the same
 canonical form.
 
 ```lean
-# variable (w x y z : Nat) (p : Nat → Prop)
 # attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
 # attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
-example : x * y + z * w  * x = x * w * z + y * x := by
+example (w x y z : Nat) (p : Nat → Prop)
+        : x * y + z * w  * x = x * w * z + y * x := by
   simp
 
-example (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) := by
+example (w x y z : Nat) (p : Nat → Prop)
+        (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) := by
   simp; simp at h; assumption
 ```
 
@@ -1265,9 +1249,7 @@ A common idiom is to simplify a goal using local hypotheses:
 
 
 ```lean
-variable (f : Nat → Nat) (k : Nat)
-
-example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
   simp [h₁, h₂]
 ```
 
@@ -1275,8 +1257,7 @@ To use all the hypotheses present in the local context when
 simplifying, we can use the wildcard symbol, ``*``:
 
 ```lean
-# variable (f : Nat → Nat) (k : Nat)
-example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
   simp [*]
 ```
 
@@ -1294,24 +1275,21 @@ q`` to ``true``, which it then proves trivially. Iterating such
 rewrites produces nontrivial propositional reasoning.
 
 ```lean
-variable (p q r : Prop)
-
-example (hp : p) : p ∧ q ↔ q := by
+example (p q : Prop) (hp : p) : p ∧ q ↔ q := by
   simp [*]
 
-example (hp : p) : p ∨ q := by
+example (p q : Prop) (hp : p) : p ∨ q := by
   simp [*]
 
-example (hp : p) (hq : q) : p ∧ (q ∨ r) := by
+example (p q r : Prop) (hp : p) (hq : q) : p ∧ (q ∨ r) := by
   simp [*]
 ```
 
 The next example simplifies all the hypotheses, and then uses them to prove the goal.
 
 ```lean
-variable (u w x x' y y' z : Nat) (p : Nat → Prop)
-
-example (h₁ : x + 0 = x') (h₂ : y + 0 = y')
+example (u w x x' y y' z : Nat) (p : Nat → Prop)
+        (h₁ : x + 0 = x') (h₂ : y + 0 = y')
         : x + y + 0 = x' + y' := by
   simp at *
   simp [*]

@@ -903,10 +903,8 @@ list above.
 ```lean
 open Classical
 
-variable (p q r : Prop)
-
 -- distributivity
-example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
   Iff.intro
     (fun h : p ∧ (q ∨ r) =>
       have hp : p := h.left
@@ -927,7 +925,7 @@ example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
           show p ∧ (q ∨ r) from ⟨hp, Or.inr hr⟩))
 
 -- an example that requires classical reasoning
-example : ¬(p ∧ ¬q) → (p → q) :=
+example (p q : Prop) : ¬(p ∧ ¬q) → (p → q) :=
   fun h : ¬(p ∧ ¬q) =>
   fun hp : p =>
   show q from
