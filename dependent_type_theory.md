@@ -257,7 +257,8 @@ natural numbers. Conversely, if you have ``p : Nat × Nat``, then you
 have ``p.1 : Nat`` and ``p.2 : Nat``. This gives you a way of "using"
 a pair, by extracting its two components.
 
-[chris] this paragraph seems redundant with the one on line 103.
+[chris] this paragraph seems redundant with the one on line 103
+and what does this have to do with functions?
 
 You already know how to "use" a function ``f : α → β``, namely, you
 can apply it to an element ``a : α`` to obtain ``f a : β``. But how do
@@ -280,7 +281,7 @@ synthesize instance Inhabited β"
 any of this, so why talk about `fun` so abstractly before diving into
 concrete examples, it doesn't help me... ?  Perhaps "``fun x : α =>
 t``" is the abstract definition of all lambda functions?  if so we
-should say that...
+should just say that...
 
 ```lean
 #check fun (x : Nat) => x + 5   -- Nat → Nat
@@ -322,26 +323,20 @@ Think about what these expressions mean. The expression ``fun x : Nat
 => x`` denotes the identity function on ``Nat``, the expression
 ``fun x : Nat => b`` denotes the constant function that always returns ``b``,
 and ``fun x : Nat => g (f x)``, denotes the composition of ``f`` and
-``g``.  You can, in general, leave off the type annotation on a
-variable and let Lean infer it for you.  So, for example, you can write
+``g``.  You can, in general, leave off the type annotation and let Lean
+infer it for you.  So, for example, you can write
 ``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
 
-You can abstract over the constants `f` and `g` in the previous
-definitions:
+You can pass functions as parameters and by giving them names `f`
+and `g` you can then use those functions in the implementation of
+this function:
 
 ```lean
 #check fun (g : String → Bool) (f : Nat → String) (x : Nat) => g (f x)
 -- (String → Bool) → (Nat → String) → Nat → Bool
 ```
 
-[chris] new term "abstract over" - what does that mean?  I would
-explain this as "you can define types inline without using
-`constant`".
-
-You can also abstract over types:
-
-[chris] you can define new types inline, including more than one
-symbol at a time:
+You can also pass types as parameters:
 
 ```lean
 #check fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)
@@ -568,7 +563,7 @@ def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
 This means `compose` is a function that takes any 2 functions as input
 arguments, so long as those functions each take only one input.
 The type algebra `β → γ` and `α → β` means that it is a requirement
-that the Type of the output of the second function must match the
+that the type of the output of the second function must match the
 type of the input to the first function - which makes sense, otherwise
 the two functions would not be composable.
 
@@ -578,7 +573,7 @@ passes the result of that function (which is type `β`) as input to the
 first function (locally named `g`).  The first function returns a type
 `γ` so that is also the return type of the `compose` function.
 
-`compose` is also very general in that it works over any Type
+`compose` is also very general in that it works over any type
 `α β γ`.  This means `compose` can compose just about any 2 functions
 so long as they each take one parameter, and so long as the type of
 output of the second matches the input of the first.  For example:
