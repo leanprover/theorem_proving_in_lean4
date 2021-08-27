@@ -461,46 +461,9 @@ that there are some other differences between the two commands.
 
 ## Introducing Definitions
 
-The ``def`` command provides one important way of defining new objects.
+The ``def`` keyword provides one important way of declaring new named
+objects.
 
-[chris] other languages use the terminology "statement" instead of
-"command"...
-
-```lean
-def foo : (Nat → Nat) → Nat :=
-  fun f => f 0
-
-#check foo   -- (Nat → Nat) → Nat
-#print foo
-```
-
-[chris] This defines an object named `foo` that evaluates to a
-function f...??? This seems like a really complex example to start
-with, I like "def double" below a lot better...
-
-You can omit the type when Lean has enough information to infer it:
-
-```lean
-def foo :=
-  fun (f : Nat → Nat) => f 0
-```
-
-The general form of a definition is ``def foo : α := bar``. Lean can
-usually infer the type ``α``, but it is often a good idea to write it
-explicitly.  This clarifies your intention, and Lean will flag an
-error if the right-hand side of the definition does not have the right
-type.
-
-[chris] I like "The general form of a definition", you should use that
-language when introducing `fun` earlier.
-
-[chris] but what is "bar", and what does the "def" command do exactly?
-I believe it's setting up some sort of function that you can call with
-parameters, and it executes statements inside the def block or
-something... so it is a lambda with a name.
-
-Lean also allows you to use an alternative format that puts the
-abstracted variables before the colon and omits the lambda:
 ```lean
 def double (x : Nat) : Nat :=
   x + x
@@ -509,31 +472,83 @@ def double (x : Nat) : Nat :=
 This might look more familiar to you if you know how functions work in
 other programming languages. The name `double` is defined as a
 function that takes an input parameter `x` of type `Nat`, where the
-result of the call is `x + x`, so it is returning type `Nat` also. You
+result of the call is `x + x`, so it is returning type `Nat`. You
 can then invoke this function using:
 
 ```lean
 #eval double 3    -- 6
-
-#print double
-#check double 3   -- Nat
-#reduce double 3  -- 6
 ```
 
-Let's define a function that adds two natural numbers:
+In this case you can think of `def` as a kind of named `lambda`.
+The following yields the same result:
+
 ```lean
-def add (x y : Nat) : Nat :=
+def double : Nat → Nat :=
+  fun x => x + x
+
+#eval double 3    -- 6
+```
+
+You can omit the type declarations when Lean has enough information to
+infer it.  Type inference is an important part of Lean:
+
+```lean
+def double :=
+  fun (x : Nat) => x + x
+```
+
+The general form of a definition is ``def foo : α := bar`` where
+``α`` is the type returned from the expression ``bar``.  Lean can
+usually infer the type ``α``, but it is often a good idea to write it
+explicitly.  This clarifies your intention, and Lean will flag an
+error if the right-hand side of the definition does not have a matching
+type.
+
+[chris] I like "The general form of a definition", you should use that
+language when introducing `fun` earlier.
+
+The right hand side `bar` can be any expression, not just a lambda.
+So `def` can also be used to simply name a value like this:
+
+```lean
+def pi := 3.141592654
+```
+
+`def` can take multiple input parameters.  Let's create one
+that adds two natural numbers:
+
+```lean
+def add (x y : Nat) :=
   x + y
 
 #eval add 3 2               -- 5
-#eval add (double 3) (7+9)  -- 22
-#print add
-#check add 3 3              -- Nat
-#reduce add 3 3             -- 6
 ```
 
-Let's define a function that invokes a given function twice passing
-the output of the first invocation to the second:
+The parameter list can be separated like this:
+
+```lean
+def add (x : Nat) (y : Nat) :=
+  x + y
+
+#eval add (double 3) (7 + 9)  -- 22
+```
+
+Notice here we called the `double` function to create the first
+parameter to `add`.
+
+You can use other more interesting expressions inside a `def`:
+
+```lean
+def greater (x y : Nat) :=
+  if x > y then x
+  else y
+```
+
+You can probably guess what this one will do.
+
+You can also define a function that takes another function as input.
+The following calls a given function twice passing the output of the
+first invocation to the second:
 
 ```lean
 def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
@@ -542,21 +557,8 @@ def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
 #eval doTwice double 2   -- 8
 ```
 
-These definitions are equivalent to the following, which shows
-how `def` is really built on lambdas:
-
-```lean
-def double : Nat → Nat :=
-  fun x => x + x
-
-def add : Nat → Nat → Nat :=
-  fun x y => x + y
-
-def doTwice : (Nat → Nat) → Nat → Nat :=
-  fun f x => f (f x)
-```
-
-You can also specify arguments that are types:
+Now to get a bit more abstract, you can also specify arguments that
+are like type parameters:
 
 ```lean
 def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
@@ -564,13 +566,19 @@ def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
 ```
 
 This means `compose` is a function that takes any 2 functions as input
-arguments, so long as those functions match the types `β → γ` and
-`α → β` respectively.  It also takes a 3rd argument of type `α` which
+arguments, so long as those functions each take only one input.
+The type algebra `β → γ` and `α → β` means that it is a requirement
+that the Type of the output of the second function must match the
+type of the input to the first function - which makes sense, otherwise
+the two functions would not be composable.
+
+`compose` also takes a 3rd argument of type `α` which
 it uses to invoke the second function (locally named `f`) and it
 passes the result of that function (which is type `β`) as input to the
 first function (locally named `g`).  The first function returns a type
 `γ` so that is also the return type of the `compose` function.
-`compose` is also very abstract in that it works over any Type
+
+`compose` is also very general in that it works over any Type
 `α β γ`.  This means `compose` can compose just about any 2 functions
 so long as they each take one parameter, and so long as the type of
 output of the second matches the input of the first.  For example:
