@@ -546,6 +546,8 @@ The following calls a given function twice passing the output of the
 first invocation to the second:
 
 ```lean
+# def double (x : Nat) : Nat :=
+#  x + x
 def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
   f (f x)
 
