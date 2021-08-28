@@ -4,4 +4,5 @@
 - [Quantifiers and Equality](./quantifiers_and_equality.md)
 - [Tactics](./tactics.md)
 - [Interacting with Lean](./interacting_with_lean.md)
+- [Inductive Types](./inductive_types.md)
 - [Building This Manual](./mdbook.md)
