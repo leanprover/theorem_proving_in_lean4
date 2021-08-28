@@ -151,6 +151,52 @@ def numberOfDay (d : Weekday) : Nat :=
 #eval numberOfDay Weekday.tuesday -- 3
 ```
 
+Note that the `match` expression is compiled using the *recursor* `Weekday.rec` generated when
+you declare the inductive type.
+
+```lean
+# inductive Weekday where
+#  | sunday : Weekday
+#  | monday : Weekday
+#  | tuesday : Weekday
+#  | wednesday : Weekday
+#  | thursday : Weekday
+#  | friday : Weekday
+#  | saturday : Weekday
+open Weekday
+
+def numberOfDay (d : Weekday) : Nat :=
+  match d with
+  | sunday    => 1
+  | monday    => 2
+  | tuesday   => 3
+  | wednesday => 4
+  | thursday  => 5
+  | friday    => 6
+  | saturday  => 7
+
+set_option pp.all true
+#print numberOfDay
+-- ... numberOfDay.match_1
+#print numberOfDay.match_1
+-- ... Weekday.casesOn ...
+#print Weekday.casesOn
+-- ... Weekday.rec ...
+#check @Weekday.rec
+/-
+@Weekday.rec.{u}
+ : {motive : Weekday → Sort u} →
+    motive Weekday.sunday →
+    motive Weekday.monday →
+    motive Weekday.tuesday →
+    motive Weekday.wednesday →
+    motive Weekday.thursday →
+    motive Weekday.friday →
+    motive Weekday.saturday →
+    (t : Weekday) → motive t
+-/
+```
+
 When declaring an inductive datatype, you can use `deriving Repr` to instruct
 Lean to generate a fuction that converts `Weekday` objects into text.
 This function is used by the `#eval` command to display `Weekday` objects.
@@ -334,7 +380,7 @@ binary operation like ``and`` using `match`:
 def and (a b : Bool) : Bool :=
   match a with
   | true  => b
-  | fales => false
+  | false => false
 # end Hidden
 ```
 
@@ -343,253 +389,303 @@ Similarly, most identities can be proved by introducing suitable `match`, and th
 Constructors with Arguments
 ---------------------------
 
-Enumerated types are a very special case of inductive types, in which the constructors take no arguments at all. In general, a "construction" can depend on data, which is then represented in the constructed argument. Consider the definitions of the product type and sum type in the library:
+Enumerated types are a very special case of inductive types, in which
+the constructors take no arguments at all. In general, a
+"construction" can depend on data, which is then represented in the
+constructed argument. Consider the definitions of the product type and
+sum type in the library:
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+inductive Prod (α : Type u) (β : Type v)
+  | mk : α → β → Prod α β
 
-    namespace hidden
+inductive Sum (α : Type u) (β : Type v) where
+  | inl : α → Sum α β
+  | inr : β → Sum α β
+# end Hidden
+```
 
-    -- BEGIN
-    universes u v
+Notice that we do not include the types ``α`` and ``β`` in the target
+of the constructors. In the meanwhile, think about what is going on in
+these examples. The product type has one constructor, ``Prod.mk``,
+which takes two arguments. To define a function on ``Prod α β``, we
+can assume the input is of the form ``Prod.mk a b``, and we have to
+specify the output, in terms of ``a`` and ``b``. We can use this to
+define the two projections for prod. Remember that the standard
+library defines notation ``α × β`` for ``Prod α β`` and ``(a, b)`` for
+``Prod.mk a b``.
 
-    inductive prod (α : Type u) (β : Type v)
-    | mk : α → β → prod
+```lean
+# namespace Hidden
+# inductive Prod (α : Type u) (β : Type v)
+#   | mk : α → β → Prod α β
+def fst {α : Type u} {β : Type v} (p : Prod α β) : α :=
+  match p with
+  | Prod.mk a b => a
 
-    inductive sum (α : Type u) (β : Type v)
-    | inl : α → sum
-    | inr : β → sum
-    -- END
+def snd {α : Type u} {β : Type v} (p : Prod α β) : β :=
+  match p with
+  | Prod.mk a b => b
+# end Hidden
+```
 
-    end hidden
+The function ``fst`` takes a pair, ``p``. The `match` interprets
+``p`` as a pair, ``Prod.mk a b``. Recall also from :numref:`dependent_types` that
+to give these definitions the greatest generality possible, we allow
+the types ``α`` and ``β`` to belong to any universe.
 
-Notice that we do not include the types ``α`` and ``β`` in the target of the constructors. In the meanwhile, think about what is going on in these examples. The product type has one constructor, ``prod.mk``, which takes two arguments. To define a function on ``prod α β``, we can assume the input is of the form ``prod.mk a b``, and we have to specify the output, in terms of ``a`` and ``b``. We can use this to define the two projections for prod. Remember that the standard library defines notation ``α × β`` for ``prod α β`` and ``(a, b)`` for ``prod.mk a b``.
 
-.. code-block:: lean
+Here is another example where we use the recursor `Prod.casesOn` instead
+of `match`.
 
-    universes u v
+```lean
+def prod_example (p : Bool × Nat) : Nat :=
+  Prod.casesOn (motive := fun _ => Nat) p (fun b n => cond b (2 * n) (2 * n + 1))
 
-    -- BEGIN
-    def fst {α : Type u} {β : Type v} (p : α × β) : α :=
-    prod.rec_on p (λ a b, a)
+#eval prod_example (true, 3)
+#eval prod_example (false, 3)
+```
 
-    def snd {α : Type u} {β : Type v} (p : α × β) : β :=
-    prod.rec_on p (λ a b, b)
-    -- END
+The argument `motive` is used to specify the type of the object you want to
+construct, and it is a function because it may depend on the pair.
+The ``cond`` function is a boolean conditional: ``cond b t1 t2``
+returns ``t1`` if ``b`` is true, and ``t2`` otherwise.
+The function ``prod_example`` takes a pair consisting of a boolean,
+``b``, and a number, ``n``, and returns either ``2 * n`` or ``2 * n + 1``
+according to whether ``b`` is true or false.
 
-The function ``fst`` takes a pair, ``p``. Applying the recursor ``prod.rec_on p (λ a b, a)`` interprets ``p`` as a pair, ``prod.mk a b``, and then uses the second argument to determine what to do with ``a`` and ``b``. Remember that you can enter the symbol for a product by typing ``\times``. Recall also from :numref:`dependent_types` that to give these definitions the greatest generality possible, we allow the types ``α`` and ``β`` to belong to any universe.
+In contrast, the sum type has *two* constructors, ``inl`` and ``inr``
+(for "insert left" and "insert right"), each of which takes *one*
+(explicit) argument. To define a function on ``sum α β``, we have to
+handle two cases: either the input is of the form ``inl a``, in which
+case we have to specify an output value in terms of ``a``, or the
+input is of the form ``inr b``, in which case we have to specify an
+output value in terms of ``b``.
 
-Here is another example:
+```lean
+def sum_example (s : Sum Nat Nat) : Nat :=
+Sum.casesOn (motive := fun _ => Nat) s
+   (fun n => 2 * n)
+   (fun n => 2 * n + 1)
 
-.. code-block:: lean
+#eval sum_example (Sum.inl 3)
+#eval sum_example (Sum.inr 3)
+```
 
-    def prod_example (p : bool × ℕ) : ℕ :=
-    prod.rec_on p (λ b n, cond b (2 * n) (2 * n + 1))
+This example is similar to the previous one, but now an input to
+``sum_example`` is implicitly either of the form ``inl n`` or ``inr n``.
+In the first case, the function returns ``2 * n``, and the second
+case, it returns ``2 * n + 1``.
 
-    #reduce prod_example (tt, 3)
-    #reduce prod_example (ff, 3)
+Notice that the product type depends on parameters ``α β : Type``
+which are arguments to the constructors as well as ``Prod``. Lean
+detects when these arguments can be inferred from later arguments to a
+constructor or the return type, and makes them implicit in that case.
 
-The ``cond`` function is a boolean conditional: ``cond b t1 t2`` returns ``t1`` if ``b`` is true, and ``t2`` otherwise. (It has the same effect as ``bool.rec_on b t2 t1``.) The function ``prod_example`` takes a pair consisting of a boolean, ``b``, and a number, ``n``, and returns either ``2 * n`` or ``2 * n + 1`` according to whether ``b`` is true or false.
+In the section after next we will see what happens when the
+constructor of an inductive type takes arguments from the inductive
+type itself. What characterizes the examples we consider in this
+section is that this is not the case: each constructor relies only on
+previously specified types.
 
-In contrast, the sum type has *two* constructors, ``inl`` and ``inr`` (for "insert left" and "insert right"), each of which takes *one* (explicit) argument. To define a function on ``sum α β``, we have to handle two cases: either the input is of the form ``inl a``, in which case we have to specify an output value in terms of ``a``, or the input is of the form ``inr b``, in which case we have to specify an output value in terms of ``b``.
+Notice that a type with multiple constructors is disjunctive: an
+element of ``Sum α β`` is either of the form ``inl a`` *or* of the
+form ``inl b``. A constructor with multiple arguments introduces
+conjunctive information: from an element ``Prod.mk a b`` of
+``Prod α β`` we can extract ``a`` *and* ``b``. An arbitrary inductive type can
+include both features, by having any number of constructors, each of
+which takes any number of arguments.
 
-.. code-block:: lean
+As with function definitions, Lean's inductive definition syntax will
+let you put named arguments to the constructors before the colon:
 
-    -- BEGIN
-    def sum_example (s : ℕ ⊕ ℕ) : ℕ :=
-    sum.cases_on s (λ n, 2 * n) (λ n, 2 * n + 1)
+```lean
+# namespace Hidden
+inductive Prod (α : Type u) (β : Type v) where
+  | mk (fst : α) (snd : β) : Prod α β
 
-    #reduce sum_example (sum.inl 3)
-    #reduce sum_example (sum.inr 3)
-    -- END
+inductive Sum (α : Type u) (β : Type v) where
+  | inl (a : α) : Sum α β
+  | inr (b : β) : Sum α β
+# end Hidden
+```
 
-This example is similar to the previous one, but now an input to ``sum_example`` is implicitly either of the form ``inl n`` or ``inr n``. In the first case, the function returns ``2 * n``, and the second case, it returns ``2 * n + 1``. You can enter the symbol for the sum by typing ``\oplus``.
+The results of these definitions are essentially the same as the ones given earlier in this section.
 
-Notice that the product type depends on parameters ``α β : Type`` which are arguments to the constructors as well as ``prod``. Lean detects when these arguments can be inferred from later arguments to a constructor or the return type, and makes them implicit in that case.
+A type, like ``Prod``, that has only one constructor is purely
+conjunctive: the constructor simply packs the list of arguments into a
+single piece of data, essentially a tuple where the type of subsequent
+arguments can depend on the type of the initial argument. We can also
+think of such a type as a "record" or a "structure". In Lean, the
+keyword ``structure`` can be used to define such an inductive type as
+well as its projections, at the same time.
 
-In the section after next we will see what happens when the constructor of an inductive type takes arguments from the inductive type itself. What characterizes the examples we consider in this section is that this is not the case: each constructor relies only on previously specified types.
+```lean
+# namespace Hidden
+structure Prod (α : Type u) (β : Type v) where
+  mk :: (fst : α) (snd : β)
+# end Hidden
+```
 
-Notice that a type with multiple constructors is disjunctive: an element of ``sum α β`` is either of the form ``inl a`` *or* of the form ``inl b``. A constructor with multiple arguments introduces conjunctive information: from an element ``prod.mk a b`` of ``prod α β`` we can extract ``a`` *and* ``b``. An arbitrary inductive type can include both features, by having any number of constructors, each of which takes any number of arguments.
+This example simultaneously introduces the inductive type, ``prod``,
+its constructor, ``mk``, the usual eliminators (``rec`` and
+``recOn``), as well as the projections, ``fst`` and ``snd``, as
+defined above.
 
-As with function definitions, Lean's inductive definition syntax will let you put named arguments to the constructors before the colon:
+If you do not name the constructor, Lean uses ``mk`` as a default. For
+example, the following defines a record to store a color as a triple
+of RGB values:
 
-.. code-block:: lean
+```lean
+structure Color where
+  (red : Nat) (green : Nat) (blue : Nat)
+  deriving Repr
 
-    namespace hidden
+def yellow := Color.mk 255 255 0
 
-    -- BEGIN
-    universes u v
+#eval Color.red yellow
+```
 
-    inductive prod (α : Type u) (β : Type v)
-    | mk (fst : α) (snd : β) : prod
+The definition of ``yellow`` forms the record with the three values
+shown, and the projection ``Color.red`` returns the red component.
 
-    inductive sum (α : Type u) (β : Type v)
-    | inl {} (a : α) : sum
-    | inr {} (b : β) : sum
-    -- END
+You can avoid the parentheses if you add a line break between each field.
 
-    end hidden
+```lean
+structure Color where
+  red : Nat
+  green : Nat
+  blue : Nat
+  deriving Repr
+```
 
-The results of these definitions are essentially the same as the ones given earlier in this section. Note that in the definition of ``sum``, the annotation ``{}`` refers to the parameters, ``α`` and ``β``. As with function definitions, you can use curly braces to specify which arguments are meant to be left implicit.
+The ``structure`` command is especially useful for defining algebraic
+structures, and Lean provides substantial infrastructure to support
+working with them. Here, for example, is the definition of a
+semigroup:
 
-A type, like ``prod``, that has only one constructor is purely conjunctive: the constructor simply packs the list of arguments into a single piece of data, essentially a tuple where the type of subsequent arguments can depend on the type of the initial argument. We can also think of such a type as a "record" or a "structure". In Lean, the keyword ``structure`` can be used to define such an inductive type as well as its projections, at the same time.
+```lean
+structure Semigroup where
+  carrier : Type u
+  mul : carrier → carrier → carrier
+  mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c)
+```
 
-.. code-block:: lean
+We will see more examples in [Chapter Structures and Records](./structures_and_records.md).
 
-    namespace hidden
+We have already discussed the dependent product type `Sigma`:
 
-    -- BEGIN
-    structure prod (α β : Type*) :=
-    mk :: (fst : α) (snd : β)
-    -- END
-
-    end hidden
-
-This example simultaneously introduces the inductive type, ``prod``, its constructor, ``mk``, the usual eliminators (``rec`` and ``rec_on``), as well as the projections, ``fst`` and ``snd``, as defined above.
-
-If you do not name the constructor, Lean uses ``mk`` as a default. For example, the following defines a record to store a color as a triple of RGB values:
-
-.. code-block:: lean
-
-    open nat
-
-    -- BEGIN
-    structure color := (red : nat) (green : nat) (blue : nat)
-    def yellow := color.mk 255 255 0
-    #reduce color.red yellow
-    -- END
-
-The definition of ``yellow`` forms the record with the three values shown, and the projection ``color.red`` returns the red component. The ``structure`` command is especially useful for defining algebraic structures, and Lean provides substantial infrastructure to support working with them. Here, for example, is the definition of a semigroup:
-
-.. code-block:: lean
-
-    universe u
-
-    structure Semigroup :=
-    (carrier : Type u)
-    (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c))
-
-We will see more examples in :numref:`Chapter %s <structures_and_records>`.
-
-We have already discussed sigma types, also known as the dependent product:
-
-.. code-block:: lean
-
-    universes u v
-
-    namespace hidden
-
-    -- BEGIN
-    inductive sigma {α : Type u} (β : α → Type v)
-    | dpair : Π a : α, β a → sigma
-    -- END
-
-    end hidden
+```lean
+# namespace Hidden
+inductive Sigma {α : Type u} (β : α → Type v) where
+  | mk : (a : α) → β a → Sigma β
+# end Hidden
+```
 
 Two more examples of inductive types in the library are the following:
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+inductive Option (α : Type u) where
+  | none : Option α
+  | some : α → Option α
 
-    namespace hidden
+inductive Inhabited (α : Type u) where
+  | mk : α → Inhabited α
+# end Hidden
+```
 
-    -- BEGIN
-    inductive option (α : Type*)
-    | none {} : option
-    | some    : α → option
+In the semantics of dependent type theory, there is no built-in notion
+of a partial function. Every element of a function type ``α → β`` or a
+dependent function type ``(a : α) → β`` is assumed to have a value
+at every input. The ``Option`` type provides a way of representing partial functions. An
+element of ``Option β`` is either ``none`` or of the form ``some b``,
+for some value ``b : β``. Thus we can think of an element ``f`` of the
+type ``α → Option β`` as being a partial function from ``α`` to ``β``:
+for every ``a : α``, ``f a`` either returns ``none``, indicating the
+``f a`` is "undefined", or ``some b``.
 
-    inductive inhabited (α : Type*)
-    | mk : α → inhabited
-    -- END
+An element of ``Inhabited α`` is simply a witness to the fact that
+there is an element of ``α``. Later, we will see that ``Inhabited`` is
+an example of a *type class* in Lean: Lean can be instructed that
+suitable base types are inhabited, and can automatically infer that
+other constructed types are inhabited on that basis.
 
-    end hidden
-
-In the semantics of dependent type theory, there is no built-in notion of a partial function. Every element of a function type ``α → β`` or a Pi type ``Π x : α, β`` is assumed to have a value at every input. The ``option`` type provides a way of representing partial functions. An element of ``option β`` is either ``none`` or of the form ``some b``, for some value ``b : β``. Thus we can think of an element ``f`` of the type ``α → option β`` as being a partial function from ``α`` to ``β``: for every ``a : α``, ``f a`` either returns ``none``, indicating the ``f a`` is "undefined", or ``some b``.
-
-An element of ``inhabited α`` is simply a witness to the fact that there is an element of ``α``. Later, we will see that ``inhabited`` is an example of a *type class* in Lean: Lean can be instructed that suitable base types are inhabited, and can automatically infer that other constructed types are inhabited on that basis.
-
-As exercises, we encourage you to develop a notion of composition for partial functions from ``α`` to ``β`` and ``β`` to ``γ``, and show that it behaves as expected. We also encourage you to show that ``bool`` and ``nat`` are inhabited, that the product of two inhabited types is inhabited, and that the type of functions to an inhabited type is inhabited.
+As exercises, we encourage you to develop a notion of composition for
+partial functions from ``α`` to ``β`` and ``β`` to ``γ``, and show
+that it behaves as expected. We also encourage you to show that
+``Bool`` and ``Nat`` are inhabited, that the product of two inhabited
+types is inhabited, and that the type of functions to an inhabited
+type is inhabited.
 
 Inductively Defined Propositions
 --------------------------------
 
-Inductively defined types can live in any type universe, including the bottom-most one, ``Prop``. In fact, this is exactly how the logical connectives are defined.
+Inductively defined types can live in any type universe, including the
+bottom-most one, ``Prop``. In fact, this is exactly how the logical
+connectives are defined.
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+inductive False : Prop
 
-    namespace hidden
+inductive True : Prop where
+  | intro : True
 
-    -- BEGIN
-    inductive false : Prop
+inductive And (a b : Prop) : Prop where
+  | intro : a → b → And a b
 
-    inductive true : Prop
-    | intro : true
+inductive Or (a b : Prop) : Prop where
+  | inl : a → Or a b
+  | inr : b → Or a b
+# end Hidden
+```
 
-    inductive and (a b : Prop) : Prop
-    | intro : a → b → and
-
-    inductive or (a b : Prop) : Prop
-    | intro_left  : a → or
-    | intro_right : b → or
-    -- END
-
-    end hidden
-
-You should think about how these give rise to the introduction and elimination rules that you have already seen. There are rules that govern what the eliminator of an inductive type can eliminate *to*, that is, what kinds of types can be the target of a recursor. Roughly speaking, what characterizes inductive types in ``Prop`` is that one can only eliminate to other types in ``Prop``. This is consistent with the understanding that if ``p : Prop``, an element ``hp : p`` carries no data. There is a small exception to this rule, however, which we will discuss below, in the section on inductive families.
+You should think about how these give rise to the introduction and
+elimination rules that you have already seen. There are rules that
+govern what the eliminator of an inductive type can eliminate *to*,
+that is, what kinds of types can be the target of a recursor. Roughly
+speaking, what characterizes inductive types in ``Prop`` is that one
+can only eliminate to other types in ``Prop``. This is consistent with
+the understanding that if ``p : Prop``, an element ``hp : p`` carries
+no data. There is a small exception to this rule, however, which we
+will discuss below, in the section on inductive families.
 
 Even the existential quantifier is inductively defined:
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+inductive Exists {α : Type u} (q : α → Prop) : Prop where
+  | intro : ∀ (a : α), q a → Exists q
+# end Hidden
+```
 
-    namespace hidden
+Keep in mind that the notation ``∃ x : α, p`` is syntactic sugar for ``Exists (fun x : α => p)``.
 
-    -- BEGIN
-    inductive Exists {α : Type*} (q : α → Prop) : Prop
-    | intro : ∀ (a : α), q a → Exists
+The definitions of ``False``, ``True``, ``And``, and ``Or`` are
+perfectly analogous to the definitions of ``Empty``, ``Unit``,
+``Prod``, and ``Sum``. The difference is that the first group yields
+elements of ``Prop``, and the second yields elements of ``Type u`` for
+some ``u``. In a similar way, ``∃ x : α, p`` is a ``Prop``-valued
+variant of ``Σ x : α, p``.
 
-     def exists.intro := @Exists.intro
-    -- END
+This is a good place to mention another inductive type, denoted
+``{x : α // p}``, which is sort of a hybrid between
+``∃ x : α, P`` and ``Σ x : α, P``.
 
-    end hidden
+```lean
+# namespace Hidden
+inductive Subtype {α : Type u} (p : α → Prop) where
+  | mk : (x : α) → p x → Subtype p
+# end Hidden
+```
 
-Keep in mind that the notation ``∃ x : α, p`` is syntactic sugar for ``Exists (λ x : α, p)``.
+In fact, in Lean, ``Subtype`` is defined using the structure command:
 
-The definitions of ``false``, ``true``, ``and``, and ``or`` are perfectly analogous to the definitions of ``empty``, ``unit``, ``prod``, and ``sum``. The difference is that the first group yields elements of ``Prop``, and the second yields elements of ``Type u`` for some ``u``. In a similar way, ``∃ x : α, p`` is a ``Prop``-valued variant of ``Σ x : α, p``.
-
-This is a good place to mention another inductive type, denoted ``{x : α // p}``, which is sort of a hybrid between ``∃ x : α, P`` and ``Σ x : α, P``.
-
-.. code-block:: lean
-
-    namespace hidden
-
-    -- BEGIN
-    inductive subtype {α : Type*} (p : α → Prop)
-    | mk : Π x : α, p x → subtype
-    -- END
-
-    end hidden
-
-In fact, in Lean, ``subtype`` is defined using the structure command:
-
-.. code-block:: lean
-
-    universe u
-    namespace hidden
-
-    -- BEGIN
-    structure subtype {α : Sort u} (p : α → Prop) :=
-    (val : α) (property : p val)
-
-    section
-    variables {α : Type u} (p : α → Prop)
-
-    #check subtype p
-    #check { x : α // p x}
-    end
-    -- END
-
-    end hidden
-
-The notation ``{x : α // p x}`` is syntactic sugar for ``subtype (λ x : α, p x)``. It is modeled after subset notation in set theory: the idea is that ``{x : α // p x}`` denotes the collection of elements of ``α`` that have property ``p``.
+The notation ``{x : α // p x}`` is syntactic sugar for ``Subtype (fun x : α => p x)``.
+It is modeled after subset notation in set theory: the idea is that ``{x : α // p x}``
+denotes the collection of elements of ``α`` that have property ``p``.
 
 Defining the Natural Numbers
 ----------------------------
@@ -981,87 +1077,101 @@ In fact, we can even define the type of countably branching trees:
 
     end cbtree
 
-.. _tactics_for_inductive_types:
-
-Tactics for Inductive Types
+<a name="_tactics_for_inductive_types"></a>Tactics for Inductive Types
 ---------------------------
 
-Given the fundamental importance of inductive types in Lean, it should not be surprising that there are a number of tactics designed to work with them effectively. We describe some of them here.
+Given the fundamental importance of inductive types in Lean, it should
+not be surprising that there are a number of tactics designed to work
+with them effectively. We describe some of them here.
 
-The ``cases`` tactic works on elements of an inductively defined type, and does what the name suggests: it decomposes the element according to each of the possible constructors. In its most basic form, it is applied to an element ``x`` in the local context. It then reduces the goal to cases in which ``x`` is replaced by each of the constructions.
+The ``cases`` tactic works on elements of an inductively defined type,
+and does what the name suggests: it decomposes the element according
+to each of the possible constructors. In its most basic form, it is
+applied to an element ``x`` in the local context. It then reduces the
+goal to cases in which ``x`` is replaced by each of the constructions.
 
-.. code-block:: lean
+```lean
+example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (Nat.succ n)) : ∀ n, p n := by
+  intro n
+  cases n
+  . exact hz  -- goal is p 0
+  . apply hs  -- goal is a : ℕ ⊢ p (succ a)
+```
 
-    open nat
-    variable p : ℕ → Prop
+There are extra bells and whistles. For one thing, ``cases`` allows
+you to choose the names for each alternative using a
+``with`` clause. In the next example, for example, we choose the name
+``m`` for the argument to ``succ``, so that the second case refers to
+``succ m``. More importantly, the cases tactic will detect any items
+in the local context that depend on the target variable. It reverts
+these elements, does the split, and reintroduces them. In the example
+below, notice that the hypothesis ``h : n ≠ 0`` becomes ``h : 0 ≠ 0``
+in the first branch, and ``h : succ m ≠ 0`` in the second.
 
-    example (hz : p 0) (hs : ∀ n, p (succ n)) : ∀ n, p n :=
-    begin
-      intro n,
-      cases n,
-      { exact hz },  -- goal is p 0
-      apply hs       -- goal is a : ℕ ⊢ p (succ a)
-    end
-
-There are extra bells and whistles. For one thing, ``cases`` allows you to choose the names for the arguments to the constructors using a ``with`` clause. In the next example, for example, we choose the name ``m`` for the argument to ``succ``, so that the second case refers to ``succ m``. More importantly, the cases tactic will detect any items in the local context that depend on the target variable. It reverts these elements, does the split, and reintroduces them. In the example below, notice that the hypothesis ``h : n ≠ 0`` becomes ``h : 0 ≠ 0`` in the first branch, and ``h : succ m ≠ 0`` in the second.
-
-.. code-block:: lean
-
-    open nat
-
-    example (n : ℕ) (h : n ≠ 0) : succ (pred n) = n :=
-    begin
-      cases n with m,
-      -- first goal: h : 0 ≠ 0 ⊢ succ (pred 0) = 0
-        { apply (absurd rfl h) },
-      -- second goal: h : succ m ≠ 0 ⊢ succ (pred (succ m)) = succ m
-      reflexivity
-    end
+```lean
+open Nat
+example (n : Nat) (h : n ≠ 0) : succ (pred n) = n := by
+  cases n with
+  | zero =>
+    -- goal: h : 0 ≠ 0 ⊢ succ (pred 0) = 0
+    apply absurd rfl h
+  | succ m =>
+    -- second goal: h : succ m ≠ 0 ⊢ succ (pred (succ m)) = succ m
+    rfl
+```
 
 Notice that ``cases`` can be used to produce data as well as prove propositions.
 
-.. code-block:: lean
+```lean
+def f (n : Nat) : Nat := by
+  cases n; exact 3; exact 7
 
-    def f (n : ℕ) : ℕ :=
-    begin
-      cases n, exact 3, exact 7
-    end
-
-    example : f 0 = 3 := rfl
-    example : f 5 = 7 := rfl
+example : f 0 = 3 := rfl
+example : f 5 = 7 := rfl
+```
 
 Once again, cases will revert, split, and then reintroduce depedencies in the context.
 
-.. code-block:: lean
+```lean
+def Tuple (α : Type) (n : Nat) :=
+  { as : List α // as.length = n }
 
-    def tuple (α : Type*) (n : ℕ) :=
-      { l : list α // list.length l = n }
+def f {n : Nat} (t : Tuple α n) : Nat := by
+  cases n; exact 3; exact 7
 
-    variables {α : Type*} {n : ℕ}
+def myTuple : Tuple Nat 3 :=
+  ⟨[0, 1, 2], rfl⟩
 
-    def f {n : ℕ} (t : tuple α n) : ℕ :=
-    begin
-      cases n, exact 3, exact 7
-    end
+example : f myTuple = 7 :=
+  rfl
+```
 
-    def my_tuple : tuple ℕ 3 :=  ⟨[0, 1, 2], rfl⟩
+Here is an example with multiple constructors with arguments.
 
-    example : f my_tuple = 7 := rfl
+```lean
+inductive Foo where
+  | bar1 : Nat → Nat → Foo
+  | bar2 : Nat → Nat → Nat → Foo
 
-If there are multiple constructors with arguments, you can provide ``cases`` with a list of all the names, arranged sequentially:
+def silly (x : Foo) : Nat := by
+  cases x with
+  | bar1 a b => exact b
+  | bar2 c d e => exact e
+```
 
-.. code-block:: lean
+The alternatives for each constructor doesn't need to be solved
+using the order the constructors were declared.
 
-    inductive foo : Type
-    | bar1 : ℕ → ℕ → foo
-    | bar2 : ℕ → ℕ → ℕ → foo
+```lean
+inductive Foo where
+  | bar1 : Nat → Nat → Foo
+  | bar2 : Nat → Nat → Nat → Foo
 
-    def silly (x : foo) : ℕ :=
-    begin
-      cases x with a b c d e,
-      exact b,    -- a, b    are in the context
-      exact e     -- c, d, e are in the context
-    end
+def silly (x : Foo) : Nat := by
+  cases x with
+  | bar2 c d e => exact e
+  | bar1 a b => exact b
+```
 
 The syntax of the ``with`` is unfortunate, in that we have to list the arguments to all the constructors sequentially, making it hard to remember what the constructors are, or what the arguments are supposed to be. For that reason, Lean provides a complementary ``case`` tactic, which allows one to assign variable names after the fact:
 
@@ -1323,204 +1433,303 @@ As the second example shows, the ``contradiction`` tactic also detects contradic
 Inductive Families
 ------------------
 
-We are almost done describing the full range of inductive definitions accepted by Lean. So far, you have seen that Lean allows you to introduce inductive types with any number of recursive constructors. In fact, a single inductive definition can introduce an indexed *family* of inductive types, in a manner we now describe.
+We are almost done describing the full range of inductive definitions
+accepted by Lean. So far, you have seen that Lean allows you to
+introduce inductive types with any number of recursive
+constructors. In fact, a single inductive definition can introduce an
+indexed *family* of inductive types, in a manner we now describe.
 
-An inductive family is an indexed family of types defined by a simultaneous induction of the following form:
+An inductive family is an indexed family of types defined by a
+simultaneous induction of the following form:
 
-.. code-block:: text
+```
+inductive foo : ... → Sort u where
+  | constructor₁ : ... → foo ...
+  | constructor₂ : ... → foo ...
+  ...
+  | constructorₙ : ... → foo ...
+```
 
-    inductive foo : ... → Sort u :=
-    | constructor₁ : ... → foo ...
-    | constructor₂ : ... → foo ...
-    ...
-    | constructorₙ : ... → foo ...
+In contrast to ordinary inductive definition, which constructs an
+element of some ``Sort u``, the more general version constructs a
+function ``... → Sort u``, where "``...``" denotes a sequence of
+argument types, also known as *indices*. Each constructor then
+constructs an element of some member of the family. One example is the
+definition of ``Vector α n``, the type of vectors of elements of ``α``
+of length ``n``:
 
-In contrast to ordinary inductive definition, which constructs an element of some ``Sort u``, the more general version constructs a function ``... → Sort u``, where "``...``" denotes a sequence of argument types, also known as *indices*. Each constructor then constructs an element of some member of the family. One example is the definition of ``vector α n``, the type of vectors of elements of ``α`` of length ``n``:
+```lean
+# namespace Hidden
+inductive Vector (α : Type u) : Nat → Type u where
+  | nil  : Vector α 0
+  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+# end Hidden
+```
 
-.. code-block:: lean
-
-    open nat
-    universe u
-    namespace hidden
-
-    -- BEGIN
-    inductive vector (α : Type u) : nat → Type u
-    | nil {}                              : vector zero
-    | cons {n : ℕ} (a : α) (v : vector n) : vector (succ n)
-    -- END
-
-    end hidden
-
-Notice that the ``cons`` constructor takes an element of ``vector α n`` and returns an element of ``vector α (succ n)``, thereby using an element of one member of the family to build an element of another.
+Notice that the ``cons`` constructor takes an element of
+``Vector α n`` and returns an element of ``Vector α (n+1)``, thereby using an
+element of one member of the family to build an element of another.
 
 A more exotic example is given by the definition of the equality type in Lean:
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+inductive Eq {α : Sort u} (a : α) : α → Prop where
+  | refl {} : Eq a a
+# end Hidden
+```
 
-    universe u
-    namespace hidden
+For each fixed ``α : Sort u`` and ``a : α``, this definition
+constructs a family of types ``Eq a x``, indexed by ``x : α``.
+Notably, however, there is only one constructor, ``refl``, which
+is an element of ``Eq a a``, and the curly braces after the
+constructor tell Lean to make the argument to ``refl``
+explicit. Intuitively, the only way to construct a proof of ``Eq a x``
+is to use reflexivity, in the case where ``x`` is ``a``.
+Note that ``Eq a a`` is the only inhabited type in the family of types
+``Eq a x``. The elimination principle generated by Lean is as follows:
 
-    -- BEGIN
-    inductive eq {α : Sort u} (a : α) : α → Prop
-    | refl [] : eq a
-    -- END
+```lean
+universe u v
 
-    end hidden
+#check (@Eq.rec : {α : Sort u} → {a : α} → {motive : (x : α) → a = x → Sort v}
+                  → motive a rfl → {b : α} → (h : a = b) → motive b h)
+```
 
-For each fixed ``α : Sort u`` and ``a : α``, this definition constructs a family of types ``eq a x``, indexed by ``x : α``. Notably, however, there is only one constructor, ``refl``, which is an element of ``eq a a``, and the square brackets after the constructor tell Lean to make the argument to ``refl`` explicit. Intuitively, the only way to construct a proof of ``eq a x`` is to use reflexivity, in the case where ``x`` is ``a``. Note that ``eq a a`` is the only inhabited type in the family of types ``eq a x``. The elimination principle generated by Lean is as follows:
+It is a remarkable fact that all the basic axioms for equality follow
+from the constructor, ``refl``, and the eliminator, ``Eq.rec``. The
+definition of equality is atypical, however; see the discussion in the
+next section.
 
-.. code-block:: lean
+The recursor ``Eq.rec`` is also used to define substitution:
 
-    universes u v
+```lean
+# namespace Hidden
+theorem subst {α : Type u} {a b : α} {p : α → Prop} (h₁ : Eq a b) (h₂ : p a) : p b :=
+  Eq.rec (motive := fun x _ => p x) h₂ h₁
+# end Hidden
+```
 
-    #check (@eq.rec_on :
-      Π {α : Sort u} {a : α} {C : α → Sort v} {b : α},
-        a = b → C a → C b)
+You can also define `subst` using `match`.
 
-It is a remarkable fact that all the basic axioms for equality follow from the constructor, ``refl``, and the eliminator, ``eq.rec_on``. The definition of equality is atypical, however; see the discussion in the next section.
+```lean
+# namespace Hidden
+theorem subst {α : Type u} {a b : α} {p : α → Prop} (h₁ : Eq a b) (h₂ : p a) : p b :=
+  match h₁ with
+  | rfl => h₂
+# end Hidden
+```
 
-The recursor ``eq.rec_on`` is also used to define substitution:
+Actually, Lean compiles the `match` expressions using a definition based on
+`Eq.rec`.
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+theorem subst {α : Type u} {a b : α} {p : α → Prop} (h₁ : Eq a b) (h₂ : p a) : p b :=
+  match h₁ with
+  | rfl => h₂
 
-    namespace hidden
-    universe u
+set_option pp.all true
+#print subst
+  -- ... subst.match_1 ...
+#print subst.match_1
+  -- ... Eq.casesOn ...
+#print Eq.casesOn
+  -- ... Eq.rec ...
+# end Hidden
+```
 
-    inductive eq {α : Type u} (a : α) : α → Prop
-    | refl [] : eq a
+Using the recursor or `match` with ``h₁ : a = b``, we may assume ``a`` and ``b`` are the same,
+in which case, ``p b`` and ``p a`` are the same.
 
-    -- BEGIN
-    @[elab_as_eliminator]
-    theorem subst {α : Type u} {a b : α} {p : α → Prop}
-      (h₁ : eq a b) (h₂ : p a) : p b :=
-    eq.rec h₂ h₁
-    -- END
+It is not hard to prove that ``Eq`` is symmetric and transitive.
+In the following example, we prove ``symm`` and leave as exercise the theorems ``trans`` and ``congr`` (congruence).
 
-    end hidden
+```lean
+# namespace Hidden
+theorem symm {α : Type u} {a b : α} (h : Eq a b) : Eq b a :=
+  match h with
+  | rfl => rfl
 
-Using the recursor with ``h₁ : a = b``, we may assume ``a`` and ``b`` are the same, in which case, ``p b`` and ``p a`` are the same. The definition of ``subst`` is marked with an elaboration hint, as described in :numref:`elaboration_hints`.
+theorem trans {α : Type u} {a b c : α} (h₁ : Eq a b) (h₂ : Eq b c) : Eq a c :=
+  sorry
 
-It is not hard to prove that ``eq`` is symmetric and transitive. In the following example, we prove ``symm`` and leave as exercise the theorems ``trans`` and ``congr`` (congruence).
+theorem congr {α β : Type u} {a b : α} (f : α → β) (h : Eq a b) : Eq (f a) (f b) :=
+  sorry
+# end Hidden
+```
 
-.. code-block:: lean
-
-    namespace hidden
-    universe u
-
-    inductive eq {α : Type u} (a : α) : α → Prop
-    | refl [] : eq a
-
-    @[elab_as_eliminator]
-    theorem subst {α : Type u} {a b : α} {P : α → Prop}
-      (h₁ : eq a b) (h₂ : P a) : P b :=
-    eq.rec h₂ h₁
-
-
-    -- BEGIN
-    theorem symm {α : Type u} {a b : α} (h : eq a b) : eq b a :=
-    subst h (eq.refl a)
-
-    theorem trans {α : Type u} {a b c : α}
-      (h₁ : eq a b) (h₂ : eq b c) : eq a c :=
-    sorry
-
-    theorem congr {α β : Type u} {a b : α} (f : α → β)
-      (h : eq a b) : eq (f a) (f b) :=
-    sorry
-    -- END
-
-    end hidden
-
-In the type theory literature, there are further generalizations of inductive definitions, for example, the principles of *induction-recursion* and *induction-induction*. These are not supported by Lean.
+In the type theory literature, there are further generalizations of
+inductive definitions, for example, the principles of
+*induction-recursion* and *induction-induction*. These are not
+supported by Lean.
 
 Axiomatic Details
 -----------------
 
-We have described inductive types and their syntax through examples. This section provides additional information for those interested in the axiomatic foundations.
+We have described inductive types and their syntax through
+examples. This section provides additional information for those
+interested in the axiomatic foundations.
 
-We have seen that the constructor to an inductive type takes *parameters* --- intuitively, the arguments that remain fixed throughout the inductive construction --- and *indices*, the arguments parameterizing the family of types that is simultaneously under construction. Each constructor should have a Pi type, where the argument types are built up from previously defined types, the parameter and index types, and the inductive family currently being defined. The requirement is that if the latter is present at all, it occurs only *strictly positively*. This means simply that any argument to the constructor in which it occurs is a Pi type in which the inductive type under definition occurs only as the resulting type, where the indices are given in terms of constants and previous arguments.
+We have seen that the constructor to an inductive type takes
+*parameters* --- intuitively, the arguments that remain fixed
+throughout the inductive construction --- and *indices*, the arguments
+parameterizing the family of types that is simultaneously under
+construction. Each constructor should have a type, where the
+argument types are built up from previously defined types, the
+parameter and index types, and the inductive family currently being
+defined. The requirement is that if the latter is present at all, it
+occurs only *strictly positively*. This means simply that any argument
+to the constructor in which it occurs is a dependent arrow type in which the
+inductive type under definition occurs only as the resulting type,
+where the indices are given in terms of constants and previous
+arguments.
 
-Since an inductive type lives in ``Sort u`` for some ``u``, it is reasonable to ask *which* universe levels ``u`` can be instantiated to. Each constructor ``c`` in the definition of a family ``C`` of inductive types is of the form
+Since an inductive type lives in ``Sort u`` for some ``u``, it is
+reasonable to ask *which* universe levels ``u`` can be instantiated
+to. Each constructor ``c`` in the definition of a family ``C`` of
+inductive types is of the form
 
-.. code-block:: text
+```
+  c : (a : α) → (b : β[a]) → C a p[a,b]
+```
 
-    c : Π (a : α) (b : β[a]), C a p[a,b]
+where ``a`` is a sequence of data type parameters, ``b`` is the
+sequence of arguments to the constructors, and ``p[a, b]`` are the
+indices, which determine which element of the inductive family the
+construction inhabits. (Note that this description is somewhat
+misleading, in that the arguments to the constructor can appear in any
+order as long as the dependencies make sense.) The constraints on the
+universe level of ``C`` fall into two cases, depending on whether or
+not the inductive type is specified to land in ``Prop`` (that is,
+``Sort 0``).
 
-where ``a`` is a sequence of data type parameters, ``b`` is the sequence of arguments to the constructors, and ``p[a, b]`` are the indices, which determine which element of the inductive family the construction inhabits. (Note that this description is somewhat misleading, in that the arguments to the constructor can appear in any order as long as the dependencies make sense.) The constraints on the universe level of ``C`` fall into two cases, depending on whether or not the inductive type is specified to land in ``Prop`` (that is, ``Sort 0``).
+Let us first consider the case where the inductive type is *not*
+specified to land in ``Prop``. Then the universe level ``u`` is
+constrained to satisfy the following:
 
-Let us first consider the case where the inductive type is *not* specified to land in ``Prop``. Then the universe level ``u`` is constrained to satisfy the following:
+> For each constructor ``c`` as above, and each ``βk[a]`` in the sequence ``β[a]``, if ``βk[a] : Sort v``, we have ``u`` ≥ ``v``.
 
-    For each constructor ``c`` as above, and each ``βk[a]`` in the sequence ``β[a]``, if ``βk[a] : Sort v``, we have ``u`` ≥ ``v``.
+In other words, the universe level ``u`` is required to be at least as
+large as the universe level of each type that represents an argument
+to a constructor.
 
-In other words, the universe level ``u`` is required to be at least as large as the universe level of each type that represents an argument to a constructor.
+When the inductive type is specified to land in ``Prop``, there are no
+constraints on the universe levels of the constructor arguments. But
+these universe levels do have a bearing on the elimination
+rule. Generally speaking, for an inductive type in ``Prop``, the
+motive of the elimination rule is required to be in ``Prop``.
 
-When the inductive type is specified to land in ``Prop``, there are no constraints on the universe levels of the constructor arguments. But these universe levels do have a bearing on the elimination rule. Generally speaking, for an inductive type in ``Prop``, the motive of the elimination rule is required to be in ``Prop``.
+There is an exception to this last rule: we are allowed to eliminate
+from an inductively defined ``Prop`` to an arbitrary ``Sort`` when
+there is only one constructor and each constructor argument is either
+in ``Prop`` or an index. The intuition is that in this case the
+elimination does not make use of any information that is not already
+given by the mere fact that the type of argument is inhabited. This
+special case is known as *singleton elimination*.
 
-There is an exception to this last rule: we are allowed to eliminate from an inductively defined ``Prop`` to an arbitrary ``Sort`` when there is only one constructor and each constructor argument is either in ``Prop`` or an index. The intuition is that in this case the elimination does not make use of any information that is not already given by the mere fact that the type of argument is inhabited. This special case is known as *singleton elimination*.
+We have already seen singleton elimination at play in applications of
+``Eq.rec``, the eliminator for the inductively defined equality
+type. We can use an element ``h : Eq a b`` to cast an element
+``t' : p a`` to ``p b`` even when ``p a`` and ``p b`` are arbitrary types,
+because the cast does not produce new data; it only reinterprets the
+data we already have. Singleton elimination is also used with
+heterogeneous equality and well-founded recursion, which will be
+discussed in a later chapter.
 
-We have already seen singleton elimination at play in applications of ``eq.rec``, the eliminator for the inductively defined equality type. We can use an element ``h : eq a b`` to cast an element ``t' : p a`` to ``p b`` even when ``p a`` and ``p b`` are arbitrary types, because the cast does not produce new data; it only reinterprets the data we already have. Singleton elimination is also used with heterogeneous equality and well-founded recursion, which will be discussed in a later chapter.
 
-.. _mutual_and_nested_inductive_types:
-
-Mutual and Nested Inductive Types
+<a name="_mutual_and_nested_inductive_types"></a>Mutual and Nested Inductive Types
 ---------------------------------
 
-We now consider two generalizations of inductive types that are often useful, which Lean supports by "compiling" them down to the more primitive kinds of inductive types described above. In other words, Lean parses the more general definitions, defines auxiliary inductive types based on them, and then uses the auxiliary types to define the ones we really want. Lean's equation compiler, described in the next chapter, is needed to make use of these types effectively. Nonetheless, it makes sense to describe the declarations here, because they are straightforward variations on ordinary inductive definitions.
+We now consider two generalizations of inductive types that are often
+useful, which Lean supports by "compiling" them down to the more
+primitive kinds of inductive types described above. In other words,
+Lean parses the more general definitions, defines auxiliary inductive
+types based on them, and then uses the auxiliary types to define the
+ones we really want. Lean's equation compiler, described in the next
+chapter, is needed to make use of these types
+effectively. Nonetheless, it makes sense to describe the declarations
+here, because they are straightforward variations on ordinary
+inductive definitions.
 
-First, Lean supports *mutually defined* inductive types. The idea is that we can define two (or more) inductive types at the same time, where each one refers to the other(s).
+First, Lean supports *mutually defined* inductive types. The idea is
+that we can define two (or more) inductive types at the same time,
+where each one refers to the other(s).
 
-.. code-block:: lean
+```lean
+mutual
+  inductive Even : Nat → Prop where
+    | even_zero : Even 0
+    | even_succ : (n : Nat) → Odd n → Even (n + 1)
 
-    mutual inductive even, odd
-    with even : ℕ → Prop
-    | even_zero : even 0
-    | even_succ : ∀ n, odd n → even (n + 1)
-    with odd : ℕ → Prop
-    | odd_succ : ∀ n, even n → odd (n + 1)
+  inductive Odd : Nat → Prop where
+    | odd_succ : (n : Nat) → Even n → Odd (n + 1)
+end
+```
 
-In this example, two types are defined simultaneously: a natural number ``n`` is ``even`` if it is ``0`` or one more than an ``odd`` number, and ``odd`` if it is one more than an even number. Under the hood, this definition is compiled down to a single inductive type with an index ``i`` in a two-valued type (such as ``bool``), where ``i`` encodes which of ``even`` or ``odd`` is intended. In the exercises below, you are asked to spell out the details.
+In this example, two types are defined simultaneously: a natural
+number ``n`` is ``Even`` if it is ``0`` or one more than an ``Odd``
+number, and ``Odd`` if it is one more than an even number.
+In the exercises below, you are asked to spell out the details.
 
-A mutual inductive definition can also be used to define the notation of a finite tree with nodes labeled by elements of ``α``:
+A mutual inductive definition can also be used to define the notation
+of a finite tree with nodes labeled by elements of ``α``:
 
-.. code-block:: lean
+```lean
+mutual
+    inductive Tree (α : Type u) where
+      | node : α → TreeList α → Tree α
 
-    universe u
+    inductive TreeList (α : Type u) where
+      | nil  : TreeList α
+      | cons : Tree α → TreeList α → TreeList α
+end
+```
 
-    mutual inductive tree, list_tree (α : Type u)
-    with tree : Type u
-    | node : α → list_tree → tree
-    with list_tree : Type u
-    | nil {} : list_tree
-    | cons    : tree → list_tree → list_tree
+With this definition, one can construct an element of ``Tree α`` by
+giving an element of ``α`` together with a list of subtrees, possibly
+empty. The list of subtrees is represented by the type ``TreeList α``,
+which is defined to be either the empty list, ``nil``, or the
+``cons`` of a tree and an element of ``TreeList α``.
 
-With this definition, one can construct an element of ``tree α`` by giving an element of ``α`` together with a list of subtrees, possibly empty. The list of subtrees is represented by the type ``list_tree α``, which is defined to be either the empty list, ``nil``, or the ``cons`` of a tree and an element of ``list_tree α``.
-
-This definition is inconvenient to work with, however. It would be much nicer if the list of subtrees were given by the type ``list (tree α)``, especially since Lean's library contains a number of functions and theorems for working with lists. One can show that the type ``list_tree α`` is *isomorphic* to ``list (tree α)``, but translating results back and forth along this isomorphism is tedious.
+This definition is inconvenient to work with, however. It would be
+much nicer if the list of subtrees were given by the type
+``List (Tree α)``, especially since Lean's library contains a number of functions
+and theorems for working with lists. One can show that the type
+``TreeList α`` is *isomorphic* to ``List (Tree α)``, but translating
+results back and forth along this isomorphism is tedious.
 
 In fact, Lean allows us to define the inductive type we really want:
 
-.. code-block:: lean
+```lean
+inductive Tree (α : Type u) where
+  | mk : α → List (Tree α) → Tree α
+```
 
-    universe u
-
-    -- BEGIN
-    inductive tree (α : Type u)
-    | mk : α → list tree → tree
-    -- END
-
-This is known as a *nested* inductive type. It falls outside the strict specification of an inductive type given in the last section because ``tree`` does not occur strictly positively among the arguments to ``mk``, but, rather, nested inside the ``list`` type constructor. Under the hood, Lean compiles this down to the mutual inductive type described above, which, in turn, is compiled down to an ordinary inductive type. Lean then automatically builds the isomorphism between ``list_tree α`` and ``list (tree  α)``, and defines the constructors for ``tree`` in terms of the isomorphism.
-
-The types of the constructors for mutual and nested inductive types can be read off from the definitions. Defining functions *from* such types is more complicated, because these also have to be compiled down to more basic operations, making use of the primitive recursors that are associated to the inductive types that are declared under the hood. Lean does its best to hide the details from users, allowing them to use the equation compiler, described in the next section, to define such functions in natural ways.
+This is known as a *nested* inductive type. It falls outside the
+strict specification of an inductive type given in the last section
+because ``Tree`` does not occur strictly positively among the
+arguments to ``mk``, but, rather, nested inside the ``List`` type
+constructor. Lean then automatically builds the
+isomorphism between ``TreeList α`` and ``List (Tree α)`` in its kernel,
+and defines the constructors for ``Tree`` in terms of the isomorphism.
 
 Exercises
 ---------
 
-#. Try defining other operations on the natural numbers, such as multiplication, the predecessor function (with ``pred 0 = 0``), truncated subtraction (with ``n - m = 0`` when ``m`` is greater than or equal to ``n``), and exponentiation. Then try proving some of their basic properties, building on the theorems we have already
+1. Try defining other operations on the natural numbers, such as
+   multiplication, the predecessor function (with ``pred 0 = 0``),
+   truncated subtraction (with ``n - m = 0`` when ``m`` is greater
+   than or equal to ``n``), and exponentiation. Then try proving some
+   of their basic properties, building on the theorems we have already
    proved.
 
-   Since many of these are already defined in Lean's core library, you should work within a namespace named ``hide``, or something like that, in order to avoid name clashes.
+   Since many of these are already defined in Lean's core library, you
+   should work within a namespace named ``Hidden``, or something like
+   that, in order to avoid name clashes.
 
-#. Define some operations on lists, like a ``length`` function or the ``reverse`` function. Prove some properties, such as the following:
+2. Define some operations on lists, like a ``length`` function or the
+   ``reverse`` function. Prove some properties, such as the following:
 
    a. ``length (s ++ t) = length s + length t``
 
@@ -1528,7 +1737,7 @@ Exercises
 
    c. ``reverse (reverse t) = t``
 
-#. Define an inductive data type consisting of terms built up from the following constructors:
+3. Define an inductive data type consisting of terms built up from the following constructors:
 
    -  ``const n``, a constant denoting the natural number ``n``
    -  ``var n``, a variable, numbered ``n``
@@ -1537,6 +1746,7 @@ Exercises
 
    Recursively define a function that evaluates any such term with respect to an assignment of values to the variables.
 
-#. Similarly, define the type of propositional formulas, as well as functions on the type of such formulas: an evaluation function, functions that measure the complexity of a formula, and a function that substitutes another formula for a given variable.
-
-#. Simulate the mutual inductive definition of ``even`` and ``odd`` described in :numref:`mutual_and_nested_inductive_types` with an ordinary inductive type, using an index to encode the choice between them in the target type.
+4. Similarly, define the type of propositional formulas, as well as
+   functions on the type of such formulas: an evaluation function,
+   functions that measure the complexity of a formula, and a function
+   that substitutes another formula for a given variable.

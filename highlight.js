@@ -1138,7 +1138,7 @@ hljs.registerLanguage("lean", function(hljs) {
     literal:
       'true false',
     meta:
-      'noncomputable|10 private protected mutual',
+      'noncomputable|10 private protected ',
     strong:
       'sorry admit',
   };
