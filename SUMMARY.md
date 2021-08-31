@@ -5,4 +5,5 @@
 - [Tactics](./tactics.md)
 - [Interacting with Lean](./interacting_with_lean.md)
 - [Inductive Types](./inductive_types.md)
+- [Structures and Records](./structures_and_records.md)
 - [Building This Manual](./mdbook.md)

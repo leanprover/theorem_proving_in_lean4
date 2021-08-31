@@ -417,7 +417,7 @@ defined in Lean's library in the file ``Prelude.core`` (see
 hierarchy), and each connective comes with its canonical introduction
 and elimination rules.
 
-### Conjunction
+### <a name="_conjunction"></a>Conjunction
 
 The expression ``and.intro h1 h2`` builds a proof of ``p ∧ q`` using
 proofs ``h1 : p`` and ``h2 : q``. It is common to describe
