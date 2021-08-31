@@ -731,7 +731,7 @@ to show that it indeed suffices to show ``q``, by proving the original
 goal of ``q ∧ p`` with the additional hypothesis ``hq : q``. Finally,
 we have to show ``q``.
 
-Classical Logic
+<a name="_classical"></a>Classical Logic
 ---------------
 
 The introduction and elimination rules we have seen so far are all

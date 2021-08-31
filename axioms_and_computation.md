@@ -912,253 +912,222 @@ The Law of the Excluded Middle
 
 The law of the excluded middle is the following
 
-.. code-block:: lean
+```lean
+open Classical
 
-    open classical
-    namespace hidden
-    -- BEGIN
-    #check (@em : ∀ (p : Prop), p ∨ ¬p)
-    -- END
-    end hidden
+#check (@em : ∀ (p : Prop), p ∨ ¬p)
+```
 
-`Diaconescu's theorem <http://en.wikipedia.org/wiki/Diaconescu%27s_theorem>`__ states that the axiom of choice is sufficient to derive the law of excluded middle. More precisely, it shows that the law of the excluded middle follows from ``classical.choice``, ``propext``, and ``funext``. We sketch the proof that is found in the standard library.
+[Diaconescu's theorem](http://en.wikipedia.org/wiki/Diaconescu%27s_theorem) states
+that the axiom of choice is sufficient to derive the law of excluded
+middle. More precisely, it shows that the law of the excluded middle
+follows from ``Classical.choice``, ``propext``, and ``funext``. We
+sketch the proof that is found in the standard library.
 
-First, we import the necessary axioms, fix a parameter, ``p``, and define two predicates ``U`` and ``V``:
+First, we import the necessary axioms, and define two predicates ``U`` and ``V``:
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+open Classical
+theorem em (p : Prop) : p ∨ ¬p :=
+  let U (x : Prop) : Prop := x = True ∨ p
+  let V (x : Prop) : Prop := x = False ∨ p
 
-    open classical
+  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+#   sorry
+# end Hidden
+```
 
-    section diaconescu
-    parameter  p : Prop
-
-    def U (x : Prop) : Prop := x = true ∨ p
-    def V (x : Prop) : Prop := x = false ∨ p
-
-    lemma exU : ∃ x, U x := ⟨true, or.inl rfl⟩
-    lemma exV : ∃ x, V x := ⟨false, or.inl rfl⟩
-
-    end diaconescu
-
-If ``p`` is true, then every element of ``Prop`` is in both ``U`` and ``V``. If ``p`` is false, then ``U`` is the singleton ``true``, and ``V`` is the singleton ``false``.
+If ``p`` is true, then every element of ``Prop`` is in both ``U`` and ``V``.
+If ``p`` is false, then ``U`` is the singleton ``true``, and ``V`` is the singleton ``false``.
 
 Next, we use ``some`` to choose an element from each of ``U`` and ``V``:
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+# open Classical
+# theorem em (p : Prop) : p ∨ ¬p :=
+#   let U (x : Prop) : Prop := x = True ∨ p
+#   let V (x : Prop) : Prop := x = False ∨ p
+#   have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+#   have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+  let u : Prop := choose exU
+  let v : Prop := choose exV
 
-    open classical
+  have u_def : U u := choose_spec exU
+  have v_def : V v := choose_spec exV
+#   sorry
+# end Hidden
+```
 
-    section diaconescu
-    parameter  p : Prop
+Each of ``U`` and ``V`` is a disjunction, so ``u_def`` and ``v_def``
+represent four cases. In one of these cases, ``u = True`` and
+``v = False``, and in all the other cases, ``p`` is true. Thus we have:
 
-    def U (x : Prop) : Prop := x = true ∨ p
-    def V (x : Prop) : Prop := x = false ∨ p
-
-    lemma exU : ∃ x, U x := ⟨true, or.inl rfl⟩
-    lemma exV : ∃ x, V x := ⟨false, or.inl rfl⟩
-
-    -- BEGIN
-    noncomputable def u := some exU
-    noncomputable def v := some exV
-
-    lemma u_def : U u := some_spec exU
-    lemma v_def : V v := some_spec exV
-    -- END
-
-    end diaconescu
-
-Each of ``U`` and ``V`` is a disjunction, so ``u_def`` and ``v_def`` represent four cases. In one of these cases, ``u = true`` and ``v = false``, and in all the other cases, ``p`` is true. Thus we have:
-
-.. code-block:: lean
-
-    open classical
-    section diaconescu
-    parameter  p : Prop
-
-    def U (x : Prop) : Prop := x = true ∨ p
-    def V (x : Prop) : Prop := x = false ∨ p
-
-    lemma exU : ∃ x, U x := ⟨true, or.inl rfl⟩
-    lemma exV : ∃ x, V x := ⟨false, or.inl rfl⟩
-
-    noncomputable def u := some exU
-    noncomputable def v := some exV
-
-    lemma u_def : U u := some_spec exU
-    lemma v_def : V v := some_spec exV
-
-    -- BEGIN
-    lemma not_uv_or_p : u ≠ v ∨ p :=
-    or.elim u_def
-      (assume hut : u = true,
-        or.elim v_def
-          (assume hvf : v = false,
-            have hne : u ≠ v,
-              from eq.symm hvf ▸ eq.symm hut ▸ true_ne_false,
-            or.inl hne)
-          (assume hp : p, or.inr hp))
-      (assume hp : p, or.inr hp)
-    -- END
-
-    end diaconescu
-
+```lean
+# namespace Hidden
+# open Classical
+# theorem em (p : Prop) : p ∨ ¬p :=
+#   let U (x : Prop) : Prop := x = True ∨ p
+#   let V (x : Prop) : Prop := x = False ∨ p
+#   have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+#   have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+#   let u : Prop := choose exU
+#   let v : Prop := choose exV
+#   have u_def : U u := choose_spec exU
+#   have v_def : V v := choose_spec exV
+  have not_uv_or_p : u ≠ v ∨ p :=
+    match u_def, v_def with
+    | Or.inr h, _ => Or.inr h
+    | _, Or.inr h => Or.inr h
+    | Or.inl hut, Or.inl hvf =>
+      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
+      Or.inl hne
+#   sorry
+# end Hidden
+```
 On the other hand, if ``p`` is true, then, by function extensionality
 and propositional extensionality, ``U`` and ``V`` are equal. By the
 definition of ``u`` and ``v``, this implies that they are equal as well.
 
-.. code-block:: lean
-
-    open classical
-    section diaconescu
-    parameter  p : Prop
-
-    def U (x : Prop) : Prop := x = true ∨ p
-    def V (x : Prop) : Prop := x = false ∨ p
-
-    lemma exU : ∃ x, U x := ⟨true, or.inl rfl⟩
-    lemma exV : ∃ x, V x := ⟨false, or.inl rfl⟩
-
-    noncomputable def u := some exU
-    noncomputable def v := some exV
-
-    lemma u_def : U u := some_spec exU
-    lemma v_def : V v := some_spec exV
-
-    lemma not_uv_or_p : ¬(u = v) ∨ p :=
-    or.elim u_def
-      (assume hut : u = true,
-        or.elim v_def
-          (assume hvf : v = false,
-            have hne : u ≠ v,
-              from eq.symm hvf ▸ eq.symm hut ▸ true_ne_false,
-            or.inl hne)
-          (assume hp : p, or.inr hp))
-      (assume hp : p, or.inr hp)
-
-    -- BEGIN
-    lemma p_implies_uv : p → u = v :=
-    assume hp : p,
-    have hpred : U = V, from
-      funext (assume x : Prop,
-        have hl : (x = true ∨ p) → (x = false ∨ p), from
-          assume a, or.inr hp,
-        have hr : (x = false ∨ p) → (x = true ∨ p), from
-          assume a, or.inr hp,
-        show (x = true ∨ p) = (x = false ∨ p), from
-          propext (iff.intro hl hr)),
-    have h₀ : ∀ exU exV,
-        @classical.some _ U exU = @classical.some _ V exV,
-      from hpred ▸ λ exU exV, rfl,
-    show u = v, from h₀ _ _
-    -- END
-    end diaconescu
-
+```lean
+# namespace Hidden
+# open Classical
+# theorem em (p : Prop) : p ∨ ¬p :=
+#   let U (x : Prop) : Prop := x = True ∨ p
+#   let V (x : Prop) : Prop := x = False ∨ p
+#   have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+#   have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+#   let u : Prop := choose exU
+#   let v : Prop := choose exV
+#   have u_def : U u := choose_spec exU
+#   have v_def : V v := choose_spec exV
+#   have not_uv_or_p : u ≠ v ∨ p :=
+#     match u_def, v_def with
+#     | Or.inr h, _ => Or.inr h
+#     | _, Or.inr h => Or.inr h
+#     | Or.inl hut, Or.inl hvf =>
+#       have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
+#       Or.inl hne
+  have p_implies_uv : p → u = v :=
+    fun hp =>
+    have hpred : U = V :=
+      funext fun x =>
+        have hl : (x = True ∨ p) → (x = False ∨ p) :=
+          fun _ => Or.inr hp
+        have hr : (x = False ∨ p) → (x = True ∨ p) :=
+          fun _ => Or.inr hp
+        show (x = True ∨ p) = (x = False ∨ p) from
+          propext (Iff.intro hl hr)
+    have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := by
+      rw [hpred]; intros; rfl
+    show u = v from h₀ _ _
+#   sorry
+# end Hidden
+```
 Putting these last two facts together yields the desired conclusion:
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+# open Classical
+# theorem em (p : Prop) : p ∨ ¬p :=
+#   let U (x : Prop) : Prop := x = True ∨ p
+#   let V (x : Prop) : Prop := x = False ∨ p
+#   have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+#   have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+#   let u : Prop := choose exU
+#   let v : Prop := choose exV
+#   have u_def : U u := choose_spec exU
+#   have v_def : V v := choose_spec exV
+#   have not_uv_or_p : u ≠ v ∨ p :=
+#     match u_def, v_def with
+#     | Or.inr h, _ => Or.inr h
+#     | _, Or.inr h => Or.inr h
+#     | Or.inl hut, Or.inl hvf =>
+#       have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
+#       Or.inl hne
+#  have p_implies_uv : p → u = v :=
+#     fun hp =>
+#     have hpred : U = V :=
+#       funext fun x =>
+#         have hl : (x = True ∨ p) → (x = False ∨ p) :=
+#           fun _ => Or.inr hp
+#         have hr : (x = False ∨ p) → (x = True ∨ p) :=
+#           fun _ => Or.inr hp
+#         show (x = True ∨ p) = (x = False ∨ p) from
+#           propext (Iff.intro hl hr)
+#     have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := by
+#       rw [hpred]; intros; rfl
+#     show u = v from h₀ _ _
+  match not_uv_or_p with
+  | Or.inl hne => Or.inr (mt p_implies_uv hne)
+  | Or.inr h   => Or.inl h
+# end Hidden
+```
 
-    open classical
-    section diaconescu
-    parameter  p : Prop
+Consequences of excluded middle include double-negation elimination,
+proof by cases, and proof by contradiction, all of which are described
+in the [Section Classical Logic](./propositions_and_proofs.md#_classical).
+The law of the excluded middle and propositional extensionality imply propositional completeness:
 
-    def U (x : Prop) : Prop := x = true ∨ p
-    def V (x : Prop) : Prop := x = false ∨ p
+```lean
+# namespace Hidden
+open Classical
+theorem propComplete (a : Prop) : a = True ∨ a = False :=
+  match em a with
+  | Or.inl ha => Or.inl (propext (Iff.intro (fun _ => ⟨⟩) (fun _ => ha)))
+  | Or.inr hn => Or.inr (propext (Iff.intro (fun h => hn h) (fun h => False.elim h)))
+# end Hidden
+```
 
-    lemma exU : ∃ x, U x := ⟨true, or.inl rfl⟩
-    lemma exV : ∃ x, V x := ⟨false, or.inl rfl⟩
+Together with choice, we also get the stronger principle that every
+proposition is decidable. Recall that the class of ``Decidable``
+propositions is defined as follows:
 
-    noncomputable def u := some exU
-    noncomputable def v := some exV
+```lean
+# namespace Hidden
+class inductive Decidable (p : Prop) where
+  | isFalse (h : ¬p) : Decidable p
+  | isTrue  (h : p)  : Decidable p
+# end Hidden
+```
 
-    lemma u_def : U u := some_spec exU
-    lemma v_def : V v := some_spec exV
+In contrast to ``p ∨ ¬ p``, which can only eliminate to ``Prop``, the
+type ``decidable p`` is equivalent to the sum type ``Sum p (¬ p)``, which
+can eliminate to any type. It is this data that is needed to write an
+if-then-else expression.
 
-    lemma not_uv_or_p : ¬(u = v) ∨ p :=
-    or.elim u_def
-      (assume hut : u = true,
-        or.elim v_def
-          (assume hvf : v = false,
-            have hne : ¬(u = v), from eq.symm hvf ▸ eq.symm hut ▸ true_ne_false,
-            or.inl hne)
-          (assume hp : p, or.inr hp))
-      (assume hp : p, or.inr hp)
+As an example of classical reasoning, we use ``choose`` to show that if
+``f : α → β`` is injective and ``α`` is inhabited, then ``f`` has a
+left inverse. To define the left inverse ``linv``, we use a dependent
+if-then-else expression. Recall that ``if h : c then t else e`` is
+notation for ``dite c (fun  h : c => t) (fun h : ¬ c => e)``. In the definition
+of ``linv``, choice is used twice: first, to show that
+``(∃ a : A, f a = b)`` is "decidable," and then to choose an ``a`` such that
+``f a = b``. Notice that ``propDecidable`` is a scoped instance and is activated
+by the `open Classical` command. We use this instance to justify
+the if-then-else expression. (See also the discussion in
+[Section Decidable Propositions](./type_classes.md#decidable_propositions)).
 
-    lemma p_implies_uv : p → u = v :=
-    assume hp : p,
-    have hpred : U = V, from
-      funext (assume x : Prop,
-        have hl : (x = true ∨ p) → (x = false ∨ p), from
-          assume a, or.inr hp,
-        have hr : (x = false ∨ p) → (x = true ∨ p), from
-          assume a, or.inr hp,
-        show (x = true ∨ p) = (x = false ∨ p), from
-          propext (iff.intro hl hr)),
-    have h₀ : ∀ exU exV,
-        @classical.some _ U exU = @classical.some _ V exV,
-      from hpred ▸ λ exU exV, rfl,
-    show u = v, from h₀ _ _
+```lean
+open Classical
 
-    -- BEGIN
-    theorem em : p ∨ ¬p :=
-    have h : ¬(u = v) → ¬p, from mt p_implies_uv,
-      or.elim not_uv_or_p
-        (assume hne : ¬(u = v), or.inr (h hne))
-        (assume hp : p, or.inl hp)
-    -- END
+noncomputable def linv [Inhabited α] (f : α → β) : β → α :=
+  fun b : β => if ex : (∃ a : α, f a = b) then choose ex else arbitrary
 
-    end diaconescu
+theorem linv_comp_self {f : α → β} [Inhabited α]
+                       (inj : ∀ {a b}, f a = f b → a = b)
+                       : linv f ∘ f = id :=
+  funext fun a =>
+    have ex  : ∃ a₁ : α, f a₁ = f a := ⟨a, rfl⟩
+    have feq : f (choose ex) = f a  := choose_spec ex
+    calc linv f (f a) = choose ex := dif_pos ex
+               _      = a         := inj feq
 
-Consequences of excluded middle include double-negation elimination, proof by cases, and proof by contradiction, all of which are described in :numref:`classical_logic`. The law of the excluded middle and propositional extensionality imply propositional completeness:
+```
 
-.. code-block:: lean
-
-    open classical
-    namespace hidden
-
-    -- BEGIN
-    theorem prop_complete (a : Prop) : a = true ∨ a = false :=
-    or.elim (em a)
-      (λ t, or.inl (propext (iff.intro (λ h, trivial) (λ h, t))))
-      (λ f, or.inr (propext (iff.intro (λ h, absurd h f)
-                                       (λ h, false.elim h))))
-    -- END
-
-    end hidden
-
-Together with choice, we also get the stronger principle that every proposition is decidable. Recall that the class of ``decidable`` propositions is defined as follows:
-
-.. code-block:: lean
-
-    namespace hidden
-
-    -- BEGIN
-    class inductive decidable (p : Prop)
-    | is_false : ¬ p → decidable
-    | is_true :  p → decidable
-    -- END
-
-    end hidden
-
-In contrast to ``p ∨ ¬ p``, which can only eliminate to ``Prop``, the type ``decidable p`` is equivalent to the sum type ``p ⊕ ¬ p``, which can eliminate to any type. It is this data that is needed to write an if-then-else expression.
-
-As an example of classical reasoning, we use ``some`` to show that if ``f : α → β`` is injective and ``α`` is inhabited, then ``f`` has a left inverse. To define the left inverse ``linv``, we use a dependent if-then-else expression. Recall that ``if h : c then t else e`` is notation for ``dite c (λ h : c, t) (λ h : ¬ c, e)``. In the definition of ``linv``, choice is used twice: first, to show that ``(∃ a : A, f a = b)`` is "decidable," and then to choose an ``a`` such that ``f a = b``. Notice that we make ``prop_decidable`` a local instance to justify the if-then-else expression. (See also the discussion in :numref:`decidable_propositions`.)
-
-.. code-block:: lean
-
-    open classical function
-    local attribute [instance] prop_decidable
-
-    noncomputable definition linv {α β : Type*} [h : inhabited α]
-      (f : α → β) : β → α :=
-    λ b : β, if ex : (∃ a : α, f a = b) then some ex else arbitrary α
-
-    theorem linv_comp_self {α β : Type*} {f : α → β}
-        [inhabited α] (inj : injective f) :
-      linv f ∘ f = id :=
-    funext (assume a,
-      have ex  : ∃ a₁ : α, f a₁ = f a, from exists.intro a rfl,
-      have   feq : f (some ex) = f a, from some_spec ex,
-      calc linv f (f a) = some ex :  dif_pos ex
-                 ...    = a       :  inj feq)
-
-From a classical point of view, ``linv`` is a function. From a constructive point of view, it is unacceptable; because there is no way to implement such a function in general, the construction is not informative.
+From a classical point of view, ``linv`` is a function. From a
+constructive point of view, it is unacceptable; because there is no
+way to implement such a function in general, the construction is not
+informative.
