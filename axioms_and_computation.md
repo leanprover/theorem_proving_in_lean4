@@ -544,368 +544,344 @@ of quotients, let us define the type of *unordered* pairs of elements
 of a type ``α`` as a quotient of the type ``α × α``. First, we define
 the relevant equivalence relation:
 
+```lean
+private def eqv (p₁ p₂ : α × α) : Prop :=
+  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 
-.. code-block:: lean
+infix:50 " ~ " => eqv
+```
 
-    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
-    (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+The next step is to prove that ``eqv`` is in fact an equivalence
+relation, which is to say, it is reflexive, symmetric and
+transitive. We can prove these three facts in a convenient and
+readable way by using dependent pattern matching to perform
+case-analysis and break the hypotheses into pieces that are then
+reassembled to produce the conclusion.
 
-    infix `~` := eqv
+```lean
+# private def eqv (p₁ p₂ : α × α) : Prop :=
+#  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+# infix:50 " ~ " => eqv
+private theorem eqv.refl (p : α × α) : p ~ p :=
+  Or.inl ⟨rfl, rfl⟩
 
-The next step is to prove that ``eqv`` is in fact an equivalence relation, which is to say, it is reflexive, symmetric and transitive. We can prove these three facts in a convenient and readable way by using dependent pattern matching to perform case-analysis and break the hypotheses into pieces that are then reassembled to produce the conclusion.
+private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =>
+    Or.inl (by simp_all)
+  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =>
+    Or.inr (by simp_all)
 
-.. code-block:: lean
+private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =>
+    Or.inl (by simp_all)
+  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =>
+    Or.inr (by simp_all)
+  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =>
+    Or.inr (by simp_all)
+  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =>
+    Or.inl (by simp_all)
 
-    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
-    (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+private theorem is_equivalence : Equivalence (@eqv α) :=
+   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+```
 
-    local infix `~` := eqv
+Now that we have proved that ``eqv`` is an equivalence relation, we
+can construct a ``Setoid (α × α)``, and use it to define the type
+``UProd α`` of unordered pairs.
 
-    -- BEGIN
-    open or
+```lean
+# private def eqv (p₁ p₂ : α × α) : Prop :=
+#  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+# infix:50 " ~ " => eqv
+# private theorem eqv.refl (p : α × α) : p ~ p :=
+#  Or.inl ⟨rfl, rfl⟩
+# private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+#   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =>
+#     Or.inl (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =>
+#     Or.inr (by simp_all)
+# private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =>
+#     Or.inl (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =>
+#     Or.inr (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =>
+#     Or.inr (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =>
+#     Or.inl (by simp_all)
+# private theorem is_equivalence : Equivalence (@eqv α) :=
+#   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+instance uprodSetoid (α : Type u) : Setoid (α × α) where
+   r     := eqv
+   iseqv := is_equivalence
 
-    private theorem eqv.refl {α : Type*} :
-      ∀ p : α × α, p ~ p :=
-    assume p, inl ⟨rfl, rfl⟩
+def UProd (α : Type u) : Type u :=
+  Quotient (uprodSetoid α)
 
-    private theorem eqv.symm {α : Type*} :
-      ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
-    | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) :=
-        inl ⟨symm a₁b₁, symm a₂b₂⟩
-    | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) :=
-        inr ⟨symm a₂b₁, symm a₁b₂⟩
+namespace UProd
 
-    private theorem eqv.trans {α : Type*} :
-      ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂)
-        (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
-      inl ⟨trans a₁b₁ b₁c₁, trans a₂b₂ b₂c₂⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂)
-        (inl ⟨a₁b₁, a₂b₂⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
-      inr ⟨trans a₁b₁ b₁c₂, trans a₂b₂ b₂c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂)
-        (inr ⟨a₁b₂, a₂b₁⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
-      inr ⟨trans a₁b₂ b₂c₂, trans a₂b₁ b₁c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂)
-        (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
-      inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
+def mk {α : Type} (a₁ a₂ : α) : UProd α :=
+  Quotient.mk (a₁, a₂)
 
-    private theorem is_equivalence (α : Type*) :
-      equivalence (@eqv α) :=
-    mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α)
-      (@eqv.trans α)
-    -- END
+notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 
-We open the namespaces ``or`` and ``eq`` to be able to use ``or.inl``, ``or.inr``, and ``eq.trans`` more conveniently.
+end UProd
+```
 
-Now that we have proved that ``eqv`` is an equivalence relation, we can construct a ``setoid (α × α)``, and use it to define the type ``uprod α`` of unordered pairs.
+Notice that we locally define the notation ``{a₁, a₂}`` for ordered
+pairs as ``Quotient.mk (a₁, a₂)``. This is useful for illustrative
+purposes, but it is not a good idea in general, since the notation
+will shadow other uses of curly brackets, such as for records and
+sets.
 
-.. code-block:: lean
+We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``,
+since we have ``(a₁, a₂) ~ (a₂, a₁)``.
 
-    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
-    (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+```lean
+# private def eqv (p₁ p₂ : α × α) : Prop :=
+#  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+# infix:50 " ~ " => eqv
+# private theorem eqv.refl (p : α × α) : p ~ p :=
+#  Or.inl ⟨rfl, rfl⟩
+# private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+#   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =>
+#     Or.inl (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =>
+#     Or.inr (by simp_all)
+# private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =>
+#     Or.inl (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =>
+#     Or.inr (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =>
+#     Or.inr (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =>
+#     Or.inl (by simp_all)
+# private theorem is_equivalence : Equivalence (@eqv α) :=
+#   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+# instance uprodSetoid (α : Type u) : Setoid (α × α) where
+#    r     := eqv
+#    iseqv := is_equivalence
+# def UProd (α : Type u) : Type u :=
+#   Quotient (uprodSetoid α)
+# namespace UProd
+# def mk {α : Type} (a₁ a₂ : α) : UProd α :=
+#   Quotient.mk (a₁, a₂)
+# notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
+theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
+  Quot.sound (Or.inr ⟨rfl, rfl⟩)
+# end UProd
+```
 
-    local infix `~` := eqv
+To complete the example, given ``a : α`` and ``u : uprod α``, we
+define the proposition ``a ∈ u`` which should hold if ``a`` is one of
+the elements of the unordered pair ``u``. First, we define a similar
+proposition ``mem_fn a u`` on (ordered) pairs; then we show that
+``mem_fn`` respects the equivalence relation ``eqv`` with the lemma
+``mem_respects``. This is an idiom that is used extensively in the
+Lean standard library.
 
-    open or
+```lean
+# private def eqv (p₁ p₂ : α × α) : Prop :=
+#  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+# infix:50 " ~ " => eqv
+# private theorem eqv.refl (p : α × α) : p ~ p :=
+#  Or.inl ⟨rfl, rfl⟩
+# private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+#   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =>
+#     Or.inl (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =>
+#     Or.inr (by simp_all)
+# private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =>
+#     Or.inl (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =>
+#     Or.inr (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =>
+#     Or.inr (by simp_all)
+#   | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =>
+#     Or.inl (by simp_all)
+# private theorem is_equivalence : Equivalence (@eqv α) :=
+#   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+# instance uprodSetoid (α : Type u) : Setoid (α × α) where
+#    r     := eqv
+#    iseqv := is_equivalence
+# def UProd (α : Type u) : Type u :=
+#   Quotient (uprodSetoid α)
+# namespace UProd
+# def mk {α : Type} (a₁ a₂ : α) : UProd α :=
+#   Quotient.mk (a₁, a₂)
+# notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
+# theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
+#   Quot.sound (Or.inr ⟨rfl, rfl⟩)
 
-    private theorem eqv.refl {α : Type*} : ∀ p : α × α, p ~ p :=
-    assume p, inl ⟨rfl, rfl⟩
+private def mem_fn (a : α) : α × α → Prop
+  | (a₁, a₂) => a = a₁ ∨ a = a₂
 
-    private theorem eqv.symm {α : Type*} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
-    | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
-    | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) := inr ⟨symm a₂b₁, symm a₁b₂⟩
-
-    private theorem eqv.trans {α : Type*} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
-      inl ⟨trans a₁b₁ b₁c₁, trans a₂b₂ b₂c₂⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
-      inr ⟨trans a₁b₁ b₁c₂, trans a₂b₂ b₂c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
-      inr ⟨trans a₁b₂ b₂c₂, trans a₂b₁ b₁c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
-      inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
-
-    private theorem is_equivalence (α : Type*) : equivalence (@eqv α) :=
-    mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α) (@eqv.trans α)
-
-    -- BEGIN
-    instance uprod.setoid (α : Type*) : setoid (α × α) :=
-    setoid.mk (@eqv α) (is_equivalence α)
-
-    definition uprod (α : Type*) : Type* :=
-    quotient (uprod.setoid α)
-
-    namespace uprod
-    definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
-    ⟦(a₁, a₂)⟧
-
-    local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
-    end uprod
-    -- END
-
-Notice that we locally define the notation ``{a₁, a₂}`` for ordered pairs as ``⟦(a₁, a₂)⟧``. This is useful for illustrative purposes, but it is not a good idea in general, since the notation will shadow other uses of curly brackets, such as for records and sets.
-
-We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``, since we have ``(a₁, a₂) ~ (a₂, a₁)``.
-
-.. code-block:: lean
-
-    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
-    (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
-
-    local infix `~` := eqv
-
-    open or
-
-    private theorem eqv.refl {α : Type*} : ∀ p : α × α, p ~ p :=
-    assume p, inl ⟨rfl, rfl⟩
-
-    private theorem eqv.symm {α : Type*} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
-    | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
-    | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) := inr ⟨symm a₂b₁, symm a₁b₂⟩
-
-    private theorem eqv.trans {α : Type*} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
-      inl ⟨trans a₁b₁ b₁c₁, trans a₂b₂ b₂c₂⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
-      inr ⟨trans a₁b₁ b₁c₂, trans a₂b₂ b₂c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
-      inr ⟨trans a₁b₂ b₂c₂, trans a₂b₁ b₁c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
-      inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
-
-    private theorem is_equivalence (α : Type*) : equivalence (@eqv α) :=
-    mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α) (@eqv.trans α)
-
-    instance uprod.setoid (α : Type*) : setoid (α × α) :=
-    setoid.mk (@eqv α) (is_equivalence α)
-
-    definition uprod (α : Type*) :=
-    quotient (uprod.setoid α)
-
-    namespace uprod
-    definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
-    ⟦(a₁, a₂)⟧
-
-    local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
-
-    -- BEGIN
-    theorem mk_eq_mk {α : Type*} (a₁ a₂ : α) :
-      {a₁, a₂} = {a₂, a₁} :=
-    quot.sound (inr ⟨rfl, rfl⟩)
-    -- END
-    end uprod
-
-To complete the example, given ``a : α`` and ``u : uprod α``, we define the proposition ``a ∈ u`` which should hold if ``a`` is one of the elements of the unordered pair ``u``. First, we define a similar proposition ``mem_fn a u`` on (ordered) pairs; then we show that ``mem_fn`` respects the equivalence relation ``eqv`` with the lemma ``mem_respects``. This is an idiom that is used extensively in the Lean standard library.
-
-.. code-block:: lean
-
-    private definition eqv {α : Type*} (p₁ p₂ : α × α) : Prop :=
-    (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
-
-    local infix `~` := eqv
-
-    open or
-
-    private theorem eqv.refl {α : Type*} : ∀ p : α × α, p ~ p :=
-    assume p, inl ⟨rfl, rfl⟩
-
-    private theorem eqv.symm {α : Type*} : ∀ p₁ p₂ : α × α, p₁ ~ p₂ → p₂ ~ p₁
-    | (a₁, a₂) (b₁, b₂) (inl ⟨a₁b₁, a₂b₂⟩) := inl ⟨symm a₁b₁, symm a₂b₂⟩
-    | (a₁, a₂) (b₁, b₂) (inr ⟨a₁b₂, a₂b₁⟩) := inr ⟨symm a₂b₁, symm a₁b₂⟩
-
-    private theorem eqv.trans {α : Type*} : ∀ p₁ p₂ p₃ : α × α, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
-      inl ⟨trans a₁b₁ b₁c₁, trans a₂b₂ b₂c₂⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inl ⟨a₁b₁, a₂b₂⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
-      inr ⟨trans a₁b₁ b₁c₂, trans a₂b₂ b₂c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inl ⟨b₁c₁, b₂c₂⟩) :=
-      inr ⟨trans a₁b₂ b₂c₂, trans a₂b₁ b₁c₁⟩
-    | (a₁, a₂) (b₁, b₂) (c₁, c₂) (inr ⟨a₁b₂, a₂b₁⟩) (inr ⟨b₁c₂, b₂c₁⟩) :=
-      inl ⟨trans a₁b₂ b₂c₁, trans a₂b₁ b₁c₂⟩
-
-    private theorem is_equivalence (α : Type*) : equivalence (@eqv α) :=
-    mk_equivalence (@eqv α) (@eqv.refl α) (@eqv.symm α) (@eqv.trans α)
-
-    instance uprod.setoid (α : Type*) : setoid (α × α) :=
-    setoid.mk (@eqv α) (is_equivalence α)
-
-    definition uprod (α : Type*) :=
-    quotient (uprod.setoid α)
-
-    namespace uprod
-    definition mk {α : Type*} (a₁ a₂ : α) : uprod α :=
-    ⟦(a₁, a₂)⟧
-
-    local notation `{` a₁ `,` a₂ `}` := mk a₁ a₂
-
-    theorem mk_eq_mk {α : Type*} (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
-    quot.sound (inr ⟨rfl, rfl⟩)
-
-    -- BEGIN
-    private definition mem_fn {α : Type*} (a : α) :
-      α × α → Prop
-    | (a₁, a₂) := a = a₁ ∨ a = a₂
-
-    -- auxiliary lemma for proving mem_respects
-    private lemma mem_swap {α : Type*} {a : α} :
+-- auxiliary lemma for proving mem_respects
+private theorem mem_swap {a : α} :
       ∀ {p : α × α}, mem_fn a p = mem_fn a (⟨p.2, p.1⟩)
-    | (a₁, a₂) := propext (iff.intro
-        (λ l : a = a₁ ∨ a = a₂,
-          or.elim l (λ h₁, inr h₁) (λ h₂, inl h₂))
-        (λ r : a = a₂ ∨ a = a₁,
-          or.elim r (λ h₁, inr h₁) (λ h₂, inl h₂)))
+  | (a₁, a₂) => by
+    apply propext
+    apply Iff.intro
+    . intro
+      | Or.inl h => exact Or.inr h
+      | Or.inr h => exact Or.inl h
+    . intro
+      | Or.inl h => exact Or.inr h
+      | Or.inr h => exact Or.inl h
 
-    private lemma mem_respects {α : Type*} :
-      ∀ {p₁ p₂ : α × α} (a : α),
-        p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
-    | (a₁, a₂) (b₁, b₂) a (inl ⟨a₁b₁, a₂b₂⟩) :=
-      by { dsimp at a₁b₁, dsimp at a₂b₂, rw [a₁b₁, a₂b₂] }
-    | (a₁, a₂) (b₁, b₂) a (inr ⟨a₁b₂, a₂b₁⟩) :=
-      by { dsimp at a₁b₂, dsimp at a₂b₁, rw [a₁b₂, a₂b₁],
-            apply mem_swap }
 
-    def mem {α : Type*} (a : α) (u : uprod α) : Prop :=
-    quot.lift_on u (λ p, mem_fn a p) (λ p₁ p₂ e, mem_respects a e)
+private theorem mem_respects
+      : {p₁ p₂ : α × α} → (a : α) → p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
+  | (a₁, a₂), (b₁, b₂), a, Or.inl ⟨a₁b₁, a₂b₂⟩ => by simp_all
+  | (a₁, a₂), (b₁, b₂), a, Or.inr ⟨a₁b₂, a₂b₁⟩ => by simp_all; apply mem_swap
 
-    local infix `∈` := mem
+def mem (a : α) (u : UProd α) : Prop :=
+  Quot.liftOn u (fun p => mem_fn a p) (fun p₁ p₂ e => mem_respects a e)
 
-    theorem mem_mk_left {α : Type*} (a b : α) : a ∈ {a, b} :=
-    inl rfl
+infix:50 " ∈ " => mem
 
-    theorem mem_mk_right {α : Type*} (a b : α) : b ∈ {a, b} :=
-    inr rfl
+theorem mem_mk_left (a b : α) : a ∈ {a, b} :=
+  Or.inl rfl
 
-    theorem mem_or_mem_of_mem_mk {α : Type*} {a b c : α} :
-      c ∈ {a, b} → c = a ∨ c = b :=
-    λ h, h
-    -- END
-    end uprod
+theorem mem_mk_right (a b : α) : b ∈ {a, b} :=
+  Or.inr rfl
 
-For convenience, the standard library also defines ``quotient.lift₂`` for lifting binary functions, and ``quotient.ind₂`` for induction on two variables.
+theorem mem_or_mem_of_mem_mk {a b c : α} : c ∈ {a, b} → c = a ∨ c = b :=
+  fun h => h
+# end UProd
+```
 
-We close this section with some hints as to why the quotient construction implies function extenionality. It is not hard to show that extensional equality on the ``Π x : α, β x`` is an equivalence relation, and so we can consider the type ``extfun α β`` of functions "up to equivalence." Of course, application respects that equivalence in the sense that if ``f₁`` is equivalent to ``f₂``, then ``f₁ a`` is equal to ``f₂ a``. Thus application gives rise to a function ``extfun_app : extfun α β → Π x : α, β x``. But for every ``f``, ``extfun_app ⟦f⟧`` is definitionally equal to ``λ x, f x``, which is in turn definitionally equal to ``f``. So, when ``f₁`` and ``f₂`` are extensionally equal, we have the following chain of equalities:
+For convenience, the standard library also defines ``Quotient.lift₂``
+for lifting binary functions, and ``Quotient.ind₂`` for induction on
+two variables.
 
-.. code-block:: text
+We close this section with some hints as to why the quotient
+construction implies function extenionality. It is not hard to show
+that extensional equality on the ``(x : α) → β x`` is an equivalence
+relation, and so we can consider the type ``extfun α β`` of functions
+"up to equivalence." Of course, application respects that equivalence
+in the sense that if ``f₁`` is equivalent to ``f₂``, then ``f₁ a`` is
+equal to ``f₂ a``. Thus application gives rise to a function
+``extfun_app : extfun α β → (x : α) → β x``. But for every ``f``,
+``extfun_app ⟦f⟧`` is definitionally equal to ``fun x => f x``, which is
+in turn definitionally equal to ``f``. So, when ``f₁`` and ``f₂`` are
+extensionally equal, we have the following chain of equalities:
 
+```
     f₁ = extfun_app ⟦f₁⟧ = extfun_app ⟦f₂⟧ = f₂
+```
 
 As a result, ``f₁`` is equal to ``f₂``.
-
-.. _choice:
 
 Choice
 ------
 
-To state the final axiom defined in the standard library, we need the ``nonempty`` type, which is defined as follows:
+To state the final axiom defined in the standard library, we need the
+``Nonempty`` type, which is defined as follows:
 
-.. code-block:: lean
+```lean
+# namespace Hidden
+class inductive Nonempty (α : Sort u) : Prop where
+  | intro (val : α) : Nonempty α
+# end Hidden
+```
 
-    namespace hidden
+Because ``Nonempty α`` has type ``Prop`` and its constructor contains data, it can only eliminate to ``Prop``.
+In fact, ``Nonempty α`` is equivalent to ``∃ x : α, True``:
 
-    -- BEGIN
-    class inductive nonempty (α : Sort*) : Prop
-    | intro : α → nonempty
-    -- END
-
-    end hidden
-
-Because ``nonempty α`` has type ``Prop`` and its constructor contains data, it can only eliminate to ``Prop``. In fact, ``nonempty α`` is equivalent to ``∃ x : α, true``:
-
-.. code-block:: lean
-
-    -- BEGIN
-    example (α : Type*) : nonempty α ↔ ∃ x : α, true :=
-    iff.intro (λ ⟨a⟩, ⟨a, trivial⟩) (λ ⟨a, h⟩, ⟨a⟩)
-    -- END
+```lean
+example (α : Type u) : Nonempty α ↔ ∃ x : α, True :=
+  Iff.intro (fun ⟨a⟩ => ⟨a, trivial⟩) (fun ⟨a, h⟩ => ⟨a⟩)
+```
 
 Our axiom of choice is now expressed simply as follows:
 
-.. code-block:: lean
 
-    namespace hidden
+```lean
+# namespace Hidden
+# universe u
+axiom choice {α : Sort u} : Nonempty α → α
+# end Hidden
+```
 
-    -- BEGIN
-    axiom choice {α : Sort*} : nonempty α → α
-    -- END
+Given only the assertion ``h`` that ``α`` is nonempty, ``choice h``
+magically produces an element of ``α``. Of course, this blocks any
+meaningful computation: by the interpretation of ``Prop``, ``h``
+contains no information at all as to how to find such an element.
 
-    end hidden
+This is found in the ``Classical`` namespace, so the full name of the
+theorem is ``Classical.choice``. The choice principle is equivalent to
+the principle of *indefinite description*, which can be expressed with
+subtypes as follows:
 
-Given only the assertion ``h`` that ``α`` is nonempty, ``choice h`` magically produces an element of ``α``. Of course, this blocks any meaningful computation: by the interpretation of ``Prop``, ``h`` contains no information at all as to how to find such an element.
+```lean
+# namespace Hidden
+# universe u
+# axiom choice {α : Sort u} : Nonempty α → α
+noncomputable def indefiniteDescription {α : Sort u} (p : α → Prop)
+                                        (h : ∃ x, p x) : {x // p x} :=
+  choice <| let ⟨x, px⟩ := h; ⟨⟨x, px⟩⟩
+# end Hidden
+```
 
-This is found in the ``classical`` namespace, so the full name of the theorem is ``classical.choice``. The choice principle is equivalent to the principle of *indefinite description*, which can be expressed with subtypes as follows:
+Because it depends on ``choice``, Lean cannot generate bytecode for
+``indefiniteDescription``, and so requires us to mark the definition
+as ``noncomputable``. Also in the ``Classical`` namespace, the
+function ``choose`` and the property ``choose_spec`` decompose the two
+parts of the output of ``indefinite_description``:
 
-.. code-block:: lean
+```lean
+# open Classical
+# namespace Hidden
+noncomputable def choose {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
+  (indefiniteDescription p h).val
 
-    namespace hidden
+theorem choose_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (choose h) :=
+  (indefiniteDescription p h).property
+# end Hidden
+```
 
-    axiom choice {α : Sort*} : nonempty α → α
-    -- BEGIN
-    noncomputable theorem indefinite_description
-        {α : Sort*} (p : α → Prop) :
-      (∃ x, p x) → {x // p x} :=
-    λ h, choice (let ⟨x, px⟩ := h in ⟨⟨x, px⟩⟩)
-    -- END
+The ``choice`` principle also erases the distinction between the
+property of being ``Nonempty`` and the more constructive property of
+being ``Inhabited``:
 
-    end hidden
+```lean
+# open Classical
+theorem inhabited_of_nonempty :Nonempty α → Inhabited α :=
+  fun h => choice (let ⟨a⟩ := h; ⟨⟨a⟩⟩)
+```
 
-Because it depends on ``choice``, Lean cannot generate bytecode for ``indefinite_description``, and so requires us to mark the definition as ``noncomputable``. Also in the ``classical`` namespace, the function ``some`` and the property ``some_spec`` decompose the two parts of the output of ``indefinite_description``:
+In the next section, we will see that ``propext``, ``funext``, and
+``choice``, taken together, imply the law of the excluded middle and
+the decidability of all propositions. Using those, one can strengthen
+the principle of indefinite description as follows:
 
-.. code-block:: lean
+```lean
+# open Classical
+# universe u
+#check (@strongIndefiniteDescription :
+         {α : Sort u} → (p : α → Prop)
+         → Nonempty α → {x // (∃ (y : α), p y) → p x})
+```
 
-    open classical
-    namespace hidden
+Assuming the ambient type ``α`` is nonempty,
+``strongIndefiniteDescription p`` produces an element of ``α``
+satisfying ``p`` if there is one. The data component of this
+definition is conventionally known as *Hilbert's epsilon function*:
 
-    -- BEGIN
-    noncomputable def some {a : Sort*} {p : a → Prop}
-      (h : ∃ x, p x) : a :=
-    subtype.val (indefinite_description p h)
+```lean
+# open Classical
+# universe u
+#check (@epsilon :
+         {α : Sort u} → [Nonempty α]
+         → (α → Prop) → α)
 
-    theorem some_spec {a : Sort*} {p : a → Prop}
-      (h : ∃ x, p x) : p (some h) :=
-    subtype.property (indefinite_description p h)
-    -- END
-
-    end hidden
-
-The ``choice`` principle also erases the distinction between the property of being ``nonempty`` and the more constructive property of being ``inhabited``:
-
-.. code-block:: lean
-
-    open classical
-
-    -- BEGIN
-    noncomputable theorem inhabited_of_nonempty {α : Type*} :
-      nonempty α → inhabited α :=
-    λ h, choice (let ⟨a⟩ := h in ⟨⟨a⟩⟩)
-    -- END
-
-In the next section, we will see that ``propext``, ``funext``, and ``choice``, taken together, imply the law of the excluded middle and the decidability of all propositions. Using those, one can strengthen the principle of indefinite description as follows:
-
-.. code-block:: lean
-
-    open classical
-
-    -- BEGIN
-    #check (@strong_indefinite_description :
-            Π {α : Sort*} (p : α → Prop),
-              nonempty α → {x // (∃ (y : α), p y) → p x})
-    -- END
-
-Assuming the ambient type ``α`` is nonempty, ``strong_indefinite_description p`` produces an element of ``α`` satisfying ``p`` if there is one. The data component of this definition is conventionally known as *Hilbert's epsilon function*:
-
-.. code-block:: lean
-
-    open classical
-
-    -- BEGIN
-    #check (@epsilon : Π {α : Sort*} [nonempty α],
-                         (α → Prop) → α)
-
-    #check (@epsilon_spec : ∀ {a : Sort*} {p : a → Prop}
-               (hex : ∃ (y : a), p y),
-             p (@epsilon _ (nonempty_of_exists hex) p))
-    -- END
+#check (@epsilon_spec :
+          ∀ {a : Sort u} {p : a → Prop}(hex : ∃ (y : a), p y),
+            p (@epsilon _ (nonempty_of_exists hex) p))
+```
 
 The Law of the Excluded Middle
 ------------------------------
