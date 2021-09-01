@@ -6,5 +6,6 @@
 - [Interacting with Lean](./interacting_with_lean.md)
 - [Inductive Types](./inductive_types.md)
 - [Structures and Records](./structures_and_records.md)
+- [Type Classes](./type_classes.md)
 - [Axioms and Computation](./axioms_and_computation.md)
 - [Building This Manual](./mdbook.md)

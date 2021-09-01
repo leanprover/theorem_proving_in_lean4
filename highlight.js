@@ -1108,7 +1108,7 @@ hljs.registerLanguage("lean", function(hljs) {
     keyword:
       'theorem|10 def class structure instance set_option ' +
       'example inductive coinductive attribute ' +
-      'axiom constant ' +
+      'axiom constant scoped local noncomputable ' +
       'partial unsafe private protected ' +
       'if then else ' +
       'universe variable variables ' +
@@ -1138,7 +1138,7 @@ hljs.registerLanguage("lean", function(hljs) {
     literal:
       'true false',
     meta:
-      'noncomputable|10 private protected ',
+      ' ',
     strong:
       'sorry admit',
   };
@@ -1157,12 +1157,6 @@ hljs.registerLanguage("lean", function(hljs) {
     className: 'meta',
     begin: '@\\[',
     end: '\\]'
-  };
-
-  var ATTRIBUTE_LINE = {
-    className: 'meta',
-    begin: '^attribute',
-    end: '$'
   };
 
   var LEAN_DEFINITION =	{
@@ -1202,7 +1196,6 @@ hljs.registerLanguage("lean", function(hljs) {
       DOC_COMMENT,
       LEAN_DEFINITION,
       ATTRIBUTE_DECORATOR,
-      ATTRIBUTE_LINE,
       { begin: /⟨/ } // relevance booster
     ]
   };
