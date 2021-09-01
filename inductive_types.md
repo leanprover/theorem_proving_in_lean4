@@ -1283,6 +1283,61 @@ theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) := by
 # end Hidden
 ```
 
+The `induction` tactic also supports user-defined induction principles with
+multiple targets (aka major premises).
+
+
+```lean
+/-
+theorem Nat.mod.inductionOn
+      {motive : Nat → Nat → Sort u}
+      (x y  : Nat)
+      (ind  : ∀ x y, 0 < y ∧ y ≤ x → motive (x - y) y → motive x y)
+      (base : ∀ x y, ¬(0 < y ∧ y ≤ x) → motive x y)
+      : motive x y :=
+-/
+
+example (x : Nat) {y : Nat} (h : y > 0) : x % y < y := by
+  induction x, y using Nat.mod.inductionOn with
+  | ind x y h₁ ih =>
+    rw [Nat.mod_eq_sub_mod h₁.2]
+    exact ih h
+  | base x y h₁ =>
+     have : ¬ 0 < y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
+     match this with
+     | Or.inl h₁ => exact absurd h h₁
+     | Or.inr h₁ =>
+       have hgt : y > x := Nat.gt_of_not_le h₁
+       rw [← Nat.mod_eq_of_lt hgt] at hgt
+       assumption
+```
+
+You can use the `match` notation in tactics too:
+
+```lean
+example : p ∨ q → q ∨ p := by
+  intro h
+  match h with
+  | Or.inl _  => apply Or.inr; assumption
+  | Or.inr h2 => apply Or.inl; exact h2
+```
+
+As a convenience, pattern-matching has been integrated into tactics such as `intro` and `funext`.
+
+```lean
+example : s ∧ q ∧ r → p ∧ r → q ∧ p := by
+  intro ⟨_, ⟨hq, _⟩⟩ ⟨hp, _⟩
+  exact ⟨hq, hp⟩
+
+example :
+    (fun (x : Nat × Nat) (y : Nat × Nat) => x.1 + y.2)
+    =
+    (fun (x : Nat × Nat) (z : Nat × Nat) => z.2 + x.1) := by
+  funext (a, b) (c, d)
+  show a + d = d + a
+  rw [Nat.add_comm]
+```
+
 We close this section with one last tactic that is designed to
 facilitate working with inductive types, namely, the ``injection``
 tactic. By design, the elements of an inductive type are freely

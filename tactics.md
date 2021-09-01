@@ -658,7 +658,7 @@ example (P : Nat → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : Nat) : P
 ```
 
 The ``cases`` tactic, and its companion, the ``induction`` tactic, are discussed in greater detail in
-the [Tactics for Inductive Types](TBD) section.
+the [Tactics for Inductive Types](./inductive_types.md#_tactics_for_inductive_types) section.
 
 The ``contradiction`` tactic searches for a contradiction among the hypotheses of the current goal:
 
