@@ -201,138 +201,117 @@ creates aliases for ``succ``, ``add``, and ``sub`` in the current namespace, so 
 Attributes
 ----------
 
-The main function of Lean is to translate user input to formal expressions that are checked by the kernel for correctness and then stored in the environment for later use. But some commands have other effects on the environment, either assigning attributes to objects in the environment, defining notation, or declaring instances of type classes, as described in :numref:`Chapter %s <type_classes>`. Most of these commands have global effects, which is to say, that they remain in effect not only in the current file, but also in any file that imports it. However, such commands can often be prefixed with the ``local`` modifier, which indicates that they only have effect until the current ``section`` or ``namespace`` is closed, or until the end of the current file.
+The main function of Lean is to translate user input to formal
+expressions that are checked by the kernel for correctness and then
+stored in the environment for later use. But some commands have other
+effects on the environment, either assigning attributes to objects in
+the environment, defining notation, or declaring instances of type
+classes, as described in [Chapter Type Classes](./type_classes.md). Most of
+these commands have global effects, which is to say, that they remain
+in effect not only in the current file, but also in any file that
+imports it. However, such commands often support the ``local`` modifier,
+which indicates that they only have effect until
+the current ``section`` or ``namespace`` is closed, or until the end
+of the current file.
 
-In :numref:`using_the_simplifier`, we saw that theorems can be annotated with the ``[simp]`` attribute, which makes them available for use by the simplifier. The following example defines the prefix relation on lists, proves that this relation is reflexive, and assigns the ``[simp]`` attribute to that theorem.
+In [Section Using the Simplifier](./tactics.md#_using_the_simp),
+we saw that theorems can be annotated with the ``[simp]`` attribute,
+which makes them available for use by the simplifier.
+The following example defines the prefix relation on lists,
+proves that this relation is reflexive, and assigns the ``[simp]`` attribute to that theorem.
 
-.. code-block:: lean
+```lean
+def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+  ∃ t, l₁ ++ t = l₂
 
-    variable {α : Type*}
+@[simp] theorem List.isPrefix_self (as : List α) : isPrefix as as :=
+  ⟨[], by simp⟩
 
-    def is_prefix (l₁ : list α) (l₂ : list α) : Prop :=
-    ∃ t, l₁ ++ t = l₂
+example : isPrefix [1, 2, 3] [1, 2, 3] := by
+  simp
+```
 
-    infix ` <+: `:50 := is_prefix
-
-    attribute [simp]
-    theorem list.is_prefix_refl (l : list α) : l <+: l :=
-    ⟨[], by simp⟩
-
-    example : [1, 2, 3] <+: [1, 2, 3] := by simp
-
-The simplifier then proves ``[1, 2, 3] <+: [1, 2, 3]`` by rewriting it to ``true``. Lean allows the alternative annotation ``@[simp]`` before a theorem to assign the attribute:
-
-.. code-block:: lean
-
-    variable {α : Type*}
-
-    def is_prefix (l₁ : list α) (l₂ : list α) : Prop := ∃ t, l₁ ++ t = l₂
-
-    infix ` <+: `:50 := is_prefix
-
-    -- BEGIN
-    @[simp]
-    theorem list.is_prefix_refl (l : list α) : l <+: l :=
-    ⟨[], by simp⟩
-    -- END
+The simplifier then proves ``isPrefix [1, 2, 3] [1, 2, 3]`` by rewriting it to ``True``.
 
 One can also assign the attribute any time after the definition takes place:
 
-.. code-block:: lean
+```lean
+# def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+#  ∃ t, l₁ ++ t = l₂
+theorem List.isPrefix_self (as : List α) : isPrefix as as :=
+  ⟨[], by simp⟩
 
-    variable {α : Type*}
+attribute [simp] List.isPrefix_self
+```
 
-    def is_prefix (l₁ : list α) (l₂ : list α) : Prop := ∃ t, l₁ ++ t = l₂
+In all these cases, the attribute remains in effect in any file that
+imports the one in which the declaration occurs. Adding the ``local``
+modifier restricts the scope:
 
-    infix ` <+: `:50 := is_prefix
+```lean
+# def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+#  ∃ t, l₁ ++ t = l₂
+section
 
-    -- BEGIN
-    theorem list.is_prefix_refl (l : list α) : l <+: l :=
-    ⟨[], by simp⟩
+theorem List.isPrefix_self (as : List α) : isPrefix as as :=
+  ⟨[], by simp⟩
 
-    attribute [simp] list.is_prefix_refl
-    -- END
+attribute [local simp] List.isPrefix_self
 
-In all these cases, the attribute remains in effect in any file that imports the one in which the declaration occurs. Adding the ``local`` modifier restricts the scope:
+example : isPrefix [1, 2, 3] [1, 2, 3] := by
+  simp
 
-.. code-block:: lean
+end
 
-    variable {α : Type*}
+-- Error:
+-- example : isPrefix [1, 2, 3] [1, 2, 3] := by
+--  simp
+```
 
-    def is_prefix (l₁ : list α) (l₂ : list α) : Prop := ∃ t, l₁ ++ t = l₂
+For another example, we can use the ``instance`` command to assign the
+notation ``≤`` to the `isPrefix` relation. That command, which will
+be explained in [Chapter Type Classes](./type_classes.md), works by
+assigning an ``[instance]`` attribute to the associated definition.
 
-    infix ` <+: `:50 := is_prefix
+```lean
+def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+  ∃ t, l₁ ++ t = l₂
 
-    -- BEGIN
-    section
-    local attribute [simp]
-    theorem list.is_prefix_refl (l : list α) : l <+: l :=
-    ⟨[], by simp⟩
+instance : LE (List α) where
+  le := isPrefix
 
-    example : [1, 2, 3] <+: [1, 2, 3] := by simp
-    end
-
-    -- error:
-    -- example : [1, 2, 3] <+: [1, 2, 3] := by simp
-    -- END
-
-For another example, we can use the ``instance`` command to assign the notation ``≤`` to the `is_prefix` relation. That command, which will be explained in :numref:`Chapter %s <type_classes>`, works by assigning an ``[instance]`` attribute to the associated definition.
-
-.. code-block:: lean
-
-    variable {α : Type*}
-
-    def is_prefix (l₁ : list α) (l₂ : list α) : Prop := ∃ t, l₁ ++ t = l₂
-
-    -- BEGIN
-    instance list_has_le : has_le (list α) := ⟨is_prefix⟩
-
-    theorem list.is_prefix_refl (l : list α) : l ≤ l :=
-    ⟨[], by simp⟩
-    -- END
+theorem List.isPrefix_self (as : List α) : as ≤ as :=
+  ⟨[], by simp⟩
+```
 
 That assignment can also be made local:
 
-.. code-block:: lean
+```lean
+# def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+#   ∃ t, l₁ ++ t = l₂
+def instLe : LE (List α) :=
+  { le := isPrefix }
 
-    variable {α : Type*}
+section
+attribute [local instance] instLe
 
-    def is_prefix (l₁ : list α) (l₂ : list α) : Prop := ∃ t, l₁ ++ t = l₂
+example (as : List α) : as ≤ as :=
+  ⟨[], by simp⟩
 
-    -- BEGIN
-    def list_has_le : has_le (list α) := ⟨is_prefix⟩
+end
 
-    section
-    local attribute [instance] list_has_le
+-- Error:
+-- example (as : List α) : as ≤ as :=
+--  ⟨[], by simp⟩
+```
 
-    theorem foo (l : list α) : l ≤ l := ⟨[], by simp⟩
-    end
-
-    -- error:
-    -- theorem bar (l : list α) : l ≤ l := ⟨[], by simp⟩
-    -- END
-
-For yet another example, the ``reflexivity`` tactic makes use of objects in the environment that have been tagged with the ``[refl]`` attribute:
-
-.. code-block:: lean
-
-    variable {α : Type*}
-
-    def is_prefix (l₁ : list α) (l₂ : list α) : Prop := ∃ t, l₁ ++ t = l₂
-
-    infix ` <+: `:50 := is_prefix
-
-    -- BEGIN
-    @[simp, refl]
-    theorem list.is_prefix_refl (l : list α) : l <+: l :=
-    ⟨[], by simp⟩
-
-    example : [1, 2, 3] <+: [1, 2, 3] := by reflexivity
-    -- END
-
-The scope of the ``[refl]`` attribute can similarly be restricted using the ``local`` modifier, as above.
-
-In :numref:`notation` below, we will discuss Lean's mechanisms for defining notation, and see that they also support the ``local`` modifier. However, in :numref:`setting_options`, we will discuss Lean's mechanisms for setting options, which does *not* follow this pattern: options can *only* be set locally, which is to say, their scope is always restricted to the current section or current file.
+In [Section Notation](#notation) below, we will discuss Lean's
+mechanisms for defining notation, and see that they also support the
+``local`` modifier. However, in [Section Setting Options](#setting_options), we will
+discuss Lean's mechanisms for setting options, which does *not* follow
+this pattern: options can *only* be set locally, which is to say,
+their scope is always restricted to the current section or current
+file.
 
 More on Implicit Arguments
 --------------------------
