@@ -21,12 +21,12 @@ Here are some examples of how you can declare objects in Lean and
 check their types.
 
 ```lean
-/- Declare some constants. -/
+/- Define some constants. -/
 
-constant m  : Nat   -- m is a natural number
-constant n  : Nat
-constant b1 : Bool  -- b1 is a Boolean
-constant b2 : Bool
+def m : Nat := 1       -- m is a natural number
+def n : Nat := 0
+def b1 : Bool := true  -- b1 is a Boolean
+def b2 : Bool := false
 
 /- Check their types. -/
 
@@ -38,6 +38,12 @@ constant b2 : Bool
 #check b1 && b2     -- "&&" is the Boolean and
 #check b1 || b2     -- Boolean or
 #check true         -- Boolean "true"
+
+/- Evaluate -/
+
+#eval 5 * 4         -- 20
+#eval m + 2         -- 3
+#eval b1 && b2      -- false
 ```
 
 Any text between ``/-`` and ``-/`` constitutes a comment block that is
@@ -46,10 +52,14 @@ the line contains a comment that is also ignored. Comment blocks can
 be nested, making it possible to "comment out" chunks of code, just as
 in many programming languages.
 
-The ``constant`` command introduces new constant symbols into the
-working environment.  The ``#check`` command asks Lean to report their
+The ``def`` keyword declares new constant symbols into the
+working environment. In the example above, `def m : Nat := 1`
+defines a new constant `m` of type `Nat` whose value is `1`.
+The ``#check`` command asks Lean to report their
 types; in Lean, auxiliary commands that query the system for
-information typically begin with the hash (#) symbol. You should try
+information typically begin with the hash (#) symbol.
+The `#eval` command asks Lean to evaluate the given expression.
+You should try
 declaring some constants and type checking some expressions on your
 own. Declaring new objects in this way is a good way to experiment
 with the system.
@@ -65,28 +75,32 @@ Lean standard library, you often see Greek letters to denote types,
 and the Unicode symbol `→` as a more compact version of `->`.
 
 ```lean
-constant m : Nat
-constant n : Nat
+#check Nat → Nat      -- type the arrow as "\to" or "\r"
+#check Nat -> Nat     -- alternative ASCII notation
 
-constant f  : Nat → Nat         -- type the arrow as "\to" or "\r"
-constant f' : Nat -> Nat        -- alternative ASCII notation
-constant p  : Nat × Nat         -- type the product as "\times"
-constant q  : Prod Nat Nat      -- alternative notation
-constant g  : Nat → Nat → Nat
-constant g' : Nat → (Nat → Nat) -- has the same type as g!
-constant h  : Nat × Nat → Nat
-constant F  : (Nat → Nat) → Nat -- a "functional"
+#check Nat × Nat      -- type the product as "\times"
+#check Prod Nat Nat   -- alternative notation
 
-#check f            -- Nat → Nat
-#check f n          -- Nat
-#check g m n        -- Nat
-#check g m          -- Nat → Nat
-#check (m, n)       -- Nat × Nat
-#check p.1          -- Nat
-#check p.2          -- Nat
-#check (m, n).1     -- Nat
-#check (p.1, n)     -- Nat × Nat
-#check F f          -- Nat
+#check Nat → Nat → Nat
+#check Nat → (Nat → Nat)  --  same type as above
+
+#check Nat × Nat → Nat
+#check (Nat → Nat) → Nat -- a "functional"
+
+#check Nat.succ     -- Nat → Nat
+#check (0, 1)       -- Nat × Nat
+#check Nat.add      -- Nat → Nat → Nat
+
+#check Nat.succ 2   -- Nat
+#check Nat.add 3    -- Nat → Nat
+#check Nat.add 5 2  -- Nat
+#check (5, 9).1     -- Nat
+#check (5, 9).2     -- Nat
+
+#eval Nat.succ 2   -- 3
+#eval Nat.add 5 2  -- 7
+#eval (5, 9).1     -- 5
+#eval (5, 9).2     -- 9
 ```
 
 Once again, you should try some examples on your own.
@@ -102,20 +116,22 @@ letters like ``α``, ``β``, and ``γ`` to range over types. You can
 enter these particular ones with ``\a``, ``\b``, and ``\g``.
 
 There are a few more things to notice here. First, the application of
-a function ``f`` to a value ``x`` is denoted ``f x``. Second, when
-writing type expressions, arrows associate to the *right*; for
-example, the type of ``g`` is ``Nat → (Nat → Nat)``. Thus you can
-view ``g`` as a function that takes natural numbers and returns
+a function ``f`` to a value ``x`` is denoted ``f x`` (e.g., `Nat.succ 2`).
+Second, when writing type expressions, arrows associate to the *right*; for
+example, the type of ``Nat.add`` is ``Nat → Nat → Nat`` which is equivalent
+to `Nat → (Nat → Nat)`. Thus you can
+view ``Nat.add`` as a function that takes natural numbers and returns
 another function that takes a natural number and returns a natural
 number. In type theory, this is generally more convenient than
-writing ``g`` as a function that takes a pair of natural numbers as
+writing ``Nat.add`` as a function that takes a pair of natural numbers as
 input and returns a natural number as output. For example, it allows
-you to "partially apply" the function ``g``.  The example above shows
-that ``g m`` has type ``Nat → Nat``, that is, ``g m`` returns a
+you to "partially apply" the function ``Nat.add``.  The example above shows
+that ``Nat.add 3`` has type ``Nat → Nat``, that is, ``Nat.add 3`` returns a
 function that "waits" for a second argument, ``n``, which is then
-equivalent to writing ``g m n``. Taking a function ``h`` of type ``Nat
+equivalent to writing ``Nat.add 3 n``.
+<!-- Taking a function ``h`` of type ``Nat
 × Nat → Nat`` and "redefining" it to look like ``g`` is a process
-known as *currying*.
+known as *currying*. -->
 
 You have seen that if you have ``m : Nat`` and ``n : Nat``, then
 ``(m, n)`` denotes the ordered pair of ``m`` and ``n`` which is of
@@ -149,10 +165,10 @@ You can see that each one of the expressions above is an object of
 type ``Type``. You can also declare new constants for types:
 
 ```lean
-constant α : Type
-constant β : Type
-constant F : Type → Type
-constant G : Type → Type → Type
+def α : Type := Nat
+def β : Type := Bool
+def F : Type → Type := List
+def G : Type → Type → Type := Prod
 
 #check α        -- Type
 #check F α      -- Type
@@ -162,12 +178,12 @@ constant G : Type → Type → Type
 #check G α Nat  -- Type
 ```
 
-Indeed, you have already seen an example of a function of type
-``Type → Type → Type``, namely, the Cartesian product:
+As the example above suggests, you have already seen an example of a function of type
+``Type → Type → Type``, namely, the Cartesian product `Prod`:
 
 ```lean
-constant α : Type
-constant β : Type
+def α : Type := Nat
+def β : Type := Bool
 
 #check Prod α β       -- Type
 #check α × β          -- Type
@@ -180,7 +196,7 @@ Here is another example: given any type ``α``, the type ``List α``
 denotes the type of lists of elements of type ``α``.
 
 ```lean
-constant α : Type
+def α : Type := Nat
 
 #check List α    -- Type
 #check List Nat  -- Type
@@ -235,20 +251,23 @@ similarly polymorphic:
 #check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 ```
 
-To define polymorphic constants and variables, Lean allows you to
+To define polymorphic constants, Lean allows you to
 declare universe variables explicitly using the `universe` command:
 
 ```lean
 universe u
-constant α : Type u
-#check α
+
+def F (α : Type u) : Type u := Prod α α
+
+#check F    -- Type u → Type u
 ```
-Equivalently, you can write ``Type _`` to avoid giving the arbitrary
-universe a name:
+
+You can avoid the universe command by providing the universe parameters when defining F.
 
 ```lean
-constant α : Type _
-#check α
+def F.{u} (α : Type u) : Type u := Prod α α
+
+#check F    -- Type u → Type u
 ```
 
 ## Function Abstraction and Evaluation
@@ -279,36 +298,32 @@ any value ``x`` to the value ``t``.
 Here are some more examples
 
 ```lean
-constant f : Nat → Nat
-constant h : Nat → Bool → Nat
-
-#check fun x : Nat => fun y : Bool => h (f x) y   -- Nat → Bool → Nat
-#check fun (x : Nat) (y : Bool) => h (f x) y      -- Nat → Bool → Nat
-#check fun x y => h (f x) y                       -- Nat → Bool → Nat
+#check fun x : Nat => fun y : Bool => if not y then x + 1 else x + 2
+#check fun (x : Nat) (y : Bool) => if not y then x + 1 else x + 2
+#check fun x y => if not y then x + 1 else x + 2   -- Nat → Bool → Nat
 ```
 
 Lean interprets the final three examples as the same expression; in
 the last expression, Lean infers the type of ``x`` and ``y`` from the
-types of ``f`` and ``h``.
+expression `if not y then x + 1 else x + 2`.
 
 Some mathematically common examples of operations of functions can be
 described in terms of lambda abstraction:
 
 ```lean
-constant f : Nat → String
-constant g : String → Bool
-constant b : Bool
+def f (n : Nat) : String := toString n
+def g (s : String) : Bool := s.length > 0
 
 #check fun x : Nat => x        -- Nat → Nat
-#check fun x : Nat => b        -- Nat → Bool
+#check fun x : Nat => true     -- Nat → Bool
 #check fun x : Nat => g (f x)  -- Nat → Bool
 #check fun x => g (f x)        -- Nat → Bool
 ```
 
 Think about what these expressions mean. The expression
 ``fun x : Nat => x`` denotes the identity function on ``Nat``, the
-expression ``fun x : Nat => b`` denotes the constant function that
-always returns ``b``, and ``fun x : Nat => g (f x)``, denotes the
+expression ``fun x : Nat => true`` denotes the constant function that
+always returns ``true``, and ``fun x : Nat => g (f x)``, denotes the
 composition of ``f`` and ``g``.  You can, in general, leave off the
 type annotation and let Lean infer it for you.  So, for example, you
 can write ``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
@@ -352,8 +367,8 @@ following expressions:
 #check (fun x : Nat => x) 1     -- Nat
 #check (fun x : Nat => true) 1  -- Bool
 
-constant f : Nat → String
-constant g : String → Bool
+def f (n : Nat) : String := toString n
+def g (s : String) : Bool := s.length > 0
 
 #check
   (fun (α β γ : Type) (u : β → γ) (v : α → β) (x : α) => u (v x)) Nat String Bool g f 0
@@ -367,9 +382,6 @@ In fact, more should be true: applying the expression ``(fun x : Nat
 ```lean
 #eval (fun x : Nat => x) 1     -- 1
 #eval (fun x : Nat => true) 1  -- true
-
-constant f : Nat → String
-constant g : String → Bool
 ```
 
 You will see later how these terms are evaluated. For now, notice that
@@ -383,7 +395,10 @@ identifications.
 Lean is a complete programming language. It has a compiler that
 generates a binary executable and an interactive interpreter. You can
 use the command `#eval` to execute expressions, and it is the
-preferred way of testing your functions. Note that `#eval` and
+preferred way of testing your functions.
+
+<!--
+Note that `#eval` and
 `#reduce` are *not* equivalent. The command `#eval` first compiles
 Lean expressions into an intermediate representation (IR) and then
 uses an interpreter to execute the generated IR. Some builtin types
@@ -397,10 +412,11 @@ that is responsible for checking and verifying the correctness of
 expressions and proofs. It is less efficient than ``#eval``, and
 treats all foreign functions as opaque constants. You will learn later
 that there are some other differences between the two commands.
+-->
 
-## Introducing Definitions
+## Definitions
 
-The ``def`` keyword provides one important way of declaring new named
+Recall that the ``def`` keyword provides one important way of declaring new named
 objects.
 
 ```lean
@@ -821,9 +837,12 @@ the type of the next two elements are ``α`` and ``List α``. These
 types vary depending on the first argument, ``α``.
 
 ```
-constant α : Type
-#check cons α           -- List Type → List Type
-#check cons             -- ?m.468 → List ?m.468 → List ?m.468 which is not ``Type → α → list α → list α``
+def cons (α : Type) (a : α) (as : List α) : List α :=
+  List.cons a as
+
+#check cons Nat        -- Nat → List Nat → List Nat
+#check cons Bool       -- Bool → List Bool → List Bool
+#check cons            -- (α : Type) → α → List α → List α
 ```
 
 This is an instance of a *dependent function type*, or *dependent
@@ -871,15 +890,14 @@ def f (α : Type u) (β : α → Type v) (a : α) (b : β a) : (a : α) × β a 
 def g (α : Type u) (β : α → Type v) (a : α) (b : β a) : Σ a : α, β a :=
   Sigma.mk a b
 
-#reduce f
-#reduce g
+def h1 (x : Nat) : Nat :=
+  (f Type (fun α => α) Nat x).2
 
-#reduce f Type (fun α => α) Nat 10
-#reduce g Type (fun α => α) Nat 10
+#eval h1 5 -- 5
 
-#reduce (f Type (fun α => α) Nat 10).1 -- Nat
-#reduce (g Type (fun α => α) Nat 10).1 -- Nat
-#reduce (f Type (fun α => α) Nat 10).2 -- 10
-#reduce (g Type (fun α => α) Nat 10).2 -- 10
+def h2 (x : Nat) : Nat :=
+  (g Type (fun α => α) Nat x).2
+
+#eval h2 5 -- 5
 ```
 The function `f` and `g` above denote the same function.
