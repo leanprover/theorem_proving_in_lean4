@@ -1,3 +1,5 @@
+# Manual
+
 - [Introduction](./introduction.md)
 - [Dependent Type Theory](./dependent_type_theory.md)
 - [Propositions and Proofs](./propositions_and_proofs.md)
@@ -9,4 +11,7 @@
 - [Structures and Records](./structures_and_records.md)
 - [Type Classes](./type_classes.md)
 - [Axioms and Computation](./axioms_and_computation.md)
+
+# Other
+
 - [Building This Manual](./mdbook.md)
