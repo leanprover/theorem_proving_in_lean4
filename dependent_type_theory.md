@@ -903,7 +903,7 @@ def h2 (x : Nat) : Nat :=
 The function `f` and `g` above denote the same function.
 
 
-Implicit Arguments
+<a name="_implicit_args"></a>Implicit Arguments
 ------------------
 
 Suppose we have an implementation of lists as:
@@ -1078,7 +1078,7 @@ provide the argument explicitly. If ``foo`` is such a function, the
 notation ``@foo`` denotes the same function with all the arguments
 made explicit.
 
-```
+```lean
 #check @id        -- {α : Type u_1} → α → α
 #check @id Nat    -- Nat → Nat
 #check @id Bool   -- Bool → Bool
