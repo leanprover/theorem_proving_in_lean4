@@ -17,3 +17,9 @@ mdbook watch --open  # opens the output in `out/` in your default browser
 ```
 
 Run `mdbook test` to test all `lean` code blocks.
+
+## How to deploy
+
+```
+./deploy.sh
+```
