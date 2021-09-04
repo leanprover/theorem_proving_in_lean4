@@ -318,344 +318,323 @@ file.
 More on Implicit Arguments
 --------------------------
 
-In :numref:`implicit_arguments`, we saw that if Lean displays the type
-of a term ``t`` as ``{x : α}, β x``, then the curly brackets
+In [Section Implicit Arguments](./dependent_type_theory.md#_implicit_args),
+we saw that if Lean displays the type
+of a term ``t`` as ``{x : α} → β x``, then the curly brackets
 indicate that ``x`` has been marked as an *implicit argument* to
 ``t``. This means that whenever you write ``t``, a placeholder, or
 "hole," is inserted, so that ``t`` is replaced by ``@t _``. If you
 don't want that to happen, you have to write ``@t`` instead.
 
-Notice that implicit arguments are inserted eagerly. Suppose we define a function ``f (x : ℕ) {y : ℕ} (z : ℕ)`` with the arguments shown. Then, when we write the expression ``f 7`` without further arguments, it is parsed as ``f 7 _``. Lean offers a weaker annotation, ``{{y : ℕ}}``, which specifies that a placeholder should only be added *before* a subsequent explicit argument. This annotation can also be written using as ``⦃y : ℕ⦄``, where the unicode brackets are entered as ``\{{`` and ``\}}``, respectively. With this annotation, the expression ``f 7`` would be parsed as is, whereas ``f 7 3`` would be parsed as ``f 7 _ 3``, just as it would be with the strong annotation.
+Notice that implicit arguments are inserted eagerly. Suppose we define
+a function ``f (x : Nat) {y : Nat} (z : Nat)`` with the arguments
+shown. Then, when we write the expression ``f 7`` without further
+arguments, it is parsed as ``f 7 _``. Lean offers a weaker annotation,
+``{{y : ℕ}}``, which specifies that a placeholder should only be added
+*before* a subsequent explicit argument. This annotation can also be
+written using as ``⦃y : Nat⦄``, where the unicode brackets are entered
+as ``\{{`` and ``\}}``, respectively. With this annotation, the
+expression ``f 7`` would be parsed as is, whereas ``f 7 3`` would be
+parsed as ``f 7 _ 3``, just as it would be with the strong annotation.
 
-To illustrate the difference, consider the following example, which shows that a reflexive euclidean relation is both symmetric and transitive.
+To illustrate the difference, consider the following example, which
+shows that a reflexive euclidean relation is both symmetric and
+transitive.
 
-.. code-block:: lean
+```lean
+def reflexive {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ (a : α), r a a
 
-    -- BEGIN
-    namespace hidden
-    variables {α : Type*} (r : α → α → Prop)
+def symmetric {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {a b : α}, r a b → r b a
 
-    definition reflexive  : Prop := ∀ (a : α), r a a
-    definition symmetric  : Prop := ∀ {a b : α}, r a b → r b a
-    definition transitive : Prop :=
-      ∀ {a b c : α}, r a b → r b c → r a c
-    definition euclidean  : Prop :=
-      ∀ {a b c : α}, r a b → r a c → r b c
+def transitive {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {a b c : α}, r a b → r b c → r a c
 
-    variable {r}
+def euclidean {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {a b c : α}, r a b → r a c → r b c
 
-    theorem th1 (reflr : reflexive r) (euclr : euclidean r) :
-      symmetric r :=
-    assume a b : α, assume : r a b,
-    show r b a, from euclr this (reflr _)
+theorem th1 {α : Type u} {r : α → α → Prop}
+            (reflr : reflexive r) (euclr : euclidean r)
+            : symmetric r :=
+  fun {a b : α} =>
+  fun (h : r a b) =>
+  show r b a from euclr h (reflr _)
 
-    theorem th2 (symmr : symmetric r) (euclr : euclidean r) :
-      transitive r :=
-    assume (a b c : α), assume (rab : r a b) (rbc : r b c),
-    euclr (symmr rab) rbc
+theorem th2 {α : Type u} {r : α → α → Prop}
+            (symmr : symmetric r) (euclr : euclidean r)
+            : transitive r :=
+  fun {a b c : α} =>
+  fun (rab : r a b) (rbc : r b c) =>
+  euclr (symmr rab) rbc
 
-    -- error:
-    /-
-    theorem th3 (reflr : reflexive r) (euclr : euclidean r) :
-      transitive r :=
-    th2 (th1 reflr euclr) euclr
-    -/
+theorem th3 {α : Type u} {r : α → α → Prop}
+            (reflr : reflexive r) (euclr : euclidean r)
+            : transitive r :=
+ @th2 _ _ (@th1 _ _ reflr @euclr) @euclr
 
-    theorem th3 (reflr : reflexive r) (euclr : euclidean r) :
-      transitive r :=
-    @th2 _ _ (@th1 _ _ reflr @euclr) @euclr
-    end hidden
-    -- END
+variable (r : α → α → Prop)
+variable (euclr : euclidean r)
 
-The results are broken down into small steps: ``th1`` shows that a relation that is reflexive and euclidean is symmetric, and ``th2`` shows that a relation that is symmetric and euclidean is transitive. Then ``th3`` combines the two results. But notice that we have to manually disable the implicit arguments in ``th1``, ``th2``, and ``euclr``, because otherwise too many implicit arguments are inserted. The problem goes away if we use weak implicit arguments:
+#check euclr  -- r ?m1 ?m2 → r ?m1 ?m3 → r ?m2 ?m3
+```
 
-.. code-block:: lean
+The results are broken down into small steps: ``th1`` shows that a
+relation that is reflexive and euclidean is symmetric, and ``th2``
+shows that a relation that is symmetric and euclidean is
+transitive. Then ``th3`` combines the two results. But notice that we
+have to manually disable the implicit arguments in ``th1``, ``th2``,
+and ``euclr``, because otherwise too many implicit arguments are
+inserted. The problem goes away if we use weak implicit arguments:
 
-    namespace hidden
-    -- BEGIN
-    variables {α : Type*} (r : α → α → Prop)
+```lean
+def reflexive {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ (a : α), r a a
 
-    definition reflexive  : Prop := ∀ (a : α), r a a
-    definition symmetric  : Prop := ∀ ⦃a b : α⦄, r a b → r b a
-    definition transitive : Prop :=
-      ∀ ⦃a b c : α⦄, r a b → r b c → r a c
-    definition euclidean  : Prop :=
-      ∀ ⦃a b c : α⦄, r a b → r a c → r b c
+def symmetric {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {{a b : α}}, r a b → r b a
 
-    variable {r}
+def transitive {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {{a b c : α}}, r a b → r b c → r a c
 
-    theorem th1 (reflr : reflexive r) (euclr : euclidean r) :
-      symmetric r :=
-    assume a b : α, assume : r a b,
-    show r b a, from euclr this (reflr _)
+def euclidean {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {{a b c : α}}, r a b → r a c → r b c
 
-    theorem th2 (symmr : symmetric r) (euclr : euclidean r) :
-      transitive r :=
-    assume (a b c : α), assume (rab : r a b) (rbc : r b c),
-    euclr (symmr rab) rbc
+theorem th1 {α : Type u} {r : α → α → Prop}
+            (reflr : reflexive r) (euclr : euclidean r)
+            : symmetric r :=
+  fun {a b : α} =>
+  fun (h : r a b) =>
+  show r b a from euclr h (reflr _)
 
-    theorem th3 (reflr : reflexive r) (euclr : euclidean r) :
-      transitive r :=
-    th2 (th1 reflr euclr) euclr
-    -- END
-    end hidden
+theorem th2 {α : Type u} {r : α → α → Prop}
+            (symmr : symmetric r) (euclr : euclidean r)
+            : transitive r :=
+  fun {a b c : α} =>
+  fun (rab : r a b) (rbc : r b c) =>
+  euclr (symmr rab) rbc
 
-There is a third kind of implicit argument that is denoted with square brackets, ``[`` and ``]``. These are used for type classes, as explained in :numref:`Chapter %s <type_classes>`.
+theorem th3 {α : Type u} {r : α → α → Prop}
+            (reflr : reflexive r) (euclr : euclidean r)
+            : transitive r :=
+  th2 (th1 reflr euclr) euclr
 
-.. _notation:
+variable (r : α → α → Prop)
+variable (euclr : euclidean r)
+
+#check euclr  -- euclidean r
+```
+
+There is a third kind of implicit argument that is denoted with square
+brackets, ``[`` and ``]``. These are used for type classes, as
+explained in [Chapter Type Classes](./type_classes.md).
 
 Notation
 --------
 
-Identifiers in Lean can include any alphanumeric characters, including Greek characters (other than Π , Σ , and λ , which, as we have seen, have a special meaning in the dependent type theory). They can also include subscripts, which can be entered by typing ``\_`` followed by the desired subscripted character.
+Identifiers in Lean can include any alphanumeric characters, including
+Greek characters (other than ∀ , Σ , and λ , which, as we have seen,
+have a special meaning in the dependent type theory). They can also
+include subscripts, which can be entered by typing ``\_`` followed by
+the desired subscripted character.
 
 Lean's parser is extensible, which is to say, we can define new notation.
 
-.. code-block:: lean
+Lean's syntax can be extended and customized by users at every level,
+ranging from basic "mixfix" notations to custom elaborators.  In fact,
+all builtin syntax is parsed and processed using the same mechanisms
+and APIs open to users.  In this section, we will describe and explain
+the various extension points.
 
-    notation `[` a `**` b `]` := a * b + 1
+While introducing new notations is a relatively rare feature in
+programming languages and sometimes even frowned upon because of its
+potential to obscure code, it is an invaluable tool in formalization
+for expressing established conventions and notations of the respective
+field succinctly in code.  Going beyond basic notations, Lean's
+ability to factor out common boilerplate code into (well-behaved)
+macros and to embed entire custom domain specific languages (DSLs) to
+textually encode subproblems efficiently and readably can be of great
+benefit to both programmers and proof engineers alike.
 
-    def mul_square (a b : ℕ) := a * a * b * b
+### Notations and Precedence
 
-    infix `<*>`:50 := mul_square
+The most basic syntax extension commands allow introducing new (or
+overloading existing) prefix, infix, and postfix operators.
 
-    #reduce [2 ** 3]
-    #reduce 2 <*> 3
+```lean
+infixl:65   " + " => HAdd.hAdd  -- left-associative
+infix:50    " = " => Eq         -- non-associative
+infixr:80   " ^ " => HPow.hPow  -- right-associative
+prefix:100  "-"   => Neg.neg
+# set_option quotPrecheck false
+postfix:max "⁻¹"  => Inv.inv
+```
 
-In this example, the ``notation`` command defines a complex binary notation for multiplying and adding one. The ``infix`` command declares a new infix operator, with precedence 50, which associates to the left. (More precisely, the token is given left-binding power 50.) The command ``infixr`` defines notation which associates to the right, instead.
+After the initial command name describing the operator kind (its
+"fixity"), we give the *parsing precedence* of the operator preceded
+by a colon `:`, then a new or existing token surrounded by double
+quotes (the whitespace is used for pretty printing), then the function
+this operator should be translated to after the arrow `=>`.
 
-If you declare these notations in a namespace, the notation is only available when the namespace is open. You can declare temporary notation using the keyword ``local``, in which case the notation is available in the current file, and moreover, within the scope of the current ``namespace`` or ``section``, if you are in one.
+The precedence is a natural number describing how "tightly" an
+operator binds to its arguments, encoding the order of operations.  We
+can make this more precise by looking at the commands above unfold to:
 
-.. code-block:: lean
+```lean
+notation:65 lhs:65 " + " rhs:66 => HAdd.hAdd lhs rhs
+notation:50 lhs:51 " = " rhs:51 => Eq lhs rhs
+notation:80 lhs:81 " ^ " rhs:80 => HPow.hPow lhs rhs
+notation:100 "-" arg:100 => Neg.neg arg
+# set_option quotPrecheck false
+notation:1024 arg:1024 "⁻¹" => Inv.inv arg  -- `max` is a shorthand for precedence 1024
+```
 
-    local notation `[` a `**` b `]` := a * b + 1
-    local infix `<*>`:50 := λ a b : ℕ, a * a * b * b
+It turns out that all commands from the first code block are in fact
+command *macros* translating to the more general `notation` command.
+We will learn about writing such macros below.  Instead of a single
+token, the `notation` command accepts a mixed sequence of tokens and
+named term placeholders with precedences, which can be referenced on
+the right-hand side of `=>` and will be replaced by the respective
+term parsed at that position.  A placeholder with precedence `p`
+accepts only notations with precedence at least `p` in that place.
+Thus the string `a + b + c` cannot be parsed as the equivalent of
+`a + (b + c)` because the right-hand side operand of an `infixl` notation
+has precedence one greater than the notation itself.  In contrast,
+`infixr` reuses the notation's precedence for the right-hand side
+operand, so `a ^ b ^ c` *can* be parsed as `a ^ (b ^ c)`.  Note that
+if we used `notation` directly to introduce an infix notation like
 
-Lean's core library declares the left-binding powers of a number of common symbols.
+```lean
+# set_option quotPrecheck false
+notation:65 lhs:65 " ~ " rhs:65 => wobble lhs rhs
+```
 
-    https://github.com/leanprover/lean/blob/master/library/init/core.lean
+where the precedences do not sufficiently determine associativity,
+Lean's parser will default to right associativity.  More precisely,
+Lean's parser follows a local *longest parse* rule in the presence of
+ambiguous grammars: when parsing the right-hand side of `a ~` in
+`a ~ b ~ c`, it will continue parsing as long as possible (as the current
+precedence allows), not stopping after `b` but parsing `~ c` as well.
+Thus the term is equivalent to `a ~ (b ~ c)`.
 
-You are welcome to overload these symbols for your own use.
+As mentioned above, the `notation` command allows us to define
+arbitrary *mixfix* syntax freely mixing tokens and placeholders.
 
-You can direct the pretty-printer to suppress notation with the command ``set_option pp.notation false``. You can also declare notation to be used for input purposes only with the ``[parsing_only]`` attribute:
+```lean
+# set_option quotPrecheck false
+notation:max "(" e ")" => e
+notation:10 Γ " ⊢ " e " : " τ => Typing Γ e τ
+```
 
-.. code-block:: lean
+Placeholders without precedence default to `0`, i.e. they accept notations of any precedence in their place.
+If two notations overlap, we again apply the longest parse rule:
 
-    notation [parsing_only] `[` a `**` b `]` := a * b + 1
+```lean
+notation:65 a " + " b:66 " + " c:66 => a + b - c
+#eval 1 + 2 + 3  -- 0
+```
 
-    variables a b : ℕ
-    #check [a ** b]
+The new notation is preferred to the binary notation since the latter,
+before chaining, would stop parsing after `1 + 2`.  If there are
+multiple notations accepting the same longest parse, the choice will
+be delayed until elaboration, which will fail unless exactly one
+overload is type correct.
 
-The output of the ``#check`` command displays the expression as ``a * b + 1``. Lean also provides mechanisms for iterated notation, such as ``[a, b, c, d, e]`` to denote a list with the indicated elements. See the discussion of ``list`` in the next chapter for an example.
-
-The possibility of declaring parameters in a section also makes it possible to define local notation that depends on those parameters. In the example below, as long as the parameter ``m`` is fixed, we can write ``a ≡ b`` for equivalence modulo ``m``. As soon as the section is closed, however, the dependence on ``m`` becomes explicit, and the notation ``a ≡ b`` is no longer valid.
-
-.. code-block:: lean
-
-    import data.int.basic
-
-    namespace int
-
-    def dvd (m n : ℤ) : Prop := ∃ k, n = m * k
-    instance : has_dvd int := ⟨int.dvd⟩
-
-    @[simp]
-    theorem dvd_zero (n : ℤ) : n ∣ 0 :=
-    ⟨0, by simp⟩
-
-    theorem dvd_intro {m n : ℤ} (k : ℤ) (h : n = m * k) : m ∣ n :=
-    ⟨k, h⟩
-
-    end int
-
-    open int
-
-    section mod_m
-    parameter (m : ℤ)
-    variables (a b c : ℤ)
-
-    definition mod_equiv := (m ∣ b - a)
-
-    local infix ≡ := mod_equiv
-
-    theorem mod_refl : a ≡ a :=
-    show m ∣ a - a, by simp
-
-    theorem mod_symm (h : a ≡ b) : b ≡ a :=
-    by cases h with c hc; apply dvd_intro (-c); simp [eq.symm hc]
-
-    local attribute [simp] add_assoc add_comm add_left_comm
-
-    theorem mod_trans (h₁ : a ≡ b) (h₂ : b ≡ c) : a ≡ c :=
-    begin
-      cases h₁ with d hd, cases h₂ with e he,
-      apply dvd_intro (d + e),
-      simp [mul_add, eq.symm hd, eq.symm he, sub_eq_add_neg]
-    end
-    end mod_m
-
-    #check (mod_refl : ∀ (m a : ℤ), mod_equiv m a a)
-
-    #check (mod_symm : ∀ (m a b : ℤ), mod_equiv m a b →
-                         mod_equiv m b a)
-
-    #check (mod_trans :  ∀ (m a b c : ℤ), mod_equiv m a b →
-                           mod_equiv m b c → mod_equiv m a c)
 
 Coercions
 ---------
 
-In Lean, the type of natural numbers, ``nat``, is different from the type of integers, ``int``. But there is a function ``int.of_nat`` that embeds the natural numbers in the integers, meaning that we can view any natural number as an integer, when needed. Lean has mechanisms to detect and insert *coercions* of this sort.
+In Lean, the type of natural numbers, ``Nat``, is different from the
+type of integers, ``Int``. But there is a function ``Int.ofNat`` that
+embeds the natural numbers in the integers, meaning that we can view
+any natural number as an integer, when needed. Lean has mechanisms to
+detect and insert *coercions* of this sort.
 
-.. code-block:: lean
+```lean
+variable (m n : Nat)
+variable (i j : Int)
 
-    variables m n : ℕ
-    variables i j : ℤ
-
-    #check i + m      -- i + ↑m : ℤ
-    #check i + m + j  -- i + ↑m + j : ℤ
-    #check i + m + n  -- i + ↑m + ↑n : ℤ
-
-Notice that the output of the ``#check`` command shows that a coercion has been inserted by printing an arrow. The latter is notation for the function ``coe``; you can type the unicode arrow with ``\u`` or use ``coe`` instead. In fact, when the order of arguments is different, you have to insert the coercion manually, because Lean does not recognize the need for a coercion until it has already parsed the earlier arguments.
-
-.. code-block:: lean
-
-    variables m n : ℕ
-    variables i j : ℤ
-
-    -- BEGIN
-    #check ↑m + i        -- ↑m + i : ℤ
-    #check ↑(m + n) + i  -- ↑(m + n) + i : ℤ
-    #check ↑m + ↑n + i   -- ↑m + ↑n + i : ℤ
-    -- END
-
-In fact, Lean allows various kinds of coercions using type classes; for details, see :numref:`coercions_using_type_classes`.
+#check i + m      -- i + Int.ofNat m : Int
+#check i + m + j  -- i + Int.ofNat m + j : Int
+#check i + m + n  -- i + Int.ofNat m + Int.ofNat n : Int
+```
 
 Displaying Information
 ----------------------
 
-There are a number of ways in which you can query Lean for information about its current state and the objects and theorems that are available in the current context. You have already seen two of the most common ones, ``#check`` and ``#reduce``. Remember that ``#check`` is often used in conjunction with the ``@`` operator, which makes all of the arguments to a theorem or definition explicit. In addition, you can use the ``#print`` command to get information about any identifier. If the identifier denotes a definition or theorem, Lean prints the type of the symbol, and its definition. If it is a constant or an axiom, Lean indicates that fact, and shows the type.
+There are a number of ways in which you can query Lean for information
+about its current state and the objects and theorems that are
+available in the current context. You have already seen two of the
+most common ones, ``#check`` and ``#eval``. Remember that ``#check``
+is often used in conjunction with the ``@`` operator, which makes all
+of the arguments to a theorem or definition explicit. In addition, you
+can use the ``#print`` command to get information about any
+identifier. If the identifier denotes a definition or theorem, Lean
+prints the type of the symbol, and its definition. If it is a constant
+or an axiom, Lean indicates that fact, and shows the type.
 
-.. code-block:: lean
+```lean
+-- examples with equality
+#check Eq
+#check @Eq
+#check Eq.symm
+#check @Eq.symm
 
-    -- examples with equality
-    #check eq
-    #check @eq
-    #check eq.symm
-    #check @eq.symm
+#print Eq.symm
 
-    #print eq.symm
+-- examples with And
+#check And
+#check And.intro
+#check @And.intro
 
-    -- examples with and
-    #check and
-    #check and.intro
-    #check @and.intro
+-- a user-defined function
+def foo {α : Type u} (x : α) : α := x
 
-    -- a user-defined function
-    def foo {α : Type*} (x : α) : α := x
-
-    #check foo
-    #check @foo
-    #reduce foo
-    #reduce (foo nat.zero)
-    #print foo
-
-There are other useful ``#print`` commands:
-
-.. code-block:: text
-
-    #print definition             : display definition
-    #print inductive              : display an inductive type and its constructors
-    #print notation               : display all notation
-    #print notation <tokens>      : display notation using any of the tokens
-    #print axioms                 : display assumed axioms
-    #print options                : display options set by user
-    #print prefix <namespace>     : display all declarations in the namespace
-    #print classes                : display all classes
-    #print instances <class name> : display all instances of the given class
-    #print fields <structure>     : display all fields of a structure
-
-We will discuss inductive types, structures, classes, instances in the next four chapters. Here are examples of how these commands are used:
-
-.. code-block:: lean
-
-    import algebra.ring
-
-    #print notation
-    #print notation + * -
-    #print axioms
-    #print options
-    #print prefix nat
-    #print prefix nat.le
-    #print classes
-    #print instances ring
-    #print fields ring
-
-The behavior of the generic print command is determined by its argument, so that the following pairs of commands all do the same thing.
-
-.. code-block:: lean
-
-    import algebra.group
-
-    #print list.append
-    #print definition list.append
-
-    #print +
-    #print notation +
-
-    #print nat
-    #print inductive nat
-
-    #print group
-    #print inductive group
-
-Moreover, both ``#print group`` and ``#print inductive group`` recognize that a group is a structure (see :numref:`Chapter %s <structures_and_records>`), and so print the fields as well.
-
-.. _setting_options:
+#check foo
+#check @foo
+#print foo
+```
 
 Setting Options
 ---------------
 
-Lean maintains a number of internal variables that can be set by users to control its behavior. The syntax for doing so is as follows:
+Lean maintains a number of internal variables that can be set by users
+to control its behavior. The syntax for doing so is as follows:
 
-.. code-block:: text
-
-    set_option <name> <value>
+```
+set_option <name> <value>
+```
 
 One very useful family of options controls the way Lean's *pretty- printer* displays terms. The following options take an input of true or false:
 
-.. code-block:: text
-
-    pp.implicit  : display implicit arguments
-    pp.universes : display hidden universe parameters
-    pp.coercions : show coercions
-    pp.notation  : display output using defined notations
-    pp.beta      : beta reduce terms before displaying them
+```
+pp.explicit  : display implicit arguments
+pp.universes : display hidden universe parameters
+pp.notation  : display output using defined notations
+```
 
 As an example, the following settings yield much longer output:
 
-.. code-block:: lean
+```lean
+set_option pp.explicit true
+set_option pp.universes true
+set_option pp.notation false
 
-    set_option pp.implicit true
-    set_option pp.universes true
-    set_option pp.notation false
-    set_option pp.numerals false
+#check 2 + 2 = 4
+#reduce (fun x => x + 2) = (fun x => x + 3)
+#check (fun x => x + 1) 1
+```
 
-    #check 2 + 2 = 4
-    #reduce (λ x, x + 2) = (λ x, x + 3)
-    #check (λ x, x + 1) 1
+The command ``set_option pp.all true`` carries out these settings all
+at once, whereas ``set_option pp.all false`` reverts to the previous
+values. Pretty printing additional information is often very useful
+when you are debugging a proof, or trying to understand a cryptic
+error message. Too much information can be overwhelming, though, and
+Lean's defaults are generally sufficient for ordinary interactions.
 
-The command ``set_option pp.all true`` carries out these settings all at once, whereas ``set_option pp.all false`` reverts to the previous values. Pretty printing additional information is often very useful when you are debugging a proof, or trying to understand a cryptic error message. Too much information can be overwhelming, though, and Lean's defaults are generally sufficient for ordinary interactions.
 
-By default, the pretty-printer does not reduce applied lambda-expressions, but this is sometimes useful. The ``pp.beta`` option controls this feature.
 
-.. code-block:: lean
-
-    set_option pp.beta true
-    #check (λ x, x + 1) 1
-
-.. _elaboration_hints:
-
+<!--
 Elaboration Hints
 -----------------
 
@@ -687,6 +666,8 @@ Lean also has a family of attributes that control the elaboration strategy. A de
 
 Once again, these attributes can be assigned and reassigned after an object is defined, and you can use the ``local`` modifier to limit their scope. Moreover, using the ``@`` symbol in front of an identifier in an expression instructs the elaborator to use the ``[elab_simple]`` strategy; the idea is that, when you provide the tricky parameters explicitly, you want the elaborator to weigh that information heavily. In fact, Lean offers an alternative annotation, ``@@``, which leaves parameters before the first higher-order parameter implicit. For example, ``@@eq.subst`` leaves the type of the equation implicit, but makes the context of the substitution explicit.
 
+-->
+
 Using the Library
 -----------------
 
@@ -706,9 +687,9 @@ editor modes can also help you find things you need, but studying the
 contents of the library directly is often unavoidable. Lean's standard
 library can be found online, on GitHub:
 
-    https://github.com/leanprover/lean4/tree/master/src/Init
+- [https://github.com/leanprover/lean4/tree/master/src/Init](https://github.com/leanprover/lean4/tree/master/src/Init)
 
-    https://github.com/leanprover/lean4/tree/master/src/Std
+- [https://github.com/leanprover/lean4/tree/master/src/Std](https://github.com/leanprover/lean4/tree/master/src/Std)
 
 You can see the contents of these directories and files using github's
 browser interface. If you have installed Lean on your own computer,
@@ -730,71 +711,46 @@ by `_`s. Often the name of theorem simply describes the conclusion:
 #check Nat.mul_one
 #check Nat.le_of_succ_le_succ
 ```
-If only a prefix of the description is enough to convey the meaning, the name may be made even shorter:
 
-.. code-block:: lean
+Remember that identifiers in Lean can be organized into hierarchical
+namespaces. For example, the theorem named ``le_of_succ_le_succ`` in the
+namespace ``Nat`` has full name ``Nat.le_of_succ_le_succ``, but the shorter
+name is made available by the command ``open Nat`` (for names not marked as
+`protected`). We will see in [Chapter Inductive Types](./inductive_types.md)
+and [Chapter Structures and Records](./structures_and_records.md)
+that defining structures and inductive data types in Lean generates
+associated operations, and these are stored in
+a namespace with the same name as the type under definition. For
+example, the product type comes with the following operations:
 
-    import data.nat.basic
+```lean
+#check @Prod.mk
+#check @Prod.fst
+#check @Prod.snd
+#check @Prod.rec
+```
 
-    open nat
+The first is used to construct a pair, whereas the next two,
+``Prod.fst`` and ``Prod.snd``, project the two elements. The last,
+``Prod.rec``, provides another mechanism for defining functions on a
+product in terms of a function on the two components. Names like
+``Prod.rec`` are *protected*, which means that one has to use the full
+name even when the ``Prod`` namespace is open.
 
-    -- BEGIN
-    #check @neg_neg
-    #check pred_succ
-    -- END
+With the propositions as types correspondence, logical connectives are
+also instances of inductive types, and so we tend to use dot notation
+for them as well:
 
-Sometimes, to disambiguate the name of theorem or better convey the intended reference, it is necessary to describe some of the hypotheses. The word "of" is used to separate these hypotheses:
-
-.. code-block:: lean
-
-    import algebra.ordered_ring
-
-    #check @nat.lt_of_succ_le
-    #check @lt_of_not_ge
-    #check @lt_of_le_of_ne
-    #check @add_lt_add_of_lt_of_le
-
-Sometimes the word "left" or "right" is helpful to describe variants of a theorem.
-
-.. code-block:: lean
-
-    import algebra.ordered_ring
-
-    #check @add_le_add_left
-    #check @add_le_add_right
-
-We can also use the word "self" to indicate a repeated argument:
-
-.. code-block:: lean
-
-    import algebra.group
-
-    #check mul_inv_self
-    #check neg_add_self
-
-Remember that identifiers in Lean can be organized into hierarchical namespaces. For example, the theorem named ``lt_of_succ_le`` in the namespace ``nat`` has full name ``nat.lt_of_succ_le``, but the shorter name is made available by the command ``open nat``. We will see in :numref:`Chapter %s <inductive_types>` and :numref:`Chapter %s <structures_and_records>` that defining structures and inductive data types in Lean generates associated operations, and these are stored in a namespace with the same name as the type under definition. For example, the product type comes with the following operations:
-
-.. code-block:: lean
-
-    #check @prod.mk
-    #check @prod.fst
-    #check @prod.snd
-    #check @prod.rec
-
-The first is used to construct a pair, whereas the next two, ``prod.fst`` and ``prod.snd``, project the two elements. The last, ``prod.rec``, provides another mechanism for defining functions on a product in terms of a function on the two components. Names like ``prod.rec`` are *protected*, which means that one has to use the full name even when the ``prod`` namespace is open.
-
-With the propositions as types correspondence, logical connectives are also instances of inductive types, and so we tend to use dot notation for them as well:
-
-.. code-block:: lean
-
-    #check @and.intro
-    #check @and.elim
-    #check @and.left
-    #check @and.right
-    #check @or.inl
-    #check @or.inr
-    #check @or.elim
-    #check @exists.intro
-    #check @exists.elim
-    #check @eq.refl
-    #check @eq.subst
+```lean
+#check @And.intro
+#check @And.casesOn
+#check @And.left
+#check @And.right
+#check @Or.inl
+#check @Or.inr
+#check @Or.elim
+#check @Exists.intro
+#check @Exists.elim
+#check @Eq.refl
+#check @Eq.subst
+```
