@@ -754,3 +754,220 @@ for them as well:
 #check @Eq.refl
 #check @Eq.subst
 ```
+
+Auto Bound Implicit Arguments
+-----------------
+
+In the previous section, we have shown how implicit arguments make functions more convenient to use.
+However, functions such as `compose` are still quite verbose to define. Note that the universe
+polymorphic `compose` is even more verbose than the one previously defined.
+
+```lean
+universe u v w
+def compose {α : Type u} {β : Type v} {γ : Type w}
+            (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+```
+
+You can avoid the `universe` command by providing the universe parameters when defining `compose`.
+
+```lean
+def compose.{u, v, w}
+            {α : Type u} {β : Type v} {γ : Type w}
+            (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+```
+
+Lean 4 supports a new feature called *auto bound implicit arguments*. It makes functions such as
+`compose` much more convenient to write. When Lean processes the header of a declaration,
+any unbound identifier is automatically added as an implicit argument *if* it is a single lower case or
+greek letter. With this feature, we can write `compose` as
+
+```lean
+def compose (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+#check @compose
+-- {β : Sort u_1} → {γ : Sort u_2} → {α : Sort u_3} → (β → γ) → (α → β) → α → γ
+```
+Note that, Lean inferred a more general type using `Sort` instead of `Type`.
+
+Although we love this feature and use it extensively when implementing Lean,
+we realize some users may feel uncomfortable with it. Thus, you can disable it using
+the command `set_option autoBoundImplicitLocal false`.
+```lean
+set_option autoBoundImplicitLocal false
+/- The following definition produces `unknown identifier` errors -/
+-- def compose (g : β → γ) (f : α → β) (x : α) : γ :=
+--   g (f x)
+```
+
+Implicit Lambdas
+---------------
+
+In Lean 3 stdlib, we find many
+[instances](https://github.com/leanprover/lean/blob/master/library/init/category/reader.lean#L39) of the dreadful `@`+`_` idiom.
+It is often used when we the expected type is a function type with implicit arguments,
+and we have a constant (`reader_t.pure` in the example) which also takes implicit arguments. In Lean 4, the elaborator automatically introduces lambdas
+for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. As an example,
+here is the example in the link above using Lean 4 implicit lambdas.
+
+```lean
+# variable (ρ : Type) (m : Type → Type) [Monad m]
+instance : Monad (ReaderT ρ m) where
+  pure := ReaderT.pure
+  bind := ReaderT.bind
+```
+
+Users can disable the implicit lambda feature by using `@` or writing
+a lambda expression with `{}` or `[]` binder annotations.  Here are
+few examples
+
+```lean
+# namespace ex2
+def id1 : {α : Type} → α → α :=
+  fun x => x
+
+def listId : List ({α : Type} → α → α) :=
+  (fun x => x) :: []
+
+-- In this example, implicit lambda introduction has been disabled because
+-- we use `@` before `fun`
+def id2 : {α : Type} → α → α :=
+  @fun α (x : α) => id1 x
+
+def id3 : {α : Type} → α → α :=
+  @fun α x => id1 x
+
+def id4 : {α : Type} → α → α :=
+  fun x => id1 x
+
+-- In this example, implicit lambda introduction has been disabled
+-- because we used the binder annotation `{...}`
+def id5 : {α : Type} → α → α :=
+  fun {α} x => id1 x
+# end ex2
+```
+
+Sugar for Simple Functions
+-------------------------
+
+In Lean 3, we can create simple functions from infix operators by
+using parentheses. For example, `(+1)` is sugar for `fun x, x + 1`. In
+Lean 4, we generalize this notation using `·` As a placeholder. Here
+are a few examples:
+
+```lean
+# namespace ex3
+#check (· + 1)
+-- fun a => a + 1
+#check (2 - ·)
+-- fun a => 2 - a
+#eval [1, 2, 3, 4, 5].foldl (·*·) 1
+-- 120
+
+def f (x y z : Nat) :=
+  x + y + z
+
+#check (f · 1 ·)
+-- fun a b => f a 1 b
+
+#eval [(1, 2), (3, 4), (5, 6)].map (·.1)
+-- [1, 3, 5]
+# end ex3
+```
+
+As in Lean 3, the notation is activated using parentheses, and the lambda abstraction is created by collecting the nested `·`s.
+The collection is interrupted by nested parentheses. In the following example, two different lambda expressions are created.
+
+```lean
+#check (Prod.mk · (· + 1))
+-- fun a => (a, fun b => b + 1)
+```
+
+Named Arguments
+---------------
+
+Named arguments enable you to specify an argument for a parameter by
+matching the argument with its name rather than with its position in
+the parameter list.  If you don't remember the order of the parameters
+but know their names, you can send the arguments in any order. You may
+also provide the value for an implicit parameter when Lean failed to
+infer it. Named arguments also improve the readability of your code by
+identifying what each argument represents.
+
+```lean
+def sum (xs : List Nat) :=
+  xs.foldl (init := 0) (·+·)
+
+#eval sum [1, 2, 3, 4]
+-- 10
+
+example {a b : Nat} {p : Nat → Nat → Nat → Prop} (h₁ : p a b b) (h₂ : b = a)
+    : p a a b :=
+  Eq.subst (motive := fun x => p a x b) h₂ h₁
+```
+
+In the following examples, we illustrate the interaction between named
+and default arguments.
+
+```lean
+def f (x : Nat) (y : Nat := 1) (w : Nat := 2) (z : Nat) :=
+  x + y + w - z
+
+example (x z : Nat) : f (z := z) x = x + 1 + 2 - z := rfl
+
+example (x z : Nat) : f x (z := z) = x + 1 + 2 - z := rfl
+
+example (x y : Nat) : f x y = fun z => x + y + 2 - z := rfl
+
+example : f = (fun x z => x + 1 + 2 - z) := rfl
+
+example (x : Nat) : f x = fun z => x + 1 + 2 - z := rfl
+
+example (y : Nat) : f (y := 5) = fun x z => x + 5 + 2 - z := rfl
+
+def g {α} [Add α] (a : α) (b? : Option α := none) (c : α) : α :=
+  match b? with
+  | none   => a + c
+  | some b => a + b + c
+
+variable {α} [Add α]
+
+example : g = fun (a c : α) => a + c := rfl
+
+example (x : α) : g (c := x) = fun (a : α) => a + x := rfl
+
+example (x : α) : g (b? := some x) = fun (a c : α) => a + x + c := rfl
+
+example (x : α) : g x = fun (c : α) => x + c := rfl
+
+example (x y : α) : g x y = fun (c : α) => x + y + c := rfl
+```
+
+You can use `..` to provide missing explicit arguments as `_`.
+This feature combined with named arguments is useful for writing patterns. Here is an example:
+
+```lean
+inductive Term where
+  | var    (name : String)
+  | num    (val : Nat)
+  | add    (fn : Term) (arg : Term)
+  | lambda (name : String) (type : Term) (body : Term)
+
+def getBinderName : Term → Option String
+  | Term.lambda (name := n) .. => some n
+  | _ => none
+
+def getBinderType : Term → Option Term
+  | Term.lambda (type := t) .. => some t
+  | _ => none
+```
+
+Ellipsis are also useful when explicit argument can be automatically
+inferred by Lean, and we want to avoid a sequence of `_`s.
+
+```lean
+example (f : Nat → Nat) (a b c : Nat) : f (a + b + c) = f (a + (b + c)) :=
+  congrArg f (Nat.add_assoc ..)
+```
