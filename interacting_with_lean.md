@@ -725,13 +725,10 @@ we rely on descriptive names where the different components are separated
 by `_`s. Often the name of theorem simply describes the conclusion:
 
 ```lean
-open nat
-
-#check succ_ne_zero
-#check @mul_zero
-#check @mul_one
-#check @sub_add_eq_add_sub
-#check @le_iff_lt_or_eq
+#check Nat.succ_ne_zero
+#check Nat.zero_add
+#check Nat.mul_one
+#check Nat.le_of_succ_le_succ
 ```
 If only a prefix of the description is enough to convey the meaning, the name may be made even shorter:
 
