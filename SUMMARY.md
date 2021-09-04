@@ -1,4 +1,4 @@
-# Manual
+# Theorem Proving in Lean 4
 
 - [Introduction](./introduction.md)
 - [Dependent Type Theory](./dependent_type_theory.md)
@@ -11,7 +11,3 @@
 - [Structures and Records](./structures_and_records.md)
 - [Type Classes](./type_classes.md)
 - [Axioms and Computation](./axioms_and_computation.md)
-
-# Other
-
-- [Building This Manual](./mdbook.md)
