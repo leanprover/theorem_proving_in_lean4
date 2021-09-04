@@ -190,13 +190,15 @@ creates aliases renaming ``Nat.mul`` to ``times`` and ``Nat.add`` to ``plus``.
 
 It is sometimes useful to ``export`` aliases from one namespace to another, or to the top level. The command
 
-.. code-block:: lean
+```lean
+export Nat (succ add sub)
+```
 
-    export nat (succ add sub)
+creates aliases for ``succ``, ``add``, and ``sub`` in the current
+namespace, so that whenever the namespace is open, these aliases are
+available. If this command is used outside a namespace, the aliases
+are exported to the top level.
 
-creates aliases for ``succ``, ``add``, and ``sub`` in the current namespace, so that whenever the namespace is open, these aliases are available. If this command is used outside a namespace, the aliases are exported to the top level. The ``export`` command admits all the variations described above.
-
-.. _attributes:
 
 Attributes
 ----------
@@ -316,7 +318,12 @@ file.
 More on Implicit Arguments
 --------------------------
 
-In :numref:`implicit_arguments`, we saw that if Lean displays the type of a term ``t`` as ``Π {x : α}, β x``, then the curly brackets indicate that ``x`` has been marked as an *implicit argument* to ``t``. This means that whenever you write ``t``, a placeholder, or "hole," is inserted, so that ``t`` is replaced by ``@t _``. If you don't want that to happen, you have to write ``@t`` instead.
+In :numref:`implicit_arguments`, we saw that if Lean displays the type
+of a term ``t`` as ``{x : α}, β x``, then the curly brackets
+indicate that ``x`` has been marked as an *implicit argument* to
+``t``. This means that whenever you write ``t``, a placeholder, or
+"hole," is inserted, so that ``t`` is replaced by ``@t _``. If you
+don't want that to happen, you have to write ``@t`` instead.
 
 Notice that implicit arguments are inserted eagerly. Suppose we define a function ``f (x : ℕ) {y : ℕ} (z : ℕ)`` with the arguments shown. Then, when we write the expression ``f 7`` without further arguments, it is parsed as ``f 7 _``. Lean offers a weaker annotation, ``{{y : ℕ}}``, which specifies that a placeholder should only be added *before* a subsequent explicit argument. This annotation can also be written using as ``⦃y : ℕ⦄``, where the unicode brackets are entered as ``\{{`` and ``\}}``, respectively. With this annotation, the expression ``f 7`` would be parsed as is, whereas ``f 7 3`` would be parsed as ``f 7 _ 3``, just as it would be with the strong annotation.
 
@@ -683,28 +690,49 @@ Once again, these attributes can be assigned and reassigned after an object is d
 Using the Library
 -----------------
 
-To use Lean effectively you will inevitably need to make use of definitions and theorems in the library. Recall that the ``import`` command at the beginning of a file imports previously compiled results from other files, and that importing is transitive; if you import ``foo`` and ``foo`` imports ``bar``, then the definitions and theorems from ``bar`` are available to you as well. But the act of opening a namespace, which provides shorter names, does not carry over. In each file, you need to open the namespaces you wish to use.
+To use Lean effectively you will inevitably need to make use of
+definitions and theorems in the library. Recall that the ``import``
+command at the beginning of a file imports previously compiled results
+from other files, and that importing is transitive; if you import
+``Foo`` and ``Foo`` imports ``Bar``, then the definitions and theorems
+from ``Bar`` are available to you as well. But the act of opening a
+namespace, which provides shorter names, does not carry over. In each
+file, you need to open the namespaces you wish to use.
 
-In general, it is important for you to be familiar with the library and its contents, so you know what theorems, definitions, notations, and resources are available to you. Below we will see that Lean's editor modes can also help you find things you need, but studying the contents of the library directly is often unavoidable. Lean's standard library can be found online, on github:
+In general, it is important for you to be familiar with the library
+and its contents, so you know what theorems, definitions, notations,
+and resources are available to you. Below we will see that Lean's
+editor modes can also help you find things you need, but studying the
+contents of the library directly is often unavoidable. Lean's standard
+library can be found online, on GitHub:
 
-    https://github.com/leanprover/lean/tree/master/library
+    https://github.com/leanprover/lean4/tree/master/src/Init
 
-You can see the contents of the directories and files using github's browser interface. If you have installed Lean on your own computer, you can find the library in the ``lean`` folder, and explore it with your file manager. Comment headers at the top of each file provide additional information.
+    https://github.com/leanprover/lean4/tree/master/src/Std
 
-Lean's library developers follow general naming guidelines to make it easier to guess the name of a theorem you need, or to find it using tab completion in editors with a Lean mode that supports this, which is discussed in the next section. Identifiers are generally ``snake_case``, which is to say, they are composed of words written in lower case separated by underscores. For the most part, we rely on descriptive names. Often the name of theorem simply describes the conclusion:
+You can see the contents of these directories and files using github's
+browser interface. If you have installed Lean on your own computer,
+you can find the library in the ``lean`` folder, and explore it with
+your file manager. Comment headers at the top of each file provide
+additional information.
 
-.. code-block:: lean
+Lean's library developers follow general naming guidelines to make it
+easier to guess the name of a theorem you need, or to find it using
+tab completion in editors with a Lean mode that supports this, which
+is discussed in the next section. Identifiers are generally
+``camelCase``, and types are `CamelCase`. For theorem names,
+we rely on descriptive names where the different components are separated
+by `_`s. Often the name of theorem simply describes the conclusion:
 
-    import data.nat.basic
+```lean
+open nat
 
-    open nat
-
-    #check succ_ne_zero
-    #check @mul_zero
-    #check @mul_one
-    #check @sub_add_eq_add_sub
-    #check @le_iff_lt_or_eq
-
+#check succ_ne_zero
+#check @mul_zero
+#check @mul_one
+#check @sub_add_eq_add_sub
+#check @le_iff_lt_or_eq
+```
 If only a prefix of the description is enough to convey the meaning, the name may be made even shorter:
 
 .. code-block:: lean
