@@ -21,17 +21,16 @@ propositions, and introduce constructors to build new propositions
 from others.
 
 ```lean
-# namespace Hidden
-constant And : Prop → Prop → Prop
-constant Or : Prop → Prop → Prop
-constant Not : Prop → Prop
-constant Implies : Prop → Prop → Prop
+# def Implies (p q : Prop) : Prop := p → q
+#check And     -- Prop → Prop → Prop
+#check Or      -- Prop → Prop → Prop
+#check Not     -- Prop → Prop
+#check Implies -- Prop → Prop → Prop
 
 variable (p q r : Prop)
 #check And p q                      -- Prop
 #check Or (And p q) r               -- Prop
 #check Implies (And p q) (And q p)  -- Prop
-# end Hidden
 ```
 
 We could then introduce, for each element ``p : Prop``, another type
@@ -39,18 +38,15 @@ We could then introduce, for each element ``p : Prop``, another type
 constant of such a type.
 
 ```lean
-# namespace Hidden
-# constant And : Prop → Prop → Prop
-# constant Or : Prop → Prop → Prop
-# constant Not : Prop → Prop
-# constant Implies : Prop → Prop → Prop
-constant Proof : Prop → Type
+# def Implies (p q : Prop) : Prop := p → q
+# structure Proof (p : Prop) : Type where
+#   proof : p
+#check Proof   -- Proof : Prop → Type
 
-axiom and_comm : (p q : Prop) → Proof (Implies (And p q) (And q p))
+axiom and_comm (p q : Prop) : Proof (Implies (And p q) (And q p))
 
 variable (p q : Prop)
 #check and_comm p q     -- Proof (implies (and p q) (and q p))
-# end Hidden
 ```
 
 In addition to axioms, however, we would also need rules to build new
@@ -62,14 +58,10 @@ propositional logic, we have the rule of modus ponens:
 We could represent this as follows:
 
 ```lean
-# namespace Hidden
-# constant And : Prop → Prop → Prop
-# constant Or : Prop → Prop → Prop
-# constant Not : Prop → Prop
-# constant Implies : Prop → Prop → Prop
-# constant Proof : Prop → Type
+# def Implies (p q : Prop) : Prop := p → q
+# structure Proof (p : Prop) : Type where
+#   proof : p
 axiom modus_ponens : (p q : Prop) → Proof (implies p q) →  Proof p → Proof q
-# end Hidden
 ```
 
 Systems of natural deduction for propositional logic also typically rely on the following rule:
@@ -79,14 +71,10 @@ Systems of natural deduction for propositional logic also typically rely on the 
 We could render this as follows:
 
 ```lean
-# namespace Hidden
-# constant And : Prop → Prop → Prop
-# constant Or : Prop → Prop → Prop
-# constant Not : Prop → Prop
-# constant Implies : Prop → Prop → Prop
-# constant Proof : Prop → Type
+# def Implies (p q : Prop) : Prop := p → q
+# structure Proof (p : Prop) : Type where
+#   proof : p
 axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (implies p q)
-# end Hidden
 ```
 
 This approach would provide us with a reasonable way of building assertions and proofs.
@@ -183,8 +171,8 @@ can be proved using lambda abstraction and application. In Lean, the
 ``theorem`` command introduces a new theorem:
 
 ```lean
-constant p : Prop
-constant q : Prop
+variable {p : Prop}
+variable {q : Prop}
 
 theorem t1 : p → q → p := fun hp : p => fun hq : q => hp
 ```
@@ -219,8 +207,8 @@ As with definitions, the ``#print`` command will show you the proof of
 a theorem.
 
 ```lean
-# constant p : Prop
-# constant q : Prop
+# variable {p : Prop}
+# variable {q : Prop}
 theorem t1 : p → q → p := fun hp : p => fun hq : q => hp
 
 #print t1
@@ -232,8 +220,8 @@ allows us to specify the type of the final term ``hp``, explicitly,
 with a ``show`` statement.
 
 ```lean
-# constant p : Prop
-# constant q : Prop
+# variable {p : Prop}
+# variable {q : Prop}
 theorem t1 : p → q → p :=
   fun hp : p =>
   fun hq : q =>
@@ -249,8 +237,8 @@ As with ordinary definitions, we can move the lambda-abstracted
 variables to the left of the colon:
 
 ```lean
-# constant p : Prop
-# constant q : Prop
+# variable {p : Prop}
+# variable {q : Prop}
 theorem t1 (hp : p) (hq : q) : p := hp
 
 #check t1    -- p → q → p
@@ -259,8 +247,8 @@ theorem t1 (hp : p) (hq : q) : p := hp
 Now we can apply the theorem ``t1`` just as a function application.
 
 ```lean
-# constant p : Prop
-# constant q : Prop
+# variable {p : Prop}
+# variable {q : Prop}
 theorem t1 (hp : p) (hq : q) : p := hp
 
 axiom hp : p
@@ -268,10 +256,7 @@ axiom hp : p
 theorem t2 : q → p := t1 hp
 ```
 
-Here, the ``axiom`` command is not just an alternative syntax for
-``constant``. The command ``constant`` can only be used when Lean
-knows the type used is not empty, thus, it does not compromise logical
-consistent. In contrast, ``axiom`` postulates the existence of an
+Here, the ``axiom`` declaration postulates the existence of an
 element of the given type and may compromise logical consistent. For
 example, we can use it to postulate the empty type `False` has an
 element.
@@ -288,33 +273,30 @@ is true, as witnessed by ``hp``. Applying the theorem
 ``t1 : p → q → p`` to the fact ``hp : p`` that ``p`` is true yields the theorem
 ``t2 : q → p``.
 
-Notice, by the way, that the original theorem ``t1`` is true for *any*
-propositions ``p`` and ``q``, not just the particular constants
-declared. So it would be more natural to define the theorem so that it
-quantifies over those, too:
+Recall that we can also write theorem ``t1`` as follows:
 
 ```lean
-theorem t1 (p q : Prop) (hp : p) (hq : q) : p := hp
+theorem t1 {p q : Prop} (hp : p) (hq : q) : p := hp
 
 #check t1
 ```
 
-The type of ``t1`` is now ``∀ (p q : Prop), p → q → p``. We can read
+The type of ``t1`` is now ``∀ {p q : Prop}, p → q → p``. We can read
 this as the assertion "for every pair of propositions ``p q``, we have
 ``p → q → p``." For example, we can move all parameters to the right
 of the colon:
 
 ```lean
 
-theorem t1 : ∀ (p q : Prop), p → q → p :=
-fun (p q : Prop) (hp : p) (hq : q) => hp
+theorem t1 : ∀ {p q : Prop}, p → q → p :=
+  fun {p q : Prop} (hp : p) (hq : q) => hp
 ```
 
 If ``p`` and ``q`` have been declared as variables, Lean will
 generalize them for us automatically:
 
 ```lean
-variable (p q : Prop)
+variable {p q : Prop}
 
 theorem t1 : p → q → p := fun (hp : p) (hq : q) => hp
 ```
@@ -323,7 +305,7 @@ In fact, by the propositions-as-types correspondence, we can declare
 the assumption ``hp`` that ``p`` holds, as another variable:
 
 ```lean
-variable (p q : Prop)
+variable {p q : Prop}
 variable (hp : p)
 
 theorem t1 : q → p := fun (hq : q) => hp
