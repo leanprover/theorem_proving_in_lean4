@@ -10,4 +10,5 @@
 - [Induction and Recursion](./induction_and_recursion.md)
 - [Structures and Records](./structures_and_records.md)
 - [Type Classes](./type_classes.md)
+- [The Conversion Tactic Mode](./conv.md)
 - [Axioms and Computation](./axioms_and_computation.md)
