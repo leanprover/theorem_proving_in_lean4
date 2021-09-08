@@ -112,7 +112,7 @@ inductive Weekday where
   | saturday
 ```
 
-Think of ``sunday``, ``monday``, :math:`\ldots`, ``saturday`` as
+Think of ``sunday``, ``monday``, ... , ``saturday`` as
 being distinct elements of ``Weekday``, with no other distinguishing
 properties. The elimination principle, ``Weekday.rec``, is defined
 along with the type ``Weekday`` and its constructors. It is also known
@@ -431,8 +431,8 @@ def snd {α : Type u} {β : Type v} (p : Prod α β) : β :=
 ```
 
 The function ``fst`` takes a pair, ``p``. The `match` interprets
-``p`` as a pair, ``Prod.mk a b``. Recall also from :numref:`dependent_types` that
-to give these definitions the greatest generality possible, we allow
+``p`` as a pair, ``Prod.mk a b``. Recall also from [Dependent Type Theory](dependent_types.md)
+that to give these definitions the greatest generality possible, we allow
 the types ``α`` and ``β`` to belong to any universe.
 
 
