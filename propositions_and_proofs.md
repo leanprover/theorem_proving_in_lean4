@@ -46,7 +46,7 @@ constant of such a type.
 axiom and_comm (p q : Prop) : Proof (Implies (And p q) (And q p))
 
 variable (p q : Prop)
-#check and_comm p q     -- Proof (implies (and p q) (and q p))
+#check and_comm p q     -- Proof (Implies (and p q) (and q p))
 ```
 
 In addition to axioms, however, we would also need rules to build new
@@ -61,7 +61,7 @@ We could represent this as follows:
 # def Implies (p q : Prop) : Prop := p → q
 # structure Proof (p : Prop) : Type where
 #   proof : p
-axiom modus_ponens : (p q : Prop) → Proof (implies p q) →  Proof p → Proof q
+axiom modus_ponens : (p q : Prop) → Proof (Implies p q) →  Proof p → Proof q
 ```
 
 Systems of natural deduction for propositional logic also typically rely on the following rule:
@@ -74,7 +74,7 @@ We could render this as follows:
 # def Implies (p q : Prop) : Prop := p → q
 # structure Proof (p : Prop) : Type where
 #   proof : p
-axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (implies p q)
+axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
 ```
 
 This approach would provide us with a reasonable way of building assertions and proofs.
@@ -185,7 +185,7 @@ hypothesis (trivially) to establish that the conclusion, ``p``, is
 true.
 
 Note that the ``theorem`` command is really a version of the
-``definition`` command: under the propositions and types
+``def`` command: under the propositions and types
 correspondence, proving the theorem ``p → q → p`` is really the same
 as defining an element of the associated type. To the kernel type
 checker, there is no difference between the two.
@@ -257,7 +257,7 @@ theorem t2 : q → p := t1 hp
 ```
 
 Here, the ``axiom`` declaration postulates the existence of an
-element of the given type and may compromise logical consistent. For
+element of the given type and may compromise logical consistency. For
 example, we can use it to postulate the empty type `False` has an
 element.
 
@@ -271,7 +271,7 @@ False.elim unsound
 Declaring a "axiom" ``hp : p`` is tantamount to declaring that ``p``
 is true, as witnessed by ``hp``. Applying the theorem
 ``t1 : p → q → p`` to the fact ``hp : p`` that ``p`` is true yields the theorem
-``t2 : q → p``.
+``t1 hp : q → p``.
 
 Recall that we can also write theorem ``t1`` as follows:
 
@@ -401,7 +401,7 @@ and elimination rules.
 
 ### <a name="_conjunction"></a>Conjunction
 
-The expression ``and.intro h1 h2`` builds a proof of ``p ∧ q`` using
+The expression ``And.intro h1 h2`` builds a proof of ``p ∧ q`` using
 proofs ``h1 : p`` and ``h2 : q``. It is common to describe
 ``And.intro`` as the *and-introduction* rule. In the next example we
 use ``And.intro`` to create a proof of ``p → q → p ∧ q``.
@@ -420,7 +420,7 @@ given term has the indicated type. It is convenient for illustration,
 and we will use it often.
 
 The expression ``And.left h`` creates a proof of ``p`` from a proof
-``h : p ∧ q``. Similarly, ``and.right h`` is a proof of ``q``. They
+``h : p ∧ q``. Similarly, ``And.right h`` is a proof of ``q``. They
 are commonly known as the right and left *and-elimination* rules.
 
 ```lean
@@ -634,9 +634,9 @@ has only an introduction rule, ``True.intro : true``.  In other words,
 ### Logical Equivalence
 
 The expression ``Iff.intro h1 h2`` produces a proof of ``p ↔ q`` from
-``h1 : p → q`` and ``h2 : q → p``.  The expression ``iff.mp h``
+``h1 : p → q`` and ``h2 : q → p``.  The expression ``Iff.mp h``
 produces a proof of ``p → q`` from ``h : p ↔ q``. Similarly,
-``iff.mpr h`` produces a proof of ``q → p`` from ``h : p ↔ q``. Here is a proof
+``Iff.mpr h`` produces a proof of ``q → p`` from ``h : p ↔ q``. Here is a proof
 of ``p ∧ q ↔ q ∧ p``:
 
 ```lean
