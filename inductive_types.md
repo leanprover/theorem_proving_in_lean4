@@ -32,7 +32,7 @@ constructed in this way. The first character ``|`` in an inductive
 declaration is optional. We can also separate constructors using a
 comma instead of ``|``.
 
-We will see below that the arguments to the constructors can include
+We will see below that the arguments of the constructors can include
 objects of type ``Foo``, subject to a certain "positivity" constraint,
 which guarantees that elements of ``Foo`` are built from the bottom
 up. Roughly speaking, each ``...`` can be any arrow type constructed from
@@ -353,7 +353,7 @@ words, under the propositions-as-types correspondence, the proof by
 cases is a kind of definition by cases, where what is being "defined"
 is a proof instead of a piece of data.
 
-The `Bool` type in the Lean library in an instance of
+The `Bool` type in the Lean library is an instance of
 enumerated type.
 ```lean
 # namespace Hidden
@@ -372,7 +372,7 @@ is started.)
 As an exercise, you should think about what the introduction and
 elimination rules for these types do. As a further exercise, we
 suggest defining boolean operations ``and``, ``or``, ``not`` on the
-boolean, and verifying common identities. Note that you can define a
+``Bool`` type, and verifying common identities. Note that you can define a
 binary operation like ``and`` using `match`:
 
 ```lean
@@ -412,7 +412,7 @@ these examples. The product type has one constructor, ``Prod.mk``,
 which takes two arguments. To define a function on ``Prod α β``, we
 can assume the input is of the form ``Prod.mk a b``, and we have to
 specify the output, in terms of ``a`` and ``b``. We can use this to
-define the two projections for prod. Remember that the standard
+define the two projections for ``Prod``. Remember that the standard
 library defines notation ``α × β`` for ``Prod α β`` and ``(a, b)`` for
 ``Prod.mk a b``.
 
@@ -457,7 +457,7 @@ according to whether ``b`` is true or false.
 
 In contrast, the sum type has *two* constructors, ``inl`` and ``inr``
 (for "insert left" and "insert right"), each of which takes *one*
-(explicit) argument. To define a function on ``sum α β``, we have to
+(explicit) argument. To define a function on ``Sum α β``, we have to
 handle two cases: either the input is of the form ``inl a``, in which
 case we have to specify an output value in terms of ``a``, or the
 input is of the form ``inr b``, in which case we have to specify an
@@ -528,7 +528,7 @@ structure Prod (α : Type u) (β : Type v) where
 # end Hidden
 ```
 
-This example simultaneously introduces the inductive type, ``prod``,
+This example simultaneously introduces the inductive type, ``Prod``,
 its constructor, ``mk``, the usual eliminators (``rec`` and
 ``recOn``), as well as the projections, ``fst`` and ``snd``, as
 defined above.
@@ -730,7 +730,7 @@ terms of ``n`` and ``f n``. If we check the type of the recursor,
 # inductive Nat where
 #  | zero : Nat
 #  | succ : Nat → Nat
-# #check @Nat.rec
+#check @Nat.rec
 # end Hidden
 ```
 
@@ -746,7 +746,7 @@ you find the following:
 The implicit argument, ``motive``, is the codomain of the function being defined.
 In type theory it is common to say ``motive`` is the *motive* for the elimination/recursion,
 since it describes the kind of object we wish to construct.
-The next two arguments after specify how to compute the zero and successor cases, as described above.
+The next two arguments specify how to compute the zero and successor cases, as described above.
 They are also known as the ``minor premises``.
 Finally, the ``t : Nat``, is the input to the function. It is also known as the ``major premise``.
 
@@ -916,7 +916,7 @@ theorem succ_add (n m : Nat) : succ n + m = succ (n + m) :=
            _  = succ (n + succ m)             := rfl)
 ```
 
-You can then replace the ``admit`` in the previous proof with ``succ_add``. Yet again, the proofs can be compressed:
+You can then replace the ``sorry`` in the previous proof with ``succ_add``. Yet again, the proofs can be compressed:
 
 ```lean
 # namespace Hidden
@@ -937,7 +937,7 @@ Other Recursive Data Types
 --------------------------
 
 Let us consider some more examples of inductively defined types. For
-any type, ``α``, the type ``list α`` of lists of elements of ``α`` is
+any type, ``α``, the type ``List α`` of lists of elements of ``α`` is
 defined in the library.
 
 ```lean
@@ -1061,7 +1061,6 @@ below, notice that the hypothesis ``h : n ≠ 0`` becomes ``h : 0 ≠ 0``
 in the first branch, and ``h : succ m ≠ 0`` in the second.
 
 ```lean
-open Nat
 example (n : Nat) (h : n ≠ 0) : succ (pred n) = n := by
   cases n with
   | zero =>
@@ -1111,8 +1110,8 @@ def silly (x : Foo) : Nat := by
   | bar2 c d e => exact e
 ```
 
-The alternatives for each constructor doesn't need to be solved
-using the order the constructors were declared.
+The alternatives for each constructor don't need to be solved
+in the order the constructors were declared.
 
 ```lean
 inductive Foo where
@@ -1159,8 +1158,6 @@ the expression, introduce the resulting universally quantified
 variable, and case on that.
 
 ```lean
-open Nat
-
 example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
         : p (m + 3 * k) := by
   cases m + 3 * k
@@ -1173,8 +1170,6 @@ zero or the successor of some number." The result is functionally
 equivalent to the following:
 
 ```lean
-open Nat
-
 example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
         : p (m + 3 * k) := by
   generalize m + 3 * k = n
@@ -1183,10 +1178,10 @@ example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
   apply hs   -- goal is a : ℕ ⊢ p (succ a)
 ```
 
-Notice that the expression ``m + 3 * k`` is erased by generalize; all
+Notice that the expression ``m + 3 * k`` is erased by ``generalize``; all
 that matters is whether it is of the form ``0`` or ``succ a``. This
 form of ``cases`` will *not* revert any hypotheses that also mention
-the expression in equation (in this case, ``m + 3 * k``). If such a
+the expression in the equation (in this case, ``m + 3 * k``). If such a
 term appears in a hypothesis and you want to generalize over that as
 well, you need to ``revert`` it explicitly.
 
@@ -1234,7 +1229,7 @@ example (m n : Nat) : m - n = 0 ∨ m ≠ n := by
 
 Remember that if you ``open Classical``, you can use the law of the
 excluded middle for any proposition at all. But using type class
-inference (see [Chapter Type Classes](./type_classes.md)`), Lean can actually
+inference (see [Chapter Type Classes](./type_classes.md)), Lean can actually
 find the relevant decision procedure, which means that you can use the
 case split in a computable function.
 
@@ -1358,8 +1353,8 @@ example (m n k : Nat) (h : succ (succ m) = succ (succ n))
 The first instance of the tactic adds ``h' : succ m = succ n`` to the
 context, and the second adds ``h'' : m = n``.
 
-The ``injection`` tactic also detect contradictions that arise when different constructors
-are set equal to one another, and use them to close the goal.
+The ``injection`` tactic also detects contradictions that arise when different constructors
+are set equal to one another, and uses them to close the goal.
 
 ```lean
 open Nat
