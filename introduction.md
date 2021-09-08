@@ -76,7 +76,7 @@ need in order to do this is not specific to Lean at all. To start with, you will
 based on, a version of *dependent type theory* that is powerful enough to prove almost any conventional mathematical
 theorem, and expressive enough to do it in a natural way. More specifically, Lean is based on a version of a system
 known as the Calculus of Constructions with inductive types. Lean can not only define mathematical objects and express
-mathematical assertions in dependent type theory, but it also can be uses as a language for writing proofs.
+mathematical assertions in dependent type theory, but it also can be used as a language for writing proofs.
 
 Because fully detailed axiomatic proofs are so complicated, the challenge of theorem proving is to have the computer
 fill in as many of the details as possible. You will learn various methods to support this in [dependent type
