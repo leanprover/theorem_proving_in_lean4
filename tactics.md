@@ -157,7 +157,7 @@ Tactics that may produce multiple subgoals often tag them. For
 example, the tactic ``apply And.intro`` tagged the first sugoal as
 ``left``, and the second as ``right``. In the case of the ``apply``
 tactic, the tags are inferred from the parameters names used in the
-``And.intro`` declaration. You can structure our tactics using the
+``And.intro`` declaration. You can structure your tactics using the
 notation ``case <tag> => <tactics>``. The following is a structured
 version of our first tactic proof in this chapter.
 
@@ -185,7 +185,7 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
 ```
 
 Note that Lean hides the other goals inside the ``case`` block. We say
-it is "focusing" on the selected goal.  Moreover, Lean signs an error
+it is "focusing" on the selected goal.  Moreover, Lean flags an error
 if the selected goal is not fully solved at the end of the ``case``
 block.
 
@@ -263,7 +263,7 @@ example : ∀ a b c : Nat, a = b → a = c → c = b := by
 As the ``apply`` tactic is a command for constructing function
 applications interactively, the ``intro`` tactic is a command for
 constructing function abstractions interactively (i.e., terms of the
-form ``fun x => e``).  As the lambda abstraction notation, the
+form ``fun x => e``).  As with lambda abstraction notation, the
 ``intro`` tactic allows us to use an implicit ``match``.
 
 ```lean
@@ -366,11 +366,11 @@ which is, in a sense, an inverse to ``intro``.
 
 ```lean
 example (x : Nat) : x = x := by
- revert x
- -- goal is ⊢ ∀ (x : Nat), x = x
- intro y
- -- goal is y : Nat ⊢ y = y
- rfl
+  revert x
+  -- goal is ⊢ ∀ (x : Nat), x = x
+  intro y
+  -- goal is y : Nat ⊢ y = y
+  rfl
 ```
 
 Moving a hypothesis into the goal yields an implication:
@@ -462,8 +462,8 @@ More Tactics
 
 Some additional tactics are useful for constructing and destructing
 propositions and data. For example, when applied to a goal of the form
-``p ∨ q``, you use tactics such as ``apply or.inl`` and ``apply
-or.inr``.  Conversely, the ``cases`` tactic can be used to decompose a
+``p ∨ q``, you use tactics such as ``apply Or.inl`` and ``apply
+Or.inr``.  Conversely, the ``cases`` tactic can be used to decompose a
 disjunction.
 
 ```lean
@@ -587,7 +587,7 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
 You will see in [Chapter Inductive Types](./inductive_types.md) that
 these tactics are quite general. The ``cases`` tactic can be used to
 decompose any element of an inductively defined type; ``constructor``
-always applies the first applicable constructor of an inductively defined type,
+always applies the first applicable constructor of an inductively defined type.
 For example, you can use ``cases`` and ``constructor`` with an existential quantifier:
 
 ```lean
