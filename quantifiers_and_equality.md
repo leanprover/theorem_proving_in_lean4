@@ -151,7 +151,7 @@ expression ``β`` may depend on a variable ``x : α``. Then
 ``(x : α) → β`` is an element of ``Sort (imax i j)``, where ``imax i j`` is the
 maximum of ``i`` and ``j`` if ``j`` is not 0, and 0 otherwise.
 
-The idea is as follows. If ``j`` is not ``0``, then ``Π x : α, β`` is
+The idea is as follows. If ``j`` is not ``0``, then ``(x : α) → β`` is
 an element of ``Sort (max i j)``. In other words, the type of
 dependent functions from ``α`` to ``β`` "lives" in the universe whose
 index is the maximum of ``i`` and ``j``. Suppose, however, that ``β``
@@ -502,7 +502,7 @@ expression, ``Exists (fun x : α => p x)``, defined in Lean's library.
 As you should by now expect, the library includes both an introduction
 rule and an elimination rule. The introduction rule is
 straightforward: to prove ``∃ x : α, p x``, it suffices to provide a
-suitable term ``t`` and a proof of ``p t``. here are some examples:
+suitable term ``t`` and a proof of ``p t``. Here are some examples:
 
 ```lean
 example : ∃ x : Nat, x > 0 :=
@@ -922,4 +922,4 @@ def Fermat's_last_theorem : Prop := sorry
 ```
 
 5. Prove as many of the identities listed in the Existential
-   Quantifier Section section as you can.
+   Quantifier section as you can.
