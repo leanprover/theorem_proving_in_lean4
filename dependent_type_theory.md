@@ -61,7 +61,7 @@ information typically begin with the hash (#) symbol.
 The `#eval` command asks Lean to evaluate the given expression.
 You should try
 declaring some constants and type checking some expressions on your
-own. Declaring new objects in this way is a good way to experiment
+own. Declaring new objects in this manner is a good way to experiment
 with the system.
 
 What makes simple type theory powerful is that you can build new types
@@ -282,15 +282,15 @@ from an expression as follows:
 #check λ x : Nat => x + 5       -- Nat inferred
 ```
 
-You can evaluate a lamda function by passing the required parameters:
+You can evaluate a lambda function by passing the required parameters:
 
 ```lean
 #eval (λ x : Nat => x + 5) 10    -- 15
 ```
 
 Creating a function from another expression is a process known as
-*lambda abstraction*. Suppose you have the variable ``x : α`` you can
-construct an expression ``t : β``. Then the expression ``fun (x : α)
+*lambda abstraction*. Suppose you have the variable ``x : α`` and you can
+construct an expression ``t : β``, then the expression ``fun (x : α)
 => t``, or, equivalently, ``λ (x : α) => t``, is an object of type ``α
 → β``. Think of this as the function from ``α`` to ``β`` which maps
 any value ``x`` to the value ``t``.
@@ -352,7 +352,7 @@ the variable ``x`` is a "bound variable": it is really a placeholder,
 whose "scope" does not extend beyond the expression ``t``.  For
 example, the variable ``b`` in the expression ``fun (b : β) (x : α) => b``
 has nothing to do with the constant ``b`` declared earlier.  In fact,
-the expression denotes the same function as ``fun (u : β) (z : α), u``.
+the expression denotes the same function as ``fun (u : β) (z : α) => u``.
 
 Formally, the expressions that are the same up to a renaming of bound
 variables are called *alpha equivalent*, and are considered "the
@@ -825,7 +825,7 @@ So it makes sense to take the type to be the first argument to
 ``cons``, so that for any type, ``α``, ``cons α`` is the insertion
 function for lists of type ``α``. In other words, for every ``α``,
 ``cons α`` is the function that takes an element ``a : α`` and a list
-``as : List α``, and returns a new list, so you have ``cons α a as : list α``.
+``as : List α``, and returns a new list, so you have ``cons α a as : List α``.
 
 It is clear that ``cons α`` should have type ``α → List α → List α``.
 But what type should ``cons`` have?  A first guess might be
@@ -900,7 +900,7 @@ def h2 (x : Nat) : Nat :=
 
 #eval h2 5 -- 5
 ```
-The function `f` and `g` above denote the same function.
+The functions `f` and `g` above denote the same function.
 
 
 <a name="_implicit_args"></a>Implicit Arguments
