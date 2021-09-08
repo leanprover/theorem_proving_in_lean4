@@ -836,7 +836,7 @@ words, *assuming* ``α : Type`` is the first argument to the function,
 the type of the next two elements are ``α`` and ``List α``. These
 types vary depending on the first argument, ``α``.
 
-```
+```lean
 def cons (α : Type) (a : α) (as : List α) : List α :=
   List.cons a as
 
