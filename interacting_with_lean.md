@@ -478,7 +478,7 @@ this operator should be translated to after the arrow `=>`.
 
 The precedence is a natural number describing how "tightly" an
 operator binds to its arguments, encoding the order of operations.  We
-can make this more precise by looking at the commands above unfold to:
+can make this more precise by looking at the commands the above unfold to:
 
 ```lean
 notation:65 lhs:65 " + " rhs:66 => HAdd.hAdd lhs rhs
@@ -691,7 +691,7 @@ library can be found online, on GitHub:
 
 - [https://github.com/leanprover/lean4/tree/master/src/Std](https://github.com/leanprover/lean4/tree/master/src/Std)
 
-You can see the contents of these directories and files using github's
+You can see the contents of these directories and files using GitHub's
 browser interface. If you have installed Lean on your own computer,
 you can find the library in the ``lean`` folder, and explore it with
 your file manager. Comment headers at the top of each file provide
@@ -781,7 +781,7 @@ def compose.{u, v, w}
 Lean 4 supports a new feature called *auto bound implicit arguments*. It makes functions such as
 `compose` much more convenient to write. When Lean processes the header of a declaration,
 any unbound identifier is automatically added as an implicit argument *if* it is a single lower case or
-greek letter. With this feature, we can write `compose` as
+greek letter. With this feature we can write `compose` as
 
 ```lean
 def compose (g : β → γ) (f : α → β) (x : α) : γ :=
@@ -790,7 +790,7 @@ def compose (g : β → γ) (f : α → β) (x : α) : γ :=
 #check @compose
 -- {β : Sort u_1} → {γ : Sort u_2} → {α : Sort u_3} → (β → γ) → (α → β) → α → γ
 ```
-Note that, Lean inferred a more general type using `Sort` instead of `Type`.
+Note that Lean inferred a more general type using `Sort` instead of `Type`.
 
 Although we love this feature and use it extensively when implementing Lean,
 we realize some users may feel uncomfortable with it. Thus, you can disable it using
@@ -809,8 +809,7 @@ In Lean 3 stdlib, we find many
 [instances](https://github.com/leanprover/lean/blob/master/library/init/category/reader.lean#L39) of the dreadful `@`+`_` idiom.
 It is often used when we the expected type is a function type with implicit arguments,
 and we have a constant (`reader_t.pure` in the example) which also takes implicit arguments. In Lean 4, the elaborator automatically introduces lambdas
-for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. As an example,
-here is the example in the link above using Lean 4 implicit lambdas.
+for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. Here is the example from the link above using Lean 4 implicit lambdas.
 
 ```lean
 # variable (ρ : Type) (m : Type → Type) [Monad m]
@@ -964,7 +963,7 @@ def getBinderType : Term → Option Term
   | _ => none
 ```
 
-Ellipsis are also useful when explicit argument can be automatically
+Ellipses are also useful when explicit argument can be automatically
 inferred by Lean, and we want to avoid a sequence of `_`s.
 
 ```lean
