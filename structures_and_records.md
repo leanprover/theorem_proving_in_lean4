@@ -9,10 +9,10 @@ everything else follows from those. The Lean standard library contains
 many instances of inductive types (e.g., ``Nat``, ``Prod``, ``List``),
 and even the logical connectives are defined using inductive types.
 
-Remember that a non-recursive inductive type that contains only one
+Recall that a non-recursive inductive type that contains only one
 constructor is called a *structure* or *record*. The product type is a
-structure, as is the dependent product type, that is, the Sigma
-type. In general, whenever we define a structure ``S``, we usually
+structure, as is the dependent product (Sigma) type.
+In general, whenever we define a structure ``S``, we usually
 define *projection* functions that allow us to "destruct" each
 instance of ``S`` and retrieve the values that are stored in its
 fields. The functions ``prod.pr1`` and ``prod.pr2``, which return the
@@ -92,7 +92,7 @@ example (a b : α) : y (mk a b) = b :=
   rfl
 ```
 
-Given ``p : Point nat``, the notation ``p.x`` is shorthand for
+Given ``p : Point Nat``, the notation ``p.x`` is shorthand for
 ``Point.x p``. This provides a convenient way of accessing the fields
 of a structure.
 
@@ -110,7 +110,7 @@ def p := Point.mk 10 20
 The dot notation is convenient not just for accessing the projections
 of a record, but also for applying functions defined in a namespace
 with the same name. Recall from the [Conjunction section](./propositions_and_proofs.md#_conjunction) if ``p``
-has type ``point``, the expression ``p.foo`` is interpreted as
+has type ``Point``, the expression ``p.foo`` is interpreted as
 ``Point.foo p``, assuming that the first non-implicit argument to
 ``foo`` has type ``Point``. The expression ``p.add q`` is therefore
 shorthand for ``Point.add p q`` in the example below.
@@ -132,7 +132,7 @@ def q : Point Nat := Point.mk 3 4
 
 In the next chapter, you will learn how to define a function like
 ``add`` so that it works generically for elements of ``Point α``
-rather than just ``point Nat``, assuming ``α`` has an associated
+rather than just ``Point Nat``, assuming ``α`` has an associated
 addition operation.
 
 More generally, given an expression ``p.foo x y z`` where `p : Point`,
@@ -202,7 +202,7 @@ example : Point Nat :=
 ```
 
 If the value of a field is not specified, Lean tries to infer it. If
-the unspecified fields cannot be inferred, Lean signs an error
+the unspecified fields cannot be inferred, Lean flags an error
 indicating the corresponding placeholder could not be synthesized.
 
 ```lean
@@ -218,10 +218,10 @@ structure MyStruct where
 *Record update* is another common operation which amounts to creating
 a new record object by modifying the value of one or more fields in an
 old one. Lean allows you to specify that unassigned fields in the
-specification of a record should be taken from a previous defined
+specification of a record should be taken from a previously defined
 structure object ``s`` by adding the annotation ``s with`` before the field
 assignments. If more than one record object is provided, then they are
-visited in order until Lean finds one the contains the unspecified
+visited in order until Lean finds one that contains the unspecified
 field. Lean raises an error if any of the field names remain
 unspecified after all the objects are visited.
 
@@ -257,7 +257,7 @@ Inheritance
 -----------
 
 We can *extend* existing structures by adding new fields. This feature
-allow us to simulate a form of *inheritance*.
+allows us to simulate a form of *inheritance*.
 
 ```lean
 structure Point (α : Type u) where
@@ -267,7 +267,7 @@ structure Point (α : Type u) where
 inductive Color where
   | red | green | blue
 
-structure ColorPoint (α : Type u) where
+structure ColorPoint (α : Type u) extends Point α where
   c : Color
 ```
 
