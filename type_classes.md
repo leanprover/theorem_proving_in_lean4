@@ -1,6 +1,6 @@
 # Type classes
 
-Typeclasses were introduced as a principled way of enabling
+Type classes were introduced as a principled way of enabling
 ad-hoc polymorphism in functional programming languages. We first observe that it
 would be easy to implement an ad-hoc polymorphic function (such as addition) if the
 function simply took the type-specific implementation of addition as an argument
@@ -43,7 +43,7 @@ implementations around in this way.
 Indeed, it would defeat most of the potential benefits of ad-hoc
 polymorphism.
 
-The main idea behind typeclasses is to make arguments such as `Add a` implicit,
+The main idea behind type classes is to make arguments such as `Add a` implicit,
 and to use a database of user-defined instances to synthesize the desired instances
 automatically through a process known as typeclass resolution. In Lean, by changing
 `structure` to `class` in the example above, the type of `Add.add` becomes
@@ -274,7 +274,7 @@ instance : ToString Rational where
 #check (2 : Rational) -- Rational
 #check (2 : Nat)      -- Nat
 ```
-Lean elaborate the terms `(2 : Nat)` and `(2 : Rational)` as
+Lean elaborates the terms `(2 : Nat)` and `(2 : Rational)` as
 `OfNat.ofNat Nat 2 (instOfNatNat 2)` and
 `OfNat.ofNat Rational 2 (instOfNatRational 2)` respectively.
 We say the numerals `2` occurring in the elaborated terms are *raw* natural numbers.
@@ -333,7 +333,7 @@ Given an application `hMul a b`, after types of `a` and `b` are known, the type 
 synthesizer is invoked, and the resulting type is obtained from the output parameter `γ`.
 In the example above, we defined two instances. The first one is the homogeneous
 multiplication for natural numbers. The second is the scalar multiplication for arrays.
-Note that, you chain instances and generalize the second instance.
+Note that you chain instances and generalize the second instance.
 ```lean
 # namespace Ex
 class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
