@@ -140,7 +140,7 @@ The equation compiler first splits on cases as to whether the input is
 ``zero`` or of the form ``succ x``.  It then does a case split on
 whether ``x`` is of the form ``zero`` or ``succ x``.  It determines
 the necessary case splits from the patterns that are presented to it,
-and raises and error if the patterns fail to exhaust the cases. Once
+and raises an error if the patterns fail to exhaust the cases. Once
 again, we can use arithmetic notation, as in the version below. In
 either case, the defining equations hold definitionally.
 
@@ -159,7 +159,7 @@ example : sub2 5 = 3 := rfl
 You can write ``#print sub2`` to see how the function was compiled to
 recursors. (Lean will tell you that ``sub2`` has been defined in terms
 of an internal auxiliary function, ``sub2.match_1``, but you can print
-that out too.). Lean uses these auxiliary functions to compile `match` expressions.
+that out too.) Lean uses these auxiliary functions to compile `match` expressions.
 Actually, the definition above is expanded to
 
 ```lean
@@ -206,7 +206,7 @@ def bar : List Nat → List Nat → Nat
   | a :: as, b :: bs => a + b
 ```
 
-Note that, the patterns are separated by commas.
+Note that the patterns are separated by commas.
 
 In each of the following examples, splitting occurs on only the first
 argument, even though the others are included among the list of
@@ -319,7 +319,7 @@ class. Roughly, an element of ``Inhabited α`` is a witness to the fact
 that there is an element of ``α``; in the [Chapter Type Classes](./type_classes.md)
 we will see that Lean can be instructed that suitable
 base types are inhabited, and can automatically infer that other
-constructed types are inhabited on that basis. On this basis, the
+constructed types are inhabited. On this basis, the
 standard library provides an arbitrary element, ``arbitrary``, of
 any inhabited type.
 
@@ -398,7 +398,7 @@ def foo (a : α) : (b : β) → γ
 Here ``(a : α)`` is a sequence of parameters, ``(b : β)`` is the
 sequence of arguments on which pattern matching takes place, and ``γ``
 is any type, which can depend on ``a`` and ``b``. Each line should
-contain the same number of patterns, one for each element of β. As we
+contain the same number of patterns, one for each element of ``β``. As we
 have seen, a pattern is either a variable, a constructor applied to
 other patterns, or an expression that normalizes to something of that
 form (where the non-constructors are marked with the ``[matchPattern]``
@@ -407,7 +407,7 @@ the arguments to the constructors represented by the given
 variables. In [Section Dependent Pattern Matching](#dependent_pattern_matching),
 we will see that it is sometimes necessary to include explicit terms in patterns that
 are needed to make an expression type check, though they do not play a
-role in pattern matching. These are called "inaccessible patterns," for
+role in pattern matching. These are called "inaccessible patterns" for
 that reason. But we will not need to use such inaccessible patterns
 before [Section Dependent Pattern Matching](#dependent_pattern_matching).
 
@@ -1352,7 +1352,7 @@ def sampleExpr : Expr :=
   plus (times (var 0) (const 7)) (times (const 2) (var 1))
 ```
 
-Here ``sampleExpr`` represents ``(v₀ + 7) * (2 + v₁)``.
+Here ``sampleExpr`` represents ``(v₀ * 7) + (2 * v₁)``.
 
 Write a function that evaluates such an expression, evaluating each ``var n`` to ``v n``.
 
