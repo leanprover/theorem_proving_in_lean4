@@ -1,5 +1,7 @@
 # Theorem Proving in Lean 4
 
+[Theorem Proving in Lean 4](title_page.md)
+
 - [Introduction](./introduction.md)
 - [Dependent Type Theory](./dependent_type_theory.md)
 - [Propositions and Proofs](./propositions_and_proofs.md)

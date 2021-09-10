@@ -1,5 +1,5 @@
 [book]
-authors = ["Jeremy Avigad", "Leonardo de Moura", "Soonho Kong"]
+authors = ["Jeremy Avigad", "Leonardo de Moura", "Soonho Kong", "Sebastian Ullrich"]
 language = "en"
 multilingual = false
 src = "."
