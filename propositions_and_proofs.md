@@ -241,7 +241,7 @@ variables to the left of the colon:
 # variable {q : Prop}
 theorem t1 (hp : p) (hq : q) : p := hp
 
-#check t1    -- p → q → p
+#print t1    -- p → q → p
 ```
 
 Now we can apply the theorem ``t1`` just as a function application.
@@ -278,7 +278,7 @@ Recall that we can also write theorem ``t1`` as follows:
 ```lean
 theorem t1 {p q : Prop} (hp : p) (hq : q) : p := hp
 
-#check t1
+#print t1
 ```
 
 The type of ``t1`` is now ``∀ {p q : Prop}, p → q → p``. We can read
@@ -312,7 +312,7 @@ theorem t1 : q → p := fun (hq : q) => hp
 ```
 
 Lean detects that the proof uses ``hp`` and automatically adds
-``hp : p`` as a premise. In all cases, the command ``#check t1`` still yields
+``hp : p`` as a premise. In all cases, the command ``#print t1`` still yields
 ``∀ p q : Prop, p → q → p``. Remember that this type can just as well
 be written ``∀ (p q : Prop) (hp : p) (hq :q), p``, since the arrow
 denotes nothing more than an arrow type in which the target does not
