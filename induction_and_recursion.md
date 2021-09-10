@@ -1412,7 +1412,7 @@ def sampleExpr : Expr :=
   plus (times (var 0) (const 7)) (times (const 2) (var 1))
 ```
 
-Here ``sampleExpr`` represents ``(v₀ + 7) * (2 + v₁)``.
+Here ``sampleExpr`` represents ``(v₀ * 7) + (2 * v₁)``.
 
 Write a function that evaluates such an expression, evaluating each ``var n`` to ``v n``.
 
