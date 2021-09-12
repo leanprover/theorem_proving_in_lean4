@@ -106,8 +106,8 @@ and the Unicode symbol `→` as a more compact version of `->`.
 Once again, you should try some examples on your own.
 
 Let's take a look at some basic syntax. You can enter the unicode
-arrow ``→`` by typing ``\to`` or ``\r``. You can also use the ASCII
-alternative ``->``, so the expressions ``Nat -> Nat`` and ``Nat →
+arrow ``→`` by typing ``\to`` or ``\r`` or ``\->``. You can also use the
+ASCII alternative ``->``, so the expressions ``Nat -> Nat`` and ``Nat →
 Nat`` mean the same thing. Both expressions denote the type of
 functions that take a natural number as input and return a natural
 number as output. The unicode symbol ``×`` for the Cartesian product
@@ -120,7 +120,7 @@ a function ``f`` to a value ``x`` is denoted ``f x`` (e.g., `Nat.succ 2`).
 Second, when writing type expressions, arrows associate to the *right*; for
 example, the type of ``Nat.add`` is ``Nat → Nat → Nat`` which is equivalent
 to `Nat → (Nat → Nat)`. Thus you can
-view ``Nat.add`` as a function that takes natural numbers and returns
+view ``Nat.add`` as a function that takes a natural number and returns
 another function that takes a natural number and returns a natural
 number. In type theory, this is generally more convenient than
 writing ``Nat.add`` as a function that takes a pair of natural numbers as
@@ -323,7 +323,7 @@ def g (s : String) : Bool := s.length > 0
 Think about what these expressions mean. The expression
 ``fun x : Nat => x`` denotes the identity function on ``Nat``, the
 expression ``fun x : Nat => true`` denotes the constant function that
-always returns ``true``, and ``fun x : Nat => g (f x)``, denotes the
+always returns ``true``, and ``fun x : Nat => g (f x)`` denotes the
 composition of ``f`` and ``g``.  You can, in general, leave off the
 type annotation and let Lean infer it for you.  So, for example, you
 can write ``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
@@ -354,7 +354,7 @@ example, the variable ``b`` in the expression ``fun (b : β) (x : α) => b``
 has nothing to do with the constant ``b`` declared earlier.  In fact,
 the expression denotes the same function as ``fun (u : β) (z : α) => u``.
 
-Formally, the expressions that are the same up to a renaming of bound
+Formally, expressions that are the same up to a renaming of bound
 variables are called *alpha equivalent*, and are considered "the
 same." Lean recognizes this equivalence.
 
@@ -523,9 +523,9 @@ def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
 ```
 
-This means `compose` is a function that takes any 2 functions as input
+This means `compose` is a function that takes any two functions as input
 arguments, so long as those functions each take only one input.
-The type algebra `β → γ` and `α → β` means that it is a requirement
+The type algebra `β → γ` and `α → β` means it is a requirement
 that the type of the output of the second function must match the
 type of the input to the first function - which makes sense, otherwise
 the two functions would not be composable.
@@ -570,9 +570,9 @@ def twice_double (x : Nat) : Nat :=
 #eval twice_double 2   -- 16
 ```
 
-Here, ``twice_double`` is definitionally equal to the term ``(x + x) * (x + x)``.
+Here, ``twice_double x`` is definitionally equal to the term ``(x + x) * (x + x)``.
 
-You can combine multiple assignments in a single ``let`` statement:
+You can combine multiple assignments by chaining ``let`` statements:
 
 ```lean
 #check let y := 2 + 2; let z := y + y; z * z   -- Nat
@@ -720,10 +720,10 @@ open Foo
 ```
 
 When you declare that you are working in the namespace ``Foo``, every
-identifier you declare has a full name with prefix "``Foo.``" Within
+identifier you declare has a full name with prefix "``Foo.``". Within
 the namespace, you can refer to identifiers by their shorter names,
 but once you end the namespace, you have to use the longer names.
-Unlike `section` namespaces require a name, there is only one
+Unlike `section`, namespaces require a name. There is only one
 anonymous namespace at the root level.
 
 The ``open`` command brings the shorter names into the current
