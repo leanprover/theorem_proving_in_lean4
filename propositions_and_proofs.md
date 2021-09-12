@@ -395,7 +395,7 @@ how to "introduce" or establish an implication. Application can be
 viewed as an "elimination rule," showing how to "eliminate" or use an
 implication in a proof. The other propositional connectives are
 defined in Lean's library in the file ``Prelude.core`` (see
-[importing files](interacting_with_lean.md) for more information on the library
+[importing files](./interacting_with_lean.md#_importing_files) for more information on the library
 hierarchy), and each connective comes with its canonical introduction
 and elimination rules.
 
