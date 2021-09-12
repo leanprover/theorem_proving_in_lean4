@@ -46,7 +46,7 @@ constant of such a type.
 axiom and_comm (p q : Prop) : Proof (Implies (And p q) (And q p))
 
 variable (p q : Prop)
-#check and_comm p q     -- Proof (Implies (and p q) (and q p))
+#check and_comm p q     -- Proof (Implies (And p q) (And q p))
 ```
 
 In addition to axioms, however, we would also need rules to build new
@@ -268,7 +268,7 @@ theorem ex : 1 = 0 :=
 False.elim unsound
 ```
 
-Declaring a "axiom" ``hp : p`` is tantamount to declaring that ``p``
+Declaring an "axiom" ``hp : p`` is tantamount to declaring that ``p``
 is true, as witnessed by ``hp``. Applying the theorem
 ``t1 : p → q → p`` to the fact ``hp : p`` that ``p`` is true yields the theorem
 ``t1 hp : q → p``.
@@ -449,7 +449,7 @@ the function space constructor, ``∧`` and ``×`` are treated separately
 in Lean. With the analogy, however, the proof we have just constructed
 is similar to a function that swaps the elements of a pair.
 
-We will see in [Chapter Structures](./structures.md) that certain
+We will see in [Chapter Structures and Records](./structures_and_records.md) that certain
 types in Lean are *structures*, which is to say, the type is defined
 with a single canonical *constructor* which builds an element of the
 type from a sequence of suitable arguments. For every ``p q : Prop``,
@@ -870,10 +870,10 @@ correct. Then go back and replace each ``sorry`` with an actual proof,
 until no more remain.
 
 Here is another useful trick. Instead of using ``sorry``, you can use
-an underscore ``_`` as a placeholder. Recall that this tells Lean that
+an underscore ``_`` as a placeholder. Recall this tells Lean that
 the argument is implicit, and should be filled in automatically. If
 Lean tries to do so and fails, it returns with an error message "don't
-know how to synthesize placeholder." This is followed by the type of
+know how to synthesize placeholder," followed by the type of
 the term it is expecting, and all the objects and hypothesis available
 in the context. In other words, for each unresolved placeholder, Lean
 reports the subgoal that needs to be filled at that point. You can
