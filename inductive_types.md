@@ -431,7 +431,7 @@ def snd {α : Type u} {β : Type v} (p : Prod α β) : β :=
 ```
 
 The function ``fst`` takes a pair, ``p``. The `match` interprets
-``p`` as a pair, ``Prod.mk a b``. Recall also from [Dependent Type Theory](dependent_types.md)
+``p`` as a pair, ``Prod.mk a b``. Recall also from [Dependent Type Theory](./dependent_type_theory.md)
 that to give these definitions the greatest generality possible, we allow
 the types ``α`` and ``β`` to belong to any universe.
 
