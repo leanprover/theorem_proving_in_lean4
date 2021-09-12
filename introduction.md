@@ -110,6 +110,5 @@ This tutorial is an open access project maintained on Github. Many people have c
 corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Mario Carneiro, Nathan
 Carter, Eduardo Cavazos, Amine Chaieb, Joe Corneli, William DeMeo, Marcus Klaas de Vries, Ben Dyer, Gabriel Ebner,
 Anthony Hart, Simon Hudon, Sean Leather, Assia Mahboubi, Gihan Marasingha, Patrick Massot, Christopher John Mazey,
-Sebastian Ullrich, Floris van Doorn, Daniel Velleman, Théo Zimmerman, and Paul Chisholm for their contributions.  Please see [lean
-prover](https://github.com/leanprover/) and [lean community](https://github.com/leanprover-community/) for an up to date list
+Sebastian Ullrich, Floris van Doorn, Daniel Velleman, Théo Zimmerman, Paul Chisholm, and Chris Lovett for their contributions.  Please see [lean prover](https://github.com/leanprover/) and [lean community](https://github.com/leanprover-community/) for an up to date list
 of our amazing contributors.
