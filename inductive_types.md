@@ -1061,6 +1061,8 @@ below, notice that the hypothesis ``h : n ≠ 0`` becomes ``h : 0 ≠ 0``
 in the first branch, and ``h : succ m ≠ 0`` in the second.
 
 ```lean
+open Nat
+
 example (n : Nat) (h : n ≠ 0) : succ (pred n) = n := by
   cases n with
   | zero =>
@@ -1158,6 +1160,8 @@ the expression, introduce the resulting universally quantified
 variable, and case on that.
 
 ```lean
+open Nat
+
 example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
         : p (m + 3 * k) := by
   cases m + 3 * k
@@ -1170,6 +1174,8 @@ zero or the successor of some number." The result is functionally
 equivalent to the following:
 
 ```lean
+open Nat
+
 example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
         : p (m + 3 * k) := by
   generalize m + 3 * k = n
