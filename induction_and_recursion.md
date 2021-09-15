@@ -17,7 +17,7 @@ refer to as the "equation compiler." The equation compiler is not part
 of the trusted code base; its output consists of terms that are
 checked independently by the kernel.
 
-Pattern Matching
+<a name="_pattern_matching"></a>Pattern Matching
 ----------------
 
 The interpretation of schematic patterns is the first step of the
@@ -46,7 +46,7 @@ def isZero : Nat → Bool
   | succ x => false
 ```
 
-The equations used to define these function hold definitionally:
+The equations used to define these functions hold definitionally:
 
 ```lean
 # open Nat
@@ -234,8 +234,8 @@ known as a *wildcard pattern*, or an *anonymous variable*. In contrast
 to usage outside the equation compiler, here the underscore does *not*
 indicate an implicit argument. The use of underscores for wildcards is
 common in functional programming languages, and so Lean adopts that
-notation. [Section wildcards and overlapping patterns](#wildcards_and_overlapping_patterns)
-expands on the notion of a wildcard, and [Section Inaccessible Patterns](#inaccessible_terms) explains how
+notation. [Section Wildcards and Overlapping Patterns](#_wildcards_and_overlapping_patterns)
+expands on the notion of a wildcard, and [Section Inaccessible Patterns](#_inaccessible_patterns) explains how
 you can use implicit arguments in patterns as well.
 
 As described in [Chapter Inductive Types](./inductive_types.md),
@@ -255,15 +255,15 @@ def tail2 : {α : Type u} → List α → List α
 ```
 
 Despite the different placement of the parameter ``α`` in these two
-examples, in both cases it treated in the same way, in that it does
+examples, in both cases it is treated in the same way, in that it does
 not participate in a case split.
 
 Lean can also handle more complex forms of pattern matching, in which
 arguments to dependent types pose additional constraints on the
 various cases. Such examples of *dependent pattern matching* are
-considered in the [Section Dependent Pattern Matching](#dependent_pattern_matching).
+considered in the [Section Dependent Pattern Matching](#_dependent_pattern_matching).
 
-<a name="wildcards_and_overlapping_patterns"></a>Wildcards and Overlapping Patterns
+<a name="_wildcards_and_overlapping_patterns"></a>Wildcards and Overlapping Patterns
 ----------------------------------
 
 Consider one of the examples from the last section:
@@ -274,6 +274,8 @@ def foo : Nat → Nat → Nat
   | m+1, 0   => 1
   | m+1, n+1 => 2
 ```
+
+An alternative presentation is:
 
 ```lean
 def foo : Nat → Nat → Nat
@@ -404,12 +406,12 @@ other patterns, or an expression that normalizes to something of that
 form (where the non-constructors are marked with the ``[matchPattern]``
 attribute). The appearances of constructors prompt case splits, with
 the arguments to the constructors represented by the given
-variables. In [Section Dependent Pattern Matching](#dependent_pattern_matching),
+variables. In [Section Dependent Pattern Matching](#_dependent_pattern_matching),
 we will see that it is sometimes necessary to include explicit terms in patterns that
 are needed to make an expression type check, though they do not play a
 role in pattern matching. These are called "inaccessible patterns" for
 that reason. But we will not need to use such inaccessible patterns
-before [Section Dependent Pattern Matching](#dependent_pattern_matching).
+before [Section Dependent Pattern Matching](#_dependent_pattern_matching).
 
 As we saw in the last section, the terms ``t₁, ..., tₙ`` can make use
 of any of the parameters ``a``, as well as any of the variables that
@@ -543,7 +545,7 @@ is exponential in ``n``. Here is a better way:
 
 ```lean
 def fibFast (n : Nat) : Nat :=
-  (loop n).1
+  (loop n).2
 where
   loop : Nat → Nat × Nat
     | 0   => (0, 1)
@@ -559,7 +561,7 @@ def fibFast (n : Nat) : Nat :=
   let rec loop : Nat → Nat × Nat
     | 0   => (0, 1)
     | n+1 => let p := loop n; (p.2, p.1 + p.2)
-  (loop n).1
+  (loop n).2
 ```
 
 In both cases, Lean generates the auxiliary function `fibFast.loop`.
@@ -932,7 +934,7 @@ We can then use a mutual recursive definition to count the number of constants o
 --------------------------
 
 All the examples of pattern matching we considered in
-:numref:`pattern_matching` can easily be written using ``cases_on``
+[Section Pattern Matching](#_pattern_matching) can easily be written using ``cases_on``
 and ``rec_on``. However, this is often not the case with indexed
 inductive families such as ``vector α n``, since case splits impose
 constraints on the values of the indices. Without the equation
@@ -1313,7 +1315,7 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
   ⟨x, y, px, qy⟩
 ```
 
-Local recursive declarations
+Local Recursive Declarations
 ---------
 
 You can define local recursive declarations using the `let rec` keyword.
@@ -1352,7 +1354,7 @@ theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
   exact aux n []
 ```
 
-You can also introduce auxiliary recursive declarations using `where` clause after your definition.
+You can also introduce auxiliary recursive declarations using a `where` clause after your definition.
 Lean converts them into a `let rec`.
 
 ```lean
@@ -1390,7 +1392,7 @@ Exercises
    the natural numbers. Similarly, see if you can figure out how to
    define ``WellFounded.fix`` on your own.
 
-4. Following the examples in [Section Dependent Pattern Matching](#dependent_pattern_matching),
+4. Following the examples in [Section Dependent Pattern Matching](#_dependent_pattern_matching),
    define a function that will append two vectors.
    This is tricky; you will have to define an auxiliary function.
 
