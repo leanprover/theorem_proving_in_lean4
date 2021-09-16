@@ -1127,11 +1127,11 @@ hljs.registerLanguage("lean", function(hljs) {
       'existsi|10 cases rcases intro intros introv by_cases ' +
       'refl rfl funext case focus propext exact exacts ' +
       'refine apply eapply fapply apply_with apply_instance ' +
-      'induction rename assumption revert generalize specialize clear ' +
+      'induction rename rename_i assumption revert generalize specialize clear ' +
       'contradiction by_contradiction by_contra trivial exfalso ' +
       'symmetry transitivity destruct constructor econstructor ' +
       'split injection injections exists admit conv arg ' +
-      'repeat skip swap solve1 abstract allGoals anyGoals done ' +
+      'repeat skip swap solve1 abstract all_goals any_goals done ' +
       'fail_if_success success_if_fail guard_target guard_hyp ' +
       'have replace at suffices show from first lhs rhs pattern tactic ' +
       'congr congr_n congrArg norm_num ring ',
