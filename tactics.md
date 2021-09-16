@@ -331,14 +331,14 @@ example : ∀ a b c : Nat, a = b → a = c → c = b := by unhygienic
   exact a_1
 ```
 
-You can also use the ``renameI`` tactic to rename the most recent inaccessible names in your context.
-In the following example, the tactic ``renameI h1 _ h2`` renames two of the last three hypotheses in
+You can also use the ``rename_i`` tactic to rename the most recent inaccessible names in your context.
+In the following example, the tactic ``rename_i h1 _ h2`` renames two of the last three hypotheses in
 your context.
 
 ```lean
 example : ∀ a b c d : Nat, a = b → a = d → a = c → c = b := by
   intros
-  renameI h1 _ h2
+  rename_i h1 _ h2
   apply Eq.trans
   apply Eq.symm
   exact h2
@@ -865,10 +865,10 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
   { intro h;
     cases h;
     { show p ∧ (q ∨ r);
-      renameI hpq;
+      rename_i hpq;
       exact ⟨hpq.left, Or.inl hpq.right⟩ }
     { show p ∧ (q ∨ r);
-      renameI hpr;
+      rename_i hpr;
       exact ⟨hpr.left, Or.inr hpr.right⟩ } }
 ```
 
@@ -981,13 +981,13 @@ Be careful: ``repeat (try t)`` will loop forever, because the inner tactic never
 In a proof, there are often multiple goals outstanding. Parallel
 sequencing is one way to arrange it so that a single tactic is applied
 to multiple goals, but there are other ways to do this. For example,
-``allGoals t`` applies ``t`` to all open goals:
+``all_goals t`` applies ``t`` to all open goals:
 
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
   constructor
-  allGoals (try constructor)
-  allGoals assumption
+  all_goals (try constructor)
+  all_goals assumption
 ```
 
 In this case, the ``any_goals`` tactic provides a more robust solution.
@@ -997,8 +997,8 @@ succeeds on at least one goal.
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
   constructor
-  anyGoals constructor
-  anyGoals assumption
+  any_goals constructor
+  any_goals assumption
 ```
 
 The first tactic in the ``by`` block below repeatedly splits
@@ -1007,8 +1007,8 @@ conjunctions:
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) := by
-  repeat (anyGoals constructor)
-  allGoals assumption
+  repeat (any_goals constructor)
+  all_goals assumption
 ```
 
 In fact, we can compress the full tactic down to one line:
@@ -1016,12 +1016,12 @@ In fact, we can compress the full tactic down to one line:
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) := by
-  repeat (anyGoals (first | constructor | assumption))
+  repeat (any_goals (first | constructor | assumption))
 ```
 
 The combinator ``focus t`` ensures that ``t`` only effects the current
 goal, temporarily hiding the others from the scope. So, if ``t``
-ordinarily only effects the current goal, ``focus (allGoals t)`` has
+ordinarily only effects the current goal, ``focus (all_goals t)`` has
 the same effect as ``t``.
 
 Rewriting
