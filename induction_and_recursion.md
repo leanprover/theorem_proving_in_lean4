@@ -711,7 +711,7 @@ def div.F (x : Nat) (f : (x₁ : Nat) → x₁ < x → Nat → Nat) (y : Nat) : 
     zero
 
 set_option codegen false
-def div := WellFounded.fix Nat.lt_wf div.F
+def div := WellFounded.fix (measure id).wf div.F
 
 #reduce div 8 2 -- 4
 ```
