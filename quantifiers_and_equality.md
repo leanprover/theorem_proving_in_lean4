@@ -708,11 +708,10 @@ nonconstructive, and hence require some form of classical reasoning.
 open Classical
 
 variable (α : Type) (p q : α → Prop)
-variable (a : α)
 variable (r : Prop)
 
 example : (∃ x : α, r) → r := sorry
-example : r → (∃ x : α, r) := sorry
+example (a : α) : r → (∃ x : α, r) := sorry
 example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r := sorry
 example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := sorry
 
@@ -722,14 +721,12 @@ example : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) := sorry
 example : (¬ ∀ x, p x) ↔ (∃ x, ¬ p x) := sorry
 
 example : (∀ x, p x → r) ↔ (∃ x, p x) → r := sorry
-example : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
-example : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
+example (a : α) : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
+example (a : α) : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
 ```
 
-Notice that the declaration ``variable (a : α)`` amounts to the
-assumption that there is at least one element of type ``α``.  This
-assumption is needed in the second example, as well as in the last
-two.
+Notice that the second example and the last two examples require the
+assumption that there is at least one element ``a`` of type ``α``.
 
 Here are solutions to two of the more difficult ones:
 
