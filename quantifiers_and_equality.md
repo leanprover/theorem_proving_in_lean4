@@ -886,7 +886,7 @@ example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
 variable (men : Type) (barber : men)
 variable  (shaves : men → men → Prop)
 
-example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : false := sorry
+example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False := sorry
 ```
 
 4. Remember that, without any parameters, an expression of type
