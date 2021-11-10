@@ -30,14 +30,14 @@ def b2 : Bool := false
 
 /- Check their types. -/
 
-#check m            -- output: Nat
-#check n
+#check m            -- Nat
+#check n            -- Nat
 #check n + 0        -- Nat
 #check m * (n + 0)  -- Nat
 #check b1           -- Bool
-#check b1 && b2     -- "&&" is the Boolean and
-#check b1 || b2     -- Boolean or
-#check true         -- Boolean "true"
+#check b1 && b2     -- Bool
+#check b1 || b2     -- Bool
+#check true         -- Bool
 
 /- Evaluate -/
 
@@ -46,33 +46,33 @@ def b2 : Bool := false
 #eval b1 && b2      -- false
 ```
 
+Note that `&&` is the logical `and` operator, and `||` is a logical `or`.
+
 Any text between ``/-`` and ``-/`` constitutes a comment block that is
 ignored by Lean. Similarly, two dashes `--` indicate that the rest of
 the line contains a comment that is also ignored. Comment blocks can
-be nested, making it possible to "comment out" chunks of code, just as
-in many programming languages.
+be nested, making it possible to "comment out" chunks of code, unlike
+many programming languages that do not allow nesting of block comments.
 
-The ``def`` keyword declares new constant symbols into the
-working environment. In the example above, `def m : Nat := 1`
-defines a new constant `m` of type `Nat` whose value is `1`.
-The ``#check`` command asks Lean to report their
-types; in Lean, auxiliary commands that query the system for
-information typically begin with the hash (#) symbol.
-The `#eval` command asks Lean to evaluate the given expression.
-You should try
-declaring some constants and type checking some expressions on your
-own. Declaring new objects in this manner is a good way to experiment
-with the system.
+The ``def`` keyword declares new constant symbols into the working
+environment. In the example above, `def m : Nat := 1` defines a new
+constant `m` of type `Nat` whose value is `1`. The ``#check`` command
+asks Lean to report their types; in Lean, auxiliary commands that
+query the system for information typically begin with the hash (#)
+symbol. The `#eval` command asks Lean to evaluate the given
+expression. You should try declaring some constants and type checking
+some expressions on your own. Declaring new objects in this manner is
+a good way to experiment with the system.
 
 What makes simple type theory powerful is that you can build new types
 out of others. For example, if ``a`` and ``b`` are types, ``a -> b``
 denotes the type of functions from ``a`` to ``b``, and ``a × b``
 denotes the type of pairs consisting of an element of ``a`` paired
 with an element of ``b``, also known as the *Cartesian product*. Note
-that `×` is a Unicode symbol. The judicious use of Unicode improves
-legibility, and all modern editors have great support for it. In the
-Lean standard library, you often see Greek letters to denote types,
-and the Unicode symbol `→` as a more compact version of `->`.
+that `×` shown here is a Unicode symbol. The judicious use of Unicode
+improves legibility, and all modern editors have great support for it.
+In the Lean standard library, you often see Greek letters to denote
+types, and the Unicode symbol `→` as a more compact version of `->`.
 
 ```lean
 #check Nat → Nat      -- type the arrow as "\to" or "\r"
@@ -115,8 +115,21 @@ is entered as ``\times``. You will generally use lower-case Greek
 letters like ``α``, ``β``, and ``γ`` to range over types. You can
 enter these particular ones with ``\a``, ``\b``, and ``\g``.
 
+Note: if you are using the [Lean 4 Visual Studio Code extension](https://github.com/leanprover/vscode-lean4)
+you can use the `Show All Abbreviations` command to see the complete
+list of abbreviations.
+
 There are a few more things to notice here. First, the application of
-a function ``f`` to a value ``x`` is denoted ``f x`` (e.g., `Nat.succ 2`).
+a function ``f`` to a value ``x`` is denoted ``f x`` (e.g., `Nat.succ
+2`). Parentheses can be used when calling functions but only when
+needed to clearly separate the expressions for each argument to that
+function just as you would use parenthesis for grouping any
+expression.  For example, `List.cons` takes two arguments and
+concatenates a value and a list so `#eval List.cons 1 [2,3]` produces
+the list `[1, 2, 3]` but if you want to call List.cons to generate the
+argument `[2,3]` you would need to use parenthesis like this: `#eval
+List.cons 1 (List.cons 2 [3])`
+
 Second, when writing type expressions, arrows associate to the *right*; for
 example, the type of ``Nat.add`` is ``Nat → Nat → Nat`` which is equivalent
 to `Nat → (Nat → Nat)`. Thus you can
@@ -251,7 +264,7 @@ similarly polymorphic:
 #check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 ```
 
-To define polymorphic constants, Lean allows you to
+To define polymorphic functions, Lean allows you to
 declare universe variables explicitly using the `universe` command:
 
 ```lean
@@ -262,7 +275,9 @@ def F (α : Type u) : Type u := Prod α α
 #check F    -- Type u → Type u
 ```
 
-You can avoid the universe command by providing the universe parameters when defining F.
+You can avoid the universe command by providing the universe
+parameters when defining F using the special syntax `.{u}` after the
+name `F`:
 
 ```lean
 def F.{u} (α : Type u) : Type u := Prod α α
@@ -293,7 +308,7 @@ Creating a function from another expression is a process known as
 construct an expression ``t : β``, then the expression ``fun (x : α)
 => t``, or, equivalently, ``λ (x : α) => t``, is an object of type ``α
 → β``. Think of this as the function from ``α`` to ``β`` which maps
-any value ``x`` to the value ``t``.
+any value ``x`` (of type ``α``) to the value ``t`` (of type ``β``).
 
 Here are some more examples
 
@@ -322,7 +337,7 @@ def g (s : String) : Bool := s.length > 0
 
 Think about what these expressions mean. The expression
 ``fun x : Nat => x`` denotes the identity function on ``Nat``, the
-expression ``fun x : Nat => true`` denotes the constant function that
+expression ``fun x : Nat => true`` denotes the function that
 always returns ``true``, and ``fun x : Nat => g (f x)`` denotes the
 composition of ``f`` and ``g``.  You can, in general, leave off the
 type annotation and let Lean infer it for you.  So, for example, you
@@ -343,15 +358,17 @@ You can also pass types as parameters:
 ```
 The last expression, for example, denotes the function that takes
 three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ``
-and ``f : α → β``, and returns the composition of ``g`` and ``f``.
-(Making sense of the type of this function requires an understanding
-of dependent products, which will be explained below.)
+and ``f : α → β``, and returns the composition of ``g`` and ``f``. For
+example, you could call this function passing the following arguments
+`Nat Nat double Nat double 2` where `double` is defined as `def double
+(x : Nat) : Nat := x + x` (This function is making use of an important
+feature named "Dependent Products", which will be explained below.)
 
 The general form of a lambda expression is ``fun x : α => t``, where
 the variable ``x`` is a "bound variable": it is really a placeholder,
 whose "scope" does not extend beyond the expression ``t``.  For
 example, the variable ``b`` in the expression ``fun (b : β) (x : α) => b``
-has nothing to do with the constant ``b`` declared earlier.  In fact,
+has nothing to do with any previous declaration of ``b``.  In fact,
 the expression denotes the same function as ``fun (u : β) (z : α) => u``.
 
 Formally, expressions that are the same up to a renaming of bound
@@ -386,7 +403,7 @@ In fact, more should be true: applying the expression ``(fun x : Nat
 
 You will see later how these terms are evaluated. For now, notice that
 this is an important feature of dependent type theory: every term has
-a computational behavior, and supports a notion of *normalization*. In
+a computational behavior, and supports a notion of *normalization*. InVector α n
 principle, two terms that reduce to the same value are called
 *definitionally equal*. They are considered "the same" by Lean's type
 checker, and Lean does its best to recognize and support these
@@ -490,7 +507,8 @@ def add (x : Nat) (y : Nat) :=
 ```
 
 Notice here we called the `double` function to create the first
-parameter to `add`.
+parameter to `add`.  Notice also that parentheses have to be used here
+to distinguish argument 1 and 2 for the `add` function.
 
 You can use other more interesting expressions inside a `def`:
 
@@ -552,6 +570,9 @@ def square (x : Nat) : Nat :=
 #eval compose Nat Nat Nat double square 3  -- 18
 ```
 
+Notice here we are passing the type `Nat` as an argument.  This is
+what was meant by the phrase earlier that "types are objects".
+
 Local Definitions
 -----------------
 
@@ -604,7 +625,7 @@ def foo := let a := Nat; fun x : a => x + 2
   def bar := (fun a => fun x : a => x + 2) Nat
 -/
 ```
-# <a name="_variables_and_sections"></a>Variables and Sections
+# Variables and Sections
 
 Consider the following three function definitions:
 ```lean
@@ -675,8 +696,8 @@ section useful
 end useful
 ```
 
-When the section is closed, the variables go out of scope, and become
-nothing more than a distant memory.
+When the section is closed, the variables go out of scope, and cannot
+be referenced (the variables are private to the section).
 
 You do not have to indent the lines within a section. Nor do you have
 to name a section, which is to say, you can use an anonymous
@@ -803,8 +824,10 @@ commands such as ``set_option`` and ``open``.
 In many respects, however, a ``namespace ... end`` block behaves the
 same as a ``section ... end`` block. In particular, if you use the
 ``variable`` command within a namespace, its scope is limited to the
-namespace. Similarly, if you use an ``open`` command within a
-namespace, its effects disappear when the namespace is closed.
+namespace (variables are also private inside a namespace). Similarly,
+if you use an ``open`` command within a namespace, its effects
+disappear when the namespace is closed.  Likewise ``open`` is
+effectively closed by the end of the file.
 
 ## What makes dependent type theory dependent?
 
@@ -903,7 +926,7 @@ def h2 (x : Nat) : Nat :=
 The functions `f` and `g` above denote the same function.
 
 
-<a name="_implicit_args"></a>Implicit Arguments
+Implicit Arguments
 ------------------
 
 Suppose we have an implementation of lists as:

@@ -50,7 +50,7 @@ More on Sections
 ----------------
 
 Lean provides various sectioning mechanisms to help structure a
-theory. You saw in [Variables and Sections](./dependent_type_theory.md#_variables_and_sections) that the
+theory. You saw in [Variables and Sections](./dependent_type_theory.md#variables_and_sections) that the
 ``section`` command makes it possible not only to group together
 elements of a theory that go together, but also to declare variables
 that are inserted as arguments to theorems and definitions, as
@@ -318,7 +318,7 @@ file.
 More on Implicit Arguments
 --------------------------
 
-In [Section Implicit Arguments](./dependent_type_theory.md#_implicit_args),
+In [Section Implicit Arguments](./dependent_type_theory.md#implicit_arguments),
 we saw that if Lean displays the type
 of a term ``t`` as ``{x : α} → β x``, then the curly brackets
 indicate that ``x`` has been marked as an *implicit argument* to
