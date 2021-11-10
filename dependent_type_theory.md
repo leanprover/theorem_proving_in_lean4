@@ -403,7 +403,7 @@ In fact, more should be true: applying the expression ``(fun x : Nat
 
 You will see later how these terms are evaluated. For now, notice that
 this is an important feature of dependent type theory: every term has
-a computational behavior, and supports a notion of *normalization*. InVector α n
+a computational behavior, and supports a notion of *normalization*. In
 principle, two terms that reduce to the same value are called
 *definitionally equal*. They are considered "the same" by Lean's type
 checker, and Lean does its best to recognize and support these

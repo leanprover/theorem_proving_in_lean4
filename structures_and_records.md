@@ -15,7 +15,7 @@ structure, as is the dependent product (Sigma) type.
 In general, whenever we define a structure ``S``, we usually
 define *projection* functions that allow us to "destruct" each
 instance of ``S`` and retrieve the values that are stored in its
-fields. The functions ``prod.1`` and ``prod.2``, which return the
+fields. The functions ``prod.fst`` and ``prod.snd``, which return the
 first and second elements of a pair, are examples of such projections.
 
 When writing programs or formalizing mathematics, it is not uncommon
