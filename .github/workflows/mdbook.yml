@@ -22,8 +22,13 @@ jobs:
       run: |
         curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
         chmod +x elan-init.sh
-        ./elan-init.sh -y
+        ./elan-init.sh -y --default-toolchain none
     - name: Install Lean4 nightly
-      run: ~/.elan/bin/lean +leanprover/lean4:nightly --version                    
+      run: |
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+        lean +leanprover/lean4:nightly --version                    
     - name: Run mdbook lean4 tests
-      run: ~/.cargo/bin/mdbook test
+      run: |
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+        . "$HOME/.cargo/env"
+        ~/.cargo/bin/mdbook test
