@@ -226,16 +226,11 @@ the unspecified fields cannot be inferred, Lean flags an error
 indicating the corresponding placeholder could not be synthesized.
 
 ```lean
-structure MyStruct where
-    {α : Type u}
-    {β : Type v}
+structure MyStruct {α : Type u} {β : Type v} where
     a : α
     b : β
 
 #check { a := 10, b := true : MyStruct }
-
--- BUGBUG: this says  field 'α' is missing ???
--- See https://github.com/leanprover/lean4/issues/783
 ```
 Instances of a structure are immutable, but Lean makes it easy to
 create a new record object by modifying the value of one or more
