@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
+    - name: Build lean version of mdbook
       run: cargo install --git https://github.com/leanprover/mdBook mdbook
     - name: Install Elan          
       run: |
@@ -24,6 +24,6 @@ jobs:
         chmod +x elan-init.sh
         ./elan-init.sh -y
     - name: Install Lean4 nightly
-      run: lean +leanprover/lean4:nightly --version                    
+      run: ~/.elan/bin/lean +leanprover/lean4:nightly --version                    
     - name: Run mdbook lean4 tests
-      run: mdbook test
+      run: ~/.cargo/bin/mdbook test
