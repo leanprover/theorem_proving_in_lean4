@@ -1,4 +1,4 @@
-name: Rust
+name: mdbook test
 
 on:
   push:
