@@ -27,6 +27,8 @@ jobs:
         ./elan-init.sh -y --default-toolchain none
         echo "$HOME/.elan/bin" >> $GITHUB_PATH
     - name: Install Lean4 nightly
-      run: lean +leanprover/lean4:nightly --version                    
+      run: |
+        lean +leanprover/lean4:nightly --version
+        elan default leanprover/lean4:nightly
     - name: Run mdbook lean4 tests
       run: mdbook test
