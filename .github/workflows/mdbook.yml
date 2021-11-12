@@ -17,18 +17,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build lean version of mdbook
-      run: cargo install --git https://github.com/leanprover/mdBook mdbook
+      run: |
+        cargo install --git https://github.com/leanprover/mdBook mdbook
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
     - name: Install Elan          
       run: |
         curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
         chmod +x elan-init.sh
         ./elan-init.sh -y --default-toolchain none
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
     - name: Install Lean4 nightly
-      run: |
-        echo "$HOME/.elan/bin" >> $GITHUB_PATH
-        lean +leanprover/lean4:nightly --version                    
+      run: lean +leanprover/lean4:nightly --version                    
     - name: Run mdbook lean4 tests
-      run: |
-        echo "$HOME/.elan/bin" >> $GITHUB_PATH
-        . "$HOME/.cargo/env"
-        ~/.cargo/bin/mdbook test
+      run: mdbook test
