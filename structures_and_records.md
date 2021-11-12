@@ -206,10 +206,9 @@ So for example, you can create a Point object using just this syntax:
 ```
 
 The suffix ``: structure-type`` can be omitted whenever the name of
-the structure can be inferred from the expected type. For example, we
-use this notation to define "points." The order that the fields are
-specified does not matter, so all the expressions below define the
-same point.
+the structure can be inferred from the expected type. For example,
+the Lean compiler can infer the type `Point Nat` in the following
+call to `Point.smul`:
 
 ```lean
 # structure Point (α : Type u) where
@@ -220,6 +219,10 @@ same point.
 #   Point.mk (n * p.x) (n * p.y)
 #eval Point.smul 3 { y := 20, x := 10 } -- { x := 30, y := 60 }
 ```
+Notice we can write `{ y := 20, x := 10 }` here instead of the more
+verbose `{ x := 10, y := 20 : Point Nat }`.  Notice also that the
+order that the fields are specified does not matter, so all the
+expressions below define the same point.
 
 If the value of a field is not specified, Lean tries to infer it. If
 the unspecified fields cannot be inferred, Lean flags an error
