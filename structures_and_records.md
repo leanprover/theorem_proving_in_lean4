@@ -124,10 +124,19 @@ structure Point (α : Type u) where
 def Point.add (p q : Point Nat) :=
   mk (p.x + q.x) (p.y + q.y)
 
-def p : Point Nat := Point.mk 1 2
-def q : Point Nat := Point.mk 3 4
+def p := Point.mk 1 2
+def q := Point.mk 3 4
 
 #eval p.add q  -- {x := 4, y := 6}
+```
+
+Note: The `deriving Repr` instruction implements a default
+representation so that you can `#eval` a Point and see a nice readable
+output message `{x := 4, y := 6}`. Without this instruction you will
+get an error from the `#eval` statement saying:
+
+```
+failed to be synthesized, this instance instructs Lean on how to display the resulting value, recall that any type implementing the `Repr` class also implements the `Lean.Eval` class
 ```
 
 In the next chapter, you will learn how to define a function like
@@ -148,21 +157,21 @@ below, ``p.smul 3`` is interpreted as ``Point.smul 3 p``.
 def Point.smul (n : Nat) (p : Point Nat) :=
   Point.mk (n * p.x) (n * p.y)
 
-def p : Point Nat := Point.mk 1 2
+def p := Point.mk 1 2
 
 #eval p.smul 3  -- {x := 3, y := 6}
 ```
 
-It is common to use a similar trick with the ``List.map`` function,
-which takes a list as its second non-implicit argument:
+Dot notation is very popular with list operations like  ``List.map``
+as follows:
 
 ```lean
 #check @List.map
 
 def xs : List Nat := [1, 2, 3]
-def f : Nat → Nat := fun x => x * x
+def square (x : Nat) := x * x
 
-#eval xs.map f  -- [1, 4, 9]
+#eval xs.map square  -- [1, 4, 9]
 ```
 
 Here ``xs.map f`` is interpreted as ``List.map f xs``.
@@ -174,12 +183,26 @@ We have been using constructors to create elements of a structure
 type. For structures containing many fields, this is often
 inconvenient, because we have to remember the order in which the
 fields were defined. Lean therefore provides the following alternative
-notations for defining elements of a structure type.
+notations for defining elements of a structure type using the field
+names also:
 
 ```
     { (<field-name> := <expr>)* : structure-type }
     or
     { (<field-name> := <expr>)* }
+```
+
+So for example, you can create a Point object using just this syntax:
+
+```lean
+# structure Point (α : Type u) where
+#   x : α
+#   y : α
+#  deriving Repr
+#eval { x := 10, y := 20 : Point Nat}
+#eval { x := 10, y := 20 : Point Nat }
+#eval { y := 20, x := 10 : Point _ }
+#eval ({ x := 10, y := 20 } : Point Nat)
 ```
 
 The suffix ``: structure-type`` can be omitted whenever the name of
@@ -189,16 +212,13 @@ specified does not matter, so all the expressions below define the
 same point.
 
 ```lean
-structure Point (α : Type u) where
-  x : α
-  y : α
-
-#check { x := 10, y := 20 : Point Nat }  -- Point ℕ
-#check { y := 20, x := 10 : Point _ }
-#check ({ x := 10, y := 20 } : Point Nat)
-
-example : Point Nat :=
-  { y := 20, x := 10 }
+# structure Point (α : Type u) where
+#   x : α
+#   y : α
+#  deriving Repr
+# def Point.smul (n : Nat) (p : Point Nat) :=
+#   Point.mk (n * p.x) (n * p.y)
+#eval Point.smul 3 { y := 20, x := 10 } -- { x := 30, y := 60 }
 ```
 
 If the value of a field is not specified, Lean tries to infer it. If
@@ -213,29 +233,42 @@ structure MyStruct where
     b : β
 
 #check { a := 10, b := true : MyStruct }
-```
 
-*Record update* is another common operation which amounts to creating
-a new record object by modifying the value of one or more fields in an
-old one. Lean allows you to specify that unassigned fields in the
-specification of a record should be taken from a previously defined
-structure object ``s`` by adding the annotation ``s with`` before the field
-assignments. If more than one record object is provided, then they are
-visited in order until Lean finds one that contains the unspecified
-field. Lean raises an error if any of the field names remain
-unspecified after all the objects are visited.
+-- BUGBUG: this says  field 'α' is missing ???
+-- See https://github.com/leanprover/lean4/issues/783
+```
+Instances of a structure are immutable, but Lean makes it easy to
+create a new record object by modifying the value of one or more
+fields in an old one. Lean allows you to specify that unassigned
+fields in the specification of a record should be taken from a
+previously defined structure object ``s`` by adding the annotation ``s
+with`` before the field assignments.
 
 ```lean
-structure Point (α : Type u) where
-  x : α
-  y : α
-  deriving Repr
-
+# structure Point (α : Type u) where
+#   x : α
+#   y : α
+#   deriving Repr
 def p : Point Nat :=
   { x := 1, y := 2 }
 
 #eval { p with y := 3 }  -- { x := 1, y := 3 }
 #eval { p with x := 4 }  -- { x := 4, y := 2 }
+```
+
+You can also provide more than one input record object, and then they
+are visited in order until Lean finds one that contains the
+unspecified field. Lean raises an error if any of the field names
+remain unspecified after all the objects are visited.  The first input
+that defines the field wins.
+
+```lean
+# structure Point (α : Type u) where
+#   x : α
+#   y : α
+#   deriving Repr
+def p : Point Nat :=
+  { x := 1, y := 2 }
 
 structure Point3 (α : Type u) where
   x : α
@@ -253,22 +286,40 @@ example : r.y = 2 := rfl
 example : r.z = 5 := rfl
 ```
 
+In the above example, notice it is creating `r` by combining the `p`
+and `q`. So it takes `x` and `y` fields from `p`, and the `z` field
+from `q`.  Then the `with` clause overrides the value of `x` from `p`
+which is how it ends up with `{ x := 6, y := 2, z := 5 }`.
+
+You can combine `p` and `q` with no override by writing `{ p, q with }`
+
+
 Inheritance
 -----------
 
 We can *extend* existing structures by adding new fields. This feature
-allows us to simulate a form of *inheritance*.
+allows you to simulate a form of *inheritance*.
 
 ```lean
 structure Point (α : Type u) where
   x : α
   y : α
+  deriving Repr
 
 inductive Color where
   | red | green | blue
+  deriving Repr
 
 structure ColorPoint (α : Type u) extends Point α where
   c : Color
+  deriving Repr
+
+#check (ColorPoint.mk {x := 1, y := 2} Color.red)
+
+def cp : ColorPoint Nat :=
+  { x := 1, y := 2, c := Color.red }
+
+#eval cp -- { toPoint := { x := 1, y := 2 }, c := Color.red }
 ```
 
 In the next example, we define a structure using multiple inheritance,
@@ -279,21 +330,36 @@ structure Point (α : Type u) where
   x : α
   y : α
   z : α
+  deriving Repr
 
 structure RGBValue where
   red : Nat
   green : Nat
   blue : Nat
+  deriving Repr
 
-structure RedGreenPoint (α : Type u) extends Point α, RGBValue where
-  no_blue : blue = 0
+structure ColorPoint (α : Type u) extends Point α, RGBValue where
+  deriving Repr
 
 def p : Point Nat :=
   { x := 10, y := 10, z := 20 }
 
-def rgp : RedGreenPoint Nat :=
-  { p with red := 200, green := 40, blue := 0, no_blue := rfl }
+#eval p  -- { x := 10, y := 10, z := 20 }
 
-example : rgp.x   = 10 := rfl
-example : rgp.red = 200 := rfl
+def rgb : RGBValue := {red := 200, green := 40, blue := 0 }
+
+#eval rgb -- { red := 200, green := 40, blue := 20 }
+
+def cp : ColorPoint Nat :=
+  { p, rgb with blue := 0 }
+
+#eval cp -- { toPoint := { x := 10, y := 10, z := 20 },
+         --   toRGBValue := { red := 200, green := 40, blue := 0 } }
+
+example : cp.x   = 10 := rfl
+example : cp.red = 200 := rfl
+example : cp.blue = 0 := rfl
 ```
+
+Notice that the `toPoint` and `toRGBValue` accessors have been automatically
+generated.
