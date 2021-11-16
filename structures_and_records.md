@@ -129,6 +129,10 @@ def q := Point.mk 3 4
 
 #eval p.add q  -- {x := 4, y := 6}
 ```
+Note that in the implementation of `Point.add` the name `mk`
+is short for `Point.mk` which is the generated constructor
+for the `structure Point`.  The qualifier `Point.` can be
+safely dropped because we are in the scope of `Point.add`.
 
 Note: The `deriving Repr` instruction implements a default
 representation so that you can `#eval` a Point and see a nice readable
@@ -136,7 +140,9 @@ output message `{x := 4, y := 6}`. Without this instruction you will
 get an error from the `#eval` statement saying:
 
 ```
-failed to be synthesized, this instance instructs Lean on how to display the resulting value, recall that any type implementing the `Repr` class also implements the `Lean.Eval` class
+failed to be synthesized, this instance instructs Lean on how to display
+the resulting value, recall that any type implementing the `Repr` class
+also implements the `Lean.Eval` class
 ```
 
 In the next chapter, you will learn how to define a function like
@@ -221,8 +227,7 @@ call to `Point.smul`:
 ```
 Notice we can write `{ y := 20, x := 10 }` here instead of the more
 verbose `{ x := 10, y := 20 : Point Nat }`.  Notice also that the
-order that the fields are specified does not matter, so all the
-expressions below define the same point.
+order that the fields are specified does not matter.
 
 If the value of a field is not specified, Lean tries to infer it. If
 the unspecified fields cannot be inferred, Lean flags an error
