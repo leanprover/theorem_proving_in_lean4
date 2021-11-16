@@ -1072,6 +1072,10 @@ interprets ``2`` as an integer.
 #check (2 : Int)    -- Int
 ```
 
+Note that numerals are actually polymorphic in Lean (see
+[Numerals](type_classes.md#numerals) but the #check command here is
+forcing `2` to pick inferred type, `Nat` in this case.
+
 Sometimes, however, we may find ourselves in a situation where we have
 declared an argument to a function to be implicit, but now want to
 provide the argument explicitly. If ``foo`` is such a function, the
