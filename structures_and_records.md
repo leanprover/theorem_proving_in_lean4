@@ -242,7 +242,7 @@ structure MyStruct {α : Type u} {β : Type v} where
 ```
 Instances of a structure are immutable, but Lean makes it easy to
 create a new record object by modifying the value of one or more
-fields in an old one. Lean allows you to specify that unassigned
+fields in an old one. Lean allows you to specify that the unassigned
 fields in the specification of a record should be taken from a
 previously defined structure object ``s`` by adding the annotation ``s
 with`` before the field assignments.
