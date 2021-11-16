@@ -1,11 +1,13 @@
 # Type classes
 
-Type classes were introduced as a principled way of enabling
+BUGBUG: this document inconsistently uses "type class" and "typeclass" can we pick one?  I prefer "type class".
+
+Type classes provide a principled way of enabling
 ad-hoc polymorphism in functional programming languages. We first observe that it
 would be easy to implement an ad-hoc polymorphic function (such as addition) if the
 function simply took the type-specific implementation of addition as an argument
 and then called that implementation on the remaining arguments. For example,
-suppose we declare a structure in Lean to hold implementations of addition
+suppose we declare a structure in Lean to hold implementations of addition:
 ```lean
 # namespace Ex
 structure Add (a : Type) where
@@ -16,9 +18,11 @@ structure Add (a : Type) where
 # end Ex
 ```
 In the above Lean code, the field `add` has type
-`Add.add : {α : Type} → Add α → α → α → α`
-where the curly braces around the type `a` mean that it is an implicit argument.
-We could implement `double` by
+`Add.add : {a : Type} → Add a → a → a → a`
+where the curly braces around the type `a` mean that it is an implicit
+argument. Note that `Add` is already defined in the Lean standard library which is why this sample is using a `namespace Ex` wrapper.
+
+Now you can implement a function `double` that takes an add implementation as a parameter:
 ```lean
 # namespace Ex
 # structure Add (a : Type) where
@@ -29,73 +33,152 @@ def double (s : Add a) (x : a) : a :=
 #eval double { add := Nat.add } 10
 -- 20
 
-#eval double { add := Nat.mul } 10
--- 100
-
 #eval double { add := Int.add } 10
 -- 20
 
 # end Ex
 ```
-Note that you can double a natural number `n` by `double { add := Nat.add } n`.
-Of course, it would be highly cumbersome for users to manually pass the
-implementations around in this way.
-Indeed, it would defeat most of the potential benefits of ad-hoc
-polymorphism.
+Note that you can double a natural number or an integer by providing
+the right implementation of those add functions. Notice also that the
+invocaction of the add function simply passes x twice and doesn't
+really care what that function does so this also works:
+
+```lean
+# namespace Ex
+# structure Add (a : Type) where
+#  add : a -> a -> a
+# def double (s : Add a) (x : a) : a :=
+#  s.add x x
+#eval double { add := Nat.mul } 10  -- 100
+```
+
+Of course, it would be highly cumbersome for users to manually pass
+the implementations around in this way. Indeed, it would defeat most
+of the potential benefits of ad-hoc polymorphism.
 
 The main idea behind type classes is to make arguments such as `Add a` implicit,
-and to use a database of user-defined instances to synthesize the desired instances
-automatically through a process known as typeclass resolution. In Lean, by changing
-`structure` to `class` in the example above, the type of `Add.add` becomes
+and to use all these type classes to synthesize the desired `Type` instances
+automatically through a process known as *type class resolution*. In Lean, by changing
+`structure` to `class` in the example above, the type of `Add.add` becomes:
 ```lean
 # namespace Ex
 class Add (a : Type) where
   add : a -> a -> a
 
+#check Add Nat      -- Add Nat : Type
+# end Ex
+```
+
+Note that an "instance" of a type class is a `Type` so you can think of
+a type class as a "class of types" whose instances are Types that can
+be inferred using type class resolution.  So Lean can not only infer
+arguments as shown in [Implicit
+Arguments](dependent_type_theory.html#implicit_arguments) but Lean can
+also infer Types, which is a very powerful concept.
+
+Note also that `class` in Lean is not exactly the same as it is in object
+oriented languages like Java, Python, C#, where a class defines a new
+type.  A `class` in Lean is more abstract, perhaps a bit like a
+generic type with type parameters.  The member "add" is not really a
+"method" it is just a member named "add" that just has to have a function type `a -> a -> a`.  These functions do not have any implementation in
+a type class, only the type signature.  The implementation is defined
+in the `instance`.
+
+```lean
+# namespace Ex
+# class Add (a : Type) where
+#   add : a -> a -> a
 #check @Add.add
 -- Add.add : {a : Type} → [self : Add a] → a → a → a
 # end Ex
 ```
-where the square brackets indicate that the argument of type `Add a` is *instance implicit*,
-i.e. that it should be synthesized using typeclass resolution. This version of
-`add` is the Lean analogue of the Haskell term `add :: Add a => a -> a -> a`.
-Similarly, we can register an instance by
+The square brackets shown above in `[self : Add a]` indicate that the
+argument of type `Add a` is *instance implicit*, i.e. that it should
+be synthesized using *type class resolution*. For those that know
+Haskell, this version of `add` is the Lean analogue of the Haskell
+term `add :: Add a => a -> a -> a`.
+
+Note: the `Add` type class is actually built into Lean so you can
+simply write this to see how it is defined:
+
 ```lean
-# namespace Ex
-# class Add (a : Type) where
-#  add : a -> a -> a
+#check @Add.add
+-- Add.add : {α : Type u_1} → [self : Add α] → α → α → α
+```
+
+Next, we can register an instance of the Lean `Add` with Type parameter `α`
+set to `Nat` by writing:
+```lean
 instance : Add Nat where
   add := Nat.add
 
-# end Ex
+#eval Add.add 5 6  -- 11
 ```
 Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with the goal
-of `Add Nat`, and typeclass resolution will synthesize the instance above. In
-general, instances may depend on other instances in complicated ways. For example,
+of `Add Nat`, and type class resolution will synthesize the instance above which is
+defined as the predefined function `Nat.add` and so the addition can be completed and we see the result `11`.
+
+The `add` member of the instance for `Add Nat` can also be written using lambdas like this:
+```lean
+instance : Add Nat where
+  add :=fun x y => Nat.add x y
+```
+
+And this lambda version can be written using some nice short hand syntax like this:
+```lean
+instance : Add Nat where
+  add x y :=  Nat.add x y
+```
+
+In general, type class instances may depend on other instances in complicated ways. For example,
 you can declare an (anonymous) instance stating that if `a` has addition, then `Array a`
 has addition:
 ```lean
 instance [Add a] : Add (Array a) where
   add x y := Array.zipWith x y (. + .)
 
-#eval Add.add #[1, 2] #[3, 4]
--- #[4, 6]
-
-#eval #[1, 2] + #[3, 4]
--- #[4, 6]
+#eval Add.add #[1, 2] #[3, 4]    -- #[4, 6]
 ```
-Note that `x + y` is notation for `Add.add x y` in Lean.
 
-The example above demonstrates how type classes are used to overload notation.
-Now, we explore another application. We often need an arbitrary element of a given type.
+Now bringing this all together, `x + y` is notation for `Add.add x y` in Lean so you can
+take full advantage of type class resolution with anonymous instances and write:
+```lean
+# instance [Add a] : Add (Array a) where
+#   add x y := Array.zipWith x y (. + .)
+#eval #[1, 2] + #[3, 4]          -- #[4, 6]
+```
+
+The example above demonstrates how type classes can be used not only to overload functions
+but also notation, in this case the notation ` + `.
+
+### TODO: this paragraph needs work...
+
+Now, let's explore another application. We often need an arbitrary element of a given type.
+
+-- really? I've never needed that, I don't even know what it mean.
+
 Recall that types may not have any elements in Lean.
+
+-- Recall from where exactly???
+-- should add that "this is called an "empty" type" to tie it together with line 152 below.
+
 It often happens that we would like a definition to return an arbitrary element in a "corner case."
+
 For example, we may like the expression ``head xs`` to be of type ``a`` when ``xs`` is of type ``List a``.
+
+-- this example is the only thing I understand in this paragraph.
+
 Similarly, many theorems hold under the additional assumption that a type is not empty.
 For example, if ``a`` is a type, ``exists x : a, x = x`` is true only if ``a`` is not empty.
+
+-- why ?  Why can't x = x also be true when a is empty?  Wouldn't that be like saying "nothing = nothing" ?
+
+-- so all this to explain why "Inhabited" exists, but I don't see how any of it helps.  This line
+160 stands on it's own - I can easily imagine why it's nice to have a default value for a type...
+But why is it called `Inhabited` instead of `Default` ?
+
 The standard library defines a type class ``Inhabited`` to enable type class inference to infer a
-"default" or "arbitrary" element of an inhabited type.
-Let us start with the first step of the program above, declaring an appropriate class:
+"default" or "arbitrary" element of an inhabited type.  The standard definition looks like this:
 
 ```lean
 # namespace Ex
@@ -106,11 +189,14 @@ class Inhabited (a : Type u) where
 -- Inhabited.default : {a : Type u} → [self : Inhabited a] → a
 # end Ex
 ```
-Note `Inhabited.default` doesn't have any explicit argument.
+Note `Inhabited.default` doesn't have any explicit argument, it only has an implicit Type.
 
 An element of the class ``Inhabited a`` is simply an expression of the form ``Inhabited.mk x``, for some element ``x : a``.
 The projection ``Inhabited.default`` will allow us to "extract" such an element of ``a`` from an element of ``Inhabited a``.
 Now we populate the class with some instances:
+
+BUGBUG: what does "element" mean?  Is this a synonym for "instance"?  Then please use "instance" to
+reduce # terms used.
 
 ```lean
 # namespace Ex
@@ -135,6 +221,7 @@ instance : Inhabited Prop where
 -- true
 # end Ex
 ```
+
 You can use the command `export` to create the alias `default` for `Inhabited.default`
 ```lean
 # namespace Ex
@@ -160,6 +247,10 @@ export Inhabited (default)
 Sometimes we want to think of the default element of a type as being an *arbitrary* element, whose specific value should not play a role in our proofs.
 For that purpose, we can write ``arbitrary`` instead of ``default``. We define ``arbitrary`` as an *opaque* constant.
 Opaque constants are never unfolded by the type checker.
+
+BUGBUG: what does "Opaque constants" mean and what makes it opaque?  Is it the square brackets?
+Is it that it's returning Inhabited.default???
+
 ```lean
 # namespace Ex
 # export Inhabited (default)
@@ -183,20 +274,24 @@ but is expected to have type
 ```
 The theorem `defNatEq0` type checks because the type checker can unfold `(default : Nat)` and reduce it to `0`. This is not the case in the theorem `arbitraryNatEq0` because `arbitrary` is an opaque constant.
 
+BUGBUG: what does "unfold" mean?
+
 ## Chaining Instances
 
 If that were the extent of type class inference, it would not be all that impressive;
 it would be simply a mechanism of storing a list of instances for the elaborator to find in a lookup table.
 What makes type class inference powerful is that one can *chain* instances. That is,
 an instance declaration can in turn depend on an implicit instance of a type class.
-This causes class inference to chain through instances recursively, backtracking when necessary, in a Prolog-like search.
+This causes class inference to chain through instances recursively, using a
+[backtracking algorithm](https://en.wikipedia.org/wiki/Backtracking) when necessary,
+similar to how [Prolog](https://en.wikipedia.org/wiki/Prolog) works.
 
-For example, the following definition shows that if two types ``a`` and ``b`` are inhabited, then so is their product:
+For example, the following definition ensures that if two types ``a`` and ``b`` are inhabited, then so is their product:
 ```lean
 instance [Inhabited a] [Inhabited b] : Inhabited (a × b) where
   default := (arbitrary, arbitrary)
 ```
-With this added to the earlier instance declarations, type class instance can infer, for example, a default element of ``Nat × Bool``:
+With this added to the earlier instance declarations, a type class instance can infer, for example, a default element of ``Nat × Bool``:
 ```lean
 # namespace Ex
 # class Inhabited (a : Type u) where
@@ -206,20 +301,23 @@ With this added to the earlier instance declarations, type class instance can in
 # instance : Inhabited Nat where
 #  default := 0
 # constant arbitrary [Inhabited a] : a :=
-#  Inhabited.default
-instance [Inhabited a] [Inhabited b] : Inhabited (a × b) where
-  default := (arbitrary, arbitrary)
+#   Inhabited.default
+# instance [Inhabited a] [Inhabited b] : Inhabited (a × b) where
+#   default := (arbitrary, arbitrary)
 
 #eval (arbitrary : Nat × Bool)
 -- (0, true)
 # end Ex
 ```
-Similarly, we can inhabit type function with suitable constant functions:
+Similarly, we can inhabit the function type with suitable defaults:
 ```lean
 instance [Inhabited b] : Inhabited (a -> b) where
   default := fun _ => arbitrary
 ```
+
 As an exercise, try defining default instances for other types, such as `List` and `Sum` types.
+The Sum type is described in [Inductive Types](inductive_types.html#constructors-with-arguments)
+See [answers](#exercise_1) if you get stuck.
 
 The Lean standard library contains the definition `inferInstance`. It has type `{α : Sort u} → [i : α] → α`,
 and is useful for triggering the type class resolution procedure when the expected type is an instance.
@@ -231,6 +329,8 @@ def foo : Inhabited (Nat × Nat) :=
 
 theorem ex : foo.default = (arbitrary, arbitrary) :=
   rfl
+
+#eval foo.default    -- (0, 0)
 ```
 You can use the command `#print` to inspect how simple `inferInstance` is.
 ```lean
@@ -238,6 +338,15 @@ You can use the command `#print` to inspect how simple `inferInstance` is.
 ```
 
 ## ToString
+
+The `ToString` type class is defined in Lean as:
+
+```lean
+# namespace Ex
+class ToString (α : Type u) where
+  toString : α → String
+# end Ex
+```
 
 The polymorphic method `toString` has type `{α : Type u} → [ToString α] → α → String`. You implement the instance
 for your own types and use chaining to convert complex values into strings. Lean comes with `ToString` instances
@@ -251,41 +360,60 @@ instance : ToString Person where
   toString p := p.name ++ "@" ++ toString p.age
 
 #eval toString { name := "Leo", age := 542 : Person }
+-- "Leo@542"
+
 #eval toString ({ name := "Daniel", age := 18 : Person }, "hello")
+-- "(Daniel@18, hello)"
 ```
+
+The " ++ " notation is a short hand for concatenation and works on strings,
+lists and arrays and any other type that defines it.
+
 ## Numerals
 
-Numerals are polymorphic in Lean. You can use a numeral (e.g., `2`) to denote an element of any type that implements
-the type class `OfNat`.
+Numerals are polymorphic in Lean. You can use a numeral (e.g., `2`) to denote an element of any type that implements the type class `OfNat`.  Lean defines it this way:
+```lean
+# namespace Ex
+class OfNat (α : Type u) (n : Nat) where
+  ofNat : α
+# end Ex
+```
+
+So now you can add an instance of `ofNat` for your own custom `Rational` number type
+along with a `toString` implementation:
 ```lean
 structure Rational where
   num : Int
   den : Nat
-  inv : den ≠ 0
 
 instance : OfNat Rational n where
-  ofNat := { num := n, den := 1, inv := by decide }
+  ofNat := { num := n, den := 1 }
+
+#check (2 : Rational) -- Rational
 
 instance : ToString Rational where
   toString r := s!"{r.num}/{r.den}"
 
 #eval (2 : Rational) -- 2/1
-
-#check (2 : Rational) -- Rational
-#check (2 : Nat)      -- Nat
+#check (2 : Nat)     -- Nat
+#check 2             -- Still defaults to Nat
 ```
 Lean elaborates the terms `(2 : Nat)` and `(2 : Rational)` as
 `OfNat.ofNat Nat 2 (instOfNatNat 2)` and
 `OfNat.ofNat Rational 2 (instOfNatRational 2)` respectively.
 We say the numerals `2` occurring in the elaborated terms are *raw* natural numbers.
-You can input the raw natural number `2` using the macro `nat_lit 2`.
+You can input the raw natural number `2` using the macro `nat_lit 2` or `(2 : Nat)`
 ```lean
 #check nat_lit 2  -- Nat
 ```
-Raw natural numbers are *not* polymorphic.
+Raw natural numbers are *not* polymorphic, only unelaborated numerals are polymorphic.
+So `#check ((2 : Nat) : Rational)` fails with a type mismatch.
 
 The `OfNat` instance is parametric on the numeral. So, you can define instances for particular numerals.
 The second argument is often a variable as in the example above, or a *raw* natural number.
+
+??? where is it a variable, do you mean the `n` in `instance : OfNat Rational n where` ?
+
 ```lean
 class Monoid (α : Type u) where
   unit : α
@@ -298,6 +426,11 @@ def getUnit [Monoid α] : α :=
   1
 ```
 
+# ??? no explanation for this Monoid code???
+#check getUnit fails???  Why can't I call it, it has only implicit args right?  What
+are the square bracket?  Previously "The square brackets shown above indicate that the argument of type `Add a`
+is *instance implicit*" is this an instance implicit thing?
+
 ## Output parameters
 
 By default, Lean only tries to synthesize an instance `Inhabited T` when the term `T` is known and does not
@@ -308,7 +441,7 @@ contain missing parts. The following command produces the error
 ```
 You can view the parameter of the type class `Inhabited` as an *input* value for the type class synthesizer.
 When a type class has multiple parameters, you can mark some of them as output parameters.
-Lean will start type class synthesizer even when these parameters have missing parts.
+Lean will start the type class synthesizer even when these parameters have missing parts.
 In the following example, we use output parameters to define a *heterogeneous* polymorphic
 multiplication.
 ```lean
@@ -328,7 +461,7 @@ instance : HMul Nat (Array Nat) (Array Nat) where
 #eval hMul 4 #[2, 3, 4]  -- #[8, 12, 16]
 # end Ex
 ```
-The parameters `α` and `β` are considered input parameters and `γ` an output one.
+The parameters `α` and `β` are considered input parameters and `γ` an output.
 Given an application `hMul a b`, after types of `a` and `b` are known, the type class
 synthesizer is invoked, and the resulting type is obtained from the output parameter `γ`.
 In the example above, we defined two instances. The first one is the homogeneous
@@ -336,8 +469,8 @@ multiplication for natural numbers. The second is the scalar multiplication for 
 Note that you chain instances and generalize the second instance.
 ```lean
 # namespace Ex
-class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
-  hMul : α → β → γ
+# class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
+#   hMul : α → β → γ
 
 export HMul (hMul)
 
@@ -358,7 +491,19 @@ instance [HMul α β γ] : HMul α (Array β) (Array γ) where
 ```
 You can use our new scalar array multiplication instance on arrays of type `Array β`
 with a scalar of type `α` whenever you have an instance `HMul α β γ`.
-In the last `#eval`, note that the instance was used twice on an array of arrays.
+In the last `#eval`, note that the instance was used twice on an array of arrays,
+in other words *type class resolution* is recursive.
+
+But if you try this it will not work `#eval hMul 4 #[3, -1, 4]` because you have
+not defined a instance that can mix Int and Nat types.  The following instance
+makes this possible:
+
+```lean
+instance : HMul Nat Int Int where
+  hMul x y := Int.mul (Int.ofNat x) y
+```
+
+So this is a kind of implicit coercion, only it is entirely under your control.
 
 ## Default instances
 
@@ -367,10 +512,9 @@ Thus, type class synthesis only starts after these two types are known. This may
 be too restrictive.
 ```lean
 # namespace Ex
-class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
-  hMul : α → β → γ
-
-export HMul (hMul)
+# class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
+#   hMul : α → β → γ
+# export HMul (hMul)
 
 instance : HMul Int Int Int where
   hMul := Int.mul
@@ -397,7 +541,11 @@ instance : HMul Int Int Int where
 
 def xs : List Int := [1, 2, 3]
 
-#check fun y => xs.map (fun x => hMul x y)  -- Int -> List Int
+def scale_xs := fun y => xs.map (fun x => hMul x y)
+
+#check scale_xs           -- Int -> List Int
+
+#eval scale_xs 4          -- [4, 8, 12]
 # end Ex
 ```
 By tagging the instance above with the attribute `defaultInstance`, we are instructing Lean
@@ -405,34 +553,34 @@ to use this instance on pending type class synthesis problems.
 The actual Lean implementation defines homogeneous and heterogeneous classes for arithmetical operators.
 Moreover, `a+b`, `a*b`, `a-b`, `a/b`, and `a%b` are notations for the heterogeneous versions.
 The instance `OfNat Nat n` is the default instance (with priority 100) for the `OfNat` class. This is why the numeral
-`2` has type `Nat` when the expected type is not known. You can define default instances with higher
+`2` has type `Nat` when the expected type is not known, for example in `#check 2`. You can define default instances with higher
 priority to override the builtin ones.
 ```lean
 structure Rational where
   num : Int
   den : Nat
-  inv : den ≠ 0
 
 @[defaultInstance 200]
 instance : OfNat Rational n where
-  ofNat := { num := n, den := 1, inv := by decide }
+  ofNat := { num := n, den := 1 }
 
 instance : ToString Rational where
   toString r := s!"{r.num}/{r.den}"
 
 #check 2 -- Rational
 ```
+
 Priorities are also useful to control the interaction between different default instances.
 For example, suppose `xs` has type `α`, when elaboration `xs.map (fun x => 2 * x)`, we want the homogeneous instance for multiplication
 to have higher priority than the default instance for `OfNat`. This is particularly important when we have implemented only the instance
 `HMul α α α`, and did not implement `HMul Nat α α`.
-Now, we reveal how the notation `a*b` is defined in Lean.
+Now, we can bring it all together and show how the notation `a*b` is defined in Lean.
 ```lean
 # namespace Ex
 class OfNat (α : Type u) (n : Nat) where
   ofNat : α
 
-@[defaultInstance]
+@[defaultInstance 100] /- low priority -/
 instance (n : Nat) : OfNat Nat n where
   ofNat := n
 
@@ -442,7 +590,7 @@ class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
 class Mul (α : Type u) where
   mul : α → α → α
 
-@[defaultInstance 10]
+@[defaultInstance]
 instance [Mul α] : HMul α α α where
   hMul a b := Mul.mul a b
 
@@ -1163,3 +1311,7 @@ We can instruct Lean's pretty-printer to hide the operators ``↑`` and ``⇑`` 
     #check @test
     -- END
 -->
+
+# Exercise Answers
+
+## Exercise 1
