@@ -337,7 +337,7 @@ def g (s : String) : Bool := s.length > 0
 
 Think about what these expressions mean. The expression
 ``fun x : Nat => x`` denotes the identity function on ``Nat``, the
-expression ``fun x : Nat => true`` denotes the function that
+expression ``fun x : Nat => true`` denotes the constant function that
 always returns ``true``, and ``fun x : Nat => g (f x)`` denotes the
 composition of ``f`` and ``g``.  You can, in general, leave off the
 type annotation and let Lean infer it for you.  So, for example, you
@@ -696,8 +696,7 @@ section useful
 end useful
 ```
 
-When the section is closed, the variables go out of scope, and cannot
-be referenced (the variables are private to the section).
+When the section is closed, the variables go out of scope.
 
 You do not have to indent the lines within a section. Nor do you have
 to name a section, which is to say, you can use an anonymous
