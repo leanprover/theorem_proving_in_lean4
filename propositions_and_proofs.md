@@ -389,6 +389,8 @@ now that the arguments are elements of ``Prop``, instead of some other
 ``p q r : Prop``, the expression ``p → q → r`` reads "if ``p``, then if ``q``,
 then ``r``." This is just the "curried" form of ``p ∧ q → r``.
 
+BUGBUG: what does "curried" mean?
+
 In the last chapter we observed that lambda abstraction can be viewed
 as an "introduction rule" for ``→``. In the current setting, it shows
 how to "introduce" or establish an implication. Application can be
