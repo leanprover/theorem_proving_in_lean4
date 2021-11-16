@@ -362,7 +362,7 @@ and ``f : α → β``, and returns the composition of ``g`` and ``f``. For
 example, you could call this function passing the following arguments
 `Nat Nat double Nat double 2` where `double` is defined as `def double
 (x : Nat) : Nat := x + x` (This function is making use of an important
-feature named "Dependent Products", which will be explained below.)
+feature named "Dependent Types", which will be explained below.)
 
 The general form of a lambda expression is ``fun x : α => t``, where
 the variable ``x`` is a "bound variable": it is really a placeholder,
@@ -898,7 +898,7 @@ explained momentarily.
 Just as dependent function types ``(a : α) → β a`` generalize the
 notion of a function type ``α → β`` by allowing ``β`` to depend on
 ``α``, dependent Cartesian product types ``(a : α) × β a`` generalize
-the Cartesian product ``α × β`` in the same way. Dependent products
+the Cartesian product ``α × β`` in the same way. Dependent types
 are also called *sigma* types, and you can also write them as
 `Σ a : α, β a`. You can use `⟨a, b⟩` or `Sigma.mk a b` to create a
 dependent pair.
