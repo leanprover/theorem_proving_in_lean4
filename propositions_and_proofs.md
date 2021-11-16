@@ -389,7 +389,18 @@ now that the arguments are elements of ``Prop``, instead of some other
 ``p q r : Prop``, the expression ``p → q → r`` reads "if ``p``, then if ``q``,
 then ``r``." This is just the "curried" form of ``p ∧ q → r``.
 
-BUGBUG: what does "curried" mean?
+Currying is the process of turning functions of the form: `(P × Q) → R` into the
+form `P → (Q → R)` (uncurrying is going the other way). In Lean this works like this:
+```lean
+variable {P Q R : Type} [Inhabited R]
+
+constant f : (P × Q) → R
+
+def g : P → (Q → R) := λ a => (λ b => f (a, b))
+```
+And in the specific case of `P Q R : Prop` as we have above the equivalent of
+`P × Q` is `P ∧ Q` since an `and` (`∧`) contains a proof of both `P` and `Q`
+similar to how a product contains a value of type `P` and `Q`.
 
 In the last chapter we observed that lambda abstraction can be viewed
 as an "introduction rule" for ``→``. In the current setting, it shows
