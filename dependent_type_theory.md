@@ -361,8 +361,7 @@ three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ``
 and ``f : α → β``, and returns the composition of ``g`` and ``f``. For
 example, you could call this function passing the following arguments
 `Nat Nat double Nat double 2` where `double` is defined as `def double
-(x : Nat) : Nat := x + x` (This function is making use of an important
-feature named "Dependent Types", which will be explained below.)
+(x : Nat) : Nat := x + x`.
 
 The general form of a lambda expression is ``fun x : α => t``, where
 the variable ``x`` is a "bound variable": it is really a placeholder,
@@ -696,7 +695,8 @@ section useful
 end useful
 ```
 
-When the section is closed, the variables go out of scope.
+When the section is closed, the variables go out of scope and cannot
+be referenced any more.
 
 You do not have to indent the lines within a section. Nor do you have
 to name a section, which is to say, you can use an anonymous
@@ -823,8 +823,12 @@ commands such as ``set_option`` and ``open``.
 In many respects, however, a ``namespace ... end`` block behaves the
 same as a ``section ... end`` block. In particular, if you use the
 ``variable`` command within a namespace, its scope is limited to the
-namespace (variables are also private inside a namespace). Similarly,
-if you use an ``open`` command within a namespace, its effects
+one namespace block they are defined in, which means they are not
+accessible in another namespace block of the same name and they
+are not accessible if you `open` the namespace later.  They behave
+like a local variable to the specific namespace block.
+
+If you use an ``open`` command within a namespace, its effects
 disappear when the namespace is closed.  Likewise ``open`` is
 effectively closed by the end of the file.
 
