@@ -55,8 +55,8 @@ jobs:
         # default false, just try to download from the last one
         check_artifacts:  true       
     - run: |
-        cd lean4 
-        tar xvf lean-4.0.0-linux.tar.gz
-        ./lean4/lean-4.0.0-linux/bin/lean --help
-        ./lean4/lean-4.0.0-linux/bin/lean --version
+        tar xvf lean4/lean-4.0.0-linux.tar.gz
+        ls -al lean-4.0.0-linux/bin
+        lean-4.0.0-linux/bin/lean --version
+        lean-4.0.0-linux/bin/lean --help
     
