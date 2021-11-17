@@ -60,16 +60,16 @@ jobs:
         # then will get the last available artifact from previous workflow
         # default false, just try to download from the last one
         check_artifacts:  true
-  - name: Unpack Lean4 build
-    run: |
-      mv $(ls *.gz) lean-4.0.0-linux.tar.gz
-      tar xvf lean-4.0.0-linux.tar.gz -C lean4 --strip-components 1
-      ls -al lean4/bin
-      echo ================= ldd lean
-      ldd lean4/bin/lean
-      echo ================= ldd libleanshared.so
-      ldd lean4/lib/lean/libleanshared.so
-  - name: Run lean --version
-    run: ./lean4/bin/lean --version
-  - name: Run lean --help
-    run: ./lean4/bin/lean --help
+    - name: Unpack Lean4 build
+      run: |
+        mv $(ls *.gz) lean-4.0.0-linux.tar.gz
+        tar xvf lean-4.0.0-linux.tar.gz -C lean4 --strip-components 1
+        ls -al lean4/bin
+        echo ================= ldd lean
+        ldd lean4/bin/lean
+        echo ================= ldd libleanshared.so
+        ldd lean4/lib/lean/libleanshared.so
+    - name: Run lean --version
+      run: ./lean4/bin/lean --version
+    - name: Run lean --help
+      run: ./lean4/bin/lean --help
