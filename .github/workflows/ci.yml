@@ -16,8 +16,7 @@ jobs:
   get-artifacts:
     runs-on: ubuntu-latest
     steps:
-    - id: download
-      name: Download Lean4 build artifact
+    - name: Download Lean4 build artifact
       uses: lovettchris/action-download-artifact@v2.15.11
       with:
         # Optional, uploaded artifact names,
@@ -33,7 +32,7 @@ jobs:
         # ====> Artifact: 'build-Windows'
         name: build-Linux release
         # Optional, directory where to extract artifacts
-        path: lean4
+        path: .
         # Optional, GitHub token
         github_token: ${{secrets.MY_PAT_TOKEN}}
         # Required, workflow file name or ID
@@ -61,15 +60,16 @@ jobs:
         # then will get the last available artifact from previous workflow
         # default false, just try to download from the last one
         check_artifacts:  true
-    - run: |
-        mv lean4/$(ls lean4) lean4/lean-4.0.0-linux.tar.gz
-        tar xvf lean4/lean-4.0.0-linux.tar.gz
-        ls -al lean-4.0.0-linux/bin
-        lsb_release -a
-        ls -al  /lib/x86_64-linux-gnu/libc.so.6
-        echo ================= ldd lean
-        ldd lean-4.0.0-linux/bin/lean
-        echo ================= ldd libleanshared.so
-        ldd lean-4.0.0-linux/lib/lean/libleanshared.so
-        /lib64/ld-linux-x86-64.so.2 --library-path lean-4.0.0-linux/lib/lean lean-4.0.0-linux/bin/lean --version
-        /lib64/ld-linux-x86-64.so.2 --library-path lean-4.0.0-linux/lib/lean lean-4.0.0-linux/bin/lean --help
+  - name: Unpack Lean4 build
+    run: |
+      mv $(ls *.gz) lean-4.0.0-linux.tar.gz
+      tar xvf lean-4.0.0-linux.tar.gz -C lean4 --strip-components 1
+      ls -al lean4/bin
+      echo ================= ldd lean
+      ldd lean4/bin/lean
+      echo ================= ldd libleanshared.so
+      ldd lean4/lib/lean/libleanshared.so
+  - name: Run lean --version
+    run: ./lean4/bin/lean --version
+  - name: Run lean --help
+    run: ./lean4/bin/lean --help
