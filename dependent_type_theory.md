@@ -822,11 +822,11 @@ commands such as ``set_option`` and ``open``.
 
 In many respects, however, a ``namespace ... end`` block behaves the
 same as a ``section ... end`` block. In particular, if you use the
-``variable`` command within a namespace, its scope is limited to the
-one namespace block they are defined in, which means they are not
-accessible in another namespace block of the same name and they
-are not accessible if you `open` the namespace later.  They behave
-like a local variable to the specific namespace block.
+``variable`` command within a namespace, the variable scope is limited to the
+one namespace block it is defined in, which means it is not
+accessible in another namespace block of the same name and it
+is not accessible if you `open` the namespace later.  Variables behave
+like a local variable in a specific namespace block.
 
 If you use an ``open`` command within a namespace, its effects
 disappear when the namespace is closed.  Likewise ``open`` is
