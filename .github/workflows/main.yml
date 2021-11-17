@@ -24,7 +24,7 @@ jobs:
         # will download all artifacts if not specified
         # and extract them in respective subdirectories
         # https://github.com/actions/download-artifact#download-all-artifacts
-        name: "build-Linux release"
+        name: "lean-4.0.0-linux.tar.gz"
         # Optional, directory where to extract artifacts
         path: lean4
         # Optional, GitHub token
