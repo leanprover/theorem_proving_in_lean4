@@ -18,7 +18,7 @@ jobs:
     steps:
     - id: download 
       name: Download Lean4 build artifact
-      uses: lovettchris/action-download-artifact@v2
+      uses: lovettchris/action-download-artifact@v2.15.4
       with:
         # Optional, uploaded artifact names,
         # will download all artifacts if not specified
@@ -47,7 +47,7 @@ jobs:
         # run_id: 1122334455
         branch: master
         # Optional, defaults to all types        
-        event: pull_request
+        # event: pull_request
         # Optional, defaults to current repo
         repo: leanprover/lean4
         # Optional, check the workflow run whether it has an artifact
