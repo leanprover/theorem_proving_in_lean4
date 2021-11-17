@@ -56,7 +56,10 @@ jobs:
         check_artifacts:  true       
     - run: |
         tar xvf lean4/lean-4.0.0-linux.tar.gz
-        ls -al lean-4.0.0-linux/bin        
+        ls -al lean-4.0.0-linux/bin
+        lsb_release -a
+        sudo apt-get install gcc-10
+        ls -al  /lib/x86_64-linux-gnu/libc.so.6
         ldd lean-4.0.0-linux/lib/lean/libleanshared.so
         /lib64/ld-linux-x86-64.so.2 --library-path lean-4.0.0-linux/lib/lean lean-4.0.0-linux/bin/lean --version
         /lib64/ld-linux-x86-64.so.2 --library-path lean-4.0.0-linux/lib/lean lean-4.0.0-linux/bin/lean --help
