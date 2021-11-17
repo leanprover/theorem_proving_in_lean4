@@ -57,7 +57,6 @@ jobs:
     - run: |
         cd lean4 
         tar xvf lean-4.0.0-linux.tar.gz
-        export PATH=$PATH:$HOME/lean4/lean-4.0.0-linux/bin
-        lean --help
-        lean --version
+        ./lean-4.0.0-linux/bin/lean --help
+        ./lean-4.0.0-linux/bin/lean --version
     
