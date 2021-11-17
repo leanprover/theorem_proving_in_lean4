@@ -58,6 +58,6 @@ jobs:
         tar xvf lean4/lean-4.0.0-linux.tar.gz
         ls -al lean-4.0.0-linux/bin
         ldd lean-4.0.0-linux/bin/lean
-        ld --library-path lean-4.0.0-linux/lib/lean lean-4.0.0-linux/bin/lean --version
-        ld --library-path lean-4.0.0-linux/lib/lean lean-4.0.0-linux/bin/lean --help
+        /lib64/ld-linux-x86-64.so.2 --library-path lean-4.0.0-linux/lib/lean lean-4.0.0-linux/bin/lean --version
+        /lib64/ld-linux-x86-64.so.2 --library-path lean-4.0.0-linux/lib/lean lean-4.0.0-linux/bin/lean --help
     
