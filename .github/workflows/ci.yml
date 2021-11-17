@@ -24,7 +24,14 @@ jobs:
         # will download all artifacts if not specified
         # and extract them in respective subdirectories
         # https://github.com/actions/download-artifact#download-all-artifacts
-        name: build-Linux Release
+        # ==> We found the following artifacts:
+        # ====> Artifact: 'build-Linux'
+        # ====> Artifact: 'build-Linux Debug'
+        # ====> Artifact: 'build-Linux fsanitize'
+        # ====> Artifact: 'build-Linux release'
+        # ====> Artifact: 'build-macOS'
+        # ====> Artifact: 'build-Windows'
+        name: build-Linux release
         # Optional, directory where to extract artifacts
         path: lean4
         # Optional, GitHub token
