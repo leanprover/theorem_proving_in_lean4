@@ -62,7 +62,7 @@ jobs:
         # default false, just try to download from the last one
         check_artifacts:  true
     - run: |
-        tar xvf lean4/lean-4.0.0-linux.tar.gz
+        tar xvf $(ls lean4)
         ls -al lean-4.0.0-linux/bin
         lsb_release -a
         ls -al  /lib/x86_64-linux-gnu/libc.so.6
