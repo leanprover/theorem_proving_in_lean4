@@ -16,9 +16,36 @@ jobs:
   get-artifacts:
     runs-on: ubuntu-latest
     steps:
-    - id: result
-      uses: MichaelMelena/list-artifacts@v1
+    - id: download 
+      name: Download Lean4 build artifact
+      uses: marcofaggian/action-download-multiple-artifacts@v1
       with:
-        GITHUB_TOKEN: ${{secrets.MY_PAT_TOKEN}}
-        repository: leanprover/lean4
-    - run: echo '${{ steps.result.outputs.artifacts }}'
+        # Optional, uploaded artifact names,
+        # will download all artifacts if not specified
+        # and extract them in respective subdirectories
+        # https://github.com/actions/download-artifact#download-all-artifacts
+        names: "build-Linux release"
+        # Optional, directory where to extract artifacts
+        paths: lean4
+        # Optional, GitHub token
+        github_token: ${{secrets.MY_PAT_TOKEN}}
+        # Required, workflow file name or ID
+        workflow: ci.yml
+        # Optional, the status or conclusion of a completed workflow to search for
+        # Can be one of a workflow conclusion::
+        # "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+        # Or a workflow status:
+        # "completed", "in_progress", "queued"
+        # Default: "completed,success"
+        workflow_conclusion: success
+        # Optional, will get head commit SHA
+        # pr: ${{github.event.pull_request.number}}
+        # Optional, no need to specify if PR is
+        # commit: ${{github.event.pull_request.head.sha}}
+        # Optional, will use the branch
+        branch: master
+        # Optional, defaults to all types
+        event: pull_request
+        # Optional, defaults to current repo
+        repo: leanprover/lean4
+    - run: ls -al lean4
