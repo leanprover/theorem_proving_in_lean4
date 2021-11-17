@@ -63,6 +63,7 @@ jobs:
     - name: Unpack Lean4 build
       run: |
         mv $(ls *.gz) lean-4.0.0-linux.tar.gz
+        mkdir lean4
         tar xvf lean-4.0.0-linux.tar.gz -C lean4 --strip-components 1
         ls -al lean4/bin
         echo ================= ldd lean
