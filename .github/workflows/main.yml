@@ -18,7 +18,7 @@ jobs:
     steps:
     - id: download 
       name: Download Lean4 build artifact
-      uses: lovettchris/action-download-artifact@v.2.15.5
+      uses: lovettchris/action-download-artifact@v2.15.6
       with:
         # Optional, uploaded artifact names,
         # will download all artifacts if not specified
