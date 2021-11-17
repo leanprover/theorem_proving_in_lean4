@@ -54,5 +54,10 @@ jobs:
         # then will get the last available artifact from previous workflow
         # default false, just try to download from the last one
         check_artifacts:  true       
-    - run: cd lean4 && tar xvf lean-4.0.0-linux.tar.gz
-    - run: ls -al lean4
+    - run: |
+        cd lean4 
+        tar xvf lean-4.0.0-linux.tar.gz
+        export PATH=$PATH:$HOME/lean4/lean-4.0.0-linux/bin
+        lean --help
+        lean --version
+    
