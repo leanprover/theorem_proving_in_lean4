@@ -18,7 +18,7 @@ jobs:
     steps:
     - id: download 
       name: Download Lean4 build artifact
-      uses: marcofaggian/action-download-multiple-artifacts@v1
+      uses: marcofaggian/action-download-multiple-artifacts@v3.0.7
       with:
         # Optional, uploaded artifact names,
         # will download all artifacts if not specified
