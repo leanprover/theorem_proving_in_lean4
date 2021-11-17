@@ -1,0 +1,24 @@
+# This is a basic workflow that is manually triggered
+
+name: Get build artifacts from leanprover
+
+# Controls when the action will run.
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  get-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+    - id: result
+      uses: MichaelMelena/list-artifacts@v1
+      with:
+        GITHUB_TOKEN: ${{secrets.MY_PAT_TOKEN}}
+        respository: leanprover/lean4
+    - run: echo '${{ steps.result.outputs.artifacts }}'
