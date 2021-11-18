@@ -74,6 +74,7 @@ jobs:
         ldd lean4/bin/lean
         echo ================= ldd libleanshared.so
         ldd lean4/lib/lean/libleanshared.so
+        chmod u+x lean4/bin/*
     - name: Run lean --help
       run: ./lean4/bin/lean --help
     - name: Set paths
