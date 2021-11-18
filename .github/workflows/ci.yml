@@ -86,7 +86,7 @@ jobs:
         echo "$HOME/.elan/bin" >> $GITHUB_PATH
         elan toolchain link master "$(pwd)/lean4"
         elan default master
-        echo master &gt; lean-toolchain
+        echo "master" &gt; "lean-toolchain"
       - name: Download mdbook for Lean
       run: |
         curl -O --location https://github.com/lovettchris/mdBook/releases/download/v0.4.5/mdbook-linux.tar.gz
