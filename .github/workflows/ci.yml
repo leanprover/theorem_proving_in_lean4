@@ -40,7 +40,7 @@ jobs:
         # Optional, directory where to extract artifacts
         path: .
         # Optional, GitHub token
-        github_token: ${{secrets.MY_PAT_TOKEN}}
+        github_token: ${{secrets.GITHUB_TOKEN}}
         # Required, workflow file name or ID
         workflow: ci.yml
         # Optional, the status or conclusion of a completed workflow to search for
