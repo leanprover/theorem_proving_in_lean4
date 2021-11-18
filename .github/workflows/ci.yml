@@ -17,11 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          # interferes with lean4-nightly authentication
-          persist-credentials: false
-          submodules: true
+      uses: actions/checkout@v2
+      with:
+        # interferes with lean4-nightly authentication
+        persist-credentials: false
+        submodules: true
     - name: Download Lean4 build artifact
       uses: lovettchris/action-download-artifact@v2.15.11
       with:
