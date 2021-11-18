@@ -80,4 +80,6 @@ jobs:
     - name: Run mdbook test
       run: |
         echo "$(pwd)/lean4/bin" >> $GITHUB_PATH
+        ls -al
+        find -name SUMMARY.md
         ./mdbook test
