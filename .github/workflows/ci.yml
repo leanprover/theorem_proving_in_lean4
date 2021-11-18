@@ -62,7 +62,7 @@ jobs:
         check_artifacts:  true
     - name: Unpack Lean4 build
       run: |
-        if [[ "$(ls *.gz)" != "lean-4.0.0-linux.tar.gz" ]]; mv $(ls *.gz) lean-4.0.0-linux.tar.gz
+        if [[ "$(ls *.gz)" != "lean-4.0.0-linux.tar.gz" ]]; then mv $(ls *.gz) lean-4.0.0-linux.tar.gz; fi
         mkdir lean4
         tar xvf lean-4.0.0-linux.tar.gz -C lean4 --strip-components 1
         ls -al lean4/bin
