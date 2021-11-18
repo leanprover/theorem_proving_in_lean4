@@ -84,6 +84,8 @@ jobs:
         chmod u+x elan-init.sh
         ./elan-init.sh -y --default-toolchain none
         echo "$HOME/.elan/bin" >> $GITHUB_PATH
+        echo Checking location "$HOME/.elan/bin"...
+        ls -al "$HOME/.elan/bin"
         elan toolchain link master "$(pwd)/lean4"
         elan default master
         echo master > lean-toolchain
