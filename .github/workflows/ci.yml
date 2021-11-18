@@ -78,12 +78,14 @@ jobs:
         ldd lean4/lib/lean/libleanshared.so
     - name: Run lean --help
       run: ./lean4/bin/lean --help
+    - name: Set paths
+      run: |
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
     - name: Setup elan toolchain on this build
       run: |
         curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
         chmod u+x elan-init.sh
         ./elan-init.sh -y --default-toolchain none
-        echo "$HOME/.elan/bin" >> $GITHUB_PATH
         echo Checking location "$HOME/.elan/bin"...
         ls -al "$HOME/.elan/bin"
         elan toolchain link master "$(pwd)/lean4"
@@ -97,6 +99,5 @@ jobs:
         ldd mdbook
     - name: Run mdbook test
       run: |
-        echo "$(pwd)/lean4/bin" >> $GITHUB_PATH
         ls -al
         ./mdbook test
