@@ -74,3 +74,12 @@ jobs:
       run: ./lean4/bin/lean --version
     - name: Run lean --help
       run: ./lean4/bin/lean --help
+    - name: Download mdbook for Lean
+      run: |
+        curl -O --location https://github.com/lovettchris/mdBook/releases/download/v0.4.5/mdbook-linux.tar.gz
+        tar xvf mdbook-linux.tar.gz
+        mdbook --help
+    - name: Run mdbook test
+      run: |
+        echo "$(pwd)/lean4/bin" >> $GITHUB_PATH
+        mdbook test
