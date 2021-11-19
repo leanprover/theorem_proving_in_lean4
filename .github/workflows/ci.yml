@@ -1,5 +1,3 @@
-# This is a basic workflow that is manually triggered
-
 name: mdbook test using latest lean4 bits
 
 # Controls when the action will run.
