@@ -1,6 +1,4 @@
-# This is a basic workflow that is manually triggered
-
-name: Get build artifacts from leanprover
+name: mdbook test using latest lean4 bits
 
 # Controls when the action will run.
 on:
