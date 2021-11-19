@@ -92,7 +92,7 @@ jobs:
         echo master > lean-toolchain
     - name: Download mdbook for Lean
       run: |
-        curl -O --location https://github.com/lovettchris/mdBook/releases/download/v0.4.5/mdbook-linux.tar.gz
+        curl -O --location https://github.com/lovettchris/mdBook/releases/download/v0.4.11/mdbook-macos.tar.gz
         tar xvf mdbook-linux.tar.gz
         ./mdbook --help
         ldd mdbook
