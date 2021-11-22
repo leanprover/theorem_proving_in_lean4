@@ -76,13 +76,14 @@ arguments as shown in [Implicit
 Arguments](dependent_type_theory.html#implicit_arguments) but Lean can
 also infer Types, which is a very powerful concept.
 
-Note also that `class` in Lean is not exactly the same as it is in object
-oriented languages like Java, Python, C#, where a class defines a new
-type.  A `class` in Lean is more abstract, perhaps a bit like a
+Note also that `class` in Lean is not exactly the same as it is in
+object oriented languages like Java, Python, C#, where a class defines
+a new type.  A `class` in Lean is more abstract, perhaps a bit like a
 generic type with type parameters.  The member "add" is not really a
-"method" it is just a member named "add" that just has to have a function type `a -> a -> a`.  These functions do not have any implementation in
-a type class, only the type signature.  The implementation is defined
-in the `instance`.
+"method" it is just a member named "add" that just has to have a
+function type `a -> a -> a`.  These functions do not have any
+implementation in a type class, only the signature.  The
+implementation is defined in the `instance`.
 
 ```lean
 # namespace Ex
@@ -99,32 +100,43 @@ Haskell, this version of `add` is the Lean analogue of the Haskell
 term `add :: Add a => a -> a -> a`.
 
 Note: the `Add` type class is actually built into Lean so you can
-simply write this to see how it is defined:
+simply write this to see how the built in version is defined:
 
 ```lean
 #check @Add.add
 -- Add.add : {α : Type u_1} → [self : Add α] → α → α → α
 ```
 
-Next, we can register an instance of the Lean `Add` with Type parameter `α`
-set to `Nat` by writing:
+Notice the only difference is the built in version uses alpha for the
+implicit type variable. There is a convention in the Lean standard
+library that greek letters are used for type variables.
+
+We cannot yet use this type class because we have no instances. So,
+now you can register an instance of the Lean `Add` type class with
+Type parameter `α` set to `Nat`, by writing:
 ```lean
 instance : Add Nat where
   add := Nat.add
 
+-- now you can use the add function for natural numbers as follows
 #eval Add.add 5 6  -- 11
 ```
-Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with the goal
-of `Add Nat`, and type class resolution will synthesize the instance above which is
-defined as the predefined function `Nat.add` and so the addition can be completed and we see the result `11`.
 
-The `add` member of the instance for `Add Nat` can also be written using lambdas like this:
+Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with the goal
+of `Add Nat`, and type class resolution will synthesize the instance above which
+defines the `add` function as `Nat.add` and so the addition can be completed and we see the result `11`.
+
+The `add` member of the instance for `Add Nat` can also be written
+using lambdas like this:
 ```lean
 instance : Add Nat where
-  add :=fun x y => Nat.add x y
+  add := fun x y => Nat.add x y
 ```
+The lambda here allows you to do some more interesting expressions
+involving `x` and `y`.
 
-And this lambda version can be written using some nice short hand syntax like this:
+This lambda version can be written using some nice short hand syntax
+like this:
 ```lean
 instance : Add Nat where
   add x y :=  Nat.add x y
@@ -139,14 +151,25 @@ instance [Add a] : Add (Array a) where
 
 #eval Add.add #[1, 2] #[3, 4]    -- #[4, 6]
 ```
+Notice here the lambda short hand syntax is being used with an interesting call to the zipWith
+function in the Array namespace that takes two Array arguments and a zip function.  Note that
+`x` and `y` in this instance are Arrays of Natural numbers. The special syntax `(. + .)`
+is short hand for the lambda `λ x => x + x`.  TODO: add link to the doc that describes this...
+(it seems to be a bit more complicated than this lambda, it has implicit typing also...)
 
-Now bringing this all together, `x + y` is notation for `Add.add x y` in Lean so you can
-take full advantage of type class resolution with anonymous instances and write:
+Now one more thing completes the story, `x + y` is defined in the Lean
+standard library as short hand notation for `Add.add x y` so you can
+take full advantage of type class resolution with anonymous instances
+and write:
+
 ```lean
 # instance [Add a] : Add (Array a) where
 #   add x y := Array.zipWith x y (. + .)
 #eval #[1, 2] + #[3, 4]          -- #[4, 6]
 ```
+
+Notice that in this final version `Add.add` has disappeared; it is "inferred" from your
+instances.
 
 The example above demonstrates how type classes can be used not only to overload functions
 but also notation, in this case the notation ` + `.
@@ -155,27 +178,29 @@ but also notation, in this case the notation ` + `.
 
 Now, let's explore another application. We often need an arbitrary element of a given type.
 
--- really? I've never needed that, I don't even know what it mean.
+TODO: really? I've never needed that, I don't even know what it mean.
 
 Recall that types may not have any elements in Lean.
 
--- Recall from where exactly???
--- should add that "this is called an "empty" type" to tie it together with line 152 below.
+TODO: Recall from where exactly???
+TODO: should add that "this is called an "empty" type" to tie it together with line 152 below.
 
-It often happens that we would like a definition to return an arbitrary element in a "corner case."
+It often happens that we would like a definition to return an
+arbitrary element in a "corner case." For example, we may like the
+expression ``head xs`` to be of type ``a`` when ``xs`` is of type
+``List a``.
 
-For example, we may like the expression ``head xs`` to be of type ``a`` when ``xs`` is of type ``List a``.
-
--- this example is the only thing I understand in this paragraph.
+TODO: this example is the only thing I understand in this paragraph.
 
 Similarly, many theorems hold under the additional assumption that a type is not empty.
 For example, if ``a`` is a type, ``exists x : a, x = x`` is true only if ``a`` is not empty.
 
--- why ?  Why can't x = x also be true when a is empty?  Wouldn't that be like saying "nothing = nothing" ?
+TODO: why ?  Why can't x = x also be true when a is empty?  Wouldn't that be like saying "nothing = nothing" ?
 
--- so all this to explain why "Inhabited" exists, but I don't see how any of it helps.  This line
-160 stands on it's own - I can easily imagine why it's nice to have a default value for a type...
-But why is it called `Inhabited` instead of `Default` ?
+TODO: so all this to explain why "Inhabited" exists, but I don't see
+how any of it helps.  The following line actually stands on it's own -
+I can easily imagine why it's nice to have a default value for a
+type... But why is it called `Inhabited` instead of `Default` ?
 
 The standard library defines a type class ``Inhabited`` to enable type class inference to infer a
 "default" or "arbitrary" element of an inhabited type.  The standard definition looks like this:
@@ -190,6 +215,7 @@ class Inhabited (a : Type u) where
 # end Ex
 ```
 Note `Inhabited.default` doesn't have any explicit argument, it only has an implicit Type.
+In other words it is not a function, it is an object.
 
 An element of the class ``Inhabited a`` is simply an expression of the form ``Inhabited.mk x``, for some element ``x : a``.
 The projection ``Inhabited.default`` will allow us to "extract" such an element of ``a`` from an element of ``Inhabited a``.
@@ -222,7 +248,9 @@ instance : Inhabited Prop where
 # end Ex
 ```
 
-You can use the command `export` to create the alias `default` for `Inhabited.default`
+As you saw in [Namespaces](dependent_type_theory.html#namespaces) you can use the
+command `export` to create the alias `default` for `Inhabited.default`:
+
 ```lean
 # namespace Ex
 # class Inhabited (a : Type _) where
