@@ -91,7 +91,7 @@ More on Namespaces
 ------------------
 
 In Lean, identifiers are given by hierarchical *names* like
-``Foo.Bar.baz``. We saw in [Namespaces](./dependent_type_theory.md#_namespaces) that Lean provides
+``Foo.Bar.baz``. We saw in [Namespaces](./dependent_type_theory.md#namespaces) that Lean provides
 mechanisms for working with hierarchical names. The command
 ``namespace foo`` causes ``foo`` to be prepended to the name of each
 definition and theorem until ``end foo`` is encountered. The command

@@ -704,7 +704,7 @@ to name a section, which is to say, you can use an anonymous
 have to close it using the same name. Sections can also be nested,
 which allows you to declare new variables incrementally.
 
-# <a name="_namespaces"></a>Namespaces
+# Namespaces
 
 Lean provides you with the ability to group definitions into nested,
 hierarchical *namespaces*:
@@ -745,6 +745,8 @@ the namespace, you can refer to identifiers by their shorter names,
 but once you end the namespace, you have to use the longer names.
 Unlike `section`, namespaces require a name. There is only one
 anonymous namespace at the root level.
+
+### open
 
 The ``open`` command brings the shorter names into the current
 context. Often, when you import a module, you will want to open one or
@@ -831,6 +833,20 @@ like a local variable in a specific namespace block.
 If you use an ``open`` command within a namespace, its effects
 disappear when the namespace is closed.  Likewise ``open`` is
 effectively closed by the end of the file.
+
+### export
+
+You can also bring a single definition from a Namespace into your current
+scope using `export` as follows:
+
+```lean
+#eval Array.append #[1,2] #[3,4]    -- #[1, 2, 3, 4]
+
+export Array (append)
+
+#eval append #[1,2] #[3,4]          -- #[1, 2, 3, 4]
+```
+
 
 ## What makes dependent type theory dependent?
 
