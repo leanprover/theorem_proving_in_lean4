@@ -847,7 +847,6 @@ export Array (append)
 #eval append #[1,2] #[3,4]          -- #[1, 2, 3, 4]
 ```
 
-
 ## What makes dependent type theory dependent?
 
 The short explanation is that types can depend on parameters. You
