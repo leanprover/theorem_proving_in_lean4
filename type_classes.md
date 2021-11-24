@@ -646,7 +646,6 @@ this kind of situation. We can achieve exactly that using *default instances*.
 # namespace Ex
 # class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
 #   hMul : α → β → γ
-#
 # export HMul (hMul)
 
 @[defaultInstance]
