@@ -2,6 +2,9 @@
 
 BUGBUG: this document inconsistently uses "type class" and "typeclass" can we pick one?  I prefer "type class".
 
+BUGBUG: this chapter is a BEAST and took many days and several re-readings to get through it all...
+Perhaps split it at "## Decidable Propositions" ???
+
 Type classes provide a principled way of enabling
 ad-hoc polymorphism in functional programming languages. We first observe that it
 would be easy to implement an ad-hoc polymorphic function (such as addition) if the
@@ -78,12 +81,11 @@ also infer Types, which is a very powerful concept.
 
 Note also that `class` in Lean is not exactly the same as it is in
 object oriented languages like Java, Python, C#, where a class defines
-a new type.  A `class` in Lean is more abstract, perhaps a bit like a
-generic type with type parameters.  The member "add" is not really a
-"method" it is just a member named "add" that just has to have a
-function type `a -> a -> a`.  These functions do not have any
-implementation in a type class, only the signature.  The
-implementation is defined in the `instance`.
+a new type.  A `class` in Lean is more abstract, a bit more like a
+Rust Trait.  The member "add" is not really a "method" it is just a
+member named "add" that just happens to have a function type `a -> a
+-> a`.  You cannot implement functions in a type class, only in an
+`instance` of the type class.
 
 ```lean
 # namespace Ex
@@ -113,7 +115,8 @@ library that greek letters are used for type variables.
 
 We cannot yet use this type class because we have no instances. So,
 now you can register an instance of the Lean `Add` type class with
-Type parameter `α` set to `Nat`, by writing:
+Type parameter `α` set to `Nat` and providing the implementation of
+the `add` member, by writing:
 ```lean
 instance : Add Nat where
   add := Nat.add
@@ -122,7 +125,7 @@ instance : Add Nat where
 #eval Add.add 5 6  -- 11
 ```
 
-Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with the goal
+Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers type class resolution with the goal
 of `Add Nat`, and type class resolution will synthesize the instance above which
 defines the `add` function as `Nat.add` and so the addition can be completed and we see the result `11`.
 
@@ -248,8 +251,8 @@ instance : Inhabited Prop where
 # end Ex
 ```
 
-As you saw in [Namespaces](dependent_type_theory.html#namespaces) you can use the
-command `export` to create the alias `default` for `Inhabited.default`:
+As you saw in [Namespaces](dependent_type_theory.html#export) you can use the
+`export` command to create the alias `default` for `Inhabited.default`:
 
 ```lean
 # namespace Ex
@@ -276,8 +279,9 @@ Sometimes we want to think of the default element of a type as being an *arbitra
 For that purpose, we can write ``arbitrary`` instead of ``default``. We define ``arbitrary`` as an *opaque* constant.
 Opaque constants are never unfolded by the type checker.
 
-BUGBUG: what does "Opaque constants" mean and what makes it opaque?  Is it the square brackets?
-Is it that it's returning Inhabited.default???
+BUGBUG: what does "Opaque constants" mean and what makes it opaque.  Is it the square brackets?
+Is it that it's returning Inhabited.default???  And again what is "unfolded".  And now we need a proper
+full definition of ``constant`` someplace...
 
 ```lean
 # namespace Ex
@@ -302,12 +306,15 @@ but is expected to have type
 ```
 The theorem `defNatEq0` type checks because the type checker can unfold `(default : Nat)` and reduce it to `0`. This is not the case in the theorem `arbitraryNatEq0` because `arbitrary` is an opaque constant.
 
+BUGBUG: is "type checks" the right phrase? It doesn't seem to be used in propositions_and_proofs.html.
+How about "theorem `defNatEq0` can be proved..."
+
 BUGBUG: what does "unfold" mean?
 
 ## Chaining Instances
 
 If that were the extent of type class inference, it would not be all that impressive;
-it would be simply a mechanism of storing a list of instances for the elaborator to find in a lookup table.
+it would be simply a mechanism like operator overloading in many other languages.
 What makes type class inference powerful is that one can *chain* instances. That is,
 an instance declaration can in turn depend on an implicit instance of a type class.
 This causes class inference to chain through instances recursively, using a
@@ -337,11 +344,37 @@ With this added to the earlier instance declarations, a type class instance can 
 -- (0, true)
 # end Ex
 ```
+
+Note: Remember to use `\times` here and not the letter `x`. This will not work `Nat x Bool`.
+
 Similarly, we can inhabit the function type with suitable defaults:
 ```lean
+# export Inhabited (default)
 instance [Inhabited b] : Inhabited (a -> b) where
   default := fun _ => arbitrary
+
+#eval (default : Nat -> Bool) 5
+
 ```
+
+BUGBUG: Why don't we also need to say a is inhabited?  Conversely, how is `a` even "defined"
+in this expression? Is it implicitly defined because it is a single letter???  Where do we
+say in these docs that single letters can be implicitly defined?
+
+Note the underscore (_) above is an [implicit
+argument](dependent_type_theory.html#implicit_arguments) which the can
+be inferred from the context, in this case the system determines it
+must be a function parameter of type `a`.  You could write the full
+version instead:
+
+```lean
+instance [Inhabited b] : Inhabited (a -> b) where
+  default := fun x : a => arbitrary
+```
+
+but the underscore is shorter and helps convey the idea that
+it really doesn't matter what you pass for the parameter `x` since it
+is not used in the computation of the result.
 
 As an exercise, try defining default instances for other types, such as `List` and `Sum` types.
 The Sum type is described in [Inductive Types](inductive_types.html#constructors-with-arguments)
@@ -364,6 +397,28 @@ You can use the command `#print` to inspect how simple `inferInstance` is.
 ```lean
 #print inferInstance
 ```
+Or you can press F12 to Goto Definition in Visual Studio Code to see the
+actual definition:
+```lean
+# namespace Ex
+set_option checkBinderAnnotations false in
+def inferInstance {α : Sort u} [i : α] : α := i
+# end Ex
+```
+Which defines a function named `inferInstance` that has an implicit
+type parameter (defined with curly brackets) `{α : Sort u}` and an
+inferred instance parameter `[i : α]` named `i` of type `α`.  It
+returns the type alpha `: α` and the implementation is simply to
+return `i`, the inferred instance.
+
+The actual implementation also uses an additional prefix:
+```
+set_option checkBinderAnnotations false in
+```
+which checks whether type is a class instance whenever the binder
+annotation `[...]` is used.  Without this set_option you will see a
+compile error saying `invalid binder annotation, type is not a class
+instance α` so in our case we are turning off this check.
 
 ## ToString
 
@@ -376,7 +431,12 @@ class ToString (α : Type u) where
 # end Ex
 ```
 
-The polymorphic method `toString` has type `{α : Type u} → [ToString α] → α → String`. You implement the instance
+The polymorphic method `toString` has type `{α : Type u} → [ToString α] → α → String` which reads
+`toString` has an implicit type parameter named `α` (implied by the class definition) and
+an inferred instance of `ToString α` such that all the instances of `toString` will take
+an object of type `α` and return a String.
+
+You implement the instance
 for your own types and use chaining to convert complex values into strings. Lean comes with `ToString` instances
 for most builtin types.
 ```lean
@@ -397,6 +457,11 @@ instance : ToString Person where
 The " ++ " notation is a short hand for concatenation and works on strings,
 lists and arrays and any other type that defines it.
 
+The first `#eval` statement is using [object syntax](structures_and_records.html#objects).
+The second eval statement is using nested toString inference the inner one
+uses `ToString Person` which will give us `(String, String)` which is of type
+`String × String` so the outer one is using the predefined: `ToString String x String`.
+
 ## Numerals
 
 Numerals are polymorphic in Lean. You can use a numeral (e.g., `2`) to denote an element of any type that implements the type class `OfNat`.  Lean defines it this way:
@@ -407,7 +472,11 @@ class OfNat (α : Type u) (n : Nat) where
 # end Ex
 ```
 
-So now you can add an instance of `ofNat` for your own custom `Rational` number type
+Our previous type classes had only one Type parameter, notice this one has two parameters,
+the Type parameter `α` and an actual natural number `n`.  So we will create instances of this type
+class using syntax like this `instance : OfNat Float n` where n is some natural number.
+
+So now you can add an instance of `OfNat.ofNat` for your own custom `Rational` number type
 along with a `toString` implementation:
 ```lean
 structure Rational where
@@ -426,21 +495,37 @@ instance : ToString Rational where
 #check (2 : Nat)     -- Nat
 #check 2             -- Still defaults to Nat
 ```
-Lean elaborates the terms `(2 : Nat)` and `(2 : Rational)` as
-`OfNat.ofNat Nat 2 (instOfNatNat 2)` and
-`OfNat.ofNat Rational 2 (instOfNatRational 2)` respectively.
+Lean elaborates the terms `(2 : Nat)` as `OfNat.ofNat Nat 2 (instOfNatNat 2)`
+where the `instOfNatNat` function is automatically defined by the system
+in the instance of `OfNat Nat`.
+
+Similarly `(2 : Rational)` is elaborated as
+`OfNat.ofNat Rational 2 (instOfNatRational 2)`.
 We say the numerals `2` occurring in the elaborated terms are *raw* natural numbers.
-You can input the raw natural number `2` using the macro `nat_lit 2` or `(2 : Nat)`
+You can input the raw natural number `2` using the macro `nat_lit 2`:
 ```lean
 #check nat_lit 2  -- Nat
 ```
 Raw natural numbers are *not* polymorphic, only unelaborated numerals are polymorphic.
 So `#check ((2 : Nat) : Rational)` fails with a type mismatch.
 
-The `OfNat` instance is parametric on the numeral. So, you can define instances for particular numerals.
-The second argument is often a variable as in the example above, or a *raw* natural number.
+The `OfNat` instance is parametric on the numeral. So, you can define
+instances for particular numerals. The second argument is often a
+variable as in the example above where we use the variable `n` in
+`OfNat Rational n`, or a *raw* natural number like this:
 
-??? where is it a variable, do you mean the `n` in `instance : OfNat Rational n where` ?
+```lean
+# structure Rational where
+#   num : Int
+#   den : Nat
+
+instance : OfNat Rational 2 where
+  ofNat := { num := 3, den := 4 }
+```
+
+BUGBUG: but what does this mean and how do you use it?
+
+# BUGBUG no intro explanation for this Monoid code???
 
 ```lean
 class Monoid (α : Type u) where
@@ -454,7 +539,6 @@ def getUnit [Monoid α] : α :=
   1
 ```
 
-# ??? no explanation for this Monoid code???
 #check getUnit fails???  Why can't I call it, it has only implicit args right?  What
 are the square bracket?  Previously "The square brackets shown above indicate that the argument of type `Add a`
 is *instance implicit*" is this an instance implicit thing?
@@ -485,6 +569,7 @@ instance : HMul Nat Nat Nat where
 instance : HMul Nat (Array Nat) (Array Nat) where
   hMul a bs := bs.map (fun b => hMul a b)
 
+#check hMul 4 3          -- 4 * 3 : Nat
 #eval hMul 4 3           -- 12
 #eval hMul 4 #[2, 3, 4]  -- #[8, 12, 16]
 # end Ex
@@ -494,7 +579,8 @@ Given an application `hMul a b`, after types of `a` and `b` are known, the type 
 synthesizer is invoked, and the resulting type is obtained from the output parameter `γ`.
 In the example above, we defined two instances. The first one is the homogeneous
 multiplication for natural numbers. The second is the scalar multiplication for arrays.
-Note that you chain instances and generalize the second instance.
+
+Note that you can chain instances and generalize the second instance.
 ```lean
 # namespace Ex
 # class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -558,10 +644,10 @@ However, it is natural to assume that the type of `y` and `x` should be the same
 this kind of situation. We can achieve exactly that using *default instances*.
 ```lean
 # namespace Ex
-class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
-  hMul : α → β → γ
-
-export HMul (hMul)
+# class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
+#   hMul : α → β → γ
+#
+# export HMul (hMul)
 
 @[defaultInstance]
 instance : HMul Int Int Int where
@@ -596,13 +682,14 @@ instance : ToString Rational where
   toString r := s!"{r.num}/{r.den}"
 
 #check 2 -- Rational
+#eval 2  -- 2/1
 ```
 
 Priorities are also useful to control the interaction between different default instances.
 For example, suppose `xs` has type `α`, when elaboration `xs.map (fun x => 2 * x)`, we want the homogeneous instance for multiplication
 to have higher priority than the default instance for `OfNat`. This is particularly important when we have implemented only the instance
 `HMul α α α`, and did not implement `HMul Nat α α`.
-Now, we can bring it all together and show how the notation `a*b` is defined in Lean.
+Now, we can bring it all together and show how the notation `a*b` is defined in Lean:
 ```lean
 # namespace Ex
 class OfNat (α : Type u) (n : Nat) where
@@ -626,6 +713,14 @@ infixl:70 " * "  => HMul.hMul
 # end Ex
 ```
 The `Mul` class is convenient for types that only implement the homogeneous multiplication.
+
+BUGBUG: but where is the implementation of Mul.mul ?  Is that this?  Shouldn't we include
+this for completeness?
+
+```lean
+instance : Mul Nat where
+  mul := Nat.mul
+```
 
 ## Local Instances
 
@@ -671,10 +766,10 @@ def double (p : Point) :=
 attribute [-instance] addPoint
 
 -- def triple (p : Point) :=
---  p + p + p  -- Error: failed to sythesize instance
+--  p + p + p  -- Error: failed to synthesize instance
 ```
 
-We recommend you only use this command to diagnose problems.
+It is recommend that you only use this command to diagnose problems.
 
 ## Scoped Instances
 
@@ -735,10 +830,11 @@ open scoped Point -- activates instance `Add Point`
 
 ## Decidable Propositions
 
-Let us consider another example of a type class defined in the
+Let's consider another example of a type class defined in the
 standard library, namely the type class of ``Decidable``
-propositions. Roughly speaking, an element of ``Prop`` is said to be
-decidable if we can decide whether it is true or false. The
+propositions. Roughly speaking, an element of type
+[Prop](propositions_and_proofs.html#propositions-as-types) is said to
+be decidable if we can decide whether it is true or false. The
 distinction is only useful in constructive mathematics; classically,
 every proposition is decidable. But if we use the classical principle,
 say, to define a function by cases, that function will not be
@@ -759,6 +855,9 @@ class inductive Decidable (p : Prop) where
 # end Hidden
 ```
 
+BUGBUG: without reading inductive types I have no idea how to read this.
+After reading inductive types I still have no idea how to read this...
+
 Logically speaking, having an element ``t : Decidable p`` is stronger
 than having an element ``t : p ∨ ¬p``; it enables us to define values
 of an arbitrary type depending on the truth value of ``p``. For
@@ -766,12 +865,29 @@ example, for the expression ``if p then a else b`` to make sense, we
 need to know that ``p`` is decidable. That expression is syntactic
 sugar for ``ite p a b``, where ``ite`` is defined as follows:
 
+BUGBUG: no idea what that first sentence means.  How could anything be
+stronger than ``t : p ∨ ¬p`` which is provably true?  What does stronger
+even mean?
+
 ```lean
 # namespace Hidden
 def ite {α : Sort u} (c : Prop) [h : Decidable c] (t e : α) : α :=
   Decidable.casesOn (motive := fun _ => α) h (fun _ => e) (fun _ => t)
 # end Hidden
 ```
+
+So the following are equivalent:
+```lean
+#eval if 3 > 4 then 10 else 20        -- 20
+#eval ite (3 > 4) 10 20               -- 20
+```
+
+Notice in Lean an expression (3 > 4) can simply be passed as a
+parameter to the function `ite` because the parameter declaration
+`(c: Prop)` says `c` is of type `Prop`.
+
+BUGBUG: is this unique to Lean or Lean and haskell, you certainly
+can't do this in other languages like
 
 The standard library also contains a variant of ``ite`` called
 ``dite``, the dependent if-then-else expression. It is defined as
@@ -787,7 +903,15 @@ def dite {α : Sort u} (c : Prop) [h : Decidable c] (t : c → α) (e : Not c �
 That is, in ``dite c t e``, we can assume ``hc : c`` in the "then"
 branch, and ``hnc : ¬ c`` in the "else" branch. To make ``dite`` more
 convenient to use, Lean allows us to write ``if h : c then t else e``
-instead of ``dite c (λ h : c, t) (λ h : ¬ c, e)``.
+instead of ``dite c (λ h : c, t) (λ h : ¬ c, e)``.  For example:
+
+```lean
+-- an optimized array access that avoid bounds checking.
+def fetch (i : Nat) (a : Array Bool) : Bool :=
+  if h : i < a.size then
+    a.get { val := i, isLt := h }
+  else false
+```
 
 Without classical logic, we cannot prove that every proposition is
 decidable. But we can prove that *certain* propositions are
@@ -848,7 +972,7 @@ instance (priority := low) propDecidable (a : Prop) : Decidable a :=
 # end Hidden
 ```
 
-The guarantees that Lean will favor other instances and fall back on
+This guarantees that Lean will favor other instances and fall back on
 ``propDecidable`` only after other attempts to infer decidability have
 failed.
 
@@ -881,18 +1005,21 @@ theorem ex : True ∧ 2 = 1+1 := by
 ```
 
 They work as follows. The expression ``decide p`` tries to infer a
-decision procedure for ``p``, and, if it is successful, evaluates to
+Decidable procedure for ``p``, and, if it is successful, evaluates to
 either ``true`` or ``false``. In particular, if ``p`` is a true closed
 expression, ``decide p`` will reduce definitionally to the Boolean ``true``.
 On the assumption that ``decide p = true`` holds, ``of_decide_eq_true``
 produces a proof of ``p``. The tactic ``decide`` puts it all together: to
 prove a target ``p``. By the previous observations,
-``decide`` will succeed any time the inferred decision procedure
+``decide`` will succeed any time the inferred Decidable procedure
  for ``c`` has enough information to evaluate, definitionally, to the ``isTrue`` case.
 
+BUGBUG: ``c`` is not defined? And where is ``isTrue`` mentioned in the code snippet?
 
 Managing Type Class Inference
 -----------------------------
+
+BUGBUG: ``inferInstance`` is already described on line 386.
 
 If you are ever in a situation where you need to supply an expression
 that Lean can infer by type class inference, you can ask Lean to carry
@@ -922,10 +1049,9 @@ You can also use the auxiliary definition `inferInstanceAs`:
 -- (α : Sort u) → [α] → α
 ```
 
-
 Sometimes Lean can't find an instance because the class is buried
 under a definition. For example, Lean cannot
-find an instance of ``Inhabited (Set α)``. We can declare one
+find an instance of ``Inhabited (Set α)``, but you can declare one
 explicitly:
 
 ```lean
@@ -938,6 +1064,10 @@ def Set (α : Type u) := α → Prop
 
 instance : Inhabited (Set α) :=
   inferInstanceAs (Inhabited (α → Prop))
+
+-- now it succeeds!
+example : Inhabited (Set α) :=
+  inferInstance
 ```
 
 At times, you may find that the type class inference fails to find an
@@ -949,9 +1079,10 @@ trace of the search:
 set_option trace.Meta.synthInstance true
 ```
 
-If you are using VS Code, you can read the results by hovering over
-the relevant theorem or definition, or opening the messages window
-with ``Ctrl-Shift-Enter``. In Emacs, you can use ``C-c C-x`` to run an
+BUGBUG: move this to advanced topics...
+
+If you are using VS Code, you can read the results by opening the messages window
+with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd>. In Emacs, you can use ``C-c C-x`` to run an
 independent Lean process on your file, and the output buffer will show
 a trace every time the type class resolution procedure is subsequently
 triggered.
@@ -963,13 +1094,15 @@ set_option synthInstance.maxSize 400
 ```
 
 Option `synthInstance.maxHeartbeats` specifies the maximum amount of
-heartbeats per typeclass resolution problem. A heartbeat is number of
+heartbeats per typeclass resolution problem. A heartbeat is the number of
 (small) memory allocations (in thousands), 0 means there is no limit.
 Option `synthInstance.maxSize` is the maximum number of instances used
-to construct a solution in the type class instance synthesis procedure
+to construct a solution in the type class instance synthesis procedure.
 
 Remember also that in both the VS Code and Emacs editor modes, tab
 completion works in ``set_option``, to help you find suitable options.
+
+BUGBUG: tab completion is not working in VS Code...
 
 As noted above, the type class instances in a given context represent
 a Prolog-like program, which gives rise to a backtracking search. Both
@@ -999,15 +1132,17 @@ instance i2 : Foo where
   a := 2
   b := 2
 
-example : Foo.a = 1 :=
+example : Foo.a = 1 := by
   rfl
 
 instance (priority := default+2) i3 : Foo where
   a := 3
   b := 3
 
-example : Foo.a = 3 :=
+example : Foo.a = 3 := by
   rfl
+
+#eval (inferInstance : Foo).a -- 3
 ```
 
 <!--
@@ -1343,3 +1478,10 @@ We can instruct Lean's pretty-printer to hide the operators ``↑`` and ``⇑`` 
 # Exercise Answers
 
 ## Exercise 1
+
+```lean
+instance : Inhabited (List a) where
+  default := Array.empty.toList
+```
+
+Todo: add default for `Sum`...
