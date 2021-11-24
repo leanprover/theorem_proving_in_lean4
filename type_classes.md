@@ -57,9 +57,10 @@ this would be unexpected:
 #eval double { add := Nat.mul } 10  -- 100
 ```
 
-Of course, it would be highly cumbersome for users to manually pass
-the implementations around in this way. Indeed, it would defeat most
-of the potential benefits of ad-hoc polymorphism.
+Of course, it would be highly cumbersome for users to manually pass the
+implementations around in this way.
+Indeed, it would defeat most of the potential benefits of ad-hoc
+polymorphism.
 
 The main idea behind type classes is to make arguments such as `Add a` implicit,
 and to use all these type classes to synthesize the desired `Type` instances
