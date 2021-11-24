@@ -22,8 +22,9 @@ structure Add (a : Type) where
 ```
 In the above Lean code, the field `add` has type
 `Add.add : {a : Type} → Add a → a → a → a`
-where the curly braces around the type `a` mean that it is an implicit
-argument. Note that `Add` is already defined in the Lean standard library which is why this sample is using a `namespace Ex` wrapper.
+where the curly braces around the type `a` mean that it is an implicit argument.
+Note that `Add` is already defined in the Lean standard library which is why this
+sample is using a `namespace Ex` wrapper.
 
 Now you can implement a function `double` that takes an add implementation as a parameter:
 ```lean
@@ -43,8 +44,9 @@ def double (s : Add a) (x : a) : a :=
 ```
 Note that you can double a natural number or an integer by providing
 the right implementation of those add functions. Notice also that the
-invocaction of the add function simply passes x twice and doesn't
-really care what that function does so this also works:
+invocation of the add function simply passes x twice and doesn't
+really care what that function does so this also works even though
+this would be unexpected:
 
 ```lean
 # namespace Ex
