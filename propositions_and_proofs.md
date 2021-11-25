@@ -524,8 +524,8 @@ right *or-introduction* rules.
 
 ```lean
 variable (p q : Prop)
-example (hp : p) : p ∨ q := Or.intro_left q hp
-example (hq : q) : p ∨ q := Or.intro_right p hq
+example (hp : p) : p ∨ q := Or.inl hp
+example (hq : q) : p ∨ q := Or.inr hq
 ```
 
 The *or-elimination* rule is slightly more complicated. The idea is
