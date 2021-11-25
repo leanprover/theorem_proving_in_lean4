@@ -517,8 +517,8 @@ This is often useful as well.
 
 ### Disjunction
 
-The expression ``Or.intro_left q hp`` creates a proof of ``p ∨ q``
-from a proof ``hp : p``. Similarly, ``Or.intro_right p hq`` creates a
+The expression ``Or.inl hp`` creates a proof of ``p ∨ q``
+from a proof ``hp : p``. Similarly, ``Or.inr hq`` creates a
 proof for ``p ∨ q`` using a proof ``hq : q``. These are the left and
 right *or-introduction* rules.
 
