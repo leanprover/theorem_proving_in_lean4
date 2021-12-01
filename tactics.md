@@ -658,7 +658,7 @@ example (P : Nat → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : Nat) : P
 ```
 
 The ``cases`` tactic, and its companion, the ``induction`` tactic, are discussed in greater detail in
-the [Tactics for Inductive Types](./inductive_types.md#_tactics_for_inductive_types) section.
+the [Tactics for Inductive Types](./inductive_types.md#tactics_for_inductive_types) section.
 
 The ``contradiction`` tactic searches for a contradiction among the hypotheses of the current goal:
 
@@ -698,7 +698,7 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
 
 ```
 
-<a name="structuring_tactic_proofs"></a>Structuring Tactic Proofs
+Structuring Tactic Proofs
 -------------------------
 
 Tactics often provide an efficient way of building a proof, but long
@@ -907,7 +907,7 @@ or
 ```
 
 
-<a name="_tactic_combinators"></a> Tactic Combinators
+Tactic Combinators
 ------------------
 
 *Tactic combinators* are operations that form new tactics from old
@@ -1028,7 +1028,7 @@ Rewriting
 ---------
 
 The ``rewrite`` tactic (abbreviated ``rw``) and the ``simp`` tactic
-were introduced briefly in [Calculational Proofs](./quantifiers_and_equality.md#_calc_proofs). In this
+were introduced briefly in [Calculational Proofs](./quantifiers_and_equality.md#calculational_proofs). In this
 section and the next, we discuss them in greater detail.
 
 The ``rewrite`` tactic provides a basic mechanism for applying
@@ -1136,7 +1136,7 @@ example (n : Nat) (h : n = 0) (t : Tuple α n) : Tuple α 0 := by
   exact t
 ```
 
-<a name="_using_simp"></a>Using the Simplifier
+Using the Simplifier
 --------------------
 
 Whereas ``rewrite`` is designed as a surgical tool for manipulating a
