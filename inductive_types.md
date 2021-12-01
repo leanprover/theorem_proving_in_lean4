@@ -265,6 +265,42 @@ example : next (previous tuesday) = tuesday :=
 end Weekday
 ```
 
+Note that putting next and previous in the Weekday namespace also allows you to use dot notation
+to access those functions:
+
+```lean
+# inductive Weekday where
+#  | sunday : Weekday
+#  | monday : Weekday
+#  | tuesday : Weekday
+#  | wednesday : Weekday
+#  | thursday : Weekday
+#  | friday : Weekday
+#  | saturday : Weekday
+#  deriving Repr
+# namespace Weekday
+# def next (d : Weekday) : Weekday :=
+#  match d with
+#  | sunday    => monday
+#  | monday    => tuesday
+#  | tuesday   => wednesday
+#  | wednesday => thursday
+#  | thursday  => friday
+#  | friday    => saturday
+#  | saturday  => sunday
+# def previous (d : Weekday) : Weekday :=
+#  match d with
+#  | sunday    => saturday
+#  | monday    => sunday
+#  | tuesday   => monday
+#  | wednesday => tuesday
+#  | thursday  => wednesday
+#  | friday    => thursday
+#  | saturday  => friday
+
+#eval Weekday.sunday.next    -- Weekday.monday
+```
+
 How can we prove the general theorem that ``next (previous d) = d``
 for any Weekday ``d``? You can use `match` to provide a proof of the claim for each
 constructor:
@@ -344,7 +380,12 @@ def next_previous (d : Weekday) : next (previous d) = d := by
   cases d <;> rfl
 ```
 
-[Tactics for Inductive Types](#_tactics_for_inductive_types) below will introduce additional
+BUGBUG: wow, you can do proofs using "def" ?? Didn't know that one...
+So why do we need the "proof" and "example" keywords then?
+
+BUGBUG: what is "<;>" ? Where is it defined?
+
+[Tactics for Inductive Types](#tactics_for_inductive_types) below will introduce additional
 tactics that are specifically designed to make use of inductive types.
 
 Notice that, under the propositions-as-types correspondence, we can
@@ -385,6 +426,11 @@ def and (a b : Bool) : Bool :=
 ```
 
 Similarly, most identities can be proved by introducing suitable `match`, and then using ``rfl``.
+
+BUGBUG: what is "identities" ?  Normally I would think I'm proving "properties" about something.
+Proving an "identity" sounds like I'm proving an operation didn't change the type? So it is
+an "identity" operation?  Is that what this means?
+
 
 Constructors with Arguments
 ---------------------------
@@ -1029,7 +1075,7 @@ def omega : CBTree :=
 end CBTree
 ```
 
-<a name="_tactics_for_inductive_types"></a>Tactics for Inductive Types
+Tactics for Inductive Types
 ---------------------------
 
 Given the fundamental importance of inductive types in Lean, it should
