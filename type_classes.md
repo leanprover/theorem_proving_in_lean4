@@ -64,8 +64,8 @@ polymorphism.
 
 The main idea behind type classes is to make arguments such as `Add a` implicit,
 and to use all these type classes to synthesize the desired `Type` instances
-automatically through a process known as *type class resolution*. In Lean, by changing
-`structure` to `class` in the example above, the type of `Add.add` becomes:
+automatically through a process known as *type class resolution*. You can do
+this in Lean, by changing `structure` to `class` as follows:
 ```lean
 # namespace Ex
 class Add (a : Type) where
@@ -75,20 +75,14 @@ class Add (a : Type) where
 # end Ex
 ```
 
-Note that an "instance" of a type class is a `Type` so you can think of
-a type class as a "class of types" whose instances are Types that can
-be inferred using type class resolution.  So Lean can not only infer
-arguments as shown in [Implicit
-Arguments](dependent_type_theory.html#implicit_arguments) but Lean can
-also infer Types, which is a very powerful concept.
-
-Note also that `class` in Lean is not exactly the same as it is in
+Note that `class` in Lean is not exactly the same as it is in
 object oriented languages like Java, Python, C#, where a class defines
-a new type.  A `class` in Lean is more abstract, a bit more like a
-Rust Trait.  The member "add" is not really a "method" it is just a
+a new type.  A `class` in Lean is a bit more like a Rust Trait.
+The member "add" is not really a "method" it is just a
 member named "add" that just happens to have a function type `a -> a
--> a`.  You cannot implement functions in a type class, only in an
-`instance` of the type class.
+-> a`.  You cannot implement functions in a type class.  The member `add`
+in a type class is like an interface (or trait) saying instances of this class
+will have an add method.
 
 ```lean
 # namespace Ex
@@ -116,8 +110,7 @@ Notice the only difference is the built in version uses alpha for the
 implicit type variable. There is a convention in the Lean standard
 library that greek letters are used for type variables.
 
-We cannot yet use this type class because we have no instances. So,
-now you can register an instance of the Lean `Add` type class with
+Now you can register an instance of the Lean `Add` type class with
 Type parameter `α` set to `Nat` and providing the implementation of
 the `add` member, by writing:
 ```lean
@@ -148,8 +141,16 @@ instance : Add Nat where
   add x y :=  Nat.add x y
 ```
 
+You can also name an instance like this, which we will use a bit later on.
+The version without a name is called an `anonymous instance`.
+
+```lean
+instance myAddInstance : Add Nat where
+  add x y :=  Nat.add x y
+```
+
 In general, type class instances may depend on other instances in complicated ways. For example,
-you can declare an (anonymous) instance stating that if `a` has addition, then `Array a`
+you can declare an anonymous instance stating that if `a` has addition, then `Array a`
 has addition:
 ```lean
 instance [Add a] : Add (Array a) where
@@ -157,6 +158,7 @@ instance [Add a] : Add (Array a) where
 
 #eval Add.add #[1, 2] #[3, 4]    -- #[4, 6]
 ```
+
 Notice here the lambda short hand syntax is being used with an interesting call to the zipWith
 function in the Array namespace that takes two Array arguments and a zip function.  Note that
 `x` and `y` in this instance are Arrays of Natural numbers. The special syntax `(. + .)`
@@ -184,7 +186,7 @@ but also notation, in this case the notation ` + `.
 
 Now, let's explore another application. We often need an arbitrary element of a given type.
 
-TODO: really? I've never needed that, I don't even know what it mean.
+TODO: really? I've never needed that, I don't even know what it means.
 
 Recall that types may not have any elements in Lean.
 
@@ -196,12 +198,17 @@ arbitrary element in a "corner case." For example, we may like the
 expression ``head xs`` to be of type ``a`` when ``xs`` is of type
 ``List a``.
 
-TODO: this example is the only thing I understand in this paragraph.
+TODO: this example is the only thing I understand in this paragraph.  But I cannot figure
+out how the "For example" is an example of "It often happens that we would like a definition to return an
+arbitrary element in a "corner case." ??
 
 Similarly, many theorems hold under the additional assumption that a type is not empty.
 For example, if ``a`` is a type, ``exists x : a, x = x`` is true only if ``a`` is not empty.
 
-TODO: why ?  Why can't x = x also be true when a is empty?  Wouldn't that be like saying "nothing = nothing" ?
+The reason this cannot hold if `a` is empty is because in order to
+prove `exists x : a, x = x` is true you'd have to find a "witness" of
+type `a` that is equivalent to itself. But if `a` is empty it would
+be impossible to show such a witness.
 
 TODO: so all this to explain why "Inhabited" exists, but I don't see
 how any of it helps.  The following line actually stands on it's own -
@@ -227,8 +234,11 @@ An element of the class ``Inhabited a`` is simply an expression of the form ``In
 The projection ``Inhabited.default`` will allow us to "extract" such an element of ``a`` from an element of ``Inhabited a``.
 Now we populate the class with some instances:
 
-BUGBUG: what does "element" mean?  Is this a synonym for "instance"?  Then please use "instance" to
-reduce # terms used.
+BUGBUG: what does "element" mean?  Is this a synonym for "instance"?
+Then please use "instance" to reduce # terms used.  Or is an "element"
+of a type (like 5 is an element of Nat) different from the term `instance` used
+here?  If so what is an `instance` exactly?  How would you defined it,
+what other names would you give it if you had to?
 
 ```lean
 # namespace Ex
@@ -312,7 +322,6 @@ The theorem `defNatEq0` type checks because the type checker can unfold `(defaul
 BUGBUG: is "type checks" the right phrase? It doesn't seem to be used in propositions_and_proofs.html.
 How about "theorem `defNatEq0` can be proved..."
 
-BUGBUG: what does "unfold" mean?
 
 ## Chaining Instances
 
@@ -324,7 +333,7 @@ This causes class inference to chain through instances recursively, using a
 [backtracking algorithm](https://en.wikipedia.org/wiki/Backtracking) when necessary,
 similar to how [Prolog](https://en.wikipedia.org/wiki/Prolog) works.
 
-For example, the following definition ensures that if two types ``a`` and ``b`` are inhabited, then so is their product:
+For example, the following definition says that if two types ``a`` and ``b`` are inhabited, then so is their product:
 ```lean
 instance [Inhabited a] [Inhabited b] : Inhabited (a × b) where
   default := (arbitrary, arbitrary)
@@ -360,9 +369,10 @@ instance [Inhabited b] : Inhabited (a -> b) where
 
 ```
 
-BUGBUG: Why don't we also need to say a is inhabited?  Conversely, how is `a` even "defined"
-in this expression? Is it implicitly defined because it is a single letter???  Where do we
-say in these docs that single letters can be implicitly defined?
+Note that `a` does not have to be inhabited or even defined here
+because it isn't used so it becomes a place holder for any input.  It
+doesn't need to be defined because it is using a single letter name
+which Lean will "implicitly define" for us.
 
 Note the underscore (_) above is an [implicit
 argument](dependent_type_theory.html#implicit_arguments) which the can
@@ -528,7 +538,11 @@ instance : OfNat Rational 2 where
 
 BUGBUG: but what does this mean and how do you use it?
 
-# BUGBUG no intro explanation for this Monoid code???
+## Monoids
+
+You can define a Monoid type class as follows, which states that a Monoid of type alpha
+has a unit operation that returns the same alpha and an operation of some kind that
+returns a function that takes an alpha and returns an alpha.
 
 ```lean
 class Monoid (α : Type u) where
@@ -542,9 +556,42 @@ def getUnit [Monoid α] : α :=
   1
 ```
 
-#check getUnit fails???  Why can't I call it, it has only implicit args right?  What
-are the square bracket?  Previously "The square brackets shown above indicate that the argument of type `Add a`
-is *instance implicit*" is this an instance implicit thing?
+The square brackets shown above indicates that the `Monoid α` is instance implicit.
+
+So the `instance` shown above is an instance of the `OfNat` type class, and remember
+the `OfNat` type class has two parameters `(α : Type u) (n : Nat)`.  Here we fix the `n`
+variable to the natural number 1 and we provide the definition of the `ofNat` member
+function to be simply the value of the Monoid unit member.
+
+We also defined a `getUnit` function that operates with implicit argument `Monoid α`
+and returns the unit value of type `α`.  For example:
+
+```
+# class Monoid (α : Type u) where
+#   unit : α
+#   op   : α → α → α
+#
+# instance [s : Monoid α] : OfNat α (nat_lit 1) where
+#   ofNat := s.unit
+#
+# def getUnit [s : Monoid α] : α :=
+#   s.unit
+
+instance MulMonoid : Monoid Nat where
+  unit := 5
+  op := Nat.mul
+
+set_option pp.all true
+#check (getUnit : Nat)  -- @getUnit.{0} Nat MulMonoid : Nat
+
+#eval (getUnit : Nat)   -- 5
+```
+
+Notice the expression ` (getUnit : Nat)` brings in the `MulMonoid` instance because
+it is an instance of `Monoid Nat` so it matches the implicit argument to `getUnit`
+which is `[Monoid α]`, so the `α` is `Nat` in this case.  Notice also that `getUnit`
+returns the unit member of the Monoid and since it has bound to the `MulMonoid` instance
+it pulls out the unit value of 5.
 
 ## Output parameters
 
@@ -857,19 +904,26 @@ class inductive Decidable (p : Prop) where
 # end Hidden
 ```
 
-BUGBUG: without reading inductive types I have no idea how to read this.
-After reading inductive types I still have no idea how to read this...
+Adding `class` to an `inductive` type turns it into a type class that
+can participate in *type class resolution*.
 
 Logically speaking, having an element ``t : Decidable p`` is stronger
-than having an element ``t : p ∨ ¬p``; it enables us to define values
-of an arbitrary type depending on the truth value of ``p``. For
-example, for the expression ``if p then a else b`` to make sense, we
-need to know that ``p`` is decidable. That expression is syntactic
-sugar for ``ite p a b``, where ``ite`` is defined as follows:
+than having an element ``t : p ∨ ¬p``.  This is because in Lean `p ∨
+¬p` not only means `p` is either true or false but also that for any
+`p` we can construct evidence that it is either true or false which is
+not the case in a general purpose programming language where `p` can
+be any expression.  So ``t : Decidable p`` is stronger which means
+that it has more guarantees (and thus possibilities). A Decidable
+instance for a specific `p` is in this sense stronger than the axiom of
+the excluded middle that for `∀ p : p ∨ ¬p`. This is because due to the
+pattern matching on Decidable we can actually write functions that do
+different things based on whether its `p` or `¬p` that is true.
 
-BUGBUG: no idea what that first sentence means.  How could anything be
-stronger than ``t : p ∨ ¬p`` which is provably true?  What does stronger
-even mean?
+`Decidable p` enables us to define values of an arbitrary type
+depending on the truth value of ``p``. For example, for the expression
+``if p then a else b`` to make sense, we need to know that ``p`` is
+decidable. That expression is syntactic sugar for ``ite p a b``, where
+``ite`` is defined as follows:
 
 ```lean
 # namespace Hidden
@@ -1014,9 +1068,10 @@ On the assumption that ``decide p = true`` holds, ``of_decide_eq_true``
 produces a proof of ``p``. The tactic ``decide`` puts it all together: to
 prove a target ``p``. By the previous observations,
 ``decide`` will succeed any time the inferred Decidable procedure
- for ``c`` has enough information to evaluate, definitionally, to the ``isTrue`` case.
+ for ``c`` has enough information to evaluate, definitionally, to the ``isTrue`` case
+ of `Decidable p`.
 
-BUGBUG: ``c`` is not defined? And where is ``isTrue`` mentioned in the code snippet?
+BUGBUG: ``c`` is not defined?
 
 Managing Type Class Inference
 -----------------------------
