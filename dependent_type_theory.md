@@ -264,7 +264,7 @@ similarly polymorphic:
 #check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
 ```
 
-To define polymorphic functions, Lean allows you to
+To define polymorphic declarations, Lean allows you to
 declare universe variables explicitly using the `universe` command:
 
 ```lean
