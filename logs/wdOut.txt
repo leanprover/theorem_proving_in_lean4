@@ -1,3 +1,0 @@
-Content-Length: 568
-
-{"result":{"serverInfo":{"version":"0.1","name":"Lean 4 Server"},"capabilities":{"typeDefinitionProvider":true,"textDocumentSync":{"willSaveWaitUntil":false,"willSave":false,"openClose":true,"change":2},"semanticTokensProvider":{"range":true,"legend":{"tokenTypes":["keyword","variable","property"],"tokenModifiers":[]},"full":true},"hoverProvider":true,"documentSymbolProvider":true,"documentHighlightProvider":true,"definitionProvider":true,"declarationProvider":true,"completionProvider":{"triggerCharacters":["."],"resolveProvider":false}}},"jsonrpc":"2.0","id":0}
