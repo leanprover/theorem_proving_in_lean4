@@ -263,7 +263,7 @@ arguments to dependent types pose additional constraints on the
 various cases. Such examples of *dependent pattern matching* are
 considered in the [Section Dependent Pattern Matching](#dependent_pattern_matching).
 
-<a name="wildcards_and_overlapping_patterns"></a>Wildcards and Overlapping Patterns
+Wildcards and Overlapping Patterns
 ----------------------------------
 
 Consider one of the examples from the last section:
@@ -375,7 +375,7 @@ def foo : Char → Nat
 #print foo.match_1
 ```
 
-<a name="structural_recursion_and_induction"></a>Structural Recursion and Induction
+Structural Recursion and Induction
 ----------------------------------
 
 What makes the equation compiler powerful is that it also supports
@@ -627,7 +627,7 @@ def listAdd [Add α] : List α → List α → List α
 
 You are encouraged to experiment with similar examples in the exercises below.
 
-<a name="_well_founded_recursion_and_induction:"></a> Well-Founded Recursion and Induction
+Well-Founded Recursion and Induction
 ------------------------------------
 
 Dependent type theory is powerful enough to encode and justify
@@ -827,9 +827,9 @@ available as a backup.
 
 .. TO DO: eventually, describe using_well_founded.
 
-.. _nested_and_mutual_recursion:
+.. nested_and_mutual_recursion:
 
-<a name="_nested_and_mutual_recursion"></a> Mutual Recursion
+Mutual Recursion
 ----------------
 
 **TODO: waiting for well-founded support in Lean 4**
@@ -928,7 +928,7 @@ We can then use a mutual recursive definition to count the number of constants o
     -- END
 
 
-<a name="_dependent_pattern_matching"></a> Dependent Pattern Matching
+Dependent Pattern Matching
 --------------------------
 
 All the examples of pattern matching we considered in
@@ -1049,7 +1049,7 @@ The ``map`` function is even more tedious to define by hand than the
 ``tail`` function. We encourage you to try it, using ``recOn``,
 ``casesOn`` and ``noConfusion``.
 
-<a name="_inaccessible_patterns"></a>Inaccessible Patterns
+Inaccessible Patterns
 ------------------
 
 Sometimes an argument in a dependent matching pattern is not essential
@@ -1223,7 +1223,7 @@ def zip : Vector α n → Vector β n → Vector (α × β) n
 # end Vector
 ```
 
-<a name="_match_expressions"></a>Match Expressions
+Match Expressions
 -----------------
 
 Lean also provides a compiler for *match-with* expressions found in

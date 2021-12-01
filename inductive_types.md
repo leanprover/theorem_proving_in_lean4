@@ -1632,7 +1632,7 @@ heterogeneous equality and well-founded recursion, which will be
 discussed in a later chapter.
 
 
-<a name="_mutual_and_nested_inductive_types"></a>Mutual and Nested Inductive Types
+Mutual and Nested Inductive Types
 ---------------------------------
 
 We now consider two generalizations of inductive types that are often

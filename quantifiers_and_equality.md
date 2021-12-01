@@ -344,7 +344,7 @@ kinds of automation. The term rewriter and simplifier are described
 briefly in the next section, and then in greater detail in the next
 chapter.
 
-<a name="_calc_proofs"></a>Calculational Proofs
+Calculational Proofs
 --------------------
 
 A calculational proof is just a chain of intermediate results that are
