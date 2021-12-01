@@ -395,11 +395,11 @@ how to "introduce" or establish an implication. Application can be
 viewed as an "elimination rule," showing how to "eliminate" or use an
 implication in a proof. The other propositional connectives are
 defined in Lean's library in the file ``Prelude.core`` (see
-[importing files](./interacting_with_lean.md#_importing_files) for more information on the library
+[importing files](./interacting_with_lean.md#importing_files) for more information on the library
 hierarchy), and each connective comes with its canonical introduction
 and elimination rules.
 
-### <a name="_conjunction"></a>Conjunction
+### Conjunction
 
 The expression ``And.intro h1 h2`` builds a proof of ``p ∧ q`` using
 proofs ``h1 : p`` and ``h2 : q``. It is common to describe
@@ -713,7 +713,7 @@ to show that it indeed suffices to show ``q``, by proving the original
 goal of ``q ∧ p`` with the additional hypothesis ``hq : q``. Finally,
 we have to show ``q``.
 
-<a name="_classical"></a>Classical Logic
+Classical Logic
 ---------------
 
 The introduction and elimination rules we have seen so far are all
