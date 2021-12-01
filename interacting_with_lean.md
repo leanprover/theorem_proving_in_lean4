@@ -13,7 +13,7 @@ Not all of the information found here will be useful to you right
 away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.
 
-<a name="_importing_files"></a> Importing Files
+Importing Files
 ---------------
 
 The goal of Lean's front end is to interpret user input, construct

@@ -344,7 +344,7 @@ def next_previous (d : Weekday) : next (previous d) = d := by
   cases d <;> rfl
 ```
 
-[Tactics for Inductive Types](#_tactics_for_inductive_types) below will introduce additional
+[Tactics for Inductive Types](#tactics_for_inductive_types) below will introduce additional
 tactics that are specifically designed to make use of inductive types.
 
 Notice that, under the propositions-as-types correspondence, we can
@@ -1029,7 +1029,7 @@ def omega : CBTree :=
 end CBTree
 ```
 
-<a name="_tactics_for_inductive_types"></a>Tactics for Inductive Types
+Tactics for Inductive Types
 ---------------------------
 
 Given the fundamental importance of inductive types in Lean, it should
@@ -1586,7 +1586,7 @@ heterogeneous equality and well-founded recursion, which will be
 discussed in a later chapter.
 
 
-<a name="_mutual_and_nested_inductive_types"></a>Mutual and Nested Inductive Types
+Mutual and Nested Inductive Types
 ---------------------------------
 
 We now consider two generalizations of inductive types that are often

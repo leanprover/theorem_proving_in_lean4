@@ -110,7 +110,7 @@ def p := Point.mk 10 20
 
 The dot notation is convenient not just for accessing the projections
 of a record, but also for applying functions defined in a namespace
-with the same name. Recall from the [Conjunction section](./propositions_and_proofs.md#_conjunction) if ``p``
+with the same name. Recall from the [Conjunction section](./propositions_and_proofs.md#conjunction) if ``p``
 has type ``Point``, the expression ``p.foo`` is interpreted as
 ``Point.foo p``, assuming that the first non-implicit argument to
 ``foo`` has type ``Point``. The expression ``p.add q`` is therefore
