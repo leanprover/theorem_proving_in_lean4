@@ -14,7 +14,7 @@ on nothing more than the type universes, dependent arrow types, and inductive
 types; everything else follows from those.
 
 Intuitively, an inductive type is built up from a specified list of
-constructors. In Lean, the syntax for specifying such a type is as
+constructors. In Lean, the most common syntax for specifying such a type is as
 follows:
 
 ```
@@ -25,22 +25,24 @@ follows:
       | constructorₙ : ... → Foo
 ```
 
+There are many variations on this syntax some of which we will cover below.
+
 The intuition is that each constructor specifies a way of building new
 objects of ``Foo``, possibly from previously constructed values. The
 type ``Foo`` consists of nothing more than the objects that are
 constructed in this way. The first character ``|`` in an inductive
-declaration is optional. We can also separate constructors using a
-comma instead of ``|``.
+declaration is optional. You can also separate constructors using a
+parentheses as shown in `structure Color` below.
 
-We will see below that the arguments of the constructors can include
+You will see below that the arguments of the constructors can include
 objects of type ``Foo``, subject to a certain "positivity" constraint,
 which guarantees that elements of ``Foo`` are built from the bottom
 up. Roughly speaking, each ``...`` can be any arrow type constructed from
 ``Foo`` and previously defined types, in which ``Foo`` appears, if at
 all, only as the "target" of the dependent arrow type.
 
-We will provide a number of examples of inductive types. We will also
-consider slight generalizations of the scheme above, to mutually
+A number of examples of inductive types are provided below. You will also
+see some slight generalizations of the scheme above, including mutually
 defined inductive types, and so-called *inductive families*.
 
 As with the logical connectives, every inductive type comes with
@@ -65,7 +67,7 @@ elaborate and complex examples.
 Enumerated Types
 ----------------
 
-The simplest kind of inductive type is simply a type with a finite, enumerated list of elements.
+The simplest kind of inductive type is an enumerated type with a finite list of elements.
 
 ```lean
 inductive Weekday where
@@ -100,6 +102,8 @@ open Weekday
 ```
 
 You can omit `: Weekday` when declaring the `Weekday` inductive type.
+So you can see that the entire right hand side  `: ... → Foo` is optional
+when defining enumerated types:
 
 ```lean
 inductive Weekday where
@@ -175,30 +179,23 @@ def numberOfDay (d : Weekday) : Nat :=
   | friday    => 6
   | saturday  => 7
 
-set_option pp.all true
-#print numberOfDay
--- ... numberOfDay.match_1
-#print numberOfDay.match_1
--- ... Weekday.casesOn ...
-#print Weekday.casesOn
--- ... Weekday.rec ...
-#check @Weekday.rec
+#print Weekday.rec
 /-
-@Weekday.rec.{u}
- : {motive : Weekday → Sort u} →
-    motive Weekday.sunday →
-    motive Weekday.monday →
-    motive Weekday.tuesday →
-    motive Weekday.wednesday →
-    motive Weekday.thursday →
-    motive Weekday.friday →
-    motive Weekday.saturday →
-    (t : Weekday) → motive t
+recursor Weekday.rec.{u}
+: {motive : Weekday → Sort u} →
+   motive sunday →
+   motive monday →
+   motive tuesday →
+   motive wednesday →
+   motive thursday →
+   motive friday →
+   motive saturday →
+   (t : Weekday) → motive t
 -/
 ```
 
 When declaring an inductive datatype, you can use `deriving Repr` to instruct
-Lean to generate a fuction that converts `Weekday` objects into text.
+Lean to generate a function that converts `Weekday` objects into text.
 This function is used by the `#eval` command to display `Weekday` objects.
 
 ```lean
@@ -258,6 +255,7 @@ def previous (d : Weekday) : Weekday :=
 
 #eval next (next tuesday)      -- Weekday.thursday
 #eval next (previous tuesday)  -- Weekday.tuesday
+#eval sunday.next.next         -- Weekday.tuesday
 
 example : next (previous tuesday) = tuesday :=
   rfl
@@ -265,41 +263,8 @@ example : next (previous tuesday) = tuesday :=
 end Weekday
 ```
 
-Note that putting next and previous in the Weekday namespace also allows you to use dot notation
-to access those functions:
-
-```lean
-# inductive Weekday where
-#  | sunday : Weekday
-#  | monday : Weekday
-#  | tuesday : Weekday
-#  | wednesday : Weekday
-#  | thursday : Weekday
-#  | friday : Weekday
-#  | saturday : Weekday
-#  deriving Repr
-# namespace Weekday
-# def next (d : Weekday) : Weekday :=
-#  match d with
-#  | sunday    => monday
-#  | monday    => tuesday
-#  | tuesday   => wednesday
-#  | wednesday => thursday
-#  | thursday  => friday
-#  | friday    => saturday
-#  | saturday  => sunday
-# def previous (d : Weekday) : Weekday :=
-#  match d with
-#  | sunday    => saturday
-#  | monday    => sunday
-#  | tuesday   => monday
-#  | wednesday => tuesday
-#  | thursday  => wednesday
-#  | friday    => thursday
-#  | saturday  => friday
-
-#eval Weekday.sunday.next    -- Weekday.monday
-```
+Note that putting next and previous in the Weekday namespace also
+allows you to use dot notation to access those functions.
 
 How can we prove the general theorem that ``next (previous d) = d``
 for any Weekday ``d``? You can use `match` to provide a proof of the claim for each
@@ -334,7 +299,7 @@ constructor:
 #  | thursday  => wednesday
 #  | friday    => thursday
 #  | saturday  => friday
-def next_previous (d : Weekday) : next (previous d) = d :=
+example (d : Weekday) : next (previous d) = d :=
   match d with
   | sunday    => rfl
   | monday    => rfl
@@ -376,14 +341,9 @@ Using a tactic proof, we can be even more concise:
 #  | thursday  => wednesday
 #  | friday    => thursday
 #  | saturday  => friday
-def next_previous (d : Weekday) : next (previous d) = d := by
+example (d : Weekday) : next (previous d) = d := by
   cases d <;> rfl
 ```
-
-BUGBUG: wow, you can do proofs using "def" ?? Didn't know that one...
-So why do we need the "proof" and "example" keywords then?
-
-BUGBUG: what is "<;>" ? Where is it defined?
 
 [Tactics for Inductive Types](#tactics_for_inductive_types) below will introduce additional
 tactics that are specifically designed to make use of inductive types.
@@ -425,11 +385,17 @@ def and (a b : Bool) : Bool :=
 # end Hidden
 ```
 
-Similarly, most identities can be proved by introducing suitable `match`, and then using ``rfl``.
+Similarly, most identities can be proved by introducing suitable `match`,
+and then using ``rfl``, for example:
 
-BUGBUG: what is "identities" ?  Normally I would think I'm proving "properties" about something.
-Proving an "identity" sounds like I'm proving an operation didn't change the type? So it is
-an "identity" operation?  Is that what this means?
+```lean
+-- BUGBUG: would be very helpful to show one example here...
+```
+
+BUGBUG: what is "identities" ?  Normally I would think I'm proving
+"properties" about something. Proving an "identity" sounds like I'm
+proving an operation didn't change the type? So it is an "identity"
+operation?  Is that what this means?
 
 
 Constructors with Arguments
@@ -438,29 +404,24 @@ Constructors with Arguments
 Enumerated types are a very special case of inductive types, in which
 the constructors take no arguments at all. In general, a
 "construction" can depend on data, which is then represented in the
-constructed argument. Consider the definitions of the product type and
-sum type in the library:
+constructed argument. Consider the definitions of the product type
+in the standard library:
 
 ```lean
 # namespace Hidden
 inductive Prod (α : Type u) (β : Type v)
   | mk : α → β → Prod α β
-
-inductive Sum (α : Type u) (β : Type v) where
-  | inl : α → Sum α β
-  | inr : β → Sum α β
 # end Hidden
 ```
 
-Notice that we do not include the types ``α`` and ``β`` in the target
-of the constructors. In the meanwhile, think about what is going on in
-these examples. The product type has one constructor, ``Prod.mk``,
-which takes two arguments. To define a function on ``Prod α β``, we
-can assume the input is of the form ``Prod.mk a b``, and we have to
-specify the output, in terms of ``a`` and ``b``. We can use this to
-define the two projections for ``Prod``. Remember that the standard
-library defines notation ``α × β`` for ``Prod α β`` and ``(a, b)`` for
-``Prod.mk a b``.
+Notice that we do not need to include the types ``α`` and ``β`` in the target
+of the constructors as it is implied. The product type has one constructor, ``Prod.mk``,
+which takes two arguments and returns an object of type `Prod α β`.
+
+To define a function on ``Prod α β``, you should make the input argument to the function
+be ``(p : Prod α β)``.  The match statement can then match the input to `Prod.mk a b` so
+that the output of the match can be computed from `a` and/or `b`.  You can use this to
+define the two projections for ``Prod``.
 
 ```lean
 # namespace Hidden
@@ -470,9 +431,9 @@ def fst {α : Type u} {β : Type v} (p : Prod α β) : α :=
   match p with
   | Prod.mk a b => a
 
-def snd {α : Type u} {β : Type v} (p : Prod α β) : β :=
+def snd {α : Type u} {β : Type v} (p : α × β) : β :=
   match p with
-  | Prod.mk a b => b
+  | (a, b) => b
 # end Hidden
 ```
 
@@ -481,48 +442,106 @@ The function ``fst`` takes a pair, ``p``. The `match` interprets
 that to give these definitions the greatest generality possible, we allow
 the types ``α`` and ``β`` to belong to any universe.
 
+Remember that the standard library defines notation ``α × β``
+for ``Prod α β`` and ``(a, b)`` for ``Prod.mk a b``.  So the
+`snd` function these equivalent, more compact forms.
 
 Here is another example where we use the recursor `Prod.casesOn` instead
 of `match`.
 
 ```lean
 def prod_example (p : Bool × Nat) : Nat :=
-  Prod.casesOn (motive := fun _ => Nat) p (fun b n => cond b (2 * n) (2 * n + 1))
+  Prod.casesOn (motive := fun _ => Nat) p
+    (fun b n => if b then (2 * n) else (2 * n + 1))
 
-#eval prod_example (true, 3)
-#eval prod_example (false, 3)
+#eval prod_example (true, 3)    -- 6
+#eval prod_example (false, 3)   -- 7
 ```
 
 The argument `motive` is used to specify the type of the object you want to
 construct, and it is a function because it may depend on the pair.
-The ``cond`` function is a boolean conditional: ``cond b t1 t2``
-returns ``t1`` if ``b`` is true, and ``t2`` otherwise.
 The function ``prod_example`` takes a pair consisting of a boolean,
 ``b``, and a number, ``n``, and returns either ``2 * n`` or ``2 * n + 1``
 according to whether ``b`` is true or false.
 
-In contrast, the sum type has *two* constructors, ``inl`` and ``inr``
+In contrast, the Sum type, also in the standard library, is defined as:
+
+```lean
+# namespace Hidden
+inductive Sum (α : Type u) (β : Type v) where
+  | inl : α → Sum α β
+  | inr : β → Sum α β
+# end Hidden
+```
+
+The `Sum` type is a kind of tagged union where the result can
+be something of type `α` or something of type `β`.
+
+Notice it has *two* constructors, ``inl`` and ``inr``
 (for "insert left" and "insert right"), each of which takes *one*
 (explicit) argument. To define a function on ``Sum α β``, we have to
-handle two cases: either the input is of the form ``inl a``, in which
+handle two cases: either the input is of the form ``Sum.inl a``, in which
 case we have to specify an output value in terms of ``a``, or the
-input is of the form ``inr b``, in which case we have to specify an
+input is of the form ``Sum.inr b``, in which case we have to specify an
 output value in terms of ``b``.
 
 ```lean
-def sum_example (s : Sum Nat Nat) : Nat :=
+def sum_example (s : Sum Bool Nat) : Nat :=
 Sum.casesOn (motive := fun _ => Nat) s
+   (fun b => if b then 1 else 0)
    (fun n => 2 * n)
-   (fun n => 2 * n + 1)
 
-#eval sum_example (Sum.inl 3)
-#eval sum_example (Sum.inr 3)
+#eval sum_example (Sum.inl true)  -- 1
+#eval sum_example (Sum.inr 3)     -- 6
 ```
 
 This example is similar to the previous one, but now an input to
-``sum_example`` is implicitly either of the form ``inl n`` or ``inr n``.
-In the first case, the function returns ``2 * n``, and the second
-case, it returns ``2 * n + 1``.
+``sum_example`` is implicitly either of the form ``Sum.inl b`` or ``Sum.inr n``.
+In the first case, the function returns 1 if b is true otherwise 0,
+and the second case, it returns ``2 * n``.
+
+Extracting a value from Sum is also a little more complicated:
+
+```lean
+namespace Sum
+
+def optionalLeft {α : Type u} {β : Type v} (p : Sum α β) : Option α :=
+  match p with
+  | Sum.inl a => a
+  | Sum.inr b => none
+
+end Sum
+```
+
+Notice that since the `Sum` can be only one of the
+values extracting the left value cannot always succeed
+so the result has to be `Option α`.  Option is a handy
+type that means `α | none`.
+
+```lean
+# namespace Sum
+# def optionalLeft {α : Type u} {β : Type v} (p : Sum α β) : Option α :=
+#   match p with
+#   | Sum.inl a => a
+#   | Sum.inr b => none
+# end Sum
+constant x : Sum Bool Nat := Sum.inl true
+#eval x.optionalLeft.get! -- true
+```
+
+but if we create a Sum using `inr` and try and call `optionalLeft`
+we get back `none`:
+
+```lean
+# namespace Sum
+# def optionalLeft {α : Type u} {β : Type v} (p : Sum α β) : Option α :=
+#   match p with
+#   | Sum.inl a => a
+#   | Sum.inr b => none
+# end Sum
+constant x : Sum Bool Nat := Sum.inr 5
+#eval x.optionalLeft.isNone   -- true
+```
 
 Notice that the product type depends on parameters ``α β : Type``
 which are arguments to the constructors as well as ``Prod``. Lean
@@ -559,13 +578,16 @@ inductive Sum (α : Type u) (β : Type v) where
 
 The results of these definitions are essentially the same as the ones given earlier in this section.
 
+BUGBUG: when is the name useful?  If never, why mention it?
+I'm guessing it is just so you can show the progression to "Structure" syntax?
+
 A type, like ``Prod``, that has only one constructor is purely
 conjunctive: the constructor simply packs the list of arguments into a
 single piece of data, essentially a tuple where the type of subsequent
 arguments can depend on the type of the initial argument. We can also
 think of such a type as a "record" or a "structure". In Lean, the
 keyword ``structure`` can be used to define such an inductive type as
-well as its projections, at the same time.
+well as its projections, in one simple statement:
 
 ```lean
 # namespace Hidden
@@ -578,6 +600,9 @@ This example simultaneously introduces the inductive type, ``Prod``,
 its constructor, ``mk``, the usual eliminators (``rec`` and
 ``recOn``), as well as the projections, ``fst`` and ``snd``, as
 defined above.
+
+The `::` is just a separator between the constructor name, `mk` shown
+here and the rest of the structure definition.
 
 If you do not name the constructor, Lean uses ``mk`` as a default. For
 example, the following defines a record to store a color as a triple
@@ -593,10 +618,12 @@ def yellow := Color.mk 255 255 0
 #eval Color.red yellow
 ```
 
-The definition of ``yellow`` forms the record with the three values
+The definition of ``yellow`` forms a record with the three values
 shown, and the projection ``Color.red`` returns the red component.
 
-You can avoid the parentheses if you add a line break between each field.
+Note: the parentheses used in `structure Color` is just a short hand
+for the multi-line version that puts red, green and blue each on a
+separate line:
 
 ```lean
 structure Color where
@@ -609,7 +636,7 @@ structure Color where
 The ``structure`` command is especially useful for defining algebraic
 structures, and Lean provides substantial infrastructure to support
 working with them. Here, for example, is the definition of a
-semigroup:
+[Semigroup](https://en.wikipedia.org/wiki/Semigroup) Type:
 
 ```lean
 structure Semigroup where
@@ -618,7 +645,7 @@ structure Semigroup where
   mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c)
 ```
 
-We will see more examples in [Chapter Structures and Records](./structures_and_records.md).
+You will see more examples in [Chapter Structures and Records](./structures_and_records.md).
 
 We have already discussed the dependent product type `Sigma`:
 
@@ -629,7 +656,7 @@ inductive Sigma {α : Type u} (β : α → Type v) where
 # end Hidden
 ```
 
-Two more examples of inductive types in the library are the following:
+Two more examples of inductive types in the standard library are the following:
 
 ```lean
 # namespace Hidden
@@ -654,9 +681,10 @@ for every ``a : α``, ``f a`` either returns ``none``, indicating the
 
 An element of ``Inhabited α`` is simply a witness to the fact that
 there is an element of ``α``. Later, we will see that ``Inhabited`` is
-an example of a *type class* in Lean: Lean can be instructed that
-suitable base types are inhabited, and can automatically infer that
-other constructed types are inhabited on that basis.
+an example of a [Type Class](type_classes.md) in Lean: Lean can be
+instructed that suitable base types are inhabited, and can
+automatically infer that other constructed types are inhabited on that
+basis.
 
 As exercises, we encourage you to develop a notion of composition for
 partial functions from ``α`` to ``β`` and ``β`` to ``γ``, and show
@@ -670,7 +698,7 @@ Inductively Defined Propositions
 
 Inductively defined types can live in any type universe, including the
 bottom-most one, ``Prop``. In fact, this is exactly how the logical
-connectives are defined.
+connectives `And` and `Or` are defined.
 
 ```lean
 # namespace Hidden
