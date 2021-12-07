@@ -798,6 +798,23 @@ open Foo
 #check fa
 #check Bar.ffa
 ```
+
+You can also provide a restricted list of declarations to bring in from the open
+namespace as follows:
+
+```lean
+namespace Foo
+  def a : Nat := 5
+  def f (x : Nat) : Nat := x + 7
+  def fa : Nat := f a
+end Foo
+
+open Foo (f fa)
+
+#check f
+#check fa
+-- #check a         -- unknown identifier 'a'
+
 Namespaces that have been closed can later be reopened, even in another file:
 
 ```lean
