@@ -414,9 +414,10 @@ inductive Prod (α : Type u) (β : Type v)
 # end Hidden
 ```
 
-Notice that we do not need to include the types ``α`` and ``β`` in the target
-of the constructors as it is implied. The product type has one constructor, ``Prod.mk``,
-which takes two arguments and returns an object of type `Prod α β`.
+Notice that we do not need to include the types ``α`` and ``β`` in the
+target of the constructors since they will be provided as implicit
+arguments. The product type has one constructor, ``Prod.mk``, which
+takes two arguments and returns an object of type `Prod α β`.
 
 To define a function on ``Prod α β``, you should make the input argument to the function
 be ``(p : Prod α β)``.  The match statement can then match the input to `Prod.mk a b` so
@@ -755,11 +756,12 @@ inductive Subtype {α : Type u} (p : α → Prop) where
 # end Hidden
 ```
 
-In fact, in Lean, ``Subtype`` is defined using the structure command:
-
-The notation ``{x : α // p x}`` is syntactic sugar for ``Subtype (fun x : α => p x)``.
+In fact, in Lean, ``Subtype`` is defined using the `structure`.  The notation ``{x : α // p x}`` is syntactic sugar for ``Subtype (fun x : α => p x)``.
 It is modeled after subset notation in set theory: the idea is that ``{x : α // p x}``
 denotes the collection of elements of ``α`` that have property ``p``.
+
+BUGBUG: please please, pretty please provide an example using Subtype? Thanks.
+
 
 Defining the Natural Numbers
 ----------------------------
@@ -817,12 +819,37 @@ you find the following:
   → (t : Nat) → motive t
 ```
 
-The implicit argument, ``motive``, is the codomain of the function being defined.
-In type theory it is common to say ``motive`` is the *motive* for the elimination/recursion,
-since it describes the kind of object we wish to construct.
-The next two arguments specify how to compute the zero and successor cases, as described above.
-They are also known as the ``minor premises``.
-Finally, the ``t : Nat``, is the input to the function. It is also known as the ``major premise``.
+To help you read this, remember the curly braces mean `{motive : Nat →
+Sort u}` is an "implicit" argument and then a long chain of arrows
+(`→`) can also be interpreted as a single function that takes many
+parameters, for example, this function:
+
+```lean
+def b (x: Nat) (y : Nat) (z : Nat): Nat :=
+  x + y + z
+```
+has type `b : Nat → Nat → Nat → Nat`.
+
+Similarly you can interpret the `@Nat.rec` function as one that takes
+4 parameters:
+1. An implicit argument, ``motive``, is the codomain of the function
+   being defined.  In type theory it is common to say ``motive`` is
+   the *motive* for the elimination/recursion, since it describes the
+   kind of object we wish to construct.
+1. How to compute the zero case, by calling the motive function with
+   `Nat.zero`.
+1. The parenthetic grouping `((n : Nat) → motive n → motive (Nat.succ
+   n))` means this is a single argument and is a function that takes 3
+   parameters. This specifies how to handle the successor case.
+
+TODO: still need to fully explain `((n : Nat) → motive n → motive (Nat.succ n))`
+how can you call a function `motive n` in the definition of a type ?
+I guess motive is a function from `Nat → Sort u` so `motive n` is a `Sort u`
+which can be used in a type definition...yikes.
+
+   Case (2) and (3) are also known as the ``minor premises``.
+1. Finally, the ``(t : Nat) → motive t``, is the input to the function.
+   It is also known as the ``major premise``.
 
 The `Nat.recOn` is similar to `Nat.rec` but the major premise occurs before the minor premises.
 
@@ -1772,3 +1799,23 @@ Exercises
    functions on the type of such formulas: an evaluation function,
    functions that measure the complexity of a formula, and a function
    that substitutes another formula for a given variable.
+
+
+Answers
+-------
+
+> develop a notion of composition for partial functions from α to β and β to γ, and show that it behaves as expected
+
+
+
+> show that Bool and Nat are inhabited
+
+example (a : Bool) : Inhabited Bool :=
+  Inhabited.mk a
+
+example (a : Nat) : Inhabited Nat :=
+  Inhabited.mk a
+
+> show that the product of two inhabited types is inhabited
+
+> show that the type of functions to an inhabited type is inhabited
