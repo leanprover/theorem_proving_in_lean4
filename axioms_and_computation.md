@@ -1090,7 +1090,7 @@ the if-then-else expression. (See also the discussion in
 open Classical
 
 noncomputable def linv [Inhabited α] (f : α → β) : β → α :=
-  fun b : β => if ex : (∃ a : α, f a = b) then choose ex else arbitrary
+  fun b : β => if ex : (∃ a : α, f a = b) then choose ex else default
 
 theorem linv_comp_self {f : α → β} [Inhabited α]
                        (inj : ∀ {a b}, f a = f b → a = b)

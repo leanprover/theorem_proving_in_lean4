@@ -320,7 +320,7 @@ that there is an element of ``α``; in the [Chapter Type Classes](./type_classes
 we will see that Lean can be instructed that suitable
 base types are inhabited, and can automatically infer that other
 constructed types are inhabited. On this basis, the
-standard library provides an arbitrary element, ``arbitrary``, of
+standard library provides a default element, ``defaulty``, of
 any inhabited type.
 
 We can also use the type ``Option α`` to simulate incomplete patterns.
@@ -332,12 +332,12 @@ both approaches.
 def f1 : Nat → Nat → Nat
   | 0, _  => 1
   | _, 0  => 2
-  | _, _  => arbitrary  -- the "incomplete" case
+  | _, _  => default  -- the "incomplete" case
 
-example : f1 0     0     = 1 := rfl
-example : f1 0     (a+1) = 1 := rfl
-example : f1 (a+1) 0     = 2 := rfl
-example : f1 (a+1) (b+1) = arbitrary := rfl
+example : f1 0     0     = 1       := rfl
+example : f1 0     (a+1) = 1       := rfl
+example : f1 (a+1) 0     = 2       := rfl
+example : f1 (a+1) (b+1) = default := rfl
 
 def f2 : Nat → Nat → Option Nat
   | 0, _  => some 1
