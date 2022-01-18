@@ -530,8 +530,8 @@ theorem ``Quotient.exact``:
 ```lean
 # universe u
 #check (@Quotient.exact :
-         ∀ {α : Sort u} [s : Setoid α] {a b : α},
-           Quotient.mk a = Quotient.mk b → a ≈ b)
+         ∀ {α : Sort u} {s : Setoid α} {a b : α},
+           Quotient.mk s a = Quotient.mk s b → a ≈ b)
 ```
 
 Together with ``Quotient.sound``, this implies that the elements of
@@ -621,7 +621,7 @@ def UProd (α : Type u) : Type u :=
 namespace UProd
 
 def mk {α : Type} (a₁ a₂ : α) : UProd α :=
-  Quotient.mk (a₁, a₂)
+  Quotient.mk' (a₁, a₂)
 
 notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 
@@ -666,7 +666,7 @@ since we have ``(a₁, a₂) ~ (a₂, a₁)``.
 #   Quotient (uprodSetoid α)
 # namespace UProd
 # def mk {α : Type} (a₁ a₂ : α) : UProd α :=
-#   Quotient.mk (a₁, a₂)
+#   Quotient.mk' (a₁, a₂)
 # notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
   Quot.sound (Or.inr ⟨rfl, rfl⟩)
@@ -710,7 +710,7 @@ Lean standard library.
 #   Quotient (uprodSetoid α)
 # namespace UProd
 # def mk {α : Type} (a₁ a₂ : α) : UProd α :=
-#   Quotient.mk (a₁, a₂)
+#   Quotient.mk' (a₁, a₂)
 # notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 # theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
 #   Quot.sound (Or.inr ⟨rfl, rfl⟩)
