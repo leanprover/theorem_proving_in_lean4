@@ -1,0 +1,38 @@
+name: mdbook deploy to github pages
+
+# Controls when the action will run: only on manual dispatch from github UI
+on: workflow_dispatch
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        # interferes with lean4-nightly authentication
+        persist-credentials: false
+        submodules: true
+    - name: Download mdbook for Lean
+      run: |
+        curl -O --location https://github.com/leanprover/mdBook/releases/download/v0.4.6/mdbook-linux.tar.gz
+        tar xvf mdbook-linux.tar.gz
+        ./mdbook-linux/mdbook --help
+        ldd ./mdbook-linux/mdbook
+    - name: Run mdbook build
+      run: |
+        ./mdbook-linux/mdbook build
+        rm -rf out/.git
+    - name: Deploy
+      run: |
+        rm -rf deploy
+        mkdir deploy
+        cd deploy
+        git init
+        cp -r ../out/./ .
+        git add -A
+        git commit -m "Update `date`"
+        git push https://github.com/leanprover/theorem_proving_in_lean4.git +HEAD:gh-pages
+        cd ..
+        rm -rf deploy
