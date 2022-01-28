@@ -601,7 +601,6 @@ connectives:
 
 #check @instDecidableOr
 #check @instDecidableNot
-#check @instDecidableArrow
 ```
 
 Thus we can carry out definitions by cases on decidable predicates on
