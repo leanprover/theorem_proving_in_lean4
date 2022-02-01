@@ -449,7 +449,7 @@ def double (p : Point) :=
 end -- instance `Add Point` is not active anymore
 
 -- def triple (p : Point) :=
---  p + p + p  -- Error: failed to sythesize instance
+--  p + p + p  -- Error: failed to synthesize instance
 ```
 
 You can also temporarily disable an instance using the `attribute` command
@@ -470,7 +470,7 @@ def double (p : Point) :=
 attribute [-instance] addPoint
 
 -- def triple (p : Point) :=
---  p + p + p  -- Error: failed to sythesize instance
+--  p + p + p  -- Error: failed to synthesize instance
 ```
 
 We recommend you only use this command to diagnose problems.
@@ -646,7 +646,7 @@ instance (priority := low) propDecidable (a : Prop) : Decidable a :=
 # end Hidden
 ```
 
-The guarantees that Lean will favor other instances and fall back on
+This guarantees that Lean will favor other instances and fall back on
 ``propDecidable`` only after other attempts to infer decidability have
 failed.
 
@@ -761,10 +761,10 @@ set_option synthInstance.maxSize 400
 ```
 
 Option `synthInstance.maxHeartbeats` specifies the maximum amount of
-heartbeats per typeclass resolution problem. A heartbeat is number of
+heartbeats per typeclass resolution problem. A heartbeat is the number of
 (small) memory allocations (in thousands), 0 means there is no limit.
 Option `synthInstance.maxSize` is the maximum number of instances used
-to construct a solution in the type class instance synthesis procedure
+to construct a solution in the type class instance synthesis procedure.
 
 Remember also that in both the VS Code and Emacs editor modes, tab
 completion works in ``set_option``, to help you find suitable options.
