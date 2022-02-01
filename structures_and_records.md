@@ -48,9 +48,9 @@ structure Point (α : Type u) where
 
 Values of type ``Point`` are created using ``Point.mk a b``, and the
 fields of a point ``p`` are accessed using ``Point.x p`` and
-``Point.y p``. The structure command also generates useful recursors and
-theorems. Dot notation is also supported so you can write `p.x`
-and `p.y`. Here are some of the constructions generated for the
+``Point.y p``. Dot notation is also supported so you can write `p.x`
+and `p.y`. The structure command also generates useful recursors and
+theorems. Here are some of the constructions generated for the
 declaration above.
 
 ```lean
@@ -93,7 +93,7 @@ example (a b : α) : y (mk a b) = b :=
   rfl
 ```
 
-Given ``p : Point Nat``, the notation ``p.x`` is shorthand for
+Given ``p : Point Nat``, the dot notation ``p.x`` is shorthand for
 ``Point.x p``. This provides a convenient way of accessing the fields
 of a structure.
 
