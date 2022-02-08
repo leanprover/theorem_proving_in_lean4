@@ -656,8 +656,8 @@ Even the existential quantifier is inductively defined:
 
 ```lean
 # namespace Hidden
-inductive Exists {α : Type u} (q : α → Prop) : Prop where
-  | intro : ∀ (a : α), q a → Exists q
+inductive Exists {α : Sort u} (p : α → Prop) : Prop where
+  | intro (w : α) (h : p w) : Exists p
 # end Hidden
 ```
 
