@@ -675,8 +675,8 @@ section useful
 end useful
 ```
 
-When the section is closed, the variables go out of scope, and become
-nothing more than a distant memory.
+When the section is closed, the variables go out of scope, and cannot
+be referenced any more.
 
 You do not have to indent the lines within a section. Nor do you have
 to name a section, which is to say, you can use an anonymous

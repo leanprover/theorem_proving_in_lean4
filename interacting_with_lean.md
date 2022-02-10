@@ -318,7 +318,7 @@ file.
 More on Implicit Arguments
 --------------------------
 
-In [Section Implicit Arguments](./dependent_type_theory.md#implicit_args),
+In [Section Implicit Arguments](./dependent_type_theory.md#implicit_arguments),
 we saw that if Lean displays the type
 of a term ``t`` as ``{x : α} → β x``, then the curly brackets
 indicate that ``x`` has been marked as an *implicit argument* to

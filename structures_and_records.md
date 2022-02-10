@@ -15,7 +15,7 @@ structure, as is the dependent product (Sigma) type.
 In general, whenever we define a structure ``S``, we usually
 define *projection* functions that allow us to "destruct" each
 instance of ``S`` and retrieve the values that are stored in its
-fields. The functions ``prod.pr1`` and ``prod.pr2``, which return the
+fields. The functions ``prod.fst`` and ``prod.snd``, which return the
 first and second elements of a pair, are examples of such projections.
 
 When writing programs or formalizing mathematics, it is not uncommon
@@ -48,7 +48,8 @@ structure Point (α : Type u) where
 
 Values of type ``Point`` are created using ``Point.mk a b``, and the
 fields of a point ``p`` are accessed using ``Point.x p`` and
-``Point.y p``. The structure command also generates useful recursors and
+``Point.y p`` (but `p.x` and `p.y` also work, see below).
+The structure command also generates useful recursors and
 theorems. Here are some of the constructions generated for the
 declaration above.
 
@@ -92,7 +93,7 @@ example (a b : α) : y (mk a b) = b :=
   rfl
 ```
 
-Given ``p : Point Nat``, the notation ``p.x`` is shorthand for
+Given ``p : Point Nat``, the dot notation ``p.x`` is shorthand for
 ``Point.x p``. This provides a convenient way of accessing the fields
 of a structure.
 
