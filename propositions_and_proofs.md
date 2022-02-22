@@ -809,7 +809,7 @@ are permissible, and Lean supports the use of classical reasoning in
 such contexts without relying on excluded middle.
 
 The full list of axioms that are used in Lean to support classical
-reasoning are discussed in [Axioms and Computations](./axioms_and_computations.md).
+reasoning are discussed in [Axioms and Computation](./axioms_and_computation.md).
 
 Examples of Propositional Validities
 ------------------------------------
