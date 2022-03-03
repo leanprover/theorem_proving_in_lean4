@@ -930,15 +930,19 @@ mutual
 end
 
 mutual
-theorem numConsts_replaceConst (a b : String) (e : Term) : numConsts (replaceConst a b e) = numConsts e := by
+theorem numConsts_replaceConst (a b : String) (e : Term)
+          : numConsts (replaceConst a b e) = numConsts e := by
   match e with
   | const c => simp [replaceConst]; split <;> simp [numConsts]
   | app f cs => simp [replaceConst, numConsts, numConsts_replaceConstLst a b cs]
 
-theorem numConsts_replaceConstLst (a b : String) (es : List Term) : numConstsLst (replaceConstLst a b es) = numConstsLst es := by
+theorem numConsts_replaceConstLst (a b : String) (es : List Term)
+          : numConstsLst (replaceConstLst a b es) = numConstsLst es := by
   match es with
   | [] => simp [replaceConstLst, numConstsLst]
-  | c :: cs => simp [replaceConstLst, numConstsLst, numConsts_replaceConst a b c, numConsts_replaceConstLst a b cs]
+  | c :: cs =>
+    simp [replaceConstLst, numConstsLst, numConsts_replaceConst a b c,
+          numConsts_replaceConstLst a b cs]
 end
 ```
 
