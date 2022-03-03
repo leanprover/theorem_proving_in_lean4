@@ -773,7 +773,7 @@ propostion `x - y < x` in the example above should be viewed as a hint
 for this tactic.
 
 The defining equation for ``div`` does *not* hold definitionally, but
-we can unfold `div` using the `unfold` tactic. We use `conv` to select which
+we can unfold `div` using the `unfold` tactic. We use [`conv`](./conv.md) to select which
 `div` application we want to unfold.
 
 ```lean
@@ -784,7 +784,7 @@ we can unfold `div` using the `unfold` tactic. We use `conv` to select which
 #  else
 #    0
 example (x y : Nat) : div x y = if 0 < y ∧ y ≤ x then div (x - y) y + 1 else 0 := by
-  conv => lhs; unfold div -- unfol occurrence in the left-hand-side of the equation
+  conv => lhs; unfold div -- unfold occurrence in the left-hand-side of the equation
 
 example (x y : Nat) (h : 0 < y ∧ y ≤ x) : div x y = div (x - y) y + 1 := by
   conv => lhs; unfold div
