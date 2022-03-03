@@ -979,7 +979,8 @@ As a result, it is a prime candidate for the third type of coercion.
 instance (S1 S2 : Semigroup) : CoeFun (Morphism S1 S2) (fun _ => S1 → S2) where
   coe m := m.mor
 
-theorem resp_mul {S1 S2 : Semigroup} (f : Morphism S1 S2) (a b : S1) : f (a * b) = f a * f b :=
+theorem resp_mul {S1 S2 : Semigroup} (f : Morphism S1 S2) (a b : S1)
+        : f (a * b) = f a * f b :=
   f.resp_mul a b
 
 example (S1 S2 : Semigroup) (f : Morphism S1 S2) (a : S1) :
