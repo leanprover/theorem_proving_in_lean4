@@ -867,6 +867,33 @@ def div (x y : Nat) : Nat :=
 decreasing_by apply div_rec_lemma; assumption
 ```
 
+We can use `decreasing_by sorry` to instruct Lean to "trust" us that the function terminates.
+
+```lean
+def natToBin : Nat → List Nat
+  | 0     => [0]
+  | 1     => [1]
+  | n + 2 => natToBin ((n + 2) / 2) ++ [n % 2]
+decreasing_by sorry
+
+#eval natToBin 1234567
+```
+
+Recall that using `sorry` is equivalent to using a new axiom, and should be avoided. In the following example, we used the `sorry` to prove `False`. The command `#print axioms` shows that `unsound` depends on the unsound axiom `sorryAx` used to implement `sorry`.
+
+```lean
+def unsound (x : Nat) : False :=
+  unsound (x + 1)
+decreasing_by sorry
+
+#check unsound 0
+-- `unsound 0` is a proof of `False`
+
+#print axioms unsound
+-- 'unsound' depends on axioms: [sorryAx]
+```
+
+
 Mutual Recursion
 ----------------
 
