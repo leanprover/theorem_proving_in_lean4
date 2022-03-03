@@ -1110,7 +1110,7 @@ hljs.registerLanguage("lean", function(hljs) {
       'example inductive coinductive attribute ' +
       'axiom constant scoped local noncomputable ' +
       'partial unsafe private protected ' +
-      'if then else ' +
+      'if then else termination_by decreasing_by ' +
       'universe variable variables ' +
       'import open export theory prelude renaming hiding exposing ' +
       'calc  match with do by let extends ' +
