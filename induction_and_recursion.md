@@ -794,7 +794,7 @@ Note that, auxiliary function `go` is recursive in this example, but `takeWhile`
 
 By default, Lean uses the tactic `decreasing_tactic` to prove recursive applications are decreasing. The modifier `decreasing_by` allows us to provide our own tactic. Here is an example.
 
-```
+```lean
 private def div_rec_lemma {x y : Nat} : 0 < y ∧ y ≤ x → x - y < x :=
   fun ⟨ypos, ylex⟩ => Nat.sub_lt (Nat.lt_of_lt_of_le ypos ylex) ypos
 
