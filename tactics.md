@@ -1465,6 +1465,24 @@ example (xs ys : List Nat) (p : List Nat → Prop)
   simp only [List.reverse_append] at h; assumption
 ```
 
+The `simp` tactic has many configuration options. For example, we can enable contextual simplifications as follows.
+```lean
+example : if x = 0 then y + x = y else x ≠ 0 := by
+  simp (config := { contextual := true })
+```
+when `contextual := true`, `simp` uses the fact that `x = 0` when simplifying `y + x = y`, and
+`x ≠ 0` when simplifying the other branch. Here is another example.
+```lean
+example : ∀ (x : Nat) (h : x = 0), y + x = y := by
+  simp (config := { contextual := true })
+```
+Another useful configuration option is `arith := true` which enables arithmetical simplifications. It is so useful
+that `simp_arith` is a shorthand for `simp (config := { arith := true })`.
+```lean
+example : 0 < 1 + x ∧ x + y + 2 ≥ y + 1 := by
+  simp_arith
+```
+
 Split Tactic
 ------------
 
