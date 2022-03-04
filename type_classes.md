@@ -843,7 +843,6 @@ We can define a coercion from ``List α`` to ``Set α`` as follows:
 # def Set.mem (a : α) (s : Set α) : Prop := s a
 # def Set.singleton (a : α) : Set α := fun x => x = a
 # def Set.union (a b : Set α) : Set α := fun x => a x ∨ b x
-# infix:50 " ∈ " => Set.mem
 # notation "{ " a " }" => Set.singleton a
 # infix:55 " ∪ " => Set.union
 def List.toSet : List α → Set α
@@ -865,7 +864,6 @@ We can use the notation ``↑`` to force a coercion to be introduced in a partic
 # def Set.mem (a : α) (s : Set α) : Prop := s a
 # def Set.singleton (a : α) : Set α := fun x => x = a
 # def Set.union (a b : Set α) : Set α := fun x => a x ∨ b x
-# infix:50 " ∈ " => Set.mem
 # notation "{ " a " }" => Set.singleton a
 # infix:55 " ∪ " => Set.union
 # def List.toSet : List α → Set α

@@ -234,7 +234,7 @@ namespace Set
 
 def mem (x : α) (a : Set α) := a x
 
-infix:50 "∈" => mem
+infix:50 (priority := high) "∈" => mem
 
 theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
   funext (fun x => propext (h x))
@@ -249,7 +249,7 @@ example, and prove set identities:
 # def Set (α : Type u) := α → Prop
 # namespace Set
 # def mem (x : α) (a : Set α) := a x
-# infix:50 "∈" => mem
+# infix:50 (priority := high) "∈" => mem
 # theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
 #  funext (fun x => propext (h x))
 def empty : Set α := fun x => False
@@ -740,7 +740,7 @@ private theorem mem_respects
 def mem (a : α) (u : UProd α) : Prop :=
   Quot.liftOn u (fun p => mem_fn a p) (fun p₁ p₂ e => mem_respects a e)
 
-infix:50 " ∈ " => mem
+infix:50 (priority := high) " ∈ " => mem
 
 theorem mem_mk_left (a b : α) : a ∈ {a, b} :=
   Or.inl rfl
