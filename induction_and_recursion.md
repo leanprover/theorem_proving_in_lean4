@@ -832,7 +832,7 @@ instance (priority := low) [SizeOf α] : WellFoundedRelation α :=
   sizeOfWFRel
 ```
 
-In the following example, we show termination by showing that `as.size - i` is decreasing
+In the following example, we prove termination by showing that `as.size - i` is decreasing
 in the recursive application.
 
 ```lean
@@ -865,6 +865,20 @@ def div (x y : Nat) : Nat :=
   else
     0
 decreasing_by apply div_rec_lemma; assumption
+```
+
+Note that `decreasing_by` is not replacement for `termination_by`, they complement each other. `termination_by` is used to specify a well-founded relation, and `decreasing_by` for providing our own tactic for showing recursive applications are decreasing. In the following example, we use both of them.
+
+```lean
+def ack : Nat → Nat → Nat
+  | 0,   y   => y+1
+  | x+1, 0   => ack x 1
+  | x+1, y+1 => ack x (ack (x+1) y)
+termination_by ack x y => (x, y)
+decreasing_by
+  simp_wf -- unfolds well-founded recursion auxiliary definitions
+  first | apply Prod.Lex.right; simp_arith
+        | apply Prod.Lex.left; simp_arith
 ```
 
 We can use `decreasing_by sorry` to instruct Lean to "trust" us that the function terminates.
