@@ -1121,7 +1121,7 @@ hljs.registerLanguage("lean", function(hljs) {
       'section namespace end infix infixl infixr postfix prefix notation ',
     built_in:
       'Type Prop|10 Sort rw|10 rewrite rwa erw subst substs ' +
-      'simp dsimp simpa simp_intros finish using generalizing ' +
+      'simp dsimp simpa simp_intros simp_wf finish using generalizing ' +
       'unfold unfold1 dunfold unfold_projs unfold_coes ' +
       'delta cc ac_reflexivity ac_refl ' +
       'existsi|10 cases rcases intro intros introv by_cases ' +
