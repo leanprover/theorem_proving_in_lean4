@@ -660,7 +660,9 @@ where
 Well-Founded Recursion and Induction
 ------------------------------------
 
-Dependent type theory is powerful enough to encode and justify
+When structural recursion cannot be used, we can prove termination using well-founded recursion.
+We need a well-founded relation and a proof that each recursive application is decreasing with respect to
+this relation. Dependent type theory is powerful enough to encode and justify
 well-founded recursion. Let us start with the logical background that
 is needed to understand how it works.
 
@@ -906,6 +908,16 @@ decreasing_by sorry
 #print axioms unsound
 -- 'unsound' depends on axioms: [sorryAx]
 ```
+
+Summary:
+
+- If there is no `termination_by`, a well-founded relation is derived (if possible) by selecting an argument and then using typeclass resolution to synthesize a well-founded relation for this argument's type.
+
+- If `termination_by` is specified, it maps the arguments of the function to a type `α` and type class resolution is again used. Recall that, the default instance for `β × γ` is a lexicographic order based on the well-founded relations for `β` and `γ`.
+
+- The default well-founded relation instance for `Nat` is `<`.
+
+- By default, the tactic `decreasing_tactic` is used to show that recursive applications are smaller with respect to the selected well-founded relation. If `decreasing_tactic` fails, the error message includes the remaining goal `... |- G`. Note that, the `decreasing_tactic` uses `assumption`. So, you can include a `have`-expression to prove goal `G`. You can also provide your own tactic using `decreasing_by`.
 
 
 Mutual Recursion
