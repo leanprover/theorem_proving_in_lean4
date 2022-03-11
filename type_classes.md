@@ -76,7 +76,7 @@ you can declare an (anonymous) instance stating that if `a` has addition, then `
 has addition:
 ```lean
 instance [Add a] : Add (Array a) where
-  add x y := Array.zipWith x y (. + .)
+  add x y := Array.zipWith x y (· + ·)
 
 #eval Add.add #[1, 2] #[3, 4]
 -- #[4, 6]
@@ -84,7 +84,7 @@ instance [Add a] : Add (Array a) where
 #eval #[1, 2] + #[3, 4]
 -- #[4, 6]
 ```
-Note that `x + y` is notation for `Add.add x y` in Lean.
+Note that `(· + ·)` is notation for `fun x y => x + y` in Lean.
 
 The example above demonstrates how type classes are used to overload notation.
 Now, we explore another application. We often need an arbitrary element of a given type.
