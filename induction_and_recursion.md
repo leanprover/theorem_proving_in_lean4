@@ -733,12 +733,12 @@ Here is essentially the definition of division on the natural numbers that is fo
 ```lean
 open Nat
 
-theorem div_rec_lemma {x y : Nat} : 0 < y ∧ y ≤ x → x - y < x :=
+theorem div_lemma {x y : Nat} : 0 < y ∧ y ≤ x → x - y < x :=
   fun h => sub_lt (Nat.lt_of_lt_of_le h.left h.right) h.left
 
 def div.F (x : Nat) (f : (x₁ : Nat) → x₁ < x → Nat → Nat) (y : Nat) : Nat :=
   if h : 0 < y ∧ y ≤ x then
-    f (x - y) (div_rec_lemma h) y + 1
+    f (x - y) (div_lemma h) y + 1
   else
     zero
 
@@ -858,7 +858,7 @@ Note that, auxiliary function `go` is recursive in this example, but `takeWhile`
 By default, Lean uses the tactic `decreasing_tactic` to prove recursive applications are decreasing. The modifier `decreasing_by` allows us to provide our own tactic. Here is an example.
 
 ```lean
-private def div_rec_lemma {x y : Nat} : 0 < y ∧ y ≤ x → x - y < x :=
+theorem div_lemma {x y : Nat} : 0 < y ∧ y ≤ x → x - y < x :=
   fun ⟨ypos, ylex⟩ => Nat.sub_lt (Nat.lt_of_lt_of_le ypos ylex) ypos
 
 def div (x y : Nat) : Nat :=
@@ -866,7 +866,7 @@ def div (x y : Nat) : Nat :=
     div (x - y) y + 1
   else
     0
-decreasing_by apply div_rec_lemma; assumption
+decreasing_by apply div_lemma; assumption
 ```
 
 Note that `decreasing_by` is not replacement for `termination_by`, they complement each other. `termination_by` is used to specify a well-founded relation, and `decreasing_by` for providing our own tactic for showing recursive applications are decreasing. In the following example, we use both of them.
