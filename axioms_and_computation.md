@@ -481,7 +481,7 @@ equivalence relation:
 # namespace Hidden
 class Setoid (α : Sort u) where
   r : α → α → Prop
-  iseqv {} : Equivalence r
+  iseqv : Equivalence r
 
 instance {α : Sort u} [Setoid α] : HasEquiv α :=
   ⟨Setoid.r⟩
@@ -491,13 +491,13 @@ namespace Setoid
 variable {α : Sort u} [Setoid α]
 
 theorem refl (a : α) : a ≈ a :=
-  (Setoid.iseqv α).refl a
+  iseqv.refl a
 
 theorem symm {a b : α} (hab : a ≈ b) : b ≈ a :=
-  (Setoid.iseqv α).symm hab
+  iseqv.symm hab
 
 theorem trans {a b c : α} (hab : a ≈ b) (hbc : b ≈ c) : a ≈ c :=
-  (Setoid.iseqv α).trans hab hbc
+  iseqv.trans hab hbc
 
 end Setoid
 # end Hidden
