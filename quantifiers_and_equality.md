@@ -851,12 +851,13 @@ Exercises
 1. Prove these equivalences:
 
 ```lean
- variable (α : Type) (p q : α → Prop)
+variable (α : Type) (p q : α → Prop)
 
- example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
- example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
- example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := sorry
+example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
+example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
+example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := sorry
 ```
+
 You should also try to understand why the reverse implication is not derivable in the last example.
 
 2. It is often possible to bring a component of a formula outside a
