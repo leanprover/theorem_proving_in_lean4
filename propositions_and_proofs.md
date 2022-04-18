@@ -957,9 +957,9 @@ with actual proofs. These require classical reasoning.
 ```lean
 open Classical
 
-variable (p q r s : Prop)
+variable (p q r : Prop)
 
-example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
+example : (p → q ∨ r) → ((p → q) ∨ (p → r)) := sorry
 example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
 example : ¬(p → q) → p ∧ ¬q := sorry
 example : (p → q) → (¬p ∨ q) := sorry
