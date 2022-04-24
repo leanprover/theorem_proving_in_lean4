@@ -206,6 +206,7 @@ universe u
 The inscription ``.{u}`` tells Lean to instantiate the constants at the universe ``u``.
 
 Thus, for example, we can specialize the example from the previous section to the equality relation:
+
 ```lean
 variable (α : Type) (a b c d : α)
 variable (hab : a = b) (hcb : c = b) (hcd : c = d)
@@ -329,7 +330,6 @@ problem. As a result, ``Eq.subst`` doesn't always do what you want it
 to.  The macro ``h ▸ e`` uses more effective heuristics for computing
 this implicit parameter, and often succeeds in situations where
 applying ``Eq.subst`` fails.
-
 
 Because equational reasoning is so common and important, Lean provides
 a number of mechanisms to carry it out more effectively. The next
