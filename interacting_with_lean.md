@@ -318,7 +318,7 @@ file.
 More on Implicit Arguments
 --------------------------
 
-In [Section Implicit Arguments](./dependent_type_theory.md#implicit_args),
+In [Section Implicit Arguments](./dependent_type_theory.md#implicit_arguments),
 we saw that if Lean displays the type
 of a term ``t`` as ``{x : α} → β x``, then the curly brackets
 indicate that ``x`` has been marked as an *implicit argument* to
@@ -794,9 +794,9 @@ Note that Lean inferred a more general type using `Sort` instead of `Type`.
 
 Although we love this feature and use it extensively when implementing Lean,
 we realize some users may feel uncomfortable with it. Thus, you can disable it using
-the command `set_option autoBoundImplicitLocal false`.
+the command `set_option autoImplicit false`.
 ```lean
-set_option autoBoundImplicitLocal false
+set_option autoImplicit false
 /- The following definition produces `unknown identifier` errors -/
 -- def compose (g : β → γ) (f : α → β) (x : α) : γ :=
 --   g (f x)

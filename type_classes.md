@@ -76,7 +76,7 @@ you can declare an (anonymous) instance stating that if `a` has addition, then `
 has addition:
 ```lean
 instance [Add a] : Add (Array a) where
-  add x y := Array.zipWith x y (. + .)
+  add x y := Array.zipWith x y (· + ·)
 
 #eval Add.add #[1, 2] #[3, 4]
 -- #[4, 6]
@@ -84,7 +84,7 @@ instance [Add a] : Add (Array a) where
 #eval #[1, 2] + #[3, 4]
 -- #[4, 6]
 ```
-Note that `x + y` is notation for `Add.add x y` in Lean.
+Note that `(· + ·)` is notation for `fun x y => x + y` in Lean.
 
 The example above demonstrates how type classes are used to overload notation.
 Now, we explore another application. We often need an arbitrary element of a given type.
@@ -449,7 +449,7 @@ def double (p : Point) :=
 end -- instance `Add Point` is not active anymore
 
 -- def triple (p : Point) :=
---  p + p + p  -- Error: failed to sythesize instance
+--  p + p + p  -- Error: failed to synthesize instance
 ```
 
 You can also temporarily disable an instance using the `attribute` command
@@ -470,7 +470,7 @@ def double (p : Point) :=
 attribute [-instance] addPoint
 
 -- def triple (p : Point) :=
---  p + p + p  -- Error: failed to sythesize instance
+--  p + p + p  -- Error: failed to synthesize instance
 ```
 
 We recommend you only use this command to diagnose problems.
@@ -601,7 +601,6 @@ connectives:
 
 #check @instDecidableOr
 #check @instDecidableNot
-#check @instDecidableArrow
 ```
 
 Thus we can carry out definitions by cases on decidable predicates on
@@ -647,7 +646,7 @@ instance (priority := low) propDecidable (a : Prop) : Decidable a :=
 # end Hidden
 ```
 
-The guarantees that Lean will favor other instances and fall back on
+This guarantees that Lean will favor other instances and fall back on
 ``propDecidable`` only after other attempts to infer decidability have
 failed.
 
@@ -762,10 +761,10 @@ set_option synthInstance.maxSize 400
 ```
 
 Option `synthInstance.maxHeartbeats` specifies the maximum amount of
-heartbeats per typeclass resolution problem. A heartbeat is number of
+heartbeats per typeclass resolution problem. A heartbeat is the number of
 (small) memory allocations (in thousands), 0 means there is no limit.
 Option `synthInstance.maxSize` is the maximum number of instances used
-to construct a solution in the type class instance synthesis procedure
+to construct a solution in the type class instance synthesis procedure.
 
 Remember also that in both the VS Code and Emacs editor modes, tab
 completion works in ``set_option``, to help you find suitable options.
@@ -809,14 +808,10 @@ example : Foo.a = 3 :=
   rfl
 ```
 
-<!--
-TODO: we may change the coercion mechanism
-.. _coercions_using_type_classes:
-
 Coercions using Type Classes
 ----------------------------
 
-The most basic type of coercion maps elements of one type to another. For example, a coercion from ``nat`` to ``int`` allows us to view any element ``n : nat`` as an element of ``int``. But some coercions depend on parameters; for example, for any type ``α``, we can view any element ``l : list α`` as an element of ``set α``, namely, the set of elements occurring in the list. The corresponding coercion is defined on the "family" of types ``list α``, parameterized by ``α``.
+The most basic type of coercion maps elements of one type to another. For example, a coercion from ``Nat`` to ``Int`` allows us to view any element ``n : Nat`` as an element of ``Int``. But some coercions depend on parameters; for example, for any type ``α``, we can view any element ``as : List α`` as an element of ``Set α``, namely, the set of elements occurring in the list. The corresponding coercion is defined on the "family" of types ``List α``, parameterized by ``α``.
 
 Lean allows us to declare three kinds of coercions:
 
@@ -826,315 +821,171 @@ Lean allows us to declare three kinds of coercions:
 
 The first kind of coercion allows us to view any element of a member of the source family as an element of a corresponding member of the target family. The second kind of coercion allows us to view any element of a member of the source family as a type. The third kind of coercion allows us to view any element of the source family as a function. Let us consider each of these in turn.
 
-In Lean, coercions are implemented on top of the type class resolution framework. We define a coercion from ``α`` to ``β`` by declaring an instance of ``has_coe α β``. For example, we can define a coercion from ``bool`` to ``Prop`` as follows:
+In Lean, coercions are implemented on top of the type class resolution framework. We define a coercion from ``α`` to ``β`` by declaring an instance of ``Coe α β``. For example, we can define a coercion from ``Bool`` to ``Prop`` as follows:
 
-.. code-block:: lean
-
-    instance bool_to_Prop : has_coe bool Prop :=
-    ⟨λ b, b = tt⟩
+```lean
+instance : Coe Bool Prop where
+  coe b := b = true
+```
 
 This enables us to use boolean terms in if-then-else expressions:
 
-.. code-block:: lean
+```lean
+#eval if true then 5 else 3
+#eval if false then 5 else 3
+```
 
-    instance bool_to_Prop : has_coe bool Prop :=
-    ⟨λ b, b = tt⟩
-    -- BEGIN
-    #reduce if tt then 3 else 5
-    #reduce if ff then 3 else 5
-    -- END
+We can define a coercion from ``List α`` to ``Set α`` as follows:
 
-We can define a coercion from ``list α`` to ``set α`` as follows:
+```lean
+# def Set (α : Type u) := α → Prop
+# def Set.empty {α : Type u} : Set α := fun _ => False
+# def Set.mem (a : α) (s : Set α) : Prop := s a
+# def Set.singleton (a : α) : Set α := fun x => x = a
+# def Set.union (a b : Set α) : Set α := fun x => a x ∨ b x
+# notation "{ " a " }" => Set.singleton a
+# infix:55 " ∪ " => Set.union
+def List.toSet : List α → Set α
+  | []    => Set.empty
+  | a::as => {a} ∪ as.toSet
 
-.. code-block:: lean
+instance : Coe (List α) (Set α) where
+  coe a := a.toSet
 
-    def list.to_set {α : Type*} : list α → set α
-    | []     := ∅
-    | (h::t) := {h} ∪ list.to_set t
+def s : Set Nat  := {1}
+#check s ∪ [2, 3]
+-- s ∪ List.toSet [2, 3] : Set Nat
+```
 
-    instance list_to_set_coe (α : Type*) :
-      has_coe (list α) (set α) :=
-    ⟨list.to_set⟩
+We can use the notation ``↑`` to force a coercion to be introduced in a particular place. It is also helpful to make our intent clear, and work around limitations of the coercion resolution system.
+```lean
+# def Set (α : Type u) := α → Prop
+# def Set.empty {α : Type u} : Set α := fun _ => False
+# def Set.mem (a : α) (s : Set α) : Prop := s a
+# def Set.singleton (a : α) : Set α := fun x => x = a
+# def Set.union (a b : Set α) : Set α := fun x => a x ∨ b x
+# notation "{ " a " }" => Set.singleton a
+# infix:55 " ∪ " => Set.union
+# def List.toSet : List α → Set α
+#   | []    => Set.empty
+#   | a::as => {a} ∪ as.toSet
+# instance : Coe (List α) (Set α) where
+#   coe a := a.toSet
+def s : Set Nat  := {1}
 
-    def s : set nat  := {1, 2}
-    def l : list nat := [3, 4]
+#check let x := ↑[2, 3]; s ∪ x
+-- let x := List.toSet [2, 3]; s ∪ x : Set Nat
+#check let x := [2, 3]; s ∪ x
+-- let x := [2, 3]; s ∪ List.toSet x : Set Nat
+```
 
-    #check s ∪ l -- set nat
+Lean also supports dependent coercions using the type class `CoeDep`. For example, we cannot coerce arbitrary propositions to `Bool`, only the ones that implement the `Decidable` typeclass.
 
-Coercions are only considered if the given and expected types do not contain metavariables at elaboration time. In the following example, when we elaborate the union operator, the type of ``[3, 2]`` is ``list ?m``, and a coercion will not be considered since it contains metavariables.
+```lean
+instance (p : Prop) [Decidable p] : CoeDep Prop p Bool where
+  coe := decide p
+```
 
-.. code-block:: lean
-
-    def list.to_set {α : Type*} : list α → set α
-    | []     := ∅
-    | (h::t) := {h} ∪ list.to_set t
-
-    instance list_to_set_coe (α : Type*) :
-      has_coe (list α) (set α) :=
-    ⟨list.to_set⟩
-
-    def s : set nat  := {1, 2}
-
-    -- BEGIN
-    /- The following #check command produces an error. -/
-    -- #check s ∪ [3, 2]
-    -- END
-
-We can work around this issue by using a type ascription.
-
-.. code-block:: lean
-
-    def list.to_set {α : Type*} : list α → set α
-    | []     := ∅
-    | (h::t) := {h} ∪ list.to_set t
-
-    instance list_to_set_coe (α : Type*) :
-      has_coe (list α) (set α) :=
-    ⟨list.to_set⟩
-
-    def s : set nat  := {1, 2}
-
-    -- BEGIN
-    #check s ∪ [(3:nat), 2]
-    -- or
-    #check s ∪ ([3, 2] : list nat)
-    -- END
-
-In the examples above, you may have noticed the symbol ``↑`` produced by the ``#check`` commands. It is the lift operator, ``↑t`` is notation for ``coe t``. We can use this operator to force a coercion to be introduced in a particular place. It is also helpful to make our intent clear, and work around limitations of the coercion resolution system.
-
-.. code-block:: lean
-
-    def list.to_set {α : Type*} : list α → set α
-    | []     := ∅
-    | (h::t) := {h} ∪ list.to_set t
-
-    instance list_to_set_coe (α : Type*) :
-      has_coe (list α) (set α) :=
-    ⟨list.to_set⟩
-
-    def s : set nat  := {1, 2}
-
-    -- BEGIN
-    #check s ∪ ↑[3, 2]
-
-    variables n m : nat
-    variable i : int
-    #check i + ↑n + ↑m
-    #check i + ↑(n + m)
-    #check ↑n + i
-    -- END
-
-In the first two examples, the coercions are not strictly necessary since Lean will insert implicit nat → int coercions. However, ``#check n + i`` would raise an error, because the expected type of ``i`` is nat in order to match the type of n, and no int → nat coercion exists). In the third example, we therefore insert an explicit ``↑`` to coerce ``n`` to ``int``.
-
-The standard library defines a coercion from subtype ``{x : α // p x}`` to ``α`` as follows:
-
-.. code-block:: lean
-
-    namespace hidden
-    -- BEGIN
-    instance coe_subtype {α : Type*} {p : α → Prop} :
-      has_coe {x // p x} α :=
-    ⟨λ s, subtype.val s⟩
-    -- END
-    end hidden
-
-Lean will also chain coercions as necessary. Actually, the type class ``has_coe_t`` is the transitive closure of ``has_coe``. You may have noticed that the type of ``coe`` depends on ``has_lift_t``, the transitive closure of the type class ``has_lift``, instead of ``has_coe_t``. Every instance of ``has_coe_t`` is also an instance of ``has_lift_t``, but the elaborator only introduces automatically instances of ``has_coe_t``. That is, to be able to coerce using an instance of ``has_lift_t``, we must use the operator ``↑``. In the standard library, we have the following instance:
-
-.. code-block:: lean
-
-    namespace hidden
-    universes u v
-
-    instance lift_list {a : Type u} {b : Type v} [has_lift_t a b] :
-      has_lift (list a) (list b) :=
-    ⟨λ l, list.map (@coe a b _) l⟩
-
-    variables s : list nat
-    variables r : list int
-    #check ↑s ++ r
-
-    end hidden
-
-It is not an instance of ``has_coe`` because lists are frequently used for writing programs, and we do not want a linear-time operation to be silently introduced by Lean, and potentially mask mistakes performed by the user. By forcing the user to write ``↑``, she is making her intent clear to Lean.
+Lean will also chain (non-dependent) coercions as necessary. Actually, the type class ``CoeT`` is the transitive closure of ``Coe``.
 
 Let us now consider the second kind of coercion. By the *class of sorts*, we mean the collection of universes ``Type u``. A coercion of the second kind is of the form
 
-.. code-block:: text
-
-    c : Π x1 : A1, ..., xn : An, F x1 ... xn → Type u
+```
+    c : (x1 : A1) → ... → (xn : An) → F x1 ... xn → Type u
+```
 
 where ``F`` is a family of types as above. This allows us to write ``s : t`` whenever ``t`` is of type ``F a1 ... an``. In other words, the coercion allows us to view the elements of ``F a1 ... an`` as types. This is very useful when defining algebraic structures in which one component, the carrier of the structure, is a ``Type``. For example, we can define a semigroup as follows:
 
-.. code-block:: lean
+```lean
+structure Semigroup where
+  carrier : Type u
+  mul : carrier → carrier → carrier
+  mul_assoc (a b c : carrier) : mul (mul a b) c = mul a (mul b c)
 
-    universe u
-
-    structure Semigroup : Type (u+1) :=
-    (carrier : Type u)
-    (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c : carrier,
-                   mul (mul a b) c = mul a (mul b c))
-
-    instance Semigroup_has_mul (S : Semigroup) :
-      has_mul (S.carrier) :=
-    ⟨S.mul⟩
+instance (S : Semigroup) : Mul S.carrier where
+  mul a b := S.mul a b
+```
 
 In other words, a semigroup consists of a type, ``carrier``, and a multiplication, ``mul``, with the property that the multiplication is associative. The ``instance`` command allows us to write ``a * b`` instead of ``Semigroup.mul S a b`` whenever we have ``a b : S.carrier``; notice that Lean can infer the argument ``S`` from the types of ``a`` and ``b``. The function ``Semigroup.carrier`` maps the class ``Semigroup`` to the sort ``Type u``:
 
-.. code-block:: lean
-
-    universe u
-
-    structure Semigroup : Type (u+1) :=
-    (carrier : Type u)
-    (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c : carrier,
-                   mul (mul a b) c = mul a (mul b c))
-
-    instance Semigroup_has_mul (S : Semigroup) : has_mul (S.carrier) :=
-    ⟨S.mul⟩
-    -- BEGIN
-    #check Semigroup.carrier
-    -- END
+```lean
+# structure Semigroup where
+#   carrier : Type u
+#   mul : carrier → carrier → carrier
+#   mul_assoc (a b c : carrier) : mul (mul a b) c = mul a (mul b c)
+# instance (S : Semigroup) : Mul S.carrier where
+#   mul a b := S.mul a b
+#check Semigroup.carrier
+```
 
 If we declare this function to be a coercion, then whenever we have a semigroup ``S : Semigroup``, we can write ``a : S`` instead of ``a : S.carrier``:
 
-.. code-block:: lean
+```lean
+# structure Semigroup where
+#   carrier : Type u
+#   mul : carrier → carrier → carrier
+#   mul_assoc (a b c : carrier) : mul (mul a b) c = mul a (mul b c)
+# instance (S : Semigroup) : Mul S.carrier where
+#   mul a b := S.mul a b
+instance : CoeSort Semigroup (Type u) where
+  coe s := s.carrier
 
-    universe u
+example (S : Semigroup) (a b c : S) : (a * b) * c = a * (b * c) :=
+  Semigroup.mul_assoc _ a b c
+```
 
-    structure Semigroup : Type (u+1) :=
-    (carrier : Type u)
-    (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
+It is the coercion that makes it possible to write ``(a b c : S)``. Note that, we define an instance of ``CoeSort Semigroup (Type u)`` instead of ``Coe Semigroup (Type u)``.
 
-    instance Semigroup_has_mul (S : Semigroup) : has_mul (S.carrier) :=
-    ⟨S.mul⟩
+By the *class of function types*, we mean the collection of Pi types ``(z : B) → C``. The third kind of coercion has the form
 
-    -- BEGIN
-    instance Semigroup_to_sort : has_coe_to_sort Semigroup :=
-    {S := Type u, coe := λ S, S.carrier}
-
-    example (S : Semigroup) (a b c : S) :
-      (a * b) * c = a * (b * c) :=
-    Semigroup.mul_assoc _ a b c
-    -- END
-
-It is the coercion that makes it possible to write ``(a b c : S)``. Note that, we define an instance of ``has_coe_to_sort Semigroup`` instead of ``has_coe Semigroup Type``. The reason is that when Lean needs a coercion to sort, it only knows it needs a type, but, in general, the universe is not known. The field ``S`` in the class ``has_coe_to_sort`` is used to specify the universe we are coercing too.
-
-By the *class of function types*, we mean the collection of Pi types ``Π z : B, C``. The third kind of coercion has the form
-
-.. code-block:: text
-
-    c : Π x1 : A1, ..., xn : An, y : F x1 ... xn, Π z : B, C
+```
+    c : (x1 : A1) → ... → (xn : An) → (y : F x1 ... xn) → (z : B) → C
+```
 
 where ``F`` is again a family of types and ``B`` and ``C`` can depend on ``x1, ..., xn, y``. This makes it possible to write ``t s`` whenever ``t`` is an element of ``F a1 ... an``. In other words, the coercion enables us to view elements of ``F a1 ... an`` as functions. Continuing the example above, we can define the notion of a morphism between semigroups ``S1`` and ``S2``. That is, a function from the carrier of ``S1`` to the carrier of ``S2`` (note the implicit coercion) that respects the multiplication. The projection ``morphism.mor`` takes a morphism to the underlying function:
 
-.. code-block:: lean
+```lean
+# structure Semigroup where
+#   carrier : Type u
+#   mul : carrier → carrier → carrier
+#   mul_assoc (a b c : carrier) : mul (mul a b) c = mul a (mul b c)
+# instance (S : Semigroup) : Mul S.carrier where
+#   mul a b := S.mul a b
+# instance : CoeSort Semigroup (Type u) where
+#   coe s := s.carrier
+structure Morphism (S1 S2 : Semigroup) where
+  mor : S1 → S2
+  resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b)
 
-    universe u
-
-    structure Semigroup : Type (u+1) :=
-    (carrier : Type u)
-    (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
-
-    instance Semigroup_has_mul (S : Semigroup) : has_mul (S.carrier) :=
-    ⟨S.mul⟩
-
-    -- BEGIN
-    instance Semigroup_to_sort : has_coe_to_sort Semigroup :=
-    {S := _, coe := λ S, S.carrier}
-
-    structure morphism (S1 S2 : Semigroup) :=
-    (mor : S1 → S2)
-    (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
-
-    #check @morphism.mor
-    -- END
+#check @Morphism.mor
+```
 
 As a result, it is a prime candidate for the third type of coercion.
 
-.. code-block:: lean
+```lean
+# structure Semigroup where
+#   carrier : Type u
+#   mul : carrier → carrier → carrier
+#   mul_assoc (a b c : carrier) : mul (mul a b) c = mul a (mul b c)
+# instance (S : Semigroup) : Mul S.carrier where
+#   mul a b := S.mul a b
+# instance : CoeSort Semigroup (Type u) where
+#   coe s := s.carrier
+# structure Morphism (S1 S2 : Semigroup) where
+#   mor : S1 → S2
+#   resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b)
+instance (S1 S2 : Semigroup) : CoeFun (Morphism S1 S2) (fun _ => S1 → S2) where
+  coe m := m.mor
 
-    universe u
+theorem resp_mul {S1 S2 : Semigroup} (f : Morphism S1 S2) (a b : S1)
+        : f (a * b) = f a * f b :=
+  f.resp_mul a b
 
-    structure Semigroup : Type (u+1) :=
-    (carrier : Type u)
-    (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
-
-    instance Semigroup_has_mul (S : Semigroup) : has_mul (S.carrier) :=
-    ⟨S.mul⟩
-
-
-    instance Semigroup_to_sort : has_coe_to_sort Semigroup :=
-    {S := _, coe := λ S, S.carrier}
-
-    structure morphism (S1 S2 : Semigroup) :=
-    (mor : S1 → S2)
-    (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
-
-    -- BEGIN
-    instance morphism_to_fun (S1 S2 : Semigroup) :
-      has_coe_to_fun (morphism S1 S2) :=
-    { F   := λ _, S1 → S2,
-      coe := λ m, m.mor }
-
-    lemma resp_mul {S1 S2 : Semigroup}
-        (f : morphism S1 S2) (a b : S1) :
-      f (a * b) = f a * f b :=
-    f.resp_mul a b
-
-    example (S1 S2 : Semigroup) (f : morphism S1 S2) (a : S1) :
+example (S1 S2 : Semigroup) (f : Morphism S1 S2) (a : S1) :
       f (a * a * a) = f a * f a * f a :=
-    calc
-      f (a * a * a) = f (a * a) * f a : by rw [resp_mul f]
-                ... = f a * f a * f a : by rw [resp_mul f]
-    -- END
+  calc f (a * a * a) = f (a * a) * f a := by rw [resp_mul f]
+                _    = f a * f a * f a := by rw [resp_mul f]
 
-With the coercion in place, we can write ``f (a * a * a)`` instead of ``morphism.mor f (a * a * a)``. When the ``morphism``, ``f``, is used where a function is expected, Lean inserts the coercion. Similar to ``has_coe_to_sort``, we have yet another class ``has_coe_to_fun`` for this class of coercions. The field ``F`` is used to specify the function type we are coercing to. This type may depend on the type we are coercing from.
+```
 
-Finally, ``⇑f`` and ``↥S`` are notations for ``coe_fn f`` and ``coe_sort S``. They are the coercion operators for the function and sort classes.
-
-We can instruct Lean's pretty-printer to hide the operators ``↑`` and ``⇑`` with ``set_option``.
-
-.. code-block:: lean
-
-    universe u
-
-    structure Semigroup : Type (u+1) :=
-    (carrier : Type u)
-    (mul : carrier → carrier → carrier)
-    (mul_assoc : ∀ a b c : carrier, mul (mul a b) c = mul a (mul b c))
-
-    instance Semigroup_has_mul (S : Semigroup) : has_mul (S.carrier) :=
-    ⟨S.mul⟩
-
-    instance Semigroup_to_sort : has_coe_to_sort Semigroup :=
-    {S := _, coe := λ S, S.carrier}
-
-    structure morphism (S1 S2 : Semigroup) :=
-    (mor : S1 → S2)
-    (resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b))
-
-    instance morphism_to_fun (S1 S2 : Semigroup) : has_coe_to_fun (morphism S1 S2) :=
-    { F   := λ _, S1 → S2,
-      coe := λ m, m.mor }
-
-    lemma resp_mul {S1 S2 : Semigroup} (f : morphism S1 S2) (a b : S1) : f (a * b) = f a * f b :=
-    f.resp_mul a b
-
-    -- BEGIN
-    theorem test (S1 S2 : Semigroup)
-        (f : morphism S1 S2) (a : S1) :
-      f (a * a * a) = f a * f a * f a :=
-    calc
-      f (a * a * a) = f (a * a) * f a : by rw [resp_mul f]
-                ... = f a * f a * f a : by rw [resp_mul f]
-
-    #check @test
-    set_option pp.coercions false
-    #check @test
-    -- END
--->
+With the coercion in place, we can write ``f (a * a * a)`` instead of ``f.mor (a * a * a)``. When the ``Morphism``, ``f``, is used where a function is expected, Lean inserts the coercion. Similar to ``CoeSort``, we have yet another class ``CoeFun`` for this class of coercions. The field ``F`` is used to specify the function type we are coercing to. This type may depend on the type we are coercing from.

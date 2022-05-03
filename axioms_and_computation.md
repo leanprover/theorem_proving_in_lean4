@@ -234,7 +234,7 @@ namespace Set
 
 def mem (x : α) (a : Set α) := a x
 
-infix:50 "∈" => mem
+infix:50 (priority := high) "∈" => mem
 
 theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
   funext (fun x => propext (h x))
@@ -249,7 +249,7 @@ example, and prove set identities:
 # def Set (α : Type u) := α → Prop
 # namespace Set
 # def mem (x : α) (a : Set α) := a x
-# infix:50 "∈" => mem
+# infix:50 (priority := high) "∈" => mem
 # theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
 #  funext (fun x => propext (h x))
 def empty : Set α := fun x => False
@@ -481,7 +481,7 @@ equivalence relation:
 # namespace Hidden
 class Setoid (α : Sort u) where
   r : α → α → Prop
-  iseqv {} : Equivalence r
+  iseqv : Equivalence r
 
 instance {α : Sort u} [Setoid α] : HasEquiv α :=
   ⟨Setoid.r⟩
@@ -491,13 +491,13 @@ namespace Setoid
 variable {α : Sort u} [Setoid α]
 
 theorem refl (a : α) : a ≈ a :=
-  (Setoid.iseqv α).refl a
+  iseqv.refl a
 
 theorem symm {a b : α} (hab : a ≈ b) : b ≈ a :=
-  (Setoid.iseqv α).symm hab
+  iseqv.symm hab
 
 theorem trans {a b c : α} (hab : a ≈ b) (hbc : b ≈ c) : a ≈ c :=
-  (Setoid.iseqv α).trans hab hbc
+  iseqv.trans hab hbc
 
 end Setoid
 # end Hidden
@@ -740,7 +740,7 @@ private theorem mem_respects
 def mem (a : α) (u : UProd α) : Prop :=
   Quot.liftOn u (fun p => mem_fn a p) (fun p₁ p₂ e => mem_respects a e)
 
-infix:50 " ∈ " => mem
+infix:50 (priority := high) " ∈ " => mem
 
 theorem mem_mk_left (a b : α) : a ∈ {a, b} :=
   Or.inl rfl

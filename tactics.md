@@ -1465,6 +1465,76 @@ example (xs ys : List Nat) (p : List Nat → Prop)
   simp only [List.reverse_append] at h; assumption
 ```
 
+The `simp` tactic has many configuration options. For example, we can enable contextual simplifications as follows.
+```lean
+example : if x = 0 then y + x = y else x ≠ 0 := by
+  simp (config := { contextual := true })
+```
+when `contextual := true`, `simp` uses the fact that `x = 0` when simplifying `y + x = y`, and
+`x ≠ 0` when simplifying the other branch. Here is another example.
+```lean
+example : ∀ (x : Nat) (h : x = 0), y + x = y := by
+  simp (config := { contextual := true })
+```
+Another useful configuration option is `arith := true` which enables arithmetical simplifications. It is so useful
+that `simp_arith` is a shorthand for `simp (config := { arith := true })`.
+```lean
+example : 0 < 1 + x ∧ x + y + 2 ≥ y + 1 := by
+  simp_arith
+```
+
+Split Tactic
+------------
+
+The ``split`` tactic is useful for breaking nested `if-then-else` and `match` expressions in cases.
+For a `match` expression with `n` cases, the `split` tactic generates at most `n` subgoals. Here is an example.
+
+```lean
+def f (x y z : Nat) : Nat :=
+  match x, y, z with
+  | 5, _, _ => y
+  | _, 5, _ => y
+  | _, _, 5 => y
+  | _, _, _ => 1
+
+example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+  intros
+  simp [f]
+  split
+  . contradiction
+  . contradiction
+  . contradiction
+  . rfl
+```
+
+We can compress the tactic proof above as follows.
+
+```lean
+# def f (x y z : Nat) : Nat :=
+#  match x, y, z with
+#  | 5, _, _ => y
+#  | _, 5, _ => y
+#  | _, _, 5 => y
+#  | _, _, _ => 1
+example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+  intros; simp [f]; split <;> first | contradiction | rfl
+```
+
+The tactic `split <;> first | contradiction | rfl` first applies the `split` tactic,
+and then for each generated goal it tries `contradiction`, and then `rfl` if `contradiction` fails.
+Like `simp`, we can apply `split` to a particular hypothesis.
+
+```lean
+def g (xs ys : List Nat) : Nat :=
+  match xs, ys with
+  | [a, b], _ => a+b+1
+  | _, [b, c] => b+1
+  | _, _      => 1
+
+example (xs ys : List Nat) (h : g xs ys = 0) : False := by
+  simp [g] at h; split at h <;> simp_arith at h
+```
+
 Extensible Tactics
 -----------------
 
