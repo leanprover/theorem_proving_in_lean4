@@ -16,7 +16,7 @@ structure Add (a : Type) where
 # end Ex
 ```
 In the above Lean code, the field `add` has type
-`Add.add : {α : Type} → Add α → α → α → α`
+`Add.add : {a : Type} → Add a → a → a → a`
 where the curly braces around the type `a` mean that it is an implicit argument.
 We could implement `double` by
 ```lean
