@@ -622,7 +622,6 @@ example (p q : Nat → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
     cases hpq with
     | intro hp hq =>
       exists x
-      constructor <;> assumption
 ```
 
 These tactics can be used on data just as well as propositions. In the
@@ -837,7 +836,6 @@ term.
 example : ∃ x, x + 2 = 8 := by
   let a : Nat := 3 * 2
   exists a
-  rfl
 ```
 
 As with ``have``, you can leave the type implicit by writing ``let a
