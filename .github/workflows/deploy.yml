@@ -9,11 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        # interferes with lean4-nightly authentication
-        persist-credentials: false
-        submodules: true
+      uses: actions/checkout@v3
     - name: Download mdbook for Lean
       shell: bash
       run: |
