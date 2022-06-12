@@ -70,8 +70,37 @@ instance : Add Nat where
 # end Ex
 ```
 Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with the goal
-of `Add Nat`, and typeclass resolution will synthesize the instance above. In
-general, instances may depend on other instances in complicated ways. For example,
+of `Add Nat`, and typeclass resolution will synthesize the instance above.
+Now double can be rewritten with an instance implicit as
+```lean
+#namespace Ex
+def double′ : [Add a] (x : a) : a :=
+  Add.add x x
+
+#check @double′
+-- @double′ : {a : Type} → [inst : Add a] → a → a
+
+#eval double′ 10
+-- 20
+
+instance : Add Int where
+  add := Int.add
+
+instance : Add Float where
+  add := Float.add
+
+#eval double′ (10 : Int)
+-- 100
+
+#eval double′ (7 : Float)
+-- 14.000000
+
+#eval double′ (239.0 + 2)
+-- 482.000000
+
+#end Ex
+```
+In general, instances may depend on other instances in complicated ways. For example,
 you can declare an (anonymous) instance stating that if `a` has addition, then `Array a`
 has addition:
 ```lean
