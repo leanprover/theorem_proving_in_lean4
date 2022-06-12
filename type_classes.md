@@ -59,7 +59,7 @@ class Add (a : Type) where
 where the square brackets indicate that the argument of type `Add a` is *instance implicit*,
 i.e. that it should be synthesized using typeclass resolution. This version of
 `add` is the Lean analogue of the Haskell term `add :: Add a => a -> a -> a`.
-Similarly, we can register an instance by
+Similarly, we can register instances by
 ```lean
 # namespace Ex
 # class Add (a : Type) where
@@ -67,38 +67,46 @@ Similarly, we can register an instance by
 instance : Add Nat where
   add := Nat.add
 
-# end Ex
-```
-Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with the goal
-of `Add Nat`, and typeclass resolution will synthesize the instance above.
-Now double can be rewritten with an instance implicit as
-```lean
-#namespace Ex
-def double′ : [Add a] (x : a) : a :=
-  Add.add x x
-
-#check @double′
--- @double′ : {a : Type} → [inst : Add a] → a → a
-
-#eval double′ 10
--- 20
-
 instance : Add Int where
   add := Int.add
 
 instance : Add Float where
   add := Float.add
 
-#eval double′ (10 : Int)
+# end Ex
+```
+Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with
+the goal of `Add Nat`, and typeclass resolution will synthesize the instance for `Nat` above.
+We can now reimplement `double` using an instance implicit by
+```lean
+# namespace Ex
+# class Add (a : Type) where
+#   add : a -> a -> a
+# instance : Add Nat where
+#  add := Nat.add
+# instance : Add Int where
+#  add := Int.add
+# instance : Add Float where
+#  add := Float.add
+def double [Add a] (x : a) : a :=
+  Add.add x x
+
+#check @double
+-- @double : {a : Type} → [inst : Add a] → a → a
+
+#eval double 10
+-- 20
+
+#eval double (10 : Int)
 -- 100
 
-#eval double′ (7 : Float)
+#eval double (7 : Float)
 -- 14.000000
 
-#eval double′ (239.0 + 2)
+#eval double (239.0 + 2)
 -- 482.000000
 
-#end Ex
+# end Ex
 ```
 In general, instances may depend on other instances in complicated ways. For example,
 you can declare an (anonymous) instance stating that if `a` has addition, then `Array a`
