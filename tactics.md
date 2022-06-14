@@ -62,7 +62,7 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
 ```
 
 We often put the ``by`` keyword on the preceding line, and write the
-example above as
+example above as:
 
 ```lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
@@ -82,16 +82,14 @@ subgoals:
 
 ```
     case left
-    p : Prop,
-    q : Prop,
-    hp : p,
+    p q : Prop
+    hp : p
     hq : q
     ⊢ p
 
     case right
-    p : Prop,
-    q : Prop,
-    hp : p,
+    p q : Prop
+    hp : p
     hq : q
     ⊢ q ∧ p
 ```
@@ -154,9 +152,9 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
 ```
 
 Tactics that may produce multiple subgoals often tag them. For
-example, the tactic ``apply And.intro`` tagged the first sugoal as
+example, the tactic ``apply And.intro`` tagged the first subgoal as
 ``left``, and the second as ``right``. In the case of the ``apply``
-tactic, the tags are inferred from the parameters names used in the
+tactic, the tags are inferred from the parameters' names used in the
 ``And.intro`` declaration. You can structure your tactics using the
 notation ``case <tag> => <tactics>``. The following is a structured
 version of our first tactic proof in this chapter.
@@ -172,7 +170,7 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
 ```
 
 You can solve the subgoal ``right`` before ``left`` using the ``case``
-notation
+notation:
 
 ```lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
@@ -189,7 +187,7 @@ it is "focusing" on the selected goal.  Moreover, Lean flags an error
 if the selected goal is not fully solved at the end of the ``case``
 block.
 
-For simple sugoals, it may not be worth selecting a subgoal using its
+For simple subgoals, it may not be worth selecting a subgoal using its
 tag, but you may still want to structure the proof. Lean also provides
 the "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
 structuring proof.
@@ -277,8 +275,8 @@ You can also provide multiple alternatives like in the ``match`` expression.
 ```lean
 example (α : Type) (p q : α → Prop) : (∃ x, p x ∨ q x) → ∃ x, q x ∨ p x := by
   intro
-    | ⟨w, Or.inl h⟩ => exact ⟨w, Or.inr h⟩
-    | ⟨w, Or.inr h⟩ => exact ⟨w, Or.inl h⟩
+  | ⟨w, Or.inl h⟩ => exact ⟨w, Or.inr h⟩
+  | ⟨w, Or.inr h⟩ => exact ⟨w, Or.inl h⟩
 ```
 
 The ``intros`` tactic can be used without any arguments, in which
@@ -331,21 +329,22 @@ example : ∀ a b c : Nat, a = b → a = c → c = b := by unhygienic
   exact a_1
 ```
 
-You can also use the ``renameI`` tactic to rename the most recent inaccessible names in your context.
-In the following example, the tactic ``renameI h1 _ h2`` renames two of the last three hypotheses in
+You can also use the ``rename_i`` tactic to rename the most recent inaccessible names in your context.
+In the following example, the tactic ``rename_i h1 _ h2`` renames two of the last three hypotheses in
 your context.
 
 ```lean
 example : ∀ a b c d : Nat, a = b → a = d → a = c → c = b := by
   intros
-  renameI h1 _ h2
+  rename_i h1 _ h2
   apply Eq.trans
   apply Eq.symm
   exact h2
   exact h1
 ```
 
-The ``rfl`` tactic is syntax sugar for ``exact rfl``.
+The ``rfl`` tactic is syntactic sugar for ``exact rfl``.
+
 ```lean
 example (y : Nat) : (fun x : Nat => 0) y = 0 :=
   by rfl
@@ -380,7 +379,7 @@ example (x y : Nat) (h : x = y) : y = x := by
   revert h
   -- goal is x y : Nat ⊢ x = y → y = x
   intro h₁
-  -- goal is x y : ℕ, h₁ : x = y ⊢ y = x
+  -- goal is x y : Nat, h₁ : x = y ⊢ y = x
   apply Eq.symm
   assumption
 ```
@@ -400,6 +399,7 @@ example (x y : Nat) (h : x = y) : y = x := by
 ```
 
 You can also revert multiple elements of the context at once:
+
 ```lean
 example (x y : Nat) (h : x = y) : y = x := by
   revert x y
@@ -417,7 +417,7 @@ tactic.
 ```lean
 example : 3 = 3 := by
   generalize 3 = x
-  -- goal is x : Nat ⊢ x = x,
+  -- goal is x : Nat ⊢ x = x
   revert x
   -- goal is ⊢ ∀ (x : Nat), x = x
   intro y
@@ -433,7 +433,7 @@ every generalization preserves the validity of the goal. Here,
 
 ```lean
 example : 2 + 3 = 5 := by
-  generalize  3 = x
+  generalize 3 = x
   -- goal is x : Nat ⊢ 2 + x = 5
   admit
 ```
@@ -455,7 +455,6 @@ example : 2 + 3 = 5 := by
 
 Here the ``rewrite`` tactic, abbreviated ``rw``, uses ``h`` to replace
 ``x`` by ``3`` again. The ``rewrite`` tactic will be discussed below.
-
 
 More Tactics
 ------------
@@ -509,7 +508,7 @@ example (p : Prop) : p ∨ p → p := by
 ```
 
 You can also use the combinator ``tac1 <;> tac2`` to apply ``tac2`` to each
-subgoal produced by tactic ``tac1``
+subgoal produced by tactic ``tac1``.
 
 ```lean
 example (p : Prop) : p ∨ p → p := by
@@ -547,7 +546,6 @@ example (p q : Prop) : p ∨ q → q ∨ p := by
   . apply Or.inr
     assumption
 ```
-
 
 The ``cases`` tactic can also be used to
 decompose a conjunction.
@@ -622,11 +620,10 @@ example (p q : Nat → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
     cases hpq with
     | intro hp hq =>
       exists x
-      constructor <;> assumption
 ```
 
 These tactics can be used on data just as well as propositions. In the
-next two examples, they are used to define functions which swap the
+next example, they are used to define functions which swap the
 components of the product and sum types:
 
 ```lean
@@ -634,9 +631,7 @@ def swap_pair : α × β → β × α := by
   intro p
   cases p
   constructor <;> assumption
-```
 
-```lean
 def swap_sum : Sum α β → Sum β α := by
   intro p
   cases p
@@ -652,13 +647,13 @@ case distinction on a natural number:
 ```lean
 open Nat
 example (P : Nat → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : Nat) : P m := by
- cases m with
- | zero    => exact h₀
- | succ m' => exact h₁ m'
+  cases m with
+  | zero    => exact h₀
+  | succ m' => exact h₁ m'
 ```
 
 The ``cases`` tactic, and its companion, the ``induction`` tactic, are discussed in greater detail in
-the [Tactics for Inductive Types](./inductive_types.md#_tactics_for_inductive_types) section.
+the [Tactics for Inductive Types](./inductive_types.md#tactics-for-inductive-types) section.
 
 The ``contradiction`` tactic searches for a contradiction among the hypotheses of the current goal:
 
@@ -690,15 +685,14 @@ You can "combine" ``intro h`` with ``match h ...`` and write the previous exampl
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
   apply Iff.intro
   . intro
-     | ⟨hp, Or.inl hq⟩ => apply Or.inl; constructor <;> assumption
-     | ⟨hp, Or.inr hr⟩ => apply Or.inr; constructor <;> assumption
+    | ⟨hp, Or.inl hq⟩ => apply Or.inl; constructor <;> assumption
+    | ⟨hp, Or.inr hr⟩ => apply Or.inr; constructor <;> assumption
   . intro
-     | Or.inl ⟨hp, hq⟩ => constructor; assumption; apply Or.inl; assumption
-     | Or.inr ⟨hp, hr⟩ => constructor; assumption; apply Or.inr; assumption
-
+    | Or.inl ⟨hp, hq⟩ => constructor; assumption; apply Or.inl; assumption
+    | Or.inr ⟨hp, hr⟩ => constructor; assumption; apply Or.inr; assumption
 ```
 
-<a name="structuring_tactic_proofs"></a>Structuring Tactic Proofs
+Structuring Tactic Proofs
 -------------------------
 
 Tactics often provide an efficient way of building a proof, but long
@@ -837,7 +831,6 @@ term.
 example : ∃ x, x + 2 = 8 := by
   let a : Nat := 3 * 2
   exists a
-  rfl
 ```
 
 As with ``have``, you can leave the type implicit by writing ``let a
@@ -851,7 +844,7 @@ been fully solved at the end of the block. This can be helpful in
 indicating the separate proofs of multiple subgoals introduced by a
 tactic. The notation ``.`` is whitespace sensitive and relies on the indentation
 to detect whether the tactic block ends. Alternatively, you can
-define tactic blocks usind curly braces and semicolons.
+define tactic blocks using curly braces and semicolons.
 
 ```lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
@@ -865,14 +858,14 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
   { intro h;
     cases h;
     { show p ∧ (q ∨ r);
-      renameI hpq;
+      rename_i hpq;
       exact ⟨hpq.left, Or.inl hpq.right⟩ }
     { show p ∧ (q ∨ r);
-      renameI hpr;
+      rename_i hpr;
       exact ⟨hpr.left, Or.inr hpr.right⟩ } }
 ```
 
-It useful to use indendation to structure proof: every time a tactic
+It is useful to use indentation to structure proof: every time a tactic
 leaves more than one subgoal, we separate the remaining subgoals by
 enclosing them in blocks and indenting.  Thus if the application of
 theorem ``foo`` to a single goal produces four subgoals, one would
@@ -906,8 +899,7 @@ or
   { <proof of final goal>  }
 ```
 
-
-<a name="_tactic_combinators"></a> Tactic Combinators
+Tactic Combinators
 ------------------
 
 *Tactic combinators* are operations that form new tactics from old
@@ -938,6 +930,9 @@ The ``first | t₁ | t₂ | ... | tₙ`` applies each `tᵢ` until one succeeds,
 
 ```lean
 example (p q : Prop) (hp : p) : p ∨ q := by
+  first | apply Or.inl; assumption | apply Or.inr; assumption
+
+example (p q : Prop) (hq : q) : p ∨ q := by
   first | apply Or.inl; assumption | apply Or.inr; assumption
 ```
 
@@ -981,24 +976,24 @@ Be careful: ``repeat (try t)`` will loop forever, because the inner tactic never
 In a proof, there are often multiple goals outstanding. Parallel
 sequencing is one way to arrange it so that a single tactic is applied
 to multiple goals, but there are other ways to do this. For example,
-``allGoals t`` applies ``t`` to all open goals:
+``all_goals t`` applies ``t`` to all open goals:
 
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
   constructor
-  allGoals (try constructor)
-  allGoals assumption
+  all_goals (try constructor)
+  all_goals assumption
 ```
 
 In this case, the ``any_goals`` tactic provides a more robust solution.
-It is similar to ``all_goals``, except it fails unless its argument
+It is similar to ``all_goals``, except it succeeds if its argument
 succeeds on at least one goal.
 
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
   constructor
-  anyGoals constructor
-  anyGoals assumption
+  any_goals constructor
+  any_goals assumption
 ```
 
 The first tactic in the ``by`` block below repeatedly splits
@@ -1007,8 +1002,8 @@ conjunctions:
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) := by
-  repeat (anyGoals constructor)
-  allGoals assumption
+  repeat (any_goals constructor)
+  all_goals assumption
 ```
 
 In fact, we can compress the full tactic down to one line:
@@ -1016,19 +1011,19 @@ In fact, we can compress the full tactic down to one line:
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
       p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) := by
-  repeat (anyGoals (first | constructor | assumption))
+  repeat (any_goals (first | constructor | assumption))
 ```
 
 The combinator ``focus t`` ensures that ``t`` only effects the current
 goal, temporarily hiding the others from the scope. So, if ``t``
-ordinarily only effects the current goal, ``focus (allGoals t)`` has
+ordinarily only effects the current goal, ``focus (all_goals t)`` has
 the same effect as ``t``.
 
 Rewriting
 ---------
 
 The ``rewrite`` tactic (abbreviated ``rw``) and the ``simp`` tactic
-were introduced briefly in [Calculational Proofs](./quantifiers_and_equality.md#_calc_proofs). In this
+were introduced briefly in [Calculational Proofs](./quantifiers_and_equality.md#calculational-proofs). In this
 section and the next, we discuss them in greater detail.
 
 The ``rewrite`` tactic provides a basic mechanism for applying
@@ -1059,11 +1054,10 @@ example (x y : Nat) (p : Nat → Prop) (q : Prop) (h : q → x = y)
   rw [h hq]; assumption
 ```
 
-Here, ``h hq`` establishes the equation ``x = y``. The parentheses
-around ``h hq`` are not necessary, but we have added them for clarity.
+Here, ``h hq`` establishes the equation ``x = y``.
 
 Multiple rewrites can be combined using the notation ``rw [t_1, ..., t_n]``,
-which is just shorthand for ``rw t_1; ...; rw t_n``. The previous example can be written as follows:
+which is just shorthand for ``rw [t_1]; ...; rw [t_n]``. The previous example can be written as follows:
 
 ```lean
 example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
@@ -1102,10 +1096,10 @@ example (a b c : Nat) : a + b + c = a + c + b := by
 ```
 
 In the first example above, the first step rewrites ``a + b + c`` to
-``a + (b + c)``. Then next applies commutativity to the term
+``a + (b + c)``. The next step applies commutativity to the term
 ``b + c``; without specifying the argument, the tactic would instead rewrite
 ``a + (b + c)`` to ``(b + c) + a``. Finally, the last step applies
-associativity in the reverse direction rewriting ``a + (c + b)`` to
+associativity in the reverse direction, rewriting ``a + (c + b)`` to
 ``a + c + b``. The next two examples instead apply associativity to
 move the parenthesis to the right on both sides, and then switch ``b``
 and ``c``. Notice that the last example specifies that the rewrite
@@ -1136,7 +1130,7 @@ example (n : Nat) (h : n = 0) (t : Tuple α n) : Tuple α 0 := by
   exact t
 ```
 
-<a name="_using_simp"></a>Using the Simplifier
+Using the Simplifier
 --------------------
 
 Whereas ``rewrite`` is designed as a surgical tool for manipulating a
@@ -1168,11 +1162,11 @@ open List
 
 example (xs : List Nat)
         : reverse (xs ++ [1, 2, 3]) = [3, 2, 1] ++ reverse xs := by
- simp
+  simp
 
 example (xs ys : List α)
         : length (reverse (xs ++ ys)) = length xs + length ys := by
- simp [Nat.add_comm]
+  simp [Nat.add_comm]
 ```
 
 As with ``rw``, you can use the keyword ``at`` to simplify a hypothesis:
@@ -1190,11 +1184,11 @@ attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
 attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
 
 example (w x y z : Nat) (p : Nat → Prop)
-        (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) := by
+        (h : p (x * y + z * w * x)) : p (x * w * z + y * x) := by
   simp at *; assumption
 
 example (x y z : Nat) (p : Nat → Prop)
-        (h₁ : p (1 * x + y)) (h₂ : p  (x * z * 1))
+        (h₁ : p (1 * x + y)) (h₂ : p (x * z * 1))
         : p (y + 0 + x) ∧ p (z * x) := by
   simp at * <;> constructor <;> assumption
 ```
@@ -1222,11 +1216,11 @@ canonical form.
 # attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
 # attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
 example (w x y z : Nat) (p : Nat → Prop)
-        : x * y + z * w  * x = x * w * z + y * x := by
+        : x * y + z * w * x = x * w * z + y * x := by
   simp
 
 example (w x y z : Nat) (p : Nat → Prop)
-        (h : p (x * y + z * w  * x)) : p (x * w * z + y * x) := by
+        (h : p (x * y + z * w * x)) : p (x * w * z + y * x) := by
   simp; simp at h; assumption
 ```
 
@@ -1246,7 +1240,6 @@ example {m n : Nat} (h : n = 1) (h' : 0 = m) : (f m n) = n := by
 ```
 
 A common idiom is to simplify a goal using local hypotheses:
-
 
 ```lean
 example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
@@ -1389,7 +1382,7 @@ theorem reverse_mk_symm (xs : List α)
 
 example (xs ys : List Nat)
         : (xs ++ mk_symm ys).reverse = mk_symm ys ++ xs.reverse := by
-  simp[reverse_mk_symm]
+  simp [reverse_mk_symm]
 
 attribute [simp] reverse_mk_symm
 
@@ -1402,7 +1395,7 @@ example (xs ys : List Nat) (p : List Nat → Prop)
 Once the attribute is applied, however, there is no way to permanently
 remove it; it persists in any file that imports the one where the
 attribute is assigned. As we will discuss further in
-[Attributes](TBD), one can limit the scope of an attribute to the
+[Attributes](./interacting_with_lean.md#attributes), one can limit the scope of an attribute to the
 current file or section using the ``local`` modifier:
 
 ```lean
@@ -1465,6 +1458,81 @@ example (xs ys : List Nat) (p : List Nat → Prop)
   simp only [List.reverse_append] at h; assumption
 ```
 
+The `simp` tactic has many configuration options. For example, we can enable contextual simplifications as follows.
+
+```lean
+example : if x = 0 then y + x = y else x ≠ 0 := by
+  simp (config := { contextual := true })
+```
+
+when `contextual := true`, `simp` uses the fact that `x = 0` when simplifying `y + x = y`, and
+`x ≠ 0` when simplifying the other branch. Here is another example.
+
+```lean
+example : ∀ (x : Nat) (h : x = 0), y + x = y := by
+  simp (config := { contextual := true })
+```
+
+Another useful configuration option is `arith := true` which enables arithmetical simplifications. It is so useful
+that `simp_arith` is a shorthand for `simp (config := { arith := true })`.
+
+```lean
+example : 0 < 1 + x ∧ x + y + 2 ≥ y + 1 := by
+  simp_arith
+```
+
+Split Tactic
+------------
+
+The ``split`` tactic is useful for breaking nested `if-then-else` and `match` expressions in cases.
+For a `match` expression with `n` cases, the `split` tactic generates at most `n` subgoals. Here is an example.
+
+```lean
+def f (x y z : Nat) : Nat :=
+  match x, y, z with
+  | 5, _, _ => y
+  | _, 5, _ => y
+  | _, _, 5 => y
+  | _, _, _ => 1
+
+example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+  intros
+  simp [f]
+  split
+  . contradiction
+  . contradiction
+  . contradiction
+  . rfl
+```
+
+We can compress the tactic proof above as follows.
+
+```lean
+# def f (x y z : Nat) : Nat :=
+#  match x, y, z with
+#  | 5, _, _ => y
+#  | _, 5, _ => y
+#  | _, _, 5 => y
+#  | _, _, _ => 1
+example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+  intros; simp [f]; split <;> first | contradiction | rfl
+```
+
+The tactic `split <;> first | contradiction | rfl` first applies the `split` tactic,
+and then for each generated goal it tries `contradiction`, and then `rfl` if `contradiction` fails.
+Like `simp`, we can apply `split` to a particular hypothesis.
+
+```lean
+def g (xs ys : List Nat) : Nat :=
+  match xs, ys with
+  | [a, b], _ => a+b+1
+  | _, [b, c] => b+1
+  | _, _      => 1
+
+example (xs ys : List Nat) (h : g xs ys = 0) : False := by
+  simp [g] at h; split at h <;> simp_arith at h
+```
+
 Extensible Tactics
 -----------------
 
@@ -1517,7 +1585,7 @@ and ``simp`` as appropriate.
 2. Use tactic combinators to obtain a one line proof of the following:
 
 ```lean
- example (p q r : Prop) (hp : p)
-         : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
-   admit
+example (p q r : Prop) (hp : p)
+        : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
+  admit
 ```

@@ -1110,7 +1110,7 @@ hljs.registerLanguage("lean", function(hljs) {
       'example inductive coinductive attribute ' +
       'axiom constant scoped local noncomputable ' +
       'partial unsafe private protected ' +
-      'if then else ' +
+      'if then else termination_by decreasing_by ' +
       'universe variable variables ' +
       'import open export theory prelude renaming hiding exposing ' +
       'calc  match with do by let extends ' +
@@ -1121,17 +1121,17 @@ hljs.registerLanguage("lean", function(hljs) {
       'section namespace end infix infixl infixr postfix prefix notation ',
     built_in:
       'Type Prop|10 Sort rw|10 rewrite rwa erw subst substs ' +
-      'simp dsimp simpa simp_intros finish using generalizing ' +
+      'simp dsimp simpa simp_intros simp_wf finish using generalizing ' +
       'unfold unfold1 dunfold unfold_projs unfold_coes ' +
       'delta cc ac_reflexivity ac_refl ' +
       'existsi|10 cases rcases intro intros introv by_cases ' +
       'refl rfl funext case focus propext exact exacts ' +
       'refine apply eapply fapply apply_with apply_instance ' +
-      'induction rename assumption revert generalize specialize clear ' +
+      'induction rename rename_i assumption revert generalize specialize clear ' +
       'contradiction by_contradiction by_contra trivial exfalso ' +
       'symmetry transitivity destruct constructor econstructor ' +
       'split injection injections exists admit conv arg ' +
-      'repeat skip swap solve1 abstract allGoals anyGoals done ' +
+      'repeat skip swap solve1 abstract all_goals any_goals done ' +
       'fail_if_success success_if_fail guard_target guard_hyp ' +
       'have replace at suffices show from first lhs rhs pattern tactic ' +
       'congr congr_n congrArg norm_num ring ',

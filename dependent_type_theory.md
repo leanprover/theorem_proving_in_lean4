@@ -233,6 +233,19 @@ an abbreviation for ``Type 0``:
 #check Type 0
 ```
 
+
+The following table may help concretize the relationships being discussed.
+Movement along the x-axis represents a change in the universe, while movement
+along the y-axis represents a change in what is sometimes referred to as
+"degree".
+
+|        |               |               |                 |                        |     |
+|:------:|:-------------:|:-------------:|:---------------:|:----------------------:|:---:|
+| sort   | Prop (Sort 0) | Type (Sort 1) | Type 1 (Sort 2) | Type 2 (Sort 3)        | ... |
+| type   | True          | Bool          |   Nat -> Type   | Type -> Type 1         | ... |
+| term   | trivial       | true          | fun n => Fin n  | fun (_ : Type) => Type | ... |
+
+
 Some operations, however, need to be *polymorphic* over type
 universes. For example, ``List α`` should make sense for any type
 ``α``, no matter which type universe ``α`` lives in. This explains the
@@ -269,6 +282,7 @@ def F.{u} (α : Type u) : Type u := Prod α α
 
 #check F    -- Type u → Type u
 ```
+
 
 ## Function Abstraction and Evaluation
 
@@ -604,7 +618,7 @@ def foo := let a := Nat; fun x : a => x + 2
   def bar := (fun a => fun x : a => x + 2) Nat
 -/
 ```
-# <a name="_variables_and_sections"></a>Variables and Sections
+# Variables and Sections
 
 Consider the following three function definitions:
 ```lean
@@ -675,8 +689,8 @@ section useful
 end useful
 ```
 
-When the section is closed, the variables go out of scope, and become
-nothing more than a distant memory.
+When the section is closed, the variables go out of scope, and cannot
+be referenced any more.
 
 You do not have to indent the lines within a section. Nor do you have
 to name a section, which is to say, you can use an anonymous
@@ -684,7 +698,7 @@ to name a section, which is to say, you can use an anonymous
 have to close it using the same name. Sections can also be nested,
 which allows you to declare new variables incrementally.
 
-# <a name="_namespaces"></a>Namespaces
+# Namespaces
 
 Lean provides you with the ability to group definitions into nested,
 hierarchical *namespaces*:
@@ -903,7 +917,7 @@ def h2 (x : Nat) : Nat :=
 The functions `f` and `g` above denote the same function.
 
 
-<a name="_implicit_args"></a>Implicit Arguments
+Implicit Arguments
 ------------------
 
 Suppose we have an implementation of lists as:

@@ -56,14 +56,7 @@ effort, and much of the potential for automation will be realized only gradually
 [Apache 2.0 license](LICENSE), a permissive open source license that permits others to use and extend the code and
 mathematical libraries freely.
 
-There are currently two ways to use Lean. The first is to run it from the web: a Javascript version of Lean, a standard
-library of definitions and theorems, and an editor are actually downloaded to your browser and run there. This provides
-a quick and convenient way to begin experimenting with the system.
-
-The second way to use Lean is to install and run it natively on your computer. The native version is much faster than
-the web version, and is more flexible in other ways, too. Special modes in Visual Studio Code (VS Code for short) and
-Emacs offer powerful support for writing and debugging proofs, and is much better suited for serious use. The source
-code, and instructions for building Lean, are available at
+To install Lean in your computer consider using the [Quickstart](https://github.com/leanprover/lean4/blob/master/doc/quickstart.md) instructions. The Lean source code, and instructions for building Lean, are available at
 [https://github.com/leanprover/lean4/](https://github.com/leanprover/lean4/).
 
 This tutorial describes the current version of Lean, known as Lean 4.
@@ -97,11 +90,10 @@ theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=
   show q ∧ p from And.intro hq hp
 ```
 
-If you are reading the book online, you will see a button that reads "try it!" Pressing the button opens up a tab with a
-Lean editor, and copies the example with enough surrounding context to make the code compile correctly. You can type
+If you are reading the book inside of [VS Code](https://code.visualstudio.com/), you will see a button that reads "try it!" Pressing the button copies the example to your editor with enough surrounding context to make the code compile correctly. You can type
 things into the editor and modify the examples, and Lean will check the results and provide feedback continuously as you
 type. We recommend running the examples and experimenting with the code on your own as you work through the chapters
-that follow.
+that follow. You can open this book on VS Code by using the command "Lean 4: Open Documentation View".
 
 Acknowledgments
 ---------------
@@ -110,5 +102,5 @@ This tutorial is an open access project maintained on Github. Many people have c
 corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Mario Carneiro, Nathan
 Carter, Eduardo Cavazos, Amine Chaieb, Joe Corneli, William DeMeo, Marcus Klaas de Vries, Ben Dyer, Gabriel Ebner,
 Anthony Hart, Simon Hudon, Sean Leather, Assia Mahboubi, Gihan Marasingha, Patrick Massot, Christopher John Mazey,
-Sebastian Ullrich, Floris van Doorn, Daniel Velleman, Théo Zimmerman, Paul Chisholm, and Chris Lovett for their contributions.  Please see [lean prover](https://github.com/leanprover/) and [lean community](https://github.com/leanprover-community/) for an up to date list
+Sebastian Ullrich, Floris van Doorn, Daniel Velleman, Théo Zimmerman, Paul Chisholm, Chris Lovett, and Siddhartha Gadgil for their contributions.  Please see [lean prover](https://github.com/leanprover/) and [lean community](https://github.com/leanprover-community/) for an up to date list
 of our amazing contributors.

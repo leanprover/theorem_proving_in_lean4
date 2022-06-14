@@ -1,0 +1,30 @@
+name: mdbook deploy to github pages
+
+# Controls when the action will run: only on manual dispatch from github UI
+on: workflow_dispatch
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Download mdbook for Lean
+      shell: bash
+      run: |
+        curl -O --location https://github.com/leanprover/mdBook/releases/download/v0.4.6/mdbook-linux.tar.gz
+        tar xvf mdbook-linux.tar.gz
+        ./mdbook-linux/mdbook --help
+        ldd ./mdbook-linux/mdbook
+    - name: Run mdbook build
+      shell: bash
+      run: |
+        ./mdbook-linux/mdbook build
+        rm -rf ./out/.git
+        rm -rf ./out/.github
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages
+        folder: out

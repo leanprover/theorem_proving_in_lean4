@@ -1,0 +1,104 @@
+name: mdbook test using latest lean4 bits
+
+# Controls when the action will run.
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  repository_dispatch:
+    types: [build_event]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        # interferes with lean4-nightly authentication
+        persist-credentials: false
+        submodules: true
+    - name: Download Lean4 build artifact
+      uses: lovettchris/action-download-artifact@v2.15.11
+      with:
+        # Optional, uploaded artifact names,
+        # will download all artifacts if not specified
+        # and extract them in respective subdirectories
+        # https://github.com/actions/download-artifact#download-all-artifacts
+        # ==> We found the following artifacts:
+        # ====> Artifact: 'build-Linux'
+        # ====> Artifact: 'build-Linux Debug'
+        # ====> Artifact: 'build-Linux fsanitize'
+        # ====> Artifact: 'build-Linux release'
+        # ====> Artifact: 'build-macOS'
+        # ====> Artifact: 'build-Windows'
+        name: build-Linux release
+        # Optional, directory where to extract artifacts
+        path: .
+        # Optional, GitHub token
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        # Required, workflow file name or ID
+        workflow: ci.yml
+        # Optional, the status or conclusion of a completed workflow to search for
+        # Can be one of a workflow conclusion::
+        # "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+        # Or a workflow status:
+        # "completed", "in_progress", "queued"
+        # Default: "completed,success"
+        workflow_conclusion: success
+        # Optional, will get head commit SHA
+        # pr: ${{github.event.pull_request.number}}
+        # Optional, no need to specify if PR is
+        # commit: ${{github.event.pull_request.head.sha}}
+        # Optional, will use the branch
+        # Optional, will use specified workflow run
+        # run_id: 1122334455
+        branch: master
+        # Optional, defaults to all types
+        # event: pull_request
+        # Optional, defaults to current repo
+        repo: leanprover/lean4
+        # Optional, check the workflow run whether it has an artifact
+        # then will get the last available artifact from previous workflow
+        # default false, just try to download from the last one
+        check_artifacts:  true
+    - name: Unpack Lean4 build
+      run: |
+        if [[ "$(ls *.zst)" != "lean-4.0.0-linux.tar.zst" ]]; then mv $(ls *.gz) lean-4.0.0-linux.tar.zst; fi
+        mkdir lean4
+        tar --use-compress-program=unzstd -xvf lean-4.0.0-linux.tar.zst -C lean4 --strip-components 1
+        ls -al lean4/bin
+        echo ================= ldd lean
+        ldd lean4/bin/lean
+        echo ================= ldd libleanshared.so
+        ldd lean4/lib/lean/libleanshared.so
+        chmod u+x lean4/bin/*
+    - name: Run lean --help
+      run: ./lean4/bin/lean --help
+    - name: Set paths
+      run: |
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+    - name: Setup elan toolchain on this build
+      run: |
+        curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
+        chmod u+x elan-init.sh
+        ./elan-init.sh -y --default-toolchain none
+        echo Checking location "$HOME/.elan/bin"...
+        ls -al "$HOME/.elan/bin"
+        elan toolchain link master "$(pwd)/lean4"
+        elan default master
+        echo master > lean-toolchain
+    - name: Download mdbook for Lean
+      run: |
+        curl -O --location https://github.com/leanprover/mdBook/releases/download/v0.4.15l2/mdbook-linux.tar.gz
+        tar xvf mdbook-linux.tar.gz
+        ./mdbook-linux/mdbook --help
+        ldd ./mdbook-linux/mdbook
+    - name: Run mdbook test
+      run: |
+        ls -al
+        ./mdbook-linux/mdbook test

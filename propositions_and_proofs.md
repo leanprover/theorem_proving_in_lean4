@@ -53,7 +53,7 @@ In addition to axioms, however, we would also need rules to build new
 proofs from old ones. For example, in many proof systems for
 propositional logic, we have the rule of modus ponens:
 
->  From a proof of ``Implies p q`` and a proof of ``p``, we obtain a proof of ``q``.
+> From a proof of ``Implies p q`` and a proof of ``p``, we obtain a proof of ``q``.
 
 We could represent this as follows:
 
@@ -61,7 +61,7 @@ We could represent this as follows:
 # def Implies (p q : Prop) : Prop := p → q
 # structure Proof (p : Prop) : Type where
 #   proof : p
-axiom modus_ponens : (p q : Prop) → Proof (Implies p q) →  Proof p → Proof q
+axiom modus_ponens : (p q : Prop) → Proof (Implies p q) → Proof p → Proof q
 ```
 
 Systems of natural deduction for propositional logic also typically rely on the following rule:
@@ -265,7 +265,7 @@ element.
 axiom unsound : False
 -- Everything follows from false
 theorem ex : 1 = 0 :=
-False.elim unsound
+  False.elim unsound
 ```
 
 Declaring an "axiom" ``hp : p`` is tantamount to declaring that ``p``
@@ -287,7 +287,6 @@ this as the assertion "for every pair of propositions ``p q``, we have
 of the colon:
 
 ```lean
-
 theorem t1 : ∀ {p q : Prop}, p → q → p :=
   fun {p q : Prop} (hp : p) (hq : q) => hp
 ```
@@ -314,7 +313,7 @@ theorem t1 : q → p := fun (hq : q) => hp
 Lean detects that the proof uses ``hp`` and automatically adds
 ``hp : p`` as a premise. In all cases, the command ``#print t1`` still yields
 ``∀ p q : Prop, p → q → p``. Remember that this type can just as well
-be written ``∀ (p q : Prop) (hp : p) (hq :q), p``, since the arrow
+be written ``∀ (p q : Prop) (hp : p) (hq : q), p``, since the arrow
 denotes nothing more than an arrow type in which the target does not
 depend on the bound variable.
 
@@ -346,9 +345,10 @@ in the last chapter, now with propositions instead of types.
 variable (p q r s : Prop)
 
 theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
-fun h₃ : p =>
-show r from h₁ (h₂ h₃)
+  fun h₃ : p =>
+  show r from h₁ (h₂ h₃)
 ```
+
 As a theorem of propositional logic, what does ``t2`` say?
 
 Note that it is often useful to use numeric unicode subscripts,
@@ -395,11 +395,11 @@ how to "introduce" or establish an implication. Application can be
 viewed as an "elimination rule," showing how to "eliminate" or use an
 implication in a proof. The other propositional connectives are
 defined in Lean's library in the file ``Prelude.core`` (see
-[importing files](./interacting_with_lean.md#_importing_files) for more information on the library
+[importing files](./interacting_with_lean.md#importing-files) for more information on the library
 hierarchy), and each connective comes with its canonical introduction
 and elimination rules.
 
-### <a name="_conjunction"></a>Conjunction
+### Conjunction
 
 The expression ``And.intro h1 h2`` builds a proof of ``p ∧ q`` using
 proofs ``h1 : p`` and ``h2 : q``. It is common to describe
@@ -421,7 +421,7 @@ and we will use it often.
 
 The expression ``And.left h`` creates a proof of ``p`` from a proof
 ``h : p ∧ q``. Similarly, ``And.right h`` is a proof of ``q``. They
-are commonly known as the right and left *and-elimination* rules.
+are commonly known as the left and right *and-elimination* rules.
 
 ```lean
 variable (p q : Prop)
@@ -436,11 +436,11 @@ We can now prove ``p ∧ q → q ∧ p`` with the following proof term.
 variable (p q : Prop)
 
 example (h : p ∧ q) : q ∧ p :=
-And.intro (And.right h) (And.left h)
+  And.intro (And.right h) (And.left h)
 ```
 
 Notice that and-introduction and and-elimination are similar to the
-pairing and projection operations for the cartesian product. The
+pairing and projection operations for the Cartesian product. The
 difference is that given ``hp : p`` and ``hq : q``, ``And.intro hp
 hq`` has type ``p ∧ q : Prop``, while ``Prod hp hq`` has type
 ``p × q : Type``. The similarity between ``∧`` and ``×`` is another instance
@@ -489,6 +489,7 @@ rewrite the sample proof above conveniently as follows:
 
 ```lean
 variable (p q : Prop)
+
 example (h : p ∧ q) : q ∧ p :=
   ⟨h.right, h.left⟩
 ```
@@ -506,10 +507,10 @@ these two proofs are equivalent:
 ```lean
 variable (p q : Prop)
 
-example (h : p ∧ q) : q ∧ p ∧ q:=
+example (h : p ∧ q) : q ∧ p ∧ q :=
   ⟨h.right, ⟨h.left, h.right⟩⟩
 
-example (h : p ∧ q) : q ∧ p ∧ q:=
+example (h : p ∧ q) : q ∧ p ∧ q :=
   ⟨h.right, h.left, h.right⟩
 ```
 
@@ -544,7 +545,7 @@ example (h : p ∨ q) : q ∨ p :=
     (fun hp : p =>
       show q ∨ p from Or.intro_right q hp)
     (fun hq : q =>
-     show q ∨ p from Or.intro_left p hq)
+      show q ∨ p from Or.intro_left p hq)
 ```
 
 In most cases, the first argument of ``Or.intro_right`` and
@@ -713,7 +714,7 @@ to show that it indeed suffices to show ``q``, by proving the original
 goal of ``q ∧ p`` with the additional hypothesis ``hq : q``. Finally,
 we have to show ``q``.
 
-<a name="_classical"></a>Classical Logic
+Classical Logic
 ---------------
 
 The introduction and elimination rules we have seen so far are all
@@ -809,7 +810,7 @@ are permissible, and Lean supports the use of classical reasoning in
 such contexts without relying on excluded middle.
 
 The full list of axioms that are used in Lean to support classical
-reasoning are discussed in [Axioms and Computations](./axioms_and_computations.md).
+reasoning are discussed in [Axioms and Computation](./axioms_and_computation.md).
 
 Examples of Propositional Validities
 ------------------------------------
@@ -874,7 +875,7 @@ an underscore ``_`` as a placeholder. Recall this tells Lean that
 the argument is implicit, and should be filled in automatically. If
 Lean tries to do so and fails, it returns with an error message "don't
 know how to synthesize placeholder," followed by the type of
-the term it is expecting, and all the objects and hypothesis available
+the term it is expecting, and all the objects and hypotheses available
 in the context. In other words, for each unresolved placeholder, Lean
 reports the subgoal that needs to be filled at that point. You can
 then construct a proof by incrementally filling in these placeholders.
@@ -956,9 +957,9 @@ with actual proofs. These require classical reasoning.
 ```lean
 open Classical
 
-variable (p q r s : Prop)
+variable (p q r : Prop)
 
-example : (p → r ∨ s) → ((p → r) ∨ (p → s)) := sorry
+example : (p → q ∨ r) → ((p → q) ∨ (p → r)) := sorry
 example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
 example : ¬(p → q) → p ∧ ¬q := sorry
 example : (p → q) → (¬p ∨ q) := sorry

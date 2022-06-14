@@ -234,7 +234,7 @@ namespace Set
 
 def mem (x : α) (a : Set α) := a x
 
-infix:50 "∈" => mem
+infix:50 (priority := high) "∈" => mem
 
 theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
   funext (fun x => propext (h x))
@@ -249,7 +249,7 @@ example, and prove set identities:
 # def Set (α : Type u) := α → Prop
 # namespace Set
 # def mem (x : α) (a : Set α) := a x
-# infix:50 "∈" => mem
+# infix:50 (priority := high) "∈" => mem
 # theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
 #  funext (fun x => propext (h x))
 def empty : Set α := fun x => False
@@ -481,7 +481,7 @@ equivalence relation:
 # namespace Hidden
 class Setoid (α : Sort u) where
   r : α → α → Prop
-  iseqv {} : Equivalence r
+  iseqv : Equivalence r
 
 instance {α : Sort u} [Setoid α] : HasEquiv α :=
   ⟨Setoid.r⟩
@@ -491,13 +491,13 @@ namespace Setoid
 variable {α : Sort u} [Setoid α]
 
 theorem refl (a : α) : a ≈ a :=
-  (Setoid.iseqv α).refl a
+  iseqv.refl a
 
 theorem symm {a b : α} (hab : a ≈ b) : b ≈ a :=
-  (Setoid.iseqv α).symm hab
+  iseqv.symm hab
 
 theorem trans {a b c : α} (hab : a ≈ b) (hbc : b ≈ c) : a ≈ c :=
-  (Setoid.iseqv α).trans hab hbc
+  iseqv.trans hab hbc
 
 end Setoid
 # end Hidden
@@ -530,8 +530,8 @@ theorem ``Quotient.exact``:
 ```lean
 # universe u
 #check (@Quotient.exact :
-         ∀ {α : Sort u} [s : Setoid α] {a b : α},
-           Quotient.mk a = Quotient.mk b → a ≈ b)
+         ∀ {α : Sort u} {s : Setoid α} {a b : α},
+           Quotient.mk s a = Quotient.mk s b → a ≈ b)
 ```
 
 Together with ``Quotient.sound``, this implies that the elements of
@@ -621,7 +621,7 @@ def UProd (α : Type u) : Type u :=
 namespace UProd
 
 def mk {α : Type} (a₁ a₂ : α) : UProd α :=
-  Quotient.mk (a₁, a₂)
+  Quotient.mk' (a₁, a₂)
 
 notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 
@@ -666,7 +666,7 @@ since we have ``(a₁, a₂) ~ (a₂, a₁)``.
 #   Quotient (uprodSetoid α)
 # namespace UProd
 # def mk {α : Type} (a₁ a₂ : α) : UProd α :=
-#   Quotient.mk (a₁, a₂)
+#   Quotient.mk' (a₁, a₂)
 # notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
   Quot.sound (Or.inr ⟨rfl, rfl⟩)
@@ -710,7 +710,7 @@ Lean standard library.
 #   Quotient (uprodSetoid α)
 # namespace UProd
 # def mk {α : Type} (a₁ a₂ : α) : UProd α :=
-#   Quotient.mk (a₁, a₂)
+#   Quotient.mk' (a₁, a₂)
 # notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 # theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
 #   Quot.sound (Or.inr ⟨rfl, rfl⟩)
@@ -740,7 +740,7 @@ private theorem mem_respects
 def mem (a : α) (u : UProd α) : Prop :=
   Quot.liftOn u (fun p => mem_fn a p) (fun p₁ p₂ e => mem_respects a e)
 
-infix:50 " ∈ " => mem
+infix:50 (priority := high) " ∈ " => mem
 
 theorem mem_mk_left (a b : α) : a ∈ {a, b} :=
   Or.inl rfl
@@ -1044,7 +1044,7 @@ Putting these last two facts together yields the desired conclusion:
 
 Consequences of excluded middle include double-negation elimination,
 proof by cases, and proof by contradiction, all of which are described
-in the [Section Classical Logic](./propositions_and_proofs.md#_classical).
+in the [Section Classical Logic](./propositions_and_proofs.md#classical_logic).
 The law of the excluded middle and propositional extensionality imply propositional completeness:
 
 ```lean
@@ -1090,7 +1090,7 @@ the if-then-else expression. (See also the discussion in
 open Classical
 
 noncomputable def linv [Inhabited α] (f : α → β) : β → α :=
-  fun b : β => if ex : (∃ a : α, f a = b) then choose ex else arbitrary
+  fun b : β => if ex : (∃ a : α, f a = b) then choose ex else default
 
 theorem linv_comp_self {f : α → β} [Inhabited α]
                        (inj : ∀ {a b}, f a = f b → a = b)

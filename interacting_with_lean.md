@@ -13,7 +13,7 @@ Not all of the information found here will be useful to you right
 away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.
 
-<a name="_importing_files"></a> Importing Files
+Importing Files
 ---------------
 
 The goal of Lean's front end is to interpret user input, construct
@@ -50,7 +50,7 @@ More on Sections
 ----------------
 
 Lean provides various sectioning mechanisms to help structure a
-theory. You saw in [Variables and Sections](./dependent_type_theory.md#_variables_and_sections) that the
+theory. You saw in [Variables and Sections](./dependent_type_theory.md#variables_and_sections) that the
 ``section`` command makes it possible not only to group together
 elements of a theory that go together, but also to declare variables
 that are inserted as arguments to theorems and definitions, as
@@ -91,7 +91,7 @@ More on Namespaces
 ------------------
 
 In Lean, identifiers are given by hierarchical *names* like
-``Foo.Bar.baz``. We saw in [Namespaces](./dependent_type_theory.md#_namespaces) that Lean provides
+``Foo.Bar.baz``. We saw in [Namespaces](./dependent_type_theory.md#namespaces) that Lean provides
 mechanisms for working with hierarchical names. The command
 ``namespace foo`` causes ``foo`` to be prepended to the name of each
 definition and theorem until ``end foo`` is encountered. The command
@@ -318,7 +318,7 @@ file.
 More on Implicit Arguments
 --------------------------
 
-In [Section Implicit Arguments](./dependent_type_theory.md#_implicit_args),
+In [Section Implicit Arguments](./dependent_type_theory.md#implicit_arguments),
 we saw that if Lean displays the type
 of a term ``t`` as ``{x : α} → β x``, then the curly brackets
 indicate that ``x`` has been marked as an *implicit argument* to
@@ -794,9 +794,9 @@ Note that Lean inferred a more general type using `Sort` instead of `Type`.
 
 Although we love this feature and use it extensively when implementing Lean,
 we realize some users may feel uncomfortable with it. Thus, you can disable it using
-the command `set_option autoBoundImplicitLocal false`.
+the command `set_option autoImplicit false`.
 ```lean
-set_option autoBoundImplicitLocal false
+set_option autoImplicit false
 /- The following definition produces `unknown identifier` errors -/
 -- def compose (g : β → γ) (f : α → β) (x : α) : γ :=
 --   g (f x)

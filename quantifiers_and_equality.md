@@ -57,7 +57,7 @@ depend on ``x``.
 Here is an example of how the propositions-as-types correspondence gets put into practice.
 
 ```lean
-example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ y : α, p y  :=
+example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ y : α, p y :=
   fun h : ∀ x : α, p x ∧ q x =>
   fun y : α =>
   show p y from (h y).left
@@ -79,11 +79,12 @@ conclusion, and instantiated it by a different variable, ``z``, in the
 proof:
 
 ```lean
-example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ x : α, p x  :=
+example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ x : α, p x :=
   fun h : ∀ x : α, p x ∧ q x =>
   fun z : α =>
   show p z from And.left (h z)
 ```
+
 As another example, here is how we can express the fact that a relation, ``r``, is transitive:
 
 ```lean
@@ -169,7 +170,7 @@ Russell blamed set-theoretic paradoxes on the "vicious circles" that
 arise when we define a property by quantifying over a collection that
 includes the very property being defined. Notice that if ``α`` is any
 type, we can form the type ``α → Prop`` of all predicates on ``α``
-(the "power type of ``α``"). The impredicativity of Prop means that we
+(the "power type of ``α``"). The impredicativity of ``Prop`` means that we
 can form propositions that quantify over ``α → Prop``. In particular,
 we can define predicates on ``α`` by quantifying over all predicates
 on ``α``, which is exactly the type of circularity that was once
@@ -205,6 +206,7 @@ universe u
 The inscription ``.{u}`` tells Lean to instantiate the constants at the universe ``u``.
 
 Thus, for example, we can specialize the example from the previous section to the equality relation:
+
 ```lean
 variable (α : Type) (a b c d : α)
 variable (hab : a = b) (hcb : c = b) (hcd : c = d)
@@ -231,7 +233,7 @@ reflexivity:
 variable (α β : Type)
 
 example (f : α → β) (a : α) : (fun x => f x) a = f a := Eq.refl _
-example (a : α) (b : α) : (a, b).1 = a := Eq.refl _
+example (a : α) (b : β) : (a, b).1 = a := Eq.refl _
 example : 2 + 3 = 5 := Eq.refl _
 ```
 
@@ -240,7 +242,7 @@ This feature of the framework is so important that the library defines a notatio
 ```lean
 # variable (α β : Type)
 example (f : α → β) (a : α) : (fun x => f x) a = f a := rfl
-example (a : α) (b : α) : (a, b).1 = a := rfl
+example (a : α) (b : β) : (a, b).1 = a := rfl
 example : 2 + 3 = 5 := rfl
 ```
 
@@ -286,7 +288,7 @@ example : f a = g b := congr h₂ h₁
 Lean's library contains a large number of common identities, such as these:
 
 ```lean
-variable (a b c d : Nat)
+variable (a b c : Nat)
 
 example : a + 0 = a := Nat.add_zero a
 example : 0 + a = a := Nat.zero_add a
@@ -307,14 +309,9 @@ for ``Nat.left_distrib`` and ``Nat.right_distrib``, respectively.  The
 properties above are stated for the natural numbers (type ``Nat``).
 
 Here is an example of a calculation in the natural numbers that uses
-substitution combined with associativity, commutativity, and
-distributivity.
+substitution combined with associativity and distributivity.
 
 ```lean
-example (x y z : Nat) : x * (y + z) = x * y + x * z := Nat.mul_add x y z
-example (x y z : Nat) : (x + y) * z = x * z + y * z := Nat.add_mul x y z
-example (x y z : Nat) : x + y + z = x + (y + z) := Nat.add_assoc x y z
-
 example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   have h1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y :=
     Nat.mul_add (x + y) x y
@@ -334,7 +331,6 @@ to.  The macro ``h ▸ e`` uses more effective heuristics for computing
 this implicit parameter, and often succeeds in situations where
 applying ``Eq.subst`` fails.
 
-
 Because equational reasoning is so common and important, Lean provides
 a number of mechanisms to carry it out more effectively. The next
 section offers syntax that allow you to write calculational proofs in
@@ -344,21 +340,20 @@ kinds of automation. The term rewriter and simplifier are described
 briefly in the next section, and then in greater detail in the next
 chapter.
 
-<a name="_calc_proofs"></a>Calculational Proofs
+Calculational Proofs
 --------------------
 
 A calculational proof is just a chain of intermediate results that are
 meant to be composed by basic principles such as the transitivity of
-equality. In Lean, a calculation proof starts with the keyword
+equality. In Lean, a calculational proof starts with the keyword
 ``calc``, and has the following syntax:
 
 ```
 calc
   <expr>_0  'op_1'  <expr>_1  ':='  <proof>_1
     '_'     'op_2'  <expr>_2  ':='  <proof>_2
-     ...
+    ...
     '_'     'op_n'  <expr>_n  ':='  <proof>_n
-
 ```
 
 Each ``<proof>_i`` is a proof for ``<expr>_{i-1} op_i <expr>_i``.
@@ -381,7 +376,7 @@ theorem T : a = e :=
     _ = e      := Eq.symm h4
 ```
 
-The style of writing proofs is most effective when it is used in
+This style of writing proofs is most effective when it is used in
 conjunction with the ``simp`` and ``rewrite`` tactics, which are
 discussed in greater detail in the next chapter. For example, using
 the abbreviation ``rw`` for rewrite, the proof above could be written
@@ -399,7 +394,7 @@ theorem T : a = e :=
     _ = c + 1  := by rw [h2]
     _ = d + 1  := by rw [h3]
     _ = 1 + d  := by rw [Nat.add_comm]
-    _ =  e     := by rw [h4]
+    _ = e      := by rw [h4]
 ```
 
 Essentially, the ``rw`` tactic uses a given equality (which can be a
@@ -420,7 +415,7 @@ theorem T : a = e :=
   calc
     a = d + 1  := by rw [h1, h2, h3]
     _ = 1 + d  := by rw [Nat.add_comm]
-    _ =  e     := by rw [h4]
+    _ = e      := by rw [h4]
 ```
 
 Or even this:
@@ -487,7 +482,7 @@ example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   by rw [Nat.mul_add, Nat.add_mul, Nat.add_mul, ←Nat.add_assoc]
 
 example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-  by simp [Nat.mul_add, Nat.add_mul, Nat.add_assoc, Nat.add_left_comm]
+  by simp [Nat.mul_add, Nat.add_mul, Nat.add_assoc]
 ```
 
 The Existential Quantifier
@@ -566,7 +561,7 @@ showing that ``q`` follows from ``p w`` for an arbitrary value
 ``w``. Roughly speaking, since we know there is an ``x`` satisfying
 ``p x``, we can give it a name, say, ``w``. If ``q`` does not mention
 ``w``, then showing that ``q`` follows from ``p w`` is tantamount to
-showing the ``q`` follows from the existence of any such ``x``. Here
+showing that ``q`` follows from the existence of any such ``x``. Here
 is an example:
 
 ```lean
@@ -651,7 +646,7 @@ example : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
 We will see in [Chapter Induction and Recursion](./induction_and_recursion.md) that all these variations are
 instances of a more general pattern-matching construct.
 
-In the following example, we define ``even a`` as ``∃ b, a = 2*b``,
+In the following example, we define ``is_even a`` as ``∃ b, a = 2 * b``,
 and then we show that the sum of two even numbers is an even number.
 
 ```lean
@@ -663,7 +658,7 @@ theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
     Exists.intro (w1 + w2)
       (calc
         a + b = 2 * w1 + 2 * w2  := by rw [hw1, hw2]
-          _   = 2*(w1 + w2)      := by rw [Nat.mul_add])))
+          _   = 2 * (w1 + w2)    := by rw [Nat.mul_add])))
 ```
 
 Using the various gadgets described in this chapter --- the match
@@ -694,7 +689,7 @@ example (h : ¬ ∀ x, ¬ p x) : ∃ x, p x :=
       have h2 : ∀ x, ¬ p x :=
         fun x =>
         fun h3 : p x =>
-        have h4 : ∃ x, p x :=  ⟨x, h3⟩
+        have h4 : ∃ x, p x := ⟨x, h3⟩
         show False from h1 h4
       show False from h h2)
 ```
@@ -708,11 +703,10 @@ nonconstructive, and hence require some form of classical reasoning.
 open Classical
 
 variable (α : Type) (p q : α → Prop)
-variable (a : α)
 variable (r : Prop)
 
 example : (∃ x : α, r) → r := sorry
-example : r → (∃ x : α, r) := sorry
+example (a : α) : r → (∃ x : α, r) := sorry
 example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r := sorry
 example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := sorry
 
@@ -722,14 +716,12 @@ example : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) := sorry
 example : (¬ ∀ x, p x) ↔ (∃ x, ¬ p x) := sorry
 
 example : (∀ x, p x → r) ↔ (∃ x, p x) → r := sorry
-example : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
-example : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
+example (a : α) : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
+example (a : α) : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
 ```
 
-Notice that the declaration ``variable (a : α)`` amounts to the
-assumption that there is at least one element of type ``α``.  This
-assumption is needed in the second example, as well as in the last
-two.
+Notice that the second example and the last two examples require the
+assumption that there is at least one element ``a`` of type ``α``.
 
 Here are solutions to two of the more difficult ones:
 
@@ -755,7 +747,7 @@ example : (∃ x, p x → r) ↔ (∀ x, p x) → r :=
   Iff.intro
     (fun ⟨b, (hb : p b → r)⟩ =>
      fun h2 : ∀ x, p x =>
-     show r from  hb (h2 b))
+     show r from hb (h2 b))
     (fun h1 : (∀ x, p x) → r =>
      show ∃ x, p x → r from
        byCases
@@ -859,12 +851,13 @@ Exercises
 1. Prove these equivalences:
 
 ```lean
- variable (α : Type) (p q : α → Prop)
+variable (α : Type) (p q : α → Prop)
 
- example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
- example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
- example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := sorry
+example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
+example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
+example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := sorry
 ```
+
 You should also try to understand why the reverse implication is not derivable in the last example.
 
 2. It is often possible to bring a component of a formula outside a
@@ -887,9 +880,9 @@ example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
 
 ```lean
 variable (men : Type) (barber : men)
-variable  (shaves : men → men → Prop)
+variable (shaves : men → men → Prop)
 
-example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : false := sorry
+example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False := sorry
 ```
 
 4. Remember that, without any parameters, an expression of type
