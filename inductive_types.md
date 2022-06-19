@@ -1122,10 +1122,9 @@ The alternatives for each constructor don't need to be solved
 in the order the constructors were declared.
 
 ```lean
-inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
+# inductive Foo where
+#   | bar1 : Nat → Nat → Foo
+#   | bar2 : Nat → Nat → Nat → Foo
 def silly (x : Foo) : Nat := by
   cases x with
   | bar2 c d e => exact e
@@ -1137,10 +1136,9 @@ Lean also provides a complementary ``case`` tactic, which allows you to focus on
 assign variable names.
 
 ```lean
-inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
+# inductive Foo where
+#   | bar1 : Nat → Nat → Foo
+#   | bar2 : Nat → Nat → Nat → Foo
 def silly (x : Foo) : Nat := by
   cases x
   case bar1 a b => exact b
@@ -1150,10 +1148,9 @@ def silly (x : Foo) : Nat := by
 The ``case`` tactic is clever, in that it will match the constructor to the appropriate goal. For example, we can fill the goals above in the opposite order:
 
 ```lean
-inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
+# inductive Foo where
+#   | bar1 : Nat → Nat → Foo
+#   | bar2 : Nat → Nat → Nat → Foo
 def silly (x : Foo) : Nat := by
   cases x
   case bar2 c d e => exact e
