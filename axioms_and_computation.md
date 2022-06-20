@@ -55,9 +55,9 @@ To summarize, then, on top of the underlying framework of universes,
 dependent function types, and inductive types, the standard library
 adds three additional components:
 
--  the axiom of propositional extensionality
--  a quotient construction, which implies function extensionality
--  a choice principle, which produces data from an existential proposition.
+- the axiom of propositional extensionality
+- a quotient construction, which implies function extensionality
+- a choice principle, which produces data from an existential proposition.
 
 The first two of these block normalization within Lean, but are
 compatible with bytecode evaluation, whereas the third is not amenable
@@ -94,7 +94,7 @@ roots; every meaningful mathematical theorem should have a direct
 computational interpretation. From a *classical* point of view, it is
 more fruitful to maintain a separation of concerns: we can use one
 language and body of methods to write computer programs, while
-maintaining the freedom to use a nonconstructive theories and methods
+maintaining the freedom to use nonconstructive theories and methods
 to reason about them. Lean is designed to support both of these
 approaches. Core parts of the library are developed constructively,
 but the system also provides support for carrying out classical
@@ -138,6 +138,7 @@ Propositional Extensionality
 ----------------------------
 
 Propositional extensionality is the following axiom:
+
 ```lean
 # namespace Hidden
 axiom propext {a b : Prop} : (a ↔ b) → a = b
@@ -251,7 +252,7 @@ example, and prove set identities:
 # def mem (x : α) (a : Set α) := a x
 # infix:50 (priority := high) "∈" => mem
 # theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
-#  funext (fun x => propext (h x))
+#   funext (fun x => propext (h x))
 def empty : Set α := fun x => False
 
 notation (priority := high) "∅" => empty
@@ -408,7 +409,7 @@ def mod7Rel (x y : Nat) : Prop :=
 #check (Quot.mk mod7Rel 4 : Quot mod7Rel)
 
 def f (x : Nat) : Bool :=
-   x % 7 = 0
+  x % 7 = 0
 
 theorem f_respects (a b : Nat) (h : mod7Rel a b) : f a = f b := by
   simp [mod7Rel, f] at *
@@ -504,7 +505,7 @@ end Setoid
 ```
 
 Given a type ``α``, a relation ``r`` on ``α``, and a proof ``p``
-that ``r`` is an equivalence relation, we can define ``Setoid.mk p``
+that ``r`` is an equivalence relation, we can define ``Setoid.mk r p``
 as an instance of the setoid class.
 
 ```lean
@@ -560,12 +561,12 @@ reassembled to produce the conclusion.
 
 ```lean
 # private def eqv (p₁ p₂ : α × α) : Prop :=
-#  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+#   (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 # infix:50 " ~ " => eqv
 private theorem eqv.refl (p : α × α) : p ~ p :=
   Or.inl ⟨rfl, rfl⟩
 
-private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =>
     Or.inl (by simp_all)
   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =>
@@ -582,7 +583,7 @@ private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p�
     Or.inl (by simp_all)
 
 private theorem is_equivalence : Equivalence (@eqv α) :=
-   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 ```
 
 Now that we have proved that ``eqv`` is an equivalence relation, we
@@ -591,11 +592,11 @@ can construct a ``Setoid (α × α)``, and use it to define the type
 
 ```lean
 # private def eqv (p₁ p₂ : α × α) : Prop :=
-#  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+#   (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 # infix:50 " ~ " => eqv
 # private theorem eqv.refl (p : α × α) : p ~ p :=
-#  Or.inl ⟨rfl, rfl⟩
-# private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+#   Or.inl ⟨rfl, rfl⟩
+# private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 #   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =>
 #     Or.inl (by simp_all)
 #   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =>
@@ -612,8 +613,8 @@ can construct a ``Setoid (α × α)``, and use it to define the type
 # private theorem is_equivalence : Equivalence (@eqv α) :=
 #   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 instance uprodSetoid (α : Type u) : Setoid (α × α) where
-   r     := eqv
-   iseqv := is_equivalence
+  r     := eqv
+  iseqv := is_equivalence
 
 def UProd (α : Type u) : Type u :=
   Quotient (uprodSetoid α)
@@ -634,16 +635,16 @@ purposes, but it is not a good idea in general, since the notation
 will shadow other uses of curly brackets, such as for records and
 sets.
 
-We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``quot.sound``,
+We can easily prove that ``{a₁, a₂} = {a₂, a₁}`` using ``Quot.sound``,
 since we have ``(a₁, a₂) ~ (a₂, a₁)``.
 
 ```lean
 # private def eqv (p₁ p₂ : α × α) : Prop :=
-#  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+#   (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 # infix:50 " ~ " => eqv
 # private theorem eqv.refl (p : α × α) : p ~ p :=
-#  Or.inl ⟨rfl, rfl⟩
-# private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+#   Or.inl ⟨rfl, rfl⟩
+# private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 #   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =>
 #     Or.inl (by simp_all)
 #   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =>
@@ -660,8 +661,8 @@ since we have ``(a₁, a₂) ~ (a₂, a₁)``.
 # private theorem is_equivalence : Equivalence (@eqv α) :=
 #   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 # instance uprodSetoid (α : Type u) : Setoid (α × α) where
-#    r     := eqv
-#    iseqv := is_equivalence
+#   r     := eqv
+#   iseqv := is_equivalence
 # def UProd (α : Type u) : Type u :=
 #   Quotient (uprodSetoid α)
 # namespace UProd
@@ -683,11 +684,11 @@ Lean standard library.
 
 ```lean
 # private def eqv (p₁ p₂ : α × α) : Prop :=
-#  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+#   (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 # infix:50 " ~ " => eqv
 # private theorem eqv.refl (p : α × α) : p ~ p :=
-#  Or.inl ⟨rfl, rfl⟩
-# private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+#   Or.inl ⟨rfl, rfl⟩
+# private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 #   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =>
 #     Or.inl (by simp_all)
 #   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =>
@@ -704,8 +705,8 @@ Lean standard library.
 # private theorem is_equivalence : Equivalence (@eqv α) :=
 #   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 # instance uprodSetoid (α : Type u) : Setoid (α × α) where
-#    r     := eqv
-#    iseqv := is_equivalence
+#   r     := eqv
+#   iseqv := is_equivalence
 # def UProd (α : Type u) : Type u :=
 #   Quotient (uprodSetoid α)
 # namespace UProd
@@ -714,7 +715,6 @@ Lean standard library.
 # notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 # theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
 #   Quot.sound (Or.inr ⟨rfl, rfl⟩)
-
 private def mem_fn (a : α) : α × α → Prop
   | (a₁, a₂) => a = a₁ ∨ a = a₂
 
@@ -758,7 +758,7 @@ for lifting binary functions, and ``Quotient.ind₂`` for induction on
 two variables.
 
 We close this section with some hints as to why the quotient
-construction implies function extenionality. It is not hard to show
+construction implies function extensionality. It is not hard to show
 that extensional equality on the ``(x : α) → β x`` is an equivalence
 relation, and so we can consider the type ``extfun α β`` of functions
 "up to equivalence." Of course, application respects that equivalence
@@ -798,7 +798,6 @@ example (α : Type u) : Nonempty α ↔ ∃ x : α, True :=
 
 Our axiom of choice is now expressed simply as follows:
 
-
 ```lean
 # namespace Hidden
 # universe u
@@ -830,7 +829,7 @@ Because it depends on ``choice``, Lean cannot generate bytecode for
 ``indefiniteDescription``, and so requires us to mark the definition
 as ``noncomputable``. Also in the ``Classical`` namespace, the
 function ``choose`` and the property ``choose_spec`` decompose the two
-parts of the output of ``indefinite_description``:
+parts of the output of ``indefiniteDescription``:
 
 ```lean
 # open Classical
@@ -849,7 +848,7 @@ being ``Inhabited``:
 
 ```lean
 # open Classical
-theorem inhabited_of_nonempty :Nonempty α → Inhabited α :=
+theorem inhabited_of_nonempty : Nonempty α → Inhabited α :=
   fun h => choice (let ⟨a⟩ := h; ⟨⟨a⟩⟩)
 ```
 
@@ -879,8 +878,8 @@ definition is conventionally known as *Hilbert's epsilon function*:
          → (α → Prop) → α)
 
 #check (@epsilon_spec :
-          ∀ {a : Sort u} {p : a → Prop}(hex : ∃ (y : a), p y),
-            p (@epsilon _ (nonempty_of_exists hex) p))
+         ∀ {α : Sort u} {p : α → Prop} (hex : ∃ (y : α), p y),
+           p (@epsilon _ (nonempty_of_exists hex) p))
 ```
 
 The Law of the Excluded Middle
@@ -963,6 +962,7 @@ represent four cases. In one of these cases, ``u = True`` and
 #   sorry
 # end Hidden
 ```
+
 On the other hand, if ``p`` is true, then, by function extensionality
 and propositional extensionality, ``U`` and ``V`` are equal. By the
 definition of ``u`` and ``v``, this implies that they are equal as well.
@@ -1002,6 +1002,7 @@ definition of ``u`` and ``v``, this implies that they are equal as well.
 #   sorry
 # end Hidden
 ```
+
 Putting these last two facts together yields the desired conclusion:
 
 ```lean
@@ -1023,7 +1024,7 @@ Putting these last two facts together yields the desired conclusion:
 #     | Or.inl hut, Or.inl hvf =>
 #       have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
 #       Or.inl hne
-#  have p_implies_uv : p → u = v :=
+#   have p_implies_uv : p → u = v :=
 #     fun hp =>
 #     have hpred : U = V :=
 #       funext fun x =>
@@ -1070,7 +1071,7 @@ class inductive Decidable (p : Prop) where
 ```
 
 In contrast to ``p ∨ ¬ p``, which can only eliminate to ``Prop``, the
-type ``decidable p`` is equivalent to the sum type ``Sum p (¬ p)``, which
+type ``Decidable p`` is equivalent to the sum type ``Sum p (¬ p)``, which
 can eliminate to any type. It is this data that is needed to write an
 if-then-else expression.
 
@@ -1078,7 +1079,7 @@ As an example of classical reasoning, we use ``choose`` to show that if
 ``f : α → β`` is injective and ``α`` is inhabited, then ``f`` has a
 left inverse. To define the left inverse ``linv``, we use a dependent
 if-then-else expression. Recall that ``if h : c then t else e`` is
-notation for ``dite c (fun  h : c => t) (fun h : ¬ c => e)``. In the definition
+notation for ``dite c (fun h : c => t) (fun h : ¬ c => e)``. In the definition
 of ``linv``, choice is used twice: first, to show that
 ``(∃ a : A, f a = b)`` is "decidable," and then to choose an ``a`` such that
 ``f a = b``. Notice that ``propDecidable`` is a scoped instance and is activated
@@ -1100,7 +1101,6 @@ theorem linv_comp_self {f : α → β} [Inhabited α]
     have feq : f (choose ex) = f a  := choose_spec ex
     calc linv f (f a) = choose ex := dif_pos ex
                _      = a         := inj feq
-
 ```
 
 From a classical point of view, ``linv`` is a function. From a
