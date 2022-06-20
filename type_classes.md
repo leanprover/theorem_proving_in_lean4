@@ -6,6 +6,7 @@ would be easy to implement an ad-hoc polymorphic function (such as addition) if 
 function simply took the type-specific implementation of addition as an argument
 and then called that implementation on the remaining arguments. For example,
 suppose we declare a structure in Lean to hold implementations of addition
+
 ```lean
 # namespace Ex
 structure Add (a : Type) where
@@ -15,10 +16,12 @@ structure Add (a : Type) where
 -- Add.add : {a : Type} → Add a → a → a → a
 # end Ex
 ```
+
 In the above Lean code, the field `add` has type
 `Add.add : {a : Type} → Add a → a → a → a`
 where the curly braces around the type `a` mean that it is an implicit argument.
 We could implement `double` by
+
 ```lean
 # namespace Ex
 # structure Add (a : Type) where
@@ -37,6 +40,7 @@ def double (s : Add a) (x : a) : a :=
 
 # end Ex
 ```
+
 Note that you can double a natural number `n` by `double { add := Nat.add } n`.
 Of course, it would be highly cumbersome for users to manually pass the
 implementations around in this way.
@@ -47,6 +51,7 @@ The main idea behind type classes is to make arguments such as `Add a` implicit,
 and to use a database of user-defined instances to synthesize the desired instances
 automatically through a process known as typeclass resolution. In Lean, by changing
 `structure` to `class` in the example above, the type of `Add.add` becomes
+
 ```lean
 # namespace Ex
 class Add (a : Type) where
@@ -56,10 +61,12 @@ class Add (a : Type) where
 -- Add.add : {a : Type} → [self : Add a] → a → a → a
 # end Ex
 ```
+
 where the square brackets indicate that the argument of type `Add a` is *instance implicit*,
 i.e. that it should be synthesized using typeclass resolution. This version of
 `add` is the Lean analogue of the Haskell term `add :: Add a => a -> a -> a`.
 Similarly, we can register instances by
+
 ```lean
 # namespace Ex
 # class Add (a : Type) where
@@ -75,9 +82,11 @@ instance : Add Float where
 
 # end Ex
 ```
+
 Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with
 the goal of `Add Nat`, and typeclass resolution will synthesize the instance for `Nat` above.
 We can now reimplement `double` using an instance implicit by
+
 ```lean
 # namespace Ex
 # class Add (a : Type) where
@@ -108,9 +117,11 @@ def double [Add a] (x : a) : a :=
 
 # end Ex
 ```
+
 In general, instances may depend on other instances in complicated ways. For example,
 you can declare an (anonymous) instance stating that if `a` has addition, then `Array a`
 has addition:
+
 ```lean
 instance [Add a] : Add (Array a) where
   add x y := Array.zipWith x y (· + ·)
@@ -121,6 +132,7 @@ instance [Add a] : Add (Array a) where
 #eval #[1, 2] + #[3, 4]
 -- #[4, 6]
 ```
+
 Note that `(· + ·)` is notation for `fun x y => x + y` in Lean.
 
 The example above demonstrates how type classes are used to overload notation.
@@ -143,6 +155,7 @@ class Inhabited (a : Type u) where
 -- Inhabited.default : {a : Type u} → [self : Inhabited a] → a
 # end Ex
 ```
+
 Note `Inhabited.default` doesn't have any explicit argument.
 
 An element of the class ``Inhabited a`` is simply an expression of the form ``Inhabited.mk x``, for some element ``x : a``.
@@ -172,7 +185,9 @@ instance : Inhabited Prop where
 -- true
 # end Ex
 ```
+
 You can use the command `export` to create the alias `default` for `Inhabited.default`
+
 ```lean
 # namespace Ex
 # class Inhabited (a : Type _) where
@@ -204,11 +219,14 @@ an instance declaration can in turn depend on an implicit instance of a type cla
 This causes class inference to chain through instances recursively, backtracking when necessary, in a Prolog-like search.
 
 For example, the following definition shows that if two types ``a`` and ``b`` are inhabited, then so is their product:
+
 ```lean
 instance [Inhabited a] [Inhabited b] : Inhabited (a × b) where
   default := (default, default)
 ```
+
 With this added to the earlier instance declarations, type class instance can infer, for example, a default element of ``Nat × Bool``:
+
 ```lean
 # namespace Ex
 # class Inhabited (a : Type u) where
@@ -226,15 +244,19 @@ instance [Inhabited a] [Inhabited b] : Inhabited (a × b) where
 -- (0, true)
 # end Ex
 ```
+
 Similarly, we can inhabit type function with suitable constant functions:
+
 ```lean
 instance [Inhabited b] : Inhabited (a -> b) where
   default := fun _ => default
 ```
+
 As an exercise, try defining default instances for other types, such as `List` and `Sum` types.
 
 The Lean standard library contains the definition `inferInstance`. It has type `{α : Sort u} → [i : α] → α`,
 and is useful for triggering the type class resolution procedure when the expected type is an instance.
+
 ```lean
 #check (inferInstance : Inhabited Nat) -- Inhabited Nat
 
@@ -244,7 +266,9 @@ def foo : Inhabited (Nat × Nat) :=
 theorem ex : foo.default = (default, default) :=
   rfl
 ```
+
 You can use the command `#print` to inspect how simple `inferInstance` is.
+
 ```lean
 #print inferInstance
 ```
@@ -254,6 +278,7 @@ You can use the command `#print` to inspect how simple `inferInstance` is.
 The polymorphic method `toString` has type `{α : Type u} → [ToString α] → α → String`. You implement the instance
 for your own types and use chaining to convert complex values into strings. Lean comes with `ToString` instances
 for most builtin types.
+
 ```lean
 structure Person where
   name : String
@@ -265,10 +290,12 @@ instance : ToString Person where
 #eval toString { name := "Leo", age := 542 : Person }
 #eval toString ({ name := "Daniel", age := 18 : Person }, "hello")
 ```
+
 ## Numerals
 
 Numerals are polymorphic in Lean. You can use a numeral (e.g., `2`) to denote an element of any type that implements
 the type class `OfNat`.
+
 ```lean
 structure Rational where
   num : Int
@@ -286,18 +313,22 @@ instance : ToString Rational where
 #check (2 : Rational) -- Rational
 #check (2 : Nat)      -- Nat
 ```
+
 Lean elaborates the terms `(2 : Nat)` and `(2 : Rational)` as
 `OfNat.ofNat Nat 2 (instOfNatNat 2)` and
 `OfNat.ofNat Rational 2 (instOfNatRational 2)` respectively.
 We say the numerals `2` occurring in the elaborated terms are *raw* natural numbers.
 You can input the raw natural number `2` using the macro `nat_lit 2`.
+
 ```lean
 #check nat_lit 2  -- Nat
 ```
+
 Raw natural numbers are *not* polymorphic.
 
 The `OfNat` instance is parametric on the numeral. So, you can define instances for particular numerals.
 The second argument is often a variable as in the example above, or a *raw* natural number.
+
 ```lean
 class Monoid (α : Type u) where
   unit : α
@@ -315,14 +346,17 @@ def getUnit [Monoid α] : α :=
 By default, Lean only tries to synthesize an instance `Inhabited T` when the term `T` is known and does not
 contain missing parts. The following command produces the error
 "failed to create type class instance for `Inhabited (Nat × ?m.1499)`" because the type has a missing part (i.e., the `_`).
+
 ```lean
 #check_failure (inferInstance : Inhabited (Nat × _))
 ```
+
 You can view the parameter of the type class `Inhabited` as an *input* value for the type class synthesizer.
 When a type class has multiple parameters, you can mark some of them as output parameters.
 Lean will start type class synthesizer even when these parameters have missing parts.
 In the following example, we use output parameters to define a *heterogeneous* polymorphic
 multiplication.
+
 ```lean
 # namespace Ex
 class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -340,12 +374,14 @@ instance : HMul Nat (Array Nat) (Array Nat) where
 #eval hMul 4 #[2, 3, 4]  -- #[8, 12, 16]
 # end Ex
 ```
+
 The parameters `α` and `β` are considered input parameters and `γ` an output one.
 Given an application `hMul a b`, after types of `a` and `b` are known, the type class
 synthesizer is invoked, and the resulting type is obtained from the output parameter `γ`.
 In the example above, we defined two instances. The first one is the homogeneous
 multiplication for natural numbers. The second is the scalar multiplication for arrays.
 Note that you chain instances and generalize the second instance.
+
 ```lean
 # namespace Ex
 class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -368,6 +404,7 @@ instance [HMul α β γ] : HMul α (Array β) (Array γ) where
 #eval hMul 2 #[#[2, 3], #[0, 4]]  -- #[#[4, 6], #[0, 8]]
 # end Ex
 ```
+
 You can use our new scalar array multiplication instance on arrays of type `Array β`
 with a scalar of type `α` whenever you have an instance `HMul α β γ`.
 In the last `#eval`, note that the instance was used twice on an array of arrays.
@@ -377,6 +414,7 @@ In the last `#eval`, note that the instance was used twice on an array of arrays
 In the class `HMul`, the parameters `α` and `β` are treated as input values.
 Thus, type class synthesis only starts after these two types are known. This may often
 be too restrictive.
+
 ```lean
 # namespace Ex
 class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -393,9 +431,11 @@ def xs : List Int := [1, 2, 3]
 #check_failure fun y => xs.map (fun x => hMul x y)
 # end Ex
 ```
+
 The instance `HMul` is not synthesized by Lean because the type of `y` has not been provided.
 However, it is natural to assume that the type of `y` and `x` should be the same in
 this kind of situation. We can achieve exactly that using *default instances*.
+
 ```lean
 # namespace Ex
 class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -412,6 +452,7 @@ def xs : List Int := [1, 2, 3]
 #check fun y => xs.map (fun x => hMul x y)  -- Int -> List Int
 # end Ex
 ```
+
 By tagging the instance above with the attribute `defaultInstance`, we are instructing Lean
 to use this instance on pending type class synthesis problems.
 The actual Lean implementation defines homogeneous and heterogeneous classes for arithmetical operators.
@@ -419,6 +460,7 @@ Moreover, `a+b`, `a*b`, `a-b`, `a/b`, and `a%b` are notations for the heterogene
 The instance `OfNat Nat n` is the default instance (with priority 100) for the `OfNat` class. This is why the numeral
 `2` has type `Nat` when the expected type is not known. You can define default instances with higher
 priority to override the builtin ones.
+
 ```lean
 structure Rational where
   num : Int
@@ -434,11 +476,13 @@ instance : ToString Rational where
 
 #check 2 -- Rational
 ```
+
 Priorities are also useful to control the interaction between different default instances.
 For example, suppose `xs` has type `α`, when elaboration `xs.map (fun x => 2 * x)`, we want the homogeneous instance for multiplication
 to have higher priority than the default instance for `OfNat`. This is particularly important when we have implemented only the instance
 `HMul α α α`, and did not implement `HMul Nat α α`.
 Now, we reveal how the notation `a*b` is defined in Lean.
+
 ```lean
 # namespace Ex
 class OfNat (α : Type u) (n : Nat) where
@@ -461,6 +505,7 @@ instance [Mul α] : HMul α α α where
 infixl:70 " * "  => HMul.hMul
 # end Ex
 ```
+
 The `Mul` class is convenient for types that only implement the homogeneous multiplication.
 
 ## Local Instances
@@ -725,9 +770,7 @@ prove a target ``p``. By the previous observations,
 ``decide`` will succeed any time the inferred decision procedure
  for ``c`` has enough information to evaluate, definitionally, to the ``isTrue`` case.
 
-
-Managing Type Class Inference
------------------------------
+## Managing Type Class Inference
 
 If you are ever in a situation where you need to supply an expression
 that Lean can infer by type class inference, you can ask Lean to carry
@@ -756,7 +799,6 @@ You can also use the auxiliary definition `inferInstanceAs`:
 #check @inferInstanceAs
 -- (α : Sort u) → [α] → α
 ```
-
 
 Sometimes Lean can't find an instance because the class is buried
 under a definition. For example, Lean cannot
@@ -792,6 +834,7 @@ a trace every time the type class resolution procedure is subsequently
 triggered.
 
 You can also limit the search using the following options:
+
 ```
 set_option synthInstance.maxHeartbeats 10000
 set_option synthInstance.maxSize 400
@@ -845,16 +888,15 @@ example : Foo.a = 3 :=
   rfl
 ```
 
-Coercions using Type Classes
-----------------------------
+## Coercions using Type Classes
 
 The most basic type of coercion maps elements of one type to another. For example, a coercion from ``Nat`` to ``Int`` allows us to view any element ``n : Nat`` as an element of ``Int``. But some coercions depend on parameters; for example, for any type ``α``, we can view any element ``as : List α`` as an element of ``Set α``, namely, the set of elements occurring in the list. The corresponding coercion is defined on the "family" of types ``List α``, parameterized by ``α``.
 
 Lean allows us to declare three kinds of coercions:
 
--  from a family of types to another family of types
--  from a family of types to the class of sorts
--  from a family of types to the class of function types
+- from a family of types to another family of types
+- from a family of types to the class of sorts
+- from a family of types to the class of function types
 
 The first kind of coercion allows us to view any element of a member of the source family as an element of a corresponding member of the target family. The second kind of coercion allows us to view any element of a member of the source family as a type. The third kind of coercion allows us to view any element of the source family as a function. Let us consider each of these in turn.
 
@@ -895,6 +937,7 @@ def s : Set Nat  := {1}
 ```
 
 We can use the notation ``↑`` to force a coercion to be introduced in a particular place. It is also helpful to make our intent clear, and work around limitations of the coercion resolution system.
+
 ```lean
 # def Set (α : Type u) := α → Prop
 # def Set.empty {α : Type u} : Set α := fun _ => False
