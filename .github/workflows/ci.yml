@@ -30,7 +30,7 @@ jobs:
     - name: Download lean binaries
       uses: houqp/download-release-assets@v1
       with:
-          repo: houqp/terraform-provider-airflow
+          repo: leanprover/lean4-nightly
           match: "lean-4.0.0-nightly.*-linux.tar.zst$"
 
     - name: Unpack Lean4 build
