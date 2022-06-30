@@ -22,18 +22,10 @@ jobs:
         # interferes with lean4-nightly authentication
         persist-credentials: false
         submodules: true
-    # - uses: robinraju/release-downloader@v1.4
-    #   with:
-    #     latest: true
-    #     fileName: lean-4.0.0-nightly-*-linux.tar.zst
-    #     repository: leanprover/lean4-nightly
-    - uses: houqp/download-release-assets@v1
-      with:
-          repo: leanprover/lean4-nightly
-          match: "lean-4.0.0-nightly.*-linux.tar.zst$"
-
-    - name: Unpack Lean4 build
+    - name: Download Lean4 binaries
       run: |
+        tag = $(gh release list --repo leanprover/lean4-nightly --limit 1 | cut -f 1)
+        gh release download nightly-2022-06-30 --repo leanprover/lean4-nightly --pattern lean-4.0.0-nightly*-linux.tar.zst
         file = $(echo lean-*.zst)
         mkdir lean4
         tar --use-compress-program=unzstd -xvf $file -C lean4 --strip-components 1
