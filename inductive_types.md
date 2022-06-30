@@ -65,7 +65,7 @@ elaborate and complex examples.
 Enumerated Types
 ----------------
 
-The simplest kind of inductive type is simply a type with a finite, enumerated list of elements.
+The simplest kind of inductive type is a type with a finite, enumerated list of elements.
 
 ```lean
 inductive Weekday where
@@ -406,9 +406,8 @@ inductive Sum (α : Type u) (β : Type v) where
 # end Hidden
 ```
 
-Notice that we do not include the types ``α`` and ``β`` in the target
-of the constructors. In the meanwhile, think about what is going on in
-these examples. The product type has one constructor, ``Prod.mk``,
+Consider what is going on in these examples.
+The product type has one constructor, ``Prod.mk``,
 which takes two arguments. To define a function on ``Prod α β``, we
 can assume the input is of the form ``Prod.mk a b``, and we have to
 specify the output, in terms of ``a`` and ``b``. We can use this to
@@ -483,11 +482,11 @@ which are arguments to the constructors as well as ``Prod``. Lean
 detects when these arguments can be inferred from later arguments to a
 constructor or the return type, and makes them implicit in that case.
 
-In the section after next we will see what happens when the
+In [Section Defining the Natural Numbers](#_defining_the_natural_numbers)
+we will see what happens when the
 constructor of an inductive type takes arguments from the inductive
 type itself. What characterizes the examples we consider in this
-section is that this is not the case: each constructor relies only on
-previously specified types.
+section is that each constructor relies only on previously specified types.
 
 Notice that a type with multiple constructors is disjunctive: an
 element of ``Sum α β`` is either of the form ``inl a`` *or* of the
@@ -650,14 +649,14 @@ speaking, what characterizes inductive types in ``Prop`` is that one
 can only eliminate to other types in ``Prop``. This is consistent with
 the understanding that if ``p : Prop``, an element ``hp : p`` carries
 no data. There is a small exception to this rule, however, which we
-will discuss below, in the section on inductive families.
+will discuss below, in [Section Inductive Families](#_inductive_families).
 
 Even the existential quantifier is inductively defined:
 
 ```lean
 # namespace Hidden
-inductive Exists {α : Type u} (q : α → Prop) : Prop where
-  | intro : ∀ (a : α), q a → Exists q
+inductive Exists {α : Sort u} (p : α → Prop) : Prop where
+  | intro (w : α) (h : p w) : Exists p
 # end Hidden
 ```
 
@@ -683,11 +682,19 @@ inductive Subtype {α : Type u} (p : α → Prop) where
 
 In fact, in Lean, ``Subtype`` is defined using the structure command:
 
+```lean
+# namespace Hidden
+structure Subtype {α : Sort u} (p : α → Prop) where
+  val : α
+  property : p val
+# end Hidden
+```
+
 The notation ``{x : α // p x}`` is syntactic sugar for ``Subtype (fun x : α => p x)``.
 It is modeled after subset notation in set theory: the idea is that ``{x : α // p x}``
 denotes the collection of elements of ``α`` that have property ``p``.
 
-Defining the Natural Numbers
+<a name="_defining_the_natural_numbers"></a>Defining the Natural Numbers
 ----------------------------
 
 The inductively defined types we have seen so far are "flat":
@@ -813,7 +820,7 @@ end Nat
 ```
 
 We will explain how the ``instance`` command works in
-[Chapter Type Classes](./type_classes.md). In the examples below, we will henceforth use
+[Chapter Type Classes](./type_classes.md). In the examples below, we will use
 Lean's version of the natural numbers.
 
 Proving a fact like ``zero + m = m``, however, requires a proof by induction.
@@ -854,7 +861,7 @@ theorem zero_add (n : Nat) : 0 + n = n :=
 # end Hidden
 ```
 
-For another example, let us prove the associativity of addition,
+As another example, let us prove the associativity of addition,
 ``∀ m n k, m + n + k = m + (n + k)``.
 (The notation ``+``, as we have defined it, associates to the left, so ``m + n + k`` is really ``(m + n) + k``.)
 The hardest part is figuring out which variable to do the induction on. Since addition is defined by recursion on the second argument,
@@ -883,7 +890,7 @@ open Nat
 theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
   Nat.recOn (motive := fun k => m + n + k = m + (n + k)) k
     rfl
-    (fun k ih => by simp [Nat.add_succ, ih]; done)
+    (fun k ih => by simp [Nat.add_succ, ih])
 ```
 
 Suppose we try to prove the commutativity of addition. Choosing induction on the second argument, we might begin as follows:
@@ -929,7 +936,7 @@ theorem succ_add (n m : Nat) : succ n + m = succ (n + m) :=
 theorem add_comm (m n : Nat) : m + n = n + m :=
   Nat.recOn (motive := fun x => m + x = x + m) n
     (by simp)
-    (fun m ih => by simp only [add_succ, succ_add, ih])
+    (fun m ih => by simp [add_succ, succ_add, ih])
 # end Hidden
 ```
 
@@ -1378,7 +1385,7 @@ example (h : 7 = 4) : False := by
 
 As the second example shows, the ``contradiction`` tactic also detects contradictions of this form.
 
-Inductive Families
+<a name="_inductive_families"></a>Inductive Families
 ------------------
 
 We are almost done describing the full range of inductive definitions
@@ -1398,7 +1405,7 @@ inductive foo : ... → Sort u where
   | constructorₙ : ... → foo ...
 ```
 
-In contrast to ordinary inductive definition, which constructs an
+In contrast to an ordinary inductive definition, which constructs an
 element of some ``Sort u``, the more general version constructs a
 function ``... → Sort u``, where "``...``" denotes a sequence of
 argument types, also known as *indices*. Each constructor then
@@ -1445,8 +1452,7 @@ universe u v
 
 It is a remarkable fact that all the basic axioms for equality follow
 from the constructor, ``refl``, and the eliminator, ``Eq.rec``. The
-definition of equality is atypical, however; see the discussion in the
-next section.
+definition of equality is atypical, however; see the discussion in [Section Axiomatic Details](#_axiomatic_details).
 
 The recursor ``Eq.rec`` is also used to define substitution:
 
@@ -1490,7 +1496,7 @@ Using the recursor or `match` with ``h₁ : a = b``, we may assume ``a`` and ``b
 in which case, ``p b`` and ``p a`` are the same.
 
 It is not hard to prove that ``Eq`` is symmetric and transitive.
-In the following example, we prove ``symm`` and leave as exercise the theorems ``trans`` and ``congr`` (congruence).
+In the following example, we prove ``symm`` and leave as exercises the theorems ``trans`` and ``congr`` (congruence).
 
 ```lean
 # namespace Hidden
@@ -1511,7 +1517,7 @@ inductive definitions, for example, the principles of
 *induction-recursion* and *induction-induction*. These are not
 supported by Lean.
 
-Axiomatic Details
+<a name="_axiomatic_details"></a>Axiomatic Details
 -----------------
 
 We have described inductive types and their syntax through
@@ -1582,7 +1588,7 @@ type. We can use an element ``h : Eq a b`` to cast an element
 because the cast does not produce new data; it only reinterprets the
 data we already have. Singleton elimination is also used with
 heterogeneous equality and well-founded recursion, which will be
-discussed in a later chapter.
+discussed in a [Chapter Induction and Recursion](./induction_and_recursion.md#_well_founded_recursion_and_induction).
 
 
 Mutual and Nested Inductive Types

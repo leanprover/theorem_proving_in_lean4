@@ -16,7 +16,7 @@ structure Add (a : Type) where
 # end Ex
 ```
 In the above Lean code, the field `add` has type
-`Add.add : {α : Type} → Add α → α → α → α`
+`Add.add : {a : Type} → Add a → a → a → a`
 where the curly braces around the type `a` mean that it is an implicit argument.
 We could implement `double` by
 ```lean
@@ -59,7 +59,7 @@ class Add (a : Type) where
 where the square brackets indicate that the argument of type `Add a` is *instance implicit*,
 i.e. that it should be synthesized using typeclass resolution. This version of
 `add` is the Lean analogue of the Haskell term `add :: Add a => a -> a -> a`.
-Similarly, we can register an instance by
+Similarly, we can register instances by
 ```lean
 # namespace Ex
 # class Add (a : Type) where
@@ -67,11 +67,48 @@ Similarly, we can register an instance by
 instance : Add Nat where
   add := Nat.add
 
+instance : Add Int where
+  add := Int.add
+
+instance : Add Float where
+  add := Float.add
+
 # end Ex
 ```
-Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with the goal
-of `Add Nat`, and typeclass resolution will synthesize the instance above. In
-general, instances may depend on other instances in complicated ways. For example,
+Then for `n : Nat` and `m : Nat`, the term `Add.add n m` triggers typeclass resolution with
+the goal of `Add Nat`, and typeclass resolution will synthesize the instance for `Nat` above.
+We can now reimplement `double` using an instance implicit by
+```lean
+# namespace Ex
+# class Add (a : Type) where
+#   add : a -> a -> a
+# instance : Add Nat where
+#  add := Nat.add
+# instance : Add Int where
+#  add := Int.add
+# instance : Add Float where
+#  add := Float.add
+def double [Add a] (x : a) : a :=
+  Add.add x x
+
+#check @double
+-- @double : {a : Type} → [inst : Add a] → a → a
+
+#eval double 10
+-- 20
+
+#eval double (10 : Int)
+-- 100
+
+#eval double (7 : Float)
+-- 14.000000
+
+#eval double (239.0 + 2)
+-- 482.000000
+
+# end Ex
+```
+In general, instances may depend on other instances in complicated ways. For example,
 you can declare an (anonymous) instance stating that if `a` has addition, then `Array a`
 has addition:
 ```lean
@@ -180,7 +217,7 @@ With this added to the earlier instance declarations, type class instance can in
 #  default := true
 # instance : Inhabited Nat where
 #  default := 0
-# constant default [Inhabited a] : a :=
+# opaque default [Inhabited a] : a :=
 #  Inhabited.default
 instance [Inhabited a] [Inhabited b] : Inhabited (a × b) where
   default := (default, default)

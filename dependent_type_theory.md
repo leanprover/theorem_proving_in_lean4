@@ -233,6 +233,19 @@ an abbreviation for ``Type 0``:
 #check Type 0
 ```
 
+
+The following table may help concretize the relationships being discussed.
+Movement along the x-axis represents a change in the universe, while movement
+along the y-axis represents a change in what is sometimes referred to as
+"degree".
+
+|        |               |               |                 |                        |     |
+|:------:|:-------------:|:-------------:|:---------------:|:----------------------:|:---:|
+| sort   | Prop (Sort 0) | Type (Sort 1) | Type 1 (Sort 2) | Type 2 (Sort 3)        | ... |
+| type   | True          | Bool          |   Nat -> Type   | Type -> Type 1         | ... |
+| term   | trivial       | true          | fun n => Fin n  | fun (_ : Type) => Type | ... |
+
+
 Some operations, however, need to be *polymorphic* over type
 universes. For example, ``List α`` should make sense for any type
 ``α``, no matter which type universe ``α`` lives in. This explains the
@@ -269,6 +282,7 @@ def F.{u} (α : Type u) : Type u := Prod α α
 
 #check F    -- Type u → Type u
 ```
+
 
 ## Function Abstraction and Evaluation
 
