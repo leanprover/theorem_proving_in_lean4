@@ -22,11 +22,17 @@ jobs:
         # interferes with lean4-nightly authentication
         persist-credentials: false
         submodules: true
-    - uses: robinraju/release-downloader@v1.4
+    # - uses: robinraju/release-downloader@v1.4
+    #   with:
+    #     latest: true
+    #     fileName: lean-4.0.0-nightly-*-linux.tar.zst
+    #     repository: leanprover/lean4-nightly
+    - name: Download lean binaries
+      uses: houqp/download-release-assets@v1
       with:
-        latest: true
-        fileName: lean-4.0.0-nightly-*-linux.tar.zst
-        repository: leanprover/lean4-nightly
+          repo: houqp/terraform-provider-airflow
+          match: "lean-4.0.0-nightly.*-linux.tar.zst$"
+
     - name: Unpack Lean4 build
       run: |
         file = $(echo lean-*.zst)
