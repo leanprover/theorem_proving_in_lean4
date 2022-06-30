@@ -26,7 +26,7 @@ jobs:
       with:
         latest: true
         fileName: lean-4.0.0-nightly-*-linux.tar.zst
-        repo: leanprover/lean4-nightly
+        repository: leanprover/lean4-nightly
     - name: Unpack Lean4 build
       run: |
         file = $(echo lean-*.zst)
