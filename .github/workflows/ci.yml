@@ -22,21 +22,6 @@ jobs:
         # interferes with lean4-nightly authentication
         persist-credentials: false
         submodules: true
-    - name: Download Lean4 binaries
-      run: |
-        tag = $(gh release list --repo leanprover/lean4-nightly --limit 1 | cut -f 1)
-        gh release download nightly-2022-06-30 --repo leanprover/lean4-nightly --pattern lean-4.0.0-nightly*-linux.tar.zst
-        file = $(echo lean-*.zst)
-        mkdir lean4
-        tar --use-compress-program=unzstd -xvf $file -C lean4 --strip-components 1
-        ls -al lean4/bin
-        echo ================= ldd lean
-        ldd lean4/bin/lean
-        echo ================= ldd libleanshared.so
-        ldd lean4/lib/lean/libleanshared.so
-        chmod u+x lean4/bin/*
-    - name: Run lean --help
-      run: ./lean4/bin/lean --help
     - name: Set paths
       run: |
         echo "$HOME/.elan/bin" >> $GITHUB_PATH
@@ -44,12 +29,10 @@ jobs:
       run: |
         curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
         chmod u+x elan-init.sh
-        ./elan-init.sh -y --default-toolchain none
+        ./elan-init.sh -y --default-toolchain leanprover/lean4:nightly
         echo Checking location "$HOME/.elan/bin"...
         ls -al "$HOME/.elan/bin"
-        elan toolchain link master "$(pwd)/lean4"
-        elan default master
-        echo master > lean-toolchain
+        elan toolchain list
     - name: Download mdbook for Lean
       run: |
         curl -O --location https://github.com/leanprover/mdBook/releases/download/v0.4.15l2/mdbook-linux.tar.gz
