@@ -698,8 +698,7 @@ we do: the standard library defines ``WellFounded.fix``, which serves
 exactly that purpose.
 
 ```lean
-set_option codegen false
-def f {α : Sort u}
+noncomputable def f {α : Sort u}
       (r : α → α → Prop)
       (h : WellFounded r)
       (C : α → Sort v)
@@ -721,7 +720,7 @@ principle. It says that if ``≺`` is well founded and you want to prove
 ``∀ x, C x``, it suffices to show that for an arbitrary ``x``, if we
 have ``∀ y ≺ x, C y``, then we have ``C x``.
 
-In the example above we set the option `codegen` to false because the code
+In the example above we use the modifier `noncomputable` because the code
 generator currently does not support `WellFounded.fix`. The function
 `WellFounded.fix` is another tool Lean uses to justify that a function
 terminates.
@@ -744,8 +743,7 @@ def div.F (x : Nat) (f : (x₁ : Nat) → x₁ < x → Nat → Nat) (y : Nat) : 
   else
     zero
 
-set_option codegen false
-def div := WellFounded.fix (measure id).wf div.F
+noncomputable def div := WellFounded.fix (measure id).wf div.F
 
 #reduce div 8 2 -- 4
 ```
