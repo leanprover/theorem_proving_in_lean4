@@ -1140,8 +1140,7 @@ number of identities in Lean's library have been tagged with the
 rewrite subterms in an expression.
 
 ```lean
-example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
-        : (x + 0) * (0 + y * 1 + z * 0) = x * y := by
+example (x y z : Nat) : (x + 0) * (0 + y * 1 + z * 0) = x * y := by
   simp
 
 example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
