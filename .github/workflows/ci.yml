@@ -8,8 +8,8 @@ on:
   pull_request:
     branches:
       - master
-  repository_dispatch:
-    types: [build_event]
+  schedule:
+    - cron: '0 10 * * *'  # 11AM CET/3AM PT
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
