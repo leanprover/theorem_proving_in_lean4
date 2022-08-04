@@ -28,7 +28,7 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
     -- |- a * (b * c)
     congr
     -- 2 goals : |- a and |- b * c
-    skip
+    rfl
     -- |- b * c
     rw [Nat.mul_comm]
 ```
@@ -38,7 +38,7 @@ The above snippet show three navigation commands:
 - `lhs` navigates to the left hand side of a relation (here equality), there is also a `rhs` navigating to the right hand side.
 - `congr` creates as many targets as there are (nondependent and explicit) arguments to the current head function
   (here the head function is multiplication).
-- `skip` goes to the next target.
+- `rfl` closes target using reflexivity.
 
 Once arrived at the relevant target, we can use `rw` as in normal
 tactic mode.
