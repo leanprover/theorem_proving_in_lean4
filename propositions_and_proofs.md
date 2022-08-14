@@ -607,7 +607,7 @@ contradiction. This rule is sometimes called *ex falso* (short for *ex
 falso sequitur quodlibet*), or the *principle of explosion*.
 
 ```lean
-variable (tp q : Prop)
+variable (p q : Prop)
 
 example (hp : p) (hnp : ¬p) : q := False.elim (hnp hp)
 ```
