@@ -177,9 +177,13 @@ variable {q : Prop}
 theorem t1 : p → q → p := fun hp : p => fun hq : q => hp
 ```
 
-This looks exactly like the definition of the constant function in the
-last chapter, the only difference being that the arguments are
-elements of ``Prop`` rather than ``Type``. Intuitively, our proof of
+Compare this proof to the expression ``fun x : α => fun y : β => x``
+of type ``α → β → α``, where ``α`` and ``β`` are data types.
+This describes the function that takes arguments ``x`` and ``y``
+of type ``α`` and ``β``, respectively, and returns ``x``.
+The proof of ``t1`` has the same form, the only difference being that
+``p`` and ``q`` are elements of ``Prop`` rather than ``Type``.
+Intuitively, our proof of
 ``p → q → p`` assumes ``p`` and ``q`` are true, and uses the first
 hypothesis (trivially) to establish that the conclusion, ``p``, is
 true.
