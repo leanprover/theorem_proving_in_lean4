@@ -1,0 +1,441 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Structures and Records - Theorem Proving in Lean 4</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html" class="active"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Theorem Proving in Lean 4</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="structures-and-records"><a class="header" href="#structures-and-records">Structures and Records</a></h1>
+<p>We have seen that Lean's foundational system includes inductive
+types. We have, moreover, noted that it is a remarkable fact that it
+is possible to construct a substantial edifice of mathematics based on
+nothing more than the type universes, dependent arrow types, and inductive types;
+everything else follows from those. The Lean standard library contains
+many instances of inductive types (e.g., <code>Nat</code>, <code>Prod</code>, <code>List</code>),
+and even the logical connectives are defined using inductive types.</p>
+<p>Recall that a non-recursive inductive type that contains only one
+constructor is called a <em>structure</em> or <em>record</em>. The product type is a
+structure, as is the dependent product (Sigma) type.
+In general, whenever we define a structure <code>S</code>, we usually
+define <em>projection</em> functions that allow us to &quot;destruct&quot; each
+instance of <code>S</code> and retrieve the values that are stored in its
+fields. The functions <code>prod.fst</code> and <code>prod.snd</code>, which return the
+first and second elements of a pair, are examples of such projections.</p>
+<p>When writing programs or formalizing mathematics, it is not uncommon
+to define structures containing many fields. The <code>structure</code>
+command, available in Lean, provides infrastructure to support this
+process. When we define a structure using this command, Lean
+automatically generates all the projection functions. The
+<code>structure</code> command also allows us to define new structures based on
+previously defined ones. Moreover, Lean provides convenient notation
+for defining instances of a given structure.</p>
+<h2 id="declaring-structures"><a class="header" href="#declaring-structures">Declaring Structures</a></h2>
+<p>The structure command is essentially a &quot;front end&quot; for defining
+inductive data types. Every <code>structure</code> declaration introduces a
+namespace with the same name. The general form is as follows:</p>
+<pre><code>    structure &lt;name&gt; &lt;parameters&gt; &lt;parent-structures&gt; where
+      &lt;constructor&gt; :: &lt;fields&gt;
+</code></pre>
+<p>Most parts are optional. Here is an example:</p>
+<pre><code class="language-lean">structure Point (α : Type u) where
+  mk :: (x : α) (y : α)
+</code></pre>
+<p>Values of type <code>Point</code> are created using <code>Point.mk a b</code>, and the
+fields of a point <code>p</code> are accessed using <code>Point.x p</code> and
+<code>Point.y p</code> (but <code>p.x</code> and <code>p.y</code> also work, see below).
+The structure command also generates useful recursors and
+theorems. Here are some of the constructions generated for the
+declaration above.</p>
+<pre><code class="language-lean"><span class="boring">structure Point (α : Type u) where
+</span><span class="boring"> mk :: (x : α) (y : α)
+</span>#check Point       -- a Type
+#check @Point.rec  -- the eliminator
+#check @Point.mk   -- the constructor
+#check @Point.x    -- a projection
+#check @Point.y    -- a projection
+</code></pre>
+<p>If the constructor name is not provided, then a constructor is named
+<code>mk</code> by default.  You can also avoid the parentheses around field
+names if you add a line break between each field.</p>
+<pre><code class="language-lean">structure Point (α : Type u) where
+  x : α
+  y : α
+</code></pre>
+<p>Here are some simple theorems and expressions that use the generated
+constructions. As usual, you can avoid the prefix <code>Point</code> by using
+the command <code>open Point</code>.</p>
+<pre><code class="language-lean"><span class="boring">structure Point (α : Type u) where
+</span><span class="boring"> x : α
+</span><span class="boring"> y : α
+</span>#eval Point.x (Point.mk 10 20)
+#eval Point.y (Point.mk 10 20)
+
+open Point
+
+example (a b : α) : x (mk a b) = a :=
+  rfl
+
+example (a b : α) : y (mk a b) = b :=
+  rfl
+</code></pre>
+<p>Given <code>p : Point Nat</code>, the dot notation <code>p.x</code> is shorthand for
+<code>Point.x p</code>. This provides a convenient way of accessing the fields
+of a structure.</p>
+<pre><code class="language-lean"><span class="boring">structure Point (α : Type u) where
+</span><span class="boring"> x : α
+</span><span class="boring"> y : α
+</span>def p := Point.mk 10 20
+
+#check p.x  -- Nat
+#eval p.x   -- 10
+#eval p.y   -- 20
+</code></pre>
+<p>The dot notation is convenient not just for accessing the projections
+of a record, but also for applying functions defined in a namespace
+with the same name. Recall from the <a href="./propositions_and_proofs.html#conjunction">Conjunction section</a> if <code>p</code>
+has type <code>Point</code>, the expression <code>p.foo</code> is interpreted as
+<code>Point.foo p</code>, assuming that the first non-implicit argument to
+<code>foo</code> has type <code>Point</code>. The expression <code>p.add q</code> is therefore
+shorthand for <code>Point.add p q</code> in the example below.</p>
+<pre><code class="language-lean">structure Point (α : Type u) where
+  x : α
+  y : α
+  deriving Repr
+
+def Point.add (p q : Point Nat) :=
+  mk (p.x + q.x) (p.y + q.y)
+
+def p : Point Nat := Point.mk 1 2
+def q : Point Nat := Point.mk 3 4
+
+#eval p.add q  -- {x := 4, y := 6}
+</code></pre>
+<p>In the next chapter, you will learn how to define a function like
+<code>add</code> so that it works generically for elements of <code>Point α</code>
+rather than just <code>Point Nat</code>, assuming <code>α</code> has an associated
+addition operation.</p>
+<p>More generally, given an expression <code>p.foo x y z</code> where <code>p : Point</code>,
+Lean will insert <code>p</code> at the first argument to <code>Point.foo</code> of type
+<code>Point</code>. For example, with the definition of scalar multiplication
+below, <code>p.smul 3</code> is interpreted as <code>Point.smul 3 p</code>.</p>
+<pre><code class="language-lean"><span class="boring">structure Point (α : Type u) where
+</span><span class="boring"> x : α
+</span><span class="boring"> y : α
+</span><span class="boring"> deriving Repr
+</span>def Point.smul (n : Nat) (p : Point Nat) :=
+  Point.mk (n * p.x) (n * p.y)
+
+def p : Point Nat := Point.mk 1 2
+
+#eval p.smul 3  -- {x := 3, y := 6}
+</code></pre>
+<p>It is common to use a similar trick with the <code>List.map</code> function,
+which takes a list as its second non-implicit argument:</p>
+<pre><code class="language-lean">#check @List.map
+
+def xs : List Nat := [1, 2, 3]
+def f : Nat → Nat := fun x =&gt; x * x
+
+#eval xs.map f  -- [1, 4, 9]
+</code></pre>
+<p>Here <code>xs.map f</code> is interpreted as <code>List.map f xs</code>.</p>
+<h2 id="objects"><a class="header" href="#objects">Objects</a></h2>
+<p>We have been using constructors to create elements of a structure
+type. For structures containing many fields, this is often
+inconvenient, because we have to remember the order in which the
+fields were defined. Lean therefore provides the following alternative
+notations for defining elements of a structure type.</p>
+<pre><code>    { (&lt;field-name&gt; := &lt;expr&gt;)* : structure-type }
+    or
+    { (&lt;field-name&gt; := &lt;expr&gt;)* }
+</code></pre>
+<p>The suffix <code>: structure-type</code> can be omitted whenever the name of
+the structure can be inferred from the expected type. For example, we
+use this notation to define &quot;points.&quot; The order that the fields are
+specified does not matter, so all the expressions below define the
+same point.</p>
+<pre><code class="language-lean">structure Point (α : Type u) where
+  x : α
+  y : α
+
+#check { x := 10, y := 20 : Point Nat }  -- Point ℕ
+#check { y := 20, x := 10 : Point _ }
+#check ({ x := 10, y := 20 } : Point Nat)
+
+example : Point Nat :=
+  { y := 20, x := 10 }
+</code></pre>
+<p>If the value of a field is not specified, Lean tries to infer it. If
+the unspecified fields cannot be inferred, Lean flags an error
+indicating the corresponding placeholder could not be synthesized.</p>
+<pre><code class="language-lean">structure MyStruct where
+    {α : Type u}
+    {β : Type v}
+    a : α
+    b : β
+
+#check { a := 10, b := true : MyStruct }
+</code></pre>
+<p><em>Record update</em> is another common operation which amounts to creating
+a new record object by modifying the value of one or more fields in an
+old one. Lean allows you to specify that unassigned fields in the
+specification of a record should be taken from a previously defined
+structure object <code>s</code> by adding the annotation <code>s with</code> before the field
+assignments. If more than one record object is provided, then they are
+visited in order until Lean finds one that contains the unspecified
+field. Lean raises an error if any of the field names remain
+unspecified after all the objects are visited.</p>
+<pre><code class="language-lean">structure Point (α : Type u) where
+  x : α
+  y : α
+  deriving Repr
+
+def p : Point Nat :=
+  { x := 1, y := 2 }
+
+#eval { p with y := 3 }  -- { x := 1, y := 3 }
+#eval { p with x := 4 }  -- { x := 4, y := 2 }
+
+structure Point3 (α : Type u) where
+  x : α
+  y : α
+  z : α
+
+def q : Point3 Nat :=
+  { x := 5, y := 5, z := 5 }
+
+def r : Point3 Nat :=
+  { p, q with x := 6 }
+
+example : r.x = 6 := rfl
+example : r.y = 2 := rfl
+example : r.z = 5 := rfl
+</code></pre>
+<h2 id="inheritance"><a class="header" href="#inheritance">Inheritance</a></h2>
+<p>We can <em>extend</em> existing structures by adding new fields. This feature
+allows us to simulate a form of <em>inheritance</em>.</p>
+<pre><code class="language-lean">structure Point (α : Type u) where
+  x : α
+  y : α
+
+inductive Color where
+  | red | green | blue
+
+structure ColorPoint (α : Type u) extends Point α where
+  c : Color
+</code></pre>
+<p>In the next example, we define a structure using multiple inheritance,
+and then define an object using objects of the parent structures.</p>
+<pre><code class="language-lean">structure Point (α : Type u) where
+  x : α
+  y : α
+  z : α
+
+structure RGBValue where
+  red : Nat
+  green : Nat
+  blue : Nat
+
+structure RedGreenPoint (α : Type u) extends Point α, RGBValue where
+  no_blue : blue = 0
+
+def p : Point Nat :=
+  { x := 10, y := 10, z := 20 }
+
+def rgp : RedGreenPoint Nat :=
+  { p with red := 200, green := 40, blue := 0, no_blue := rfl }
+
+example : rgp.x   = 10 := rfl
+example : rgp.red = 200 := rfl
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="induction_and_recursion.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="type_classes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="induction_and_recursion.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="type_classes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

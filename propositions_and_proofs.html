@@ -1,0 +1,975 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Propositions and Proofs - Theorem Proving in Lean 4</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html" class="active"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Theorem Proving in Lean 4</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="propositions-and-proofs"><a class="header" href="#propositions-and-proofs">Propositions and Proofs</a></h1>
+<p>By now, you have seen some ways of defining objects and functions in
+Lean. In this chapter, we will begin to explain how to write
+mathematical assertions and proofs in the language of dependent type
+theory as well.</p>
+<h2 id="propositions-as-types"><a class="header" href="#propositions-as-types">Propositions as Types</a></h2>
+<p>One strategy for proving assertions about objects defined in the
+language of dependent type theory is to layer an assertion language
+and a proof language on top of the definition language. But there is
+no reason to multiply languages in this way: dependent type theory is
+flexible and expressive, and there is no reason we cannot represent
+assertions and proofs in the same general framework.</p>
+<p>For example, we could introduce a new type, <code>Prop</code>, to represent
+propositions, and introduce constructors to build new propositions
+from others.</p>
+<pre><code class="language-lean"><span class="boring">def Implies (p q : Prop) : Prop := p → q
+</span>#check And     -- Prop → Prop → Prop
+#check Or      -- Prop → Prop → Prop
+#check Not     -- Prop → Prop
+#check Implies -- Prop → Prop → Prop
+
+variable (p q r : Prop)
+#check And p q                      -- Prop
+#check Or (And p q) r               -- Prop
+#check Implies (And p q) (And q p)  -- Prop
+</code></pre>
+<p>We could then introduce, for each element <code>p : Prop</code>, another type
+<code>Proof p</code>, for the type of proofs of <code>p</code>.  An &quot;axiom&quot; would be a
+constant of such a type.</p>
+<pre><code class="language-lean"><span class="boring">def Implies (p q : Prop) : Prop := p → q
+</span><span class="boring">structure Proof (p : Prop) : Type where
+</span><span class="boring">  proof : p
+</span>#check Proof   -- Proof : Prop → Type
+
+axiom and_comm (p q : Prop) : Proof (Implies (And p q) (And q p))
+
+variable (p q : Prop)
+#check and_comm p q     -- Proof (Implies (And p q) (And q p))
+</code></pre>
+<p>In addition to axioms, however, we would also need rules to build new
+proofs from old ones. For example, in many proof systems for
+propositional logic, we have the rule of modus ponens:</p>
+<blockquote>
+<p>From a proof of <code>Implies p q</code> and a proof of <code>p</code>, we obtain a proof of <code>q</code>.</p>
+</blockquote>
+<p>We could represent this as follows:</p>
+<pre><code class="language-lean"><span class="boring">def Implies (p q : Prop) : Prop := p → q
+</span><span class="boring">structure Proof (p : Prop) : Type where
+</span><span class="boring">  proof : p
+</span>axiom modus_ponens : (p q : Prop) → Proof (Implies p q) → Proof p → Proof q
+</code></pre>
+<p>Systems of natural deduction for propositional logic also typically rely on the following rule:</p>
+<blockquote>
+<p>Suppose that, assuming <code>p</code> as a hypothesis, we have a proof of <code>q</code>. Then we can &quot;cancel&quot; the hypothesis and obtain a proof of <code>Implies p q</code>.</p>
+</blockquote>
+<p>We could render this as follows:</p>
+<pre><code class="language-lean"><span class="boring">def Implies (p q : Prop) : Prop := p → q
+</span><span class="boring">structure Proof (p : Prop) : Type where
+</span><span class="boring">  proof : p
+</span>axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
+</code></pre>
+<p>This approach would provide us with a reasonable way of building assertions and proofs.
+Determining that an expression <code>t</code> is a correct proof of assertion <code>p</code> would then
+simply be a matter of checking that <code>t</code> has type <code>Proof p</code>.</p>
+<p>Some simplifications are possible, however. To start with, we can
+avoid writing the term <code>Proof</code> repeatedly by conflating <code>Proof p</code>
+with <code>p</code> itself. In other words, whenever we have <code>p : Prop</code>, we
+can interpret <code>p</code> as a type, namely, the type of its proofs. We can
+then read <code>t : p</code> as the assertion that <code>t</code> is a proof of <code>p</code>.</p>
+<p>Moreover, once we make this identification, the rules for implication
+show that we can pass back and forth between <code>Implies p q</code> and
+<code>p → q</code>. In other words, implication between propositions <code>p</code> and <code>q</code>
+corresponds to having a function that takes any element of <code>p</code> to an
+element of <code>q</code>. As a result, the introduction of the connective
+<code>Implies</code> is entirely redundant: we can use the usual function space
+constructor <code>p → q</code> from dependent type theory as our notion of
+implication.</p>
+<p>This is the approach followed in the Calculus of Constructions, and
+hence in Lean as well. The fact that the rules for implication in a
+proof system for natural deduction correspond exactly to the rules
+governing abstraction and application for functions is an instance of
+the <em>Curry-Howard isomorphism</em>, sometimes known as the
+<em>propositions-as-types</em> paradigm. In fact, the type <code>Prop</code> is
+syntactic sugar for <code>Sort 0</code>, the very bottom of the type hierarchy
+described in the last chapter. Moreover, <code>Type u</code> is also just
+syntactic sugar for <code>Sort (u+1)</code>. <code>Prop</code> has some special
+features, but like the other type universes, it is closed under the
+arrow constructor: if we have <code>p q : Prop</code>, then <code>p → q : Prop</code>.</p>
+<p>There are at least two ways of thinking about propositions as
+types. To some who take a constructive view of logic and mathematics,
+this is a faithful rendering of what it means to be a proposition: a
+proposition <code>p</code> represents a sort of data type, namely, a
+specification of the type of data that constitutes a proof. A proof of
+<code>p</code> is then simply an object <code>t : p</code> of the right type.</p>
+<p>Those not inclined to this ideology can view it, rather, as a simple
+coding trick. To each proposition <code>p</code> we associate a type that is
+empty if <code>p</code> is false and has a single element, say <code>*</code>, if <code>p</code>
+is true. In the latter case, let us say that (the type associated
+with) <code>p</code> is <em>inhabited</em>. It just so happens that the rules for
+function application and abstraction can conveniently help us keep
+track of which elements of <code>Prop</code> are inhabited. So constructing an
+element <code>t : p</code> tells us that <code>p</code> is indeed true. You can think of
+the inhabitant of <code>p</code> as being the &quot;fact that <code>p</code> is true.&quot; A
+proof of <code>p → q</code> uses &quot;the fact that <code>p</code> is true&quot; to obtain &quot;the
+fact that <code>q</code> is true.&quot;</p>
+<p>Indeed, if <code>p : Prop</code> is any proposition, Lean's kernel treats any
+two elements <code>t1 t2 : p</code> as being definitionally equal, much the
+same way as it treats <code>(fun x =&gt; t) s</code> and <code>t[s/x]</code> as
+definitionally equal. This is known as <em>proof irrelevance,</em> and is
+consistent with the interpretation in the last paragraph. It means
+that even though we can treat proofs <code>t : p</code> as ordinary objects in
+the language of dependent type theory, they carry no information
+beyond the fact that <code>p</code> is true.</p>
+<p>The two ways we have suggested thinking about the
+propositions-as-types paradigm differ in a fundamental way. From the
+constructive point of view, proofs are abstract mathematical objects
+that are <em>denoted</em> by suitable expressions in dependent type
+theory. In contrast, if we think in terms of the coding trick
+described above, then the expressions themselves do not denote
+anything interesting. Rather, it is the fact that we can write them
+down and check that they are well-typed that ensures that the
+proposition in question is true. In other words, the expressions
+<em>themselves</em> are the proofs.</p>
+<p>In the exposition below, we will slip back and forth between these two
+ways of talking, at times saying that an expression &quot;constructs&quot; or
+&quot;produces&quot; or &quot;returns&quot; a proof of a proposition, and at other times
+simply saying that it &quot;is&quot; such a proof. This is similar to the way
+that computer scientists occasionally blur the distinction between
+syntax and semantics by saying, at times, that a program &quot;computes&quot; a
+certain function, and at other times speaking as though the program
+&quot;is&quot; the function in question.</p>
+<p>In any case, all that really matters is the bottom line. To formally
+express a mathematical assertion in the language of dependent type
+theory, we need to exhibit a term <code>p : Prop</code>. To <em>prove</em> that
+assertion, we need to exhibit a term <code>t : p</code>. Lean's task, as a
+proof assistant, is to help us to construct such a term, <code>t</code>, and to
+verify that it is well-formed and has the correct type.</p>
+<h2 id="working-with-propositions-as-types"><a class="header" href="#working-with-propositions-as-types">Working with Propositions as Types</a></h2>
+<p>In the propositions-as-types paradigm, theorems involving only <code>→</code>
+can be proved using lambda abstraction and application. In Lean, the
+<code>theorem</code> command introduces a new theorem:</p>
+<pre><code class="language-lean">variable {p : Prop}
+variable {q : Prop}
+
+theorem t1 : p → q → p := fun hp : p =&gt; fun hq : q =&gt; hp
+</code></pre>
+<p>Compare this proof to the expression <code>fun x : α =&gt; fun y : β =&gt; x</code>
+of type <code>α → β → α</code>, where <code>α</code> and <code>β</code> are data types.
+This describes the function that takes arguments <code>x</code> and <code>y</code>
+of type <code>α</code> and <code>β</code>, respectively, and returns <code>x</code>.
+The proof of <code>t1</code> has the same form, the only difference being that
+<code>p</code> and <code>q</code> are elements of <code>Prop</code> rather than <code>Type</code>.
+Intuitively, our proof of
+<code>p → q → p</code> assumes <code>p</code> and <code>q</code> are true, and uses the first
+hypothesis (trivially) to establish that the conclusion, <code>p</code>, is
+true.</p>
+<p>Note that the <code>theorem</code> command is really a version of the
+<code>def</code> command: under the propositions and types
+correspondence, proving the theorem <code>p → q → p</code> is really the same
+as defining an element of the associated type. To the kernel type
+checker, there is no difference between the two.</p>
+<p>There are a few pragmatic differences between definitions and
+theorems, however. In normal circumstances, it is never necessary to
+unfold the &quot;definition&quot; of a theorem; by proof irrelevance, any two
+proofs of that theorem are definitionally equal. Once the proof of a
+theorem is complete, typically we only need to know that the proof
+exists; it doesn't matter what the proof is. In light of that fact,
+Lean tags proofs as <em>irreducible</em>, which serves as a hint to the
+parser (more precisely, the <em>elaborator</em>) that there is generally no
+need to unfold it when processing a file. In fact, Lean is generally
+able to process and check proofs in parallel, since assessing the
+correctness of one proof does not require knowing the details of
+another.</p>
+<p>As with definitions, the <code>#print</code> command will show you the proof of
+a theorem.</p>
+<pre><code class="language-lean"><span class="boring">variable {p : Prop}
+</span><span class="boring">variable {q : Prop}
+</span>theorem t1 : p → q → p := fun hp : p =&gt; fun hq : q =&gt; hp
+
+#print t1
+</code></pre>
+<p>Notice that the lambda abstractions <code>hp : p</code> and <code>hq : q</code> can be
+viewed as temporary assumptions in the proof of <code>t1</code>.  Lean also
+allows us to specify the type of the final term <code>hp</code>, explicitly,
+with a <code>show</code> statement.</p>
+<pre><code class="language-lean"><span class="boring">variable {p : Prop}
+</span><span class="boring">variable {q : Prop}
+</span>theorem t1 : p → q → p :=
+  fun hp : p =&gt;
+  fun hq : q =&gt;
+  show p from hp
+</code></pre>
+<p>Adding such extra information can improve the clarity of a proof and
+help detect errors when writing a proof. The <code>show</code> command does
+nothing more than annotate the type, and, internally, all the
+presentations of <code>t1</code> that we have seen produce the same term.</p>
+<p>As with ordinary definitions, we can move the lambda-abstracted
+variables to the left of the colon:</p>
+<pre><code class="language-lean"><span class="boring">variable {p : Prop}
+</span><span class="boring">variable {q : Prop}
+</span>theorem t1 (hp : p) (hq : q) : p := hp
+
+#print t1    -- p → q → p
+</code></pre>
+<p>Now we can apply the theorem <code>t1</code> just as a function application.</p>
+<pre><code class="language-lean"><span class="boring">variable {p : Prop}
+</span><span class="boring">variable {q : Prop}
+</span>theorem t1 (hp : p) (hq : q) : p := hp
+
+axiom hp : p
+
+theorem t2 : q → p := t1 hp
+</code></pre>
+<p>Here, the <code>axiom</code> declaration postulates the existence of an
+element of the given type and may compromise logical consistency. For
+example, we can use it to postulate the empty type <code>False</code> has an
+element.</p>
+<pre><code class="language-lean">axiom unsound : False
+-- Everything follows from false
+theorem ex : 1 = 0 :=
+  False.elim unsound
+</code></pre>
+<p>Declaring an &quot;axiom&quot; <code>hp : p</code> is tantamount to declaring that <code>p</code>
+is true, as witnessed by <code>hp</code>. Applying the theorem
+<code>t1 : p → q → p</code> to the fact <code>hp : p</code> that <code>p</code> is true yields the theorem
+<code>t1 hp : q → p</code>.</p>
+<p>Recall that we can also write theorem <code>t1</code> as follows:</p>
+<pre><code class="language-lean">theorem t1 {p q : Prop} (hp : p) (hq : q) : p := hp
+
+#print t1
+</code></pre>
+<p>The type of <code>t1</code> is now <code>∀ {p q : Prop}, p → q → p</code>. We can read
+this as the assertion &quot;for every pair of propositions <code>p q</code>, we have
+<code>p → q → p</code>.&quot; For example, we can move all parameters to the right
+of the colon:</p>
+<pre><code class="language-lean">theorem t1 : ∀ {p q : Prop}, p → q → p :=
+  fun {p q : Prop} (hp : p) (hq : q) =&gt; hp
+</code></pre>
+<p>If <code>p</code> and <code>q</code> have been declared as variables, Lean will
+generalize them for us automatically:</p>
+<pre><code class="language-lean">variable {p q : Prop}
+
+theorem t1 : p → q → p := fun (hp : p) (hq : q) =&gt; hp
+</code></pre>
+<p>In fact, by the propositions-as-types correspondence, we can declare
+the assumption <code>hp</code> that <code>p</code> holds, as another variable:</p>
+<pre><code class="language-lean">variable {p q : Prop}
+variable (hp : p)
+
+theorem t1 : q → p := fun (hq : q) =&gt; hp
+</code></pre>
+<p>Lean detects that the proof uses <code>hp</code> and automatically adds
+<code>hp : p</code> as a premise. In all cases, the command <code>#print t1</code> still yields
+<code>∀ p q : Prop, p → q → p</code>. Remember that this type can just as well
+be written <code>∀ (p q : Prop) (hp : p) (hq : q), p</code>, since the arrow
+denotes nothing more than an arrow type in which the target does not
+depend on the bound variable.</p>
+<p>When we generalize <code>t1</code> in such a way, we can then apply it to
+different pairs of propositions, to obtain different instances of the
+general theorem.</p>
+<pre><code class="language-lean">theorem t1 (p q : Prop) (hp : p) (hq : q) : p := hp
+
+variable (p q r s : Prop)
+
+#check t1 p q                -- p → q → p
+#check t1 r s                -- r → s → r
+#check t1 (r → s) (s → r)    -- (r → s) → (s → r) → r → s
+
+variable (h : r → s)
+#check t1 (r → s) (s → r) h  -- (s → r) → r → s
+</code></pre>
+<p>Once again, using the propositions-as-types correspondence, the
+variable <code>h</code> of type <code>r → s</code> can be viewed as the hypothesis, or
+premise, that <code>r → s</code> holds.</p>
+<p>As another example, let us consider the composition function discussed
+in the last chapter, now with propositions instead of types.</p>
+<pre><code class="language-lean">variable (p q r s : Prop)
+
+theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
+  fun h₃ : p =&gt;
+  show r from h₁ (h₂ h₃)
+</code></pre>
+<p>As a theorem of propositional logic, what does <code>t2</code> say?</p>
+<p>Note that it is often useful to use numeric unicode subscripts,
+entered as <code>\0</code>, <code>\1</code>, <code>\2</code>, ..., for hypotheses, as we did in
+this example.</p>
+<h2 id="propositional-logic"><a class="header" href="#propositional-logic">Propositional Logic</a></h2>
+<p>Lean defines all the standard logical connectives and notation. The propositional connectives come with the following notation:</p>
+<table><thead><tr><th>Ascii</th><th>Unicode</th><th>Editor shortcut</th><th>Definition</th></tr></thead><tbody>
+<tr><td>True</td><td></td><td></td><td>True</td></tr>
+<tr><td>False</td><td></td><td></td><td>False</td></tr>
+<tr><td>Not</td><td>¬</td><td><code>\not</code>, <code>\neg</code></td><td>Not</td></tr>
+<tr><td>/\</td><td>∧</td><td><code>\and</code></td><td>And</td></tr>
+<tr><td>\/</td><td>∨</td><td><code>\or</code></td><td>Or</td></tr>
+<tr><td>-&gt;</td><td>→</td><td><code>\to</code>, <code>\r</code>, <code>\imp</code></td><td></td></tr>
+<tr><td>&lt;-&gt;</td><td>↔</td><td><code>\iff</code>, <code>\lr</code></td><td>Iff</td></tr>
+</tbody></table>
+<p>They all take values in <code>Prop</code>.</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+#check p → q → p ∧ q
+#check ¬p → p ↔ False
+#check p ∨ q → q ∨ p
+</code></pre>
+<p>The order of operations is as follows: unary negation <code>¬</code> binds most
+strongly, then <code>∧</code>, then <code>∨</code>, then <code>→</code>, and finally <code>↔</code>. For
+example, <code>a ∧ b → c ∨ d ∧ e</code> means <code>(a ∧ b) → (c ∨ (d ∧ e))</code>. Remember that <code>→</code> associates to the right (nothing changes
+now that the arguments are elements of <code>Prop</code>, instead of some other
+<code>Type</code>), as do the other binary connectives. So if we have
+<code>p q r : Prop</code>, the expression <code>p → q → r</code> reads &quot;if <code>p</code>, then if <code>q</code>,
+then <code>r</code>.&quot; This is just the &quot;curried&quot; form of <code>p ∧ q → r</code>.</p>
+<p>In the last chapter we observed that lambda abstraction can be viewed
+as an &quot;introduction rule&quot; for <code>→</code>. In the current setting, it shows
+how to &quot;introduce&quot; or establish an implication. Application can be
+viewed as an &quot;elimination rule,&quot; showing how to &quot;eliminate&quot; or use an
+implication in a proof. The other propositional connectives are
+defined in Lean's library in the file <code>Prelude.core</code> (see
+<a href="./interacting_with_lean.html#importing-files">importing files</a> for more information on the library
+hierarchy), and each connective comes with its canonical introduction
+and elimination rules.</p>
+<h3 id="conjunction"><a class="header" href="#conjunction">Conjunction</a></h3>
+<p>The expression <code>And.intro h1 h2</code> builds a proof of <code>p ∧ q</code> using
+proofs <code>h1 : p</code> and <code>h2 : q</code>. It is common to describe
+<code>And.intro</code> as the <em>and-introduction</em> rule. In the next example we
+use <code>And.intro</code> to create a proof of <code>p → q → p ∧ q</code>.</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (hp : p) (hq : q) : p ∧ q := And.intro hp hq
+
+#check fun (hp : p) (hq : q) =&gt; And.intro hp hq
+</code></pre>
+<p>The <code>example</code> command states a theorem without naming it or storing
+it in the permanent context. Essentially, it just checks that the
+given term has the indicated type. It is convenient for illustration,
+and we will use it often.</p>
+<p>The expression <code>And.left h</code> creates a proof of <code>p</code> from a proof
+<code>h : p ∧ q</code>. Similarly, <code>And.right h</code> is a proof of <code>q</code>. They
+are commonly known as the left and right <em>and-elimination</em> rules.</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (h : p ∧ q) : p := And.left h
+example (h : p ∧ q) : q := And.right h
+</code></pre>
+<p>We can now prove <code>p ∧ q → q ∧ p</code> with the following proof term.</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (h : p ∧ q) : q ∧ p :=
+  And.intro (And.right h) (And.left h)
+</code></pre>
+<p>Notice that and-introduction and and-elimination are similar to the
+pairing and projection operations for the Cartesian product. The
+difference is that given <code>hp : p</code> and <code>hq : q</code>, <code>And.intro hp hq</code> has type <code>p ∧ q : Prop</code>, while <code>Prod hp hq</code> has type
+<code>p × q : Type</code>. The similarity between <code>∧</code> and <code>×</code> is another instance
+of the Curry-Howard isomorphism, but in contrast to implication and
+the function space constructor, <code>∧</code> and <code>×</code> are treated separately
+in Lean. With the analogy, however, the proof we have just constructed
+is similar to a function that swaps the elements of a pair.</p>
+<p>We will see in <a href="./structures_and_records.html">Chapter Structures and Records</a> that certain
+types in Lean are <em>structures</em>, which is to say, the type is defined
+with a single canonical <em>constructor</em> which builds an element of the
+type from a sequence of suitable arguments. For every <code>p q : Prop</code>,
+<code>p ∧ q</code> is an example: the canonical way to construct an element is
+to apply <code>And.intro</code> to suitable arguments <code>hp : p</code> and
+<code>hq : q</code>. Lean allows us to use <em>anonymous constructor</em> notation
+<code>⟨arg1, arg2, ...⟩</code> in situations like these, when the relevant type is an
+inductive type and can be inferred from the context. In particular, we
+can often write <code>⟨hp, hq⟩</code> instead of <code>And.intro hp hq</code>:</p>
+<pre><code class="language-lean">variable (p q : Prop)
+variable (hp : p) (hq : q)
+
+#check (⟨hp, hq⟩ : p ∧ q)
+</code></pre>
+<p>These angle brackets are obtained by typing <code>\&lt;</code> and <code>\&gt;</code>, respectively.</p>
+<p>Lean provides another useful syntactic gadget. Given an expression
+<code>e</code> of an inductive type <code>Foo</code> (possibly applied to some
+arguments), the notation <code>e.bar</code> is shorthand for <code>Foo.bar e</code>.
+This provides a convenient way of accessing functions without opening
+a namespace.  For example, the following two expressions mean the same
+thing:</p>
+<pre><code class="language-lean">variable (xs : List Nat)
+
+#check List.length xs
+#check xs.length
+</code></pre>
+<p>As a result, given <code>h : p ∧ q</code>, we can write <code>h.left</code> for
+<code>And.left h</code> and <code>h.right</code> for <code>And.right h</code>. We can therefore
+rewrite the sample proof above conveniently as follows:</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (h : p ∧ q) : q ∧ p :=
+  ⟨h.right, h.left⟩
+</code></pre>
+<p>There is a fine line between brevity and obfuscation, and omitting
+information in this way can sometimes make a proof harder to read. But
+for straightforward constructions like the one above, when the type of
+<code>h</code> and the goal of the construction are salient, the notation is
+clean and effective.</p>
+<p>It is common to iterate constructions like &quot;And.&quot; Lean also allows you
+to flatten nested constructors that associate to the right, so that
+these two proofs are equivalent:</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (h : p ∧ q) : q ∧ p ∧ q :=
+  ⟨h.right, ⟨h.left, h.right⟩⟩
+
+example (h : p ∧ q) : q ∧ p ∧ q :=
+  ⟨h.right, h.left, h.right⟩
+</code></pre>
+<p>This is often useful as well.</p>
+<h3 id="disjunction"><a class="header" href="#disjunction">Disjunction</a></h3>
+<p>The expression <code>Or.intro_left q hp</code> creates a proof of <code>p ∨ q</code>
+from a proof <code>hp : p</code>. Similarly, <code>Or.intro_right p hq</code> creates a
+proof for <code>p ∨ q</code> using a proof <code>hq : q</code>. These are the left and
+right <em>or-introduction</em> rules.</p>
+<pre><code class="language-lean">variable (p q : Prop)
+example (hp : p) : p ∨ q := Or.intro_left q hp
+example (hq : q) : p ∨ q := Or.intro_right p hq
+</code></pre>
+<p>The <em>or-elimination</em> rule is slightly more complicated. The idea is
+that we can prove <code>r</code> from <code>p ∨ q</code>, by showing that <code>r</code> follows
+from <code>p</code> and that <code>r</code> follows from <code>q</code>.  In other words, it is a
+proof by cases. In the expression <code>Or.elim hpq hpr hqr</code>, <code>Or.elim</code>
+takes three arguments, <code>hpq : p ∨ q</code>, <code>hpr : p → r</code> and
+<code>hqr : q → r</code>, and produces a proof of <code>r</code>. In the following example, we use
+<code>Or.elim</code> to prove <code>p ∨ q → q ∨ p</code>.</p>
+<pre><code class="language-lean">variable (p q r : Prop)
+
+example (h : p ∨ q) : q ∨ p :=
+  Or.elim h
+    (fun hp : p =&gt;
+      show q ∨ p from Or.intro_right q hp)
+    (fun hq : q =&gt;
+      show q ∨ p from Or.intro_left p hq)
+</code></pre>
+<p>In most cases, the first argument of <code>Or.intro_right</code> and
+<code>Or.intro_left</code> can be inferred automatically by Lean. Lean
+therefore provides <code>Or.inr</code> and <code>Or.inl</code> which can be viewed as
+shorthand for <code>Or.intro_right _</code> and <code>Or.intro_left _</code>. Thus the
+proof term above could be written more concisely:</p>
+<pre><code class="language-lean">variable (p q r : Prop)
+
+example (h : p ∨ q) : q ∨ p :=
+  Or.elim h (fun hp =&gt; Or.inr hp) (fun hq =&gt; Or.inl hq)
+</code></pre>
+<p>Notice that there is enough information in the full expression for
+Lean to infer the types of <code>hp</code> and <code>hq</code> as well.  But using the
+type annotations in the longer version makes the proof more readable,
+and can help catch and debug errors.</p>
+<p>Because <code>Or</code> has two constructors, we cannot use anonymous
+constructor notation. But we can still write <code>h.elim</code> instead of
+<code>Or.elim h</code>:</p>
+<pre><code class="language-lean">variable (p q r : Prop)
+
+example (h : p ∨ q) : q ∨ p :=
+  h.elim (fun hp =&gt; Or.inr hp) (fun hq =&gt; Or.inl hq)
+</code></pre>
+<p>Once again, you should exercise judgment as to whether such
+abbreviations enhance or diminish readability.</p>
+<h3 id="negation-and-falsity"><a class="header" href="#negation-and-falsity">Negation and Falsity</a></h3>
+<p>Negation, <code>¬p</code>, is actually defined to be <code>p → False</code>, so we
+obtain <code>¬p</code> by deriving a contradiction from <code>p</code>. Similarly, the
+expression <code>hnp hp</code> produces a proof of <code>False</code> from <code>hp : p</code>
+and <code>hnp : ¬p</code>. The next example uses both these rules to produce a
+proof of <code>(p → q) → ¬q → ¬p</code>. (The symbol <code>¬</code> is produced by
+typing <code>\not</code> or <code>\neg</code>.)</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (hpq : p → q) (hnq : ¬q) : ¬p :=
+  fun hp : p =&gt;
+  show False from hnq (hpq hp)
+</code></pre>
+<p>The connective <code>False</code> has a single elimination rule,
+<code>False.elim</code>, which expresses the fact that anything follows from a
+contradiction. This rule is sometimes called <em>ex falso</em> (short for <em>ex
+falso sequitur quodlibet</em>), or the <em>principle of explosion</em>.</p>
+<pre><code class="language-lean">variable (tp q : Prop)
+
+example (hp : p) (hnp : ¬p) : q := False.elim (hnp hp)
+</code></pre>
+<p>The arbitrary fact, <code>q</code>, that follows from falsity is an implicit
+argument in <code>False.elim</code> and is inferred automatically. This
+pattern, deriving an arbitrary fact from contradictory hypotheses, is
+quite common, and is represented by <code>absurd</code>.</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (hp : p) (hnp : ¬p) : q := absurd hp hnp
+</code></pre>
+<p>Here, for example, is a proof of <code>¬p → q → (q → p) → r</code>:</p>
+<pre><code class="language-lean">variable (p q r : Prop)
+
+example (hnp : ¬p) (hq : q) (hqp : q → p) : r :=
+  absurd (hqp hq) hnp
+</code></pre>
+<p>Incidentally, just as <code>False</code> has only an elimination rule, <code>True</code>
+has only an introduction rule, <code>True.intro : true</code>.  In other words,
+<code>True</code> is simply true, and has a canonical proof, <code>True.intro</code>.</p>
+<h3 id="logical-equivalence"><a class="header" href="#logical-equivalence">Logical Equivalence</a></h3>
+<p>The expression <code>Iff.intro h1 h2</code> produces a proof of <code>p ↔ q</code> from
+<code>h1 : p → q</code> and <code>h2 : q → p</code>.  The expression <code>Iff.mp h</code>
+produces a proof of <code>p → q</code> from <code>h : p ↔ q</code>. Similarly,
+<code>Iff.mpr h</code> produces a proof of <code>q → p</code> from <code>h : p ↔ q</code>. Here is a proof
+of <code>p ∧ q ↔ q ∧ p</code>:</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+theorem and_swap : p ∧ q ↔ q ∧ p :=
+  Iff.intro
+    (fun h : p ∧ q =&gt;
+     show q ∧ p from And.intro (And.right h) (And.left h))
+    (fun h : q ∧ p =&gt;
+     show p ∧ q from And.intro (And.right h) (And.left h))
+
+#check and_swap p q    -- p ∧ q ↔ q ∧ p
+
+variable (h : p ∧ q)
+example : q ∧ p := Iff.mp (and_swap p q) h
+</code></pre>
+<p>We can use the anonymous constructor notation to construct a proof of
+<code>p ↔ q</code> from proofs of the forward and backward directions, and we
+can also use <code>.</code> notation with <code>mp</code> and <code>mpr</code>. The previous
+examples can therefore be written concisely as follows:</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+theorem and_swap : p ∧ q ↔ q ∧ p :=
+  ⟨ fun h =&gt; ⟨h.right, h.left⟩, fun h =&gt; ⟨h.right, h.left⟩ ⟩
+
+example (h : p ∧ q) : q ∧ p := (and_swap p q).mp h
+</code></pre>
+<h2 id="introducing-auxiliary-subgoals"><a class="header" href="#introducing-auxiliary-subgoals">Introducing Auxiliary Subgoals</a></h2>
+<p>This is a good place to introduce another device Lean offers to help
+structure long proofs, namely, the <code>have</code> construct, which
+introduces an auxiliary subgoal in a proof. Here is a small example,
+adapted from the last section:</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (h : p ∧ q) : q ∧ p :=
+  have hp : p := h.left
+  have hq : q := h.right
+  show q ∧ p from And.intro hq hp
+</code></pre>
+<p>Internally, the expression <code>have h : p := s; t</code> produces the term
+<code>(fun (h : p) =&gt; t) s</code>. In other words, <code>s</code> is a proof of <code>p</code>,
+<code>t</code> is a proof of the desired conclusion assuming <code>h : p</code>, and the
+two are combined by a lambda abstraction and application. This simple
+device is extremely useful when it comes to structuring long proofs,
+since we can use intermediate <code>have</code>'s as stepping stones leading to
+the final goal.</p>
+<p>Lean also supports a structured way of reasoning backwards from a
+goal, which models the &quot;suffices to show&quot; construction in ordinary
+mathematics. The next example simply permutes the last two lines in
+the previous proof.</p>
+<pre><code class="language-lean">variable (p q : Prop)
+
+example (h : p ∧ q) : q ∧ p :=
+  have hp : p := h.left
+  suffices hq : q from And.intro hq hp
+  show q from And.right h
+</code></pre>
+<p>Writing <code>suffices hq : q</code> leaves us with two goals. First, we have
+to show that it indeed suffices to show <code>q</code>, by proving the original
+goal of <code>q ∧ p</code> with the additional hypothesis <code>hq : q</code>. Finally,
+we have to show <code>q</code>.</p>
+<h2 id="classical-logic"><a class="header" href="#classical-logic">Classical Logic</a></h2>
+<p>The introduction and elimination rules we have seen so far are all
+constructive, which is to say, they reflect a computational
+understanding of the logical connectives based on the
+propositions-as-types correspondence. Ordinary classical logic adds to
+this the law of the excluded middle, <code>p ∨ ¬p</code>. To use this
+principle, you have to open the classical namespace.</p>
+<pre><code class="language-lean">open Classical
+
+variable (p : Prop)
+#check em p
+</code></pre>
+<p>Intuitively, the constructive &quot;Or&quot; is very strong: asserting <code>p ∨ q</code>
+amounts to knowing which is the case. If <code>RH</code> represents the Riemann
+hypothesis, a classical mathematician is willing to assert
+<code>RH ∨ ¬RH</code>, even though we cannot yet assert either disjunct.</p>
+<p>One consequence of the law of the excluded middle is the principle of
+double-negation elimination:</p>
+<pre><code class="language-lean">open Classical
+
+theorem dne {p : Prop} (h : ¬¬p) : p :=
+  Or.elim (em p)
+    (fun hp : p =&gt; hp)
+    (fun hnp : ¬p =&gt; absurd hnp h)
+</code></pre>
+<p>Double-negation elimination allows one to prove any proposition,
+<code>p</code>, by assuming <code>¬p</code> and deriving <code>false</code>, because that amounts
+to proving <code>¬¬p</code>. In other words, double-negation elimination allows
+one to carry out a proof by contradiction, something which is not
+generally possible in constructive logic. As an exercise, you might
+try proving the converse, that is, showing that <code>em</code> can be proved
+from <code>dne</code>.</p>
+<p>The classical axioms also give you access to additional patterns of
+proof that can be justified by appeal to <code>em</code>.  For example, one can
+carry out a proof by cases:</p>
+<pre><code class="language-lean">open Classical
+variable (p : Prop)
+
+example (h : ¬¬p) : p :=
+  byCases
+    (fun h1 : p =&gt; h1)
+    (fun h1 : ¬p =&gt; absurd h1 h)
+</code></pre>
+<p>Or you can carry out a proof by contradiction:</p>
+<pre><code class="language-lean">open Classical
+variable (p : Prop)
+
+example (h : ¬¬p) : p :=
+  byContradiction
+    (fun h1 : ¬p =&gt;
+     show False from h h1)
+</code></pre>
+<p>If you are not used to thinking constructively, it may take some time
+for you to get a sense of where classical reasoning is used.  It is
+needed in the following example because, from a constructive
+standpoint, knowing that <code>p</code> and <code>q</code> are not both true does not
+necessarily tell you which one is false:</p>
+<pre><code class="language-lean"><span class="boring">open Classical
+</span><span class="boring">variable (p q : Prop)
+</span>example (h : ¬(p ∧ q)) : ¬p ∨ ¬q :=
+  Or.elim (em p)
+    (fun hp : p =&gt;
+      Or.inr
+        (show ¬q from
+          fun hq : q =&gt;
+          h ⟨hp, hq⟩))
+    (fun hp : ¬p =&gt;
+      Or.inl hp)
+</code></pre>
+<p>We will see later that there <em>are</em> situations in constructive logic
+where principles like excluded middle and double-negation elimination
+are permissible, and Lean supports the use of classical reasoning in
+such contexts without relying on excluded middle.</p>
+<p>The full list of axioms that are used in Lean to support classical
+reasoning are discussed in <a href="./axioms_and_computation.html">Axioms and Computation</a>.</p>
+<h2 id="examples-of-propositional-validities"><a class="header" href="#examples-of-propositional-validities">Examples of Propositional Validities</a></h2>
+<p>Lean's standard library contains proofs of many valid statements of
+propositional logic, all of which you are free to use in proofs of
+your own. The following list includes a number of common identities.</p>
+<p>Commutativity:</p>
+<ol>
+<li><code>p ∧ q ↔ q ∧ p</code></li>
+<li><code>p ∨ q ↔ q ∨ p</code></li>
+</ol>
+<p>Associativity:</p>
+<ol start="3">
+<li><code>(p ∧ q) ∧ r ↔ p ∧ (q ∧ r)</code></li>
+<li><code>(p ∨ q) ∨ r ↔ p ∨ (q ∨ r)</code></li>
+</ol>
+<p>Distributivity:</p>
+<ol start="5">
+<li><code>p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r)</code></li>
+<li><code>p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r)</code></li>
+</ol>
+<p>Other properties:</p>
+<ol start="7">
+<li><code>(p → (q → r)) ↔ (p ∧ q → r)</code></li>
+<li><code>((p ∨ q) → r) ↔ (p → r) ∧ (q → r)</code></li>
+<li><code>¬(p ∨ q) ↔ ¬p ∧ ¬q</code></li>
+<li><code>¬p ∨ ¬q → ¬(p ∧ q)</code></li>
+<li><code>¬(p ∧ ¬p)</code></li>
+<li><code>p ∧ ¬q → ¬(p → q)</code></li>
+<li><code>¬p → (p → q)</code></li>
+<li><code>(¬p ∨ q) → (p → q)</code></li>
+<li><code>p ∨ False ↔ p</code></li>
+<li><code>p ∧ False ↔ False</code></li>
+<li><code>¬(p ↔ ¬p)</code></li>
+<li><code>(p → q) → (¬q → ¬p)</code></li>
+</ol>
+<p>These require classical reasoning:</p>
+<ol start="19">
+<li><code>(p → r ∨ s) → ((p → r) ∨ (p → s))</code></li>
+<li><code>¬(p ∧ q) → ¬p ∨ ¬q</code></li>
+<li><code>¬(p → q) → p ∧ ¬q</code></li>
+<li><code>(p → q) → (¬p ∨ q)</code></li>
+<li><code>(¬q → ¬p) → (p → q)</code></li>
+<li><code>p ∨ ¬p</code></li>
+<li><code>(((p → q) → p) → p)</code></li>
+</ol>
+<p>The <code>sorry</code> identifier magically produces a proof of anything, or
+provides an object of any data type at all. Of course, it is unsound
+as a proof method -- for example, you can use it to prove <code>False</code> --
+and Lean produces severe warnings when files use or import theorems
+which depend on it. But it is very useful for building long proofs
+incrementally. Start writing the proof from the top down, using
+<code>sorry</code> to fill in subproofs. Make sure Lean accepts the term with
+all the <code>sorry</code>'s; if not, there are errors that you need to
+correct. Then go back and replace each <code>sorry</code> with an actual proof,
+until no more remain.</p>
+<p>Here is another useful trick. Instead of using <code>sorry</code>, you can use
+an underscore <code>_</code> as a placeholder. Recall this tells Lean that
+the argument is implicit, and should be filled in automatically. If
+Lean tries to do so and fails, it returns with an error message &quot;don't
+know how to synthesize placeholder,&quot; followed by the type of
+the term it is expecting, and all the objects and hypotheses available
+in the context. In other words, for each unresolved placeholder, Lean
+reports the subgoal that needs to be filled at that point. You can
+then construct a proof by incrementally filling in these placeholders.</p>
+<p>For reference, here are two sample proofs of validities taken from the
+list above.</p>
+<pre><code class="language-lean">open Classical
+
+-- distributivity
+example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) :=
+  Iff.intro
+    (fun h : p ∧ (q ∨ r) =&gt;
+      have hp : p := h.left
+      Or.elim (h.right)
+        (fun hq : q =&gt;
+          show (p ∧ q) ∨ (p ∧ r) from Or.inl ⟨hp, hq⟩)
+        (fun hr : r =&gt;
+          show (p ∧ q) ∨ (p ∧ r) from Or.inr ⟨hp, hr⟩))
+    (fun h : (p ∧ q) ∨ (p ∧ r) =&gt;
+      Or.elim h
+        (fun hpq : p ∧ q =&gt;
+          have hp : p := hpq.left
+          have hq : q := hpq.right
+          show p ∧ (q ∨ r) from ⟨hp, Or.inl hq⟩)
+        (fun hpr : p ∧ r =&gt;
+          have hp : p := hpr.left
+          have hr : r := hpr.right
+          show p ∧ (q ∨ r) from ⟨hp, Or.inr hr⟩))
+
+-- an example that requires classical reasoning
+example (p q : Prop) : ¬(p ∧ ¬q) → (p → q) :=
+  fun h : ¬(p ∧ ¬q) =&gt;
+  fun hp : p =&gt;
+  show q from
+    Or.elim (em q)
+      (fun hq : q =&gt; hq)
+      (fun hnq : ¬q =&gt; absurd (And.intro hp hnq) h)
+</code></pre>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<p>Prove the following identities, replacing the &quot;sorry&quot; placeholders with actual proofs.</p>
+<pre><code class="language-lean">variable (p q r : Prop)
+
+-- commutativity of ∧ and ∨
+example : p ∧ q ↔ q ∧ p := sorry
+example : p ∨ q ↔ q ∨ p := sorry
+
+-- associativity of ∧ and ∨
+example : (p ∧ q) ∧ r ↔ p ∧ (q ∧ r) := sorry
+example : (p ∨ q) ∨ r ↔ p ∨ (q ∨ r) := sorry
+
+-- distributivity
+example : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := sorry
+example : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) := sorry
+
+-- other properties
+example : (p → (q → r)) ↔ (p ∧ q → r) := sorry
+example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
+example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
+example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
+example : ¬(p ∧ ¬p) := sorry
+example : p ∧ ¬q → ¬(p → q) := sorry
+example : ¬p → (p → q) := sorry
+example : (¬p ∨ q) → (p → q) := sorry
+example : p ∨ False ↔ p := sorry
+example : p ∧ False ↔ False := sorry
+example : (p → q) → (¬q → ¬p) := sorry
+</code></pre>
+<p>Prove the following identities, replacing the &quot;sorry&quot; placeholders
+with actual proofs. These require classical reasoning.</p>
+<pre><code class="language-lean">open Classical
+
+variable (p q r : Prop)
+
+example : (p → q ∨ r) → ((p → q) ∨ (p → r)) := sorry
+example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
+example : ¬(p → q) → p ∧ ¬q := sorry
+example : (p → q) → (¬p ∨ q) := sorry
+example : (¬q → ¬p) → (p → q) := sorry
+example : p ∨ ¬p := sorry
+example : (((p → q) → p) → p) := sorry
+</code></pre>
+<p>Prove <code>¬(p ↔ ¬p)</code> without using classical logic.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="dependent_type_theory.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="quantifiers_and_equality.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="dependent_type_theory.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="quantifiers_and_equality.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

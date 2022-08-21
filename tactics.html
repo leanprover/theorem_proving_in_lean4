@@ -1,0 +1,1439 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tactics - Theorem Proving in Lean 4</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html" class="active"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Theorem Proving in Lean 4</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="tactics"><a class="header" href="#tactics">Tactics</a></h1>
+<p>In this chapter, we describe an alternative approach to constructing
+proofs, using <em>tactics</em>.  A proof term is a representation of a
+mathematical proof; tactics are commands, or instructions, that
+describe how to build such a proof. Informally, you might begin a
+mathematical proof by saying &quot;to prove the forward direction, unfold
+the definition, apply the previous lemma, and simplify.&quot; Just as these
+are instructions that tell the reader how to find the relevant proof,
+tactics are instructions that tell Lean how to construct a proof
+term. They naturally support an incremental style of writing proofs,
+in which you decompose a proof and work on goals one step at a time.</p>
+<p>We will describe proofs that consist of sequences of tactics as
+&quot;tactic-style&quot; proofs, to contrast with the ways of writing proof
+terms we have seen so far, which we will call &quot;term-style&quot;
+proofs. Each style has its own advantages and disadvantages. For
+example, tactic-style proofs can be harder to read, because they
+require the reader to predict or guess the results of each
+instruction. But they can also be shorter and easier to
+write. Moreover, tactics offer a gateway to using Lean's automation,
+since automated procedures are themselves tactics.</p>
+<h2 id="entering-tactic-mode"><a class="header" href="#entering-tactic-mode">Entering Tactic Mode</a></h2>
+<p>Conceptually, stating a theorem or introducing a <code>have</code> statement
+creates a goal, namely, the goal of constructing a term with the
+expected type. For example, the following creates the goal of
+constructing a term of type <code>p ∧ q ∧ p</code>, in a context with constants
+<code>p q : Prop</code>, <code>hp : p</code> and <code>hq : q</code>:</p>
+<pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
+  sorry
+</code></pre>
+<p>You can write this goal as follows:</p>
+<pre><code>    p : Prop, q : Prop, hp : p, hq : q ⊢ p ∧ q ∧ p
+</code></pre>
+<p>Indeed, if you replace the &quot;sorry&quot; by an underscore in the example
+above, Lean will report that it is exactly this goal that has been
+left unsolved.</p>
+<p>Ordinarily, you meet such a goal by writing an explicit term. But
+wherever a term is expected, Lean allows us to insert instead a <code>by &lt;tactics&gt;</code> block, where <code>&lt;tactics&gt;</code> is a sequence of commands,
+separated by semicolons or line breaks. You can prove the theorem above
+in that way:</p>
+<pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
+  by apply And.intro
+     exact hp
+     apply And.intro
+     exact hq
+     exact hp
+</code></pre>
+<p>We often put the <code>by</code> keyword on the preceding line, and write the
+example above as:</p>
+<pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+  apply And.intro
+  exact hp
+  apply And.intro
+  exact hq
+  exact hp
+</code></pre>
+<p>The <code>apply</code> tactic applies an expression, viewed as denoting a
+function with zero or more arguments. It unifies the conclusion with
+the expression in the current goal, and creates new goals for the
+remaining arguments, provided that no later arguments depend on
+them. In the example above, the command <code>apply And.intro</code> yields two
+subgoals:</p>
+<pre><code>    case left
+    p q : Prop
+    hp : p
+    hq : q
+    ⊢ p
+
+    case right
+    p q : Prop
+    hp : p
+    hq : q
+    ⊢ q ∧ p
+</code></pre>
+<p>The first goal is met with the command <code>exact hp</code>. The <code>exact</code>
+command is just a variant of <code>apply</code> which signals that the
+expression given should fill the goal exactly. It is good form to use
+it in a tactic proof, since its failure signals that something has
+gone wrong. It is also more robust than <code>apply</code>, since the
+elaborator takes the expected type, given by the target of the goal,
+into account when processing the expression that is being applied. In
+this case, however, <code>apply</code> would work just as well.</p>
+<p>You can see the resulting proof term with the <code>#print</code> command:</p>
+<pre><code class="language-lean"><span class="boring">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+</span><span class="boring"> apply And.intro
+</span><span class="boring"> exact hp
+</span><span class="boring"> apply And.intro
+</span><span class="boring"> exact hq
+</span><span class="boring"> exact hp
+</span>#print test
+</code></pre>
+<p>You can write a tactic script incrementally. In VS Code, you can open
+a window to display messages by pressing <code>Ctrl-Shift-Enter</code>, and
+that window will then show you the current goal whenever the cursor is
+in a tactic block. In Emacs, you can see the goal at the end of any
+line by pressing <code>C-c C-g</code>, or see the remaining goal in an
+incomplete proof by putting the cursor after the first character of
+the last tactic. If the proof is incomplete, the token <code>by</code> is
+decorated with a red squiggly line, and the error message contains the
+remaining goals.</p>
+<p>Tactic commands can take compound expressions, not just single
+identifiers. The following is a shorter version of the preceding
+proof:</p>
+<pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+  apply And.intro hp
+  exact And.intro hq hp
+</code></pre>
+<p>Unsurprisingly, it produces exactly the same proof term.</p>
+<pre><code class="language-lean"><span class="boring">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+</span><span class="boring"> apply And.intro hp
+</span><span class="boring"> exact And.intro hq hp
+</span>#print test
+</code></pre>
+<p>Multiple tactic applications can be written in a single line by concatenating with a semicolon.</p>
+<pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+  apply And.intro hp; exact And.intro hq hp
+</code></pre>
+<p>Tactics that may produce multiple subgoals often tag them. For
+example, the tactic <code>apply And.intro</code> tagged the first subgoal as
+<code>left</code>, and the second as <code>right</code>. In the case of the <code>apply</code>
+tactic, the tags are inferred from the parameters' names used in the
+<code>And.intro</code> declaration. You can structure your tactics using the
+notation <code>case &lt;tag&gt; =&gt; &lt;tactics&gt;</code>. The following is a structured
+version of our first tactic proof in this chapter.</p>
+<pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+  apply And.intro
+  case left =&gt; exact hp
+  case right =&gt;
+    apply And.intro
+    case left =&gt; exact hq
+    case right =&gt; exact hp
+</code></pre>
+<p>You can solve the subgoal <code>right</code> before <code>left</code> using the <code>case</code>
+notation:</p>
+<pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+  apply And.intro
+  case right =&gt;
+    apply And.intro
+    case left =&gt; exact hq
+    case right =&gt; exact hp
+  case left =&gt; exact hp
+</code></pre>
+<p>Note that Lean hides the other goals inside the <code>case</code> block. We say
+it is &quot;focusing&quot; on the selected goal.  Moreover, Lean flags an error
+if the selected goal is not fully solved at the end of the <code>case</code>
+block.</p>
+<p>For simple subgoals, it may not be worth selecting a subgoal using its
+tag, but you may still want to structure the proof. Lean also provides
+the &quot;bullet&quot; notation <code>. &lt;tactics&gt;</code> (or <code>· &lt;tactics&gt;</code>) for
+structuring proof.</p>
+<pre><code class="language-lean">theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
+  apply And.intro
+  . exact hp
+  . apply And.intro
+    . exact hq
+    . exact hp
+</code></pre>
+<h2 id="basic-tactics"><a class="header" href="#basic-tactics">Basic Tactics</a></h2>
+<p>In addition to <code>apply</code> and <code>exact</code>, another useful tactic is
+<code>intro</code>, which introduces a hypothesis. What follows is an example
+of an identity from propositional logic that we proved in a previous
+chapter, now proved using tactics.</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro h
+    apply Or.elim (And.right h)
+    . intro hq
+      apply Or.inl
+      apply And.intro
+      . exact And.left h
+      . exact hq
+    . intro hr
+      apply Or.inr
+      apply And.intro
+      . exact And.left h
+      . exact hr
+  . intro h
+    apply Or.elim h
+    . intro hpq
+      apply And.intro
+      . exact And.left hpq
+      . apply Or.inl
+        exact And.right hpq
+    . intro hpr
+      apply And.intro
+      . exact And.left hpr
+      . apply Or.inr
+        exact And.right hpr
+</code></pre>
+<p>The <code>intro</code> command can more generally be used to introduce a variable of any type:</p>
+<pre><code class="language-lean">example (α : Type) : α → α := by
+  intro a
+  exact a
+
+example (α : Type) : ∀ x : α, x = x := by
+  intro x
+  exact Eq.refl x
+</code></pre>
+<p>You can use it to introduce several variables:</p>
+<pre><code class="language-lean">example : ∀ a b c : Nat, a = b → a = c → c = b := by
+  intro a b c h₁ h₂
+  exact Eq.trans (Eq.symm h₂) h₁
+</code></pre>
+<p>As the <code>apply</code> tactic is a command for constructing function
+applications interactively, the <code>intro</code> tactic is a command for
+constructing function abstractions interactively (i.e., terms of the
+form <code>fun x =&gt; e</code>).  As with lambda abstraction notation, the
+<code>intro</code> tactic allows us to use an implicit <code>match</code>.</p>
+<pre><code class="language-lean">example (α : Type) (p q : α → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
+  intro ⟨w, hpw, hqw⟩
+  exact ⟨w, hqw, hpw⟩
+</code></pre>
+<p>You can also provide multiple alternatives like in the <code>match</code> expression.</p>
+<pre><code class="language-lean">example (α : Type) (p q : α → Prop) : (∃ x, p x ∨ q x) → ∃ x, q x ∨ p x := by
+  intro
+  | ⟨w, Or.inl h⟩ =&gt; exact ⟨w, Or.inr h⟩
+  | ⟨w, Or.inr h⟩ =&gt; exact ⟨w, Or.inl h⟩
+</code></pre>
+<p>The <code>intros</code> tactic can be used without any arguments, in which
+case, it chooses names and introduces as many variables as it can. You
+will see an example of this in a moment.</p>
+<p>The <code>assumption</code> tactic looks through the assumptions in context of
+the current goal, and if there is one matching the conclusion, it
+applies it.</p>
+<pre><code class="language-lean">example (x y z w : Nat) (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
+  apply Eq.trans h₁
+  apply Eq.trans h₂
+  assumption   -- applied h₃
+</code></pre>
+<p>It will unify metavariables in the conclusion if necessary:</p>
+<pre><code class="language-lean">example (x y z w : Nat) (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
+  apply Eq.trans
+  assumption      -- solves x = ?b with h₁
+  apply Eq.trans
+  assumption      -- solves y = ?h₂.b with h₂
+  assumption      -- solves z = w with h₃
+</code></pre>
+<p>The following example uses the <code>intros</code> command to introduce the three variables and two hypotheses automatically:</p>
+<pre><code class="language-lean">example : ∀ a b c : Nat, a = b → a = c → c = b := by
+  intros
+  apply Eq.trans
+  apply Eq.symm
+  assumption
+  assumption
+</code></pre>
+<p>Note that names automatically generated by Lean are inaccessible by default. The motivation is to
+ensure your tactic proofs do not rely on automatically generated names, and are consequently more robust.
+However, you can use the combinator <code>unhygienic</code> to disable this restriction.</p>
+<pre><code class="language-lean">example : ∀ a b c : Nat, a = b → a = c → c = b := by unhygienic
+  intros
+  apply Eq.trans
+  apply Eq.symm
+  exact a_2
+  exact a_1
+</code></pre>
+<p>You can also use the <code>rename_i</code> tactic to rename the most recent inaccessible names in your context.
+In the following example, the tactic <code>rename_i h1 _ h2</code> renames two of the last three hypotheses in
+your context.</p>
+<pre><code class="language-lean">example : ∀ a b c d : Nat, a = b → a = d → a = c → c = b := by
+  intros
+  rename_i h1 _ h2
+  apply Eq.trans
+  apply Eq.symm
+  exact h2
+  exact h1
+</code></pre>
+<p>The <code>rfl</code> tactic is syntactic sugar for <code>exact rfl</code>.</p>
+<pre><code class="language-lean">example (y : Nat) : (fun x : Nat =&gt; 0) y = 0 :=
+  by rfl
+</code></pre>
+<p>The <code>repeat</code> combinator can be used to apply a tactic several times.</p>
+<pre><code class="language-lean">example : ∀ a b c : Nat, a = b → a = c → c = b := by
+  intros
+  apply Eq.trans
+  apply Eq.symm
+  repeat assumption
+</code></pre>
+<p>Another tactic that is sometimes useful is the <code>revert</code> tactic,
+which is, in a sense, an inverse to <code>intro</code>.</p>
+<pre><code class="language-lean">example (x : Nat) : x = x := by
+  revert x
+  -- goal is ⊢ ∀ (x : Nat), x = x
+  intro y
+  -- goal is y : Nat ⊢ y = y
+  rfl
+</code></pre>
+<p>Moving a hypothesis into the goal yields an implication:</p>
+<pre><code class="language-lean">example (x y : Nat) (h : x = y) : y = x := by
+  revert h
+  -- goal is x y : Nat ⊢ x = y → y = x
+  intro h₁
+  -- goal is x y : Nat, h₁ : x = y ⊢ y = x
+  apply Eq.symm
+  assumption
+</code></pre>
+<p>But <code>revert</code> is even more clever, in that it will revert not only an
+element of the context but also all the subsequent elements of the
+context that depend on it. For example, reverting <code>x</code> in the example
+above brings <code>h</code> along with it:</p>
+<pre><code class="language-lean">example (x y : Nat) (h : x = y) : y = x := by
+  revert x
+  -- goal is y : Nat ⊢ ∀ (x : Nat), x = y → y = x
+  intros
+  apply Eq.symm
+  assumption
+</code></pre>
+<p>You can also revert multiple elements of the context at once:</p>
+<pre><code class="language-lean">example (x y : Nat) (h : x = y) : y = x := by
+  revert x y
+  -- goal is ⊢ ∀ (x y : Nat), x = y → y = x
+  intros
+  apply Eq.symm
+  assumption
+</code></pre>
+<p>You can only <code>revert</code> an element of the local context, that is, a
+local variable or hypothesis. But you can replace an arbitrary
+expression in the goal by a fresh variable using the <code>generalize</code>
+tactic.</p>
+<pre><code class="language-lean">example : 3 = 3 := by
+  generalize 3 = x
+  -- goal is x : Nat ⊢ x = x
+  revert x
+  -- goal is ⊢ ∀ (x : Nat), x = x
+  intro y
+  -- goal is y : Nat ⊢ y = y
+  rfl
+</code></pre>
+<p>The mnemonic in the notation above is that you are generalizing the
+goal by setting <code>3</code> to an arbitrary variable <code>x</code>. Be careful: not
+every generalization preserves the validity of the goal. Here,
+<code>generalize</code> replaces a goal that could be proved using
+<code>rfl</code> with one that is not provable:</p>
+<pre><code class="language-lean">example : 2 + 3 = 5 := by
+  generalize 3 = x
+  -- goal is x : Nat ⊢ 2 + x = 5
+  admit
+</code></pre>
+<p>In this example, the <code>admit</code> tactic is the analogue of the <code>sorry</code>
+proof term. It closes the current goal, producing the usual warning
+that <code>sorry</code> has been used. To preserve the validity of the previous
+goal, the <code>generalize</code> tactic allows us to record the fact that
+<code>3</code> has been replaced by <code>x</code>. All you need to do is to provide a
+label, and <code>generalize</code> uses it to store the assignment in the local
+context:</p>
+<pre><code class="language-lean">example : 2 + 3 = 5 := by
+  generalize h : 3 = x
+  -- goal is x : Nat, h : 3 = x ⊢ 2 + x = 5
+  rw [← h]
+</code></pre>
+<p>Here the <code>rewrite</code> tactic, abbreviated <code>rw</code>, uses <code>h</code> to replace
+<code>x</code> by <code>3</code> again. The <code>rewrite</code> tactic will be discussed below.</p>
+<h2 id="more-tactics"><a class="header" href="#more-tactics">More Tactics</a></h2>
+<p>Some additional tactics are useful for constructing and destructing
+propositions and data. For example, when applied to a goal of the form
+<code>p ∨ q</code>, you use tactics such as <code>apply Or.inl</code> and <code>apply Or.inr</code>.  Conversely, the <code>cases</code> tactic can be used to decompose a
+disjunction.</p>
+<pre><code class="language-lean">example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h with
+  | inl hp =&gt; apply Or.inr; exact hp
+  | inr hq =&gt; apply Or.inl; exact hq
+</code></pre>
+<p>Note that the syntax is similar to the one used in <code>match</code> expressions.
+The new subgoals can be solved in any order.</p>
+<pre><code class="language-lean">example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h with
+  | inr hq =&gt; apply Or.inl; exact hq
+  | inl hp =&gt; apply Or.inr; exact hp
+</code></pre>
+<p>You can also use a (unstructured) <code>cases</code> without the <code>with</code> and a tactic
+for each alternative.</p>
+<pre><code class="language-lean">example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h
+  apply Or.inr
+  assumption
+  apply Or.inl
+  assumption
+</code></pre>
+<p>The (unstructured) <code>cases</code> is particularly useful when you can close several
+subgoals using the same tactic.</p>
+<pre><code class="language-lean">example (p : Prop) : p ∨ p → p := by
+  intro h
+  cases h
+  repeat assumption
+</code></pre>
+<p>You can also use the combinator <code>tac1 &lt;;&gt; tac2</code> to apply <code>tac2</code> to each
+subgoal produced by tactic <code>tac1</code>.</p>
+<pre><code class="language-lean">example (p : Prop) : p ∨ p → p := by
+  intro h
+  cases h &lt;;&gt; assumption
+</code></pre>
+<p>You can combine the unstructured <code>cases</code> tactic with the <code>case</code> and <code>.</code> notation.</p>
+<pre><code class="language-lean">example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h
+  . apply Or.inr
+    assumption
+  . apply Or.inl
+    assumption
+
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h
+  case inr h =&gt;
+    apply Or.inl
+    assumption
+  case inl h =&gt;
+    apply Or.inr
+    assumption
+
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro h
+  cases h
+  case inr h =&gt;
+    apply Or.inl
+    assumption
+  . apply Or.inr
+    assumption
+</code></pre>
+<p>The <code>cases</code> tactic can also be used to
+decompose a conjunction.</p>
+<pre><code class="language-lean">example (p q : Prop) : p ∧ q → q ∧ p := by
+  intro h
+  cases h with
+  | intro hp hq =&gt; constructor; exact hq; exact hp
+</code></pre>
+<p>In this example, there is only one goal after the <code>cases</code> tactic is
+applied, with <code>h : p ∧ q</code> replaced by a pair of assumptions,
+<code>hp : p</code> and <code>hq : q</code>. The <code>constructor</code> tactic applies the unique
+constructor for conjunction, <code>And.intro</code>. With these tactics, an
+example from the previous section can be rewritten as follows:</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro h
+    cases h with
+    | intro hp hqr =&gt;
+      cases hqr
+      . apply Or.inl; constructor &lt;;&gt; assumption
+      . apply Or.inr; constructor &lt;;&gt; assumption
+  . intro h
+    cases h with
+    | inl hpq =&gt;
+      cases hpq with
+      | intro hp hq =&gt; constructor; exact hp; apply Or.inl; exact hq
+    | inr hpr =&gt;
+      cases hpr with
+      | intro hp hr =&gt; constructor; exact hp; apply Or.inr; exact hr
+</code></pre>
+<p>You will see in <a href="./inductive_types.html">Chapter Inductive Types</a> that
+these tactics are quite general. The <code>cases</code> tactic can be used to
+decompose any element of an inductively defined type; <code>constructor</code>
+always applies the first applicable constructor of an inductively defined type.
+For example, you can use <code>cases</code> and <code>constructor</code> with an existential quantifier:</p>
+<pre><code class="language-lean">example (p q : Nat → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x := by
+  intro h
+  cases h with
+  | intro x px =&gt; constructor; apply Or.inl; exact px
+</code></pre>
+<p>Here, the <code>constructor</code> tactic leaves the first component of the
+existential assertion, the value of <code>x</code>, implicit. It is represented
+by a metavariable, which should be instantiated later on. In the
+previous example, the proper value of the metavariable is determined
+by the tactic <code>exact px</code>, since <code>px</code> has type <code>p x</code>. If you want
+to specify a witness to the existential quantifier explicitly, you can
+use the <code>exists</code> tactic instead:</p>
+<pre><code class="language-lean">example (p q : Nat → Prop) : (∃ x, p x) → ∃ x, p x ∨ q x := by
+  intro h
+  cases h with
+  | intro x px =&gt; exists x; apply Or.inl; exact px
+</code></pre>
+<p>Here is another example:</p>
+<pre><code class="language-lean">example (p q : Nat → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
+  intro h
+  cases h with
+  | intro x hpq =&gt;
+    cases hpq with
+    | intro hp hq =&gt;
+      exists x
+</code></pre>
+<p>These tactics can be used on data just as well as propositions. In the
+next example, they are used to define functions which swap the
+components of the product and sum types:</p>
+<pre><code class="language-lean">def swap_pair : α × β → β × α := by
+  intro p
+  cases p
+  constructor &lt;;&gt; assumption
+
+def swap_sum : Sum α β → Sum β α := by
+  intro p
+  cases p
+  . apply Sum.inr; assumption
+  . apply Sum.inl; assumption
+</code></pre>
+<p>Note that up to the names we have chosen for the variables, the
+definitions are identical to the proofs of the analogous propositions
+for conjunction and disjunction. The <code>cases</code> tactic will also do a
+case distinction on a natural number:</p>
+<pre><code class="language-lean">open Nat
+example (P : Nat → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : Nat) : P m := by
+  cases m with
+  | zero    =&gt; exact h₀
+  | succ m' =&gt; exact h₁ m'
+</code></pre>
+<p>The <code>cases</code> tactic, and its companion, the <code>induction</code> tactic, are discussed in greater detail in
+the <a href="./inductive_types.html#tactics-for-inductive-types">Tactics for Inductive Types</a> section.</p>
+<p>The <code>contradiction</code> tactic searches for a contradiction among the hypotheses of the current goal:</p>
+<pre><code class="language-lean">example (p q : Prop) : p ∧ ¬ p → q := by
+  intro h
+  cases h
+  contradiction
+</code></pre>
+<p>You can also use <code>match</code> in tactic blocks.</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro h
+    match h with
+    | ⟨_, Or.inl _⟩ =&gt; apply Or.inl; constructor &lt;;&gt; assumption
+    | ⟨_, Or.inr _⟩ =&gt; apply Or.inr; constructor &lt;;&gt; assumption
+  . intro h
+    match h with
+    | Or.inl ⟨hp, hq⟩ =&gt; constructor; exact hp; apply Or.inl; exact hq
+    | Or.inr ⟨hp, hr⟩ =&gt; constructor; exact hp; apply Or.inr; exact hr
+</code></pre>
+<p>You can &quot;combine&quot; <code>intro h</code> with <code>match h ...</code> and write the previous examples as follows</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro
+    | ⟨hp, Or.inl hq⟩ =&gt; apply Or.inl; constructor &lt;;&gt; assumption
+    | ⟨hp, Or.inr hr⟩ =&gt; apply Or.inr; constructor &lt;;&gt; assumption
+  . intro
+    | Or.inl ⟨hp, hq⟩ =&gt; constructor; assumption; apply Or.inl; assumption
+    | Or.inr ⟨hp, hr⟩ =&gt; constructor; assumption; apply Or.inr; assumption
+</code></pre>
+<h2 id="structuring-tactic-proofs"><a class="header" href="#structuring-tactic-proofs">Structuring Tactic Proofs</a></h2>
+<p>Tactics often provide an efficient way of building a proof, but long
+sequences of instructions can obscure the structure of the
+argument. In this section, we describe some means that help provide
+structure to a tactic-style proof, making such proofs more readable
+and robust.</p>
+<p>One thing that is nice about Lean's proof-writing syntax is that it is
+possible to mix term-style and tactic-style proofs, and pass between
+the two freely. For example, the tactics <code>apply</code> and <code>exact</code>
+expect arbitrary terms, which you can write using <code>have</code>, <code>show</code>,
+and so on. Conversely, when writing an arbitrary Lean term, you can
+always invoke the tactic mode by inserting a <code>by</code>
+block. The following is a somewhat toy example:</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
+  intro h
+  exact
+    have hp : p := h.left
+    have hqr : q ∨ r := h.right
+    show (p ∧ q) ∨ (p ∧ r) by
+      cases hqr with
+      | inl hq =&gt; exact Or.inl ⟨hp, hq⟩
+      | inr hr =&gt; exact Or.inr ⟨hp, hr⟩
+</code></pre>
+<p>The following is a more natural example:</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro h
+    cases h.right with
+    | inl hq =&gt; exact Or.inl ⟨h.left, hq⟩
+    | inr hr =&gt; exact Or.inr ⟨h.left, hr⟩
+  . intro h
+    cases h with
+    | inl hpq =&gt; exact ⟨hpq.left, Or.inl hpq.right⟩
+    | inr hpr =&gt; exact ⟨hpr.left, Or.inr hpr.right⟩
+</code></pre>
+<p>In fact, there is a <code>show</code> tactic, which is similar to the
+<code>show</code> expression in a proof term. It simply declares the type of the
+goal that is about to be solved, while remaining in tactic
+mode.</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  . intro h
+    cases h.right with
+    | inl hq =&gt;
+      show (p ∧ q) ∨ (p ∧ r)
+      exact Or.inl ⟨h.left, hq⟩
+    | inr hr =&gt;
+      show (p ∧ q) ∨ (p ∧ r)
+      exact Or.inr ⟨h.left, hr⟩
+  . intro h
+    cases h with
+    | inl hpq =&gt;
+      show p ∧ (q ∨ r)
+      exact ⟨hpq.left, Or.inl hpq.right⟩
+    | inr hpr =&gt;
+      show p ∧ (q ∨ r)
+      exact ⟨hpr.left, Or.inr hpr.right⟩
+</code></pre>
+<p>The <code>show</code> tactic can actually be used to rewrite a goal to something definitionally equivalent:</p>
+<pre><code class="language-lean">example (n : Nat) : n + 1 = Nat.succ n := by
+  show Nat.succ n = Nat.succ n
+  rfl
+</code></pre>
+<p>There is also a <code>have</code> tactic, which introduces a new subgoal, just as when writing proof terms:</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
+  intro ⟨hp, hqr⟩
+  show (p ∧ q) ∨ (p ∧ r)
+  cases hqr with
+  | inl hq =&gt;
+    have hpq : p ∧ q := And.intro hp hq
+    apply Or.inl
+    exact hpq
+  | inr hr =&gt;
+    have hpr : p ∧ r := And.intro hp hr
+    apply Or.inr
+    exact hpr
+</code></pre>
+<p>As with proof terms, you can omit the label in the <code>have</code> tactic, in
+which case, the default label <code>this</code> is used:</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
+  intro ⟨hp, hqr⟩
+  show (p ∧ q) ∨ (p ∧ r)
+  cases hqr with
+  | inl hq =&gt;
+    have : p ∧ q := And.intro hp hq
+    apply Or.inl
+    exact this
+  | inr hr =&gt;
+    have : p ∧ r := And.intro hp hr
+    apply Or.inr
+    exact this
+</code></pre>
+<p>The types in a <code>have</code> tactic can be omitted, so you can write <code>have hp := h.left</code> and <code>have hqr := h.right</code>.  In fact, with this
+notation, you can even omit both the type and the label, in which case
+the new fact is introduced with the label <code>this</code>.</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
+  intro ⟨hp, hqr⟩
+  cases hqr with
+  | inl hq =&gt;
+    have := And.intro hp hq
+    apply Or.inl; exact this
+  | inr hr =&gt;
+    have := And.intro hp hr
+    apply Or.inr; exact this
+</code></pre>
+<p>Lean also has a <code>let</code> tactic, which is similar to the <code>have</code>
+tactic, but is used to introduce local definitions instead of
+auxiliary facts. It is the tactic analogue of a <code>let</code> in a proof
+term.</p>
+<pre><code class="language-lean">example : ∃ x, x + 2 = 8 := by
+  let a : Nat := 3 * 2
+  exists a
+</code></pre>
+<p>As with <code>have</code>, you can leave the type implicit by writing <code>let a := 3 * 2</code>. The difference between <code>let</code> and <code>have</code> is that
+<code>let</code> introduces a local definition in the context, so that the
+definition of the local declaration can be unfolded in the proof.</p>
+<p>We have used <code>.</code> to create nested tactic blocks.  In a nested block,
+Lean focuses on the first goal, and generates an error if it has not
+been fully solved at the end of the block. This can be helpful in
+indicating the separate proofs of multiple subgoals introduced by a
+tactic. The notation <code>.</code> is whitespace sensitive and relies on the indentation
+to detect whether the tactic block ends. Alternatively, you can
+define tactic blocks using curly braces and semicolons.</p>
+<pre><code class="language-lean">example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
+  apply Iff.intro
+  { intro h;
+    cases h.right;
+    { show (p ∧ q) ∨ (p ∧ r);
+      exact Or.inl ⟨h.left, ‹q›⟩ }
+    { show (p ∧ q) ∨ (p ∧ r);
+      exact Or.inr ⟨h.left, ‹r›⟩ } }
+  { intro h;
+    cases h;
+    { show p ∧ (q ∨ r);
+      rename_i hpq;
+      exact ⟨hpq.left, Or.inl hpq.right⟩ }
+    { show p ∧ (q ∨ r);
+      rename_i hpr;
+      exact ⟨hpr.left, Or.inr hpr.right⟩ } }
+</code></pre>
+<p>It is useful to use indentation to structure proof: every time a tactic
+leaves more than one subgoal, we separate the remaining subgoals by
+enclosing them in blocks and indenting.  Thus if the application of
+theorem <code>foo</code> to a single goal produces four subgoals, one would
+expect the proof to look like this:</p>
+<pre><code>  apply foo
+  . &lt;proof of first goal&gt;
+  . &lt;proof of second goal&gt;
+  . &lt;proof of third goal&gt;
+  . &lt;proof of final goal&gt;
+</code></pre>
+<p>or</p>
+<pre><code>  apply foo
+  case &lt;tag of first goal&gt;  =&gt; &lt;proof of first goal&gt;
+  case &lt;tag of second goal&gt; =&gt; &lt;proof of second goal&gt;
+  case &lt;tag of third goal&gt;  =&gt; &lt;proof of third goal&gt;
+  case &lt;tag of final goal&gt;  =&gt; &lt;proof of final goal&gt;
+</code></pre>
+<p>or</p>
+<pre><code>  apply foo
+  { &lt;proof of first goal&gt;  }
+  { &lt;proof of second goal&gt; }
+  { &lt;proof of third goal&gt;  }
+  { &lt;proof of final goal&gt;  }
+</code></pre>
+<h2 id="tactic-combinators"><a class="header" href="#tactic-combinators">Tactic Combinators</a></h2>
+<p><em>Tactic combinators</em> are operations that form new tactics from old
+ones. A sequencing combinator is already implicit in the <code>by</code> block:</p>
+<pre><code class="language-lean">example (p q : Prop) (hp : p) : p ∨ q :=
+  by apply Or.inl; assumption
+</code></pre>
+<p>Here, <code>apply Or.inl; assumption</code> is functionally equivalent to a
+single tactic which first applies <code>apply Or.inl</code> and then applies
+<code>assumption</code>.</p>
+<p>In <code>t₁ &lt;;&gt; t₂</code>, the <code>&lt;;&gt;</code> operator provides a <em>parallel</em> version of the sequencing operation:
+<code>t₁</code> is applied to the current goal, and then <code>t₂</code> is applied to <em>all</em> the resulting subgoals:</p>
+<pre><code class="language-lean">example (p q : Prop) (hp : p) (hq : q) : p ∧ q :=
+  by constructor &lt;;&gt; assumption
+</code></pre>
+<p>This is especially useful when the resulting goals can be finished off
+in a uniform way, or, at least, when it is possible to make progress
+on all of them uniformly.</p>
+<p>The <code>first | t₁ | t₂ | ... | tₙ</code> applies each <code>tᵢ</code> until one succeeds, or else fails:</p>
+<pre><code class="language-lean">example (p q : Prop) (hp : p) : p ∨ q := by
+  first | apply Or.inl; assumption | apply Or.inr; assumption
+
+example (p q : Prop) (hq : q) : p ∨ q := by
+  first | apply Or.inl; assumption | apply Or.inr; assumption
+</code></pre>
+<p>In the first example, the left branch succeeds, whereas in the second one, it is the right one that succeeds.
+In the next three examples, the same compound tactic succeeds in each case.</p>
+<pre><code class="language-lean">example (p q r : Prop) (hp : p) : p ∨ q ∨ r :=
+  by repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
+
+example (p q r : Prop) (hq : q) : p ∨ q ∨ r :=
+  by repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
+
+example (p q r : Prop) (hr : r) : p ∨ q ∨ r :=
+  by repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
+</code></pre>
+<p>The tactic tries to solve the left disjunct immediately by assumption;
+if that fails, it tries to focus on the right disjunct; and if that
+doesn't work, it invokes the assumption tactic.</p>
+<p>You will have no doubt noticed by now that tactics can fail. Indeed,
+it is the &quot;failure&quot; state that causes the <em>first</em> combinator to
+backtrack and try the next tactic. The <code>try</code> combinator builds a
+tactic that always succeeds, though possibly in a trivial way:
+<code>try t</code> executes <code>t</code> and reports success, even if <code>t</code> fails. It is
+equivalent to <code>first | t | skip</code>, where <code>skip</code> is a tactic that does
+nothing (and succeeds in doing so). In the next example, the second
+<code>constructor</code> succeeds on the right conjunct <code>q ∧ r</code> (remember that
+disjunction and conjunction associate to the right) but fails on the
+first. The <code>try</code> tactic ensures that the sequential composition
+succeeds.</p>
+<pre><code class="language-lean">example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
+  constructor &lt;;&gt; (try constructor) &lt;;&gt; assumption
+</code></pre>
+<p>Be careful: <code>repeat (try t)</code> will loop forever, because the inner tactic never fails.</p>
+<p>In a proof, there are often multiple goals outstanding. Parallel
+sequencing is one way to arrange it so that a single tactic is applied
+to multiple goals, but there are other ways to do this. For example,
+<code>all_goals t</code> applies <code>t</code> to all open goals:</p>
+<pre><code class="language-lean">example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
+  constructor
+  all_goals (try constructor)
+  all_goals assumption
+</code></pre>
+<p>In this case, the <code>any_goals</code> tactic provides a more robust solution.
+It is similar to <code>all_goals</code>, except it succeeds if its argument
+succeeds on at least one goal.</p>
+<pre><code class="language-lean">example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
+  constructor
+  any_goals constructor
+  any_goals assumption
+</code></pre>
+<p>The first tactic in the <code>by</code> block below repeatedly splits
+conjunctions:</p>
+<pre><code class="language-lean">example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
+      p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) := by
+  repeat (any_goals constructor)
+  all_goals assumption
+</code></pre>
+<p>In fact, we can compress the full tactic down to one line:</p>
+<pre><code class="language-lean">example (p q r : Prop) (hp : p) (hq : q) (hr : r) :
+      p ∧ ((p ∧ q) ∧ r) ∧ (q ∧ r ∧ p) := by
+  repeat (any_goals (first | constructor | assumption))
+</code></pre>
+<p>The combinator <code>focus t</code> ensures that <code>t</code> only effects the current
+goal, temporarily hiding the others from the scope. So, if <code>t</code>
+ordinarily only effects the current goal, <code>focus (all_goals t)</code> has
+the same effect as <code>t</code>.</p>
+<h2 id="rewriting"><a class="header" href="#rewriting">Rewriting</a></h2>
+<p>The <code>rewrite</code> tactic (abbreviated <code>rw</code>) and the <code>simp</code> tactic
+were introduced briefly in <a href="./quantifiers_and_equality.html#calculational-proofs">Calculational Proofs</a>. In this
+section and the next, we discuss them in greater detail.</p>
+<p>The <code>rewrite</code> tactic provides a basic mechanism for applying
+substitutions to goals and hypotheses, providing a convenient and
+efficient way of working with equality. The most basic form of the
+tactic is <code>rewrite [t]</code>, where <code>t</code> is a term whose type asserts an
+equality. For example, <code>t</code> can be a hypothesis <code>h : x = y</code> in the
+context; it can be a general lemma, like
+<code>add_comm : ∀ x y, x + y = y + x</code>, in which the rewrite tactic tries to find suitable
+instantiations of <code>x</code> and <code>y</code>; or it can be any compound term
+asserting a concrete or general equation. In the following example, we
+use this basic form to rewrite the goal using a hypothesis.</p>
+<pre><code class="language-lean">example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+  rw [h₂] -- replace k with 0
+  rw [h₁] -- replace f 0 with 0
+</code></pre>
+<p>In the example above, the first use of <code>rw</code> replaces <code>k</code> with
+<code>0</code> in the goal <code>f k = 0</code>. Then, the second one replaces <code>f 0</code>
+with <code>0</code>. The tactic automatically closes any goal of the form
+<code>t = t</code>. Here is an example of rewriting using a compound expression:</p>
+<pre><code class="language-lean">example (x y : Nat) (p : Nat → Prop) (q : Prop) (h : q → x = y)
+        (h' : p y) (hq : q) : p x := by
+  rw [h hq]; assumption
+</code></pre>
+<p>Here, <code>h hq</code> establishes the equation <code>x = y</code>.</p>
+<p>Multiple rewrites can be combined using the notation <code>rw [t_1, ..., t_n]</code>,
+which is just shorthand for <code>rw [t_1]; ...; rw [t_n]</code>. The previous example can be written as follows:</p>
+<pre><code class="language-lean">example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+  rw [h₂, h₁]
+</code></pre>
+<p>By default, <code>rw</code> uses an equation in the forward direction, matching
+the left-hand side with an expression, and replacing it with the
+right-hand side. The notation <code>←t</code> can be used to instruct the
+tactic to use the equality <code>t</code> in the reverse direction.</p>
+<pre><code class="language-lean">example (f : Nat → Nat) (a b : Nat) (h₁ : a = b) (h₂ : f a = 0) : f b = 0 := by
+  rw [←h₁, h₂]
+</code></pre>
+<p>In this example, the term <code>←h₁</code> instructs the rewriter to replace
+<code>b</code> with <code>a</code>. In the editors, you can type the backwards arrow as
+<code>\l</code>. You can also use the ascii equivalent, <code>&lt;-</code>.</p>
+<p>Sometimes the left-hand side of an identity can match more than one
+subterm in the pattern, in which case the <code>rw</code> tactic chooses the
+first match it finds when traversing the term. If that is not the one
+you want, you can use additional arguments to specify the appropriate
+subterm.</p>
+<pre><code class="language-lean">example (a b c : Nat) : a + b + c = a + c + b := by
+  rw [Nat.add_assoc, Nat.add_comm b, ← Nat.add_assoc]
+
+example (a b c : Nat) : a + b + c = a + c + b := by
+  rw [Nat.add_assoc, Nat.add_assoc, Nat.add_comm b]
+
+example (a b c : Nat) : a + b + c = a + c + b := by
+  rw [Nat.add_assoc, Nat.add_assoc, Nat.add_comm _ b]
+</code></pre>
+<p>In the first example above, the first step rewrites <code>a + b + c</code> to
+<code>a + (b + c)</code>. The next step applies commutativity to the term
+<code>b + c</code>; without specifying the argument, the tactic would instead rewrite
+<code>a + (b + c)</code> to <code>(b + c) + a</code>. Finally, the last step applies
+associativity in the reverse direction, rewriting <code>a + (c + b)</code> to
+<code>a + c + b</code>. The next two examples instead apply associativity to
+move the parenthesis to the right on both sides, and then switch <code>b</code>
+and <code>c</code>. Notice that the last example specifies that the rewrite
+should take place on the right-hand side by specifying the second
+argument to <code>Nat.add_comm</code>.</p>
+<p>By default, the <code>rewrite</code> tactic affects only the goal. The notation
+<code>rw [t] at h</code> applies the rewrite <code>t</code> at hypothesis <code>h</code>.</p>
+<pre><code class="language-lean">example (f : Nat → Nat) (a : Nat) (h : a + 0 = 0) : f a = f 0 := by
+  rw [Nat.add_zero] at h
+  rw [h]
+</code></pre>
+<p>The first step, <code>rw [Nat.add_zero] at h</code>, rewrites the hypothesis <code>a + 0 = 0</code> to <code>a = 0</code>.
+Then the new hypothesis <code>a = 0</code> is used to rewrite the goal to <code>f 0 = f 0</code>.</p>
+<p>The <code>rewrite</code> tactic is not restricted to propositions.
+In the following example, we use <code>rw [h] at t</code> to rewrite the hypothesis <code>t : Tuple α n</code> to <code>t : Tuple α 0</code>.</p>
+<pre><code class="language-lean">def Tuple (α : Type) (n : Nat) :=
+  { as : List α // as.length = n }
+
+example (n : Nat) (h : n = 0) (t : Tuple α n) : Tuple α 0 := by
+  rw [h] at t
+  exact t
+</code></pre>
+<h2 id="using-the-simplifier"><a class="header" href="#using-the-simplifier">Using the Simplifier</a></h2>
+<p>Whereas <code>rewrite</code> is designed as a surgical tool for manipulating a
+goal, the simplifier offers a more powerful form of automation. A
+number of identities in Lean's library have been tagged with the
+<code>[simp]</code> attribute, and the <code>simp</code> tactic uses them to iteratively
+rewrite subterms in an expression.</p>
+<pre><code class="language-lean">example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
+        : (x + 0) * (0 + y * 1 + z * 0) = x * y := by
+  simp
+
+example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
+        : p ((x + 0) * (0 + y * 1 + z * 0)) := by
+  simp; assumption
+</code></pre>
+<p>In the first example, the left-hand side of the equality in the goal
+is simplified using the usual identities involving 0 and 1, reducing
+the goal to <code>x * y = x * y</code>. At that point, <code>simp</code> applies
+reflexivity to finish it off. In the second example, <code>simp</code> reduces
+the goal to <code>p (x * y)</code>, at which point the assumption <code>h</code>
+finishes it off. Here are some more examples
+with lists:</p>
+<pre><code class="language-lean">open List
+
+example (xs : List Nat)
+        : reverse (xs ++ [1, 2, 3]) = [3, 2, 1] ++ reverse xs := by
+  simp
+
+example (xs ys : List α)
+        : length (reverse (xs ++ ys)) = length xs + length ys := by
+  simp [Nat.add_comm]
+</code></pre>
+<p>As with <code>rw</code>, you can use the keyword <code>at</code> to simplify a hypothesis:</p>
+<pre><code class="language-lean">example (x y z : Nat) (p : Nat → Prop)
+        (h : p ((x + 0) * (0 + y * 1 + z * 0))) : p (x * y) := by
+  simp at h; assumption
+</code></pre>
+<p>Moreover, you can use a &quot;wildcard&quot; asterisk to simplify all the hypotheses and the goal:</p>
+<pre><code class="language-lean">attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
+attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
+
+example (w x y z : Nat) (p : Nat → Prop)
+        (h : p (x * y + z * w * x)) : p (x * w * z + y * x) := by
+  simp at *; assumption
+
+example (x y z : Nat) (p : Nat → Prop)
+        (h₁ : p (1 * x + y)) (h₂ : p (x * z * 1))
+        : p (y + 0 + x) ∧ p (z * x) := by
+  simp at * &lt;;&gt; constructor &lt;;&gt; assumption
+</code></pre>
+<p>For operations that are commutative and associative, like
+multiplication on the natural numbers, the simplifier uses these two
+facts to rewrite an expression, as well as <em>left commutativity</em>. In
+the case of multiplication the latter is expressed as follows:
+<code>x * (y * z) = y * (x * z)</code>. The <code>local</code> modifier tells the simplifier
+to use these rules in the current file (or section or namespace, as
+the case may be). It may seem that commutativity and
+left-commutativity are problematic, in that repeated application of
+either causes looping. But the simplifier detects identities that
+permute their arguments, and uses a technique known as <em>ordered
+rewriting</em>. This means that the system maintains an internal ordering
+of terms, and only applies the identity if doing so decreases the
+order. With the three identities mentioned above, this has the effect
+that all the parentheses in an expression are associated to the right,
+and the expressions are ordered in a canonical (though somewhat
+arbitrary) way. Two expressions that are equivalent up to
+associativity and commutativity are then rewritten to the same
+canonical form.</p>
+<pre><code class="language-lean"><span class="boring">attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
+</span><span class="boring">attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
+</span>example (w x y z : Nat) (p : Nat → Prop)
+        : x * y + z * w * x = x * w * z + y * x := by
+  simp
+
+example (w x y z : Nat) (p : Nat → Prop)
+        (h : p (x * y + z * w * x)) : p (x * w * z + y * x) := by
+  simp; simp at h; assumption
+</code></pre>
+<p>As with <code>rewrite</code>, you can send <code>simp</code> a list of facts to use,
+including general lemmas, local hypotheses, definitions to unfold, and
+compound expressions. The <code>simp</code> tactic also recognizes the <code>←t</code>
+syntax that <code>rewrite</code> does. In any case, the additional rules are
+added to the collection of identities that are used to simplify a
+term.</p>
+<pre><code class="language-lean">def f (m n : Nat) : Nat :=
+  m + n + m
+
+example {m n : Nat} (h : n = 1) (h' : 0 = m) : (f m n) = n := by
+  simp [h, ←h', f]
+</code></pre>
+<p>A common idiom is to simplify a goal using local hypotheses:</p>
+<pre><code class="language-lean">example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+  simp [h₁, h₂]
+</code></pre>
+<p>To use all the hypotheses present in the local context when
+simplifying, we can use the wildcard symbol, <code>*</code>:</p>
+<pre><code class="language-lean">example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+  simp [*]
+</code></pre>
+<p>Here is another example:</p>
+<pre><code class="language-lean">example (u w x y z : Nat) (h₁ : x = y + z) (h₂ : w = u + x)
+        : w = z + y + u := by
+  simp [*, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+</code></pre>
+<p>The simplifier will also do propositional rewriting. For example,
+using the hypothesis <code>p</code>, it rewrites <code>p ∧ q</code> to <code>q</code> and <code>p ∨ q</code> to <code>true</code>, which it then proves trivially. Iterating such
+rewrites produces nontrivial propositional reasoning.</p>
+<pre><code class="language-lean">example (p q : Prop) (hp : p) : p ∧ q ↔ q := by
+  simp [*]
+
+example (p q : Prop) (hp : p) : p ∨ q := by
+  simp [*]
+
+example (p q r : Prop) (hp : p) (hq : q) : p ∧ (q ∨ r) := by
+  simp [*]
+</code></pre>
+<p>The next example simplifies all the hypotheses, and then uses them to prove the goal.</p>
+<pre><code class="language-lean">example (u w x x' y y' z : Nat) (p : Nat → Prop)
+        (h₁ : x + 0 = x') (h₂ : y + 0 = y')
+        : x + y + 0 = x' + y' := by
+  simp at *
+  simp [*]
+</code></pre>
+<p>One thing that makes the simplifier especially useful is that its
+capabilities can grow as a library develops. For example, suppose we
+define a list operation that symmetrizes its input by appending its
+reversal:</p>
+<pre><code class="language-lean">def mk_symm (xs : List α) :=
+  xs ++ xs.reverse
+</code></pre>
+<p>Then for any list <code>xs</code>, <code>reverse (mk_symm xs)</code> is equal to <code>mk_symm xs</code>,
+which can easily be proved by unfolding the definition:</p>
+<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
+</span><span class="boring"> xs ++ xs.reverse
+</span>theorem reverse_mk_symm (xs : List α)
+        : (mk_symm xs).reverse = mk_symm xs := by
+  simp [mk_symm]
+</code></pre>
+<p>We can now use this theorem to prove new results:</p>
+<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
+</span><span class="boring"> xs ++ xs.reverse
+</span><span class="boring">theorem reverse_mk_symm (xs : List α)
+</span><span class="boring">       : (mk_symm xs).reverse = mk_symm xs := by
+</span><span class="boring"> simp [mk_symm]
+</span>example (xs ys : List Nat)
+        : (xs ++ mk_symm ys).reverse = mk_symm ys ++ xs.reverse := by
+  simp [reverse_mk_symm]
+
+example (xs ys : List Nat) (p : List Nat → Prop)
+        (h : p (xs ++ mk_symm ys).reverse)
+        : p (mk_symm ys ++ xs.reverse) := by
+  simp [reverse_mk_symm] at h; assumption
+</code></pre>
+<p>But using <code>reverse_mk_symm</code> is generally the right thing to do, and
+it would be nice if users did not have to invoke it explicitly. You can
+achieve that by marking it as a simplification rule when the theorem
+is defined:</p>
+<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
+</span><span class="boring"> xs ++ xs.reverse
+</span>@[simp] theorem reverse_mk_symm (xs : List α)
+        : (mk_symm xs).reverse = mk_symm xs := by
+  simp [mk_symm]
+
+example (xs ys : List Nat)
+        : (xs ++ mk_symm ys).reverse = mk_symm ys ++ xs.reverse := by
+  simp
+
+example (xs ys : List Nat) (p : List Nat → Prop)
+        (h : p (xs ++ mk_symm ys).reverse)
+        : p (mk_symm ys ++ xs.reverse) := by
+  simp at h; assumption
+</code></pre>
+<p>The notation <code>@[simp]</code> declares <code>reverse_mk_symm</code> to have the
+<code>[simp]</code> attribute, and can be spelled out more explicitly:</p>
+<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
+</span><span class="boring"> xs ++ xs.reverse
+</span>theorem reverse_mk_symm (xs : List α)
+        : (mk_symm xs).reverse = mk_symm xs := by
+  simp [mk_symm]
+
+attribute [simp] reverse_mk_symm
+
+example (xs ys : List Nat)
+        : (xs ++ mk_symm ys).reverse = mk_symm ys ++ xs.reverse := by
+  simp
+
+example (xs ys : List Nat) (p : List Nat → Prop)
+        (h : p (xs ++ mk_symm ys).reverse)
+        : p (mk_symm ys ++ xs.reverse) := by
+  simp at h; assumption
+</code></pre>
+<p>The attribute can also be applied any time after the theorem is declared:</p>
+<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
+</span><span class="boring"> xs ++ xs.reverse
+</span>theorem reverse_mk_symm (xs : List α)
+        : (mk_symm xs).reverse = mk_symm xs := by
+  simp [mk_symm]
+
+example (xs ys : List Nat)
+        : (xs ++ mk_symm ys).reverse = mk_symm ys ++ xs.reverse := by
+  simp [reverse_mk_symm]
+
+attribute [simp] reverse_mk_symm
+
+example (xs ys : List Nat) (p : List Nat → Prop)
+        (h : p (xs ++ mk_symm ys).reverse)
+        : p (mk_symm ys ++ xs.reverse) := by
+  simp at h; assumption
+</code></pre>
+<p>Once the attribute is applied, however, there is no way to permanently
+remove it; it persists in any file that imports the one where the
+attribute is assigned. As we will discuss further in
+<a href="./interacting_with_lean.html#attributes">Attributes</a>, one can limit the scope of an attribute to the
+current file or section using the <code>local</code> modifier:</p>
+<pre><code class="language-lean"><span class="boring">def mk_symm (xs : List α) :=
+</span><span class="boring"> xs ++ xs.reverse
+</span>theorem reverse_mk_symm (xs : List α)
+        : (mk_symm xs).reverse = mk_symm xs := by
+  simp [mk_symm]
+
+section
+attribute [local simp] reverse_mk_symm
+
+example (xs ys : List Nat)
+        : (xs ++ mk_symm ys).reverse = mk_symm ys ++ xs.reverse := by
+  simp
+
+example (xs ys : List Nat) (p : List Nat → Prop)
+        (h : p (xs ++ mk_symm ys).reverse)
+        : p (mk_symm ys ++ xs.reverse) := by
+  simp at h; assumption
+end
+</code></pre>
+<p>Outside the section, the simplifier will no longer use
+<code>reverse_mk_symm</code> by default.</p>
+<p>Note that the various <code>simp</code> options we have discussed --- giving an
+explicit list of rules, and using <code>at</code> to specify the location --- can be combined,
+but the order they are listed is rigid. You can see the correct order
+in an editor by placing the cursor on the <code>simp</code> identifier to see
+the documentation string that is associated with it.</p>
+<p>There are two additional modifiers that are useful. By default,
+<code>simp</code> includes all theorems that have been marked with the
+attribute <code>[simp]</code>. Writing <code>simp only</code> excludes these defaults,
+allowing you to use a more explicitly crafted list of
+rules. In the examples below, the minus sign and
+<code>only</code> are used to block the application of <code>reverse_mk_symm</code>.</p>
+<pre><code class="language-lean">def mk_symm (xs : List α) :=
+  xs ++ xs.reverse
+@[simp] theorem reverse_mk_symm (xs : List α)
+        : (mk_symm xs).reverse = mk_symm xs := by
+  simp [mk_symm]
+
+example (xs ys : List Nat) (p : List Nat → Prop)
+        (h : p (xs ++ mk_symm ys).reverse)
+        : p (mk_symm ys ++ xs.reverse) := by
+  simp at h; assumption
+
+example (xs ys : List Nat) (p : List Nat → Prop)
+        (h : p (xs ++ mk_symm ys).reverse)
+        : p ((mk_symm ys).reverse ++ xs.reverse) := by
+  simp [-reverse_mk_symm] at h; assumption
+
+example (xs ys : List Nat) (p : List Nat → Prop)
+        (h : p (xs ++ mk_symm ys).reverse)
+        : p ((mk_symm ys).reverse ++ xs.reverse) := by
+  simp only [List.reverse_append] at h; assumption
+</code></pre>
+<p>The <code>simp</code> tactic has many configuration options. For example, we can enable contextual simplifications as follows.</p>
+<pre><code class="language-lean">example : if x = 0 then y + x = y else x ≠ 0 := by
+  simp (config := { contextual := true })
+</code></pre>
+<p>when <code>contextual := true</code>, <code>simp</code> uses the fact that <code>x = 0</code> when simplifying <code>y + x = y</code>, and
+<code>x ≠ 0</code> when simplifying the other branch. Here is another example.</p>
+<pre><code class="language-lean">example : ∀ (x : Nat) (h : x = 0), y + x = y := by
+  simp (config := { contextual := true })
+</code></pre>
+<p>Another useful configuration option is <code>arith := true</code> which enables arithmetical simplifications. It is so useful
+that <code>simp_arith</code> is a shorthand for <code>simp (config := { arith := true })</code>.</p>
+<pre><code class="language-lean">example : 0 &lt; 1 + x ∧ x + y + 2 ≥ y + 1 := by
+  simp_arith
+</code></pre>
+<h2 id="split-tactic"><a class="header" href="#split-tactic">Split Tactic</a></h2>
+<p>The <code>split</code> tactic is useful for breaking nested <code>if-then-else</code> and <code>match</code> expressions in cases.
+For a <code>match</code> expression with <code>n</code> cases, the <code>split</code> tactic generates at most <code>n</code> subgoals. Here is an example.</p>
+<pre><code class="language-lean">def f (x y z : Nat) : Nat :=
+  match x, y, z with
+  | 5, _, _ =&gt; y
+  | _, 5, _ =&gt; y
+  | _, _, 5 =&gt; y
+  | _, _, _ =&gt; 1
+
+example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+  intros
+  simp [f]
+  split
+  . contradiction
+  . contradiction
+  . contradiction
+  . rfl
+</code></pre>
+<p>We can compress the tactic proof above as follows.</p>
+<pre><code class="language-lean"><span class="boring">def f (x y z : Nat) : Nat :=
+</span><span class="boring"> match x, y, z with
+</span><span class="boring"> | 5, _, _ =&gt; y
+</span><span class="boring"> | _, 5, _ =&gt; y
+</span><span class="boring"> | _, _, 5 =&gt; y
+</span><span class="boring"> | _, _, _ =&gt; 1
+</span>example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+  intros; simp [f]; split &lt;;&gt; first | contradiction | rfl
+</code></pre>
+<p>The tactic <code>split &lt;;&gt; first | contradiction | rfl</code> first applies the <code>split</code> tactic,
+and then for each generated goal it tries <code>contradiction</code>, and then <code>rfl</code> if <code>contradiction</code> fails.
+Like <code>simp</code>, we can apply <code>split</code> to a particular hypothesis.</p>
+<pre><code class="language-lean">def g (xs ys : List Nat) : Nat :=
+  match xs, ys with
+  | [a, b], _ =&gt; a+b+1
+  | _, [b, c] =&gt; b+1
+  | _, _      =&gt; 1
+
+example (xs ys : List Nat) (h : g xs ys = 0) : False := by
+  simp [g] at h; split at h &lt;;&gt; simp_arith at h
+</code></pre>
+<h2 id="extensible-tactics"><a class="header" href="#extensible-tactics">Extensible Tactics</a></h2>
+<p>In the following example, we define the notation <code>triv</code> using the command <code>syntax</code>.
+Then, we use the command <code>macro_rules</code> to specify what should
+be done when <code>triv</code> is used. You can provide different expansions, and the tactic
+interpreter will try all of them until one succeeds.</p>
+<pre><code class="language-lean">-- Define a new tactic notation
+syntax &quot;triv&quot; : tactic
+
+macro_rules
+  | `(tactic| triv) =&gt; `(tactic| assumption)
+
+example (h : p) : p := by
+  triv
+
+-- You cannot prove the following theorem using `triv`
+-- example (x : α) : x = x := by
+--  triv
+
+-- Let's extend `triv`. The tactic interpreter
+-- tries all possible macro extensions for `triv` until one succeeds
+macro_rules
+  | `(tactic| triv) =&gt; `(tactic| rfl)
+
+example (x : α) : x = x := by
+  triv
+
+example (x : α) (h : p) : x = x ∧ p := by
+  apply And.intro &lt;;&gt; triv
+
+-- We now add a (recursive) extension
+macro_rules | `(tactic| triv) =&gt; `(tactic| apply And.intro &lt;;&gt; triv)
+
+example (x : α) (h : p) : x = x ∧ p := by
+  triv
+</code></pre>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<ol>
+<li>
+<p>Go back to the exercises in <a href="./propositions_and_proofs.html">Chapter Propositions and
+Proofs</a> and
+<a href="./quantifiers_and_equality.html">Chapter Quantifiers and Equality</a> and
+redo as many as you can now with tactic proofs, using also <code>rw</code>
+and <code>simp</code> as appropriate.</p>
+</li>
+<li>
+<p>Use tactic combinators to obtain a one line proof of the following:</p>
+</li>
+</ol>
+<pre><code class="language-lean">example (p q r : Prop) (hp : p)
+        : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
+  admit
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="quantifiers_and_equality.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="interacting_with_lean.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="quantifiers_and_equality.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="interacting_with_lean.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

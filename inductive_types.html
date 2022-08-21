@@ -1,0 +1,1594 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Inductive Types - Theorem Proving in Lean 4</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html" class="active"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Theorem Proving in Lean 4</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="inductive-types"><a class="header" href="#inductive-types">Inductive Types</a></h1>
+<p>We have seen that Lean's formal foundation includes basic types,
+<code>Prop, Type 0, Type 1, Type 2, ...</code>, and allows for the formation of
+dependent function types, <code>(x : α) → β</code>. In the examples, we have
+also made use of additional types like <code>Bool</code>, <code>Nat</code>, and <code>Int</code>,
+and type constructors, like <code>List</code>, and product, <code>×</code>. In fact, in
+Lean's library, every concrete type other than the universes and every
+type constructor other than dependent arrows is an instance of a general family of
+type constructions known as <em>inductive types</em>. It is remarkable that
+it is possible to construct a substantial edifice of mathematics based
+on nothing more than the type universes, dependent arrow types, and inductive
+types; everything else follows from those.</p>
+<p>Intuitively, an inductive type is built up from a specified list of
+constructors. In Lean, the syntax for specifying such a type is as
+follows:</p>
+<pre><code>    inductive Foo where
+      | constructor₁ : ... → Foo
+      | constructor₂ : ... → Foo
+      ...
+      | constructorₙ : ... → Foo
+</code></pre>
+<p>The intuition is that each constructor specifies a way of building new
+objects of <code>Foo</code>, possibly from previously constructed values. The
+type <code>Foo</code> consists of nothing more than the objects that are
+constructed in this way. The first character <code>|</code> in an inductive
+declaration is optional. We can also separate constructors using a
+comma instead of <code>|</code>.</p>
+<p>We will see below that the arguments of the constructors can include
+objects of type <code>Foo</code>, subject to a certain &quot;positivity&quot; constraint,
+which guarantees that elements of <code>Foo</code> are built from the bottom
+up. Roughly speaking, each <code>...</code> can be any arrow type constructed from
+<code>Foo</code> and previously defined types, in which <code>Foo</code> appears, if at
+all, only as the &quot;target&quot; of the dependent arrow type.</p>
+<p>We will provide a number of examples of inductive types. We will also
+consider slight generalizations of the scheme above, to mutually
+defined inductive types, and so-called <em>inductive families</em>.</p>
+<p>As with the logical connectives, every inductive type comes with
+introduction rules, which show how to construct an element of the
+type, and elimination rules, which show how to &quot;use&quot; an element of the
+type in another construction. The analogy to the logical connectives
+should not come as a surprise; as we will see below, they, too, are
+examples of inductive type constructions. You have already seen the
+introduction rules for an inductive type: they are just the
+constructors that are specified in the definition of the type. The
+elimination rules provide for a principle of recursion on the type,
+which includes, as a special case, a principle of induction as well.</p>
+<p>In the next chapter, we will describe Lean's function definition
+package, which provides even more convenient ways to define functions
+on inductive types and carry out inductive proofs. But because the
+notion of an inductive type is so fundamental, we feel it is important
+to start with a low-level, hands-on understanding. We will start with
+some basic examples of inductive types, and work our way up to more
+elaborate and complex examples.</p>
+<h2 id="enumerated-types"><a class="header" href="#enumerated-types">Enumerated Types</a></h2>
+<p>The simplest kind of inductive type is a type with a finite, enumerated list of elements.</p>
+<pre><code class="language-lean">inductive Weekday where
+  | sunday : Weekday
+  | monday : Weekday
+  | tuesday : Weekday
+  | wednesday : Weekday
+  | thursday : Weekday
+  | friday : Weekday
+  | saturday : Weekday
+</code></pre>
+<p>The <code>inductive</code> command creates a new type, <code>Weekday</code>. The
+constructors all live in the <code>Weekday</code> namespace.</p>
+<pre><code class="language-lean"><span class="boring">inductive Weekday where
+</span><span class="boring"> | sunday : Weekday
+</span><span class="boring"> | monday : Weekday
+</span><span class="boring"> | tuesday : Weekday
+</span><span class="boring"> | wednesday : Weekday
+</span><span class="boring"> | thursday : Weekday
+</span><span class="boring"> | friday : Weekday
+</span><span class="boring"> | saturday : Weekday
+</span>#check Weekday.sunday
+#check Weekday.monday
+
+open Weekday
+
+#check sunday
+#check monday
+</code></pre>
+<p>You can omit <code>: Weekday</code> when declaring the <code>Weekday</code> inductive type.</p>
+<pre><code class="language-lean">inductive Weekday where
+  | sunday
+  | monday
+  | tuesday
+  | wednesday
+  | thursday
+  | friday
+  | saturday
+</code></pre>
+<p>Think of <code>sunday</code>, <code>monday</code>, ... , <code>saturday</code> as
+being distinct elements of <code>Weekday</code>, with no other distinguishing
+properties. The elimination principle, <code>Weekday.rec</code>, is defined
+along with the type <code>Weekday</code> and its constructors. It is also known
+as a <em>recursor</em>, and it is what makes the type &quot;inductive&quot;: it allows
+us to define a function on <code>Weekday</code> by assigning values
+corresponding to each constructor. The intuition is that an inductive
+type is exhaustively generated by the constructors, and has no
+elements beyond those they construct.</p>
+<p>We will use the <code>match</code> expression to define a function from <code>Weekday</code>
+to the natural numbers:</p>
+<pre><code class="language-lean"><span class="boring">inductive Weekday where
+</span><span class="boring"> | sunday : Weekday
+</span><span class="boring"> | monday : Weekday
+</span><span class="boring"> | tuesday : Weekday
+</span><span class="boring"> | wednesday : Weekday
+</span><span class="boring"> | thursday : Weekday
+</span><span class="boring"> | friday : Weekday
+</span><span class="boring"> | saturday : Weekday
+</span>open Weekday
+
+def numberOfDay (d : Weekday) : Nat :=
+  match d with
+  | sunday    =&gt; 1
+  | monday    =&gt; 2
+  | tuesday   =&gt; 3
+  | wednesday =&gt; 4
+  | thursday  =&gt; 5
+  | friday    =&gt; 6
+  | saturday  =&gt; 7
+
+#eval numberOfDay Weekday.sunday  -- 1
+#eval numberOfDay Weekday.monday  -- 2
+#eval numberOfDay Weekday.tuesday -- 3
+</code></pre>
+<p>Note that the <code>match</code> expression is compiled using the <em>recursor</em> <code>Weekday.rec</code> generated when
+you declare the inductive type.</p>
+<pre><code class="language-lean"><span class="boring">inductive Weekday where
+</span><span class="boring"> | sunday : Weekday
+</span><span class="boring"> | monday : Weekday
+</span><span class="boring"> | tuesday : Weekday
+</span><span class="boring"> | wednesday : Weekday
+</span><span class="boring"> | thursday : Weekday
+</span><span class="boring"> | friday : Weekday
+</span><span class="boring"> | saturday : Weekday
+</span>open Weekday
+
+def numberOfDay (d : Weekday) : Nat :=
+  match d with
+  | sunday    =&gt; 1
+  | monday    =&gt; 2
+  | tuesday   =&gt; 3
+  | wednesday =&gt; 4
+  | thursday  =&gt; 5
+  | friday    =&gt; 6
+  | saturday  =&gt; 7
+
+set_option pp.all true
+#print numberOfDay
+-- ... numberOfDay.match_1
+#print numberOfDay.match_1
+-- ... Weekday.casesOn ...
+#print Weekday.casesOn
+-- ... Weekday.rec ...
+#check @Weekday.rec
+/-
+@Weekday.rec.{u}
+ : {motive : Weekday → Sort u} →
+    motive Weekday.sunday →
+    motive Weekday.monday →
+    motive Weekday.tuesday →
+    motive Weekday.wednesday →
+    motive Weekday.thursday →
+    motive Weekday.friday →
+    motive Weekday.saturday →
+    (t : Weekday) → motive t
+-/
+</code></pre>
+<p>When declaring an inductive datatype, you can use <code>deriving Repr</code> to instruct
+Lean to generate a fuction that converts <code>Weekday</code> objects into text.
+This function is used by the <code>#eval</code> command to display <code>Weekday</code> objects.</p>
+<pre><code class="language-lean">inductive Weekday where
+  | sunday
+  | monday
+  | tuesday
+  | wednesday
+  | thursday
+  | friday
+  | saturday
+  deriving Repr
+
+open Weekday
+
+#eval tuesday   -- Weekday.tuesday
+</code></pre>
+<p>It is often useful to group definitions and theorems related to a
+structure in a namespace with the same name. For example, we can put
+the <code>numberOfDay</code> function in the <code>Weekday</code> namespace. We are
+then allowed to use the shorter name when we open the namespace.</p>
+<p>We can define functions from <code>Weekday</code> to <code>Weekday</code>:</p>
+<pre><code class="language-lean"><span class="boring">inductive Weekday where
+</span><span class="boring"> | sunday : Weekday
+</span><span class="boring"> | monday : Weekday
+</span><span class="boring"> | tuesday : Weekday
+</span><span class="boring"> | wednesday : Weekday
+</span><span class="boring"> | thursday : Weekday
+</span><span class="boring"> | friday : Weekday
+</span><span class="boring"> | saturday : Weekday
+</span><span class="boring"> deriving Repr
+</span>
+namespace Weekday
+def next (d : Weekday) : Weekday :=
+  match d with
+  | sunday    =&gt; monday
+  | monday    =&gt; tuesday
+  | tuesday   =&gt; wednesday
+  | wednesday =&gt; thursday
+  | thursday  =&gt; friday
+  | friday    =&gt; saturday
+  | saturday  =&gt; sunday
+
+def previous (d : Weekday) : Weekday :=
+  match d with
+  | sunday    =&gt; saturday
+  | monday    =&gt; sunday
+  | tuesday   =&gt; monday
+  | wednesday =&gt; tuesday
+  | thursday  =&gt; wednesday
+  | friday    =&gt; thursday
+  | saturday  =&gt; friday
+
+#eval next (next tuesday)      -- Weekday.thursday
+#eval next (previous tuesday)  -- Weekday.tuesday
+
+example : next (previous tuesday) = tuesday :=
+  rfl
+
+end Weekday
+</code></pre>
+<p>How can we prove the general theorem that <code>next (previous d) = d</code>
+for any Weekday <code>d</code>? You can use <code>match</code> to provide a proof of the claim for each
+constructor:</p>
+<pre><code class="language-lean"><span class="boring">inductive Weekday where
+</span><span class="boring"> | sunday : Weekday
+</span><span class="boring"> | monday : Weekday
+</span><span class="boring"> | tuesday : Weekday
+</span><span class="boring"> | wednesday : Weekday
+</span><span class="boring"> | thursday : Weekday
+</span><span class="boring"> | friday : Weekday
+</span><span class="boring"> | saturday : Weekday
+</span><span class="boring"> deriving Repr
+</span><span class="boring">namespace Weekday
+</span><span class="boring">def next (d : Weekday) : Weekday :=
+</span><span class="boring"> match d with
+</span><span class="boring"> | sunday    =&gt; monday
+</span><span class="boring"> | monday    =&gt; tuesday
+</span><span class="boring"> | tuesday   =&gt; wednesday
+</span><span class="boring"> | wednesday =&gt; thursday
+</span><span class="boring"> | thursday  =&gt; friday
+</span><span class="boring"> | friday    =&gt; saturday
+</span><span class="boring"> | saturday  =&gt; sunday
+</span><span class="boring">def previous (d : Weekday) : Weekday :=
+</span><span class="boring"> match d with
+</span><span class="boring"> | sunday    =&gt; saturday
+</span><span class="boring"> | monday    =&gt; sunday
+</span><span class="boring"> | tuesday   =&gt; monday
+</span><span class="boring"> | wednesday =&gt; tuesday
+</span><span class="boring"> | thursday  =&gt; wednesday
+</span><span class="boring"> | friday    =&gt; thursday
+</span><span class="boring"> | saturday  =&gt; friday
+</span>def next_previous (d : Weekday) : next (previous d) = d :=
+  match d with
+  | sunday    =&gt; rfl
+  | monday    =&gt; rfl
+  | tuesday   =&gt; rfl
+  | wednesday =&gt; rfl
+  | thursday  =&gt; rfl
+  | friday    =&gt; rfl
+  | saturday  =&gt; rfl
+</code></pre>
+<p>Using a tactic proof, we can be even more concise:</p>
+<pre><code class="language-lean"><span class="boring">inductive Weekday where
+</span><span class="boring"> | sunday : Weekday
+</span><span class="boring"> | monday : Weekday
+</span><span class="boring"> | tuesday : Weekday
+</span><span class="boring"> | wednesday : Weekday
+</span><span class="boring"> | thursday : Weekday
+</span><span class="boring"> | friday : Weekday
+</span><span class="boring"> | saturday : Weekday
+</span><span class="boring"> deriving Repr
+</span><span class="boring">namespace Weekday
+</span><span class="boring">def next (d : Weekday) : Weekday :=
+</span><span class="boring"> match d with
+</span><span class="boring"> | sunday    =&gt; monday
+</span><span class="boring"> | monday    =&gt; tuesday
+</span><span class="boring"> | tuesday   =&gt; wednesday
+</span><span class="boring"> | wednesday =&gt; thursday
+</span><span class="boring"> | thursday  =&gt; friday
+</span><span class="boring"> | friday    =&gt; saturday
+</span><span class="boring"> | saturday  =&gt; sunday
+</span><span class="boring">def previous (d : Weekday) : Weekday :=
+</span><span class="boring"> match d with
+</span><span class="boring"> | sunday    =&gt; saturday
+</span><span class="boring"> | monday    =&gt; sunday
+</span><span class="boring"> | tuesday   =&gt; monday
+</span><span class="boring"> | wednesday =&gt; tuesday
+</span><span class="boring"> | thursday  =&gt; wednesday
+</span><span class="boring"> | friday    =&gt; thursday
+</span><span class="boring"> | saturday  =&gt; friday
+</span>def next_previous (d : Weekday) : next (previous d) = d := by
+  cases d &lt;;&gt; rfl
+</code></pre>
+<p><a href="#tactics_for_inductive_types">Tactics for Inductive Types</a> below will introduce additional
+tactics that are specifically designed to make use of inductive types.</p>
+<p>Notice that, under the propositions-as-types correspondence, we can
+use <code>match</code> to prove theorems as well as define functions.  In other
+words, under the propositions-as-types correspondence, the proof by
+cases is a kind of definition by cases, where what is being &quot;defined&quot;
+is a proof instead of a piece of data.</p>
+<p>The <code>Bool</code> type in the Lean library is an instance of
+enumerated type.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Bool where
+  | false : Bool
+  | true  : Bool
+<span class="boring">end Hidden
+</span></code></pre>
+<p>(To run these examples, we put them in a namespace called <code>Hidden</code>,
+so that a name like <code>Bool</code> does not conflict with the <code>Bool</code> in
+the standard library. This is necessary because these types are part
+of the Lean &quot;prelude&quot; that is automatically imported when the system
+is started.)</p>
+<p>As an exercise, you should think about what the introduction and
+elimination rules for these types do. As a further exercise, we
+suggest defining boolean operations <code>and</code>, <code>or</code>, <code>not</code> on the
+<code>Bool</code> type, and verifying common identities. Note that you can define a
+binary operation like <code>and</code> using <code>match</code>:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>def and (a b : Bool) : Bool :=
+  match a with
+  | true  =&gt; b
+  | false =&gt; false
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Similarly, most identities can be proved by introducing suitable <code>match</code>, and then using <code>rfl</code>.</p>
+<h2 id="constructors-with-arguments"><a class="header" href="#constructors-with-arguments">Constructors with Arguments</a></h2>
+<p>Enumerated types are a very special case of inductive types, in which
+the constructors take no arguments at all. In general, a
+&quot;construction&quot; can depend on data, which is then represented in the
+constructed argument. Consider the definitions of the product type and
+sum type in the library:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Prod (α : Type u) (β : Type v)
+  | mk : α → β → Prod α β
+
+inductive Sum (α : Type u) (β : Type v) where
+  | inl : α → Sum α β
+  | inr : β → Sum α β
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Consider what is going on in these examples.
+The product type has one constructor, <code>Prod.mk</code>,
+which takes two arguments. To define a function on <code>Prod α β</code>, we
+can assume the input is of the form <code>Prod.mk a b</code>, and we have to
+specify the output, in terms of <code>a</code> and <code>b</code>. We can use this to
+define the two projections for <code>Prod</code>. Remember that the standard
+library defines notation <code>α × β</code> for <code>Prod α β</code> and <code>(a, b)</code> for
+<code>Prod.mk a b</code>.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">inductive Prod (α : Type u) (β : Type v)
+</span><span class="boring">  | mk : α → β → Prod α β
+</span>def fst {α : Type u} {β : Type v} (p : Prod α β) : α :=
+  match p with
+  | Prod.mk a b =&gt; a
+
+def snd {α : Type u} {β : Type v} (p : Prod α β) : β :=
+  match p with
+  | Prod.mk a b =&gt; b
+<span class="boring">end Hidden
+</span></code></pre>
+<p>The function <code>fst</code> takes a pair, <code>p</code>. The <code>match</code> interprets
+<code>p</code> as a pair, <code>Prod.mk a b</code>. Recall also from <a href="./dependent_type_theory.html">Dependent Type Theory</a>
+that to give these definitions the greatest generality possible, we allow
+the types <code>α</code> and <code>β</code> to belong to any universe.</p>
+<p>Here is another example where we use the recursor <code>Prod.casesOn</code> instead
+of <code>match</code>.</p>
+<pre><code class="language-lean">def prod_example (p : Bool × Nat) : Nat :=
+  Prod.casesOn (motive := fun _ =&gt; Nat) p (fun b n =&gt; cond b (2 * n) (2 * n + 1))
+
+#eval prod_example (true, 3)
+#eval prod_example (false, 3)
+</code></pre>
+<p>The argument <code>motive</code> is used to specify the type of the object you want to
+construct, and it is a function because it may depend on the pair.
+The <code>cond</code> function is a boolean conditional: <code>cond b t1 t2</code>
+returns <code>t1</code> if <code>b</code> is true, and <code>t2</code> otherwise.
+The function <code>prod_example</code> takes a pair consisting of a boolean,
+<code>b</code>, and a number, <code>n</code>, and returns either <code>2 * n</code> or <code>2 * n + 1</code>
+according to whether <code>b</code> is true or false.</p>
+<p>In contrast, the sum type has <em>two</em> constructors, <code>inl</code> and <code>inr</code>
+(for &quot;insert left&quot; and &quot;insert right&quot;), each of which takes <em>one</em>
+(explicit) argument. To define a function on <code>Sum α β</code>, we have to
+handle two cases: either the input is of the form <code>inl a</code>, in which
+case we have to specify an output value in terms of <code>a</code>, or the
+input is of the form <code>inr b</code>, in which case we have to specify an
+output value in terms of <code>b</code>.</p>
+<pre><code class="language-lean">def sum_example (s : Sum Nat Nat) : Nat :=
+Sum.casesOn (motive := fun _ =&gt; Nat) s
+   (fun n =&gt; 2 * n)
+   (fun n =&gt; 2 * n + 1)
+
+#eval sum_example (Sum.inl 3)
+#eval sum_example (Sum.inr 3)
+</code></pre>
+<p>This example is similar to the previous one, but now an input to
+<code>sum_example</code> is implicitly either of the form <code>inl n</code> or <code>inr n</code>.
+In the first case, the function returns <code>2 * n</code>, and the second
+case, it returns <code>2 * n + 1</code>.</p>
+<p>Notice that the product type depends on parameters <code>α β : Type</code>
+which are arguments to the constructors as well as <code>Prod</code>. Lean
+detects when these arguments can be inferred from later arguments to a
+constructor or the return type, and makes them implicit in that case.</p>
+<p>In <a href="#_defining_the_natural_numbers">Section Defining the Natural Numbers</a>
+we will see what happens when the
+constructor of an inductive type takes arguments from the inductive
+type itself. What characterizes the examples we consider in this
+section is that each constructor relies only on previously specified types.</p>
+<p>Notice that a type with multiple constructors is disjunctive: an
+element of <code>Sum α β</code> is either of the form <code>inl a</code> <em>or</em> of the
+form <code>inl b</code>. A constructor with multiple arguments introduces
+conjunctive information: from an element <code>Prod.mk a b</code> of
+<code>Prod α β</code> we can extract <code>a</code> <em>and</em> <code>b</code>. An arbitrary inductive type can
+include both features, by having any number of constructors, each of
+which takes any number of arguments.</p>
+<p>As with function definitions, Lean's inductive definition syntax will
+let you put named arguments to the constructors before the colon:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Prod (α : Type u) (β : Type v) where
+  | mk (fst : α) (snd : β) : Prod α β
+
+inductive Sum (α : Type u) (β : Type v) where
+  | inl (a : α) : Sum α β
+  | inr (b : β) : Sum α β
+<span class="boring">end Hidden
+</span></code></pre>
+<p>The results of these definitions are essentially the same as the ones given earlier in this section.</p>
+<p>A type, like <code>Prod</code>, that has only one constructor is purely
+conjunctive: the constructor simply packs the list of arguments into a
+single piece of data, essentially a tuple where the type of subsequent
+arguments can depend on the type of the initial argument. We can also
+think of such a type as a &quot;record&quot; or a &quot;structure&quot;. In Lean, the
+keyword <code>structure</code> can be used to define such an inductive type as
+well as its projections, at the same time.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>structure Prod (α : Type u) (β : Type v) where
+  mk :: (fst : α) (snd : β)
+<span class="boring">end Hidden
+</span></code></pre>
+<p>This example simultaneously introduces the inductive type, <code>Prod</code>,
+its constructor, <code>mk</code>, the usual eliminators (<code>rec</code> and
+<code>recOn</code>), as well as the projections, <code>fst</code> and <code>snd</code>, as
+defined above.</p>
+<p>If you do not name the constructor, Lean uses <code>mk</code> as a default. For
+example, the following defines a record to store a color as a triple
+of RGB values:</p>
+<pre><code class="language-lean">structure Color where
+  (red : Nat) (green : Nat) (blue : Nat)
+  deriving Repr
+
+def yellow := Color.mk 255 255 0
+
+#eval Color.red yellow
+</code></pre>
+<p>The definition of <code>yellow</code> forms the record with the three values
+shown, and the projection <code>Color.red</code> returns the red component.</p>
+<p>You can avoid the parentheses if you add a line break between each field.</p>
+<pre><code class="language-lean">structure Color where
+  red : Nat
+  green : Nat
+  blue : Nat
+  deriving Repr
+</code></pre>
+<p>The <code>structure</code> command is especially useful for defining algebraic
+structures, and Lean provides substantial infrastructure to support
+working with them. Here, for example, is the definition of a
+semigroup:</p>
+<pre><code class="language-lean">structure Semigroup where
+  carrier : Type u
+  mul : carrier → carrier → carrier
+  mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c)
+</code></pre>
+<p>We will see more examples in <a href="./structures_and_records.html">Chapter Structures and Records</a>.</p>
+<p>We have already discussed the dependent product type <code>Sigma</code>:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Sigma {α : Type u} (β : α → Type v) where
+  | mk : (a : α) → β a → Sigma β
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Two more examples of inductive types in the library are the following:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Option (α : Type u) where
+  | none : Option α
+  | some : α → Option α
+
+inductive Inhabited (α : Type u) where
+  | mk : α → Inhabited α
+<span class="boring">end Hidden
+</span></code></pre>
+<p>In the semantics of dependent type theory, there is no built-in notion
+of a partial function. Every element of a function type <code>α → β</code> or a
+dependent function type <code>(a : α) → β</code> is assumed to have a value
+at every input. The <code>Option</code> type provides a way of representing partial functions. An
+element of <code>Option β</code> is either <code>none</code> or of the form <code>some b</code>,
+for some value <code>b : β</code>. Thus we can think of an element <code>f</code> of the
+type <code>α → Option β</code> as being a partial function from <code>α</code> to <code>β</code>:
+for every <code>a : α</code>, <code>f a</code> either returns <code>none</code>, indicating the
+<code>f a</code> is &quot;undefined&quot;, or <code>some b</code>.</p>
+<p>An element of <code>Inhabited α</code> is simply a witness to the fact that
+there is an element of <code>α</code>. Later, we will see that <code>Inhabited</code> is
+an example of a <em>type class</em> in Lean: Lean can be instructed that
+suitable base types are inhabited, and can automatically infer that
+other constructed types are inhabited on that basis.</p>
+<p>As exercises, we encourage you to develop a notion of composition for
+partial functions from <code>α</code> to <code>β</code> and <code>β</code> to <code>γ</code>, and show
+that it behaves as expected. We also encourage you to show that
+<code>Bool</code> and <code>Nat</code> are inhabited, that the product of two inhabited
+types is inhabited, and that the type of functions to an inhabited
+type is inhabited.</p>
+<h2 id="inductively-defined-propositions"><a class="header" href="#inductively-defined-propositions">Inductively Defined Propositions</a></h2>
+<p>Inductively defined types can live in any type universe, including the
+bottom-most one, <code>Prop</code>. In fact, this is exactly how the logical
+connectives are defined.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive False : Prop
+
+inductive True : Prop where
+  | intro : True
+
+inductive And (a b : Prop) : Prop where
+  | intro : a → b → And a b
+
+inductive Or (a b : Prop) : Prop where
+  | inl : a → Or a b
+  | inr : b → Or a b
+<span class="boring">end Hidden
+</span></code></pre>
+<p>You should think about how these give rise to the introduction and
+elimination rules that you have already seen. There are rules that
+govern what the eliminator of an inductive type can eliminate <em>to</em>,
+that is, what kinds of types can be the target of a recursor. Roughly
+speaking, what characterizes inductive types in <code>Prop</code> is that one
+can only eliminate to other types in <code>Prop</code>. This is consistent with
+the understanding that if <code>p : Prop</code>, an element <code>hp : p</code> carries
+no data. There is a small exception to this rule, however, which we
+will discuss below, in <a href="#_inductive_families">Section Inductive Families</a>.</p>
+<p>Even the existential quantifier is inductively defined:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Exists {α : Sort u} (p : α → Prop) : Prop where
+  | intro (w : α) (h : p w) : Exists p
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Keep in mind that the notation <code>∃ x : α, p</code> is syntactic sugar for <code>Exists (fun x : α =&gt; p)</code>.</p>
+<p>The definitions of <code>False</code>, <code>True</code>, <code>And</code>, and <code>Or</code> are
+perfectly analogous to the definitions of <code>Empty</code>, <code>Unit</code>,
+<code>Prod</code>, and <code>Sum</code>. The difference is that the first group yields
+elements of <code>Prop</code>, and the second yields elements of <code>Type u</code> for
+some <code>u</code>. In a similar way, <code>∃ x : α, p</code> is a <code>Prop</code>-valued
+variant of <code>Σ x : α, p</code>.</p>
+<p>This is a good place to mention another inductive type, denoted
+<code>{x : α // p}</code>, which is sort of a hybrid between
+<code>∃ x : α, P</code> and <code>Σ x : α, P</code>.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Subtype {α : Type u} (p : α → Prop) where
+  | mk : (x : α) → p x → Subtype p
+<span class="boring">end Hidden
+</span></code></pre>
+<p>In fact, in Lean, <code>Subtype</code> is defined using the structure command:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>structure Subtype {α : Sort u} (p : α → Prop) where
+  val : α
+  property : p val
+<span class="boring">end Hidden
+</span></code></pre>
+<p>The notation <code>{x : α // p x}</code> is syntactic sugar for <code>Subtype (fun x : α =&gt; p x)</code>.
+It is modeled after subset notation in set theory: the idea is that <code>{x : α // p x}</code>
+denotes the collection of elements of <code>α</code> that have property <code>p</code>.</p>
+<h2 id="defining-the-natural-numbers"><a class="header" href="#defining-the-natural-numbers"><a name="_defining_the_natural_numbers"></a>Defining the Natural Numbers</a></h2>
+<p>The inductively defined types we have seen so far are &quot;flat&quot;:
+constructors wrap data and insert it into a type, and the
+corresponding recursor unpacks the data and acts on it. Things get
+much more interesting when the constructors act on elements of the
+very type being defined. A canonical example is the type <code>Nat</code> of
+natural numbers:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Nat where
+  | zero : Nat
+  | succ : Nat → Nat
+<span class="boring">end Hidden
+</span></code></pre>
+<p>There are two constructors. We start with <code>zero : Nat</code>; it takes
+no arguments, so we have it from the start. In contrast, the
+constructor <code>succ</code> can only be applied to a previously constructed
+<code>Nat</code>. Applying it to <code>zero</code> yields <code>succ zero : Nat</code>. Applying
+it again yields <code>succ (succ zero) : Nat</code>, and so on. Intuitively,
+<code>Nat</code> is the &quot;smallest&quot; type with these constructors, meaning that
+it is exhaustively (and freely) generated by starting with <code>zero</code>
+and applying <code>succ</code> repeatedly.</p>
+<p>As before, the recursor for <code>Nat</code> is designed to define a dependent
+function <code>f</code> from <code>Nat</code> to any domain, that is, an element <code>f</code>
+of <code>(n : nat) → motive n</code> for some <code>motive : Nat → Sort u</code>.
+It has to handle two cases: the case where the input is <code>zero</code>, and the case where
+the input is of the form <code>succ n</code> for some <code>n : Nat</code>. In the first
+case, we simply specify a target value with the appropriate type, as
+before. In the second case, however, the recursor can assume that a
+value of <code>f</code> at <code>n</code> has already been computed. As a result, the
+next argument to the recursor specifies a value for <code>f (succ n)</code> in
+terms of <code>n</code> and <code>f n</code>. If we check the type of the recursor,</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">inductive Nat where
+</span><span class="boring"> | zero : Nat
+</span><span class="boring"> | succ : Nat → Nat
+</span>#check @Nat.rec
+<span class="boring">end Hidden
+</span></code></pre>
+<p>you find the following:</p>
+<pre><code>  {motive : Nat → Sort u}
+  → motive Nat.zero
+  → ((n : Nat) → motive n → motive (Nat.succ n))
+  → (t : Nat) → motive t
+</code></pre>
+<p>The implicit argument, <code>motive</code>, is the codomain of the function being defined.
+In type theory it is common to say <code>motive</code> is the <em>motive</em> for the elimination/recursion,
+since it describes the kind of object we wish to construct.
+The next two arguments specify how to compute the zero and successor cases, as described above.
+They are also known as the <code>minor premises</code>.
+Finally, the <code>t : Nat</code>, is the input to the function. It is also known as the <code>major premise</code>.</p>
+<p>The <code>Nat.recOn</code> is similar to <code>Nat.rec</code> but the major premise occurs before the minor premises.</p>
+<pre><code>@Nat.recOn :
+  {motive : Nat → Sort u}
+  → (t : Nat)
+  → motive Nat.zero
+  → ((n : Nat) → motive n → motive (Nat.succ n))
+  → motive t
+</code></pre>
+<p>Consider, for example, the addition function <code>add m n</code> on the
+natural numbers. Fixing <code>m</code>, we can define addition by recursion on
+<code>n</code>. In the base case, we set <code>add m zero</code> to <code>m</code>. In the
+successor step, assuming the value <code>add m n</code> is already determined,
+we define <code>add m (succ n)</code> to be <code>succ (add m n)</code>.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Nat where
+  | zero : Nat
+  | succ : Nat → Nat
+  deriving Repr
+
+def add (m n : Nat) : Nat :=
+  match n with
+  | Nat.zero   =&gt; m
+  | Nat.succ n =&gt; Nat.succ (add m n)
+
+open Nat
+
+#eval add (succ (succ zero)) (succ zero)
+<span class="boring">end Hidden
+</span></code></pre>
+<p>It is useful to put such definitions into a namespace, <code>Nat</code>. We can
+then go on to define familiar notation in that namespace. The two
+defining equations for addition now hold definitionally:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">inductive Nat where
+</span><span class="boring"> | zero : Nat
+</span><span class="boring"> | succ : Nat → Nat
+</span><span class="boring"> deriving Repr
+</span>namespace Nat
+
+def add (m n : Nat) : Nat :=
+  match n with
+  | Nat.zero   =&gt; m
+  | Nat.succ n =&gt; Nat.succ (add m n)
+
+instance : Add Nat where
+  add := add
+
+theorem add_zero (m : Nat) : m + zero = m := rfl
+theorem add_succ (m n : Nat) : m + succ n = succ (m + n) := rfl
+
+end Nat
+<span class="boring">end Hidden
+</span></code></pre>
+<p>We will explain how the <code>instance</code> command works in
+<a href="./type_classes.html">Chapter Type Classes</a>. In the examples below, we will use
+Lean's version of the natural numbers.</p>
+<p>Proving a fact like <code>zero + m = m</code>, however, requires a proof by induction.
+As observed above, the induction principle is just a special case of the recursion principle,
+when the codomain <code>motive n</code> is an element of <code>Prop</code>. It represents the familiar
+pattern of an inductive proof: to prove <code>∀ n, motive n</code>, first prove <code>motive 0</code>,
+and then, for arbitrary <code>n</code>, assume <code>ih : motive n</code> and prove <code>motive (succ n)</code>.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>open Nat
+
+theorem zero_add (n : Nat) : 0 + n = n :=
+  Nat.recOn (motive := fun x =&gt; 0 + x = x)
+   n
+   (show 0 + 0 = 0 from rfl)
+   (fun (n : Nat) (ih : 0 + n = n) =&gt;
+    show 0 + succ n = succ n from
+    calc
+       0 + succ n = succ (0 + n) := rfl
+                _ = succ n       := by rw [ih])
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Notice that, once again, when <code>Nat.recOn</code> is used in the context of
+a proof, it is really the induction principle in disguise. The
+<code>rewrite</code> and <code>simp</code> tactics tend to be very effective in proofs
+like these. In this case, each can be used to reduce the proof to:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>open Nat
+
+theorem zero_add (n : Nat) : 0 + n = n :=
+  Nat.recOn (motive := fun x =&gt; 0 + x = x) n
+    rfl
+    (fun n ih =&gt; by simp [add_succ, ih])
+<span class="boring">end Hidden
+</span></code></pre>
+<p>As another example, let us prove the associativity of addition,
+<code>∀ m n k, m + n + k = m + (n + k)</code>.
+(The notation <code>+</code>, as we have defined it, associates to the left, so <code>m + n + k</code> is really <code>(m + n) + k</code>.)
+The hardest part is figuring out which variable to do the induction on. Since addition is defined by recursion on the second argument,
+<code>k</code> is a good guess, and once we make that choice the proof almost writes itself:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>open Nat
+theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
+  Nat.recOn (motive := fun k =&gt; m + n + k = m + (n + k)) k
+    (show m + n + 0 = m + (n + 0) from rfl)
+    (fun k (ih : m + n + k = m + (n + k)) =&gt;
+      show m + n + succ k = m + (n + succ k) from
+      calc
+          m + n + succ k = succ (m + n + k) := rfl
+            _ = succ (m + (n + k)) := by rw [ih]
+            _ = m + succ (n + k) := rfl
+            _ = m + (n + succ k) := rfl)
+<span class="boring">end Hidden
+</span></code></pre>
+<p>One again, you can reduce the proof to:</p>
+<pre><code class="language-lean">open Nat
+theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
+  Nat.recOn (motive := fun k =&gt; m + n + k = m + (n + k)) k
+    rfl
+    (fun k ih =&gt; by simp [Nat.add_succ, ih])
+</code></pre>
+<p>Suppose we try to prove the commutativity of addition. Choosing induction on the second argument, we might begin as follows:</p>
+<pre><code class="language-lean">open Nat
+theorem add_comm (m n : Nat) : m + n = n + m :=
+  Nat.recOn (motive := fun x =&gt; m + x = x + m) n
+   (show m + 0 = 0 + m by rw [Nat.zero_add, Nat.add_zero])
+   (fun (n : Nat) (ih : m + n = n + m) =&gt;
+    show m + succ n = succ n + m from
+    calc m + succ n = succ (m + n) := rfl
+                  _ = succ (n + m) := by rw [ih]
+                  _ = succ n +  m  := sorry)
+</code></pre>
+<p>At this point, we see that we need another supporting fact, namely, that <code>succ (n + m) = succ n + m</code>.
+You can prove this by induction on <code>m</code>:</p>
+<pre><code class="language-lean">open Nat
+
+theorem succ_add (n m : Nat) : succ n + m = succ (n + m) :=
+  Nat.recOn (motive := fun x =&gt; succ n + x = succ (n + x)) m
+    (show succ n + 0 = succ (n + 0) from rfl)
+    (fun (m : Nat) (ih : succ n + m = succ (n + m)) =&gt;
+     show succ n + succ m = succ (n + succ m) from
+     calc succ n + succ m = succ (succ n + m) := rfl
+           _  = succ (succ (n + m))           := by rw [ih]
+           _  = succ (n + succ m)             := rfl)
+</code></pre>
+<p>You can then replace the <code>sorry</code> in the previous proof with <code>succ_add</code>. Yet again, the proofs can be compressed:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>open Nat
+theorem succ_add (n m : Nat) : succ n + m = succ (n + m) :=
+  Nat.recOn (motive := fun x =&gt; succ n + x = succ (n + x)) m
+    rfl
+    (fun m ih =&gt; by simp only [add_succ, ih])
+
+theorem add_comm (m n : Nat) : m + n = n + m :=
+  Nat.recOn (motive := fun x =&gt; m + x = x + m) n
+    (by simp)
+    (fun m ih =&gt; by simp [add_succ, succ_add, ih])
+<span class="boring">end Hidden
+</span></code></pre>
+<h2 id="other-recursive-data-types"><a class="header" href="#other-recursive-data-types">Other Recursive Data Types</a></h2>
+<p>Let us consider some more examples of inductively defined types. For
+any type, <code>α</code>, the type <code>List α</code> of lists of elements of <code>α</code> is
+defined in the library.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive List (α : Type u) where
+| nil  : List α
+| cons : α → List α → List α
+
+namespace List
+
+def append (as bs : List α) : List α :=
+  match as with
+  | nil       =&gt; bs
+  | cons a as =&gt; cons a (append as bs)
+
+theorem nil_append (as : List α) : append nil as = as :=
+  rfl
+
+theorem cons_append (a : α) (as bs : List α)
+                    : append (cons a as) bs = cons a (append as bs) :=
+  rfl
+
+end List
+<span class="boring">end Hidden
+</span></code></pre>
+<p>A list of elements of type <code>α</code> is either the empty list, <code>nil</code>, or
+an element <code>h : α</code> followed by a list <code>t : List α</code>.
+The first element, <code>h</code>, is commonly known as the &quot;head&quot; of the list,
+and the remainder, <code>t</code>, is known as the &quot;tail.&quot;</p>
+<p>As an exercise, prove the following:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">inductive List (α : Type u) where
+</span><span class="boring">| nil  : List α
+</span><span class="boring">| cons : α → List α → List α
+</span><span class="boring">namespace List
+</span><span class="boring">def append (as bs : List α) : List α :=
+</span><span class="boring"> match as with
+</span><span class="boring"> | nil       =&gt; bs
+</span><span class="boring"> | cons a as =&gt; cons a (append as bs)
+</span><span class="boring">theorem nil_append (as : List α) : append nil as = as :=
+</span><span class="boring"> rfl
+</span><span class="boring">theorem cons_append (a : α) (as bs : List α)
+</span><span class="boring">                    : append (cons a as) bs = cons a (append as bs) :=
+</span><span class="boring"> rfl
+</span>theorem append_nil (as : List α) : append as nil = as :=
+  sorry
+
+theorem append_assoc (as bs cs : List α)
+        : append (append as bs) cs = append as (append bs cs) :=
+  sorry
+<span class="boring">end List
+</span><span class="boring">end Hidden
+</span></code></pre>
+<p>Try also defining the function <code>length : {α : Type u} → List α → Nat</code> that returns the length of a list,
+and prove that it behaves as expected (for example, <code>length (append as bs) = length as + length bs</code>).</p>
+<p>For another example, we can define the type of binary trees:</p>
+<pre><code class="language-lean">inductive BinaryTree where
+  | leaf : BinaryTree
+  | node : BinaryTree → BinaryTree → BinaryTree
+</code></pre>
+<p>In fact, we can even define the type of countably branching trees:</p>
+<pre><code class="language-lean">inductive CBTree where
+  | leaf : CBTree
+  | sup : (Nat → CBTree) → CBTree
+
+namespace CBTree
+
+def succ (t : CBTree) : CBTree :=
+  sup (fun _ =&gt; t)
+
+def toCBTree : Nat → CBTree
+  | 0 =&gt; leaf
+  | n+1 =&gt; succ (toCBTree n)
+
+def omega : CBTree :=
+  sup toCBTree
+
+end CBTree
+</code></pre>
+<h2 id="tactics-for-inductive-types"><a class="header" href="#tactics-for-inductive-types">Tactics for Inductive Types</a></h2>
+<p>Given the fundamental importance of inductive types in Lean, it should
+not be surprising that there are a number of tactics designed to work
+with them effectively. We describe some of them here.</p>
+<p>The <code>cases</code> tactic works on elements of an inductively defined type,
+and does what the name suggests: it decomposes the element according
+to each of the possible constructors. In its most basic form, it is
+applied to an element <code>x</code> in the local context. It then reduces the
+goal to cases in which <code>x</code> is replaced by each of the constructions.</p>
+<pre><code class="language-lean">example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (Nat.succ n)) : ∀ n, p n := by
+  intro n
+  cases n
+  . exact hz  -- goal is p 0
+  . apply hs  -- goal is a : ℕ ⊢ p (succ a)
+</code></pre>
+<p>There are extra bells and whistles. For one thing, <code>cases</code> allows
+you to choose the names for each alternative using a
+<code>with</code> clause. In the next example, for example, we choose the name
+<code>m</code> for the argument to <code>succ</code>, so that the second case refers to
+<code>succ m</code>. More importantly, the cases tactic will detect any items
+in the local context that depend on the target variable. It reverts
+these elements, does the split, and reintroduces them. In the example
+below, notice that the hypothesis <code>h : n ≠ 0</code> becomes <code>h : 0 ≠ 0</code>
+in the first branch, and <code>h : succ m ≠ 0</code> in the second.</p>
+<pre><code class="language-lean">open Nat
+
+example (n : Nat) (h : n ≠ 0) : succ (pred n) = n := by
+  cases n with
+  | zero =&gt;
+    -- goal: h : 0 ≠ 0 ⊢ succ (pred 0) = 0
+    apply absurd rfl h
+  | succ m =&gt;
+    -- second goal: h : succ m ≠ 0 ⊢ succ (pred (succ m)) = succ m
+    rfl
+</code></pre>
+<p>Notice that <code>cases</code> can be used to produce data as well as prove propositions.</p>
+<pre><code class="language-lean">def f (n : Nat) : Nat := by
+  cases n; exact 3; exact 7
+
+example : f 0 = 3 := rfl
+example : f 5 = 7 := rfl
+</code></pre>
+<p>Once again, cases will revert, split, and then reintroduce depedencies in the context.</p>
+<pre><code class="language-lean">def Tuple (α : Type) (n : Nat) :=
+  { as : List α // as.length = n }
+
+def f {n : Nat} (t : Tuple α n) : Nat := by
+  cases n; exact 3; exact 7
+
+def myTuple : Tuple Nat 3 :=
+  ⟨[0, 1, 2], rfl⟩
+
+example : f myTuple = 7 :=
+  rfl
+</code></pre>
+<p>Here is an example with multiple constructors with arguments.</p>
+<pre><code class="language-lean">inductive Foo where
+  | bar1 : Nat → Nat → Foo
+  | bar2 : Nat → Nat → Nat → Foo
+
+def silly (x : Foo) : Nat := by
+  cases x with
+  | bar1 a b =&gt; exact b
+  | bar2 c d e =&gt; exact e
+</code></pre>
+<p>The alternatives for each constructor don't need to be solved
+in the order the constructors were declared.</p>
+<pre><code class="language-lean">inductive Foo where
+  | bar1 : Nat → Nat → Foo
+  | bar2 : Nat → Nat → Nat → Foo
+
+def silly (x : Foo) : Nat := by
+  cases x with
+  | bar2 c d e =&gt; exact e
+  | bar1 a b =&gt; exact b
+</code></pre>
+<p>The syntax of the <code>with</code> is convenient for writing structured proofs.
+Lean also provides a complementary <code>case</code> tactic, which allows you to focus on goal
+assign variable names.</p>
+<pre><code class="language-lean">inductive Foo where
+  | bar1 : Nat → Nat → Foo
+  | bar2 : Nat → Nat → Nat → Foo
+
+def silly (x : Foo) : Nat := by
+  cases x
+  case bar2 c d e =&gt; exact e
+  case bar1 a b =&gt; exact b
+</code></pre>
+<p>The <code>case</code> tactic is clever, in that it will match the constructor to the appropriate goal. For example, we can fill the goals above in the opposite order:</p>
+<pre><code class="language-lean">inductive Foo where
+  | bar1 : Nat → Nat → Foo
+  | bar2 : Nat → Nat → Nat → Foo
+
+def silly (x : Foo) : Nat := by
+  cases x
+  case bar1 a b =&gt; exact b
+  case bar2 c d e =&gt; exact e
+</code></pre>
+<p>You can also use <code>cases</code> with an arbitrary expression. Assuming that
+expression occurs in the goal, the cases tactic will generalize over
+the expression, introduce the resulting universally quantified
+variable, and case on that.</p>
+<pre><code class="language-lean">open Nat
+
+example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
+        : p (m + 3 * k) := by
+  cases m + 3 * k
+  exact hz   -- goal is p 0
+  apply hs   -- goal is a : ℕ ⊢ p (succ a)
+</code></pre>
+<p>Think of this as saying &quot;split on cases as to whether <code>m + 3 * k</code> is
+zero or the successor of some number.&quot; The result is functionally
+equivalent to the following:</p>
+<pre><code class="language-lean">open Nat
+
+example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
+        : p (m + 3 * k) := by
+  generalize m + 3 * k = n
+  cases n
+  exact hz   -- goal is p 0
+  apply hs   -- goal is a : ℕ ⊢ p (succ a)
+</code></pre>
+<p>Notice that the expression <code>m + 3 * k</code> is erased by <code>generalize</code>; all
+that matters is whether it is of the form <code>0</code> or <code>succ a</code>. This
+form of <code>cases</code> will <em>not</em> revert any hypotheses that also mention
+the expression in the equation (in this case, <code>m + 3 * k</code>). If such a
+term appears in a hypothesis and you want to generalize over that as
+well, you need to <code>revert</code> it explicitly.</p>
+<p>If the expression you case on does not appear in the goal, the
+<code>cases</code> tactic uses <code>have</code> to put the type of the expression into
+the context. Here is an example:</p>
+<pre><code class="language-lean">example (p : Prop) (m n : Nat)
+        (h₁ : m &lt; n → p) (h₂ : m ≥ n → p) : p := by
+  cases Nat.lt_or_ge m n
+  case inl hlt =&gt; exact h₁ hlt
+  case inr hge =&gt; exact h₂ hge
+</code></pre>
+<p>The theorem <code>Nat.lt_or_ge m n</code> says <code>m &lt; n ∨ m ≥ n</code>, and it is
+natural to think of the proof above as splitting on these two
+cases. In the first branch, we have the hypothesis <code>h₁ : m &lt; n</code>, and
+in the second we have the hypothesis <code>h₂ : m ≥ n</code>. The proof above
+is functionally equivalent to the following:</p>
+<pre><code class="language-lean">example (p : Prop) (m n : Nat)
+        (h₁ : m &lt; n → p) (h₂ : m ≥ n → p) : p := by
+  have h : m &lt; n ∨ m ≥ n := Nat.lt_or_ge m n
+  cases h
+  case inl hlt =&gt; exact h₁ hlt
+  case inr hge =&gt; exact h₂ hge
+</code></pre>
+<p>After the first two lines, we have <code>h : m &lt; n ∨ m ≥ n</code> as a
+hypothesis, and we simply do cases on that.</p>
+<p>Here is another example, where we use the decidability of equality on
+the natural numbers to split on the cases <code>m = n</code> and <code>m ≠ n</code>.</p>
+<pre><code class="language-lean">#check Nat.sub_self
+
+example (m n : Nat) : m - n = 0 ∨ m ≠ n := by
+  cases Decidable.em (m = n) with
+  | inl heq =&gt; rw [heq]; apply Or.inl; exact Nat.sub_self n
+  | inr hne =&gt; apply Or.inr; exact hne
+</code></pre>
+<p>Remember that if you <code>open Classical</code>, you can use the law of the
+excluded middle for any proposition at all. But using type class
+inference (see <a href="./type_classes.html">Chapter Type Classes</a>), Lean can actually
+find the relevant decision procedure, which means that you can use the
+case split in a computable function.</p>
+<p>Just as the <code>cases</code> tactic can be used to carry out proof by cases,
+the <code>induction</code> tactic can be used to carry out proofs by
+induction. The syntax is similar to that of <code>cases</code>, except that the
+argument can only be a term in the local context. Here is an example:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>theorem zero_add (n : Nat) : 0 + n = n := by
+  induction n with
+  | zero =&gt; rfl
+  | succ n ih =&gt; rw [Nat.add_succ, ih]
+<span class="boring">end Hidden
+</span></code></pre>
+<p>As with <code>cases</code>, we can use the <code>case</code> tactic instead of <code>with</code>.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>theorem zero_add (n : Nat) : 0 + n = n := by
+  induction n
+  case zero =&gt; rfl
+  case succ n ih =&gt; rw [Nat.add_succ, ih]
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Here are some additional examples:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>open Nat
+
+theorem zero_add (n : Nat) : 0 + n = n := by
+  induction n &lt;;&gt; simp [*, add_zero, add_succ]
+
+theorem succ_add (m n : Nat) : succ m + n = succ (m + n) := by
+  induction n &lt;;&gt; simp [*, add_zero, add_succ]
+
+theorem add_comm (m n : Nat) : m + n = n + m := by
+  induction n &lt;;&gt; simp [*, add_zero, add_succ, succ_add, zero_add]
+
+theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) := by
+  induction k &lt;;&gt; simp [*, add_zero, add_succ]
+<span class="boring">end Hidden
+</span></code></pre>
+<p>The <code>induction</code> tactic also supports user-defined induction principles with
+multiple targets (aka major premises).</p>
+<pre><code class="language-lean">/-
+theorem Nat.mod.inductionOn
+      {motive : Nat → Nat → Sort u}
+      (x y  : Nat)
+      (ind  : ∀ x y, 0 &lt; y ∧ y ≤ x → motive (x - y) y → motive x y)
+      (base : ∀ x y, ¬(0 &lt; y ∧ y ≤ x) → motive x y)
+      : motive x y :=
+-/
+
+example (x : Nat) {y : Nat} (h : y &gt; 0) : x % y &lt; y := by
+  induction x, y using Nat.mod.inductionOn with
+  | ind x y h₁ ih =&gt;
+    rw [Nat.mod_eq_sub_mod h₁.2]
+    exact ih h
+  | base x y h₁ =&gt;
+     have : ¬ 0 &lt; y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
+     match this with
+     | Or.inl h₁ =&gt; exact absurd h h₁
+     | Or.inr h₁ =&gt;
+       have hgt : y &gt; x := Nat.gt_of_not_le h₁
+       rw [← Nat.mod_eq_of_lt hgt] at hgt
+       assumption
+</code></pre>
+<p>You can use the <code>match</code> notation in tactics too:</p>
+<pre><code class="language-lean">example : p ∨ q → q ∨ p := by
+  intro h
+  match h with
+  | Or.inl _  =&gt; apply Or.inr; assumption
+  | Or.inr h2 =&gt; apply Or.inl; exact h2
+</code></pre>
+<p>As a convenience, pattern-matching has been integrated into tactics such as <code>intro</code> and <code>funext</code>.</p>
+<pre><code class="language-lean">example : s ∧ q ∧ r → p ∧ r → q ∧ p := by
+  intro ⟨_, ⟨hq, _⟩⟩ ⟨hp, _⟩
+  exact ⟨hq, hp⟩
+
+example :
+    (fun (x : Nat × Nat) (y : Nat × Nat) =&gt; x.1 + y.2)
+    =
+    (fun (x : Nat × Nat) (z : Nat × Nat) =&gt; z.2 + x.1) := by
+  funext (a, b) (c, d)
+  show a + d = d + a
+  rw [Nat.add_comm]
+</code></pre>
+<p>We close this section with one last tactic that is designed to
+facilitate working with inductive types, namely, the <code>injection</code>
+tactic. By design, the elements of an inductive type are freely
+generated, which is to say, the constructors are injective and have
+disjoint ranges. The <code>injection</code> tactic is designed to make use of
+this fact:</p>
+<pre><code class="language-lean">open Nat
+
+example (m n k : Nat) (h : succ (succ m) = succ (succ n))
+        : n + k = m + k := by
+  injection h with h'
+  injection h' with h''
+  rw [h'']
+</code></pre>
+<p>The first instance of the tactic adds <code>h' : succ m = succ n</code> to the
+context, and the second adds <code>h'' : m = n</code>.</p>
+<p>The <code>injection</code> tactic also detects contradictions that arise when different constructors
+are set equal to one another, and uses them to close the goal.</p>
+<pre><code class="language-lean">open Nat
+
+
+example (m n : Nat) (h : succ m = 0) : n = n + 7 := by
+  injection h
+
+example (m n : Nat) (h : succ m = 0) : n = n + 7 := by
+  contradiction
+
+example (h : 7 = 4) : False := by
+  contradiction
+</code></pre>
+<p>As the second example shows, the <code>contradiction</code> tactic also detects contradictions of this form.</p>
+<h2 id="inductive-families"><a class="header" href="#inductive-families"><a name="_inductive_families"></a>Inductive Families</a></h2>
+<p>We are almost done describing the full range of inductive definitions
+accepted by Lean. So far, you have seen that Lean allows you to
+introduce inductive types with any number of recursive
+constructors. In fact, a single inductive definition can introduce an
+indexed <em>family</em> of inductive types, in a manner we now describe.</p>
+<p>An inductive family is an indexed family of types defined by a
+simultaneous induction of the following form:</p>
+<pre><code>inductive foo : ... → Sort u where
+  | constructor₁ : ... → foo ...
+  | constructor₂ : ... → foo ...
+  ...
+  | constructorₙ : ... → foo ...
+</code></pre>
+<p>In contrast to an ordinary inductive definition, which constructs an
+element of some <code>Sort u</code>, the more general version constructs a
+function <code>... → Sort u</code>, where &quot;<code>...</code>&quot; denotes a sequence of
+argument types, also known as <em>indices</em>. Each constructor then
+constructs an element of some member of the family. One example is the
+definition of <code>Vector α n</code>, the type of vectors of elements of <code>α</code>
+of length <code>n</code>:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Vector (α : Type u) : Nat → Type u where
+  | nil  : Vector α 0
+  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Notice that the <code>cons</code> constructor takes an element of
+<code>Vector α n</code> and returns an element of <code>Vector α (n+1)</code>, thereby using an
+element of one member of the family to build an element of another.</p>
+<p>A more exotic example is given by the definition of the equality type in Lean:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>inductive Eq {α : Sort u} (a : α) : α → Prop where
+  | refl : Eq a a
+<span class="boring">end Hidden
+</span></code></pre>
+<p>For each fixed <code>α : Sort u</code> and <code>a : α</code>, this definition
+constructs a family of types <code>Eq a x</code>, indexed by <code>x : α</code>.
+Notably, however, there is only one constructor, <code>refl</code>, which
+is an element of <code>Eq a a</code>.
+Intuitively, the only way to construct a proof of <code>Eq a x</code>
+is to use reflexivity, in the case where <code>x</code> is <code>a</code>.
+Note that <code>Eq a a</code> is the only inhabited type in the family of types
+<code>Eq a x</code>. The elimination principle generated by Lean is as follows:</p>
+<pre><code class="language-lean">universe u v
+
+#check (@Eq.rec : {α : Sort u} → {a : α} → {motive : (x : α) → a = x → Sort v}
+                  → motive a rfl → {b : α} → (h : a = b) → motive b h)
+</code></pre>
+<p>It is a remarkable fact that all the basic axioms for equality follow
+from the constructor, <code>refl</code>, and the eliminator, <code>Eq.rec</code>. The
+definition of equality is atypical, however; see the discussion in <a href="#_axiomatic_details">Section Axiomatic Details</a>.</p>
+<p>The recursor <code>Eq.rec</code> is also used to define substitution:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>theorem subst {α : Type u} {a b : α} {p : α → Prop} (h₁ : Eq a b) (h₂ : p a) : p b :=
+  Eq.rec (motive := fun x _ =&gt; p x) h₂ h₁
+<span class="boring">end Hidden
+</span></code></pre>
+<p>You can also define <code>subst</code> using <code>match</code>.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>theorem subst {α : Type u} {a b : α} {p : α → Prop} (h₁ : Eq a b) (h₂ : p a) : p b :=
+  match h₁ with
+  | rfl =&gt; h₂
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Actually, Lean compiles the <code>match</code> expressions using a definition based on
+<code>Eq.rec</code>.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>theorem subst {α : Type u} {a b : α} {p : α → Prop} (h₁ : Eq a b) (h₂ : p a) : p b :=
+  match h₁ with
+  | rfl =&gt; h₂
+
+set_option pp.all true
+#print subst
+  -- ... subst.match_1 ...
+#print subst.match_1
+  -- ... Eq.casesOn ...
+#print Eq.casesOn
+  -- ... Eq.rec ...
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Using the recursor or <code>match</code> with <code>h₁ : a = b</code>, we may assume <code>a</code> and <code>b</code> are the same,
+in which case, <code>p b</code> and <code>p a</code> are the same.</p>
+<p>It is not hard to prove that <code>Eq</code> is symmetric and transitive.
+In the following example, we prove <code>symm</code> and leave as exercises the theorems <code>trans</code> and <code>congr</code> (congruence).</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>theorem symm {α : Type u} {a b : α} (h : Eq a b) : Eq b a :=
+  match h with
+  | rfl =&gt; rfl
+
+theorem trans {α : Type u} {a b c : α} (h₁ : Eq a b) (h₂ : Eq b c) : Eq a c :=
+  sorry
+
+theorem congr {α β : Type u} {a b : α} (f : α → β) (h : Eq a b) : Eq (f a) (f b) :=
+  sorry
+<span class="boring">end Hidden
+</span></code></pre>
+<p>In the type theory literature, there are further generalizations of
+inductive definitions, for example, the principles of
+<em>induction-recursion</em> and <em>induction-induction</em>. These are not
+supported by Lean.</p>
+<h2 id="axiomatic-details"><a class="header" href="#axiomatic-details"><a name="_axiomatic_details"></a>Axiomatic Details</a></h2>
+<p>We have described inductive types and their syntax through
+examples. This section provides additional information for those
+interested in the axiomatic foundations.</p>
+<p>We have seen that the constructor to an inductive type takes
+<em>parameters</em> --- intuitively, the arguments that remain fixed
+throughout the inductive construction --- and <em>indices</em>, the arguments
+parameterizing the family of types that is simultaneously under
+construction. Each constructor should have a type, where the
+argument types are built up from previously defined types, the
+parameter and index types, and the inductive family currently being
+defined. The requirement is that if the latter is present at all, it
+occurs only <em>strictly positively</em>. This means simply that any argument
+to the constructor in which it occurs is a dependent arrow type in which the
+inductive type under definition occurs only as the resulting type,
+where the indices are given in terms of constants and previous
+arguments.</p>
+<p>Since an inductive type lives in <code>Sort u</code> for some <code>u</code>, it is
+reasonable to ask <em>which</em> universe levels <code>u</code> can be instantiated
+to. Each constructor <code>c</code> in the definition of a family <code>C</code> of
+inductive types is of the form</p>
+<pre><code>  c : (a : α) → (b : β[a]) → C a p[a,b]
+</code></pre>
+<p>where <code>a</code> is a sequence of data type parameters, <code>b</code> is the
+sequence of arguments to the constructors, and <code>p[a, b]</code> are the
+indices, which determine which element of the inductive family the
+construction inhabits. (Note that this description is somewhat
+misleading, in that the arguments to the constructor can appear in any
+order as long as the dependencies make sense.) The constraints on the
+universe level of <code>C</code> fall into two cases, depending on whether or
+not the inductive type is specified to land in <code>Prop</code> (that is,
+<code>Sort 0</code>).</p>
+<p>Let us first consider the case where the inductive type is <em>not</em>
+specified to land in <code>Prop</code>. Then the universe level <code>u</code> is
+constrained to satisfy the following:</p>
+<blockquote>
+<p>For each constructor <code>c</code> as above, and each <code>βk[a]</code> in the sequence <code>β[a]</code>, if <code>βk[a] : Sort v</code>, we have <code>u</code> ≥ <code>v</code>.</p>
+</blockquote>
+<p>In other words, the universe level <code>u</code> is required to be at least as
+large as the universe level of each type that represents an argument
+to a constructor.</p>
+<p>When the inductive type is specified to land in <code>Prop</code>, there are no
+constraints on the universe levels of the constructor arguments. But
+these universe levels do have a bearing on the elimination
+rule. Generally speaking, for an inductive type in <code>Prop</code>, the
+motive of the elimination rule is required to be in <code>Prop</code>.</p>
+<p>There is an exception to this last rule: we are allowed to eliminate
+from an inductively defined <code>Prop</code> to an arbitrary <code>Sort</code> when
+there is only one constructor and each constructor argument is either
+in <code>Prop</code> or an index. The intuition is that in this case the
+elimination does not make use of any information that is not already
+given by the mere fact that the type of argument is inhabited. This
+special case is known as <em>singleton elimination</em>.</p>
+<p>We have already seen singleton elimination at play in applications of
+<code>Eq.rec</code>, the eliminator for the inductively defined equality
+type. We can use an element <code>h : Eq a b</code> to cast an element
+<code>t' : p a</code> to <code>p b</code> even when <code>p a</code> and <code>p b</code> are arbitrary types,
+because the cast does not produce new data; it only reinterprets the
+data we already have. Singleton elimination is also used with
+heterogeneous equality and well-founded recursion, which will be
+discussed in a <a href="./induction_and_recursion.html#_well_founded_recursion_and_induction">Chapter Induction and Recursion</a>.</p>
+<h2 id="mutual-and-nested-inductive-types"><a class="header" href="#mutual-and-nested-inductive-types">Mutual and Nested Inductive Types</a></h2>
+<p>We now consider two generalizations of inductive types that are often
+useful, which Lean supports by &quot;compiling&quot; them down to the more
+primitive kinds of inductive types described above. In other words,
+Lean parses the more general definitions, defines auxiliary inductive
+types based on them, and then uses the auxiliary types to define the
+ones we really want. Lean's equation compiler, described in the next
+chapter, is needed to make use of these types
+effectively. Nonetheless, it makes sense to describe the declarations
+here, because they are straightforward variations on ordinary
+inductive definitions.</p>
+<p>First, Lean supports <em>mutually defined</em> inductive types. The idea is
+that we can define two (or more) inductive types at the same time,
+where each one refers to the other(s).</p>
+<pre><code class="language-lean">mutual
+  inductive Even : Nat → Prop where
+    | even_zero : Even 0
+    | even_succ : (n : Nat) → Odd n → Even (n + 1)
+
+  inductive Odd : Nat → Prop where
+    | odd_succ : (n : Nat) → Even n → Odd (n + 1)
+end
+</code></pre>
+<p>In this example, two types are defined simultaneously: a natural
+number <code>n</code> is <code>Even</code> if it is <code>0</code> or one more than an <code>Odd</code>
+number, and <code>Odd</code> if it is one more than an <code>Even</code> number.
+In the exercises below, you are asked to spell out the details.</p>
+<p>A mutual inductive definition can also be used to define the notation
+of a finite tree with nodes labelled by elements of <code>α</code>:</p>
+<pre><code class="language-lean">mutual
+    inductive Tree (α : Type u) where
+      | node : α → TreeList α → Tree α
+
+    inductive TreeList (α : Type u) where
+      | nil  : TreeList α
+      | cons : Tree α → TreeList α → TreeList α
+end
+</code></pre>
+<p>With this definition, one can construct an element of <code>Tree α</code> by
+giving an element of <code>α</code> together with a list of subtrees, possibly
+empty. The list of subtrees is represented by the type <code>TreeList α</code>,
+which is defined to be either the empty list, <code>nil</code>, or the
+<code>cons</code> of a tree and an element of <code>TreeList α</code>.</p>
+<p>This definition is inconvenient to work with, however. It would be
+much nicer if the list of subtrees were given by the type
+<code>List (Tree α)</code>, especially since Lean's library contains a number of functions
+and theorems for working with lists. One can show that the type
+<code>TreeList α</code> is <em>isomorphic</em> to <code>List (Tree α)</code>, but translating
+results back and forth along this isomorphism is tedious.</p>
+<p>In fact, Lean allows us to define the inductive type we really want:</p>
+<pre><code class="language-lean">inductive Tree (α : Type u) where
+  | mk : α → List (Tree α) → Tree α
+</code></pre>
+<p>This is known as a <em>nested</em> inductive type. It falls outside the
+strict specification of an inductive type given in the last section
+because <code>Tree</code> does not occur strictly positively among the
+arguments to <code>mk</code>, but, rather, nested inside the <code>List</code> type
+constructor. Lean then automatically builds the
+isomorphism between <code>TreeList α</code> and <code>List (Tree α)</code> in its kernel,
+and defines the constructors for <code>Tree</code> in terms of the isomorphism.</p>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<ol>
+<li>
+<p>Try defining other operations on the natural numbers, such as
+multiplication, the predecessor function (with <code>pred 0 = 0</code>),
+truncated subtraction (with <code>n - m = 0</code> when <code>m</code> is greater
+than or equal to <code>n</code>), and exponentiation. Then try proving some
+of their basic properties, building on the theorems we have already
+proved.</p>
+<p>Since many of these are already defined in Lean's core library, you
+should work within a namespace named <code>Hidden</code>, or something like
+that, in order to avoid name clashes.</p>
+</li>
+<li>
+<p>Define some operations on lists, like a <code>length</code> function or the
+<code>reverse</code> function. Prove some properties, such as the following:</p>
+<p>a. <code>length (s ++ t) = length s + length t</code></p>
+<p>b. <code>length (reverse t) = length t</code></p>
+<p>c. <code>reverse (reverse t) = t</code></p>
+</li>
+<li>
+<p>Define an inductive data type consisting of terms built up from the following constructors:</p>
+<ul>
+<li><code>const n</code>, a constant denoting the natural number <code>n</code></li>
+<li><code>var n</code>, a variable, numbered <code>n</code></li>
+<li><code>plus s t</code>, denoting the sum of <code>s</code> and <code>t</code></li>
+<li><code>times s t</code>, denoting the product of <code>s</code> and <code>t</code></li>
+</ul>
+<p>Recursively define a function that evaluates any such term with respect to an assignment of values to the variables.</p>
+</li>
+<li>
+<p>Similarly, define the type of propositional formulas, as well as
+functions on the type of such formulas: an evaluation function,
+functions that measure the complexity of a formula, and a function
+that substitutes another formula for a given variable.</p>
+</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="interacting_with_lean.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="induction_and_recursion.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="interacting_with_lean.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="induction_and_recursion.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

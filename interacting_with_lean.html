@@ -1,0 +1,988 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Interacting with Lean - Theorem Proving in Lean 4</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html" class="active"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Theorem Proving in Lean 4</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="interacting-with-lean"><a class="header" href="#interacting-with-lean">Interacting with Lean</a></h1>
+<p>You are now familiar with the fundamentals of dependent type theory,
+both as a language for defining mathematical objects and a language
+for constructing proofs. The one thing you are missing is a mechanism
+for defining new data types. We will fill this gap in the next
+chapter, which introduces the notion of an <em>inductive data type</em>. But
+first, in this chapter, we take a break from the mechanics of type
+theory to explore some pragmatic aspects of interacting with Lean.</p>
+<p>Not all of the information found here will be useful to you right
+away. We recommend skimming this section to get a sense of Lean's
+features, and then returning to it as necessary.</p>
+<h2 id="importing-files"><a class="header" href="#importing-files">Importing Files</a></h2>
+<p>The goal of Lean's front end is to interpret user input, construct
+formal expressions, and check that they are well formed and type
+correct. Lean also supports the use of various editors, which provide
+continuous checking and feedback. More information can be found on the
+Lean <a href="http://leanprover.github.io/documentation/">documentation pages</a>.</p>
+<p>The definitions and theorems in Lean's standard library are spread
+across multiple files. Users may also wish to make use of additional
+libraries, or develop their own projects across multiple files. When
+Lean starts, it automatically imports the contents of the library
+<code>Init</code> folder, which includes a number of fundamental definitions
+and constructions. As a result, most of the examples we present here
+work &quot;out of the box.&quot;</p>
+<p>If you want to use additional files, however, they need to be imported
+manually, via an <code>import</code> statement at the beginning of a file. The
+command</p>
+<pre><code>import Bar.Baz.Blah
+</code></pre>
+<p>imports the file <code>Bar/Baz/Blah.olean</code>, where the descriptions are
+interpreted relative to the Lean <em>search path</em>. Information as to how
+the search path is determined can be found on the
+<a href="http://leanprover.github.io/documentation/">documentation pages</a>.
+By default, it includes the standard library directory, and (in some contexts)
+the root of the user's local project. One can also specify imports relative to the current directory; for example,
+Importing is transitive. In other words, if you import <code>Foo</code> and <code>Foo</code> imports <code>Bar</code>,
+then you also have access to the contents of <code>Bar</code>, and do not need to import it explicitly.</p>
+<h2 id="more-on-sections"><a class="header" href="#more-on-sections">More on Sections</a></h2>
+<p>Lean provides various sectioning mechanisms to help structure a
+theory. You saw in <a href="./dependent_type_theory.html#variables_and_sections">Variables and Sections</a> that the
+<code>section</code> command makes it possible not only to group together
+elements of a theory that go together, but also to declare variables
+that are inserted as arguments to theorems and definitions, as
+necessary. Remember that the point of the <code>variable</code> command is to
+declare variables for use in theorems, as in the following example:</p>
+<pre><code class="language-lean">section
+variable (x y : Nat)
+
+def double := x + x
+
+#check double y
+#check double (2 * x)
+
+attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
+
+theorem t1 : double (x + y) = double x + double y := by
+  simp [double]
+
+#check t1 y
+#check t1 (2 * x)
+
+theorem t2 : double (x * y) = double x * y := by
+  simp [double, Nat.add_mul]
+
+end
+</code></pre>
+<p>The definition of <code>double</code> does not have to declare <code>x</code> as an
+argument; Lean detects the dependence and inserts it
+automatically. Similarly, Lean detects the occurrence of <code>x</code> in
+<code>t1</code> and <code>t2</code>, and inserts it automatically there, too.
+Note that double does <em>not</em> have <code>y</code> as argument. Variables are only
+included in declarations where they are actually used.</p>
+<h2 id="more-on-namespaces"><a class="header" href="#more-on-namespaces">More on Namespaces</a></h2>
+<p>In Lean, identifiers are given by hierarchical <em>names</em> like
+<code>Foo.Bar.baz</code>. We saw in <a href="./dependent_type_theory.html#namespaces">Namespaces</a> that Lean provides
+mechanisms for working with hierarchical names. The command
+<code>namespace foo</code> causes <code>foo</code> to be prepended to the name of each
+definition and theorem until <code>end foo</code> is encountered. The command
+<code>open foo</code> then creates temporary <em>aliases</em> to definitions and
+theorems that begin with prefix <code>foo</code>.</p>
+<pre><code class="language-lean">namespace Foo
+def bar : Nat := 1
+end Foo
+
+open Foo
+
+#check bar
+#check Foo.bar
+</code></pre>
+<p>The following definition</p>
+<pre><code class="language-lean">def Foo.bar : Nat := 1
+</code></pre>
+<p>is treated as a macro, and expands to</p>
+<pre><code class="language-lean">namespace Foo
+def bar : Nat := 1
+end Foo
+</code></pre>
+<p>Although the names of theorems and definitions have to be unique, the
+aliases that identify them do not. When we open a namespace, an
+identifier may be ambiguous. Lean tries to use type information to
+disambiguate the meaning in context, but you can always disambiguate
+by giving the full name. To that end, the string <code>_root_</code> is an
+explicit description of the empty prefix.</p>
+<pre><code class="language-lean">def String.add (a b : String) : String :=
+  a ++ b
+
+def Bool.add (a b : Bool) : Bool :=
+  a != b
+
+def add (α β : Type) : Type := Sum α β
+
+open Bool
+open String
+-- #check add -- ambiguous
+#check String.add           -- String → String → String
+#check Bool.add             -- Bool → Bool → Bool
+#check _root_.add           -- Type → Type → Type
+
+#check add &quot;hello&quot; &quot;world&quot;  -- String
+#check add true false       -- Bool
+#check add Nat Nat          -- Type
+</code></pre>
+<p>We can prevent the shorter alias from being created by using the <code>protected</code> keyword:</p>
+<pre><code class="language-lean">protected def Foo.bar : Nat := 1
+
+open Foo
+
+-- #check bar -- error
+#check Foo.bar
+</code></pre>
+<p>This is often used for names like <code>Nat.rec</code> and <code>Nat.recOn</code>, to prevent
+overloading of common names.</p>
+<p>The <code>open</code> command admits variations. The command</p>
+<pre><code class="language-lean">open Nat (succ zero gcd)
+#check zero     -- Nat
+#eval gcd 15 6  -- 3
+</code></pre>
+<p>creates aliases for only the identifiers listed. The command</p>
+<pre><code class="language-lean">open Nat hiding succ gcd
+#check zero     -- Nat
+-- #eval gcd 15 6  -- error
+#eval Nat.gcd 15 6  -- 3
+</code></pre>
+<p>creates aliases for everything in the <code>Nat</code> namespace <em>except</em> the identifiers listed.</p>
+<pre><code class="language-lean">open Nat renaming mul → times, add → plus
+#eval plus (times 2 2) 3  -- 7
+</code></pre>
+<p>creates aliases renaming <code>Nat.mul</code> to <code>times</code> and <code>Nat.add</code> to <code>plus</code>.</p>
+<p>It is sometimes useful to <code>export</code> aliases from one namespace to another, or to the top level. The command</p>
+<pre><code class="language-lean">export Nat (succ add sub)
+</code></pre>
+<p>creates aliases for <code>succ</code>, <code>add</code>, and <code>sub</code> in the current
+namespace, so that whenever the namespace is open, these aliases are
+available. If this command is used outside a namespace, the aliases
+are exported to the top level.</p>
+<h2 id="attributes"><a class="header" href="#attributes">Attributes</a></h2>
+<p>The main function of Lean is to translate user input to formal
+expressions that are checked by the kernel for correctness and then
+stored in the environment for later use. But some commands have other
+effects on the environment, either assigning attributes to objects in
+the environment, defining notation, or declaring instances of type
+classes, as described in <a href="./type_classes.html">Chapter Type Classes</a>. Most of
+these commands have global effects, which is to say, that they remain
+in effect not only in the current file, but also in any file that
+imports it. However, such commands often support the <code>local</code> modifier,
+which indicates that they only have effect until
+the current <code>section</code> or <code>namespace</code> is closed, or until the end
+of the current file.</p>
+<p>In <a href="./tactics.html#_using_the_simp">Section Using the Simplifier</a>,
+we saw that theorems can be annotated with the <code>[simp]</code> attribute,
+which makes them available for use by the simplifier.
+The following example defines the prefix relation on lists,
+proves that this relation is reflexive, and assigns the <code>[simp]</code> attribute to that theorem.</p>
+<pre><code class="language-lean">def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+  ∃ t, l₁ ++ t = l₂
+
+@[simp] theorem List.isPrefix_self (as : List α) : isPrefix as as :=
+  ⟨[], by simp⟩
+
+example : isPrefix [1, 2, 3] [1, 2, 3] := by
+  simp
+</code></pre>
+<p>The simplifier then proves <code>isPrefix [1, 2, 3] [1, 2, 3]</code> by rewriting it to <code>True</code>.</p>
+<p>One can also assign the attribute any time after the definition takes place:</p>
+<pre><code class="language-lean"><span class="boring">def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+</span><span class="boring"> ∃ t, l₁ ++ t = l₂
+</span>theorem List.isPrefix_self (as : List α) : isPrefix as as :=
+  ⟨[], by simp⟩
+
+attribute [simp] List.isPrefix_self
+</code></pre>
+<p>In all these cases, the attribute remains in effect in any file that
+imports the one in which the declaration occurs. Adding the <code>local</code>
+modifier restricts the scope:</p>
+<pre><code class="language-lean"><span class="boring">def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+</span><span class="boring"> ∃ t, l₁ ++ t = l₂
+</span>section
+
+theorem List.isPrefix_self (as : List α) : isPrefix as as :=
+  ⟨[], by simp⟩
+
+attribute [local simp] List.isPrefix_self
+
+example : isPrefix [1, 2, 3] [1, 2, 3] := by
+  simp
+
+end
+
+-- Error:
+-- example : isPrefix [1, 2, 3] [1, 2, 3] := by
+--  simp
+</code></pre>
+<p>For another example, we can use the <code>instance</code> command to assign the
+notation <code>≤</code> to the <code>isPrefix</code> relation. That command, which will
+be explained in <a href="./type_classes.html">Chapter Type Classes</a>, works by
+assigning an <code>[instance]</code> attribute to the associated definition.</p>
+<pre><code class="language-lean">def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+  ∃ t, l₁ ++ t = l₂
+
+instance : LE (List α) where
+  le := isPrefix
+
+theorem List.isPrefix_self (as : List α) : as ≤ as :=
+  ⟨[], by simp⟩
+</code></pre>
+<p>That assignment can also be made local:</p>
+<pre><code class="language-lean"><span class="boring">def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
+</span><span class="boring">  ∃ t, l₁ ++ t = l₂
+</span>def instLe : LE (List α) :=
+  { le := isPrefix }
+
+section
+attribute [local instance] instLe
+
+example (as : List α) : as ≤ as :=
+  ⟨[], by simp⟩
+
+end
+
+-- Error:
+-- example (as : List α) : as ≤ as :=
+--  ⟨[], by simp⟩
+</code></pre>
+<p>In <a href="#notation">Section Notation</a> below, we will discuss Lean's
+mechanisms for defining notation, and see that they also support the
+<code>local</code> modifier. However, in <a href="#setting_options">Section Setting Options</a>, we will
+discuss Lean's mechanisms for setting options, which does <em>not</em> follow
+this pattern: options can <em>only</em> be set locally, which is to say,
+their scope is always restricted to the current section or current
+file.</p>
+<h2 id="more-on-implicit-arguments"><a class="header" href="#more-on-implicit-arguments">More on Implicit Arguments</a></h2>
+<p>In <a href="./dependent_type_theory.html#implicit_arguments">Section Implicit Arguments</a>,
+we saw that if Lean displays the type
+of a term <code>t</code> as <code>{x : α} → β x</code>, then the curly brackets
+indicate that <code>x</code> has been marked as an <em>implicit argument</em> to
+<code>t</code>. This means that whenever you write <code>t</code>, a placeholder, or
+&quot;hole,&quot; is inserted, so that <code>t</code> is replaced by <code>@t _</code>. If you
+don't want that to happen, you have to write <code>@t</code> instead.</p>
+<p>Notice that implicit arguments are inserted eagerly. Suppose we define
+a function <code>f (x : Nat) {y : Nat} (z : Nat)</code> with the arguments
+shown. Then, when we write the expression <code>f 7</code> without further
+arguments, it is parsed as <code>f 7 _</code>. Lean offers a weaker annotation,
+<code>{{y : ℕ}}</code>, which specifies that a placeholder should only be added
+<em>before</em> a subsequent explicit argument. This annotation can also be
+written using as <code>⦃y : Nat⦄</code>, where the unicode brackets are entered
+as <code>\{{</code> and <code>\}}</code>, respectively. With this annotation, the
+expression <code>f 7</code> would be parsed as is, whereas <code>f 7 3</code> would be
+parsed as <code>f 7 _ 3</code>, just as it would be with the strong annotation.</p>
+<p>To illustrate the difference, consider the following example, which
+shows that a reflexive euclidean relation is both symmetric and
+transitive.</p>
+<pre><code class="language-lean">def reflexive {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ (a : α), r a a
+
+def symmetric {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {a b : α}, r a b → r b a
+
+def transitive {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {a b c : α}, r a b → r b c → r a c
+
+def euclidean {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {a b c : α}, r a b → r a c → r b c
+
+theorem th1 {α : Type u} {r : α → α → Prop}
+            (reflr : reflexive r) (euclr : euclidean r)
+            : symmetric r :=
+  fun {a b : α} =&gt;
+  fun (h : r a b) =&gt;
+  show r b a from euclr h (reflr _)
+
+theorem th2 {α : Type u} {r : α → α → Prop}
+            (symmr : symmetric r) (euclr : euclidean r)
+            : transitive r :=
+  fun {a b c : α} =&gt;
+  fun (rab : r a b) (rbc : r b c) =&gt;
+  euclr (symmr rab) rbc
+
+theorem th3 {α : Type u} {r : α → α → Prop}
+            (reflr : reflexive r) (euclr : euclidean r)
+            : transitive r :=
+ @th2 _ _ (@th1 _ _ reflr @euclr) @euclr
+
+variable (r : α → α → Prop)
+variable (euclr : euclidean r)
+
+#check euclr  -- r ?m1 ?m2 → r ?m1 ?m3 → r ?m2 ?m3
+</code></pre>
+<p>The results are broken down into small steps: <code>th1</code> shows that a
+relation that is reflexive and euclidean is symmetric, and <code>th2</code>
+shows that a relation that is symmetric and euclidean is
+transitive. Then <code>th3</code> combines the two results. But notice that we
+have to manually disable the implicit arguments in <code>th1</code>, <code>th2</code>,
+and <code>euclr</code>, because otherwise too many implicit arguments are
+inserted. The problem goes away if we use weak implicit arguments:</p>
+<pre><code class="language-lean">def reflexive {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ (a : α), r a a
+
+def symmetric {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {{a b : α}}, r a b → r b a
+
+def transitive {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {{a b c : α}}, r a b → r b c → r a c
+
+def euclidean {α : Type u} (r : α → α → Prop) : Prop :=
+  ∀ {{a b c : α}}, r a b → r a c → r b c
+
+theorem th1 {α : Type u} {r : α → α → Prop}
+            (reflr : reflexive r) (euclr : euclidean r)
+            : symmetric r :=
+  fun {a b : α} =&gt;
+  fun (h : r a b) =&gt;
+  show r b a from euclr h (reflr _)
+
+theorem th2 {α : Type u} {r : α → α → Prop}
+            (symmr : symmetric r) (euclr : euclidean r)
+            : transitive r :=
+  fun {a b c : α} =&gt;
+  fun (rab : r a b) (rbc : r b c) =&gt;
+  euclr (symmr rab) rbc
+
+theorem th3 {α : Type u} {r : α → α → Prop}
+            (reflr : reflexive r) (euclr : euclidean r)
+            : transitive r :=
+  th2 (th1 reflr euclr) euclr
+
+variable (r : α → α → Prop)
+variable (euclr : euclidean r)
+
+#check euclr  -- euclidean r
+</code></pre>
+<p>There is a third kind of implicit argument that is denoted with square
+brackets, <code>[</code> and <code>]</code>. These are used for type classes, as
+explained in <a href="./type_classes.html">Chapter Type Classes</a>.</p>
+<h2 id="notation"><a class="header" href="#notation">Notation</a></h2>
+<p>Identifiers in Lean can include any alphanumeric characters, including
+Greek characters (other than ∀ , Σ , and λ , which, as we have seen,
+have a special meaning in the dependent type theory). They can also
+include subscripts, which can be entered by typing <code>\_</code> followed by
+the desired subscripted character.</p>
+<p>Lean's parser is extensible, which is to say, we can define new notation.</p>
+<p>Lean's syntax can be extended and customized by users at every level,
+ranging from basic &quot;mixfix&quot; notations to custom elaborators.  In fact,
+all builtin syntax is parsed and processed using the same mechanisms
+and APIs open to users.  In this section, we will describe and explain
+the various extension points.</p>
+<p>While introducing new notations is a relatively rare feature in
+programming languages and sometimes even frowned upon because of its
+potential to obscure code, it is an invaluable tool in formalization
+for expressing established conventions and notations of the respective
+field succinctly in code.  Going beyond basic notations, Lean's
+ability to factor out common boilerplate code into (well-behaved)
+macros and to embed entire custom domain specific languages (DSLs) to
+textually encode subproblems efficiently and readably can be of great
+benefit to both programmers and proof engineers alike.</p>
+<h3 id="notations-and-precedence"><a class="header" href="#notations-and-precedence">Notations and Precedence</a></h3>
+<p>The most basic syntax extension commands allow introducing new (or
+overloading existing) prefix, infix, and postfix operators.</p>
+<pre><code class="language-lean">infixl:65   &quot; + &quot; =&gt; HAdd.hAdd  -- left-associative
+infix:50    &quot; = &quot; =&gt; Eq         -- non-associative
+infixr:80   &quot; ^ &quot; =&gt; HPow.hPow  -- right-associative
+prefix:100  &quot;-&quot;   =&gt; Neg.neg
+<span class="boring">set_option quotPrecheck false
+</span>postfix:max &quot;⁻¹&quot;  =&gt; Inv.inv
+</code></pre>
+<p>After the initial command name describing the operator kind (its
+&quot;fixity&quot;), we give the <em>parsing precedence</em> of the operator preceded
+by a colon <code>:</code>, then a new or existing token surrounded by double
+quotes (the whitespace is used for pretty printing), then the function
+this operator should be translated to after the arrow <code>=&gt;</code>.</p>
+<p>The precedence is a natural number describing how &quot;tightly&quot; an
+operator binds to its arguments, encoding the order of operations.  We
+can make this more precise by looking at the commands the above unfold to:</p>
+<pre><code class="language-lean">notation:65 lhs:65 &quot; + &quot; rhs:66 =&gt; HAdd.hAdd lhs rhs
+notation:50 lhs:51 &quot; = &quot; rhs:51 =&gt; Eq lhs rhs
+notation:80 lhs:81 &quot; ^ &quot; rhs:80 =&gt; HPow.hPow lhs rhs
+notation:100 &quot;-&quot; arg:100 =&gt; Neg.neg arg
+<span class="boring">set_option quotPrecheck false
+</span>notation:1024 arg:1024 &quot;⁻¹&quot; =&gt; Inv.inv arg  -- `max` is a shorthand for precedence 1024
+</code></pre>
+<p>It turns out that all commands from the first code block are in fact
+command <em>macros</em> translating to the more general <code>notation</code> command.
+We will learn about writing such macros below.  Instead of a single
+token, the <code>notation</code> command accepts a mixed sequence of tokens and
+named term placeholders with precedences, which can be referenced on
+the right-hand side of <code>=&gt;</code> and will be replaced by the respective
+term parsed at that position.  A placeholder with precedence <code>p</code>
+accepts only notations with precedence at least <code>p</code> in that place.
+Thus the string <code>a + b + c</code> cannot be parsed as the equivalent of
+<code>a + (b + c)</code> because the right-hand side operand of an <code>infixl</code> notation
+has precedence one greater than the notation itself.  In contrast,
+<code>infixr</code> reuses the notation's precedence for the right-hand side
+operand, so <code>a ^ b ^ c</code> <em>can</em> be parsed as <code>a ^ (b ^ c)</code>.  Note that
+if we used <code>notation</code> directly to introduce an infix notation like</p>
+<pre><code class="language-lean"><span class="boring">set_option quotPrecheck false
+</span>notation:65 lhs:65 &quot; ~ &quot; rhs:65 =&gt; wobble lhs rhs
+</code></pre>
+<p>where the precedences do not sufficiently determine associativity,
+Lean's parser will default to right associativity.  More precisely,
+Lean's parser follows a local <em>longest parse</em> rule in the presence of
+ambiguous grammars: when parsing the right-hand side of <code>a ~</code> in
+<code>a ~ b ~ c</code>, it will continue parsing as long as possible (as the current
+precedence allows), not stopping after <code>b</code> but parsing <code>~ c</code> as well.
+Thus the term is equivalent to <code>a ~ (b ~ c)</code>.</p>
+<p>As mentioned above, the <code>notation</code> command allows us to define
+arbitrary <em>mixfix</em> syntax freely mixing tokens and placeholders.</p>
+<pre><code class="language-lean"><span class="boring">set_option quotPrecheck false
+</span>notation:max &quot;(&quot; e &quot;)&quot; =&gt; e
+notation:10 Γ &quot; ⊢ &quot; e &quot; : &quot; τ =&gt; Typing Γ e τ
+</code></pre>
+<p>Placeholders without precedence default to <code>0</code>, i.e. they accept notations of any precedence in their place.
+If two notations overlap, we again apply the longest parse rule:</p>
+<pre><code class="language-lean">notation:65 a &quot; + &quot; b:66 &quot; + &quot; c:66 =&gt; a + b - c
+#eval 1 + 2 + 3  -- 0
+</code></pre>
+<p>The new notation is preferred to the binary notation since the latter,
+before chaining, would stop parsing after <code>1 + 2</code>.  If there are
+multiple notations accepting the same longest parse, the choice will
+be delayed until elaboration, which will fail unless exactly one
+overload is type correct.</p>
+<h2 id="coercions"><a class="header" href="#coercions">Coercions</a></h2>
+<p>In Lean, the type of natural numbers, <code>Nat</code>, is different from the
+type of integers, <code>Int</code>. But there is a function <code>Int.ofNat</code> that
+embeds the natural numbers in the integers, meaning that we can view
+any natural number as an integer, when needed. Lean has mechanisms to
+detect and insert <em>coercions</em> of this sort.</p>
+<pre><code class="language-lean">variable (m n : Nat)
+variable (i j : Int)
+
+#check i + m      -- i + Int.ofNat m : Int
+#check i + m + j  -- i + Int.ofNat m + j : Int
+#check i + m + n  -- i + Int.ofNat m + Int.ofNat n : Int
+</code></pre>
+<h2 id="displaying-information"><a class="header" href="#displaying-information">Displaying Information</a></h2>
+<p>There are a number of ways in which you can query Lean for information
+about its current state and the objects and theorems that are
+available in the current context. You have already seen two of the
+most common ones, <code>#check</code> and <code>#eval</code>. Remember that <code>#check</code>
+is often used in conjunction with the <code>@</code> operator, which makes all
+of the arguments to a theorem or definition explicit. In addition, you
+can use the <code>#print</code> command to get information about any
+identifier. If the identifier denotes a definition or theorem, Lean
+prints the type of the symbol, and its definition. If it is a constant
+or an axiom, Lean indicates that fact, and shows the type.</p>
+<pre><code class="language-lean">-- examples with equality
+#check Eq
+#check @Eq
+#check Eq.symm
+#check @Eq.symm
+
+#print Eq.symm
+
+-- examples with And
+#check And
+#check And.intro
+#check @And.intro
+
+-- a user-defined function
+def foo {α : Type u} (x : α) : α := x
+
+#check foo
+#check @foo
+#print foo
+</code></pre>
+<h2 id="setting-options"><a class="header" href="#setting-options">Setting Options</a></h2>
+<p>Lean maintains a number of internal variables that can be set by users
+to control its behavior. The syntax for doing so is as follows:</p>
+<pre><code>set_option &lt;name&gt; &lt;value&gt;
+</code></pre>
+<p>One very useful family of options controls the way Lean's <em>pretty- printer</em> displays terms. The following options take an input of true or false:</p>
+<pre><code>pp.explicit  : display implicit arguments
+pp.universes : display hidden universe parameters
+pp.notation  : display output using defined notations
+</code></pre>
+<p>As an example, the following settings yield much longer output:</p>
+<pre><code class="language-lean">set_option pp.explicit true
+set_option pp.universes true
+set_option pp.notation false
+
+#check 2 + 2 = 4
+#reduce (fun x =&gt; x + 2) = (fun x =&gt; x + 3)
+#check (fun x =&gt; x + 1) 1
+</code></pre>
+<p>The command <code>set_option pp.all true</code> carries out these settings all
+at once, whereas <code>set_option pp.all false</code> reverts to the previous
+values. Pretty printing additional information is often very useful
+when you are debugging a proof, or trying to understand a cryptic
+error message. Too much information can be overwhelming, though, and
+Lean's defaults are generally sufficient for ordinary interactions.</p>
+<!--
+Elaboration Hints
+-----------------
+
+When you ask Lean to process an expression like ``λ x y z, f (x + y) z``, you are leaving information implicit. For example, the types of ``x``, ``y``, and ``z`` have to be inferred from the context, the notation ``+`` may be overloaded, and there may be implicit arguments to ``f`` that need to be filled in as well. Moreover, we will see in :numref:`Chapter %s <type_classes>` that some implicit arguments are synthesized by a process known as *type class resolution*. And we have also already seen in the last chapter that some parts of an expression can be constructed by the tactic framework.
+
+Inferring some implicit arguments is straightforward. For example, suppose a function ``f`` has type ``Π {α : Type*}, α → α → α`` and Lean is trying to parse the expression ``f n``, where ``n`` can be inferred to have type ``nat``. Then it is clear that the implicit argument ``α`` has to be ``nat``. However, some inference problems are *higher order*. For example, the substitution operation for equality, ``eq.subst``, has the following type:
+
+.. code-block:: text
+
+    eq.subst : ∀ {α : Sort u} {p : α → Prop} {a b : α},
+                 a = b → p a → p b
+
+Now suppose we are given ``a b : ℕ`` and ``h₁ : a = b`` and ``h₂ : a * b > a``. Then, in the expression ``eq.subst h₁ h₂``, ``P`` could be any of the following:
+
+-  ``λ x, x * b > x``
+-  ``λ x, x * b > a``
+-  ``λ x, a * b > x``
+-  ``λ x, a * b > a``
+
+In other words, our intent may be to replace either the first or second ``a`` in ``h₂``, or both, or neither. Similar ambiguities arise in inferring induction predicates, or inferring function arguments. Even second-order unification is known to be undecidable. Lean therefore relies on heuristics to fill in such arguments, and when it fails to guess the right ones, they need to be provided explicitly.
+
+To make matters worse, sometimes definitions need to be unfolded, and sometimes expressions need to be reduced according to the computational rules of the underlying logical framework. Once again, Lean has to rely on heuristics to determine what to unfold or reduce, and when.
+
+There are attributes, however, that can be used to provide hints to the elaborator. One class of attributes determines how eagerly definitions are unfolded: constants can be marked with the attribute ``[reducible]``, ``[semireducible]``, or ``[irreducible]``. Definitions are marked ``[semireducible]`` by default. A definition with the ``[reducible]`` attribute is unfolded eagerly; if you think of a definition as serving as an abbreviation, this attribute would be appropriate. The elaborator avoids unfolding definitions with the ``[irreducible]`` attribute. Theorems are marked ``[irreducible]`` by default, because typically proofs are not relevant to the elaboration process.
+
+It is worth emphasizing that these attributes are only hints to the elaborator. When checking an elaborated term for correctness, Lean's kernel will unfold whatever definitions it needs to unfold. As with other attributes, the ones above can be assigned with the ``local`` modifier, so that they are in effect only in the current section or file.
+
+Lean also has a family of attributes that control the elaboration strategy. A definition or theorem can be marked ``[elab_with_expected_type]``, ``[elab_simple]``. or ``[elab_as_eliminator]``. When applied to a definition ``f``, these bear on elaboration of an expression ``f a b c ...`` in which ``f`` is applied to arguments. With the default attribute, ``[elab_with_expected_type]``, the arguments ``a``, ``b``, ``c``, ... are elaborating using information about their expected type, inferred from ``f`` and the previous arguments. In contrast, with ``[elab_simple]``, the arguments are elaborated from left to right without propagating information about their types. The last attribute, ``[elab_as_eliminator]``, is commonly used for eliminators like recursors, induction principles, and ``eq.subst``. It uses a separate heuristic to infer higher-order parameters. We will consider such operations in more detail in the next chapter.
+
+Once again, these attributes can be assigned and reassigned after an object is defined, and you can use the ``local`` modifier to limit their scope. Moreover, using the ``@`` symbol in front of an identifier in an expression instructs the elaborator to use the ``[elab_simple]`` strategy; the idea is that, when you provide the tricky parameters explicitly, you want the elaborator to weigh that information heavily. In fact, Lean offers an alternative annotation, ``@@``, which leaves parameters before the first higher-order parameter implicit. For example, ``@@eq.subst`` leaves the type of the equation implicit, but makes the context of the substitution explicit.
+
+-->
+<h2 id="using-the-library"><a class="header" href="#using-the-library">Using the Library</a></h2>
+<p>To use Lean effectively you will inevitably need to make use of
+definitions and theorems in the library. Recall that the <code>import</code>
+command at the beginning of a file imports previously compiled results
+from other files, and that importing is transitive; if you import
+<code>Foo</code> and <code>Foo</code> imports <code>Bar</code>, then the definitions and theorems
+from <code>Bar</code> are available to you as well. But the act of opening a
+namespace, which provides shorter names, does not carry over. In each
+file, you need to open the namespaces you wish to use.</p>
+<p>In general, it is important for you to be familiar with the library
+and its contents, so you know what theorems, definitions, notations,
+and resources are available to you. Below we will see that Lean's
+editor modes can also help you find things you need, but studying the
+contents of the library directly is often unavoidable. Lean's standard
+library can be found online, on GitHub:</p>
+<ul>
+<li>
+<p><a href="https://github.com/leanprover/lean4/tree/master/src/Init">https://github.com/leanprover/lean4/tree/master/src/Init</a></p>
+</li>
+<li>
+<p><a href="https://github.com/leanprover/lean4/tree/master/src/Std">https://github.com/leanprover/lean4/tree/master/src/Std</a></p>
+</li>
+</ul>
+<p>You can see the contents of these directories and files using GitHub's
+browser interface. If you have installed Lean on your own computer,
+you can find the library in the <code>lean</code> folder, and explore it with
+your file manager. Comment headers at the top of each file provide
+additional information.</p>
+<p>Lean's library developers follow general naming guidelines to make it
+easier to guess the name of a theorem you need, or to find it using
+tab completion in editors with a Lean mode that supports this, which
+is discussed in the next section. Identifiers are generally
+<code>camelCase</code>, and types are <code>CamelCase</code>. For theorem names,
+we rely on descriptive names where the different components are separated
+by <code>_</code>s. Often the name of theorem simply describes the conclusion:</p>
+<pre><code class="language-lean">#check Nat.succ_ne_zero
+#check Nat.zero_add
+#check Nat.mul_one
+#check Nat.le_of_succ_le_succ
+</code></pre>
+<p>Remember that identifiers in Lean can be organized into hierarchical
+namespaces. For example, the theorem named <code>le_of_succ_le_succ</code> in the
+namespace <code>Nat</code> has full name <code>Nat.le_of_succ_le_succ</code>, but the shorter
+name is made available by the command <code>open Nat</code> (for names not marked as
+<code>protected</code>). We will see in <a href="./inductive_types.html">Chapter Inductive Types</a>
+and <a href="./structures_and_records.html">Chapter Structures and Records</a>
+that defining structures and inductive data types in Lean generates
+associated operations, and these are stored in
+a namespace with the same name as the type under definition. For
+example, the product type comes with the following operations:</p>
+<pre><code class="language-lean">#check @Prod.mk
+#check @Prod.fst
+#check @Prod.snd
+#check @Prod.rec
+</code></pre>
+<p>The first is used to construct a pair, whereas the next two,
+<code>Prod.fst</code> and <code>Prod.snd</code>, project the two elements. The last,
+<code>Prod.rec</code>, provides another mechanism for defining functions on a
+product in terms of a function on the two components. Names like
+<code>Prod.rec</code> are <em>protected</em>, which means that one has to use the full
+name even when the <code>Prod</code> namespace is open.</p>
+<p>With the propositions as types correspondence, logical connectives are
+also instances of inductive types, and so we tend to use dot notation
+for them as well:</p>
+<pre><code class="language-lean">#check @And.intro
+#check @And.casesOn
+#check @And.left
+#check @And.right
+#check @Or.inl
+#check @Or.inr
+#check @Or.elim
+#check @Exists.intro
+#check @Exists.elim
+#check @Eq.refl
+#check @Eq.subst
+</code></pre>
+<h2 id="auto-bound-implicit-arguments"><a class="header" href="#auto-bound-implicit-arguments">Auto Bound Implicit Arguments</a></h2>
+<p>In the previous section, we have shown how implicit arguments make functions more convenient to use.
+However, functions such as <code>compose</code> are still quite verbose to define. Note that the universe
+polymorphic <code>compose</code> is even more verbose than the one previously defined.</p>
+<pre><code class="language-lean">universe u v w
+def compose {α : Type u} {β : Type v} {γ : Type w}
+            (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+</code></pre>
+<p>You can avoid the <code>universe</code> command by providing the universe parameters when defining <code>compose</code>.</p>
+<pre><code class="language-lean">def compose.{u, v, w}
+            {α : Type u} {β : Type v} {γ : Type w}
+            (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+</code></pre>
+<p>Lean 4 supports a new feature called <em>auto bound implicit arguments</em>. It makes functions such as
+<code>compose</code> much more convenient to write. When Lean processes the header of a declaration,
+any unbound identifier is automatically added as an implicit argument <em>if</em> it is a single lower case or
+greek letter. With this feature we can write <code>compose</code> as</p>
+<pre><code class="language-lean">def compose (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+#check @compose
+-- {β : Sort u_1} → {γ : Sort u_2} → {α : Sort u_3} → (β → γ) → (α → β) → α → γ
+</code></pre>
+<p>Note that Lean inferred a more general type using <code>Sort</code> instead of <code>Type</code>.</p>
+<p>Although we love this feature and use it extensively when implementing Lean,
+we realize some users may feel uncomfortable with it. Thus, you can disable it using
+the command <code>set_option autoImplicit false</code>.</p>
+<pre><code class="language-lean">set_option autoImplicit false
+/- The following definition produces `unknown identifier` errors -/
+-- def compose (g : β → γ) (f : α → β) (x : α) : γ :=
+--   g (f x)
+</code></pre>
+<h2 id="implicit-lambdas"><a class="header" href="#implicit-lambdas">Implicit Lambdas</a></h2>
+<p>In Lean 3 stdlib, we find many
+<a href="https://github.com/leanprover/lean/blob/master/library/init/category/reader.lean#L39">instances</a> of the dreadful <code>@</code>+<code>_</code> idiom.
+It is often used when we the expected type is a function type with implicit arguments,
+and we have a constant (<code>reader_t.pure</code> in the example) which also takes implicit arguments. In Lean 4, the elaborator automatically introduces lambdas
+for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. Here is the example from the link above using Lean 4 implicit lambdas.</p>
+<pre><code class="language-lean"><span class="boring">variable (ρ : Type) (m : Type → Type) [Monad m]
+</span>instance : Monad (ReaderT ρ m) where
+  pure := ReaderT.pure
+  bind := ReaderT.bind
+</code></pre>
+<p>Users can disable the implicit lambda feature by using <code>@</code> or writing
+a lambda expression with <code>{}</code> or <code>[]</code> binder annotations.  Here are
+few examples</p>
+<pre><code class="language-lean"><span class="boring">namespace ex2
+</span>def id1 : {α : Type} → α → α :=
+  fun x =&gt; x
+
+def listId : List ({α : Type} → α → α) :=
+  (fun x =&gt; x) :: []
+
+-- In this example, implicit lambda introduction has been disabled because
+-- we use `@` before `fun`
+def id2 : {α : Type} → α → α :=
+  @fun α (x : α) =&gt; id1 x
+
+def id3 : {α : Type} → α → α :=
+  @fun α x =&gt; id1 x
+
+def id4 : {α : Type} → α → α :=
+  fun x =&gt; id1 x
+
+-- In this example, implicit lambda introduction has been disabled
+-- because we used the binder annotation `{...}`
+def id5 : {α : Type} → α → α :=
+  fun {α} x =&gt; id1 x
+<span class="boring">end ex2
+</span></code></pre>
+<h2 id="sugar-for-simple-functions"><a class="header" href="#sugar-for-simple-functions">Sugar for Simple Functions</a></h2>
+<p>In Lean 3, we can create simple functions from infix operators by
+using parentheses. For example, <code>(+1)</code> is sugar for <code>fun x, x + 1</code>. In
+Lean 4, we generalize this notation using <code>·</code> As a placeholder. Here
+are a few examples:</p>
+<pre><code class="language-lean"><span class="boring">namespace ex3
+</span>#check (· + 1)
+-- fun a =&gt; a + 1
+#check (2 - ·)
+-- fun a =&gt; 2 - a
+#eval [1, 2, 3, 4, 5].foldl (·*·) 1
+-- 120
+
+def f (x y z : Nat) :=
+  x + y + z
+
+#check (f · 1 ·)
+-- fun a b =&gt; f a 1 b
+
+#eval [(1, 2), (3, 4), (5, 6)].map (·.1)
+-- [1, 3, 5]
+<span class="boring">end ex3
+</span></code></pre>
+<p>As in Lean 3, the notation is activated using parentheses, and the lambda abstraction is created by collecting the nested <code>·</code>s.
+The collection is interrupted by nested parentheses. In the following example, two different lambda expressions are created.</p>
+<pre><code class="language-lean">#check (Prod.mk · (· + 1))
+-- fun a =&gt; (a, fun b =&gt; b + 1)
+</code></pre>
+<h2 id="named-arguments"><a class="header" href="#named-arguments">Named Arguments</a></h2>
+<p>Named arguments enable you to specify an argument for a parameter by
+matching the argument with its name rather than with its position in
+the parameter list.  If you don't remember the order of the parameters
+but know their names, you can send the arguments in any order. You may
+also provide the value for an implicit parameter when Lean failed to
+infer it. Named arguments also improve the readability of your code by
+identifying what each argument represents.</p>
+<pre><code class="language-lean">def sum (xs : List Nat) :=
+  xs.foldl (init := 0) (·+·)
+
+#eval sum [1, 2, 3, 4]
+-- 10
+
+example {a b : Nat} {p : Nat → Nat → Nat → Prop} (h₁ : p a b b) (h₂ : b = a)
+    : p a a b :=
+  Eq.subst (motive := fun x =&gt; p a x b) h₂ h₁
+</code></pre>
+<p>In the following examples, we illustrate the interaction between named
+and default arguments.</p>
+<pre><code class="language-lean">def f (x : Nat) (y : Nat := 1) (w : Nat := 2) (z : Nat) :=
+  x + y + w - z
+
+example (x z : Nat) : f (z := z) x = x + 1 + 2 - z := rfl
+
+example (x z : Nat) : f x (z := z) = x + 1 + 2 - z := rfl
+
+example (x y : Nat) : f x y = fun z =&gt; x + y + 2 - z := rfl
+
+example : f = (fun x z =&gt; x + 1 + 2 - z) := rfl
+
+example (x : Nat) : f x = fun z =&gt; x + 1 + 2 - z := rfl
+
+example (y : Nat) : f (y := 5) = fun x z =&gt; x + 5 + 2 - z := rfl
+
+def g {α} [Add α] (a : α) (b? : Option α := none) (c : α) : α :=
+  match b? with
+  | none   =&gt; a + c
+  | some b =&gt; a + b + c
+
+variable {α} [Add α]
+
+example : g = fun (a c : α) =&gt; a + c := rfl
+
+example (x : α) : g (c := x) = fun (a : α) =&gt; a + x := rfl
+
+example (x : α) : g (b? := some x) = fun (a c : α) =&gt; a + x + c := rfl
+
+example (x : α) : g x = fun (c : α) =&gt; x + c := rfl
+
+example (x y : α) : g x y = fun (c : α) =&gt; x + y + c := rfl
+</code></pre>
+<p>You can use <code>..</code> to provide missing explicit arguments as <code>_</code>.
+This feature combined with named arguments is useful for writing patterns. Here is an example:</p>
+<pre><code class="language-lean">inductive Term where
+  | var    (name : String)
+  | num    (val : Nat)
+  | add    (fn : Term) (arg : Term)
+  | lambda (name : String) (type : Term) (body : Term)
+
+def getBinderName : Term → Option String
+  | Term.lambda (name := n) .. =&gt; some n
+  | _ =&gt; none
+
+def getBinderType : Term → Option Term
+  | Term.lambda (type := t) .. =&gt; some t
+  | _ =&gt; none
+</code></pre>
+<p>Ellipses are also useful when explicit argument can be automatically
+inferred by Lean, and we want to avoid a sequence of <code>_</code>s.</p>
+<pre><code class="language-lean">example (f : Nat → Nat) (a b c : Nat) : f (a + b + c) = f (a + (b + c)) :=
+  congrArg f (Nat.add_assoc ..)
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="tactics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="inductive_types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="tactics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="inductive_types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

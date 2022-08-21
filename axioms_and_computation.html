@@ -1,0 +1,1149 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Axioms and Computation - Theorem Proving in Lean 4</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html" class="active"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Theorem Proving in Lean 4</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="axioms-and-computation"><a class="header" href="#axioms-and-computation">Axioms and Computation</a></h1>
+<p>We have seen that the version of the Calculus of Constructions that
+has been implemented in Lean includes dependent function types,
+inductive types, and a hierarchy of universes that starts with an
+impredicative, proof-irrelevant <code>Prop</code> at the bottom. In this
+chapter, we consider ways of extending the CIC with additional axioms
+and rules. Extending a foundational system in such a way is often
+convenient; it can make it possible to prove more theorems, as well as
+make it easier to prove theorems that could have been proved
+otherwise. But there can be negative consequences of adding additional
+axioms, consequences which may go beyond concerns about their
+correctness. In particular, the use of axioms bears on the
+computational content of definitions and theorems, in ways we will
+explore here.</p>
+<p>Lean is designed to support both computational and classical
+reasoning. Users that are so inclined can stick to a &quot;computationally
+pure&quot; fragment, which guarantees that closed expressions in the system
+evaluate to canonical normal forms. In particular, any closed
+computationally pure expression of type <code>Nat</code>, for example, will
+reduce to a numeral.</p>
+<p>Lean's standard library defines an additional axiom, propositional
+extensionality, and a quotient construction which in turn implies the
+principle of function extensionality. These extensions are used, for
+example, to develop theories of sets and finite sets. We will see
+below that using these theorems can block evaluation in Lean's kernel,
+so that closed terms of type <code>Nat</code> no longer evaluate to numerals. But
+Lean erases types and propositional information when compiling
+definitions to bytecode for its virtual machine evaluator, and since
+these axioms only add new propositions, they are compatible with that
+computational interpretation. Even computationally inclined users may
+wish to use the classical law of the excluded middle to reason about
+computation. This also blocks evaluation in the kernel, but it is
+compatible with compilation to bytecode.</p>
+<p>The standard library also defines a choice principle that is entirely
+antithetical to a computational interpretation, since it magically
+produces &quot;data&quot; from a proposition asserting its existence. Its use is
+essential to some classical constructions, and users can import it
+when needed. But expressions that use this construction to produce
+data do not have computational content, and in Lean we are required to
+mark such definitions as <code>noncomputable</code> to flag that fact.</p>
+<p>Using a clever trick (known as Diaconescu's theorem), one can use
+propositional extensionality, function extensionality, and choice to
+derive the law of the excluded middle. As noted above, however, use of
+the law of the excluded middle is still compatible with bytecode
+compilation and code extraction, as are other classical principles, as
+long as they are not used to manufacture data.</p>
+<p>To summarize, then, on top of the underlying framework of universes,
+dependent function types, and inductive types, the standard library
+adds three additional components:</p>
+<ul>
+<li>the axiom of propositional extensionality</li>
+<li>a quotient construction, which implies function extensionality</li>
+<li>a choice principle, which produces data from an existential proposition.</li>
+</ul>
+<p>The first two of these block normalization within Lean, but are
+compatible with bytecode evaluation, whereas the third is not amenable
+to computational interpretation. We will spell out the details more
+precisely below.</p>
+<h2 id="historical-and-philosophical-context"><a class="header" href="#historical-and-philosophical-context">Historical and Philosophical Context</a></h2>
+<p>For most of its history, mathematics was essentially computational:
+geometry dealt with constructions of geometric objects, algebra was
+concerned with algorithmic solutions to systems of equations, and
+analysis provided means to compute the future behavior of systems
+evolving over time. From the proof of a theorem to the effect that
+&quot;for every <code>x</code>, there is a <code>y</code> such that ...&quot;, it was generally
+straightforward to extract an algorithm to compute such a <code>y</code> given
+<code>x</code>.</p>
+<p>In the nineteenth century, however, increases in the complexity of
+mathematical arguments pushed mathematicians to develop new styles of
+reasoning that suppress algorithmic information and invoke
+descriptions of mathematical objects that abstract away the details of
+how those objects are represented. The goal was to obtain a powerful
+&quot;conceptual&quot; understanding without getting bogged down in
+computational details, but this had the effect of admitting
+mathematical theorems that are simply <em>false</em> on a direct
+computational reading.</p>
+<p>There is still fairly uniform agreement today that computation is
+important to mathematics. But there are different views as to how best
+to address computational concerns. From a <em>constructive</em> point of
+view, it is a mistake to separate mathematics from its computational
+roots; every meaningful mathematical theorem should have a direct
+computational interpretation. From a <em>classical</em> point of view, it is
+more fruitful to maintain a separation of concerns: we can use one
+language and body of methods to write computer programs, while
+maintaining the freedom to use a nonconstructive theories and methods
+to reason about them. Lean is designed to support both of these
+approaches. Core parts of the library are developed constructively,
+but the system also provides support for carrying out classical
+mathematical reasoning.</p>
+<p>Computationally, the purest part of dependent type theory avoids the
+use of <code>Prop</code> entirely. Inductive types and dependent function types
+can be viewed as data types, and terms of these types can be
+&quot;evaluated&quot; by applying reduction rules until no more rules can be
+applied. In principle, any closed term (that is, term with no free
+variables) of type <code>Nat</code> should evaluate to a numeral, <code>succ (... (succ zero)...)</code>.</p>
+<p>Introducing a proof-irrelevant <code>Prop</code> and marking theorems
+irreducible represents a first step towards separation of
+concerns. The intention is that elements of a type <code>p : Prop</code> should
+play no role in computation, and so the particular construction of a
+term <code>t : p</code> is &quot;irrelevant&quot; in that sense. One can still define
+computational objects that incorporate elements of type <code>Prop</code>; the
+point is that these elements can help us reason about the effects of
+the computation, but can be ignored when we extract &quot;code&quot; from the
+term. Elements of type <code>Prop</code> are not entirely innocuous,
+however. They include equations <code>s = t : α</code> for any type <code>α</code>, and
+such equations can be used as casts, to type check terms. Below, we
+will see examples of how such casts can block computation in the
+system. However, computation is still possible under an evaluation
+scheme that erases propositional content, ignores intermediate typing
+constraints, and reduces terms until they reach a normal form. This is
+precisely what Lean's virtual machine does.</p>
+<p>Having adopted a proof-irrelevant <code>Prop</code>, one might consider it
+legitimate to use, for example, the law of the excluded middle,
+<code>p ∨ ¬p</code>, where <code>p</code> is any proposition. Of course, this, too, can block
+computation according to the rules of CIC, but it does not block
+bytecode evaluation, as described above. It is only the choice
+principles discussed in :numref:<code>choice</code> that completely erase the
+distinction between the proof-irrelevant and data-relevant parts of
+the theory.</p>
+<h2 id="propositional-extensionality"><a class="header" href="#propositional-extensionality">Propositional Extensionality</a></h2>
+<p>Propositional extensionality is the following axiom:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>axiom propext {a b : Prop} : (a ↔ b) → a = b
+<span class="boring">end Hidden
+</span></code></pre>
+<p>It asserts that when two propositions imply one another, they are
+actually equal. This is consistent with set-theoretic interpretations
+in which any element <code>a : Prop</code> is either empty or the singleton set
+<code>{*}</code>, for some distinguished element <code>*</code>. The axiom has the
+effect that equivalent propositions can be substituted for one another
+in any context:</p>
+<pre><code class="language-lean">theorem thm₁ (a b c d e : Prop) (h : a ↔ b) : (c ∧ a ∧ d → e) ↔ (c ∧ b ∧ d → e) :=
+  propext h ▸ Iff.refl _
+
+theorem thm₂ (a b : Prop) (p : Prop → Prop) (h : a ↔ b) (h₁ : p a) : p b :=
+  propext h ▸ h₁
+</code></pre>
+<!--
+The first example could be proved more laboriously without ``propext``
+using the fact that the propositional connectives respect
+propositional equivalence. The second example represents a more
+essential use of ``propext``. In fact, it is equivalent to ``propext``
+itself, a fact which we encourage you to prove.
+
+Given any definition or theorem in Lean, you can use the ``#print
+axioms`` command to display the axioms it depends on.
+
+.. code-block:: lean
+
+    variables a b c d e : Prop
+    variable p : Prop → Prop
+
+    theorem thm₁ (h : a ↔ b) : (c ∧ a ∧ d → e) ↔ (c ∧ b ∧ d → e) :=
+    propext h ▸ iff.refl _
+
+    theorem thm₂ (h : a ↔ b) (h₁ : p a) : p b :=
+    propext h ▸ h₁
+
+    -- BEGIN
+    #print axioms thm₁  -- propext
+    #print axioms thm₂  -- propext
+    -- END
+-->
+<h2 id="function-extensionality"><a class="header" href="#function-extensionality">Function Extensionality</a></h2>
+<p>Similar to propositional extensionality, function extensionality
+asserts that any two functions of type <code>(x : α) → β x</code> that agree on
+all their inputs are equal.</p>
+<pre><code class="language-lean">universe u v
+#check (@funext :
+           {α : Type u}
+         → {β : α → Type u}
+         → {f g : (x : α) → β x}
+         → (∀ (x : α), f x = g x)
+         → f = g)
+
+#print funext
+</code></pre>
+<p>From a classical, set-theoretic perspective, this is exactly what it
+means for two functions to be equal. This is known as an &quot;extensional&quot;
+view of functions. From a constructive perspective, however, it is
+sometimes more natural to think of functions as algorithms, or
+computer programs, that are presented in some explicit way. It is
+certainly the case that two computer programs can compute the same
+answer for every input despite the fact that they are syntactically
+quite different. In much the same way, you might want to maintain a
+view of functions that does not force you to identify two functions
+that have the same input / output behavior. This is known as an
+&quot;intensional&quot; view of functions.</p>
+<p>In fact, function extensionality follows from the existence of
+quotients, which we describe in the next section. In the Lean standard
+library, therefore, <code>funext</code> is thus
+<a href="https://github.com/leanprover/lean4/blob/master/src/Init/Core.lean">proved from the quotient construction</a>.</p>
+<p>Suppose that for <code>α : Type</code> we define the <code>Set α := α → Prop</code> to
+denote the type of subsets of <code>α</code>, essentially identifying subsets
+with predicates. By combining <code>funext</code> and <code>propext</code>, we obtain an
+extensional theory of such sets:</p>
+<pre><code class="language-lean">def Set (α : Type u) := α → Prop
+
+namespace Set
+
+def mem (x : α) (a : Set α) := a x
+
+infix:50 (priority := high) &quot;∈&quot; =&gt; mem
+
+theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
+  funext (fun x =&gt; propext (h x))
+
+end Set
+</code></pre>
+<p>We can then proceed to define the empty set and set intersection, for
+example, and prove set identities:</p>
+<pre><code class="language-lean"><span class="boring">def Set (α : Type u) := α → Prop
+</span><span class="boring">namespace Set
+</span><span class="boring">def mem (x : α) (a : Set α) := a x
+</span><span class="boring">infix:50 (priority := high) &quot;∈&quot; =&gt; mem
+</span><span class="boring">theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
+</span><span class="boring"> funext (fun x =&gt; propext (h x))
+</span>def empty : Set α := fun x =&gt; False
+
+notation (priority := high) &quot;∅&quot; =&gt; empty
+
+def inter (a b : Set α) : Set α :=
+  fun x =&gt; x ∈ a ∧ x ∈ b
+
+infix:70 &quot; ∩ &quot; =&gt; inter
+
+theorem inter_self (a : Set α) : a ∩ a = a :=
+  setext fun x =&gt; Iff.intro
+    (fun ⟨h, _⟩ =&gt; h)
+    (fun h =&gt; ⟨h, h⟩)
+
+theorem inter_empty (a : Set α) : a ∩ ∅ = ∅ :=
+  setext fun x =&gt; Iff.intro
+    (fun ⟨_, h⟩ =&gt; h)
+    (fun h =&gt; False.elim h)
+
+theorem empty_inter (a : Set α) : ∅ ∩ a = ∅ :=
+  setext fun x =&gt; Iff.intro
+    (fun ⟨h, _⟩ =&gt; h)
+    (fun h =&gt; False.elim h)
+
+theorem inter.comm (a b : Set α) : a ∩ b = b ∩ a :=
+  setext fun x =&gt; Iff.intro
+    (fun ⟨h₁, h₂⟩ =&gt; ⟨h₂, h₁⟩)
+    (fun ⟨h₁, h₂⟩ =&gt; ⟨h₂, h₁⟩)
+<span class="boring">end Set
+</span></code></pre>
+<p>The following is an example of how function extensionality blocks
+computation inside the Lean kernel.</p>
+<pre><code class="language-lean">def f (x : Nat) := x
+def g (x : Nat) := 0 + x
+
+theorem f_eq_g : f = g :=
+  funext fun x =&gt; (Nat.zero_add x).symm
+
+def val : Nat :=
+  Eq.recOn (motive := fun _ _ =&gt; Nat) f_eq_g 0
+
+-- does not reduce to 0
+#reduce val
+
+-- evaluates to 0
+#eval val
+</code></pre>
+<p>First, we show that the two functions <code>f</code> and <code>g</code> are equal using
+function extensionality, and then we cast <code>0</code> of type <code>Nat</code> by
+replacing <code>f</code> by <code>g</code> in the type. Of course, the cast is
+vacuous, because <code>Nat</code> does not depend on <code>f</code>. But that is enough
+to do the damage: under the computational rules of the system, we now
+have a closed term of <code>Nat</code> that does not reduce to a numeral. In this
+case, we may be tempted to reduce the expression to <code>0</code>. But in
+nontrivial examples, eliminating cast changes the type of the term,
+which might make an ambient expression type incorrect. The virtual
+machine, however, has no trouble evaluating the expression to
+<code>0</code>. Here is a similarly contrived example that shows how
+<code>propext</code> can get in the way.</p>
+<pre><code class="language-lean">theorem tteq : (True ∧ True) = True :=
+  propext (Iff.intro (fun ⟨h, _⟩ =&gt; h) (fun h =&gt; ⟨h, h⟩))
+
+def val : Nat :=
+  Eq.recOn (motive := fun _ _ =&gt; Nat) tteq 0
+
+-- does not reduce to 0
+#reduce val
+
+-- evaluates to 0
+#eval val
+</code></pre>
+<p>Current research programs, including work on <em>observational type
+theory</em> and <em>cubical type theory</em>, aim to extend type theory in ways
+that permit reductions for casts involving function extensionality,
+quotients, and more. But the solutions are not so clear cut, and the
+rules of Lean's underlying calculus do not sanction such reductions.</p>
+<p>In a sense, however, a cast does not change the meaning of an
+expression. Rather, it is a mechanism to reason about the expression's
+type. Given an appropriate semantics, it then makes sense to reduce
+terms in ways that preserve their meaning, ignoring the intermediate
+bookkeeping needed to make the reductions type correct. In that case,
+adding new axioms in <code>Prop</code> does not matter; by proof irrelevance,
+an expression in <code>Prop</code> carries no information, and can be safely
+ignored by the reduction procedures.</p>
+<h2 id="quotients"><a class="header" href="#quotients">Quotients</a></h2>
+<p>Let <code>α</code> be any type, and let <code>r</code> be an equivalence relation on
+<code>α</code>. It is mathematically common to form the &quot;quotient&quot; <code>α / r</code>,
+that is, the type of elements of <code>α</code> &quot;modulo&quot; <code>r</code>. Set
+theoretically, one can view <code>α / r</code> as the set of equivalence
+classes of <code>α</code> modulo <code>r</code>. If <code>f : α → β</code> is any function that
+respects the equivalence relation in the sense that for every
+<code>x y : α</code>, <code>r x y</code> implies <code>f x = f y</code>, then <code>f</code> &quot;lifts&quot; to a function
+<code>f' : α / r → β</code> defined on each equivalence class <code>⟦x⟧</code> by
+<code>f' ⟦x⟧ = f x</code>. Lean's standard library extends the Calculus of
+Constructions with additional constants that perform exactly these
+constructions, and installs this last equation as a definitional
+reduction rule.</p>
+<p>In its most basic form, the quotient construction does not even
+require <code>r</code> to be an equivalence relation. The following constants
+are built into Lean:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>universe u v
+
+axiom Quot : {α : Sort u} → (α → α → Prop) → Sort u
+
+axiom Quot.mk : {α : Sort u} → (r : α → α → Prop) → α → Quot r
+
+axiom Quot.ind :
+    ∀ {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop},
+      (∀ a, β (Quot.mk r a)) → (q : Quot r) → β q
+
+axiom Quot.lift :
+    {α : Sort u} → {r : α → α → Prop} → {β : Sort u} → (f : α → β)
+    → (∀ a b, r a b → f a = f b) → Quot r → β
+<span class="boring">end Hidden
+</span></code></pre>
+<p>The first one forms a type <code>Quot r</code> given a type <code>α</code> by any binary
+relation <code>r</code> on <code>α</code>. The second maps <code>α</code> to <code>Quot α</code>, so that
+if <code>r : α → α → Prop</code> and <code>a : α</code>, then <code>Quot.mk r a</code> is an
+element of <code>Quot r</code>. The third principle, <code>Quot.ind</code>, says that
+every element of <code>Quot.mk r a</code> is of this form.  As for
+<code>Quot.lift</code>, given a function <code>f : α → β</code>, if <code>h</code> is a proof
+that <code>f</code> respects the relation <code>r</code>, then <code>Quot.lift f h</code> is the
+corresponding function on <code>Quot r</code>. The idea is that for each
+element <code>a</code> in <code>α</code>, the function <code>Quot.lift f h</code> maps
+<code>Quot.mk r a</code> (the <code>r</code>-class containing <code>a</code>) to <code>f a</code>, wherein <code>h</code>
+shows that this function is well defined. In fact, the computation
+principle is declared as a reduction rule, as the proof below makes
+clear.</p>
+<pre><code class="language-lean">def mod7Rel (x y : Nat) : Prop :=
+  x % 7 = y % 7
+
+-- the quotient type
+#check (Quot mod7Rel : Type)
+
+-- the class of a
+#check (Quot.mk mod7Rel 4 : Quot mod7Rel)
+
+def f (x : Nat) : Bool :=
+   x % 7 = 0
+
+theorem f_respects (a b : Nat) (h : mod7Rel a b) : f a = f b := by
+  simp [mod7Rel, f] at *
+  rw [h]
+
+#check (Quot.lift f f_respects : Quot mod7Rel → Bool)
+
+-- the computation principle
+example (a : Nat) : Quot.lift f f_respects (Quot.mk mod7Rel a) = f a :=
+  rfl
+</code></pre>
+<p>The four constants, <code>Quot</code>, <code>Quot.mk</code>, <code>Quot.ind</code>, and
+<code>Quot.lift</code> in and of themselves are not very strong. You can check
+that the <code>Quot.ind</code> is satisfied if we take <code>Quot r</code> to be simply
+<code>α</code>, and take <code>Quot.lift</code> to be the identity function (ignoring
+<code>h</code>). For that reason, these four constants are not viewed as
+additional axioms.</p>
+<!--
+    variables α β : Type
+    variable  r : α → α → Prop
+    variable  a : α
+    variable  f : α → β
+    variable   h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂
+    theorem thm : quot.lift f h (quot.mk r a) = f a := rfl
+    -- BEGIN
+    #print axioms thm   -- no axioms
+    -- END
+-->
+<p>They are, like inductively defined types and the associated
+constructors and recursors, viewed as part of the logical framework.</p>
+<p>What makes the <code>Quot</code> construction into a bona fide quotient is the
+following additional axiom:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">universe u v
+</span>axiom Quot.sound :
+      ∀ {α : Type u} {r : α → α → Prop} {a b : α},
+        r a b → Quot.mk r a = Quot.mk r b
+<span class="boring">end Hidden
+</span></code></pre>
+<p>This is the axiom that asserts that any two elements of <code>α</code> that are
+related by <code>r</code> become identified in the quotient. If a theorem or
+definition makes use of <code>Quot.sound</code>, it will show up in the
+<code>#print axioms</code> command.</p>
+<p>Of course, the quotient construction is most commonly used in
+situations when <code>r</code> is an equivalence relation. Given <code>r</code> as
+above, if we define <code>r'</code> according to the rule <code>r' a b</code> iff
+<code>Quot.mk r a = Quot.mk r b</code>, then it's clear that <code>r'</code> is an
+equivalence relation. Indeed, <code>r'</code> is the <em>kernel</em> of the function
+<code>a ↦ quot.mk r a</code>.  The axiom <code>Quot.sound</code> says that <code>r a b</code>
+implies <code>r' a b</code>. Using <code>Quot.lift</code> and <code>Quot.ind</code>, we can show
+that <code>r'</code> is the smallest equivalence relation containing <code>r</code>, in
+the sense that if <code>r''</code> is any equivalence relation containing
+<code>r</code>, then <code>r' a b</code> implies <code>r'' a b</code>. In particular, if <code>r</code>
+was an equivalence relation to start with, then for all <code>a</code> and
+<code>b</code> we have <code>r a b</code> iff <code>r' a b</code>.</p>
+<p>To support this common use case, the standard library defines the
+notion of a <em>setoid</em>, which is simply a type with an associated
+equivalence relation:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>class Setoid (α : Sort u) where
+  r : α → α → Prop
+  iseqv : Equivalence r
+
+instance {α : Sort u} [Setoid α] : HasEquiv α :=
+  ⟨Setoid.r⟩
+
+namespace Setoid
+
+variable {α : Sort u} [Setoid α]
+
+theorem refl (a : α) : a ≈ a :=
+  iseqv.refl a
+
+theorem symm {a b : α} (hab : a ≈ b) : b ≈ a :=
+  iseqv.symm hab
+
+theorem trans {a b c : α} (hab : a ≈ b) (hbc : b ≈ c) : a ≈ c :=
+  iseqv.trans hab hbc
+
+end Setoid
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Given a type <code>α</code>, a relation <code>r</code> on <code>α</code>, and a proof <code>p</code>
+that <code>r</code> is an equivalence relation, we can define <code>Setoid.mk p</code>
+as an instance of the setoid class.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>def Quotient {α : Sort u} (s : Setoid α) :=
+  @Quot α Setoid.r
+<span class="boring">end Hidden
+</span></code></pre>
+<p>The constants <code>Quotient.mk</code>, <code>Quotient.ind</code>, <code>Quotient.lift</code>,
+and <code>Quotient.sound</code> are nothing more than the specializations of
+the corresponding elements of <code>Quot</code>. The fact that type class
+inference can find the setoid associated to a type <code>α</code> brings a
+number of benefits. First, we can use the notation <code>a ≈ b</code> (entered
+with <code>\approx</code>) for <code>Setoid.r a b</code>, where the instance of
+<code>Setoid</code> is implicit in the notation <code>Setoid.r</code>. We can use the
+generic theorems <code>Setoid.refl</code>, <code>Setoid.symm</code>, <code>Setoid.trans</code> to
+reason about the relation. Specifically with quotients we can use the
+generic notation <code>⟦a⟧</code> for <code>Quot.mk Setoid.r</code> where the instance
+of <code>Setoid</code> is implicit in the notation <code>Setoid.r</code>, as well as the
+theorem <code>Quotient.exact</code>:</p>
+<pre><code class="language-lean"><span class="boring">universe u
+</span>#check (@Quotient.exact :
+         ∀ {α : Sort u} {s : Setoid α} {a b : α},
+           Quotient.mk s a = Quotient.mk s b → a ≈ b)
+</code></pre>
+<p>Together with <code>Quotient.sound</code>, this implies that the elements of
+the quotient correspond exactly to the equivalence classes of elements
+in <code>α</code>.</p>
+<p>Recall that in the standard library, <code>α × β</code> represents the
+Cartesian product of the types <code>α</code> and <code>β</code>. To illustrate the use
+of quotients, let us define the type of <em>unordered</em> pairs of elements
+of a type <code>α</code> as a quotient of the type <code>α × α</code>. First, we define
+the relevant equivalence relation:</p>
+<pre><code class="language-lean">private def eqv (p₁ p₂ : α × α) : Prop :=
+  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+
+infix:50 &quot; ~ &quot; =&gt; eqv
+</code></pre>
+<p>The next step is to prove that <code>eqv</code> is in fact an equivalence
+relation, which is to say, it is reflexive, symmetric and
+transitive. We can prove these three facts in a convenient and
+readable way by using dependent pattern matching to perform
+case-analysis and break the hypotheses into pieces that are then
+reassembled to produce the conclusion.</p>
+<pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
+</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
+</span>private theorem eqv.refl (p : α × α) : p ~ p :=
+  Or.inl ⟨rfl, rfl⟩
+
+private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
+    Or.inl (by simp_all)
+  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
+    Or.inr (by simp_all)
+
+private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =&gt;
+    Or.inl (by simp_all)
+  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =&gt;
+    Or.inr (by simp_all)
+  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =&gt;
+    Or.inr (by simp_all)
+  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =&gt;
+    Or.inl (by simp_all)
+
+private theorem is_equivalence : Equivalence (@eqv α) :=
+   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+</code></pre>
+<p>Now that we have proved that <code>eqv</code> is an equivalence relation, we
+can construct a <code>Setoid (α × α)</code>, and use it to define the type
+<code>UProd α</code> of unordered pairs.</p>
+<pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
+</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
+</span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
+</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
+</span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+</span>instance uprodSetoid (α : Type u) : Setoid (α × α) where
+   r     := eqv
+   iseqv := is_equivalence
+
+def UProd (α : Type u) : Type u :=
+  Quotient (uprodSetoid α)
+
+namespace UProd
+
+def mk {α : Type} (a₁ a₂ : α) : UProd α :=
+  Quotient.mk' (a₁, a₂)
+
+notation &quot;{ &quot; a₁ &quot;, &quot; a₂ &quot; }&quot; =&gt; mk a₁ a₂
+
+end UProd
+</code></pre>
+<p>Notice that we locally define the notation <code>{a₁, a₂}</code> for ordered
+pairs as <code>Quotient.mk (a₁, a₂)</code>. This is useful for illustrative
+purposes, but it is not a good idea in general, since the notation
+will shadow other uses of curly brackets, such as for records and
+sets.</p>
+<p>We can easily prove that <code>{a₁, a₂} = {a₂, a₁}</code> using <code>quot.sound</code>,
+since we have <code>(a₁, a₂) ~ (a₂, a₁)</code>.</p>
+<pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
+</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
+</span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
+</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
+</span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+</span><span class="boring">instance uprodSetoid (α : Type u) : Setoid (α × α) where
+</span><span class="boring">   r     := eqv
+</span><span class="boring">   iseqv := is_equivalence
+</span><span class="boring">def UProd (α : Type u) : Type u :=
+</span><span class="boring">  Quotient (uprodSetoid α)
+</span><span class="boring">namespace UProd
+</span><span class="boring">def mk {α : Type} (a₁ a₂ : α) : UProd α :=
+</span><span class="boring">  Quotient.mk' (a₁, a₂)
+</span><span class="boring">notation &quot;{ &quot; a₁ &quot;, &quot; a₂ &quot; }&quot; =&gt; mk a₁ a₂
+</span>theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
+  Quot.sound (Or.inr ⟨rfl, rfl⟩)
+<span class="boring">end UProd
+</span></code></pre>
+<p>To complete the example, given <code>a : α</code> and <code>u : uprod α</code>, we
+define the proposition <code>a ∈ u</code> which should hold if <code>a</code> is one of
+the elements of the unordered pair <code>u</code>. First, we define a similar
+proposition <code>mem_fn a u</code> on (ordered) pairs; then we show that
+<code>mem_fn</code> respects the equivalence relation <code>eqv</code> with the lemma
+<code>mem_respects</code>. This is an idiom that is used extensively in the
+Lean standard library.</p>
+<pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
+</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
+</span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
+</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p₂ ~ p₃ → p₁ ~ p₃
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inl ⟨a₁b₁, a₂b₂⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inl ⟨b₁c₁, b₂c₂⟩ =&gt;
+</span><span class="boring">    Or.inr (by simp_all)
+</span><span class="boring">  | (a₁, a₂), (b₁, b₂), (c₁, c₂), Or.inr ⟨a₁b₂, a₂b₁⟩, Or.inr ⟨b₁c₂, b₂c₁⟩ =&gt;
+</span><span class="boring">    Or.inl (by simp_all)
+</span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
+</span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+</span><span class="boring">instance uprodSetoid (α : Type u) : Setoid (α × α) where
+</span><span class="boring">   r     := eqv
+</span><span class="boring">   iseqv := is_equivalence
+</span><span class="boring">def UProd (α : Type u) : Type u :=
+</span><span class="boring">  Quotient (uprodSetoid α)
+</span><span class="boring">namespace UProd
+</span><span class="boring">def mk {α : Type} (a₁ a₂ : α) : UProd α :=
+</span><span class="boring">  Quotient.mk' (a₁, a₂)
+</span><span class="boring">notation &quot;{ &quot; a₁ &quot;, &quot; a₂ &quot; }&quot; =&gt; mk a₁ a₂
+</span><span class="boring">theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
+</span><span class="boring">  Quot.sound (Or.inr ⟨rfl, rfl⟩)
+</span>
+private def mem_fn (a : α) : α × α → Prop
+  | (a₁, a₂) =&gt; a = a₁ ∨ a = a₂
+
+-- auxiliary lemma for proving mem_respects
+private theorem mem_swap {a : α} :
+      ∀ {p : α × α}, mem_fn a p = mem_fn a (⟨p.2, p.1⟩)
+  | (a₁, a₂) =&gt; by
+    apply propext
+    apply Iff.intro
+    . intro
+      | Or.inl h =&gt; exact Or.inr h
+      | Or.inr h =&gt; exact Or.inl h
+    . intro
+      | Or.inl h =&gt; exact Or.inr h
+      | Or.inr h =&gt; exact Or.inl h
+
+
+private theorem mem_respects
+      : {p₁ p₂ : α × α} → (a : α) → p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
+  | (a₁, a₂), (b₁, b₂), a, Or.inl ⟨a₁b₁, a₂b₂⟩ =&gt; by simp_all
+  | (a₁, a₂), (b₁, b₂), a, Or.inr ⟨a₁b₂, a₂b₁⟩ =&gt; by simp_all; apply mem_swap
+
+def mem (a : α) (u : UProd α) : Prop :=
+  Quot.liftOn u (fun p =&gt; mem_fn a p) (fun p₁ p₂ e =&gt; mem_respects a e)
+
+infix:50 (priority := high) &quot; ∈ &quot; =&gt; mem
+
+theorem mem_mk_left (a b : α) : a ∈ {a, b} :=
+  Or.inl rfl
+
+theorem mem_mk_right (a b : α) : b ∈ {a, b} :=
+  Or.inr rfl
+
+theorem mem_or_mem_of_mem_mk {a b c : α} : c ∈ {a, b} → c = a ∨ c = b :=
+  fun h =&gt; h
+<span class="boring">end UProd
+</span></code></pre>
+<p>For convenience, the standard library also defines <code>Quotient.lift₂</code>
+for lifting binary functions, and <code>Quotient.ind₂</code> for induction on
+two variables.</p>
+<p>We close this section with some hints as to why the quotient
+construction implies function extenionality. It is not hard to show
+that extensional equality on the <code>(x : α) → β x</code> is an equivalence
+relation, and so we can consider the type <code>extfun α β</code> of functions
+&quot;up to equivalence.&quot; Of course, application respects that equivalence
+in the sense that if <code>f₁</code> is equivalent to <code>f₂</code>, then <code>f₁ a</code> is
+equal to <code>f₂ a</code>. Thus application gives rise to a function
+<code>extfun_app : extfun α β → (x : α) → β x</code>. But for every <code>f</code>,
+<code>extfun_app ⟦f⟧</code> is definitionally equal to <code>fun x =&gt; f x</code>, which is
+in turn definitionally equal to <code>f</code>. So, when <code>f₁</code> and <code>f₂</code> are
+extensionally equal, we have the following chain of equalities:</p>
+<pre><code>    f₁ = extfun_app ⟦f₁⟧ = extfun_app ⟦f₂⟧ = f₂
+</code></pre>
+<p>As a result, <code>f₁</code> is equal to <code>f₂</code>.</p>
+<h2 id="choice"><a class="header" href="#choice">Choice</a></h2>
+<p>To state the final axiom defined in the standard library, we need the
+<code>Nonempty</code> type, which is defined as follows:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>class inductive Nonempty (α : Sort u) : Prop where
+  | intro (val : α) : Nonempty α
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Because <code>Nonempty α</code> has type <code>Prop</code> and its constructor contains data, it can only eliminate to <code>Prop</code>.
+In fact, <code>Nonempty α</code> is equivalent to <code>∃ x : α, True</code>:</p>
+<pre><code class="language-lean">example (α : Type u) : Nonempty α ↔ ∃ x : α, True :=
+  Iff.intro (fun ⟨a⟩ =&gt; ⟨a, trivial⟩) (fun ⟨a, h⟩ =&gt; ⟨a⟩)
+</code></pre>
+<p>Our axiom of choice is now expressed simply as follows:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">universe u
+</span>axiom choice {α : Sort u} : Nonempty α → α
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Given only the assertion <code>h</code> that <code>α</code> is nonempty, <code>choice h</code>
+magically produces an element of <code>α</code>. Of course, this blocks any
+meaningful computation: by the interpretation of <code>Prop</code>, <code>h</code>
+contains no information at all as to how to find such an element.</p>
+<p>This is found in the <code>Classical</code> namespace, so the full name of the
+theorem is <code>Classical.choice</code>. The choice principle is equivalent to
+the principle of <em>indefinite description</em>, which can be expressed with
+subtypes as follows:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">universe u
+</span><span class="boring">axiom choice {α : Sort u} : Nonempty α → α
+</span>noncomputable def indefiniteDescription {α : Sort u} (p : α → Prop)
+                                        (h : ∃ x, p x) : {x // p x} :=
+  choice &lt;| let ⟨x, px⟩ := h; ⟨⟨x, px⟩⟩
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Because it depends on <code>choice</code>, Lean cannot generate bytecode for
+<code>indefiniteDescription</code>, and so requires us to mark the definition
+as <code>noncomputable</code>. Also in the <code>Classical</code> namespace, the
+function <code>choose</code> and the property <code>choose_spec</code> decompose the two
+parts of the output of <code>indefinite_description</code>:</p>
+<pre><code class="language-lean"><span class="boring">open Classical
+</span><span class="boring">namespace Hidden
+</span>noncomputable def choose {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
+  (indefiniteDescription p h).val
+
+theorem choose_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (choose h) :=
+  (indefiniteDescription p h).property
+<span class="boring">end Hidden
+</span></code></pre>
+<p>The <code>choice</code> principle also erases the distinction between the
+property of being <code>Nonempty</code> and the more constructive property of
+being <code>Inhabited</code>:</p>
+<pre><code class="language-lean"><span class="boring">open Classical
+</span>theorem inhabited_of_nonempty :Nonempty α → Inhabited α :=
+  fun h =&gt; choice (let ⟨a⟩ := h; ⟨⟨a⟩⟩)
+</code></pre>
+<p>In the next section, we will see that <code>propext</code>, <code>funext</code>, and
+<code>choice</code>, taken together, imply the law of the excluded middle and
+the decidability of all propositions. Using those, one can strengthen
+the principle of indefinite description as follows:</p>
+<pre><code class="language-lean"><span class="boring">open Classical
+</span><span class="boring">universe u
+</span>#check (@strongIndefiniteDescription :
+         {α : Sort u} → (p : α → Prop)
+         → Nonempty α → {x // (∃ (y : α), p y) → p x})
+</code></pre>
+<p>Assuming the ambient type <code>α</code> is nonempty,
+<code>strongIndefiniteDescription p</code> produces an element of <code>α</code>
+satisfying <code>p</code> if there is one. The data component of this
+definition is conventionally known as <em>Hilbert's epsilon function</em>:</p>
+<pre><code class="language-lean"><span class="boring">open Classical
+</span><span class="boring">universe u
+</span>#check (@epsilon :
+         {α : Sort u} → [Nonempty α]
+         → (α → Prop) → α)
+
+#check (@epsilon_spec :
+          ∀ {a : Sort u} {p : a → Prop}(hex : ∃ (y : a), p y),
+            p (@epsilon _ (nonempty_of_exists hex) p))
+</code></pre>
+<h2 id="the-law-of-the-excluded-middle"><a class="header" href="#the-law-of-the-excluded-middle">The Law of the Excluded Middle</a></h2>
+<p>The law of the excluded middle is the following</p>
+<pre><code class="language-lean">open Classical
+
+#check (@em : ∀ (p : Prop), p ∨ ¬p)
+</code></pre>
+<p><a href="http://en.wikipedia.org/wiki/Diaconescu%27s_theorem">Diaconescu's theorem</a> states
+that the axiom of choice is sufficient to derive the law of excluded
+middle. More precisely, it shows that the law of the excluded middle
+follows from <code>Classical.choice</code>, <code>propext</code>, and <code>funext</code>. We
+sketch the proof that is found in the standard library.</p>
+<p>First, we import the necessary axioms, and define two predicates <code>U</code> and <code>V</code>:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>open Classical
+theorem em (p : Prop) : p ∨ ¬p :=
+  let U (x : Prop) : Prop := x = True ∨ p
+  let V (x : Prop) : Prop := x = False ∨ p
+
+  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+<span class="boring">  sorry
+</span><span class="boring">end Hidden
+</span></code></pre>
+<p>If <code>p</code> is true, then every element of <code>Prop</code> is in both <code>U</code> and <code>V</code>.
+If <code>p</code> is false, then <code>U</code> is the singleton <code>true</code>, and <code>V</code> is the singleton <code>false</code>.</p>
+<p>Next, we use <code>some</code> to choose an element from each of <code>U</code> and <code>V</code>:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">open Classical
+</span><span class="boring">theorem em (p : Prop) : p ∨ ¬p :=
+</span><span class="boring">  let U (x : Prop) : Prop := x = True ∨ p
+</span><span class="boring">  let V (x : Prop) : Prop := x = False ∨ p
+</span><span class="boring">  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+</span><span class="boring">  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+</span>  let u : Prop := choose exU
+  let v : Prop := choose exV
+
+  have u_def : U u := choose_spec exU
+  have v_def : V v := choose_spec exV
+<span class="boring">  sorry
+</span><span class="boring">end Hidden
+</span></code></pre>
+<p>Each of <code>U</code> and <code>V</code> is a disjunction, so <code>u_def</code> and <code>v_def</code>
+represent four cases. In one of these cases, <code>u = True</code> and
+<code>v = False</code>, and in all the other cases, <code>p</code> is true. Thus we have:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">open Classical
+</span><span class="boring">theorem em (p : Prop) : p ∨ ¬p :=
+</span><span class="boring">  let U (x : Prop) : Prop := x = True ∨ p
+</span><span class="boring">  let V (x : Prop) : Prop := x = False ∨ p
+</span><span class="boring">  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+</span><span class="boring">  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+</span><span class="boring">  let u : Prop := choose exU
+</span><span class="boring">  let v : Prop := choose exV
+</span><span class="boring">  have u_def : U u := choose_spec exU
+</span><span class="boring">  have v_def : V v := choose_spec exV
+</span>  have not_uv_or_p : u ≠ v ∨ p :=
+    match u_def, v_def with
+    | Or.inr h, _ =&gt; Or.inr h
+    | _, Or.inr h =&gt; Or.inr h
+    | Or.inl hut, Or.inl hvf =&gt;
+      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
+      Or.inl hne
+<span class="boring">  sorry
+</span><span class="boring">end Hidden
+</span></code></pre>
+<p>On the other hand, if <code>p</code> is true, then, by function extensionality
+and propositional extensionality, <code>U</code> and <code>V</code> are equal. By the
+definition of <code>u</code> and <code>v</code>, this implies that they are equal as well.</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">open Classical
+</span><span class="boring">theorem em (p : Prop) : p ∨ ¬p :=
+</span><span class="boring">  let U (x : Prop) : Prop := x = True ∨ p
+</span><span class="boring">  let V (x : Prop) : Prop := x = False ∨ p
+</span><span class="boring">  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+</span><span class="boring">  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+</span><span class="boring">  let u : Prop := choose exU
+</span><span class="boring">  let v : Prop := choose exV
+</span><span class="boring">  have u_def : U u := choose_spec exU
+</span><span class="boring">  have v_def : V v := choose_spec exV
+</span><span class="boring">  have not_uv_or_p : u ≠ v ∨ p :=
+</span><span class="boring">    match u_def, v_def with
+</span><span class="boring">    | Or.inr h, _ =&gt; Or.inr h
+</span><span class="boring">    | _, Or.inr h =&gt; Or.inr h
+</span><span class="boring">    | Or.inl hut, Or.inl hvf =&gt;
+</span><span class="boring">      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
+</span><span class="boring">      Or.inl hne
+</span>  have p_implies_uv : p → u = v :=
+    fun hp =&gt;
+    have hpred : U = V :=
+      funext fun x =&gt;
+        have hl : (x = True ∨ p) → (x = False ∨ p) :=
+          fun _ =&gt; Or.inr hp
+        have hr : (x = False ∨ p) → (x = True ∨ p) :=
+          fun _ =&gt; Or.inr hp
+        show (x = True ∨ p) = (x = False ∨ p) from
+          propext (Iff.intro hl hr)
+    have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := by
+      rw [hpred]; intros; rfl
+    show u = v from h₀ _ _
+<span class="boring">  sorry
+</span><span class="boring">end Hidden
+</span></code></pre>
+<p>Putting these last two facts together yields the desired conclusion:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">open Classical
+</span><span class="boring">theorem em (p : Prop) : p ∨ ¬p :=
+</span><span class="boring">  let U (x : Prop) : Prop := x = True ∨ p
+</span><span class="boring">  let V (x : Prop) : Prop := x = False ∨ p
+</span><span class="boring">  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+</span><span class="boring">  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+</span><span class="boring">  let u : Prop := choose exU
+</span><span class="boring">  let v : Prop := choose exV
+</span><span class="boring">  have u_def : U u := choose_spec exU
+</span><span class="boring">  have v_def : V v := choose_spec exV
+</span><span class="boring">  have not_uv_or_p : u ≠ v ∨ p :=
+</span><span class="boring">    match u_def, v_def with
+</span><span class="boring">    | Or.inr h, _ =&gt; Or.inr h
+</span><span class="boring">    | _, Or.inr h =&gt; Or.inr h
+</span><span class="boring">    | Or.inl hut, Or.inl hvf =&gt;
+</span><span class="boring">      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
+</span><span class="boring">      Or.inl hne
+</span><span class="boring"> have p_implies_uv : p → u = v :=
+</span><span class="boring">    fun hp =&gt;
+</span><span class="boring">    have hpred : U = V :=
+</span><span class="boring">      funext fun x =&gt;
+</span><span class="boring">        have hl : (x = True ∨ p) → (x = False ∨ p) :=
+</span><span class="boring">          fun _ =&gt; Or.inr hp
+</span><span class="boring">        have hr : (x = False ∨ p) → (x = True ∨ p) :=
+</span><span class="boring">          fun _ =&gt; Or.inr hp
+</span><span class="boring">        show (x = True ∨ p) = (x = False ∨ p) from
+</span><span class="boring">          propext (Iff.intro hl hr)
+</span><span class="boring">    have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := by
+</span><span class="boring">      rw [hpred]; intros; rfl
+</span><span class="boring">    show u = v from h₀ _ _
+</span>  match not_uv_or_p with
+  | Or.inl hne =&gt; Or.inr (mt p_implies_uv hne)
+  | Or.inr h   =&gt; Or.inl h
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Consequences of excluded middle include double-negation elimination,
+proof by cases, and proof by contradiction, all of which are described
+in the <a href="./propositions_and_proofs.html#classical_logic">Section Classical Logic</a>.
+The law of the excluded middle and propositional extensionality imply propositional completeness:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>open Classical
+theorem propComplete (a : Prop) : a = True ∨ a = False :=
+  match em a with
+  | Or.inl ha =&gt; Or.inl (propext (Iff.intro (fun _ =&gt; ⟨⟩) (fun _ =&gt; ha)))
+  | Or.inr hn =&gt; Or.inr (propext (Iff.intro (fun h =&gt; hn h) (fun h =&gt; False.elim h)))
+<span class="boring">end Hidden
+</span></code></pre>
+<p>Together with choice, we also get the stronger principle that every
+proposition is decidable. Recall that the class of <code>Decidable</code>
+propositions is defined as follows:</p>
+<pre><code class="language-lean"><span class="boring">namespace Hidden
+</span>class inductive Decidable (p : Prop) where
+  | isFalse (h : ¬p) : Decidable p
+  | isTrue  (h : p)  : Decidable p
+<span class="boring">end Hidden
+</span></code></pre>
+<p>In contrast to <code>p ∨ ¬ p</code>, which can only eliminate to <code>Prop</code>, the
+type <code>decidable p</code> is equivalent to the sum type <code>Sum p (¬ p)</code>, which
+can eliminate to any type. It is this data that is needed to write an
+if-then-else expression.</p>
+<p>As an example of classical reasoning, we use <code>choose</code> to show that if
+<code>f : α → β</code> is injective and <code>α</code> is inhabited, then <code>f</code> has a
+left inverse. To define the left inverse <code>linv</code>, we use a dependent
+if-then-else expression. Recall that <code>if h : c then t else e</code> is
+notation for <code>dite c (fun  h : c =&gt; t) (fun h : ¬ c =&gt; e)</code>. In the definition
+of <code>linv</code>, choice is used twice: first, to show that
+<code>(∃ a : A, f a = b)</code> is &quot;decidable,&quot; and then to choose an <code>a</code> such that
+<code>f a = b</code>. Notice that <code>propDecidable</code> is a scoped instance and is activated
+by the <code>open Classical</code> command. We use this instance to justify
+the if-then-else expression. (See also the discussion in
+<a href="./type_classes.html#decidable_propositions">Section Decidable Propositions</a>).</p>
+<pre><code class="language-lean">open Classical
+
+noncomputable def linv [Inhabited α] (f : α → β) : β → α :=
+  fun b : β =&gt; if ex : (∃ a : α, f a = b) then choose ex else default
+
+theorem linv_comp_self {f : α → β} [Inhabited α]
+                       (inj : ∀ {a b}, f a = f b → a = b)
+                       : linv f ∘ f = id :=
+  funext fun a =&gt;
+    have ex  : ∃ a₁ : α, f a₁ = f a := ⟨a, rfl⟩
+    have feq : f (choose ex) = f a  := choose_spec ex
+    calc linv f (f a) = choose ex := dif_pos ex
+               _      = a         := inj feq
+
+</code></pre>
+<p>From a classical point of view, <code>linv</code> is a function. From a
+constructive point of view, it is unacceptable; because there is no
+way to implement such a function in general, the construction is not
+informative.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="conv.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="conv.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

@@ -1,0 +1,1082 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Dependent Type Theory - Theorem Proving in Lean 4</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html" class="active"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Theorem Proving in Lean 4</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="dependent-type-theory"><a class="header" href="#dependent-type-theory">Dependent Type Theory</a></h1>
+<p>Dependent type theory is a powerful and expressive language, allowing
+you to express complex mathematical assertions, write complex hardware
+and software specifications, and reason about both of these in a
+natural and uniform way. Lean is based on a version of dependent type
+theory known as the <em>Calculus of Constructions</em>, with a countable
+hierarchy of non-cumulative universes and inductive types. By the end
+of this chapter, you will understand much of what this means.</p>
+<h2 id="simple-type-theory"><a class="header" href="#simple-type-theory">Simple Type Theory</a></h2>
+<p>&quot;Type theory&quot; gets its name from the fact that every expression has an
+associated <em>type</em>. For example, in a given context, <code>x + 0</code> may
+denote a natural number and <code>f</code> may denote a function on the natural
+numbers. For those who like precise definitions, a Lean natural number
+is an arbitrary-precision unsigned integer.</p>
+<p>Here are some examples of how you can declare objects in Lean and
+check their types.</p>
+<pre><code class="language-lean">/- Define some constants. -/
+
+def m : Nat := 1       -- m is a natural number
+def n : Nat := 0
+def b1 : Bool := true  -- b1 is a Boolean
+def b2 : Bool := false
+
+/- Check their types. -/
+
+#check m            -- output: Nat
+#check n
+#check n + 0        -- Nat
+#check m * (n + 0)  -- Nat
+#check b1           -- Bool
+#check b1 &amp;&amp; b2     -- &quot;&amp;&amp;&quot; is the Boolean and
+#check b1 || b2     -- Boolean or
+#check true         -- Boolean &quot;true&quot;
+
+/- Evaluate -/
+
+#eval 5 * 4         -- 20
+#eval m + 2         -- 3
+#eval b1 &amp;&amp; b2      -- false
+</code></pre>
+<p>Any text between <code>/-</code> and <code>-/</code> constitutes a comment block that is
+ignored by Lean. Similarly, two dashes <code>--</code> indicate that the rest of
+the line contains a comment that is also ignored. Comment blocks can
+be nested, making it possible to &quot;comment out&quot; chunks of code, just as
+in many programming languages.</p>
+<p>The <code>def</code> keyword declares new constant symbols into the
+working environment. In the example above, <code>def m : Nat := 1</code>
+defines a new constant <code>m</code> of type <code>Nat</code> whose value is <code>1</code>.
+The <code>#check</code> command asks Lean to report their
+types; in Lean, auxiliary commands that query the system for
+information typically begin with the hash (#) symbol.
+The <code>#eval</code> command asks Lean to evaluate the given expression.
+You should try
+declaring some constants and type checking some expressions on your
+own. Declaring new objects in this manner is a good way to experiment
+with the system.</p>
+<p>What makes simple type theory powerful is that you can build new types
+out of others. For example, if <code>a</code> and <code>b</code> are types, <code>a -&gt; b</code>
+denotes the type of functions from <code>a</code> to <code>b</code>, and <code>a × b</code>
+denotes the type of pairs consisting of an element of <code>a</code> paired
+with an element of <code>b</code>, also known as the <em>Cartesian product</em>. Note
+that <code>×</code> is a Unicode symbol. The judicious use of Unicode improves
+legibility, and all modern editors have great support for it. In the
+Lean standard library, you often see Greek letters to denote types,
+and the Unicode symbol <code>→</code> as a more compact version of <code>-&gt;</code>.</p>
+<pre><code class="language-lean">#check Nat → Nat      -- type the arrow as &quot;\to&quot; or &quot;\r&quot;
+#check Nat -&gt; Nat     -- alternative ASCII notation
+
+#check Nat × Nat      -- type the product as &quot;\times&quot;
+#check Prod Nat Nat   -- alternative notation
+
+#check Nat → Nat → Nat
+#check Nat → (Nat → Nat)  --  same type as above
+
+#check Nat × Nat → Nat
+#check (Nat → Nat) → Nat -- a &quot;functional&quot;
+
+#check Nat.succ     -- Nat → Nat
+#check (0, 1)       -- Nat × Nat
+#check Nat.add      -- Nat → Nat → Nat
+
+#check Nat.succ 2   -- Nat
+#check Nat.add 3    -- Nat → Nat
+#check Nat.add 5 2  -- Nat
+#check (5, 9).1     -- Nat
+#check (5, 9).2     -- Nat
+
+#eval Nat.succ 2   -- 3
+#eval Nat.add 5 2  -- 7
+#eval (5, 9).1     -- 5
+#eval (5, 9).2     -- 9
+</code></pre>
+<p>Once again, you should try some examples on your own.</p>
+<p>Let's take a look at some basic syntax. You can enter the unicode
+arrow <code>→</code> by typing <code>\to</code> or <code>\r</code> or <code>\-&gt;</code>. You can also use the
+ASCII alternative <code>-&gt;</code>, so the expressions <code>Nat -&gt; Nat</code> and <code>Nat → Nat</code> mean the same thing. Both expressions denote the type of
+functions that take a natural number as input and return a natural
+number as output. The unicode symbol <code>×</code> for the Cartesian product
+is entered as <code>\times</code>. You will generally use lower-case Greek
+letters like <code>α</code>, <code>β</code>, and <code>γ</code> to range over types. You can
+enter these particular ones with <code>\a</code>, <code>\b</code>, and <code>\g</code>.</p>
+<p>There are a few more things to notice here. First, the application of
+a function <code>f</code> to a value <code>x</code> is denoted <code>f x</code> (e.g., <code>Nat.succ 2</code>).
+Second, when writing type expressions, arrows associate to the <em>right</em>; for
+example, the type of <code>Nat.add</code> is <code>Nat → Nat → Nat</code> which is equivalent
+to <code>Nat → (Nat → Nat)</code>. Thus you can
+view <code>Nat.add</code> as a function that takes a natural number and returns
+another function that takes a natural number and returns a natural
+number. In type theory, this is generally more convenient than
+writing <code>Nat.add</code> as a function that takes a pair of natural numbers as
+input and returns a natural number as output. For example, it allows
+you to &quot;partially apply&quot; the function <code>Nat.add</code>.  The example above shows
+that <code>Nat.add 3</code> has type <code>Nat → Nat</code>, that is, <code>Nat.add 3</code> returns a
+function that &quot;waits&quot; for a second argument, <code>n</code>, which is then
+equivalent to writing <code>Nat.add 3 n</code>.</p>
+<!-- Taking a function ``h`` of type ``Nat
+× Nat → Nat`` and "redefining" it to look like ``g`` is a process
+known as *currying*. -->
+<p>You have seen that if you have <code>m : Nat</code> and <code>n : Nat</code>, then
+<code>(m, n)</code> denotes the ordered pair of <code>m</code> and <code>n</code> which is of
+type <code>Nat × Nat</code>. This gives you a way of creating pairs of natural
+numbers. Conversely, if you have <code>p : Nat × Nat</code>, then you can write
+<code>p.1 : Nat</code> and <code>p.2 : Nat</code>. This gives you a way of extracting
+its two components.</p>
+<h2 id="types-as-objects"><a class="header" href="#types-as-objects">Types as objects</a></h2>
+<p>One way in which Lean's dependent type theory extends simple type
+theory is that types themselves --- entities like <code>Nat</code> and <code>Bool</code>
+--- are first-class citizens, which is to say that they themselves are
+objects. For that to be the case, each of them also has to have a
+type.</p>
+<pre><code class="language-lean">#check Nat               -- Type
+#check Bool              -- Type
+#check Nat → Bool        -- Type
+#check Nat × Bool        -- Type
+#check Nat → Nat         -- ...
+#check Nat × Nat → Nat
+#check Nat → Nat → Nat
+#check Nat → (Nat → Nat)
+#check Nat → Nat → Bool
+#check (Nat → Nat) → Nat
+</code></pre>
+<p>You can see that each one of the expressions above is an object of
+type <code>Type</code>. You can also declare new constants for types:</p>
+<pre><code class="language-lean">def α : Type := Nat
+def β : Type := Bool
+def F : Type → Type := List
+def G : Type → Type → Type := Prod
+
+#check α        -- Type
+#check F α      -- Type
+#check F Nat    -- Type
+#check G α      -- Type → Type
+#check G α β    -- Type
+#check G α Nat  -- Type
+</code></pre>
+<p>As the example above suggests, you have already seen an example of a function of type
+<code>Type → Type → Type</code>, namely, the Cartesian product <code>Prod</code>:</p>
+<pre><code class="language-lean">def α : Type := Nat
+def β : Type := Bool
+
+#check Prod α β       -- Type
+#check α × β          -- Type
+
+#check Prod Nat Nat   -- Type
+#check Nat × Nat      -- Type
+</code></pre>
+<p>Here is another example: given any type <code>α</code>, the type <code>List α</code>
+denotes the type of lists of elements of type <code>α</code>.</p>
+<pre><code class="language-lean">def α : Type := Nat
+
+#check List α    -- Type
+#check List Nat  -- Type
+</code></pre>
+<p>Given that every expression in Lean has a type, it is natural to ask:
+what type does <code>Type</code> itself have?</p>
+<pre><code class="language-lean">#check Type      -- Type 1
+</code></pre>
+<p>You have actually come up against one of the most subtle aspects of
+Lean's typing system. Lean's underlying foundation has an infinite
+hierarchy of types:</p>
+<pre><code class="language-lean">#check Type     -- Type 1
+#check Type 1   -- Type 2
+#check Type 2   -- Type 3
+#check Type 3   -- Type 4
+#check Type 4   -- Type 5
+</code></pre>
+<p>Think of <code>Type 0</code> as a universe of &quot;small&quot; or &quot;ordinary&quot; types.
+<code>Type 1</code> is then a larger universe of types, which contains <code>Type 0</code> as an element, and <code>Type 2</code> is an even larger universe of types,
+which contains <code>Type 1</code> as an element. The list is indefinite, so
+that there is a <code>Type n</code> for every natural number <code>n</code>. <code>Type</code> is
+an abbreviation for <code>Type 0</code>:</p>
+<pre><code class="language-lean">#check Type
+#check Type 0
+</code></pre>
+<p>The following table may help concretize the relationships being discussed.
+Movement along the x-axis represents a change in the universe, while movement
+along the y-axis represents a change in what is sometimes referred to as
+&quot;degree&quot;.</p>
+<table><thead><tr><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th></tr></thead><tbody>
+<tr><td style="text-align: center">sort</td><td style="text-align: center">Prop (Sort 0)</td><td style="text-align: center">Type (Sort 1)</td><td style="text-align: center">Type 1 (Sort 2)</td><td style="text-align: center">Type 2 (Sort 3)</td><td style="text-align: center">...</td></tr>
+<tr><td style="text-align: center">type</td><td style="text-align: center">True</td><td style="text-align: center">Bool</td><td style="text-align: center">Nat -&gt; Type</td><td style="text-align: center">Type -&gt; Type 1</td><td style="text-align: center">...</td></tr>
+<tr><td style="text-align: center">term</td><td style="text-align: center">trivial</td><td style="text-align: center">true</td><td style="text-align: center">fun n =&gt; Fin n</td><td style="text-align: center">fun (_ : Type) =&gt; Type</td><td style="text-align: center">...</td></tr>
+</tbody></table>
+<p>Some operations, however, need to be <em>polymorphic</em> over type
+universes. For example, <code>List α</code> should make sense for any type
+<code>α</code>, no matter which type universe <code>α</code> lives in. This explains the
+type annotation of the function <code>List</code>:</p>
+<pre><code class="language-lean">#check List    -- Type u_1 → Type u_1
+</code></pre>
+<p>Here <code>u_1</code> is a variable ranging over type levels. The output of the
+<code>#check</code> command means that whenever <code>α</code> has type <code>Type n</code>,
+<code>List α</code> also has type <code>Type n</code>. The function <code>Prod</code> is
+similarly polymorphic:</p>
+<pre><code class="language-lean">#check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
+</code></pre>
+<p>To define polymorphic constants, Lean allows you to
+declare universe variables explicitly using the <code>universe</code> command:</p>
+<pre><code class="language-lean">universe u
+
+def F (α : Type u) : Type u := Prod α α
+
+#check F    -- Type u → Type u
+</code></pre>
+<p>You can avoid the universe command by providing the universe parameters when defining F.</p>
+<pre><code class="language-lean">def F.{u} (α : Type u) : Type u := Prod α α
+
+#check F    -- Type u → Type u
+</code></pre>
+<h2 id="function-abstraction-and-evaluation"><a class="header" href="#function-abstraction-and-evaluation">Function Abstraction and Evaluation</a></h2>
+<p>Lean provides a <code>fun</code> (or <code>λ</code>) keyword to create a function
+from an expression as follows:</p>
+<pre><code class="language-lean">#check fun (x : Nat) =&gt; x + 5   -- Nat → Nat
+#check λ (x : Nat) =&gt; x + 5     -- λ and fun mean the same thing
+#check fun x : Nat =&gt; x + 5     -- Nat inferred
+#check λ x : Nat =&gt; x + 5       -- Nat inferred
+</code></pre>
+<p>You can evaluate a lambda function by passing the required parameters:</p>
+<pre><code class="language-lean">#eval (λ x : Nat =&gt; x + 5) 10    -- 15
+</code></pre>
+<p>Creating a function from another expression is a process known as
+<em>lambda abstraction</em>. Suppose you have the variable <code>x : α</code> and you can
+construct an expression <code>t : β</code>, then the expression <code>fun (x : α) =&gt; t</code>, or, equivalently, <code>λ (x : α) =&gt; t</code>, is an object of type <code>α → β</code>. Think of this as the function from <code>α</code> to <code>β</code> which maps
+any value <code>x</code> to the value <code>t</code>.</p>
+<p>Here are some more examples</p>
+<pre><code class="language-lean">#check fun x : Nat =&gt; fun y : Bool =&gt; if not y then x + 1 else x + 2
+#check fun (x : Nat) (y : Bool) =&gt; if not y then x + 1 else x + 2
+#check fun x y =&gt; if not y then x + 1 else x + 2   -- Nat → Bool → Nat
+</code></pre>
+<p>Lean interprets the final three examples as the same expression; in
+the last expression, Lean infers the type of <code>x</code> and <code>y</code> from the
+expression <code>if not y then x + 1 else x + 2</code>.</p>
+<p>Some mathematically common examples of operations of functions can be
+described in terms of lambda abstraction:</p>
+<pre><code class="language-lean">def f (n : Nat) : String := toString n
+def g (s : String) : Bool := s.length &gt; 0
+
+#check fun x : Nat =&gt; x        -- Nat → Nat
+#check fun x : Nat =&gt; true     -- Nat → Bool
+#check fun x : Nat =&gt; g (f x)  -- Nat → Bool
+#check fun x =&gt; g (f x)        -- Nat → Bool
+</code></pre>
+<p>Think about what these expressions mean. The expression
+<code>fun x : Nat =&gt; x</code> denotes the identity function on <code>Nat</code>, the
+expression <code>fun x : Nat =&gt; true</code> denotes the constant function that
+always returns <code>true</code>, and <code>fun x : Nat =&gt; g (f x)</code> denotes the
+composition of <code>f</code> and <code>g</code>.  You can, in general, leave off the
+type annotation and let Lean infer it for you.  So, for example, you
+can write <code>fun x =&gt; g (f x)</code> instead of <code>fun x : Nat =&gt; g (f x)</code>.</p>
+<p>You can pass functions as parameters and by giving them names <code>f</code>
+and <code>g</code> you can then use those functions in the implementation:</p>
+<pre><code class="language-lean">#check fun (g : String → Bool) (f : Nat → String) (x : Nat) =&gt; g (f x)
+-- (String → Bool) → (Nat → String) → Nat → Bool
+</code></pre>
+<p>You can also pass types as parameters:</p>
+<pre><code class="language-lean">#check fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) =&gt; g (f x)
+</code></pre>
+<p>The last expression, for example, denotes the function that takes
+three types, <code>α</code>, <code>β</code>, and <code>γ</code>, and two functions, <code>g : β → γ</code>
+and <code>f : α → β</code>, and returns the composition of <code>g</code> and <code>f</code>.
+(Making sense of the type of this function requires an understanding
+of dependent products, which will be explained below.)</p>
+<p>The general form of a lambda expression is <code>fun x : α =&gt; t</code>, where
+the variable <code>x</code> is a &quot;bound variable&quot;: it is really a placeholder,
+whose &quot;scope&quot; does not extend beyond the expression <code>t</code>.  For
+example, the variable <code>b</code> in the expression <code>fun (b : β) (x : α) =&gt; b</code>
+has nothing to do with the constant <code>b</code> declared earlier.  In fact,
+the expression denotes the same function as <code>fun (u : β) (z : α) =&gt; u</code>.</p>
+<p>Formally, expressions that are the same up to a renaming of bound
+variables are called <em>alpha equivalent</em>, and are considered &quot;the
+same.&quot; Lean recognizes this equivalence.</p>
+<p>Notice that applying a term <code>t : α → β</code> to a term <code>s : α</code> yields
+an expression <code>t s : β</code>. Returning to the previous example and
+renaming bound variables for clarity, notice the types of the
+following expressions:</p>
+<pre><code class="language-lean">#check (fun x : Nat =&gt; x) 1     -- Nat
+#check (fun x : Nat =&gt; true) 1  -- Bool
+
+def f (n : Nat) : String := toString n
+def g (s : String) : Bool := s.length &gt; 0
+
+#check
+  (fun (α β γ : Type) (u : β → γ) (v : α → β) (x : α) =&gt; u (v x)) Nat String Bool g f 0
+  -- Bool
+</code></pre>
+<p>As expected, the expression <code>(fun x : Nat =&gt;  x) 1</code> has type <code>Nat</code>.
+In fact, more should be true: applying the expression <code>(fun x : Nat =&gt; x)</code> to <code>1</code> should &quot;return&quot; the value <code>1</code>. And, indeed, it does:</p>
+<pre><code class="language-lean">#eval (fun x : Nat =&gt; x) 1     -- 1
+#eval (fun x : Nat =&gt; true) 1  -- true
+</code></pre>
+<p>You will see later how these terms are evaluated. For now, notice that
+this is an important feature of dependent type theory: every term has
+a computational behavior, and supports a notion of <em>normalization</em>. In
+principle, two terms that reduce to the same value are called
+<em>definitionally equal</em>. They are considered &quot;the same&quot; by Lean's type
+checker, and Lean does its best to recognize and support these
+identifications.</p>
+<p>Lean is a complete programming language. It has a compiler that
+generates a binary executable and an interactive interpreter. You can
+use the command <code>#eval</code> to execute expressions, and it is the
+preferred way of testing your functions.</p>
+<!--
+Note that `#eval` and
+`#reduce` are *not* equivalent. The command `#eval` first compiles
+Lean expressions into an intermediate representation (IR) and then
+uses an interpreter to execute the generated IR. Some builtin types
+(e.g., `Nat`, `String`, `Array`) have a more efficient representation
+in the IR. The IR has support for using foreign functions that are
+opaque to Lean.
+
+In contrast, the ``#reduce`` command relies on a reduction engine
+similar to the one used in Lean's trusted kernel, the part of Lean
+that is responsible for checking and verifying the correctness of
+expressions and proofs. It is less efficient than ``#eval``, and
+treats all foreign functions as opaque constants. You will learn later
+that there are some other differences between the two commands.
+-->
+<h2 id="definitions"><a class="header" href="#definitions">Definitions</a></h2>
+<p>Recall that the <code>def</code> keyword provides one important way of declaring new named
+objects.</p>
+<pre><code class="language-lean">def double (x : Nat) : Nat :=
+  x + x
+</code></pre>
+<p>This might look more familiar to you if you know how functions work in
+other programming languages. The name <code>double</code> is defined as a
+function that takes an input parameter <code>x</code> of type <code>Nat</code>, where the
+result of the call is <code>x + x</code>, so it is returning type <code>Nat</code>. You
+can then invoke this function using:</p>
+<pre><code class="language-lean"><span class="boring">def double (x : Nat) : Nat :=
+</span><span class="boring"> x + x
+</span>#eval double 3    -- 6
+</code></pre>
+<p>In this case you can think of <code>def</code> as a kind of named <code>lambda</code>.
+The following yields the same result:</p>
+<pre><code class="language-lean">def double : Nat → Nat :=
+  fun x =&gt; x + x
+
+#eval double 3    -- 6
+</code></pre>
+<p>You can omit the type declarations when Lean has enough information to
+infer it.  Type inference is an important part of Lean:</p>
+<pre><code class="language-lean">def double :=
+  fun (x : Nat) =&gt; x + x
+</code></pre>
+<p>The general form of a definition is <code>def foo : α := bar</code> where
+<code>α</code> is the type returned from the expression <code>bar</code>.  Lean can
+usually infer the type <code>α</code>, but it is often a good idea to write it
+explicitly.  This clarifies your intention, and Lean will flag an
+error if the right-hand side of the definition does not have a matching
+type.</p>
+<p>The right hand side <code>bar</code> can be any expression, not just a lambda.
+So <code>def</code> can also be used to simply name a value like this:</p>
+<pre><code class="language-lean">def pi := 3.141592654
+</code></pre>
+<p><code>def</code> can take multiple input parameters.  Let's create one
+that adds two natural numbers:</p>
+<pre><code class="language-lean">def add (x y : Nat) :=
+  x + y
+
+#eval add 3 2               -- 5
+</code></pre>
+<p>The parameter list can be separated like this:</p>
+<pre><code class="language-lean"><span class="boring">def double (x : Nat) : Nat :=
+</span><span class="boring"> x + x
+</span>def add (x : Nat) (y : Nat) :=
+  x + y
+
+#eval add (double 3) (7 + 9)  -- 22
+</code></pre>
+<p>Notice here we called the <code>double</code> function to create the first
+parameter to <code>add</code>.</p>
+<p>You can use other more interesting expressions inside a <code>def</code>:</p>
+<pre><code class="language-lean">def greater (x y : Nat) :=
+  if x &gt; y then x
+  else y
+</code></pre>
+<p>You can probably guess what this one will do.</p>
+<p>You can also define a function that takes another function as input.
+The following calls a given function twice passing the output of the
+first invocation to the second:</p>
+<pre><code class="language-lean"><span class="boring">def double (x : Nat) : Nat :=
+</span><span class="boring"> x + x
+</span>def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
+  f (f x)
+
+#eval doTwice double 2   -- 8
+</code></pre>
+<p>Now to get a bit more abstract, you can also specify arguments that
+are like type parameters:</p>
+<pre><code class="language-lean">def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+</code></pre>
+<p>This means <code>compose</code> is a function that takes any two functions as input
+arguments, so long as those functions each take only one input.
+The type algebra <code>β → γ</code> and <code>α → β</code> means it is a requirement
+that the type of the output of the second function must match the
+type of the input to the first function - which makes sense, otherwise
+the two functions would not be composable.</p>
+<p><code>compose</code> also takes a 3rd argument of type <code>α</code> which
+it uses to invoke the second function (locally named <code>f</code>) and it
+passes the result of that function (which is type <code>β</code>) as input to the
+first function (locally named <code>g</code>).  The first function returns a type
+<code>γ</code> so that is also the return type of the <code>compose</code> function.</p>
+<p><code>compose</code> is also very general in that it works over any type
+<code>α β γ</code>.  This means <code>compose</code> can compose just about any 2 functions
+so long as they each take one parameter, and so long as the type of
+output of the second matches the input of the first.  For example:</p>
+<pre><code class="language-lean"><span class="boring">def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
+</span><span class="boring"> g (f x)
+</span><span class="boring">def double (x : Nat) : Nat :=
+</span><span class="boring"> x + x
+</span>def square (x : Nat) : Nat :=
+  x * x
+
+#eval compose Nat Nat Nat double square 3  -- 18
+</code></pre>
+<h2 id="local-definitions"><a class="header" href="#local-definitions">Local Definitions</a></h2>
+<p>Lean also allows you to introduce &quot;local&quot; definitions using the
+<code>let</code> keyword. The expression <code>let a := t1; t2</code> is
+definitionally equal to the result of replacing every occurrence of
+<code>a</code> in <code>t2</code> by <code>t1</code>.</p>
+<pre><code class="language-lean">#check let y := 2 + 2; y * y   -- Nat
+#eval  let y := 2 + 2; y * y   -- 16
+
+def twice_double (x : Nat) : Nat :=
+  let y := x + x; y * y
+
+#eval twice_double 2   -- 16
+</code></pre>
+<p>Here, <code>twice_double x</code> is definitionally equal to the term <code>(x + x) * (x + x)</code>.</p>
+<p>You can combine multiple assignments by chaining <code>let</code> statements:</p>
+<pre><code class="language-lean">#check let y := 2 + 2; let z := y + y; z * z   -- Nat
+#eval  let y := 2 + 2; let z := y + y; z * z   -- 64
+</code></pre>
+<p>The <code>;</code> can be omitted when a line break is used.</p>
+<pre><code class="language-lean">def t (x : Nat) : Nat :=
+  let y := x + x
+  y * y
+</code></pre>
+<p>Notice that the meaning of the expression <code>let a := t1; t2</code> is very
+similar to the meaning of <code>(fun a =&gt; t2) t1</code>, but the two are not
+the same. In the first expression, you should think of every instance
+of <code>a</code> in <code>t2</code> as a syntactic abbreviation for <code>t1</code>. In the
+second expression, <code>a</code> is a variable, and the expression
+<code>fun a =&gt; t2</code> has to make sense independently of the value of <code>a</code>.
+The <code>let</code> construct is a stronger means of abbreviation, and there
+are expressions of the form <code>let a := t1; t2</code> that cannot be
+expressed as <code>(fun a =&gt; t2) t1</code>. As an exercise, try to understand
+why the definition of <code>foo</code> below type checks, but the definition of
+<code>bar</code> does not.</p>
+<pre><code class="language-lean">def foo := let a := Nat; fun x : a =&gt; x + 2
+/-
+  def bar := (fun a =&gt; fun x : a =&gt; x + 2) Nat
+-/
+</code></pre>
+<h1 id="variables-and-sections"><a class="header" href="#variables-and-sections">Variables and Sections</a></h1>
+<p>Consider the following three function definitions:</p>
+<pre><code class="language-lean">def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+def doTwice (α : Type) (h : α → α) (x : α) : α :=
+  h (h x)
+
+def doThrice (α : Type) (h : α → α) (x : α) : α :=
+  h (h (h x))
+</code></pre>
+<p>Lean provides you with the <code>variable</code> command to make such
+declarations look more compact:</p>
+<pre><code class="language-lean">variable (α β γ : Type)
+
+def compose (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
+
+def doTwice (h : α → α) (x : α) : α :=
+  h (h x)
+
+def doThrice (h : α → α) (x : α) : α :=
+  h (h (h x))
+</code></pre>
+<p>You can declare variables of any type, not just <code>Type</code> itself:</p>
+<pre><code class="language-lean">variable (α β γ : Type)
+variable (g : β → γ) (f : α → β) (h : α → α)
+variable (x : α)
+
+def compose := g (f x)
+def doTwice := h (h x)
+def doThrice := h (h (h x))
+
+#print compose
+#print doTwice
+#print doThrice
+</code></pre>
+<p>Printing them out shows that all three groups of definitions have
+exactly the same effect.</p>
+<p>The <code>variable</code> command instructs Lean to insert the declared
+variables as bound variables in definitions that refer to them by
+name. Lean is smart enough to figure out which variables are used
+explicitly or implicitly in a definition. You can therefore proceed as
+though <code>α</code>, <code>β</code>, <code>γ</code>, <code>g</code>, <code>f</code>, <code>h</code>, and <code>x</code> are fixed
+objects when you write your definitions, and let Lean abstract the
+definitions for you automatically.</p>
+<p>When declared in this way, a variable stays in scope until the end of
+the file you are working on. Sometimes, however, it is useful to limit
+the scope of a variable. For that purpose, Lean provides the notion of
+a <code>section</code>:</p>
+<pre><code class="language-lean">section useful
+  variable (α β γ : Type)
+  variable (g : β → γ) (f : α → β) (h : α → α)
+  variable (x : α)
+
+  def compose := g (f x)
+  def doTwice := h (h x)
+  def doThrice := h (h (h x))
+end useful
+</code></pre>
+<p>When the section is closed, the variables go out of scope, and cannot
+be referenced any more.</p>
+<p>You do not have to indent the lines within a section. Nor do you have
+to name a section, which is to say, you can use an anonymous
+<code>section</code> / <code>end</code> pair. If you do name a section, however, you
+have to close it using the same name. Sections can also be nested,
+which allows you to declare new variables incrementally.</p>
+<h1 id="namespaces"><a class="header" href="#namespaces">Namespaces</a></h1>
+<p>Lean provides you with the ability to group definitions into nested,
+hierarchical <em>namespaces</em>:</p>
+<pre><code class="language-lean">namespace Foo
+  def a : Nat := 5
+  def f (x : Nat) : Nat := x + 7
+
+  def fa : Nat := f a
+  def ffa : Nat := f (f a)
+
+  #check a
+  #check f
+  #check fa
+  #check ffa
+  #check Foo.fa
+end Foo
+
+-- #check a  -- error
+-- #check f  -- error
+#check Foo.a
+#check Foo.f
+#check Foo.fa
+#check Foo.ffa
+
+open Foo
+
+#check a
+#check f
+#check fa
+#check Foo.fa
+</code></pre>
+<p>When you declare that you are working in the namespace <code>Foo</code>, every
+identifier you declare has a full name with prefix &quot;<code>Foo.</code>&quot;. Within
+the namespace, you can refer to identifiers by their shorter names,
+but once you end the namespace, you have to use the longer names.
+Unlike <code>section</code>, namespaces require a name. There is only one
+anonymous namespace at the root level.</p>
+<p>The <code>open</code> command brings the shorter names into the current
+context. Often, when you import a module, you will want to open one or
+more of the namespaces it contains, to have access to the short
+identifiers. But sometimes you will want to leave this information
+protected by a fully qualified name, for example, when they conflict
+with identifiers in another namespace you want to use. Thus namespaces
+give you a way to manage names in your working environment.</p>
+<p>For example, Lean groups definitions and theorems involving lists into
+a namespace <code>List</code>.</p>
+<pre><code class="language-lean">#check List.nil
+#check List.cons
+#check List.map
+</code></pre>
+<p>The command <code>open List</code> allows you to use the shorter names:</p>
+<pre><code class="language-lean">open List
+
+#check nil
+#check cons
+#check map
+</code></pre>
+<p>Like sections, namespaces can be nested:</p>
+<pre><code class="language-lean">namespace Foo
+  def a : Nat := 5
+  def f (x : Nat) : Nat := x + 7
+
+  def fa : Nat := f a
+
+  namespace Bar
+    def ffa : Nat := f (f a)
+
+    #check fa
+    #check ffa
+  end Bar
+
+  #check fa
+  #check Bar.ffa
+end Foo
+
+#check Foo.fa
+#check Foo.Bar.ffa
+
+open Foo
+
+#check fa
+#check Bar.ffa
+</code></pre>
+<p>Namespaces that have been closed can later be reopened, even in another file:</p>
+<pre><code class="language-lean">namespace Foo
+  def a : Nat := 5
+  def f (x : Nat) : Nat := x + 7
+
+  def fa : Nat := f a
+end Foo
+
+#check Foo.a
+#check Foo.f
+
+namespace Foo
+  def ffa : Nat := f (f a)
+end Foo
+</code></pre>
+<p>Like sections, nested namespaces have to be closed in the order they
+are opened. Namespaces and sections serve different purposes:
+namespaces organize data and sections declare variables for insertion
+in definitions. Sections are also useful for delimiting the scope of
+commands such as <code>set_option</code> and <code>open</code>.</p>
+<p>In many respects, however, a <code>namespace ... end</code> block behaves the
+same as a <code>section ... end</code> block. In particular, if you use the
+<code>variable</code> command within a namespace, its scope is limited to the
+namespace. Similarly, if you use an <code>open</code> command within a
+namespace, its effects disappear when the namespace is closed.</p>
+<h2 id="what-makes-dependent-type-theory-dependent"><a class="header" href="#what-makes-dependent-type-theory-dependent">What makes dependent type theory dependent?</a></h2>
+<p>The short explanation is that types can depend on parameters. You
+have already seen a nice example of this: the type <code>List α</code> depends
+on the argument <code>α</code>, and this dependence is what distinguishes
+<code>List Nat</code> and <code>List Bool</code>. For another example, consider the
+type <code>Vector α n</code>, the type of vectors of elements of <code>α</code> of
+length <code>n</code>.  This type depends on <em>two</em> parameters: the type of the
+elements in the vector (<code>α : Type</code>) and the length of the vector
+<code>n : Nat</code>.</p>
+<p>Suppose you wish to write a function <code>cons</code> which inserts a new
+element at the head of a list. What type should <code>cons</code> have? Such a
+function is <em>polymorphic</em>: you expect the <code>cons</code> function for
+<code>Nat</code>, <code>Bool</code>, or an arbitrary type <code>α</code> to behave the same way.
+So it makes sense to take the type to be the first argument to
+<code>cons</code>, so that for any type, <code>α</code>, <code>cons α</code> is the insertion
+function for lists of type <code>α</code>. In other words, for every <code>α</code>,
+<code>cons α</code> is the function that takes an element <code>a : α</code> and a list
+<code>as : List α</code>, and returns a new list, so you have <code>cons α a as : List α</code>.</p>
+<p>It is clear that <code>cons α</code> should have type <code>α → List α → List α</code>.
+But what type should <code>cons</code> have?  A first guess might be
+<code>Type → α → list α → list α</code>, but, on reflection, this does not make
+sense: the <code>α</code> in this expression does not refer to anything,
+whereas it should refer to the argument of type <code>Type</code>.  In other
+words, <em>assuming</em> <code>α : Type</code> is the first argument to the function,
+the type of the next two elements are <code>α</code> and <code>List α</code>. These
+types vary depending on the first argument, <code>α</code>.</p>
+<pre><code class="language-lean">def cons (α : Type) (a : α) (as : List α) : List α :=
+  List.cons a as
+
+#check cons Nat        -- Nat → List Nat → List Nat
+#check cons Bool       -- Bool → List Bool → List Bool
+#check cons            -- (α : Type) → α → List α → List α
+</code></pre>
+<p>This is an instance of a <em>dependent function type</em>, or <em>dependent
+arrow type</em>. Given <code>α : Type</code> and <code>β : α → Type</code>, think of <code>β</code>
+as a family of types over <code>α</code>, that is, a type <code>β a</code> for each
+<code>a : α</code>. In that case, the type <code>(a : α) → β a</code> denotes the type
+of functions <code>f</code> with the property that, for each <code>a : α</code>, <code>f a</code>
+is an element of <code>β a</code>. In other words, the type of the value
+returned by <code>f</code> depends on its input.</p>
+<p>Notice that <code>(a : α) → β</code> makes sense for any expression <code>β : Type</code>. When the value of <code>β</code> depends on <code>a</code> (as does, for
+example, the expression <code>β a</code> in the previous paragraph),
+<code>(a : α) → β</code> denotes a dependent function type. When <code>β</code> doesn't
+depend on <code>a</code>, <code>(a : α) → β</code> is no different from the type
+<code>α → β</code>.  Indeed, in dependent type theory (and in Lean), <code>α → β</code>
+is just notation for <code>(a : α) → β</code> when <code>β</code> does not depend on <code>a</code>.</p>
+<p>Returning to the example of lists, you can use the command <code>#check</code> to
+inspect the type of the following <code>List</code> functions.  The <code>@</code> symbol
+and the difference between the round and curly braces will be
+explained momentarily.</p>
+<pre><code class="language-lean">#check @List.cons    -- {α : Type u_1} → α → List α → List α
+#check @List.nil     -- {α : Type u_1} → List α
+#check @List.length  -- {α : Type u_1} → List α → Nat
+#check @List.append  -- {α : Type u_1} → List α → List α → List α
+</code></pre>
+<p>Just as dependent function types <code>(a : α) → β a</code> generalize the
+notion of a function type <code>α → β</code> by allowing <code>β</code> to depend on
+<code>α</code>, dependent Cartesian product types <code>(a : α) × β a</code> generalize
+the Cartesian product <code>α × β</code> in the same way. Dependent products
+are also called <em>sigma</em> types, and you can also write them as
+<code>Σ a : α, β a</code>. You can use <code>⟨a, b⟩</code> or <code>Sigma.mk a b</code> to create a
+dependent pair.</p>
+<pre><code class="language-lean">universe u v
+
+def f (α : Type u) (β : α → Type v) (a : α) (b : β a) : (a : α) × β a :=
+  ⟨a, b⟩
+
+def g (α : Type u) (β : α → Type v) (a : α) (b : β a) : Σ a : α, β a :=
+  Sigma.mk a b
+
+def h1 (x : Nat) : Nat :=
+  (f Type (fun α =&gt; α) Nat x).2
+
+#eval h1 5 -- 5
+
+def h2 (x : Nat) : Nat :=
+  (g Type (fun α =&gt; α) Nat x).2
+
+#eval h2 5 -- 5
+</code></pre>
+<p>The functions <code>f</code> and <code>g</code> above denote the same function.</p>
+<h2 id="implicit-arguments"><a class="header" href="#implicit-arguments">Implicit Arguments</a></h2>
+<p>Suppose we have an implementation of lists as:</p>
+<pre><code class="language-lean"><span class="boring">universe u
+</span><span class="boring">def Lst (α : Type u) : Type u := List α
+</span><span class="boring">def Lst.cons (α : Type u) (a : α) (as : Lst α) : Lst α := List.cons a as
+</span><span class="boring">def Lst.nil (α : Type u) : Lst α := List.nil
+</span><span class="boring">def Lst.append (α : Type u) (as bs : Lst α) : Lst α := List.append as bs
+</span>#check Lst          -- Type u_1 → Type u_1
+#check Lst.cons     -- (α : Type u_1) → α → Lst α → Lst α
+#check Lst.nil      -- (α : Type u_1) → Lst α
+#check Lst.append   -- (α : Type u_1) → Lst α → Lst α → Lst α
+</code></pre>
+<p>Then, you can construct lists of <code>Nat</code> as follows.</p>
+<pre><code class="language-lean"><span class="boring">universe u
+</span><span class="boring">def Lst (α : Type u) : Type u := List α
+</span><span class="boring">def Lst.cons (α : Type u) (a : α) (as : Lst α) : Lst α := List.cons a as
+</span><span class="boring">def Lst.nil (α : Type u) : Lst α := List.nil
+</span><span class="boring">def Lst.append (α : Type u) (as bs : Lst α) : Lst α := List.append as bs
+</span><span class="boring">#check Lst          -- Type u_1 → Type u_1
+</span><span class="boring">#check Lst.cons     -- (α : Type u_1) → α → Lst α → Lst α
+</span><span class="boring">#check Lst.nil      -- (α : Type u_1) → Lst α
+</span><span class="boring">#check Lst.append   -- (α : Type u_1) → Lst α → Lst α → Lst α
+</span>#check Lst.cons Nat 0 (Lst.nil Nat)
+
+def as : Lst Nat := Lst.nil Nat
+def bs : Lst Nat := Lst.cons Nat 5 (Lst.nil Nat)
+
+#check Lst.append Nat as bs
+</code></pre>
+<p>Because the constructors are polymorphic over types, we have to insert
+the type <code>Nat</code> as an argument repeatedly. But this information is
+redundant: one can infer the argument <code>α</code> in
+<code>Lst.cons Nat 5 (Lst.nil Nat)</code> from the fact that the second argument, <code>5</code>, has
+type <code>Nat</code>. One can similarly infer the argument in <code>Lst.nil Nat</code>, not
+from anything else in that expression, but from the fact that it is
+sent as an argument to the function <code>Lst.cons</code>, which expects an element
+of type <code>Lst α</code> in that position.</p>
+<p>This is a central feature of dependent type theory: terms carry a lot
+of information, and often some of that information can be inferred
+from the context. In Lean, one uses an underscore, <code>_</code>, to specify
+that the system should fill in the information automatically. This is
+known as an &quot;implicit argument.&quot;</p>
+<pre><code class="language-lean"><span class="boring">universe u
+</span><span class="boring">def Lst (α : Type u) : Type u := List α
+</span><span class="boring">def Lst.cons (α : Type u) (a : α) (as : Lst α) : Lst α := List.cons a as
+</span><span class="boring">def Lst.nil (α : Type u) : Lst α := List.nil
+</span><span class="boring">def Lst.append (α : Type u) (as bs : Lst α) : Lst α := List.append as bs
+</span><span class="boring">#check Lst          -- Type u_1 → Type u_1
+</span><span class="boring">#check Lst.cons     -- (α : Type u_1) → α → Lst α → Lst α
+</span><span class="boring">#check Lst.nil      -- (α : Type u_1) → Lst α
+</span><span class="boring">#check Lst.append   -- (α : Type u_1) → Lst α → Lst α → Lst α
+</span>#check Lst.cons _ 0 (Lst.nil _)
+
+def as : Lst Nat := Lst.nil _
+def bs : Lst Nat := Lst.cons _ 5 (Lst.nil _)
+
+#check Lst.append _ as bs
+</code></pre>
+<p>It is still tedious, however, to type all these underscores. When a
+function takes an argument that can generally be inferred from
+context, Lean allows you to specify that this argument should, by
+default, be left implicit. This is done by putting the arguments in
+curly braces, as follows:</p>
+<pre><code class="language-lean">universe u
+def Lst (α : Type u) : Type u := List α
+
+def Lst.cons {α : Type u} (a : α) (as : Lst α) : Lst α := List.cons a as
+def Lst.nil {α : Type u} : Lst α := List.nil
+def Lst.append {α : Type u} (as bs : Lst α) : Lst α := List.append as bs
+
+#check Lst.cons 0 Lst.nil
+
+def as : Lst Nat := Lst.nil
+def bs : Lst Nat := Lst.cons 5 Lst.nil
+
+#check Lst.append as bs
+</code></pre>
+<p>All that has changed are the braces around <code>α : Type u</code> in the
+declaration of the variables. We can also use this device in function
+definitions:</p>
+<pre><code class="language-lean">universe u
+def ident {α : Type u} (x : α) := x
+
+#check ident         -- ?m → ?m
+#check ident 1       -- Nat
+#check ident &quot;hello&quot; -- String
+#check @ident        -- {α : Type u_1} → α → α
+</code></pre>
+<p>This makes the first argument to <code>ident</code> implicit. Notationally,
+this hides the specification of the type, making it look as though
+<code>ident</code> simply takes an argument of any type. In fact, the function
+<code>id</code> is defined in the standard library in exactly this way. We have
+chosen a nontraditional name here only to avoid a clash of names.</p>
+<p>Variables can also be specified as implicit when they are declared with
+the <code>variable</code> command:</p>
+<pre><code class="language-lean">universe u
+
+section
+  variable {α : Type u}
+  variable (x : α)
+  def ident := x
+end
+
+#check ident
+#check ident 4
+#check ident &quot;hello&quot;
+</code></pre>
+<p>This definition of <code>ident</code> here has the same effect as the one
+above.</p>
+<p>Lean has very complex mechanisms for instantiating implicit arguments,
+and we will see that they can be used to infer function types,
+predicates, and even proofs. The process of instantiating these
+&quot;holes,&quot; or &quot;placeholders,&quot; in a term is often known as
+<em>elaboration</em>. The presence of implicit arguments means that at times
+there may be insufficient information to fix the meaning of an
+expression precisely. An expression like <code>id</code> or <code>List.nil</code> is
+said to be <em>polymorphic</em>, because it can take on different meanings in
+different contexts.</p>
+<p>One can always specify the type <code>T</code> of an expression <code>e</code> by
+writing <code>(e : T)</code>. This instructs Lean's elaborator to use the value
+<code>T</code> as the type of <code>e</code> when trying to resolve implicit
+arguments. In the second pair of examples below, this mechanism is
+used to specify the desired types of the expressions <code>id</code> and
+<code>List.nil</code>:</p>
+<pre><code class="language-lean">#check List.nil               -- List ?m
+#check id                     -- ?m → ?m
+
+#check (List.nil : List Nat)  -- List Nat
+#check (id : Nat → Nat)       -- Nat → Nat
+</code></pre>
+<p>Numerals are overloaded in Lean, but when the type of a numeral cannot
+be inferred, Lean assumes, by default, that it is a natural number. So
+the expressions in the first two <code>#check</code> commands below are
+elaborated in the same way, whereas the third <code>#check</code> command
+interprets <code>2</code> as an integer.</p>
+<pre><code class="language-lean">#check 2            -- Nat
+#check (2 : Nat)    -- Nat
+#check (2 : Int)    -- Int
+</code></pre>
+<p>Sometimes, however, we may find ourselves in a situation where we have
+declared an argument to a function to be implicit, but now want to
+provide the argument explicitly. If <code>foo</code> is such a function, the
+notation <code>@foo</code> denotes the same function with all the arguments
+made explicit.</p>
+<pre><code class="language-lean">#check @id        -- {α : Type u_1} → α → α
+#check @id Nat    -- Nat → Nat
+#check @id Bool   -- Bool → Bool
+
+#check @id Nat 1     -- Nat
+#check @id Bool true -- Bool
+</code></pre>
+<p>Notice that now the first <code>#check</code> command gives the type of the
+identifier, <code>id</code>, without inserting any placeholders. Moreover, the
+output indicates that the first argument is implicit.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="propositions_and_proofs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="propositions_and_proofs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

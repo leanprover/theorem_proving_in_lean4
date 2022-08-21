@@ -1,0 +1,976 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Quantifiers and Equality - Theorem Proving in Lean 4</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme && theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar && sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="title_page.html">Theorem Proving in Lean 4</a></li><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="dependent_type_theory.html"><strong aria-hidden="true">2.</strong> Dependent Type Theory</a></li><li class="chapter-item expanded "><a href="propositions_and_proofs.html"><strong aria-hidden="true">3.</strong> Propositions and Proofs</a></li><li class="chapter-item expanded "><a href="quantifiers_and_equality.html" class="active"><strong aria-hidden="true">4.</strong> Quantifiers and Equality</a></li><li class="chapter-item expanded "><a href="tactics.html"><strong aria-hidden="true">5.</strong> Tactics</a></li><li class="chapter-item expanded "><a href="interacting_with_lean.html"><strong aria-hidden="true">6.</strong> Interacting with Lean</a></li><li class="chapter-item expanded "><a href="inductive_types.html"><strong aria-hidden="true">7.</strong> Inductive Types</a></li><li class="chapter-item expanded "><a href="induction_and_recursion.html"><strong aria-hidden="true">8.</strong> Induction and Recursion</a></li><li class="chapter-item expanded "><a href="structures_and_records.html"><strong aria-hidden="true">9.</strong> Structures and Records</a></li><li class="chapter-item expanded "><a href="type_classes.html"><strong aria-hidden="true">10.</strong> Type Classes</a></li><li class="chapter-item expanded "><a href="conv.html"><strong aria-hidden="true">11.</strong> The Conversion Tactic Mode</a></li><li class="chapter-item expanded "><a href="axioms_and_computation.html"><strong aria-hidden="true">12.</strong> Axioms and Computation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Theorem Proving in Lean 4</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="quantifiers-and-equality"><a class="header" href="#quantifiers-and-equality">Quantifiers and Equality</a></h1>
+<p>The last chapter introduced you to methods that construct proofs of
+statements involving the propositional connectives. In this chapter,
+we extend the repertoire of logical constructions to include the
+universal and existential quantifiers, and the equality relation.</p>
+<h2 id="the-universal-quantifier"><a class="header" href="#the-universal-quantifier">The Universal Quantifier</a></h2>
+<p>Notice that if <code>α</code> is any type, we can represent a unary predicate
+<code>p</code> on <code>α</code> as an object of type <code>α → Prop</code>. In that case, given
+<code>x : α</code>, <code>p x</code> denotes the assertion that <code>p</code> holds of
+<code>x</code>. Similarly, an object <code>r : α → α → Prop</code> denotes a binary
+relation on <code>α</code>: given <code>x y : α</code>, <code>r x y</code> denotes the assertion
+that <code>x</code> is related to <code>y</code>.</p>
+<p>The universal quantifier, <code>∀ x : α, p x</code> is supposed to denote the
+assertion that &quot;for every <code>x : α</code>, <code>p x</code>&quot; holds. As with the
+propositional connectives, in systems of natural deduction, &quot;forall&quot;
+is governed by an introduction and elimination rule. Informally, the
+introduction rule states:</p>
+<blockquote>
+<p>Given a proof of <code>p x</code>, in a context where <code>x : α</code> is arbitrary, we obtain a proof <code>∀ x : α, p x</code>.</p>
+</blockquote>
+<p>The elimination rule states:</p>
+<blockquote>
+<p>Given a proof <code>∀ x : α, p x</code> and any term <code>t : α</code>, we obtain a proof of <code>p t</code>.</p>
+</blockquote>
+<p>As was the case for implication, the propositions-as-types
+interpretation now comes into play. Remember the introduction and
+elimination rules for dependent arrow types:</p>
+<blockquote>
+<p>Given a term <code>t</code> of type <code>β x</code>, in a context where <code>x : α</code> is arbitrary, we have <code>(fun x : α =&gt; t) : (x : α) → β x</code>.</p>
+</blockquote>
+<p>The elimination rule states:</p>
+<blockquote>
+<p>Given a term <code>s : (x : α) → β x</code> and any term <code>t : α</code>, we have <code>s t : β t</code>.</p>
+</blockquote>
+<p>In the case where <code>p x</code> has type <code>Prop</code>, if we replace
+<code>(x : α) → β x</code> with <code>∀ x : α, p x</code>, we can read these as the correct rules
+for building proofs involving the universal quantifier.</p>
+<p>The Calculus of Constructions therefore identifies dependent arrow
+types with forall-expressions in this way. If <code>p</code> is any expression,
+<code>∀ x : α, p</code> is nothing more than alternative notation for
+<code>(x : α) → p</code>, with the idea that the former is more natural than the latter
+in cases where <code>p</code> is a proposition. Typically, the expression <code>p</code>
+will depend on <code>x : α</code>. Recall that, in the case of ordinary
+function spaces, we could interpret <code>α → β</code> as the special case of
+<code>(x : α) → β</code> in which <code>β</code> does not depend on <code>x</code>. Similarly, we
+can think of an implication <code>p → q</code> between propositions as the
+special case of <code>∀ x : p, q</code> in which the expression <code>q</code> does not
+depend on <code>x</code>.</p>
+<p>Here is an example of how the propositions-as-types correspondence gets put into practice.</p>
+<pre><code class="language-lean">example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ y : α, p y :=
+  fun h : ∀ x : α, p x ∧ q x =&gt;
+  fun y : α =&gt;
+  show p y from (h y).left
+</code></pre>
+<p>As a notational convention, we give the universal quantifier the
+widest scope possible, so parentheses are needed to limit the
+quantifier over <code>x</code> to the hypothesis in the example above. The
+canonical way to prove <code>∀ y : α, p y</code> is to take an arbitrary <code>y</code>,
+and prove <code>p y</code>. This is the introduction rule. Now, given that
+<code>h</code> has type <code>∀ x : α, p x ∧ q x</code>, the expression <code>h y</code> has type
+<code>p y ∧ q y</code>. This is the elimination rule. Taking the left conjunct
+gives the desired conclusion, <code>p y</code>.</p>
+<p>Remember that expressions which differ up to renaming of bound
+variables are considered to be equivalent. So, for example, we could
+have used the same variable, <code>x</code>, in both the hypothesis and
+conclusion, and instantiated it by a different variable, <code>z</code>, in the
+proof:</p>
+<pre><code class="language-lean">example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ x : α, p x :=
+  fun h : ∀ x : α, p x ∧ q x =&gt;
+  fun z : α =&gt;
+  show p z from And.left (h z)
+</code></pre>
+<p>As another example, here is how we can express the fact that a relation, <code>r</code>, is transitive:</p>
+<pre><code class="language-lean">variable (α : Type) (r : α → α → Prop)
+variable (trans_r : ∀ x y z, r x y → r y z → r x z)
+
+variable (a b c : α)
+variable (hab : r a b) (hbc : r b c)
+
+#check trans_r    -- ∀ (x y z : α), r x y → r y z → r x z
+#check trans_r a b c
+#check trans_r a b c hab
+#check trans_r a b c hab hbc
+</code></pre>
+<p>Think about what is going on here. When we instantiate <code>trans_r</code> at
+the values <code>a b c</code>, we end up with a proof of <code>r a b → r b c → r a c</code>.
+Applying this to the &quot;hypothesis&quot; <code>hab : r a b</code>, we get a proof
+of the implication <code>r b c → r a c</code>. Finally, applying it to the
+hypothesis <code>hbc</code> yields a proof of the conclusion <code>r a c</code>.</p>
+<p>In situations like this, it can be tedious to supply the arguments
+<code>a b c</code>, when they can be inferred from <code>hab hbc</code>. For that reason, it
+is common to make these arguments implicit:</p>
+<pre><code class="language-lean">variable (α : Type) (r : α → α → Prop)
+variable (trans_r : ∀ {x y z}, r x y → r y z → r x z)
+
+variable (a b c : α)
+variable (hab : r a b) (hbc : r b c)
+
+#check trans_r
+#check trans_r hab
+#check trans_r hab hbc
+</code></pre>
+<p>The advantage is that we can simply write <code>trans_r hab hbc</code> as a
+proof of <code>r a c</code>. A disadvantage is that Lean does not have enough
+information to infer the types of the arguments in the expressions
+<code>trans_r</code> and <code>trans_r hab</code>. The output of the first <code>#check</code>
+command is <code>r ?m.1 ?m.2 → r ?m.2 ?m.3 → r ?m.1 ?m.3</code>, indicating
+that the implicit arguments are unspecified in this case.</p>
+<p>Here is an example of how we can carry out elementary reasoning with an equivalence relation:</p>
+<pre><code class="language-lean">variable (α : Type) (r : α → α → Prop)
+
+variable (refl_r : ∀ x, r x x)
+variable (symm_r : ∀ {x y}, r x y → r y x)
+variable (trans_r : ∀ {x y z}, r x y → r y z → r x z)
+
+example (a b c d : α) (hab : r a b) (hcb : r c b) (hcd : r c d) : r a d :=
+  trans_r (trans_r hab (symm_r hcb)) hcd
+</code></pre>
+<p>To get used to using universal quantifiers, you should try some of the
+exercises at the end of this section.</p>
+<p>It is the typing rule for dependent arrow types, and the universal
+quantifier in particular, that distinguishes <code>Prop</code> from other
+types.  Suppose we have <code>α : Sort i</code> and <code>β : Sort j</code>, where the
+expression <code>β</code> may depend on a variable <code>x : α</code>. Then
+<code>(x : α) → β</code> is an element of <code>Sort (imax i j)</code>, where <code>imax i j</code> is the
+maximum of <code>i</code> and <code>j</code> if <code>j</code> is not 0, and 0 otherwise.</p>
+<p>The idea is as follows. If <code>j</code> is not <code>0</code>, then <code>(x : α) → β</code> is
+an element of <code>Sort (max i j)</code>. In other words, the type of
+dependent functions from <code>α</code> to <code>β</code> &quot;lives&quot; in the universe whose
+index is the maximum of <code>i</code> and <code>j</code>. Suppose, however, that <code>β</code>
+is of <code>Sort 0</code>, that is, an element of <code>Prop</code>. In that case,
+<code>(x : α) → β</code> is an element of <code>Sort 0</code> as well, no matter which
+type universe <code>α</code> lives in. In other words, if <code>β</code> is a
+proposition depending on <code>α</code>, then <code>∀ x : α, β</code> is again a
+proposition. This reflects the interpretation of <code>Prop</code> as the type
+of propositions rather than data, and it is what makes <code>Prop</code>
+<em>impredicative</em>.</p>
+<p>The term &quot;predicative&quot; stems from foundational developments around the
+turn of the twentieth century, when logicians such as Poincaré and
+Russell blamed set-theoretic paradoxes on the &quot;vicious circles&quot; that
+arise when we define a property by quantifying over a collection that
+includes the very property being defined. Notice that if <code>α</code> is any
+type, we can form the type <code>α → Prop</code> of all predicates on <code>α</code>
+(the &quot;power type of <code>α</code>&quot;). The impredicativity of <code>Prop</code> means that we
+can form propositions that quantify over <code>α → Prop</code>. In particular,
+we can define predicates on <code>α</code> by quantifying over all predicates
+on <code>α</code>, which is exactly the type of circularity that was once
+considered problematic.</p>
+<h2 id="equality"><a class="header" href="#equality">Equality</a></h2>
+<p>Let us now turn to one of the most fundamental relations defined in
+Lean's library, namely, the equality relation. In <a href="inductive_types.html">Chapter Inductive Types</a>,
+we will explain <em>how</em> equality is defined from the primitives of Lean's logical framework.
+In the meanwhile, here we explain how to use it.</p>
+<p>Of course, a fundamental property of equality is that it is an equivalence relation:</p>
+<pre><code class="language-lean">#check Eq.refl    -- ∀ (a : ?m.1), a = a
+#check Eq.symm    -- ?m.2 = ?m.3 → ?m.3 = ?m.2
+#check Eq.trans   -- ?m.2 = ?m.3 → ?m.3 = ?m.4 → ?m.2 = ?m.4
+</code></pre>
+<p>We can make the output easier to read by telling Lean not to insert
+the implicit arguments (which are displayed here as metavariables).</p>
+<pre><code class="language-lean">universe u
+
+#check @Eq.refl.{u}   -- ∀ {α : Sort u} (a : α), a = a
+#check @Eq.symm.{u}   -- ∀ {α : Sort u} {a b : α}, a = b → b = a
+#check @Eq.trans.{u}  -- ∀ {α : Sort u} {a b c : α}, a = b → b = c → a = c
+</code></pre>
+<p>The inscription <code>.{u}</code> tells Lean to instantiate the constants at the universe <code>u</code>.</p>
+<p>Thus, for example, we can specialize the example from the previous section to the equality relation:</p>
+<pre><code class="language-lean">variable (α : Type) (a b c d : α)
+variable (hab : a = b) (hcb : c = b) (hcd : c = d)
+
+example : a = d :=
+  Eq.trans (Eq.trans hab (Eq.symm hcb)) hcd
+</code></pre>
+<p>We can also use the projection notation:</p>
+<pre><code class="language-lean"><span class="boring">variable (α : Type) (a b c d : α)
+</span><span class="boring">variable (hab : a = b) (hcb : c = b) (hcd : c = d)
+</span>example : a = d := (hab.trans hcb.symm).trans hcd
+</code></pre>
+<p>Reflexivity is more powerful than it looks. Recall that terms in the
+Calculus of Constructions have a computational interpretation, and
+that the logical framework treats terms with a common reduct as the
+same. As a result, some nontrivial identities can be proved by
+reflexivity:</p>
+<pre><code class="language-lean">variable (α β : Type)
+
+example (f : α → β) (a : α) : (fun x =&gt; f x) a = f a := Eq.refl _
+example (a : α) (b : β) : (a, b).1 = a := Eq.refl _
+example : 2 + 3 = 5 := Eq.refl _
+</code></pre>
+<p>This feature of the framework is so important that the library defines a notation <code>rfl</code> for <code>Eq.refl _</code>:</p>
+<pre><code class="language-lean"><span class="boring">variable (α β : Type)
+</span>example (f : α → β) (a : α) : (fun x =&gt; f x) a = f a := rfl
+example (a : α) (b : β) : (a, b).1 = a := rfl
+example : 2 + 3 = 5 := rfl
+</code></pre>
+<p>Equality is much more than an equivalence relation, however. It has
+the important property that every assertion respects the equivalence,
+in the sense that we can substitute equal expressions without changing
+the truth value. That is, given <code>h1 : a = b</code> and <code>h2 : p a</code>, we
+can construct a proof for <code>p b</code> using substitution:
+<code>Eq.subst h1 h2</code>.</p>
+<pre><code class="language-lean">example (α : Type) (a b : α) (p : α → Prop)
+        (h1 : a = b) (h2 : p a) : p b :=
+  Eq.subst h1 h2
+
+example (α : Type) (a b : α) (p : α → Prop)
+    (h1 : a = b) (h2 : p a) : p b :=
+  h1 ▸ h2
+</code></pre>
+<p>The triangle in the second presentation is a macro built on top of
+<code>Eq.subst</code> and <code>Eq.symm</code>, and you can enter it by typing <code>\t</code>.</p>
+<p>The rule <code>Eq.subst</code> is used to define the following auxiliary rules,
+which carry out more explicit substitutions. They are designed to deal
+with applicative terms, that is, terms of form <code>s t</code>. Specifically,
+<code>congrArg</code> can be used to replace the argument, <code>congrFun</code> can be
+used to replace the term that is being applied, and <code>congr</code> can be
+used to replace both at once.</p>
+<pre><code class="language-lean">variable (α : Type)
+variable (a b : α)
+variable (f g : α → Nat)
+variable (h₁ : a = b)
+variable (h₂ : f = g)
+
+example : f a = f b := congrArg f h₁
+example : f a = g a := congrFun h₂ a
+example : f a = g b := congr h₂ h₁
+</code></pre>
+<p>Lean's library contains a large number of common identities, such as these:</p>
+<pre><code class="language-lean">variable (a b c : Nat)
+
+example : a + 0 = a := Nat.add_zero a
+example : 0 + a = a := Nat.zero_add a
+example : a * 1 = a := Nat.mul_one a
+example : 1 * a = a := Nat.one_mul a
+example : a + b = b + a := Nat.add_comm a b
+example : a + b + c = a + (b + c) := Nat.add_assoc a b c
+example : a * b = b * a := Nat.mul_comm a b
+example : a * b * c = a * (b * c) := Nat.mul_assoc a b c
+example : a * (b + c) = a * b + a * c := Nat.mul_add a b c
+example : a * (b + c) = a * b + a * c := Nat.left_distrib a b c
+example : (a + b) * c = a * c + b * c := Nat.add_mul a b c
+example : (a + b) * c = a * c + b * c := Nat.right_distrib a b c
+</code></pre>
+<p>Note that <code>Nat.mul_add</code> and <code>Nat.add_mul</code> are alternative names
+for <code>Nat.left_distrib</code> and <code>Nat.right_distrib</code>, respectively.  The
+properties above are stated for the natural numbers (type <code>Nat</code>).</p>
+<p>Here is an example of a calculation in the natural numbers that uses
+substitution combined with associativity and distributivity.</p>
+<pre><code class="language-lean">example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+  have h1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y :=
+    Nat.mul_add (x + y) x y
+  have h2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y) :=
+    (Nat.add_mul x y x) ▸ (Nat.add_mul x y y) ▸ h1
+  h2.trans (Nat.add_assoc (x * x + y * x) (x * y) (y * y)).symm
+</code></pre>
+<p>Notice that the second implicit parameter to <code>Eq.subst</code>, which
+provides the context in which the substitution is to occur, has type
+<code>α → Prop</code>.  Inferring this predicate therefore requires an instance
+of <em>higher-order unification</em>. In full generality, the problem of
+determining whether a higher-order unifier exists is undecidable, and
+Lean can at best provide imperfect and approximate solutions to the
+problem. As a result, <code>Eq.subst</code> doesn't always do what you want it
+to.  The macro <code>h ▸ e</code> uses more effective heuristics for computing
+this implicit parameter, and often succeeds in situations where
+applying <code>Eq.subst</code> fails.</p>
+<p>Because equational reasoning is so common and important, Lean provides
+a number of mechanisms to carry it out more effectively. The next
+section offers syntax that allow you to write calculational proofs in
+a more natural and perspicuous way. But, more importantly, equational
+reasoning is supported by a term rewriter, a simplifier, and other
+kinds of automation. The term rewriter and simplifier are described
+briefly in the next section, and then in greater detail in the next
+chapter.</p>
+<h2 id="calculational-proofs"><a class="header" href="#calculational-proofs">Calculational Proofs</a></h2>
+<p>A calculational proof is just a chain of intermediate results that are
+meant to be composed by basic principles such as the transitivity of
+equality. In Lean, a calculational proof starts with the keyword
+<code>calc</code>, and has the following syntax:</p>
+<pre><code>calc
+  &lt;expr&gt;_0  'op_1'  &lt;expr&gt;_1  ':='  &lt;proof&gt;_1
+    '_'     'op_2'  &lt;expr&gt;_2  ':='  &lt;proof&gt;_2
+    ...
+    '_'     'op_n'  &lt;expr&gt;_n  ':='  &lt;proof&gt;_n
+</code></pre>
+<p>Each <code>&lt;proof&gt;_i</code> is a proof for <code>&lt;expr&gt;_{i-1} op_i &lt;expr&gt;_i</code>.</p>
+<p>Here is an example:</p>
+<pre><code class="language-lean">variable (a b c d e : Nat)
+variable (h1 : a = b)
+variable (h2 : b = c + 1)
+variable (h3 : c = d)
+variable (h4 : e = 1 + d)
+
+theorem T : a = e :=
+  calc
+    a = b      := h1
+    _ = c + 1  := h2
+    _ = d + 1  := congrArg Nat.succ h3
+    _ = 1 + d  := Nat.add_comm d 1
+    _ = e      := Eq.symm h4
+</code></pre>
+<p>This style of writing proofs is most effective when it is used in
+conjunction with the <code>simp</code> and <code>rewrite</code> tactics, which are
+discussed in greater detail in the next chapter. For example, using
+the abbreviation <code>rw</code> for rewrite, the proof above could be written
+as follows:</p>
+<pre><code class="language-lean"><span class="boring">variable (a b c d e : Nat)
+</span><span class="boring">variable (h1 : a = b)
+</span><span class="boring">variable (h2 : b = c + 1)
+</span><span class="boring">variable (h3 : c = d)
+</span><span class="boring">variable (h4 : e = 1 + d)
+</span>theorem T : a = e :=
+  calc
+    a = b      := by rw [h1]
+    _ = c + 1  := by rw [h2]
+    _ = d + 1  := by rw [h3]
+    _ = 1 + d  := by rw [Nat.add_comm]
+    _ = e      := by rw [h4]
+</code></pre>
+<p>Essentially, the <code>rw</code> tactic uses a given equality (which can be a
+hypothesis, a theorem name, or a complex term) to &quot;rewrite&quot; the
+goal. If doing so reduces the goal to an identity <code>t = t</code>, the
+tactic applies reflexivity to prove it.</p>
+<p>Rewrites can be applied sequentially, so that the proof above can be
+shortened to this:</p>
+<pre><code class="language-lean"><span class="boring">variable (a b c d e : Nat)
+</span><span class="boring">variable (h1 : a = b)
+</span><span class="boring">variable (h2 : b = c + 1)
+</span><span class="boring">variable (h3 : c = d)
+</span><span class="boring">variable (h4 : e = 1 + d)
+</span>theorem T : a = e :=
+  calc
+    a = d + 1  := by rw [h1, h2, h3]
+    _ = 1 + d  := by rw [Nat.add_comm]
+    _ = e      := by rw [h4]
+</code></pre>
+<p>Or even this:</p>
+<pre><code class="language-lean"><span class="boring">variable (a b c d e : Nat)
+</span><span class="boring">variable (h1 : a = b)
+</span><span class="boring">variable (h2 : b = c + 1)
+</span><span class="boring">variable (h3 : c = d)
+</span><span class="boring">variable (h4 : e = 1 + d)
+</span>theorem T : a = e :=
+  by rw [h1, h2, h3, Nat.add_comm, h4]
+</code></pre>
+<p>The <code>simp</code> tactic, instead, rewrites the goal by applying the given
+identities repeatedly, in any order, anywhere they are applicable in a
+term. It also uses other rules that have been previously declared to
+the system, and applies commutativity wisely to avoid looping. As a
+result, we can also prove the theorem as follows:</p>
+<pre><code class="language-lean"><span class="boring">variable (a b c d e : Nat)
+</span><span class="boring">variable (h1 : a = b)
+</span><span class="boring">variable (h2 : b = c + 1)
+</span><span class="boring">variable (h3 : c = d)
+</span><span class="boring">variable (h4 : e = 1 + d)
+</span>theorem T : a = e :=
+  by simp [h1, h2, h3, Nat.add_comm, h4]
+</code></pre>
+<p>We will discuss variations of <code>rw</code> and <code>simp</code> in the next chapter.</p>
+<p>The <code>calc</code> command can be configured for any relation that supports
+some form of transitivity. It can even combine different relations.</p>
+<pre><code class="language-lean">example (a b c d : Nat) (h1 : a = b) (h2 : b ≤ c) (h3 : c + 1 &lt; d) : a &lt; d :=
+  calc
+    a = b     := h1
+    _ &lt; b + 1 := Nat.lt_succ_self b
+    _ ≤ c + 1 := Nat.succ_le_succ h2
+    _ &lt; d     := h3
+</code></pre>
+<p>You can &quot;teach&quot; <code>calc</code> new transitivity theorems by adding new instances
+of the <code>Trans</code> type class. Type classes are introduced later, but the following
+small example demonstrates how to extend the <code>calc</code> notation using new <code>Trans</code> instances.</p>
+<pre><code class="language-lean">def divides (x y : Nat) : Prop :=
+  ∃ k, k*x = y
+
+def divides_trans (h₁ : divides x y) (h₂ : divides y z) : divides x z :=
+  let ⟨k₁, d₁⟩ := h₁
+  let ⟨k₂, d₂⟩ := h₂
+  ⟨k₁ * k₂, by rw [Nat.mul_comm k₁ k₂, Nat.mul_assoc, d₁, d₂]⟩
+
+def divides_mul (x : Nat) (k : Nat) : divides x (k*x) :=
+  ⟨k, rfl⟩
+
+instance : Trans divides divides divides where
+  trans := divides_trans
+
+example (h₁ : divides x y) (h₂ : y = z) : divides x (2*z) :=
+  calc
+    divides x y     := h₁
+    _ = z           := h₂
+    divides _ (2*z) := divides_mul ..
+
+infix:50 &quot; ∣ &quot; =&gt; divides
+
+example (h₁ : divides x y) (h₂ : y = z) : divides x (2*z) :=
+  calc
+    x ∣ y   := h₁
+    _ = z   := h₂
+    _ ∣ 2*z := divides_mul ..
+</code></pre>
+<p>The example above also makes it clear that you can use <code>calc</code> even if you
+do not have an infix notation for your relation. Finally we remark that
+the vertical bar <code>∣</code> in the example above is the unicode one. We use
+unicode to make sure we do not overload the ASCII <code>|</code> used in the
+<code>match .. with</code> expression.</p>
+<p>With <code>calc</code>, we can write the proof in the last section in a more
+natural and perspicuous way.</p>
+<pre><code class="language-lean">example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+  calc
+    (x + y) * (x + y) = (x + y) * x + (x + y) * y  := by rw [Nat.mul_add]
+        _ = x * x + y * x + (x + y) * y            := by rw [Nat.add_mul]
+        _ = x * x + y * x + (x * y + y * y)        := by rw [Nat.add_mul]
+        _ = x * x + y * x + x * y + y * y          := by rw [←Nat.add_assoc]
+</code></pre>
+<p>Here the left arrow before <code>Nat.add_assoc</code> tells rewrite to use the
+identity in the opposite direction. (You can enter it with <code>\l</code> or
+use the ascii equivalent, <code>&lt;-</code>.) If brevity is what we are after,
+both <code>rw</code> and <code>simp</code> can do the job on their own:</p>
+<pre><code class="language-lean">example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+  by rw [Nat.mul_add, Nat.add_mul, Nat.add_mul, ←Nat.add_assoc]
+
+example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+  by simp [Nat.mul_add, Nat.add_mul, Nat.add_assoc]
+</code></pre>
+<h2 id="the-existential-quantifier"><a class="header" href="#the-existential-quantifier">The Existential Quantifier</a></h2>
+<p>Finally, consider the existential quantifier, which can be written as
+either <code>exists x : α, p x</code> or <code>∃ x : α, p x</code>.  Both versions are
+actually notationally convenient abbreviations for a more long-winded
+expression, <code>Exists (fun x : α =&gt; p x)</code>, defined in Lean's library.</p>
+<p>As you should by now expect, the library includes both an introduction
+rule and an elimination rule. The introduction rule is
+straightforward: to prove <code>∃ x : α, p x</code>, it suffices to provide a
+suitable term <code>t</code> and a proof of <code>p t</code>. Here are some examples:</p>
+<pre><code class="language-lean">example : ∃ x : Nat, x &gt; 0 :=
+  have h : 1 &gt; 0 := Nat.zero_lt_succ 0
+  Exists.intro 1 h
+
+example (x : Nat) (h : x &gt; 0) : ∃ y, y &lt; x :=
+  Exists.intro 0 h
+
+example (x y z : Nat) (hxy : x &lt; y) (hyz : y &lt; z) : ∃ w, x &lt; w ∧ w &lt; z :=
+  Exists.intro y (And.intro hxy hyz)
+
+#check @Exists.intro
+</code></pre>
+<p>We can use the anonymous constructor notation <code>⟨t, h⟩</code> for
+<code>Exists.intro t h</code>, when the type is clear from the context.</p>
+<pre><code class="language-lean">example : ∃ x : Nat, x &gt; 0 :=
+  have h : 1 &gt; 0 := Nat.zero_lt_succ 0
+  ⟨1, h⟩
+
+example (x : Nat) (h : x &gt; 0) : ∃ y, y &lt; x :=
+  ⟨0, h⟩
+
+example (x y z : Nat) (hxy : x &lt; y) (hyz : y &lt; z) : ∃ w, x &lt; w ∧ w &lt; z :=
+  ⟨y, hxy, hyz⟩
+</code></pre>
+<p>Note that <code>Exists.intro</code> has implicit arguments: Lean has to infer
+the predicate <code>p : α → Prop</code> in the conclusion <code>∃ x, p x</code>.  This
+is not a trivial affair. For example, if we have have
+<code>hg : g 0 0 = 0</code> and write <code>Exists.intro 0 hg</code>, there are many possible values
+for the predicate <code>p</code>, corresponding to the theorems <code>∃ x, g x x = x</code>,
+<code>∃ x, g x x = 0</code>, <code>∃ x, g x 0 = x</code>, etc. Lean uses the
+context to infer which one is appropriate. This is illustrated in the
+following example, in which we set the option <code>pp.explicit</code> to true
+to ask Lean's pretty-printer to show the implicit arguments.</p>
+<pre><code class="language-lean">variable (g : Nat → Nat → Nat)
+variable (hg : g 0 0 = 0)
+
+theorem gex1 : ∃ x, g x x = x := ⟨0, hg⟩
+theorem gex2 : ∃ x, g x 0 = x := ⟨0, hg⟩
+theorem gex3 : ∃ x, g 0 0 = x := ⟨0, hg⟩
+theorem gex4 : ∃ x, g x x = 0 := ⟨0, hg⟩
+
+set_option pp.explicit true  -- display implicit arguments
+#print gex1
+#print gex2
+#print gex3
+#print gex4
+</code></pre>
+<p>We can view <code>Exists.intro</code> as an information-hiding operation, since
+it hides the witness to the body of the assertion. The existential
+elimination rule, <code>Exists.elim</code>, performs the opposite operation. It
+allows us to prove a proposition <code>q</code> from <code>∃ x : α, p x</code>, by
+showing that <code>q</code> follows from <code>p w</code> for an arbitrary value
+<code>w</code>. Roughly speaking, since we know there is an <code>x</code> satisfying
+<code>p x</code>, we can give it a name, say, <code>w</code>. If <code>q</code> does not mention
+<code>w</code>, then showing that <code>q</code> follows from <code>p w</code> is tantamount to
+showing that <code>q</code> follows from the existence of any such <code>x</code>. Here
+is an example:</p>
+<pre><code class="language-lean">variable (α : Type) (p q : α → Prop)
+
+example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
+  Exists.elim h
+    (fun w =&gt;
+     fun hw : p w ∧ q w =&gt;
+     show ∃ x, q x ∧ p x from ⟨w, hw.right, hw.left⟩)
+</code></pre>
+<p>It may be helpful to compare the exists-elimination rule to the
+or-elimination rule: the assertion <code>∃ x : α, p x</code> can be thought of
+as a big disjunction of the propositions <code>p a</code>, as <code>a</code> ranges over
+all the elements of <code>α</code>. Note that the anonymous constructor
+notation <code>⟨w, hw.right, hw.left⟩</code> abbreviates a nested constructor
+application; we could equally well have written <code>⟨w, ⟨hw.right, hw.left⟩⟩</code>.</p>
+<p>Notice that an existential proposition is very similar to a sigma
+type, as described in dependent types section.  The difference is that
+given <code>a : α</code> and <code>h : p a</code>, the term <code>Exists.intro a h</code> has
+type <code>(∃ x : α, p x) : Prop</code> and <code>Sigma.mk a h</code> has type
+<code>(Σ x : α, p x) : Type</code>. The similarity between <code>∃</code> and <code>Σ</code> is another
+instance of the Curry-Howard isomorphism.</p>
+<p>Lean provides a more convenient way to eliminate from an existential
+quantifier with the <code>match</code> expression:</p>
+<pre><code class="language-lean">variable (α : Type) (p q : α → Prop)
+
+example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
+  match h with
+  | ⟨w, hw⟩ =&gt; ⟨w, hw.right, hw.left⟩
+</code></pre>
+<p>The <code>match</code> expression is part of Lean's function definition system,
+which provides convenient and expressive ways of defining complex
+functions.  Once again, it is the Curry-Howard isomorphism that allows
+us to co-opt this mechanism for writing proofs as well.  The <code>match</code>
+statement &quot;destructs&quot; the existential assertion into the components
+<code>w</code> and <code>hw</code>, which can then be used in the body of the statement
+to prove the proposition. We can annotate the types used in the match
+for greater clarity:</p>
+<pre><code class="language-lean"><span class="boring">variable (α : Type) (p q : α → Prop)
+</span>example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
+  match h with
+  | ⟨(w : α), (hw : p w ∧ q w)⟩ =&gt; ⟨w, hw.right, hw.left⟩
+</code></pre>
+<p>We can even use the match statement to decompose the conjunction at the same time:</p>
+<pre><code class="language-lean"><span class="boring">variable (α : Type) (p q : α → Prop)
+</span>example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
+  match h with
+  | ⟨w, hpw, hqw⟩ =&gt; ⟨w, hqw, hpw⟩
+</code></pre>
+<p>Lean also provides a pattern-matching <code>let</code> expression:</p>
+<pre><code class="language-lean"><span class="boring">variable (α : Type) (p q : α → Prop)
+</span>example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
+  let ⟨w, hpw, hqw⟩ := h
+  ⟨w, hqw, hpw⟩
+</code></pre>
+<p>This is essentially just alternative notation for the <code>match</code>
+construct above. Lean will even allow us to use an implicit <code>match</code>
+in the <code>fun</code> expression:</p>
+<pre><code class="language-lean"><span class="boring">variable (α : Type) (p q : α → Prop)
+</span>example : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
+  fun ⟨w, hpw, hqw⟩ =&gt; ⟨w, hqw, hpw⟩
+</code></pre>
+<p>We will see in <a href="./induction_and_recursion.html">Chapter Induction and Recursion</a> that all these variations are
+instances of a more general pattern-matching construct.</p>
+<p>In the following example, we define <code>is_even a</code> as <code>∃ b, a = 2 * b</code>,
+and then we show that the sum of two even numbers is an even number.</p>
+<pre><code class="language-lean">def is_even (a : Nat) := ∃ b, a = 2 * b
+
+theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
+  Exists.elim h1 (fun w1 (hw1 : a = 2 * w1) =&gt;
+  Exists.elim h2 (fun w2 (hw2 : b = 2 * w2) =&gt;
+    Exists.intro (w1 + w2)
+      (calc
+        a + b = 2 * w1 + 2 * w2  := by rw [hw1, hw2]
+          _   = 2 * (w1 + w2)    := by rw [Nat.mul_add])))
+</code></pre>
+<p>Using the various gadgets described in this chapter --- the match
+statement, anonymous constructors, and the <code>rewrite</code> tactic, we can
+write this proof concisely as follows:</p>
+<pre><code class="language-lean"><span class="boring">def is_even (a : Nat) := ∃ b, a = 2 * b
+</span>theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
+  match h1, h2 with
+  | ⟨w1, hw1⟩, ⟨w2, hw2⟩ =&gt; ⟨w1 + w2, by rw [hw1, hw2, Nat.mul_add]⟩
+</code></pre>
+<p>Just as the constructive &quot;or&quot; is stronger than the classical &quot;or,&quot; so,
+too, is the constructive &quot;exists&quot; stronger than the classical
+&quot;exists&quot;. For example, the following implication requires classical
+reasoning because, from a constructive standpoint, knowing that it is
+not the case that every <code>x</code> satisfies <code>¬ p</code> is not the same as
+having a particular <code>x</code> that satisfies <code>p</code>.</p>
+<pre><code class="language-lean">open Classical
+variable (p : α → Prop)
+
+example (h : ¬ ∀ x, ¬ p x) : ∃ x, p x :=
+  byContradiction
+    (fun h1 : ¬ ∃ x, p x =&gt;
+      have h2 : ∀ x, ¬ p x :=
+        fun x =&gt;
+        fun h3 : p x =&gt;
+        have h4 : ∃ x, p x := ⟨x, h3⟩
+        show False from h1 h4
+      show False from h h2)
+</code></pre>
+<p>What follows are some common identities involving the existential
+quantifier. In the exercises below, we encourage you to prove as many
+as you can. We also leave it to you to determine which are
+nonconstructive, and hence require some form of classical reasoning.</p>
+<pre><code class="language-lean">open Classical
+
+variable (α : Type) (p q : α → Prop)
+variable (r : Prop)
+
+example : (∃ x : α, r) → r := sorry
+example (a : α) : r → (∃ x : α, r) := sorry
+example : (∃ x, p x ∧ r) ↔ (∃ x, p x) ∧ r := sorry
+example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := sorry
+
+example : (∀ x, p x) ↔ ¬ (∃ x, ¬ p x) := sorry
+example : (∃ x, p x) ↔ ¬ (∀ x, ¬ p x) := sorry
+example : (¬ ∃ x, p x) ↔ (∀ x, ¬ p x) := sorry
+example : (¬ ∀ x, p x) ↔ (∃ x, ¬ p x) := sorry
+
+example : (∀ x, p x → r) ↔ (∃ x, p x) → r := sorry
+example (a : α) : (∃ x, p x → r) ↔ (∀ x, p x) → r := sorry
+example (a : α) : (∃ x, r → p x) ↔ (r → ∃ x, p x) := sorry
+</code></pre>
+<p>Notice that the second example and the last two examples require the
+assumption that there is at least one element <code>a</code> of type <code>α</code>.</p>
+<p>Here are solutions to two of the more difficult ones:</p>
+<pre><code class="language-lean">open Classical
+
+variable (α : Type) (p q : α → Prop)
+variable (a : α)
+variable (r : Prop)
+
+example : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) :=
+  Iff.intro
+    (fun ⟨a, (h1 : p a ∨ q a)⟩ =&gt;
+      Or.elim h1
+        (fun hpa : p a =&gt; Or.inl ⟨a, hpa⟩)
+        (fun hqa : q a =&gt; Or.inr ⟨a, hqa⟩))
+    (fun h : (∃ x, p x) ∨ (∃ x, q x) =&gt;
+      Or.elim h
+        (fun ⟨a, hpa⟩ =&gt; ⟨a, (Or.inl hpa)⟩)
+        (fun ⟨a, hqa⟩ =&gt; ⟨a, (Or.inr hqa)⟩))
+
+example : (∃ x, p x → r) ↔ (∀ x, p x) → r :=
+  Iff.intro
+    (fun ⟨b, (hb : p b → r)⟩ =&gt;
+     fun h2 : ∀ x, p x =&gt;
+     show r from hb (h2 b))
+    (fun h1 : (∀ x, p x) → r =&gt;
+     show ∃ x, p x → r from
+       byCases
+         (fun hap : ∀ x, p x =&gt; ⟨a, λ h' =&gt; h1 hap⟩)
+         (fun hnap : ¬ ∀ x, p x =&gt;
+          byContradiction
+            (fun hnex : ¬ ∃ x, p x → r =&gt;
+              have hap : ∀ x, p x :=
+                fun x =&gt;
+                byContradiction
+                  (fun hnp : ¬ p x =&gt;
+                    have hex : ∃ x, p x → r := ⟨x, (fun hp =&gt; absurd hp hnp)⟩
+                    show False from hnex hex)
+              show False from hnap hap)))
+</code></pre>
+<h2 id="more-on-the-proof-language"><a class="header" href="#more-on-the-proof-language">More on the Proof Language</a></h2>
+<p>We have seen that keywords like <code>fun</code>, <code>have</code>, and <code>show</code> make
+it possible to write formal proof terms that mirror the structure of
+informal mathematical proofs. In this section, we discuss some
+additional features of the proof language that are often convenient.</p>
+<p>To start with, we can use anonymous &quot;have&quot; expressions to introduce an
+auxiliary goal without having to label it. We can refer to the last
+expression introduced in this way using the keyword <code>this</code>:</p>
+<pre><code class="language-lean">variable (f : Nat → Nat)
+variable (h : ∀ x : Nat, f x ≤ f (x + 1))
+
+example : f 0 ≤ f 3 :=
+  have : f 0 ≤ f 1 := h 0
+  have : f 0 ≤ f 2 := Nat.le_trans this (h 1)
+  show f 0 ≤ f 3 from Nat.le_trans this (h 2)
+</code></pre>
+<p>Often proofs move from one fact to the next, so this can be effective
+in eliminating the clutter of lots of labels.</p>
+<p>When the goal can be inferred, we can also ask Lean instead to fill in
+the proof by writing <code>by assumption</code>:</p>
+<pre><code class="language-lean"><span class="boring">variable (f : Nat → Nat)
+</span><span class="boring">variable (h : ∀ x : Nat, f x ≤ f (x + 1))
+</span>example : f 0 ≤ f 3 :=
+  have : f 0 ≤ f 1 := h 0
+  have : f 0 ≤ f 2 := Nat.le_trans (by assumption) (h 1)
+  show f 0 ≤ f 3 from Nat.le_trans (by assumption) (h 2)
+</code></pre>
+<p>This tells Lean to use the <code>assumption</code> tactic, which, in turn,
+proves the goal by finding a suitable hypothesis in the local
+context. We will learn more about the <code>assumption</code> tactic in the
+next chapter.</p>
+<p>We can also ask Lean to fill in the proof by writing <code>‹p›</code>, where
+<code>p</code> is the proposition whose proof we want Lean to find in the
+context.  You can type these corner quotes using <code>\f&lt;</code> and <code>\f&gt;</code>,
+respectively. The letter &quot;f&quot; is for &quot;French,&quot; since the unicode
+symbols can also be used as French quotation marks. In fact, the
+notation is defined in Lean as follows:</p>
+<pre><code class="language-lean">notation &quot;‹&quot; p &quot;›&quot; =&gt; show p by assumption
+</code></pre>
+<p>This approach is more robust than using <code>by assumption</code>, because the
+type of the assumption that needs to be inferred is given
+explicitly. It also makes proofs more readable. Here is a more
+elaborate example:</p>
+<pre><code class="language-lean">variable (f : Nat → Nat)
+variable (h : ∀ x : Nat, f x ≤ f (x + 1))
+
+example : f 0 ≥ f 1 → f 1 ≥ f 2 → f 0 = f 2 :=
+  fun _ : f 0 ≥ f 1 =&gt;
+  fun _ : f 1 ≥ f 2 =&gt;
+  have : f 0 ≥ f 2 := Nat.le_trans ‹f 1 ≥ f 2› ‹f 0 ≥ f 1›
+  have : f 0 ≤ f 2 := Nat.le_trans (h 0) (h 1)
+  show f 0 = f 2 from Nat.le_antisymm this ‹f 0 ≥ f 2›
+</code></pre>
+<p>Keep in mind that you can use the French quotation marks in this way
+to refer to <em>anything</em> in the context, not just things that were
+introduced anonymously. Its use is also not limited to propositions,
+though using it for data is somewhat odd:</p>
+<pre><code class="language-lean">example (n : Nat) : Nat := ‹Nat›
+</code></pre>
+<p>Later, we show how you can extend the proof language using the Lean macro system.</p>
+<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<ol>
+<li>Prove these equivalences:</li>
+</ol>
+<pre><code class="language-lean">variable (α : Type) (p q : α → Prop)
+
+example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
+example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
+example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := sorry
+</code></pre>
+<p>You should also try to understand why the reverse implication is not derivable in the last example.</p>
+<ol start="2">
+<li>It is often possible to bring a component of a formula outside a
+universal quantifier, when it does not depend on the quantified
+variable. Try proving these (one direction of the second of these
+requires classical logic):</li>
+</ol>
+<pre><code class="language-lean">variable (α : Type) (p q : α → Prop)
+variable (r : Prop)
+
+example : α → ((∀ x : α, r) ↔ r) := sorry
+example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
+example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
+</code></pre>
+<ol start="3">
+<li>Consider the &quot;barber paradox,&quot; that is, the claim that in a certain
+town there is a (male) barber that shaves all and only the men who
+do not shave themselves. Prove that this is a contradiction:</li>
+</ol>
+<pre><code class="language-lean">variable (men : Type) (barber : men)
+variable (shaves : men → men → Prop)
+
+example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False := sorry
+</code></pre>
+<ol start="4">
+<li>Remember that, without any parameters, an expression of type
+<code>Prop</code> is just an assertion. Fill in the definitions of <code>prime</code>
+and <code>Fermat_prime</code> below, and construct each of the given
+assertions. For example, you can say that there are infinitely many
+primes by asserting that for every natural number <code>n</code>, there is a
+prime number greater than <code>n</code>. Goldbach's weak conjecture states
+that every odd number greater than 5 is the sum of three
+primes. Look up the definition of a Fermat prime or any of the
+other statements, if necessary.</li>
+</ol>
+<pre><code class="language-lean">def even (n : Nat) : Prop := sorry
+
+def prime (n : Nat) : Prop := sorry
+
+def infinitely_many_primes : Prop := sorry
+
+def Fermat_prime (n : Nat) : Prop := sorry
+
+def infinitely_many_Fermat_primes : Prop := sorry
+
+def goldbach_conjecture : Prop := sorry
+
+def Goldbach's_weak_conjecture : Prop := sorry
+
+def Fermat's_last_theorem : Prop := sorry
+</code></pre>
+<ol start="5">
+<li>Prove as many of the identities listed in the Existential
+Quantifier section as you can.</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="propositions_and_proofs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="tactics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="propositions_and_proofs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="tactics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>
