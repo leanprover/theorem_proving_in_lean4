@@ -33,7 +33,7 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
     rw [Nat.mul_comm]
 ```
 
-The above snippet show three navigation commands:
+The above snippet shows three navigation commands:
 
 - `lhs` navigates to the left hand side of a relation (here equality), there is also a `rhs` navigating to the right hand side.
 - `congr` creates as many targets as there are (nondependent and explicit) arguments to the current head function
