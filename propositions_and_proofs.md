@@ -793,10 +793,8 @@ standpoint, knowing that ``p`` and ``q`` are not both true does not
 necessarily tell you which one is false:
 
 ```lean
-open Classical
-variable (p q : Prop)
-
--- BEGIN
+# open Classical
+# variable (p q : Prop)
 example (h : ¬(p ∧ q)) : ¬p ∨ ¬q :=
   Or.elim (em p)
     (fun hp : p =>
