@@ -689,7 +689,7 @@ library can be found online, on GitHub:
 
 - [https://github.com/leanprover/lean4/tree/master/src/Init](https://github.com/leanprover/lean4/tree/master/src/Init)
 
-- [https://github.com/leanprover/lean4/tree/master/src/Std](https://github.com/leanprover/lean4/tree/master/src/Std)
+- [https://github.com/leanprover/std4/tree/main/Std](https://github.com/leanprover/std4/tree/main/Std)
 
 You can see the contents of these directories and files using GitHub's
 browser interface. If you have installed Lean on your own computer,
