@@ -1060,7 +1060,7 @@ mutual
 end
 ```
 
-Dependent Pattern Matching
+<a name="_dependent_pattern_matching"></a>Dependent Pattern Matching
 --------------------------
 
 All the examples of pattern matching we considered in
@@ -1181,7 +1181,7 @@ The ``map`` function is even more tedious to define by hand than the
 ``tail`` function. We encourage you to try it, using ``recOn``,
 ``casesOn`` and ``noConfusion``.
 
-Inaccessible Patterns
+<a name="_inaccessible_patterns"></a>Inaccessible Patterns
 ------------------
 
 Sometimes an argument in a dependent matching pattern is not essential
