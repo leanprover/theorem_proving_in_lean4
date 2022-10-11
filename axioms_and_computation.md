@@ -426,7 +426,7 @@ The four constants, ``Quot``, ``Quot.mk``, ``Quot.ind``, and
 that the ``Quot.ind`` is satisfied if we take ``Quot r`` to be simply
 ``α``, and take ``Quot.lift`` to be the identity function (ignoring
 ``h``). For that reason, these four constants are not viewed as
-additional axioms:
+additional axioms.
 
 <!--
     variables α β : Type
