@@ -79,7 +79,7 @@ def isZero : Nat → Bool
 ```
 
 Because addition and the zero notation have been assigned the
-``[matchPattern]`` attribute, they can be used in pattern matching. Lean
+``[match_pattern]`` attribute, they can be used in pattern matching. Lean
 simply normalizes these expressions until the constructors ``zero``
 and ``succ`` are exposed.
 
@@ -403,7 +403,7 @@ is any type, which can depend on ``a`` and ``b``. Each line should
 contain the same number of patterns, one for each element of ``β``. As we
 have seen, a pattern is either a variable, a constructor applied to
 other patterns, or an expression that normalizes to something of that
-form (where the non-constructors are marked with the ``[matchPattern]``
+form (where the non-constructors are marked with the ``[match_pattern]``
 attribute). The appearances of constructors prompt case splits, with
 the arguments to the constructors represented by the given
 variables. In [Section Dependent Pattern Matching](#_dependent_pattern_matching),
