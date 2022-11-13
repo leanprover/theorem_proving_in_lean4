@@ -322,7 +322,7 @@ that there is an element of ``α``; in the [Chapter Type Classes](./type_classes
 we will see that Lean can be instructed that suitable
 base types are inhabited, and can automatically infer that other
 constructed types are inhabited. On this basis, the
-standard library provides a default element, ``defaulty``, of
+standard library provides a default element, ``default``, of
 any inhabited type.
 
 We can also use the type ``Option α`` to simulate incomplete patterns.
