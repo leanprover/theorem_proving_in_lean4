@@ -16,20 +16,20 @@ other tactics could finish them immediately). The naive
 first attempt is to enter tactic mode and try `rw [Nat.mul_comm]`. But this
 transforms the goal into `b * c * a = a * (c * b)`, after commuting the
 very first multiplication appearing in the term. There are several
-ways to fix this issue, and one way is to use a more precise tool :
+ways to fix this issue, and one way is to use a more precise tool:
 the conversion mode. The following code block shows the current target
 after each line.
 
 ```lean
 example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv =>
-    -- |- a * (b * c) = a * (c * b)
+    -- ⊢ a * (b * c) = a * (c * b)
     lhs
-    -- |- a * (b * c)
+    -- ⊢ a * (b * c)
     congr
-    -- 2 goals : |- a and |- b * c
+    -- 2 goals: ⊢ a, ⊢ b * c
     rfl
-    -- |- b * c
+    -- ⊢ b * c
     rw [Nat.mul_comm]
 ```
 
@@ -47,7 +47,7 @@ The second main reason to use conversion mode is to rewrite under
 binders. Suppose we want to prove example
 `(fun x : Nat => 0 + x) = (fun x => x)`.
 The naive first attempt is to enter tactic mode and try
-`rw [zero_add]`. But this fails with a frustrating
+`rw [Nat.zero_add]`. But this fails with a frustrating
 
 ```
 error: tactic 'rewrite' failed, did not find instance of the pattern
@@ -81,7 +81,7 @@ example : (fun x : Nat => 0 + x) = (fun x => x) := by
   simp
 ```
 
-All this is also available to rewrite an hypothesis `h` from the local context using `conv at h`.
+`conv` can also rewrite a hypothesis `h` from the local context, using `conv at h`.
 
 Pattern matching
 -------
@@ -131,15 +131,15 @@ Other tactics inside conversion mode
 ```lean
 example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv =>
-    -- |- a * (b * c) = a * (c * b)
+    -- ⊢ a * (b * c) = a * (c * b)
     lhs
-    -- |- a * (b * c)
+    -- ⊢ a * (b * c)
     arg 2
-    -- |- b * c
+    -- ⊢ b * c
     rw [Nat.mul_comm]
 ```
 
-- `args` alternative name for `congr`
+- `args` alternative name for `congr`.
 
 - `simp` applies the simplifier to the current goal. It supports the same options available in regular tactic mode.
 
@@ -154,20 +154,21 @@ example (g : Nat → Nat) (h₁ : g x = x + 1) (h₂ : x > 0) : g x = f x := by
   exact h₁
 ```
 
-- `enter [1, x, 2, y]` iterate `arg` and `intro` with the given arguments. It is just the macro.
+- `enter [1, x, 2, y]` iterate `arg` and `intro` with the given arguments. It is just the macro:
 
 ```
-syntax enterArg := ident <|> num
+syntax enterArg := ident <|> group("@"? num)
 syntax "enter " "[" (colGt enterArg),+ "]": conv
 macro_rules
-  | `(conv| enter [$i:numLit]) => `(conv| arg $i)
+  | `(conv| enter [$i:num]) => `(conv| arg $i)
+  | `(conv| enter [@$i:num]) => `(conv| arg @$i)
   | `(conv| enter [$id:ident]) => `(conv| ext $id)
   | `(conv| enter [$arg:enterArg, $args,*]) => `(conv| (enter [$arg]; enter [$args,*]))
 ```
 
 - `done` fail if there are unsolved goals.
 
-- `traceState` display the current tactic state.
+- `trace_state` display the current tactic state.
 
 - `whnf` put term in weak head normal form.
 
@@ -182,11 +183,11 @@ example (g : Nat → Nat → Nat)
         : g x x + x = 1 + x := by
   conv =>
     lhs
-    -- |- g x x + x
+    -- ⊢ g x x + x
     arg 1
-    -- |- g x x
+    -- ⊢ g x x
     rw [h₁]
-    -- 2 goals: |- 1, |- x ≠ 0
+    -- 2 goals: ⊢ 1, ⊢ x ≠ 0
     . skip
     . tactic => exact h₂
 ```
