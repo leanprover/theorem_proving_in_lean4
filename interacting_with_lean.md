@@ -37,13 +37,14 @@ command
 ```
 import Bar.Baz.Blah
 ```
+
 imports the file ``Bar/Baz/Blah.olean``, where the descriptions are
 interpreted relative to the Lean *search path*. Information as to how
 the search path is determined can be found on the
 [documentation pages](http://leanprover.github.io/documentation/).
 By default, it includes the standard library directory, and (in some contexts)
 the root of the user's local project. One can also specify imports relative to the current directory; for example,
-Importing is transitive. In other words, if you import ``Foo`` and ``Foo`` imports ``Bar``,
+importing is transitive. In other words, if you import ``Foo`` and ``Foo`` imports ``Bar``,
 then you also have access to the contents of ``Bar``, and do not need to import it explicitly.
 
 More on Sections
@@ -84,7 +85,7 @@ The definition of ``double`` does not have to declare ``x`` as an
 argument; Lean detects the dependence and inserts it
 automatically. Similarly, Lean detects the occurrence of ``x`` in
 ``t1`` and ``t2``, and inserts it automatically there, too.
-Note that double does *not* have ``y`` as argument. Variables are only
+Note that ``double`` does *not* have ``y`` as argument. Variables are only
 included in declarations where they are actually used.
 
 More on Namespaces
@@ -110,10 +111,13 @@ open Foo
 ```
 
 The following definition
+
 ```lean
 def Foo.bar : Nat := 1
 ```
+
 is treated as a macro, and expands to
+
 ```lean
 namespace Foo
 def bar : Nat := 1
@@ -198,7 +202,6 @@ creates aliases for ``succ``, ``add``, and ``sub`` in the current
 namespace, so that whenever the namespace is open, these aliases are
 available. If this command is used outside a namespace, the aliases
 are exported to the top level.
-
 
 Attributes
 ----------
@@ -330,7 +333,7 @@ Notice that implicit arguments are inserted eagerly. Suppose we define
 a function ``f (x : Nat) {y : Nat} (z : Nat)`` with the arguments
 shown. Then, when we write the expression ``f 7`` without further
 arguments, it is parsed as ``f 7 _``. Lean offers a weaker annotation,
-``{{y : ℕ}}``, which specifies that a placeholder should only be added
+``{{y : Nat}}``, which specifies that a placeholder should only be added
 *before* a subsequent explicit argument. This annotation can also be
 written using as ``⦃y : Nat⦄``, where the unicode brackets are entered
 as ``\{{`` and ``\}}``, respectively. With this annotation, the
@@ -540,7 +543,6 @@ multiple notations accepting the same longest parse, the choice will
 be delayed until elaboration, which will fail unless exactly one
 overload is type correct.
 
-
 Coercions
 ---------
 
@@ -632,8 +634,6 @@ when you are debugging a proof, or trying to understand a cryptic
 error message. Too much information can be overwhelming, though, and
 Lean's defaults are generally sufficient for ordinary interactions.
 
-
-
 <!--
 Elaboration Hints
 -----------------
@@ -689,7 +689,7 @@ library can be found online, on GitHub:
 
 - [https://github.com/leanprover/lean4/tree/master/src/Init](https://github.com/leanprover/lean4/tree/master/src/Init)
 
-- [https://github.com/leanprover/lean4/tree/master/src/Std](https://github.com/leanprover/lean4/tree/master/src/Std)
+- [https://github.com/leanprover/std4/tree/main/Std](https://github.com/leanprover/std4/tree/main/Std)
 
 You can see the contents of these directories and files using GitHub's
 browser interface. If you have installed Lean on your own computer,
@@ -790,11 +790,13 @@ def compose (g : β → γ) (f : α → β) (x : α) : γ :=
 #check @compose
 -- {β : Sort u_1} → {γ : Sort u_2} → {α : Sort u_3} → (β → γ) → (α → β) → α → γ
 ```
+
 Note that Lean inferred a more general type using `Sort` instead of `Type`.
 
 Although we love this feature and use it extensively when implementing Lean,
 we realize some users may feel uncomfortable with it. Thus, you can disable it using
 the command `set_option autoImplicit false`.
+
 ```lean
 set_option autoImplicit false
 /- The following definition produces `unknown identifier` errors -/
@@ -807,7 +809,7 @@ Implicit Lambdas
 
 In Lean 3 stdlib, we find many
 [instances](https://github.com/leanprover/lean/blob/master/library/init/category/reader.lean#L39) of the dreadful `@`+`_` idiom.
-It is often used when we the expected type is a function type with implicit arguments,
+It is often used when the expected type is a function type with implicit arguments,
 and we have a constant (`reader_t.pure` in the example) which also takes implicit arguments. In Lean 4, the elaborator automatically introduces lambdas
 for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. Here is the example from the link above using Lean 4 implicit lambdas.
 
@@ -853,7 +855,7 @@ Sugar for Simple Functions
 
 In Lean 3, we can create simple functions from infix operators by
 using parentheses. For example, `(+1)` is sugar for `fun x, x + 1`. In
-Lean 4, we generalize this notation using `·` As a placeholder. Here
+Lean 4, we generalize this notation using `·` as a placeholder. Here
 are a few examples:
 
 ```lean
@@ -963,7 +965,7 @@ def getBinderType : Term → Option Term
   | _ => none
 ```
 
-Ellipses are also useful when explicit argument can be automatically
+Ellipses are also useful when explicit arguments can be automatically
 inferred by Lean, and we want to avoid a sequence of `_`s.
 
 ```lean

@@ -79,7 +79,7 @@ def isZero : Nat → Bool
 ```
 
 Because addition and the zero notation have been assigned the
-``[matchPattern]`` attribute, they can be used in pattern matching. Lean
+``[match_pattern]`` attribute, they can be used in pattern matching. Lean
 simply normalizes these expressions until the constructors ``zero``
 and ``succ`` are exposed.
 
@@ -240,7 +240,7 @@ you can use implicit arguments in patterns as well.
 
 As described in [Chapter Inductive Types](./inductive_types.md),
 inductive data types can depend on parameters. The following example defines
-the ``tail`` function using pattern matching. The argument ``α : Type``
+the ``tail`` function using pattern matching. The argument ``α : Type u``
 is a parameter and occurs before the colon to indicate it does not participate in the pattern matching.
 Lean also allows parameters to occur after ``:``, but it cannot pattern match on them.
 
@@ -322,7 +322,7 @@ that there is an element of ``α``; in the [Chapter Type Classes](./type_classes
 we will see that Lean can be instructed that suitable
 base types are inhabited, and can automatically infer that other
 constructed types are inhabited. On this basis, the
-standard library provides a default element, ``defaulty``, of
+standard library provides a default element, ``default``, of
 any inhabited type.
 
 We can also use the type ``Option α`` to simulate incomplete patterns.
@@ -403,7 +403,7 @@ is any type, which can depend on ``a`` and ``b``. Each line should
 contain the same number of patterns, one for each element of ``β``. As we
 have seen, a pattern is either a variable, a constructor applied to
 other patterns, or an expression that normalizes to something of that
-form (where the non-constructors are marked with the ``[matchPattern]``
+form (where the non-constructors are marked with the ``[match_pattern]``
 attribute). The appearances of constructors prompt case splits, with
 the arguments to the constructors represented by the given
 variables. In [Section Dependent Pattern Matching](#_dependent_pattern_matching),
@@ -509,7 +509,7 @@ Here, the value of the ``fib`` function at ``n + 2`` (which is
 definitionally equal to ``succ (succ n)``) is defined in terms of the
 values at ``n + 1`` (which is definitionally equivalent to ``succ n``)
 and the value at ``n``. This is a notoriously inefficient way of
-computing the fibonacci function, however, with an execution time that
+computing the Fibonacci function, however, with an execution time that
 is exponential in ``n``. Here is a better way:
 
 ```lean
@@ -658,7 +658,6 @@ where
     | n+1 => simp [replicate.loop, aux n, Nat.add_succ, Nat.succ_add]
 ```
 
-
 Well-Founded Recursion and Induction
 ------------------------------------
 
@@ -771,7 +770,7 @@ When Lean encounters a recursive definition, it first
 tries structural recursion, and only when that fails, does it fall
 back on well-founded recursion. Lean uses the tactic `decreasing_tactic`
 to show that the recursive applications are smaller. The auxiliary
-propostion `x - y < x` in the example above should be viewed as a hint
+proposition `x - y < x` in the example above should be viewed as a hint
 for this tactic.
 
 The defining equation for ``div`` does *not* hold definitionally, but
@@ -782,7 +781,7 @@ we can unfold `div` using the `unfold` tactic. We use [`conv`](./conv.md) to sel
 # def div (x y : Nat) : Nat :=
 #  if h : 0 < y ∧ y ≤ x then
 #    have : x - y < x := Nat.sub_lt (Nat.lt_of_lt_of_le h.1 h.2) h.1
-# div (x - y) y + 1
+#    div (x - y) y + 1
 #  else
 #    0
 example (x y : Nat) : div x y = if 0 < y ∧ y ≤ x then div (x - y) y + 1 else 0 := by
@@ -817,7 +816,6 @@ instructs Lean to use a lexicographic order. This clause is actually mapping
 the function arguments to elements of type `Nat × Nat`. Then, Lean uses typeclass
 resolution to synthesize an element of type `WellFoundedRelation (Nat × Nat)`.
 
-
 ```lean
 def ack : Nat → Nat → Nat
   | 0,   y   => y+1
@@ -829,7 +827,7 @@ termination_by ack x y => (x, y)
 Note that a lexicographic order is used in the example above because the instance
 `WellFoundedRelation (α × β)` uses a lexicographic order. Lean also defines the instance
 
-```
+```lean
 instance (priority := low) [SizeOf α] : WellFoundedRelation α :=
   sizeOfWFRel
 ```
@@ -919,7 +917,6 @@ Summary:
 
 - By default, the tactic `decreasing_tactic` is used to show that recursive applications are smaller with respect to the selected well-founded relation. If `decreasing_tactic` fails, the error message includes the remaining goal `... |- G`. Note that, the `decreasing_tactic` uses `assumption`. So, you can include a `have`-expression to prove goal `G`. You can also provide your own tactic using `decreasing_by`.
 
-
 Mutual Recursion
 ----------------
 
@@ -963,7 +960,7 @@ mutual
 end
 ```
 
-The constructors, ``even_zero``, ``even_succ``, and ``odd_succ`` provide positive means for showing that a number is even or odd. We need to use the fact that the inductive type is generated by these constructors to know that the zero is not odd, and that the latter two implications reverse. As usual, the constructors are kept in a namespace that is named after the type being defined, and the command ``open Even Odd`` allows us to access them move conveniently.
+The constructors, ``even_zero``, ``even_succ``, and ``odd_succ`` provide positive means for showing that a number is even or odd. We need to use the fact that the inductive type is generated by these constructors to know that zero is not odd, and that the latter two implications reverse. As usual, the constructors are kept in a namespace that is named after the type being defined, and the command ``open Even Odd`` allows us to access them more conveniently.
 
 ```lean
 # mutual
@@ -979,10 +976,10 @@ theorem not_odd_zero : ¬ Odd 0 :=
   fun h => nomatch h
 
 theorem even_of_odd_succ : ∀ n, Odd (n + 1) → Even n
-  | _,  odd_succ n h => h
+  | _, odd_succ n h => h
 
 theorem odd_of_even_succ : ∀ n, Even (n + 1) → Odd n
-  | _, even_succ n h =>  h
+  | _, even_succ n h => h
 ```
 
 For another example, suppose we use a nested inductive type to define a set of terms inductively, so that a term is either a constant (with a name given by a string), or the result of applying a constant to a list of constants.
@@ -990,7 +987,7 @@ For another example, suppose we use a nested inductive type to define a set of t
 ```lean
 inductive Term where
   | const : String → Term
-  | app   : String → List term → Term
+  | app   : String → List Term → Term
 ```
 
 We can then use a mutual recursive definition to count the number of constants occurring in a term, as well as the number occurring in a list of terms.
@@ -1018,7 +1015,7 @@ def sample := app "f" [app "g" [const "x"], const "y"]
 end Term
 ```
 
-As a final example, we define a function `replaceConst a b e` that replaces a constant `a` with `b` in a term `e`, and then prove the numbers of constants is the same. Note that, our proof uses mutual recursion (aka induction).
+As a final example, we define a function `replaceConst a b e` that replaces a constant `a` with `b` in a term `e`, and then prove the number of constants is the same. Note that, our proof uses mutual recursion (aka induction).
 
 ```lean
 # inductive Term where
@@ -1035,12 +1032,12 @@ As a final example, we define a function `replaceConst a b e` that replaces a co
 # end
 mutual
   def replaceConst (a b : String) : Term → Term
-   | const c => if a == c then const b else const c
-   | app f cs => app f (replaceConstLst a b cs)
+    | const c => if a == c then const b else const c
+    | app f cs => app f (replaceConstLst a b cs)
 
   def replaceConstLst (a b : String) : List Term → List Term
-   | [] => []
-   | c :: cs => replaceConst a b c :: replaceConstLst a b cs
+    | [] => []
+    | c :: cs => replaceConst a b c :: replaceConstLst a b cs
 end
 
 mutual
@@ -1066,13 +1063,13 @@ Dependent Pattern Matching
 All the examples of pattern matching we considered in
 [Section Pattern Matching](#_pattern_matching) can easily be written using ``cases_on``
 and ``rec_on``. However, this is often not the case with indexed
-inductive families such as ``vector α n``, since case splits impose
+inductive families such as ``Vector α n``, since case splits impose
 constraints on the values of the indices. Without the equation
 compiler, we would need a lot of boilerplate code to define very
 simple functions such as ``map``, ``zip``, and ``unzip`` using
 recursors. To understand the difficulty, consider what it would take
 to define a function ``tail`` which takes a vector
-``v : vector α (succ n)`` and deletes the first element. A first thought might be to
+``v : Vector α (succ n)`` and deletes the first element. A first thought might be to
 use the ``casesOn`` function:
 
 ```lean
@@ -1133,7 +1130,6 @@ a case is to use ``noConfusion``.
 The ``tail`` function is, however, easy to define using recursive
 equations, and the equation compiler generates all the boilerplate
 code automatically for us. Here are a number of similar examples:
-
 
 ```lean
 # inductive Vector (α : Type u) : Nat → Type u
@@ -1226,7 +1222,7 @@ In the example above, the inaccessible annotation makes it clear that
 
 Inaccessible patterns can be used to clarify and control definitions that
 make use of dependent pattern matching. Consider the following
-definition of the function ``Vector.add,`` which adds two vectors of
+definition of the function ``Vector.add``, which adds two vectors of
 elements of a type, assuming that type has an associated addition
 function:
 
@@ -1263,11 +1259,9 @@ the equation compiler to avoid the case split on ``n``
 #   | nil  : Vector α 0
 #   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
 # namespace Vector
-
 def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
-  | .(_),   nil,       nil       => nil
+  | .(_), nil,       nil       => nil
   | .(_), cons a as, cons b bs => cons (a + b) (add as bs)
-
 # end Vector
 ```
 
@@ -1284,11 +1278,9 @@ The inaccessible pattern `.(_)` can be written as `_` for convenience.
 #   | nil  : Vector α 0
 #   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
 # namespace Vector
-
 def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
-  | _,   nil,       nil       => nil
+  | _, nil,       nil       => nil
   | _, cons a as, cons b bs => cons (a + b) (add as bs)
-
 # end Vector
 ```
 
@@ -1304,11 +1296,9 @@ these extra discriminants automatically for us.
 #   | nil  : Vector α 0
 #   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
 # namespace Vector
-
 def add [Add α] {n : Nat} : Vector α n → Vector α n → Vector α n
   | nil,       nil       => nil
   | cons a as, cons b bs => cons (a + b) (add as bs)
-
 # end Vector
 ```
 
@@ -1320,11 +1310,9 @@ the declare further and write:
 #   | nil  : Vector α 0
 #   | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
 # namespace Vector
-
 def add [Add α] : Vector α n → Vector α n → Vector α n
   | nil,       nil       => nil
   | cons a as, cons b bs => cons (a + b) (add as bs)
-
 # end Vector
 ```
 
@@ -1427,13 +1415,12 @@ These variations are equally useful for destructing propositions:
 variable (p q : Nat → Prop)
 
 example : (∃ x, p x) → (∃ y, q y) → ∃ x y, p x ∧ q y
- | ⟨x, px⟩, ⟨y, qy⟩ => ⟨x, y, px, qy⟩
+  | ⟨x, px⟩, ⟨y, qy⟩ => ⟨x, y, px, qy⟩
 
 example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
         : ∃ x y, p x ∧ q y :=
   match h₀, h₁ with
   | ⟨x, px⟩, ⟨y, qy⟩ => ⟨x, y, px, qy⟩
-
 
 example : (∃ x, p x) → (∃ y, q y) → ∃ x y, p x ∧ q y :=
   fun ⟨x, px⟩ ⟨y, qy⟩ => ⟨x, y, px, qy⟩

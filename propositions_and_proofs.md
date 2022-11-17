@@ -177,9 +177,13 @@ variable {q : Prop}
 theorem t1 : p → q → p := fun hp : p => fun hq : q => hp
 ```
 
-This looks exactly like the definition of the constant function in the
-last chapter, the only difference being that the arguments are
-elements of ``Prop`` rather than ``Type``. Intuitively, our proof of
+Compare this proof to the expression ``fun x : α => fun y : β => x``
+of type ``α → β → α``, where ``α`` and ``β`` are data types.
+This describes the function that takes arguments ``x`` and ``y``
+of type ``α`` and ``β``, respectively, and returns ``x``.
+The proof of ``t1`` has the same form, the only difference being that
+``p`` and ``q`` are elements of ``Prop`` rather than ``Type``.
+Intuitively, our proof of
 ``p → q → p`` assumes ``p`` and ``q`` are true, and uses the first
 hypothesis (trivially) to establish that the conclusion, ``p``, is
 true.
@@ -603,7 +607,7 @@ contradiction. This rule is sometimes called *ex falso* (short for *ex
 falso sequitur quodlibet*), or the *principle of explosion*.
 
 ```lean
-variable (tp q : Prop)
+variable (p q : Prop)
 
 example (hp : p) (hnp : ¬p) : q := False.elim (hnp hp)
 ```
@@ -789,10 +793,8 @@ standpoint, knowing that ``p`` and ``q`` are not both true does not
 necessarily tell you which one is false:
 
 ```lean
-open Classical
-variable (p q : Prop)
-
--- BEGIN
+# open Classical
+# variable (p q : Prop)
 example (h : ¬(p ∧ q)) : ¬p ∨ ¬q :=
   Or.elim (em p)
     (fun hp : p =>

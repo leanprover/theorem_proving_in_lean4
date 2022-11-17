@@ -18,11 +18,11 @@ constructors. In Lean, the syntax for specifying such a type is as
 follows:
 
 ```
-    inductive Foo where
-      | constructor₁ : ... → Foo
-      | constructor₂ : ... → Foo
-      ...
-      | constructorₙ : ... → Foo
+inductive Foo where
+  | constructor₁ : ... → Foo
+  | constructor₂ : ... → Foo
+  ...
+  | constructorₙ : ... → Foo
 ```
 
 The intuition is that each constructor specifies a way of building new
@@ -198,7 +198,7 @@ set_option pp.all true
 ```
 
 When declaring an inductive datatype, you can use `deriving Repr` to instruct
-Lean to generate a fuction that converts `Weekday` objects into text.
+Lean to generate a function that converts `Weekday` objects into text.
 This function is used by the `#eval` command to display `Weekday` objects.
 
 ```lean
@@ -234,7 +234,6 @@ We can define functions from ``Weekday`` to ``Weekday``:
 #  | friday : Weekday
 #  | saturday : Weekday
 #  deriving Repr
-
 namespace Weekday
 def next (d : Weekday) : Weekday :=
   match d with
@@ -355,6 +354,7 @@ is a proof instead of a piece of data.
 
 The `Bool` type in the Lean library is an instance of
 enumerated type.
+
 ```lean
 # namespace Hidden
 inductive Bool where
@@ -434,7 +434,6 @@ The function ``fst`` takes a pair, ``p``. The `match` interprets
 that to give these definitions the greatest generality possible, we allow
 the types ``α`` and ``β`` to belong to any universe.
 
-
 Here is another example where we use the recursor `Prod.casesOn` instead
 of `match`.
 
@@ -464,9 +463,9 @@ output value in terms of ``b``.
 
 ```lean
 def sum_example (s : Sum Nat Nat) : Nat :=
-Sum.casesOn (motive := fun _ => Nat) s
-   (fun n => 2 * n)
-   (fun n => 2 * n + 1)
+  Sum.casesOn (motive := fun _ => Nat) s
+    (fun n => 2 * n)
+    (fun n => 2 * n + 1)
 
 #eval sum_example (Sum.inl 3)
 #eval sum_example (Sum.inr 3)
@@ -602,7 +601,7 @@ at every input. The ``Option`` type provides a way of representing partial funct
 element of ``Option β`` is either ``none`` or of the form ``some b``,
 for some value ``b : β``. Thus we can think of an element ``f`` of the
 type ``α → Option β`` as being a partial function from ``α`` to ``β``:
-for every ``a : α``, ``f a`` either returns ``none``, indicating the
+for every ``a : α``, ``f a`` either returns ``none``, indicating
 ``f a`` is "undefined", or ``some b``.
 
 An element of ``Inhabited α`` is simply a witness to the fact that
@@ -723,7 +722,7 @@ and applying ``succ`` repeatedly.
 
 As before, the recursor for ``Nat`` is designed to define a dependent
 function ``f`` from ``Nat`` to any domain, that is, an element ``f``
-of ``(n : nat) → motive n`` for some ``motive : Nat → Sort u``.
+of ``(n : Nat) → motive n`` for some ``motive : Nat → Sort u``.
 It has to handle two cases: the case where the input is ``zero``, and the case where
 the input is of the form ``succ n`` for some ``n : Nat``. In the first
 case, we simply specify a target value with the appropriate type, as
@@ -754,8 +753,8 @@ The implicit argument, ``motive``, is the codomain of the function being defined
 In type theory it is common to say ``motive`` is the *motive* for the elimination/recursion,
 since it describes the kind of object we wish to construct.
 The next two arguments specify how to compute the zero and successor cases, as described above.
-They are also known as the ``minor premises``.
-Finally, the ``t : Nat``, is the input to the function. It is also known as the ``major premise``.
+They are also known as the *minor premises*.
+Finally, the ``t : Nat``, is the input to the function. It is also known as the *major premise*.
 
 The `Nat.recOn` is similar to `Nat.rec` but the major premise occurs before the minor premises.
 
@@ -904,7 +903,7 @@ theorem add_comm (m n : Nat) : m + n = n + m :=
     show m + succ n = succ n + m from
     calc m + succ n = succ (m + n) := rfl
                   _ = succ (n + m) := by rw [ih]
-                  _ = succ n +  m  := sorry)
+                  _ = succ n + m   := sorry)
 ```
 
 At this point, we see that we need another supporting fact, namely, that ``succ (n + m) = succ n + m``.
@@ -950,8 +949,8 @@ defined in the library.
 ```lean
 # namespace Hidden
 inductive List (α : Type u) where
-| nil  : List α
-| cons : α → List α → List α
+  | nil  : List α
+  | cons : α → List α → List α
 
 namespace List
 
@@ -1054,7 +1053,7 @@ example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (Nat.succ n)) : ∀ n, p n 
   intro n
   cases n
   . exact hz  -- goal is p 0
-  . apply hs  -- goal is a : ℕ ⊢ p (succ a)
+  . apply hs  -- goal is a : Nat ⊢ p (succ a)
 ```
 
 There are extra bells and whistles. For one thing, ``cases`` allows
@@ -1090,7 +1089,7 @@ example : f 0 = 3 := rfl
 example : f 5 = 7 := rfl
 ```
 
-Once again, cases will revert, split, and then reintroduce depedencies in the context.
+Once again, cases will revert, split, and then reintroduce dependencies in the context.
 
 ```lean
 def Tuple (α : Type) (n : Nat) :=
@@ -1106,7 +1105,7 @@ example : f myTuple = 7 :=
   rfl
 ```
 
-Here is an example with multiple constructors with arguments.
+Here is an example of multiple constructors with arguments.
 
 ```lean
 inductive Foo where
@@ -1123,10 +1122,9 @@ The alternatives for each constructor don't need to be solved
 in the order the constructors were declared.
 
 ```lean
-inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
+# inductive Foo where
+#   | bar1 : Nat → Nat → Foo
+#   | bar2 : Nat → Nat → Nat → Foo
 def silly (x : Foo) : Nat := by
   cases x with
   | bar2 c d e => exact e
@@ -1138,27 +1136,25 @@ Lean also provides a complementary ``case`` tactic, which allows you to focus on
 assign variable names.
 
 ```lean
-inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
+# inductive Foo where
+#   | bar1 : Nat → Nat → Foo
+#   | bar2 : Nat → Nat → Nat → Foo
 def silly (x : Foo) : Nat := by
   cases x
-  case bar2 c d e => exact e
   case bar1 a b => exact b
+  case bar2 c d e => exact e
 ```
 
 The ``case`` tactic is clever, in that it will match the constructor to the appropriate goal. For example, we can fill the goals above in the opposite order:
 
 ```lean
-inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
+# inductive Foo where
+#   | bar1 : Nat → Nat → Foo
+#   | bar2 : Nat → Nat → Nat → Foo
 def silly (x : Foo) : Nat := by
   cases x
-  case bar1 a b => exact b
   case bar2 c d e => exact e
+  case bar1 a b => exact b
 ```
 
 You can also use ``cases`` with an arbitrary expression. Assuming that
@@ -1173,7 +1169,7 @@ example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
         : p (m + 3 * k) := by
   cases m + 3 * k
   exact hz   -- goal is p 0
-  apply hs   -- goal is a : ℕ ⊢ p (succ a)
+  apply hs   -- goal is a : Nat ⊢ p (succ a)
 ```
 
 Think of this as saying "split on cases as to whether ``m + 3 * k`` is
@@ -1188,7 +1184,7 @@ example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
   generalize m + 3 * k = n
   cases n
   exact hz   -- goal is p 0
-  apply hs   -- goal is a : ℕ ⊢ p (succ a)
+  apply hs   -- goal is a : Nat ⊢ p (succ a)
 ```
 
 Notice that the expression ``m + 3 * k`` is erased by ``generalize``; all
@@ -1212,8 +1208,8 @@ example (p : Prop) (m n : Nat)
 
 The theorem ``Nat.lt_or_ge m n`` says ``m < n ∨ m ≥ n``, and it is
 natural to think of the proof above as splitting on these two
-cases. In the first branch, we have the hypothesis ``h₁ : m < n``, and
-in the second we have the hypothesis ``h₂ : m ≥ n``. The proof above
+cases. In the first branch, we have the hypothesis ``hlt : m < n``, and
+in the second we have the hypothesis ``hge : m ≥ n``. The proof above
 is functionally equivalent to the following:
 
 ```lean
@@ -1275,6 +1271,7 @@ Here are some additional examples:
 
 ```lean
 # namespace Hidden
+# theorem add_zero (n : Nat) : n + 0 = n := Nat.add_zero n
 open Nat
 
 theorem zero_add (n : Nat) : 0 + n = n := by
@@ -1294,7 +1291,6 @@ theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) := by
 The `induction` tactic also supports user-defined induction principles with
 multiple targets (aka major premises).
 
-
 ```lean
 /-
 theorem Nat.mod.inductionOn
@@ -1311,13 +1307,13 @@ example (x : Nat) {y : Nat} (h : y > 0) : x % y < y := by
     rw [Nat.mod_eq_sub_mod h₁.2]
     exact ih h
   | base x y h₁ =>
-     have : ¬ 0 < y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
-     match this with
-     | Or.inl h₁ => exact absurd h h₁
-     | Or.inr h₁ =>
-       have hgt : y > x := Nat.gt_of_not_le h₁
-       rw [← Nat.mod_eq_of_lt hgt] at hgt
-       assumption
+    have : ¬ 0 < y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
+    match this with
+    | Or.inl h₁ => exact absurd h h₁
+    | Or.inr h₁ =>
+      have hgt : y > x := Nat.gt_of_not_le h₁
+      rw [← Nat.mod_eq_of_lt hgt] at hgt
+      assumption
 ```
 
 You can use the `match` notation in tactics too:
@@ -1371,7 +1367,6 @@ are set equal to one another, and uses them to close the goal.
 
 ```lean
 open Nat
-
 
 example (m n : Nat) (h : succ m = 0) : n = n + 7 := by
   injection h
@@ -1590,7 +1585,6 @@ data we already have. Singleton elimination is also used with
 heterogeneous equality and well-founded recursion, which will be
 discussed in a [Chapter Induction and Recursion](./induction_and_recursion.md#_well_founded_recursion_and_induction).
 
-
 Mutual and Nested Inductive Types
 ---------------------------------
 
@@ -1692,10 +1686,10 @@ Exercises
 
 3. Define an inductive data type consisting of terms built up from the following constructors:
 
-   -  ``const n``, a constant denoting the natural number ``n``
-   -  ``var n``, a variable, numbered ``n``
-   -  ``plus s t``, denoting the sum of ``s`` and ``t``
-   -  ``times s t``, denoting the product of ``s`` and ``t``
+   - ``const n``, a constant denoting the natural number ``n``
+   - ``var n``, a variable, numbered ``n``
+   - ``plus s t``, denoting the sum of ``s`` and ``t``
+   - ``times s t``, denoting the product of ``s`` and ``t``
 
    Recursively define a function that evaluates any such term with respect to an assignment of values to the variables.
 

@@ -1107,13 +1107,13 @@ hljs.registerLanguage("lean", function(hljs) {
     $pattern: /#?\w+/,
     keyword:
       'theorem|10 def class structure instance set_option ' +
-      'example inductive coinductive attribute ' +
-      'axiom constant scoped local noncomputable ' +
+      'example inductive coinductive ' +
+      'axiom constant ' +
       'partial unsafe private protected ' +
-      'if then else termination_by decreasing_by ' +
-      'universe variable variables ' +
-      'import open export theory prelude renaming hiding exposing ' +
-      'calc  match with do by let extends ' +
+      'if then else ' +
+      'universe variable ' +
+      'import open export prelude renaming hiding ' +
+      'calc match with do by let extends ' +
       'for in unless try catch finally mutual mut return continue break where rec ' +
       'syntax macro_rules macro deriving ' +
       'fun ' +
@@ -1121,29 +1121,29 @@ hljs.registerLanguage("lean", function(hljs) {
       'section namespace end infix infixl infixr postfix prefix notation ',
     built_in:
       'Type Prop|10 Sort rw|10 rewrite rwa erw subst substs ' +
-      'simp dsimp simpa simp_intros simp_wf finish using generalizing ' +
+      'simp dsimp simpa simp_intros finish using generalizing ' +
       'unfold unfold1 dunfold unfold_projs unfold_coes ' +
-      'delta cc ac_reflexivity ac_refl ' +
+      'delta cc ac_rfl ' +
       'existsi|10 cases rcases intro intros introv by_cases ' +
       'refl rfl funext case focus propext exact exacts ' +
       'refine apply eapply fapply apply_with apply_instance ' +
-      'induction rename rename_i assumption revert generalize specialize clear ' +
+      'induction rename assumption revert generalize specialize clear ' +
       'contradiction by_contradiction by_contra trivial exfalso ' +
       'symmetry transitivity destruct constructor econstructor ' +
-      'split injection injections exists admit conv arg ' +
+      'left right split injection injections ' +
       'repeat skip swap solve1 abstract all_goals any_goals done ' +
       'fail_if_success success_if_fail guard_target guard_hyp ' +
-      'have replace at suffices show from first lhs rhs pattern tactic ' +
-      'congr congr_n congrArg norm_num ring ',
+      'have replace at suffices show from ' +
+      'congr congr_n congr_arg norm_num ring ',
     literal:
       'true false',
     meta:
-      ' ',
+      'noncomputable|10 private protected mutual',
     strong:
       'sorry admit',
   };
 
-  var LEAN_IDENT_RE = /[A-Za-z_][\\w\u207F-\u209C\u1D62-\u1D6A\u2079\'0-9]*/;
+  var LEAN_IDENT_RE = /[A-Za-z_][\\w\u207F-\u209C\u1D62-\u1D6A\u2079\'0-9?]*/;
 
   var DASH_COMMENT = hljs.COMMENT('--', '$');
   var MULTI_LINE_COMMENT = hljs.COMMENT('/-[^-]', '-/');
@@ -1157,6 +1157,12 @@ hljs.registerLanguage("lean", function(hljs) {
     className: 'meta',
     begin: '@\\[',
     end: '\\]'
+  };
+
+  var ATTRIBUTE_LINE = {
+    className: 'meta',
+    begin: '^attribute',
+    end: '$'
   };
 
   var LEAN_DEFINITION =	{
@@ -1196,6 +1202,7 @@ hljs.registerLanguage("lean", function(hljs) {
       DOC_COMMENT,
       LEAN_DEFINITION,
       ATTRIBUTE_DECORATOR,
+      ATTRIBUTE_LINE,
       { begin: /⟨/ } // relevance booster
     ]
   };
