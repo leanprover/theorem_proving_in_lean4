@@ -1275,6 +1275,7 @@ Here are some additional examples:
 
 ```lean
 # namespace Hidden
+# theorem add_zero (n : Nat) : n + 0 = n := Nat.add_zero n
 open Nat
 
 theorem zero_add (n : Nat) : 0 + n = n := by
