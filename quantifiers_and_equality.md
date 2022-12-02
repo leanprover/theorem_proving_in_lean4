@@ -569,7 +569,7 @@ example (x y z : Nat) (hxy : x < y) (hyz : y < z) : ∃ w, x < w ∧ w < z :=
 
 Note that ``Exists.intro`` has implicit arguments: Lean has to infer
 the predicate ``p : α → Prop`` in the conclusion ``∃ x, p x``.  This
-is not a trivial affair. For example, if we have have
+is not a trivial affair. For example, if we have
 ``hg : g 0 0 = 0`` and write ``Exists.intro 0 hg``, there are many possible values
 for the predicate ``p``, corresponding to the theorems ``∃ x, g x x = x``,
 ``∃ x, g x x = 0``, ``∃ x, g x 0 = x``, etc. Lean uses the
