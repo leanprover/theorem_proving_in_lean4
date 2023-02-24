@@ -1060,8 +1060,9 @@ theorem resp_mul {S1 S2 : Semigroup} (f : Morphism S1 S2) (a b : S1)
 
 example (S1 S2 : Semigroup) (f : Morphism S1 S2) (a : S1) :
       f (a * a * a) = f a * f a * f a :=
-  calc f (a * a * a) = f (a * a) * f a := by rw [resp_mul f]
-                _    = f a * f a * f a := by rw [resp_mul f]
+  calc f (a * a * a)
+    _ = f (a * a) * f a := by rw [resp_mul f]
+    _ = f a * f a * f a := by rw [resp_mul f]
 ```
 
 With the coercion in place, we can write ``f (a * a * a)`` instead of ``f.mor (a * a * a)``. When the ``Morphism``, ``f``, is used where a function is expected, Lean inserts the coercion. Similar to ``CoeSort``, we have yet another class ``CoeFun`` for this class of coercions. The field ``F`` is used to specify the function type we are coercing to. This type may depend on the type we are coercing from.

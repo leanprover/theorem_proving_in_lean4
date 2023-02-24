@@ -838,9 +838,9 @@ theorem zero_add (n : Nat) : 0 + n = n :=
    (show 0 + 0 = 0 from rfl)
    (fun (n : Nat) (ih : 0 + n = n) =>
     show 0 + succ n = succ n from
-    calc
-       0 + succ n = succ (0 + n) := rfl
-                _ = succ n       := by rw [ih])
+    calc 0 + succ n
+      _ = succ (0 + n) := rfl
+      _ = succ n       := by rw [ih])
 # end Hidden
 ```
 
@@ -874,11 +874,11 @@ theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
     (show m + n + 0 = m + (n + 0) from rfl)
     (fun k (ih : m + n + k = m + (n + k)) =>
       show m + n + succ k = m + (n + succ k) from
-      calc
-          m + n + succ k = succ (m + n + k) := rfl
-            _ = succ (m + (n + k)) := by rw [ih]
-            _ = m + succ (n + k) := rfl
-            _ = m + (n + succ k) := rfl)
+      calc m + n + succ k
+        _ = succ (m + n + k)   := rfl
+        _ = succ (m + (n + k)) := by rw [ih]
+        _ = m + succ (n + k)   := rfl
+        _ = m + (n + succ k)   := rfl)
 # end Hidden
 ```
 
@@ -901,9 +901,10 @@ theorem add_comm (m n : Nat) : m + n = n + m :=
    (show m + 0 = 0 + m by rw [Nat.zero_add, Nat.add_zero])
    (fun (n : Nat) (ih : m + n = n + m) =>
     show m + succ n = succ n + m from
-    calc m + succ n = succ (m + n) := rfl
-                  _ = succ (n + m) := by rw [ih]
-                  _ = succ n + m   := sorry)
+    calc m + succ n
+      _ = succ (m + n) := rfl
+      _ = succ (n + m) := by rw [ih]
+      _ = succ n + m   := sorry)
 ```
 
 At this point, we see that we need another supporting fact, namely, that ``succ (n + m) = succ n + m``.
@@ -917,9 +918,10 @@ theorem succ_add (n m : Nat) : succ n + m = succ (n + m) :=
     (show succ n + 0 = succ (n + 0) from rfl)
     (fun (m : Nat) (ih : succ n + m = succ (n + m)) =>
      show succ n + succ m = succ (n + succ m) from
-     calc succ n + succ m = succ (succ n + m) := rfl
-           _  = succ (succ (n + m))           := by rw [ih]
-           _  = succ (n + succ m)             := rfl)
+     calc succ n + succ m
+       _ = succ (succ n + m)   := rfl
+       _ = succ (succ (n + m)) := by rw [ih]
+       _ = succ (n + succ m)   := rfl)
 ```
 
 You can then replace the ``sorry`` in the previous proof with ``succ_add``. Yet again, the proofs can be compressed:
