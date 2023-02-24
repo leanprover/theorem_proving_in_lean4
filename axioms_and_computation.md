@@ -1099,8 +1099,9 @@ theorem linv_comp_self {f : α → β} [Inhabited α]
   funext fun a =>
     have ex  : ∃ a₁ : α, f a₁ = f a := ⟨a, rfl⟩
     have feq : f (choose ex) = f a  := choose_spec ex
-    calc linv f (f a) = choose ex := dif_pos ex
-               _      = a         := inj feq
+    calc linv f (f a)
+      _ = choose ex := dif_pos ex
+      _ = a         := inj feq
 ```
 
 From a classical point of view, ``linv`` is a function. From a

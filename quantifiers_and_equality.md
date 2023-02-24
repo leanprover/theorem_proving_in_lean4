@@ -358,6 +358,17 @@ calc
 
 Each ``<proof>_i`` is a proof for ``<expr>_{i-1} op_i <expr>_i``.
 
+We can also use `_` in the first relation (right after `<expr>_0`)
+which is useful to align the sequence of relation/proof pairs:
+
+```
+calc <expr>_0 
+    '_' 'op_1' <expr>_1 ':=' <proof>_1
+    '_' 'op_2' <expr>_2 ':=' <proof>_2
+    ...
+    '_' 'op_n' <expr>_n ':=' <proof>_n
+```
+
 Here is an example:
 
 ```lean
@@ -507,9 +518,22 @@ natural and perspicuous way.
 example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   calc
     (x + y) * (x + y) = (x + y) * x + (x + y) * y  := by rw [Nat.mul_add]
-        _ = x * x + y * x + (x + y) * y            := by rw [Nat.add_mul]
-        _ = x * x + y * x + (x * y + y * y)        := by rw [Nat.add_mul]
-        _ = x * x + y * x + x * y + y * y          := by rw [←Nat.add_assoc]
+    _ = x * x + y * x + (x + y) * y                := by rw [Nat.add_mul]
+    _ = x * x + y * x + (x * y + y * y)            := by rw [Nat.add_mul]
+    _ = x * x + y * x + x * y + y * y              := by rw [←Nat.add_assoc]
+```
+
+The alternative `calc` notation is worth considering here. When the
+first expression is taking this much space, using `_` in the first
+relation naturally aligns all relations:
+
+```lean
+example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+  calc (x + y) * (x + y)
+    _ = (x + y) * x + (x + y) * y       := by rw [Nat.mul_add]
+    _ = x * x + y * x + (x + y) * y     := by rw [Nat.add_mul]
+    _ = x * x + y * x + (x * y + y * y) := by rw [Nat.add_mul]
+    _ = x * x + y * x + x * y + y * y   := by rw [←Nat.add_assoc]
 ```
 
 Here the left arrow before ``Nat.add_assoc`` tells rewrite to use the
@@ -696,9 +720,9 @@ theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
   Exists.elim h1 (fun w1 (hw1 : a = 2 * w1) =>
   Exists.elim h2 (fun w2 (hw2 : b = 2 * w2) =>
     Exists.intro (w1 + w2)
-      (calc
-        a + b = 2 * w1 + 2 * w2  := by rw [hw1, hw2]
-          _   = 2 * (w1 + w2)    := by rw [Nat.mul_add])))
+      (calc a + b
+        _ = 2 * w1 + 2 * w2 := by rw [hw1, hw2]
+        _ = 2 * (w1 + w2)   := by rw [Nat.mul_add])))
 ```
 
 Using the various gadgets described in this chapter --- the match
