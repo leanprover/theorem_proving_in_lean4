@@ -351,14 +351,15 @@ equality. In Lean, a calculational proof starts with the keyword
 ```
 calc
   <expr>_0  'op_1'  <expr>_1  ':='  <proof>_1
-    '_'     'op_2'  <expr>_2  ':='  <proof>_2
-    ...
-    '_'     'op_n'  <expr>_n  ':='  <proof>_n
+  '_'       'op_2'  <expr>_2  ':='  <proof>_2
+  ...
+  '_'       'op_n'  <expr>_n  ':='  <proof>_n
 ```
 
-Each ``<proof>_i`` is a proof for ``<expr>_{i-1} op_i <expr>_i``.
+Note that the `calc` relations all have the same indentation. Each
+``<proof>_i`` is a proof for ``<expr>_{i-1} op_i <expr>_i``.
 
-We can also use `_` in the first relation (right after `<expr>_0`)
+We can also use `_` in the first relation (right after ``<expr>_0``)
 which is useful to align the sequence of relation/proof pairs:
 
 ```
