@@ -374,7 +374,7 @@ theorem th2 {α : Type u} {r : α → α → Prop}
 theorem th3 {α : Type u} {r : α → α → Prop}
             (reflr : reflexive r) (euclr : euclidean r)
             : transitive r :=
- @th2 _ _ (@th1 _ _ reflr @euclr) @euclr
+ th2 (th1 reflr @euclr) @euclr
 
 variable (r : α → α → Prop)
 variable (euclr : euclidean r)
