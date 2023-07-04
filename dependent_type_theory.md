@@ -292,8 +292,8 @@ from an expression as follows:
 ```lean
 #check fun (x : Nat) => x + 5   -- Nat → Nat
 #check λ (x : Nat) => x + 5     -- λ and fun mean the same thing
-#check fun x : Nat => x + 5     -- Nat inferred
-#check λ x : Nat => x + 5       -- Nat inferred
+#check fun x => x + 5     -- Nat inferred
+#check λ x => x + 5       -- Nat inferred
 ```
 
 You can evaluate a lambda function by passing the required parameters:
