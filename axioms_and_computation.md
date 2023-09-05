@@ -893,7 +893,7 @@ open Classical
 #check (@em : ∀ (p : Prop), p ∨ ¬p)
 ```
 
-[Diaconescu's theorem](http://en.wikipedia.org/wiki/Diaconescu%27s_theorem) states
+[Diaconescu's theorem](https://en.wikipedia.org/wiki/Diaconescu%27s_theorem) states
 that the axiom of choice is sufficient to derive the law of excluded
 middle. More precisely, it shows that the law of the excluded middle
 follows from ``Classical.choice``, ``propext``, and ``funext``. We
@@ -1045,7 +1045,7 @@ Putting these last two facts together yields the desired conclusion:
 
 Consequences of excluded middle include double-negation elimination,
 proof by cases, and proof by contradiction, all of which are described
-in the [Section Classical Logic](./propositions_and_proofs.md#classical_logic).
+in the [Section Classical Logic](./propositions_and_proofs.md#classical-logic).
 The law of the excluded middle and propositional extensionality imply propositional completeness:
 
 ```lean
@@ -1085,7 +1085,7 @@ of ``linv``, choice is used twice: first, to show that
 ``f a = b``. Notice that ``propDecidable`` is a scoped instance and is activated
 by the `open Classical` command. We use this instance to justify
 the if-then-else expression. (See also the discussion in
-[Section Decidable Propositions](./type_classes.md#decidable_propositions)).
+[Section Decidable Propositions](./type_classes.md#decidable-propositions)).
 
 ```lean
 open Classical

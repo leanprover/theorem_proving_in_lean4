@@ -20,7 +20,7 @@ The goal of Lean's front end is to interpret user input, construct
 formal expressions, and check that they are well formed and type
 correct. Lean also supports the use of various editors, which provide
 continuous checking and feedback. More information can be found on the
-Lean [documentation pages](http://leanprover.github.io/documentation/).
+Lean [documentation pages](https://leanprover.github.io/documentation/).
 
 The definitions and theorems in Lean's standard library are spread
 across multiple files. Users may also wish to make use of additional
@@ -41,7 +41,7 @@ import Bar.Baz.Blah
 imports the file ``Bar/Baz/Blah.olean``, where the descriptions are
 interpreted relative to the Lean *search path*. Information as to how
 the search path is determined can be found on the
-[documentation pages](http://leanprover.github.io/documentation/).
+[documentation pages](https://leanprover.github.io/documentation/).
 By default, it includes the standard library directory, and (in some contexts)
 the root of the user's local project. One can also specify imports relative to the current directory; for example,
 importing is transitive. In other words, if you import ``Foo`` and ``Foo`` imports ``Bar``,
@@ -51,7 +51,7 @@ More on Sections
 ----------------
 
 Lean provides various sectioning mechanisms to help structure a
-theory. You saw in [Variables and Sections](./dependent_type_theory.md#variables_and_sections) that the
+theory. You saw in [Variables and Sections](./dependent_type_theory.md#variables-and-sections) that the
 ``section`` command makes it possible not only to group together
 elements of a theory that go together, but also to declare variables
 that are inserted as arguments to theorems and definitions, as
@@ -219,7 +219,7 @@ which indicates that they only have effect until
 the current ``section`` or ``namespace`` is closed, or until the end
 of the current file.
 
-In [Section Using the Simplifier](./tactics.md#_using_the_simp),
+In [Section Using the Simplifier](./tactics.md#using-the-simplifier),
 we saw that theorems can be annotated with the ``[simp]`` attribute,
 which makes them available for use by the simplifier.
 The following example defines the prefix relation on lists,
@@ -312,7 +312,7 @@ end
 
 In [Section Notation](#notation) below, we will discuss Lean's
 mechanisms for defining notation, and see that they also support the
-``local`` modifier. However, in [Section Setting Options](#setting_options), we will
+``local`` modifier. However, in [Section Setting Options](#setting-options), we will
 discuss Lean's mechanisms for setting options, which does *not* follow
 this pattern: options can *only* be set locally, which is to say,
 their scope is always restricted to the current section or current
@@ -321,7 +321,7 @@ file.
 More on Implicit Arguments
 --------------------------
 
-In [Section Implicit Arguments](./dependent_type_theory.md#implicit_arguments),
+In [Section Implicit Arguments](./dependent_type_theory.md#implicit-arguments),
 we saw that if Lean displays the type
 of a term ``t`` as ``{x : α} → β x``, then the curly brackets
 indicate that ``x`` has been marked as an *implicit argument* to
