@@ -4,25 +4,37 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Axioms and Computation - Theorem Proving in Lean 4</title>
+        
+        
 
 
         <!-- Custom HTML head -->
         
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
         <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
         <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -30,7 +42,9 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        
 
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -89,7 +103,8 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -105,27 +120,33 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
+                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
+                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
+                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-
+                        
                     </div>
                 </div>
 
+                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -133,6 +154,7 @@
                         </ul>
                     </div>
                 </div>
+                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -145,7 +167,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="axioms-and-computation"><a class="header" href="#axioms-and-computation">Axioms and Computation</a></h1>
+                        <h1><a class="header" href="#axioms-and-computation" id="axioms-and-computation">Axioms and Computation</a></h1>
 <p>We have seen that the version of the Calculus of Constructions that
 has been implemented in Lean includes dependent function types,
 inductive types, and a hierarchy of universes that starts with an
@@ -203,7 +225,7 @@ adds three additional components:</p>
 compatible with bytecode evaluation, whereas the third is not amenable
 to computational interpretation. We will spell out the details more
 precisely below.</p>
-<h2 id="historical-and-philosophical-context"><a class="header" href="#historical-and-philosophical-context">Historical and Philosophical Context</a></h2>
+<h2><a class="header" href="#historical-and-philosophical-context" id="historical-and-philosophical-context">Historical and Philosophical Context</a></h2>
 <p>For most of its history, mathematics was essentially computational:
 geometry dealt with constructions of geometric objects, algebra was
 concerned with algorithmic solutions to systems of equations, and
@@ -229,7 +251,7 @@ roots; every meaningful mathematical theorem should have a direct
 computational interpretation. From a <em>classical</em> point of view, it is
 more fruitful to maintain a separation of concerns: we can use one
 language and body of methods to write computer programs, while
-maintaining the freedom to use a nonconstructive theories and methods
+maintaining the freedom to use nonconstructive theories and methods
 to reason about them. Lean is designed to support both of these
 approaches. Core parts of the library are developed constructively,
 but the system also provides support for carrying out classical
@@ -264,7 +286,7 @@ bytecode evaluation, as described above. It is only the choice
 principles discussed in :numref:<code>choice</code> that completely erase the
 distinction between the proof-irrelevant and data-relevant parts of
 the theory.</p>
-<h2 id="propositional-extensionality"><a class="header" href="#propositional-extensionality">Propositional Extensionality</a></h2>
+<h2><a class="header" href="#propositional-extensionality" id="propositional-extensionality">Propositional Extensionality</a></h2>
 <p>Propositional extensionality is the following axiom:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>axiom propext {a b : Prop} : (a ↔ b) → a = b
@@ -308,7 +330,7 @@ axioms`` command to display the axioms it depends on.
     #print axioms thm₂  -- propext
     -- END
 -->
-<h2 id="function-extensionality"><a class="header" href="#function-extensionality">Function Extensionality</a></h2>
+<h2><a class="header" href="#function-extensionality" id="function-extensionality">Function Extensionality</a></h2>
 <p>Similar to propositional extensionality, function extensionality
 asserts that any two functions of type <code>(x : α) → β x</code> that agree on
 all their inputs are equal.</p>
@@ -361,7 +383,7 @@ example, and prove set identities:</p>
 </span><span class="boring">def mem (x : α) (a : Set α) := a x
 </span><span class="boring">infix:50 (priority := high) &quot;∈&quot; =&gt; mem
 </span><span class="boring">theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
-</span><span class="boring"> funext (fun x =&gt; propext (h x))
+</span><span class="boring">  funext (fun x =&gt; propext (h x))
 </span>def empty : Set α := fun x =&gt; False
 
 notation (priority := high) &quot;∅&quot; =&gt; empty
@@ -446,7 +468,7 @@ bookkeeping needed to make the reductions type correct. In that case,
 adding new axioms in <code>Prop</code> does not matter; by proof irrelevance,
 an expression in <code>Prop</code> carries no information, and can be safely
 ignored by the reduction procedures.</p>
-<h2 id="quotients"><a class="header" href="#quotients">Quotients</a></h2>
+<h2><a class="header" href="#quotients" id="quotients">Quotients</a></h2>
 <p>Let <code>α</code> be any type, and let <code>r</code> be an equivalence relation on
 <code>α</code>. It is mathematically common to form the &quot;quotient&quot; <code>α / r</code>,
 that is, the type of elements of <code>α</code> &quot;modulo&quot; <code>r</code>. Set
@@ -501,7 +523,7 @@ clear.</p>
 #check (Quot.mk mod7Rel 4 : Quot mod7Rel)
 
 def f (x : Nat) : Bool :=
-   x % 7 = 0
+  x % 7 = 0
 
 theorem f_respects (a b : Nat) (h : mod7Rel a b) : f a = f b := by
   simp [mod7Rel, f] at *
@@ -585,7 +607,7 @@ end Setoid
 <span class="boring">end Hidden
 </span></code></pre>
 <p>Given a type <code>α</code>, a relation <code>r</code> on <code>α</code>, and a proof <code>p</code>
-that <code>r</code> is an equivalence relation, we can define <code>Setoid.mk p</code>
+that <code>r</code> is an equivalence relation, we can define <code>Setoid.mk r p</code>
 as an instance of the setoid class.</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>def Quotient {α : Sort u} (s : Setoid α) :=
@@ -629,12 +651,12 @@ readable way by using dependent pattern matching to perform
 case-analysis and break the hypotheses into pieces that are then
 reassembled to produce the conclusion.</p>
 <pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
-</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 </span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
 </span>private theorem eqv.refl (p : α × α) : p ~ p :=
   Or.inl ⟨rfl, rfl⟩
 
-private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
     Or.inl (by simp_all)
   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
@@ -651,17 +673,17 @@ private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p�
     Or.inl (by simp_all)
 
 private theorem is_equivalence : Equivalence (@eqv α) :=
-   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 </code></pre>
 <p>Now that we have proved that <code>eqv</code> is an equivalence relation, we
 can construct a <code>Setoid (α × α)</code>, and use it to define the type
 <code>UProd α</code> of unordered pairs.</p>
 <pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
-</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 </span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
 </span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
-</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
-</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
 </span><span class="boring">    Or.inl (by simp_all)
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
@@ -678,8 +700,8 @@ can construct a <code>Setoid (α × α)</code>, and use it to define the type
 </span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
 </span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 </span>instance uprodSetoid (α : Type u) : Setoid (α × α) where
-   r     := eqv
-   iseqv := is_equivalence
+  r     := eqv
+  iseqv := is_equivalence
 
 def UProd (α : Type u) : Type u :=
   Quotient (uprodSetoid α)
@@ -698,14 +720,14 @@ pairs as <code>Quotient.mk (a₁, a₂)</code>. This is useful for illustrative
 purposes, but it is not a good idea in general, since the notation
 will shadow other uses of curly brackets, such as for records and
 sets.</p>
-<p>We can easily prove that <code>{a₁, a₂} = {a₂, a₁}</code> using <code>quot.sound</code>,
+<p>We can easily prove that <code>{a₁, a₂} = {a₂, a₁}</code> using <code>Quot.sound</code>,
 since we have <code>(a₁, a₂) ~ (a₂, a₁)</code>.</p>
 <pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
-</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 </span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
 </span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
-</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
-</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
 </span><span class="boring">    Or.inl (by simp_all)
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
@@ -722,8 +744,8 @@ since we have <code>(a₁, a₂) ~ (a₂, a₁)</code>.</p>
 </span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
 </span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 </span><span class="boring">instance uprodSetoid (α : Type u) : Setoid (α × α) where
-</span><span class="boring">   r     := eqv
-</span><span class="boring">   iseqv := is_equivalence
+</span><span class="boring">  r     := eqv
+</span><span class="boring">  iseqv := is_equivalence
 </span><span class="boring">def UProd (α : Type u) : Type u :=
 </span><span class="boring">  Quotient (uprodSetoid α)
 </span><span class="boring">namespace UProd
@@ -742,11 +764,11 @@ proposition <code>mem_fn a u</code> on (ordered) pairs; then we show that
 <code>mem_respects</code>. This is an idiom that is used extensively in the
 Lean standard library.</p>
 <pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
-</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 </span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
 </span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
-</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
-</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
 </span><span class="boring">    Or.inl (by simp_all)
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
@@ -763,8 +785,8 @@ Lean standard library.</p>
 </span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
 </span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 </span><span class="boring">instance uprodSetoid (α : Type u) : Setoid (α × α) where
-</span><span class="boring">   r     := eqv
-</span><span class="boring">   iseqv := is_equivalence
+</span><span class="boring">  r     := eqv
+</span><span class="boring">  iseqv := is_equivalence
 </span><span class="boring">def UProd (α : Type u) : Type u :=
 </span><span class="boring">  Quotient (uprodSetoid α)
 </span><span class="boring">namespace UProd
@@ -773,8 +795,7 @@ Lean standard library.</p>
 </span><span class="boring">notation &quot;{ &quot; a₁ &quot;, &quot; a₂ &quot; }&quot; =&gt; mk a₁ a₂
 </span><span class="boring">theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
 </span><span class="boring">  Quot.sound (Or.inr ⟨rfl, rfl⟩)
-</span>
-private def mem_fn (a : α) : α × α → Prop
+</span>private def mem_fn (a : α) : α × α → Prop
   | (a₁, a₂) =&gt; a = a₁ ∨ a = a₂
 
 -- auxiliary lemma for proving mem_respects
@@ -815,7 +836,7 @@ theorem mem_or_mem_of_mem_mk {a b c : α} : c ∈ {a, b} → c = a ∨ c = b :=
 for lifting binary functions, and <code>Quotient.ind₂</code> for induction on
 two variables.</p>
 <p>We close this section with some hints as to why the quotient
-construction implies function extenionality. It is not hard to show
+construction implies function extensionality. It is not hard to show
 that extensional equality on the <code>(x : α) → β x</code> is an equivalence
 relation, and so we can consider the type <code>extfun α β</code> of functions
 &quot;up to equivalence.&quot; Of course, application respects that equivalence
@@ -828,7 +849,7 @@ extensionally equal, we have the following chain of equalities:</p>
 <pre><code>    f₁ = extfun_app ⟦f₁⟧ = extfun_app ⟦f₂⟧ = f₂
 </code></pre>
 <p>As a result, <code>f₁</code> is equal to <code>f₂</code>.</p>
-<h2 id="choice"><a class="header" href="#choice">Choice</a></h2>
+<h2><a class="header" href="#choice" id="choice">Choice</a></h2>
 <p>To state the final axiom defined in the standard library, we need the
 <code>Nonempty</code> type, which is defined as follows:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
@@ -867,7 +888,7 @@ subtypes as follows:</p>
 <code>indefiniteDescription</code>, and so requires us to mark the definition
 as <code>noncomputable</code>. Also in the <code>Classical</code> namespace, the
 function <code>choose</code> and the property <code>choose_spec</code> decompose the two
-parts of the output of <code>indefinite_description</code>:</p>
+parts of the output of <code>indefiniteDescription</code>:</p>
 <pre><code class="language-lean"><span class="boring">open Classical
 </span><span class="boring">namespace Hidden
 </span>noncomputable def choose {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
@@ -881,7 +902,7 @@ theorem choose_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (choose
 property of being <code>Nonempty</code> and the more constructive property of
 being <code>Inhabited</code>:</p>
 <pre><code class="language-lean"><span class="boring">open Classical
-</span>theorem inhabited_of_nonempty :Nonempty α → Inhabited α :=
+</span>theorem inhabited_of_nonempty : Nonempty α → Inhabited α :=
   fun h =&gt; choice (let ⟨a⟩ := h; ⟨⟨a⟩⟩)
 </code></pre>
 <p>In the next section, we will see that <code>propext</code>, <code>funext</code>, and
@@ -905,16 +926,16 @@ definition is conventionally known as <em>Hilbert's epsilon function</em>:</p>
          → (α → Prop) → α)
 
 #check (@epsilon_spec :
-          ∀ {a : Sort u} {p : a → Prop}(hex : ∃ (y : a), p y),
-            p (@epsilon _ (nonempty_of_exists hex) p))
+         ∀ {α : Sort u} {p : α → Prop} (hex : ∃ (y : α), p y),
+           p (@epsilon _ (nonempty_of_exists hex) p))
 </code></pre>
-<h2 id="the-law-of-the-excluded-middle"><a class="header" href="#the-law-of-the-excluded-middle">The Law of the Excluded Middle</a></h2>
+<h2><a class="header" href="#the-law-of-the-excluded-middle" id="the-law-of-the-excluded-middle">The Law of the Excluded Middle</a></h2>
 <p>The law of the excluded middle is the following</p>
 <pre><code class="language-lean">open Classical
 
 #check (@em : ∀ (p : Prop), p ∨ ¬p)
 </code></pre>
-<p><a href="http://en.wikipedia.org/wiki/Diaconescu%27s_theorem">Diaconescu's theorem</a> states
+<p><a href="https://en.wikipedia.org/wiki/Diaconescu%27s_theorem">Diaconescu's theorem</a> states
 that the axiom of choice is sufficient to derive the law of excluded
 middle. More precisely, it shows that the law of the excluded middle
 follows from <code>Classical.choice</code>, <code>propext</code>, and <code>funext</code>. We
@@ -1029,7 +1050,7 @@ definition of <code>u</code> and <code>v</code>, this implies that they are equa
 </span><span class="boring">    | Or.inl hut, Or.inl hvf =&gt;
 </span><span class="boring">      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
 </span><span class="boring">      Or.inl hne
-</span><span class="boring"> have p_implies_uv : p → u = v :=
+</span><span class="boring">  have p_implies_uv : p → u = v :=
 </span><span class="boring">    fun hp =&gt;
 </span><span class="boring">    have hpred : U = V :=
 </span><span class="boring">      funext fun x =&gt;
@@ -1049,7 +1070,7 @@ definition of <code>u</code> and <code>v</code>, this implies that they are equa
 </span></code></pre>
 <p>Consequences of excluded middle include double-negation elimination,
 proof by cases, and proof by contradiction, all of which are described
-in the <a href="./propositions_and_proofs.html#classical_logic">Section Classical Logic</a>.
+in the <a href="./propositions_and_proofs.html#classical-logic">Section Classical Logic</a>.
 The law of the excluded middle and propositional extensionality imply propositional completeness:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>open Classical
@@ -1069,20 +1090,20 @@ propositions is defined as follows:</p>
 <span class="boring">end Hidden
 </span></code></pre>
 <p>In contrast to <code>p ∨ ¬ p</code>, which can only eliminate to <code>Prop</code>, the
-type <code>decidable p</code> is equivalent to the sum type <code>Sum p (¬ p)</code>, which
+type <code>Decidable p</code> is equivalent to the sum type <code>Sum p (¬ p)</code>, which
 can eliminate to any type. It is this data that is needed to write an
 if-then-else expression.</p>
 <p>As an example of classical reasoning, we use <code>choose</code> to show that if
 <code>f : α → β</code> is injective and <code>α</code> is inhabited, then <code>f</code> has a
 left inverse. To define the left inverse <code>linv</code>, we use a dependent
 if-then-else expression. Recall that <code>if h : c then t else e</code> is
-notation for <code>dite c (fun  h : c =&gt; t) (fun h : ¬ c =&gt; e)</code>. In the definition
+notation for <code>dite c (fun h : c =&gt; t) (fun h : ¬ c =&gt; e)</code>. In the definition
 of <code>linv</code>, choice is used twice: first, to show that
 <code>(∃ a : A, f a = b)</code> is &quot;decidable,&quot; and then to choose an <code>a</code> such that
 <code>f a = b</code>. Notice that <code>propDecidable</code> is a scoped instance and is activated
 by the <code>open Classical</code> command. We use this instance to justify
 the if-then-else expression. (See also the discussion in
-<a href="./type_classes.html#decidable_propositions">Section Decidable Propositions</a>).</p>
+<a href="./type_classes.html#decidable-propositions">Section Decidable Propositions</a>).</p>
 <pre><code class="language-lean">open Classical
 
 noncomputable def linv [Inhabited α] (f : α → β) : β → α :=
@@ -1094,9 +1115,9 @@ theorem linv_comp_self {f : α → β} [Inhabited α]
   funext fun a =&gt;
     have ex  : ∃ a₁ : α, f a₁ = f a := ⟨a, rfl⟩
     have feq : f (choose ex) = f a  := choose_spec ex
-    calc linv f (f a) = choose ex := dif_pos ex
-               _      = a         := inj feq
-
+    calc linv f (f a)
+      _ = choose ex := dif_pos ex
+      _ = a         := inj feq
 </code></pre>
 <p>From a classical point of view, <code>linv</code> is a function. From a
 constructive point of view, it is unacceptable; because there is no
@@ -1107,10 +1128,13 @@ informative.</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
                             <a rel="prev" href="conv.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+                        
 
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -1118,32 +1142,48 @@ informative.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
                     <a rel="prev" href="conv.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+                
 
+                
             </nav>
 
         </div>
 
+        
 
+        
 
+        
 
+        
         <script type="text/javascript">
             window.playground_copyable = true;
+            window.clip_buttons = true;
+            window.tryit_buttons = false;
+            window.side_bar = true;
         </script>
+        
 
+        
 
+        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        
 
+        
 
     </body>
 </html>

@@ -4,25 +4,37 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>The Conversion Tactic Mode - Theorem Proving in Lean 4</title>
+        
+        
 
 
         <!-- Custom HTML head -->
         
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
         <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
         <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -30,7 +42,9 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        
 
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -89,7 +103,8 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -105,27 +120,33 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
+                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
+                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
+                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-
+                        
                     </div>
                 </div>
 
+                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -133,6 +154,7 @@
                         </ul>
                     </div>
                 </div>
+                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -145,12 +167,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="the-conversion-tactic-mode"><a class="header" href="#the-conversion-tactic-mode">The Conversion Tactic Mode</a></h1>
+                        <h1><a class="header" href="#the-conversion-tactic-mode" id="the-conversion-tactic-mode">The Conversion Tactic Mode</a></h1>
 <p>Inside a tactic block, one can use the keyword <code>conv</code> to enter
 conversion mode. This mode allows to travel inside assumptions and
 goals, even inside function abstractions and dependent arrows, to apply rewriting or
 simplifying steps.</p>
-<h2 id="basic-navigation-and-rewriting"><a class="header" href="#basic-navigation-and-rewriting">Basic navigation and rewriting</a></h2>
+<h2><a class="header" href="#basic-navigation-and-rewriting" id="basic-navigation-and-rewriting">Basic navigation and rewriting</a></h2>
 <p>As a first example, let us prove example
 <code>(a b c : Nat) : a * (b * c) = a * (c * b)</code>
 (examples in this file are somewhat artificial since
@@ -158,21 +180,21 @@ other tactics could finish them immediately). The naive
 first attempt is to enter tactic mode and try <code>rw [Nat.mul_comm]</code>. But this
 transforms the goal into <code>b * c * a = a * (c * b)</code>, after commuting the
 very first multiplication appearing in the term. There are several
-ways to fix this issue, and one way is to use a more precise tool :
+ways to fix this issue, and one way is to use a more precise tool:
 the conversion mode. The following code block shows the current target
 after each line.</p>
 <pre><code class="language-lean">example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv =&gt;
-    -- |- a * (b * c) = a * (c * b)
+    -- ⊢ a * (b * c) = a * (c * b)
     lhs
-    -- |- a * (b * c)
+    -- ⊢ a * (b * c)
     congr
-    -- 2 goals : |- a and |- b * c
+    -- 2 goals: ⊢ a, ⊢ b * c
     rfl
-    -- |- b * c
+    -- ⊢ b * c
     rw [Nat.mul_comm]
 </code></pre>
-<p>The above snippet show three navigation commands:</p>
+<p>The above snippet shows three navigation commands:</p>
 <ul>
 <li><code>lhs</code> navigates to the left hand side of a relation (here equality), there is also a <code>rhs</code> navigating to the right hand side.</li>
 <li><code>congr</code> creates as many targets as there are (nondependent and explicit) arguments to the current head function
@@ -185,7 +207,7 @@ tactic mode.</p>
 binders. Suppose we want to prove example
 <code>(fun x : Nat =&gt; 0 + x) = (fun x =&gt; x)</code>.
 The naive first attempt is to enter tactic mode and try
-<code>rw [zero_add]</code>. But this fails with a frustrating</p>
+<code>rw [Nat.zero_add]</code>. But this fails with a frustrating</p>
 <pre><code>error: tactic 'rewrite' failed, did not find instance of the pattern
        in the target expression
   0 + ?n
@@ -207,8 +229,8 @@ Note that this example is somewhat artificial, one could also do:</p>
 <pre><code class="language-lean">example : (fun x : Nat =&gt; 0 + x) = (fun x =&gt; x) := by
   simp
 </code></pre>
-<p>All this is also available to rewrite an hypothesis <code>h</code> from the local context using <code>conv at h</code>.</p>
-<h2 id="pattern-matching"><a class="header" href="#pattern-matching">Pattern matching</a></h2>
+<p><code>conv</code> can also rewrite a hypothesis <code>h</code> from the local context, using <code>conv at h</code>.</p>
+<h2><a class="header" href="#pattern-matching" id="pattern-matching">Pattern matching</a></h2>
 <p>Navigation using the above commands can be tedious. One can shortcut it using pattern matching as follows:</p>
 <pre><code class="language-lean">example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv in b * c =&gt; rw [Nat.mul_comm]
@@ -223,7 +245,7 @@ Note that this example is somewhat artificial, one could also do:</p>
 <pre><code class="language-lean">example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv in _ * c =&gt; rw [Nat.mul_comm]
 </code></pre>
-<h2 id="structuring-conversion-tactics"><a class="header" href="#structuring-conversion-tactics">Structuring conversion tactics</a></h2>
+<h2><a class="header" href="#structuring-conversion-tactics" id="structuring-conversion-tactics">Structuring conversion tactics</a></h2>
 <p>Curly brackets and <code>.</code> can also be used in <code>conv</code> mode to structure tactics.</p>
 <pre><code class="language-lean">example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
   conv =&gt;
@@ -232,22 +254,22 @@ Note that this example is somewhat artificial, one could also do:</p>
     . rw [Nat.zero_add]
     . rw [Nat.mul_comm]
 </code></pre>
-<h2 id="other-tactics-inside-conversion-mode"><a class="header" href="#other-tactics-inside-conversion-mode">Other tactics inside conversion mode</a></h2>
+<h2><a class="header" href="#other-tactics-inside-conversion-mode" id="other-tactics-inside-conversion-mode">Other tactics inside conversion mode</a></h2>
 <ul>
 <li><code>arg i</code> enter the <code>i</code>-th nondependent explicit argument of an application.</li>
 </ul>
 <pre><code class="language-lean">example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv =&gt;
-    -- |- a * (b * c) = a * (c * b)
+    -- ⊢ a * (b * c) = a * (c * b)
     lhs
-    -- |- a * (b * c)
+    -- ⊢ a * (b * c)
     arg 2
-    -- |- b * c
+    -- ⊢ b * c
     rw [Nat.mul_comm]
 </code></pre>
 <ul>
 <li>
-<p><code>args</code> alternative name for <code>congr</code></p>
+<p><code>args</code> alternative name for <code>congr</code>.</p>
 </li>
 <li>
 <p><code>simp</code> applies the simplifier to the current goal. It supports the same options available in regular tactic mode.</p>
@@ -263,12 +285,13 @@ example (g : Nat → Nat) (h₁ : g x = x + 1) (h₂ : x &gt; 0) : g x = f x := 
   exact h₁
 </code></pre>
 <ul>
-<li><code>enter [1, x, 2, y]</code> iterate <code>arg</code> and <code>intro</code> with the given arguments. It is just the macro.</li>
+<li><code>enter [1, x, 2, y]</code> iterate <code>arg</code> and <code>intro</code> with the given arguments. It is just the macro:</li>
 </ul>
-<pre><code>syntax enterArg := ident &lt;|&gt; num
+<pre><code>syntax enterArg := ident &lt;|&gt; group(&quot;@&quot;? num)
 syntax &quot;enter &quot; &quot;[&quot; (colGt enterArg),+ &quot;]&quot;: conv
 macro_rules
-  | `(conv| enter [$i:numLit]) =&gt; `(conv| arg $i)
+  | `(conv| enter [$i:num]) =&gt; `(conv| arg $i)
+  | `(conv| enter [@$i:num]) =&gt; `(conv| arg @$i)
   | `(conv| enter [$id:ident]) =&gt; `(conv| ext $id)
   | `(conv| enter [$arg:enterArg, $args,*]) =&gt; `(conv| (enter [$arg]; enter [$args,*]))
 </code></pre>
@@ -277,7 +300,7 @@ macro_rules
 <p><code>done</code> fail if there are unsolved goals.</p>
 </li>
 <li>
-<p><code>traceState</code> display the current tactic state.</p>
+<p><code>trace_state</code> display the current tactic state.</p>
 </li>
 <li>
 <p><code>whnf</code> put term in weak head normal form.</p>
@@ -294,11 +317,11 @@ applying custom congruence and extensionality lemmas.</p>
         : g x x + x = 1 + x := by
   conv =&gt;
     lhs
-    -- |- g x x + x
+    -- ⊢ g x x + x
     arg 1
-    -- |- g x x
+    -- ⊢ g x x
     rw [h₁]
-    -- 2 goals: |- 1, |- x ≠ 0
+    -- 2 goals: ⊢ 1, ⊢ x ≠ 0
     . skip
     . tactic =&gt; exact h₂
 </code></pre>
@@ -321,13 +344,17 @@ applying custom congruence and extensionality lemmas.</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
                             <a rel="prev" href="type_classes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+                        
 
+                        
                             <a rel="next" href="axioms_and_computation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -335,35 +362,52 @@ applying custom congruence and extensionality lemmas.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
                     <a rel="prev" href="type_classes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+                
 
+                
                     <a rel="next" href="axioms_and_computation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
+                
             </nav>
 
         </div>
 
+        
 
+        
 
+        
 
+        
         <script type="text/javascript">
             window.playground_copyable = true;
+            window.clip_buttons = true;
+            window.tryit_buttons = false;
+            window.side_bar = true;
         </script>
+        
 
+        
 
+        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        
 
+        
 
     </body>
 </html>

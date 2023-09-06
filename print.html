@@ -4,26 +4,39 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Theorem Proving in Lean 4</title>
+        
         <meta name="robots" content="noindex" />
+        
+        
 
 
         <!-- Custom HTML head -->
         
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
         <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
         <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -31,7 +44,9 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        
 
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -90,7 +105,8 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -106,27 +122,33 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
+                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
+                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
+                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-
+                        
                     </div>
                 </div>
 
+                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -134,6 +156,7 @@
                         </ul>
                     </div>
                 </div>
+                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -146,15 +169,15 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="theorem-proving-in-lean-4"><a class="header" href="#theorem-proving-in-lean-4">Theorem Proving in Lean 4</a></h1>
+                        <h1><a class="header" href="#theorem-proving-in-lean-4" id="theorem-proving-in-lean-4">Theorem Proving in Lean 4</a></h1>
 <p><em>by Jeremy Avigad, Leonardo de Moura, Soonho Kong and Sebastian Ullrich, with contributions from the Lean Community</em></p>
 <p>This version of the text assumes you’re using Lean 4. See the <a href="https://leanprover.github.io/lean4/doc/setup.html">Setting
 Up Lean section</a> of
 the <a href="https://leanprover.github.io/lean4/doc/">Lean 4 Manual</a> to install Lean. The first version of this book was
 written for Lean 2, and the Lean 3 version is available
 <a href="https://leanprover.github.io/theorem_proving_in_lean/">here</a>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<h2 id="computers-and-theorem-proving"><a class="header" href="#computers-and-theorem-proving">Computers and Theorem Proving</a></h2>
+<h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<h2><a class="header" href="#computers-and-theorem-proving" id="computers-and-theorem-proving">Computers and Theorem Proving</a></h2>
 <p><em>Formal verification</em> involves the use of logical and computational methods to establish claims that are expressed in
 precise mathematical terms. These can include ordinary mathematical theorems, as well as claims that pieces of hardware
 or software, network protocols, and mechanical and hybrid systems meet their specifications. In practice, there is not a
@@ -193,7 +216,7 @@ reasoning about the functions that the programs compute. Lean also has mechanism
 language</em>, which means that you can implement automation and extend the functionality of Lean using Lean itself. These
 aspects of Lean are explored in a companion tutorial to this one, <a href="TBD">Programming in Lean 4</a>, though computational
 aspects of the system will make an appearance here.</p>
-<h2 id="about-lean"><a class="header" href="#about-lean">About Lean</a></h2>
+<h2><a class="header" href="#about-lean" id="about-lean">About Lean</a></h2>
 <p>The <em>Lean</em> project was launched by Leonardo de Moura at Microsoft Research Redmond in 2013. It is an ongoing, long-term
 effort, and much of the potential for automation will be realized only gradually over time. Lean is released under the
 <a href="LICENSE">Apache 2.0 license</a>, a permissive open source license that permits others to use and extend the code and
@@ -201,7 +224,7 @@ mathematical libraries freely.</p>
 <p>To install Lean in your computer consider using the <a href="https://github.com/leanprover/lean4/blob/master/doc/quickstart.md">Quickstart</a> instructions. The Lean source code, and instructions for building Lean, are available at
 <a href="https://github.com/leanprover/lean4/">https://github.com/leanprover/lean4/</a>.</p>
 <p>This tutorial describes the current version of Lean, known as Lean 4.</p>
-<h2 id="about-this-book"><a class="header" href="#about-this-book">About this Book</a></h2>
+<h2><a class="header" href="#about-this-book" id="about-this-book">About this Book</a></h2>
 <p>This book is designed to teach you to develop and verify proofs in Lean. Much of the background information you will
 need in order to do this is not specific to Lean at all. To start with, you will learn the logical system that Lean is
 based on, a version of <em>dependent type theory</em> that is powerful enough to prove almost any conventional mathematical
@@ -226,14 +249,14 @@ with the system, and the mechanisms Lean offers for managing complex theories an
 things into the editor and modify the examples, and Lean will check the results and provide feedback continuously as you
 type. We recommend running the examples and experimenting with the code on your own as you work through the chapters
 that follow. You can open this book on VS Code by using the command &quot;Lean 4: Open Documentation View&quot;.</p>
-<h2 id="acknowledgments"><a class="header" href="#acknowledgments">Acknowledgments</a></h2>
+<h2><a class="header" href="#acknowledgments" id="acknowledgments">Acknowledgments</a></h2>
 <p>This tutorial is an open access project maintained on Github. Many people have contributed to the effort, providing
 corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Mario Carneiro, Nathan
 Carter, Eduardo Cavazos, Amine Chaieb, Joe Corneli, William DeMeo, Marcus Klaas de Vries, Ben Dyer, Gabriel Ebner,
 Anthony Hart, Simon Hudon, Sean Leather, Assia Mahboubi, Gihan Marasingha, Patrick Massot, Christopher John Mazey,
 Sebastian Ullrich, Floris van Doorn, Daniel Velleman, Théo Zimmerman, Paul Chisholm, Chris Lovett, and Siddhartha Gadgil for their contributions.  Please see <a href="https://github.com/leanprover/">lean prover</a> and <a href="https://github.com/leanprover-community/">lean community</a> for an up to date list
 of our amazing contributors.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="dependent-type-theory"><a class="header" href="#dependent-type-theory">Dependent Type Theory</a></h1>
+<h1><a class="header" href="#dependent-type-theory" id="dependent-type-theory">Dependent Type Theory</a></h1>
 <p>Dependent type theory is a powerful and expressive language, allowing
 you to express complex mathematical assertions, write complex hardware
 and software specifications, and reason about both of these in a
@@ -241,7 +264,7 @@ natural and uniform way. Lean is based on a version of dependent type
 theory known as the <em>Calculus of Constructions</em>, with a countable
 hierarchy of non-cumulative universes and inductive types. By the end
 of this chapter, you will understand much of what this means.</p>
-<h2 id="simple-type-theory"><a class="header" href="#simple-type-theory">Simple Type Theory</a></h2>
+<h2><a class="header" href="#simple-type-theory" id="simple-type-theory">Simple Type Theory</a></h2>
 <p>&quot;Type theory&quot; gets its name from the fact that every expression has an
 associated <em>type</em>. For example, in a given context, <code>x + 0</code> may
 denote a natural number and <code>f</code> may denote a function on the natural
@@ -357,7 +380,7 @@ type <code>Nat × Nat</code>. This gives you a way of creating pairs of natural
 numbers. Conversely, if you have <code>p : Nat × Nat</code>, then you can write
 <code>p.1 : Nat</code> and <code>p.2 : Nat</code>. This gives you a way of extracting
 its two components.</p>
-<h2 id="types-as-objects"><a class="header" href="#types-as-objects">Types as objects</a></h2>
+<h2><a class="header" href="#types-as-objects" id="types-as-objects">Types as objects</a></h2>
 <p>One way in which Lean's dependent type theory extends simple type
 theory is that types themselves --- entities like <code>Nat</code> and <code>Bool</code>
 --- are first-class citizens, which is to say that they themselves are
@@ -431,10 +454,10 @@ an abbreviation for <code>Type 0</code>:</p>
 Movement along the x-axis represents a change in the universe, while movement
 along the y-axis represents a change in what is sometimes referred to as
 &quot;degree&quot;.</p>
-<table><thead><tr><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th></tr></thead><tbody>
-<tr><td style="text-align: center">sort</td><td style="text-align: center">Prop (Sort 0)</td><td style="text-align: center">Type (Sort 1)</td><td style="text-align: center">Type 1 (Sort 2)</td><td style="text-align: center">Type 2 (Sort 3)</td><td style="text-align: center">...</td></tr>
-<tr><td style="text-align: center">type</td><td style="text-align: center">True</td><td style="text-align: center">Bool</td><td style="text-align: center">Nat -&gt; Type</td><td style="text-align: center">Type -&gt; Type 1</td><td style="text-align: center">...</td></tr>
-<tr><td style="text-align: center">term</td><td style="text-align: center">trivial</td><td style="text-align: center">true</td><td style="text-align: center">fun n =&gt; Fin n</td><td style="text-align: center">fun (_ : Type) =&gt; Type</td><td style="text-align: center">...</td></tr>
+<table><thead><tr><th align="center"></th><th align="center"></th><th align="center"></th><th align="center"></th><th align="center"></th><th align="center"></th></tr></thead><tbody>
+<tr><td align="center">sort</td><td align="center">Prop (Sort 0)</td><td align="center">Type (Sort 1)</td><td align="center">Type 1 (Sort 2)</td><td align="center">Type 2 (Sort 3)</td><td align="center">...</td></tr>
+<tr><td align="center">type</td><td align="center">True</td><td align="center">Bool</td><td align="center">Nat -&gt; Type</td><td align="center">Type -&gt; Type 1</td><td align="center">...</td></tr>
+<tr><td align="center">term</td><td align="center">trivial</td><td align="center">true</td><td align="center">fun n =&gt; Fin n</td><td align="center">fun (_ : Type) =&gt; Type</td><td align="center">...</td></tr>
 </tbody></table>
 <p>Some operations, however, need to be <em>polymorphic</em> over type
 universes. For example, <code>List α</code> should make sense for any type
@@ -461,7 +484,7 @@ def F (α : Type u) : Type u := Prod α α
 
 #check F    -- Type u → Type u
 </code></pre>
-<h2 id="function-abstraction-and-evaluation"><a class="header" href="#function-abstraction-and-evaluation">Function Abstraction and Evaluation</a></h2>
+<h2><a class="header" href="#function-abstraction-and-evaluation" id="function-abstraction-and-evaluation">Function Abstraction and Evaluation</a></h2>
 <p>Lean provides a <code>fun</code> (or <code>λ</code>) keyword to create a function
 from an expression as follows:</p>
 <pre><code class="language-lean">#check fun (x : Nat) =&gt; x + 5   -- Nat → Nat
@@ -569,7 +592,7 @@ expressions and proofs. It is less efficient than ``#eval``, and
 treats all foreign functions as opaque constants. You will learn later
 that there are some other differences between the two commands.
 -->
-<h2 id="definitions"><a class="header" href="#definitions">Definitions</a></h2>
+<h2><a class="header" href="#definitions" id="definitions">Definitions</a></h2>
 <p>Recall that the <code>def</code> keyword provides one important way of declaring new named
 objects.</p>
 <pre><code class="language-lean">def double (x : Nat) : Nat :=
@@ -668,7 +691,7 @@ output of the second matches the input of the first.  For example:</p>
 
 #eval compose Nat Nat Nat double square 3  -- 18
 </code></pre>
-<h2 id="local-definitions"><a class="header" href="#local-definitions">Local Definitions</a></h2>
+<h2><a class="header" href="#local-definitions" id="local-definitions">Local Definitions</a></h2>
 <p>Lean also allows you to introduce &quot;local&quot; definitions using the
 <code>let</code> keyword. The expression <code>let a := t1; t2</code> is
 definitionally equal to the result of replacing every occurrence of
@@ -707,7 +730,7 @@ why the definition of <code>foo</code> below type checks, but the definition of
   def bar := (fun a =&gt; fun x : a =&gt; x + 2) Nat
 -/
 </code></pre>
-<h1 id="variables-and-sections"><a class="header" href="#variables-and-sections">Variables and Sections</a></h1>
+<h1><a class="header" href="#variables-and-sections" id="variables-and-sections">Variables and Sections</a></h1>
 <p>Consider the following three function definitions:</p>
 <pre><code class="language-lean">def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
@@ -774,7 +797,7 @@ to name a section, which is to say, you can use an anonymous
 <code>section</code> / <code>end</code> pair. If you do name a section, however, you
 have to close it using the same name. Sections can also be nested,
 which allows you to declare new variables incrementally.</p>
-<h1 id="namespaces"><a class="header" href="#namespaces">Namespaces</a></h1>
+<h1><a class="header" href="#namespaces" id="namespaces">Namespaces</a></h1>
 <p>Lean provides you with the ability to group definitions into nested,
 hierarchical <em>namespaces</em>:</p>
 <pre><code class="language-lean">namespace Foo
@@ -882,7 +905,7 @@ same as a <code>section ... end</code> block. In particular, if you use the
 <code>variable</code> command within a namespace, its scope is limited to the
 namespace. Similarly, if you use an <code>open</code> command within a
 namespace, its effects disappear when the namespace is closed.</p>
-<h2 id="what-makes-dependent-type-theory-dependent"><a class="header" href="#what-makes-dependent-type-theory-dependent">What makes dependent type theory dependent?</a></h2>
+<h2><a class="header" href="#what-makes-dependent-type-theory-dependent" id="what-makes-dependent-type-theory-dependent">What makes dependent type theory dependent?</a></h2>
 <p>The short explanation is that types can depend on parameters. You
 have already seen a nice example of this: the type <code>List α</code> depends
 on the argument <code>α</code>, and this dependence is what distinguishes
@@ -963,7 +986,7 @@ def h2 (x : Nat) : Nat :=
 #eval h2 5 -- 5
 </code></pre>
 <p>The functions <code>f</code> and <code>g</code> above denote the same function.</p>
-<h2 id="implicit-arguments"><a class="header" href="#implicit-arguments">Implicit Arguments</a></h2>
+<h2><a class="header" href="#implicit-arguments" id="implicit-arguments">Implicit Arguments</a></h2>
 <p>Suppose we have an implementation of lists as:</p>
 <pre><code class="language-lean"><span class="boring">universe u
 </span><span class="boring">def Lst (α : Type u) : Type u := List α
@@ -1117,12 +1140,12 @@ made explicit.</p>
 <p>Notice that now the first <code>#check</code> command gives the type of the
 identifier, <code>id</code>, without inserting any placeholders. Moreover, the
 output indicates that the first argument is implicit.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="propositions-and-proofs"><a class="header" href="#propositions-and-proofs">Propositions and Proofs</a></h1>
+<h1><a class="header" href="#propositions-and-proofs" id="propositions-and-proofs">Propositions and Proofs</a></h1>
 <p>By now, you have seen some ways of defining objects and functions in
 Lean. In this chapter, we will begin to explain how to write
 mathematical assertions and proofs in the language of dependent type
 theory as well.</p>
-<h2 id="propositions-as-types"><a class="header" href="#propositions-as-types">Propositions as Types</a></h2>
+<h2><a class="header" href="#propositions-as-types" id="propositions-as-types">Propositions as Types</a></h2>
 <p>One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
 and a proof language on top of the definition language. But there is
@@ -1254,7 +1277,7 @@ theory, we need to exhibit a term <code>p : Prop</code>. To <em>prove</em> that
 assertion, we need to exhibit a term <code>t : p</code>. Lean's task, as a
 proof assistant, is to help us to construct such a term, <code>t</code>, and to
 verify that it is well-formed and has the correct type.</p>
-<h2 id="working-with-propositions-as-types"><a class="header" href="#working-with-propositions-as-types">Working with Propositions as Types</a></h2>
+<h2><a class="header" href="#working-with-propositions-as-types" id="working-with-propositions-as-types">Working with Propositions as Types</a></h2>
 <p>In the propositions-as-types paradigm, theorems involving only <code>→</code>
 can be proved using lambda abstraction and application. In Lean, the
 <code>theorem</code> command introduces a new theorem:</p>
@@ -1403,7 +1426,7 @@ theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
 <p>Note that it is often useful to use numeric unicode subscripts,
 entered as <code>\0</code>, <code>\1</code>, <code>\2</code>, ..., for hypotheses, as we did in
 this example.</p>
-<h2 id="propositional-logic"><a class="header" href="#propositional-logic">Propositional Logic</a></h2>
+<h2><a class="header" href="#propositional-logic" id="propositional-logic">Propositional Logic</a></h2>
 <p>Lean defines all the standard logical connectives and notation. The propositional connectives come with the following notation:</p>
 <table><thead><tr><th>Ascii</th><th>Unicode</th><th>Editor shortcut</th><th>Definition</th></tr></thead><tbody>
 <tr><td>True</td><td></td><td></td><td>True</td></tr>
@@ -1437,7 +1460,7 @@ defined in Lean's library in the file <code>Prelude.core</code> (see
 <a href="./interacting_with_lean.html#importing-files">importing files</a> for more information on the library
 hierarchy), and each connective comes with its canonical introduction
 and elimination rules.</p>
-<h3 id="conjunction"><a class="header" href="#conjunction">Conjunction</a></h3>
+<h3><a class="header" href="#conjunction" id="conjunction">Conjunction</a></h3>
 <p>The expression <code>And.intro h1 h2</code> builds a proof of <code>p ∧ q</code> using
 proofs <code>h1 : p</code> and <code>h2 : q</code>. It is common to describe
 <code>And.intro</code> as the <em>and-introduction</em> rule. In the next example we
@@ -1526,7 +1549,7 @@ example (h : p ∧ q) : q ∧ p ∧ q :=
   ⟨h.right, h.left, h.right⟩
 </code></pre>
 <p>This is often useful as well.</p>
-<h3 id="disjunction"><a class="header" href="#disjunction">Disjunction</a></h3>
+<h3><a class="header" href="#disjunction" id="disjunction">Disjunction</a></h3>
 <p>The expression <code>Or.intro_left q hp</code> creates a proof of <code>p ∨ q</code>
 from a proof <code>hp : p</code>. Similarly, <code>Or.intro_right p hq</code> creates a
 proof for <code>p ∨ q</code> using a proof <code>hq : q</code>. These are the left and
@@ -1575,7 +1598,7 @@ example (h : p ∨ q) : q ∨ p :=
 </code></pre>
 <p>Once again, you should exercise judgment as to whether such
 abbreviations enhance or diminish readability.</p>
-<h3 id="negation-and-falsity"><a class="header" href="#negation-and-falsity">Negation and Falsity</a></h3>
+<h3><a class="header" href="#negation-and-falsity" id="negation-and-falsity">Negation and Falsity</a></h3>
 <p>Negation, <code>¬p</code>, is actually defined to be <code>p → False</code>, so we
 obtain <code>¬p</code> by deriving a contradiction from <code>p</code>. Similarly, the
 expression <code>hnp hp</code> produces a proof of <code>False</code> from <code>hp : p</code>
@@ -1592,7 +1615,7 @@ example (hpq : p → q) (hnq : ¬q) : ¬p :=
 <code>False.elim</code>, which expresses the fact that anything follows from a
 contradiction. This rule is sometimes called <em>ex falso</em> (short for <em>ex
 falso sequitur quodlibet</em>), or the <em>principle of explosion</em>.</p>
-<pre><code class="language-lean">variable (tp q : Prop)
+<pre><code class="language-lean">variable (p q : Prop)
 
 example (hp : p) (hnp : ¬p) : q := False.elim (hnp hp)
 </code></pre>
@@ -1613,7 +1636,7 @@ example (hnp : ¬p) (hq : q) (hqp : q → p) : r :=
 <p>Incidentally, just as <code>False</code> has only an elimination rule, <code>True</code>
 has only an introduction rule, <code>True.intro : true</code>.  In other words,
 <code>True</code> is simply true, and has a canonical proof, <code>True.intro</code>.</p>
-<h3 id="logical-equivalence"><a class="header" href="#logical-equivalence">Logical Equivalence</a></h3>
+<h3><a class="header" href="#logical-equivalence" id="logical-equivalence">Logical Equivalence</a></h3>
 <p>The expression <code>Iff.intro h1 h2</code> produces a proof of <code>p ↔ q</code> from
 <code>h1 : p → q</code> and <code>h2 : q → p</code>.  The expression <code>Iff.mp h</code>
 produces a proof of <code>p → q</code> from <code>h : p ↔ q</code>. Similarly,
@@ -1644,7 +1667,7 @@ theorem and_swap : p ∧ q ↔ q ∧ p :=
 
 example (h : p ∧ q) : q ∧ p := (and_swap p q).mp h
 </code></pre>
-<h2 id="introducing-auxiliary-subgoals"><a class="header" href="#introducing-auxiliary-subgoals">Introducing Auxiliary Subgoals</a></h2>
+<h2><a class="header" href="#introducing-auxiliary-subgoals" id="introducing-auxiliary-subgoals">Introducing Auxiliary Subgoals</a></h2>
 <p>This is a good place to introduce another device Lean offers to help
 structure long proofs, namely, the <code>have</code> construct, which
 introduces an auxiliary subgoal in a proof. Here is a small example,
@@ -1678,7 +1701,7 @@ example (h : p ∧ q) : q ∧ p :=
 to show that it indeed suffices to show <code>q</code>, by proving the original
 goal of <code>q ∧ p</code> with the additional hypothesis <code>hq : q</code>. Finally,
 we have to show <code>q</code>.</p>
-<h2 id="classical-logic"><a class="header" href="#classical-logic">Classical Logic</a></h2>
+<h2><a class="header" href="#classical-logic" id="classical-logic">Classical Logic</a></h2>
 <p>The introduction and elimination rules we have seen so far are all
 constructive, which is to say, they reflect a computational
 understanding of the logical connectives based on the
@@ -1753,7 +1776,7 @@ are permissible, and Lean supports the use of classical reasoning in
 such contexts without relying on excluded middle.</p>
 <p>The full list of axioms that are used in Lean to support classical
 reasoning are discussed in <a href="./axioms_and_computation.html">Axioms and Computation</a>.</p>
-<h2 id="examples-of-propositional-validities"><a class="header" href="#examples-of-propositional-validities">Examples of Propositional Validities</a></h2>
+<h2><a class="header" href="#examples-of-propositional-validities" id="examples-of-propositional-validities">Examples of Propositional Validities</a></h2>
 <p>Lean's standard library contains proofs of many valid statements of
 propositional logic, all of which you are free to use in proofs of
 your own. The following list includes a number of common identities.</p>
@@ -1850,7 +1873,7 @@ example (p q : Prop) : ¬(p ∧ ¬q) → (p → q) :=
       (fun hq : q =&gt; hq)
       (fun hnq : ¬q =&gt; absurd (And.intro hp hnq) h)
 </code></pre>
-<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<h2><a class="header" href="#exercises" id="exercises">Exercises</a></h2>
 <p>Prove the following identities, replacing the &quot;sorry&quot; placeholders with actual proofs.</p>
 <pre><code class="language-lean">variable (p q r : Prop)
 
@@ -1894,12 +1917,12 @@ example : p ∨ ¬p := sorry
 example : (((p → q) → p) → p) := sorry
 </code></pre>
 <p>Prove <code>¬(p ↔ ¬p)</code> without using classical logic.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="quantifiers-and-equality"><a class="header" href="#quantifiers-and-equality">Quantifiers and Equality</a></h1>
+<h1><a class="header" href="#quantifiers-and-equality" id="quantifiers-and-equality">Quantifiers and Equality</a></h1>
 <p>The last chapter introduced you to methods that construct proofs of
 statements involving the propositional connectives. In this chapter,
 we extend the repertoire of logical constructions to include the
 universal and existential quantifiers, and the equality relation.</p>
-<h2 id="the-universal-quantifier"><a class="header" href="#the-universal-quantifier">The Universal Quantifier</a></h2>
+<h2><a class="header" href="#the-universal-quantifier" id="the-universal-quantifier">The Universal Quantifier</a></h2>
 <p>Notice that if <code>α</code> is any type, we can represent a unary predicate
 <code>p</code> on <code>α</code> as an object of type <code>α → Prop</code>. In that case, given
 <code>x : α</code>, <code>p x</code> denotes the assertion that <code>p</code> holds of
@@ -2042,7 +2065,7 @@ can form propositions that quantify over <code>α → Prop</code>. In particular
 we can define predicates on <code>α</code> by quantifying over all predicates
 on <code>α</code>, which is exactly the type of circularity that was once
 considered problematic.</p>
-<h2 id="equality"><a class="header" href="#equality">Equality</a></h2>
+<h2><a class="header" href="#equality" id="equality">Equality</a></h2>
 <p>Let us now turn to one of the most fundamental relations defined in
 Lean's library, namely, the equality relation. In <a href="inductive_types.html">Chapter Inductive Types</a>,
 we will explain <em>how</em> equality is defined from the primitives of Lean's logical framework.
@@ -2168,18 +2191,27 @@ reasoning is supported by a term rewriter, a simplifier, and other
 kinds of automation. The term rewriter and simplifier are described
 briefly in the next section, and then in greater detail in the next
 chapter.</p>
-<h2 id="calculational-proofs"><a class="header" href="#calculational-proofs">Calculational Proofs</a></h2>
+<h2><a class="header" href="#calculational-proofs" id="calculational-proofs">Calculational Proofs</a></h2>
 <p>A calculational proof is just a chain of intermediate results that are
 meant to be composed by basic principles such as the transitivity of
 equality. In Lean, a calculational proof starts with the keyword
 <code>calc</code>, and has the following syntax:</p>
 <pre><code>calc
   &lt;expr&gt;_0  'op_1'  &lt;expr&gt;_1  ':='  &lt;proof&gt;_1
-    '_'     'op_2'  &lt;expr&gt;_2  ':='  &lt;proof&gt;_2
-    ...
-    '_'     'op_n'  &lt;expr&gt;_n  ':='  &lt;proof&gt;_n
+  '_'       'op_2'  &lt;expr&gt;_2  ':='  &lt;proof&gt;_2
+  ...
+  '_'       'op_n'  &lt;expr&gt;_n  ':='  &lt;proof&gt;_n
 </code></pre>
-<p>Each <code>&lt;proof&gt;_i</code> is a proof for <code>&lt;expr&gt;_{i-1} op_i &lt;expr&gt;_i</code>.</p>
+<p>Note that the <code>calc</code> relations all have the same indentation. Each
+<code>&lt;proof&gt;_i</code> is a proof for <code>&lt;expr&gt;_{i-1} op_i &lt;expr&gt;_i</code>.</p>
+<p>We can also use <code>_</code> in the first relation (right after <code>&lt;expr&gt;_0</code>)
+which is useful to align the sequence of relation/proof pairs:</p>
+<pre><code>calc &lt;expr&gt;_0 
+    '_' 'op_1' &lt;expr&gt;_1 ':=' &lt;proof&gt;_1
+    '_' 'op_2' &lt;expr&gt;_2 ':=' &lt;proof&gt;_2
+    ...
+    '_' 'op_n' &lt;expr&gt;_n ':=' &lt;proof&gt;_n
+</code></pre>
 <p>Here is an example:</p>
 <pre><code class="language-lean">variable (a b c d e : Nat)
 variable (h1 : a = b)
@@ -2303,9 +2335,19 @@ natural and perspicuous way.</p>
 <pre><code class="language-lean">example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   calc
     (x + y) * (x + y) = (x + y) * x + (x + y) * y  := by rw [Nat.mul_add]
-        _ = x * x + y * x + (x + y) * y            := by rw [Nat.add_mul]
-        _ = x * x + y * x + (x * y + y * y)        := by rw [Nat.add_mul]
-        _ = x * x + y * x + x * y + y * y          := by rw [←Nat.add_assoc]
+    _ = x * x + y * x + (x + y) * y                := by rw [Nat.add_mul]
+    _ = x * x + y * x + (x * y + y * y)            := by rw [Nat.add_mul]
+    _ = x * x + y * x + x * y + y * y              := by rw [←Nat.add_assoc]
+</code></pre>
+<p>The alternative <code>calc</code> notation is worth considering here. When the
+first expression is taking this much space, using <code>_</code> in the first
+relation naturally aligns all relations:</p>
+<pre><code class="language-lean">example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+  calc (x + y) * (x + y)
+    _ = (x + y) * x + (x + y) * y       := by rw [Nat.mul_add]
+    _ = x * x + y * x + (x + y) * y     := by rw [Nat.add_mul]
+    _ = x * x + y * x + (x * y + y * y) := by rw [Nat.add_mul]
+    _ = x * x + y * x + x * y + y * y   := by rw [←Nat.add_assoc]
 </code></pre>
 <p>Here the left arrow before <code>Nat.add_assoc</code> tells rewrite to use the
 identity in the opposite direction. (You can enter it with <code>\l</code> or
@@ -2317,7 +2359,7 @@ both <code>rw</code> and <code>simp</code> can do the job on their own:</p>
 example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   by simp [Nat.mul_add, Nat.add_mul, Nat.add_assoc]
 </code></pre>
-<h2 id="the-existential-quantifier"><a class="header" href="#the-existential-quantifier">The Existential Quantifier</a></h2>
+<h2><a class="header" href="#the-existential-quantifier" id="the-existential-quantifier">The Existential Quantifier</a></h2>
 <p>Finally, consider the existential quantifier, which can be written as
 either <code>exists x : α, p x</code> or <code>∃ x : α, p x</code>.  Both versions are
 actually notationally convenient abbreviations for a more long-winded
@@ -2453,9 +2495,9 @@ theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
   Exists.elim h1 (fun w1 (hw1 : a = 2 * w1) =&gt;
   Exists.elim h2 (fun w2 (hw2 : b = 2 * w2) =&gt;
     Exists.intro (w1 + w2)
-      (calc
-        a + b = 2 * w1 + 2 * w2  := by rw [hw1, hw2]
-          _   = 2 * (w1 + w2)    := by rw [Nat.mul_add])))
+      (calc a + b
+        _ = 2 * w1 + 2 * w2 := by rw [hw1, hw2]
+        _ = 2 * (w1 + w2)   := by rw [Nat.mul_add])))
 </code></pre>
 <p>Using the various gadgets described in this chapter --- the match
 statement, anonymous constructors, and the <code>rewrite</code> tactic, we can
@@ -2547,7 +2589,7 @@ example : (∃ x, p x → r) ↔ (∀ x, p x) → r :=
                     show False from hnex hex)
               show False from hnap hap)))
 </code></pre>
-<h2 id="more-on-the-proof-language"><a class="header" href="#more-on-the-proof-language">More on the Proof Language</a></h2>
+<h2><a class="header" href="#more-on-the-proof-language" id="more-on-the-proof-language">More on the Proof Language</a></h2>
 <p>We have seen that keywords like <code>fun</code>, <code>have</code>, and <code>show</code> make
 it possible to write formal proof terms that mirror the structure of
 informal mathematical proofs. In this section, we discuss some
@@ -2607,7 +2649,7 @@ though using it for data is somewhat odd:</p>
 <pre><code class="language-lean">example (n : Nat) : Nat := ‹Nat›
 </code></pre>
 <p>Later, we show how you can extend the proof language using the Lean macro system.</p>
-<h2 id="exercises-1"><a class="header" href="#exercises-1">Exercises</a></h2>
+<h2><a class="header" href="#exercises-1" id="exercises-1">Exercises</a></h2>
 <ol>
 <li>Prove these equivalences:</li>
 </ol>
@@ -2672,7 +2714,7 @@ def Fermat's_last_theorem : Prop := sorry
 <li>Prove as many of the identities listed in the Existential
 Quantifier section as you can.</li>
 </ol>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="tactics"><a class="header" href="#tactics">Tactics</a></h1>
+<h1><a class="header" href="#tactics" id="tactics">Tactics</a></h1>
 <p>In this chapter, we describe an alternative approach to constructing
 proofs, using <em>tactics</em>.  A proof term is a representation of a
 mathematical proof; tactics are commands, or instructions, that
@@ -2692,7 +2734,7 @@ require the reader to predict or guess the results of each
 instruction. But they can also be shorter and easier to
 write. Moreover, tactics offer a gateway to using Lean's automation,
 since automated procedures are themselves tactics.</p>
-<h2 id="entering-tactic-mode"><a class="header" href="#entering-tactic-mode">Entering Tactic Mode</a></h2>
+<h2><a class="header" href="#entering-tactic-mode" id="entering-tactic-mode">Entering Tactic Mode</a></h2>
 <p>Conceptually, stating a theorem or introducing a <code>have</code> statement
 creates a goal, namely, the goal of constructing a term with the
 expected type. For example, the following creates the goal of
@@ -2828,7 +2870,7 @@ structuring proof.</p>
     . exact hq
     . exact hp
 </code></pre>
-<h2 id="basic-tactics"><a class="header" href="#basic-tactics">Basic Tactics</a></h2>
+<h2><a class="header" href="#basic-tactics" id="basic-tactics">Basic Tactics</a></h2>
 <p>In addition to <code>apply</code> and <code>exact</code>, another useful tactic is
 <code>intro</code>, which introduces a hypothesis. What follows is an example
 of an identity from propositional logic that we proved in a previous
@@ -3022,7 +3064,7 @@ context:</p>
 </code></pre>
 <p>Here the <code>rewrite</code> tactic, abbreviated <code>rw</code>, uses <code>h</code> to replace
 <code>x</code> by <code>3</code> again. The <code>rewrite</code> tactic will be discussed below.</p>
-<h2 id="more-tactics"><a class="header" href="#more-tactics">More Tactics</a></h2>
+<h2><a class="header" href="#more-tactics" id="more-tactics">More Tactics</a></h2>
 <p>Some additional tactics are useful for constructing and destructing
 propositions and data. For example, when applied to a goal of the form
 <code>p ∨ q</code>, you use tactics such as <code>apply Or.inl</code> and <code>apply Or.inr</code>.  Conversely, the <code>cases</code> tactic can be used to decompose a
@@ -3206,7 +3248,7 @@ the <a href="./inductive_types.html#tactics-for-inductive-types">Tactics for Ind
     | Or.inl ⟨hp, hq⟩ =&gt; constructor; assumption; apply Or.inl; assumption
     | Or.inr ⟨hp, hr⟩ =&gt; constructor; assumption; apply Or.inr; assumption
 </code></pre>
-<h2 id="structuring-tactic-proofs"><a class="header" href="#structuring-tactic-proofs">Structuring Tactic Proofs</a></h2>
+<h2><a class="header" href="#structuring-tactic-proofs" id="structuring-tactic-proofs">Structuring Tactic Proofs</a></h2>
 <p>Tactics often provide an efficient way of building a proof, but long
 sequences of instructions can obscure the structure of the
 argument. In this section, we describe some means that help provide
@@ -3371,7 +3413,7 @@ expect the proof to look like this:</p>
   { &lt;proof of third goal&gt;  }
   { &lt;proof of final goal&gt;  }
 </code></pre>
-<h2 id="tactic-combinators"><a class="header" href="#tactic-combinators">Tactic Combinators</a></h2>
+<h2><a class="header" href="#tactic-combinators" id="tactic-combinators">Tactic Combinators</a></h2>
 <p><em>Tactic combinators</em> are operations that form new tactics from old
 ones. A sequencing combinator is already implicit in the <code>by</code> block:</p>
 <pre><code class="language-lean">example (p q : Prop) (hp : p) : p ∨ q :=
@@ -3457,7 +3499,7 @@ conjunctions:</p>
 goal, temporarily hiding the others from the scope. So, if <code>t</code>
 ordinarily only effects the current goal, <code>focus (all_goals t)</code> has
 the same effect as <code>t</code>.</p>
-<h2 id="rewriting"><a class="header" href="#rewriting">Rewriting</a></h2>
+<h2><a class="header" href="#rewriting" id="rewriting">Rewriting</a></h2>
 <p>The <code>rewrite</code> tactic (abbreviated <code>rw</code>) and the <code>simp</code> tactic
 were introduced briefly in <a href="./quantifiers_and_equality.html#calculational-proofs">Calculational Proofs</a>. In this
 section and the next, we discuss them in greater detail.</p>
@@ -3540,14 +3582,13 @@ example (n : Nat) (h : n = 0) (t : Tuple α n) : Tuple α 0 := by
   rw [h] at t
   exact t
 </code></pre>
-<h2 id="using-the-simplifier"><a class="header" href="#using-the-simplifier">Using the Simplifier</a></h2>
+<h2><a class="header" href="#using-the-simplifier" id="using-the-simplifier">Using the Simplifier</a></h2>
 <p>Whereas <code>rewrite</code> is designed as a surgical tool for manipulating a
 goal, the simplifier offers a more powerful form of automation. A
 number of identities in Lean's library have been tagged with the
 <code>[simp]</code> attribute, and the <code>simp</code> tactic uses them to iteratively
 rewrite subterms in an expression.</p>
-<pre><code class="language-lean">example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
-        : (x + 0) * (0 + y * 1 + z * 0) = x * y := by
+<pre><code class="language-lean">example (x y z : Nat) : (x + 0) * (0 + y * 1 + z * 0) = x * y := by
   simp
 
 example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
@@ -3820,7 +3861,7 @@ that <code>simp_arith</code> is a shorthand for <code>simp (config := { arith :=
 <pre><code class="language-lean">example : 0 &lt; 1 + x ∧ x + y + 2 ≥ y + 1 := by
   simp_arith
 </code></pre>
-<h2 id="split-tactic"><a class="header" href="#split-tactic">Split Tactic</a></h2>
+<h2><a class="header" href="#split-tactic" id="split-tactic">Split Tactic</a></h2>
 <p>The <code>split</code> tactic is useful for breaking nested <code>if-then-else</code> and <code>match</code> expressions in cases.
 For a <code>match</code> expression with <code>n</code> cases, the <code>split</code> tactic generates at most <code>n</code> subgoals. Here is an example.</p>
 <pre><code class="language-lean">def f (x y z : Nat) : Nat :=
@@ -3861,7 +3902,7 @@ Like <code>simp</code>, we can apply <code>split</code> to a particular hypothes
 example (xs ys : List Nat) (h : g xs ys = 0) : False := by
   simp [g] at h; split at h &lt;;&gt; simp_arith at h
 </code></pre>
-<h2 id="extensible-tactics"><a class="header" href="#extensible-tactics">Extensible Tactics</a></h2>
+<h2><a class="header" href="#extensible-tactics" id="extensible-tactics">Extensible Tactics</a></h2>
 <p>In the following example, we define the notation <code>triv</code> using the command <code>syntax</code>.
 Then, we use the command <code>macro_rules</code> to specify what should
 be done when <code>triv</code> is used. You can provide different expansions, and the tactic
@@ -3896,7 +3937,7 @@ macro_rules | `(tactic| triv) =&gt; `(tactic| apply And.intro &lt;;&gt; triv)
 example (x : α) (h : p) : x = x ∧ p := by
   triv
 </code></pre>
-<h2 id="exercises-2"><a class="header" href="#exercises-2">Exercises</a></h2>
+<h2><a class="header" href="#exercises-2" id="exercises-2">Exercises</a></h2>
 <ol>
 <li>
 <p>Go back to the exercises in <a href="./propositions_and_proofs.html">Chapter Propositions and
@@ -3913,7 +3954,7 @@ and <code>simp</code> as appropriate.</p>
         : (p ∨ q ∨ r) ∧ (q ∨ p ∨ r) ∧ (q ∨ r ∨ p) := by
   admit
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="interacting-with-lean"><a class="header" href="#interacting-with-lean">Interacting with Lean</a></h1>
+<h1><a class="header" href="#interacting-with-lean" id="interacting-with-lean">Interacting with Lean</a></h1>
 <p>You are now familiar with the fundamentals of dependent type theory,
 both as a language for defining mathematical objects and a language
 for constructing proofs. The one thing you are missing is a mechanism
@@ -3924,12 +3965,12 @@ theory to explore some pragmatic aspects of interacting with Lean.</p>
 <p>Not all of the information found here will be useful to you right
 away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.</p>
-<h2 id="importing-files"><a class="header" href="#importing-files">Importing Files</a></h2>
+<h2><a class="header" href="#importing-files" id="importing-files">Importing Files</a></h2>
 <p>The goal of Lean's front end is to interpret user input, construct
 formal expressions, and check that they are well formed and type
 correct. Lean also supports the use of various editors, which provide
 continuous checking and feedback. More information can be found on the
-Lean <a href="http://leanprover.github.io/documentation/">documentation pages</a>.</p>
+Lean <a href="https://leanprover.github.io/documentation/">documentation pages</a>.</p>
 <p>The definitions and theorems in Lean's standard library are spread
 across multiple files. Users may also wish to make use of additional
 libraries, or develop their own projects across multiple files. When
@@ -3945,14 +3986,14 @@ command</p>
 <p>imports the file <code>Bar/Baz/Blah.olean</code>, where the descriptions are
 interpreted relative to the Lean <em>search path</em>. Information as to how
 the search path is determined can be found on the
-<a href="http://leanprover.github.io/documentation/">documentation pages</a>.
+<a href="https://leanprover.github.io/documentation/">documentation pages</a>.
 By default, it includes the standard library directory, and (in some contexts)
 the root of the user's local project. One can also specify imports relative to the current directory; for example,
-Importing is transitive. In other words, if you import <code>Foo</code> and <code>Foo</code> imports <code>Bar</code>,
+importing is transitive. In other words, if you import <code>Foo</code> and <code>Foo</code> imports <code>Bar</code>,
 then you also have access to the contents of <code>Bar</code>, and do not need to import it explicitly.</p>
-<h2 id="more-on-sections"><a class="header" href="#more-on-sections">More on Sections</a></h2>
+<h2><a class="header" href="#more-on-sections" id="more-on-sections">More on Sections</a></h2>
 <p>Lean provides various sectioning mechanisms to help structure a
-theory. You saw in <a href="./dependent_type_theory.html#variables_and_sections">Variables and Sections</a> that the
+theory. You saw in <a href="./dependent_type_theory.html#variables-and-sections">Variables and Sections</a> that the
 <code>section</code> command makes it possible not only to group together
 elements of a theory that go together, but also to declare variables
 that are inserted as arguments to theorems and definitions, as
@@ -3983,9 +4024,9 @@ end
 argument; Lean detects the dependence and inserts it
 automatically. Similarly, Lean detects the occurrence of <code>x</code> in
 <code>t1</code> and <code>t2</code>, and inserts it automatically there, too.
-Note that double does <em>not</em> have <code>y</code> as argument. Variables are only
+Note that <code>double</code> does <em>not</em> have <code>y</code> as argument. Variables are only
 included in declarations where they are actually used.</p>
-<h2 id="more-on-namespaces"><a class="header" href="#more-on-namespaces">More on Namespaces</a></h2>
+<h2><a class="header" href="#more-on-namespaces" id="more-on-namespaces">More on Namespaces</a></h2>
 <p>In Lean, identifiers are given by hierarchical <em>names</em> like
 <code>Foo.Bar.baz</code>. We saw in <a href="./dependent_type_theory.html#namespaces">Namespaces</a> that Lean provides
 mechanisms for working with hierarchical names. The command
@@ -4068,7 +4109,7 @@ overloading of common names.</p>
 namespace, so that whenever the namespace is open, these aliases are
 available. If this command is used outside a namespace, the aliases
 are exported to the top level.</p>
-<h2 id="attributes"><a class="header" href="#attributes">Attributes</a></h2>
+<h2><a class="header" href="#attributes" id="attributes">Attributes</a></h2>
 <p>The main function of Lean is to translate user input to formal
 expressions that are checked by the kernel for correctness and then
 stored in the environment for later use. But some commands have other
@@ -4081,7 +4122,7 @@ imports it. However, such commands often support the <code>local</code> modifier
 which indicates that they only have effect until
 the current <code>section</code> or <code>namespace</code> is closed, or until the end
 of the current file.</p>
-<p>In <a href="./tactics.html#_using_the_simp">Section Using the Simplifier</a>,
+<p>In <a href="./tactics.html#using-the-simplifier">Section Using the Simplifier</a>,
 we saw that theorems can be annotated with the <code>[simp]</code> attribute,
 which makes them available for use by the simplifier.
 The following example defines the prefix relation on lists,
@@ -4158,13 +4199,13 @@ end
 </code></pre>
 <p>In <a href="interacting_with_lean.html#notation">Section Notation</a> below, we will discuss Lean's
 mechanisms for defining notation, and see that they also support the
-<code>local</code> modifier. However, in <a href="interacting_with_lean.html#setting_options">Section Setting Options</a>, we will
+<code>local</code> modifier. However, in <a href="interacting_with_lean.html#setting-options">Section Setting Options</a>, we will
 discuss Lean's mechanisms for setting options, which does <em>not</em> follow
 this pattern: options can <em>only</em> be set locally, which is to say,
 their scope is always restricted to the current section or current
 file.</p>
-<h2 id="more-on-implicit-arguments"><a class="header" href="#more-on-implicit-arguments">More on Implicit Arguments</a></h2>
-<p>In <a href="./dependent_type_theory.html#implicit_arguments">Section Implicit Arguments</a>,
+<h2><a class="header" href="#more-on-implicit-arguments" id="more-on-implicit-arguments">More on Implicit Arguments</a></h2>
+<p>In <a href="./dependent_type_theory.html#implicit-arguments">Section Implicit Arguments</a>,
 we saw that if Lean displays the type
 of a term <code>t</code> as <code>{x : α} → β x</code>, then the curly brackets
 indicate that <code>x</code> has been marked as an <em>implicit argument</em> to
@@ -4175,7 +4216,7 @@ don't want that to happen, you have to write <code>@t</code> instead.</p>
 a function <code>f (x : Nat) {y : Nat} (z : Nat)</code> with the arguments
 shown. Then, when we write the expression <code>f 7</code> without further
 arguments, it is parsed as <code>f 7 _</code>. Lean offers a weaker annotation,
-<code>{{y : ℕ}}</code>, which specifies that a placeholder should only be added
+<code>{{y : Nat}}</code>, which specifies that a placeholder should only be added
 <em>before</em> a subsequent explicit argument. This annotation can also be
 written using as <code>⦃y : Nat⦄</code>, where the unicode brackets are entered
 as <code>\{{</code> and <code>\}}</code>, respectively. With this annotation, the
@@ -4266,7 +4307,7 @@ variable (euclr : euclidean r)
 <p>There is a third kind of implicit argument that is denoted with square
 brackets, <code>[</code> and <code>]</code>. These are used for type classes, as
 explained in <a href="./type_classes.html">Chapter Type Classes</a>.</p>
-<h2 id="notation"><a class="header" href="#notation">Notation</a></h2>
+<h2><a class="header" href="#notation" id="notation">Notation</a></h2>
 <p>Identifiers in Lean can include any alphanumeric characters, including
 Greek characters (other than ∀ , Σ , and λ , which, as we have seen,
 have a special meaning in the dependent type theory). They can also
@@ -4287,7 +4328,7 @@ ability to factor out common boilerplate code into (well-behaved)
 macros and to embed entire custom domain specific languages (DSLs) to
 textually encode subproblems efficiently and readably can be of great
 benefit to both programmers and proof engineers alike.</p>
-<h3 id="notations-and-precedence"><a class="header" href="#notations-and-precedence">Notations and Precedence</a></h3>
+<h3><a class="header" href="#notations-and-precedence" id="notations-and-precedence">Notations and Precedence</a></h3>
 <p>The most basic syntax extension commands allow introducing new (or
 overloading existing) prefix, infix, and postfix operators.</p>
 <pre><code class="language-lean">infixl:65   &quot; + &quot; =&gt; HAdd.hAdd  -- left-associative
@@ -4352,7 +4393,7 @@ before chaining, would stop parsing after <code>1 + 2</code>.  If there are
 multiple notations accepting the same longest parse, the choice will
 be delayed until elaboration, which will fail unless exactly one
 overload is type correct.</p>
-<h2 id="coercions"><a class="header" href="#coercions">Coercions</a></h2>
+<h2><a class="header" href="#coercions" id="coercions">Coercions</a></h2>
 <p>In Lean, the type of natural numbers, <code>Nat</code>, is different from the
 type of integers, <code>Int</code>. But there is a function <code>Int.ofNat</code> that
 embeds the natural numbers in the integers, meaning that we can view
@@ -4365,7 +4406,7 @@ variable (i j : Int)
 #check i + m + j  -- i + Int.ofNat m + j : Int
 #check i + m + n  -- i + Int.ofNat m + Int.ofNat n : Int
 </code></pre>
-<h2 id="displaying-information"><a class="header" href="#displaying-information">Displaying Information</a></h2>
+<h2><a class="header" href="#displaying-information" id="displaying-information">Displaying Information</a></h2>
 <p>There are a number of ways in which you can query Lean for information
 about its current state and the objects and theorems that are
 available in the current context. You have already seen two of the
@@ -4396,7 +4437,7 @@ def foo {α : Type u} (x : α) : α := x
 #check @foo
 #print foo
 </code></pre>
-<h2 id="setting-options"><a class="header" href="#setting-options">Setting Options</a></h2>
+<h2><a class="header" href="#setting-options" id="setting-options">Setting Options</a></h2>
 <p>Lean maintains a number of internal variables that can be set by users
 to control its behavior. The syntax for doing so is as follows:</p>
 <pre><code>set_option &lt;name&gt; &lt;value&gt;
@@ -4454,7 +4495,7 @@ Lean also has a family of attributes that control the elaboration strategy. A de
 Once again, these attributes can be assigned and reassigned after an object is defined, and you can use the ``local`` modifier to limit their scope. Moreover, using the ``@`` symbol in front of an identifier in an expression instructs the elaborator to use the ``[elab_simple]`` strategy; the idea is that, when you provide the tricky parameters explicitly, you want the elaborator to weigh that information heavily. In fact, Lean offers an alternative annotation, ``@@``, which leaves parameters before the first higher-order parameter implicit. For example, ``@@eq.subst`` leaves the type of the equation implicit, but makes the context of the substitution explicit.
 
 -->
-<h2 id="using-the-library"><a class="header" href="#using-the-library">Using the Library</a></h2>
+<h2><a class="header" href="#using-the-library" id="using-the-library">Using the Library</a></h2>
 <p>To use Lean effectively you will inevitably need to make use of
 definitions and theorems in the library. Recall that the <code>import</code>
 command at the beginning of a file imports previously compiled results
@@ -4474,7 +4515,7 @@ library can be found online, on GitHub:</p>
 <p><a href="https://github.com/leanprover/lean4/tree/master/src/Init">https://github.com/leanprover/lean4/tree/master/src/Init</a></p>
 </li>
 <li>
-<p><a href="https://github.com/leanprover/lean4/tree/master/src/Std">https://github.com/leanprover/lean4/tree/master/src/Std</a></p>
+<p><a href="https://github.com/leanprover/std4/tree/main/Std">https://github.com/leanprover/std4/tree/main/Std</a></p>
 </li>
 </ul>
 <p>You can see the contents of these directories and files using GitHub's
@@ -4530,7 +4571,7 @@ for them as well:</p>
 #check @Eq.refl
 #check @Eq.subst
 </code></pre>
-<h2 id="auto-bound-implicit-arguments"><a class="header" href="#auto-bound-implicit-arguments">Auto Bound Implicit Arguments</a></h2>
+<h2><a class="header" href="#auto-bound-implicit-arguments" id="auto-bound-implicit-arguments">Auto Bound Implicit Arguments</a></h2>
 <p>In the previous section, we have shown how implicit arguments make functions more convenient to use.
 However, functions such as <code>compose</code> are still quite verbose to define. Note that the universe
 polymorphic <code>compose</code> is even more verbose than the one previously defined.</p>
@@ -4564,10 +4605,10 @@ the command <code>set_option autoImplicit false</code>.</p>
 -- def compose (g : β → γ) (f : α → β) (x : α) : γ :=
 --   g (f x)
 </code></pre>
-<h2 id="implicit-lambdas"><a class="header" href="#implicit-lambdas">Implicit Lambdas</a></h2>
+<h2><a class="header" href="#implicit-lambdas" id="implicit-lambdas">Implicit Lambdas</a></h2>
 <p>In Lean 3 stdlib, we find many
 <a href="https://github.com/leanprover/lean/blob/master/library/init/category/reader.lean#L39">instances</a> of the dreadful <code>@</code>+<code>_</code> idiom.
-It is often used when we the expected type is a function type with implicit arguments,
+It is often used when the expected type is a function type with implicit arguments,
 and we have a constant (<code>reader_t.pure</code> in the example) which also takes implicit arguments. In Lean 4, the elaborator automatically introduces lambdas
 for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. Here is the example from the link above using Lean 4 implicit lambdas.</p>
 <pre><code class="language-lean"><span class="boring">variable (ρ : Type) (m : Type → Type) [Monad m]
@@ -4602,10 +4643,10 @@ def id5 : {α : Type} → α → α :=
   fun {α} x =&gt; id1 x
 <span class="boring">end ex2
 </span></code></pre>
-<h2 id="sugar-for-simple-functions"><a class="header" href="#sugar-for-simple-functions">Sugar for Simple Functions</a></h2>
+<h2><a class="header" href="#sugar-for-simple-functions" id="sugar-for-simple-functions">Sugar for Simple Functions</a></h2>
 <p>In Lean 3, we can create simple functions from infix operators by
 using parentheses. For example, <code>(+1)</code> is sugar for <code>fun x, x + 1</code>. In
-Lean 4, we generalize this notation using <code>·</code> As a placeholder. Here
+Lean 4, we generalize this notation using <code>·</code> as a placeholder. Here
 are a few examples:</p>
 <pre><code class="language-lean"><span class="boring">namespace ex3
 </span>#check (· + 1)
@@ -4630,7 +4671,7 @@ The collection is interrupted by nested parentheses. In the following example, t
 <pre><code class="language-lean">#check (Prod.mk · (· + 1))
 -- fun a =&gt; (a, fun b =&gt; b + 1)
 </code></pre>
-<h2 id="named-arguments"><a class="header" href="#named-arguments">Named Arguments</a></h2>
+<h2><a class="header" href="#named-arguments" id="named-arguments">Named Arguments</a></h2>
 <p>Named arguments enable you to specify an argument for a parameter by
 matching the argument with its name rather than with its position in
 the parameter list.  If you don't remember the order of the parameters
@@ -4698,12 +4739,12 @@ def getBinderType : Term → Option Term
   | Term.lambda (type := t) .. =&gt; some t
   | _ =&gt; none
 </code></pre>
-<p>Ellipses are also useful when explicit argument can be automatically
+<p>Ellipses are also useful when explicit arguments can be automatically
 inferred by Lean, and we want to avoid a sequence of <code>_</code>s.</p>
 <pre><code class="language-lean">example (f : Nat → Nat) (a b c : Nat) : f (a + b + c) = f (a + (b + c)) :=
   congrArg f (Nat.add_assoc ..)
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="inductive-types"><a class="header" href="#inductive-types">Inductive Types</a></h1>
+<h1><a class="header" href="#inductive-types" id="inductive-types">Inductive Types</a></h1>
 <p>We have seen that Lean's formal foundation includes basic types,
 <code>Prop, Type 0, Type 1, Type 2, ...</code>, and allows for the formation of
 dependent function types, <code>(x : α) → β</code>. In the examples, we have
@@ -4718,11 +4759,11 @@ types; everything else follows from those.</p>
 <p>Intuitively, an inductive type is built up from a specified list of
 constructors. In Lean, the syntax for specifying such a type is as
 follows:</p>
-<pre><code>    inductive Foo where
-      | constructor₁ : ... → Foo
-      | constructor₂ : ... → Foo
-      ...
-      | constructorₙ : ... → Foo
+<pre><code>inductive Foo where
+  | constructor₁ : ... → Foo
+  | constructor₂ : ... → Foo
+  ...
+  | constructorₙ : ... → Foo
 </code></pre>
 <p>The intuition is that each constructor specifies a way of building new
 objects of <code>Foo</code>, possibly from previously constructed values. The
@@ -4756,7 +4797,7 @@ notion of an inductive type is so fundamental, we feel it is important
 to start with a low-level, hands-on understanding. We will start with
 some basic examples of inductive types, and work our way up to more
 elaborate and complex examples.</p>
-<h2 id="enumerated-types"><a class="header" href="#enumerated-types">Enumerated Types</a></h2>
+<h2><a class="header" href="#enumerated-types" id="enumerated-types">Enumerated Types</a></h2>
 <p>The simplest kind of inductive type is a type with a finite, enumerated list of elements.</p>
 <pre><code class="language-lean">inductive Weekday where
   | sunday : Weekday
@@ -4874,7 +4915,7 @@ set_option pp.all true
 -/
 </code></pre>
 <p>When declaring an inductive datatype, you can use <code>deriving Repr</code> to instruct
-Lean to generate a fuction that converts <code>Weekday</code> objects into text.
+Lean to generate a function that converts <code>Weekday</code> objects into text.
 This function is used by the <code>#eval</code> command to display <code>Weekday</code> objects.</p>
 <pre><code class="language-lean">inductive Weekday where
   | sunday
@@ -4904,8 +4945,7 @@ then allowed to use the shorter name when we open the namespace.</p>
 </span><span class="boring"> | friday : Weekday
 </span><span class="boring"> | saturday : Weekday
 </span><span class="boring"> deriving Repr
-</span>
-namespace Weekday
+</span>namespace Weekday
 def next (d : Weekday) : Weekday :=
   match d with
   | sunday    =&gt; monday
@@ -5007,7 +5047,7 @@ constructor:</p>
 </span>def next_previous (d : Weekday) : next (previous d) = d := by
   cases d &lt;;&gt; rfl
 </code></pre>
-<p><a href="inductive_types.html#tactics_for_inductive_types">Tactics for Inductive Types</a> below will introduce additional
+<p><a href="inductive_types.html#tactics-for-inductive-types">Tactics for Inductive Types</a> below will introduce additional
 tactics that are specifically designed to make use of inductive types.</p>
 <p>Notice that, under the propositions-as-types correspondence, we can
 use <code>match</code> to prove theorems as well as define functions.  In other
@@ -5040,7 +5080,7 @@ binary operation like <code>and</code> using <code>match</code>:</p>
 <span class="boring">end Hidden
 </span></code></pre>
 <p>Similarly, most identities can be proved by introducing suitable <code>match</code>, and then using <code>rfl</code>.</p>
-<h2 id="constructors-with-arguments"><a class="header" href="#constructors-with-arguments">Constructors with Arguments</a></h2>
+<h2><a class="header" href="#constructors-with-arguments" id="constructors-with-arguments">Constructors with Arguments</a></h2>
 <p>Enumerated types are a very special case of inductive types, in which
 the constructors take no arguments at all. In general, a
 &quot;construction&quot; can depend on data, which is then represented in the
@@ -5102,9 +5142,9 @@ case we have to specify an output value in terms of <code>a</code>, or the
 input is of the form <code>inr b</code>, in which case we have to specify an
 output value in terms of <code>b</code>.</p>
 <pre><code class="language-lean">def sum_example (s : Sum Nat Nat) : Nat :=
-Sum.casesOn (motive := fun _ =&gt; Nat) s
-   (fun n =&gt; 2 * n)
-   (fun n =&gt; 2 * n + 1)
+  Sum.casesOn (motive := fun _ =&gt; Nat) s
+    (fun n =&gt; 2 * n)
+    (fun n =&gt; 2 * n + 1)
 
 #eval sum_example (Sum.inl 3)
 #eval sum_example (Sum.inr 3)
@@ -5117,7 +5157,7 @@ case, it returns <code>2 * n + 1</code>.</p>
 which are arguments to the constructors as well as <code>Prod</code>. Lean
 detects when these arguments can be inferred from later arguments to a
 constructor or the return type, and makes them implicit in that case.</p>
-<p>In <a href="inductive_types.html#_defining_the_natural_numbers">Section Defining the Natural Numbers</a>
+<p>In <a href="inductive_types.html#defining-the-natural-numbers">Section Defining the Natural Numbers</a>
 we will see what happens when the
 constructor of an inductive type takes arguments from the inductive
 type itself. What characterizes the examples we consider in this
@@ -5210,7 +5250,7 @@ at every input. The <code>Option</code> type provides a way of representing part
 element of <code>Option β</code> is either <code>none</code> or of the form <code>some b</code>,
 for some value <code>b : β</code>. Thus we can think of an element <code>f</code> of the
 type <code>α → Option β</code> as being a partial function from <code>α</code> to <code>β</code>:
-for every <code>a : α</code>, <code>f a</code> either returns <code>none</code>, indicating the
+for every <code>a : α</code>, <code>f a</code> either returns <code>none</code>, indicating
 <code>f a</code> is &quot;undefined&quot;, or <code>some b</code>.</p>
 <p>An element of <code>Inhabited α</code> is simply a witness to the fact that
 there is an element of <code>α</code>. Later, we will see that <code>Inhabited</code> is
@@ -5223,7 +5263,7 @@ that it behaves as expected. We also encourage you to show that
 <code>Bool</code> and <code>Nat</code> are inhabited, that the product of two inhabited
 types is inhabited, and that the type of functions to an inhabited
 type is inhabited.</p>
-<h2 id="inductively-defined-propositions"><a class="header" href="#inductively-defined-propositions">Inductively Defined Propositions</a></h2>
+<h2><a class="header" href="#inductively-defined-propositions" id="inductively-defined-propositions">Inductively Defined Propositions</a></h2>
 <p>Inductively defined types can live in any type universe, including the
 bottom-most one, <code>Prop</code>. In fact, this is exactly how the logical
 connectives are defined.</p>
@@ -5249,7 +5289,7 @@ speaking, what characterizes inductive types in <code>Prop</code> is that one
 can only eliminate to other types in <code>Prop</code>. This is consistent with
 the understanding that if <code>p : Prop</code>, an element <code>hp : p</code> carries
 no data. There is a small exception to this rule, however, which we
-will discuss below, in <a href="inductive_types.html#_inductive_families">Section Inductive Families</a>.</p>
+will discuss below, in <a href="inductive_types.html#inductive-families">Section Inductive Families</a>.</p>
 <p>Even the existential quantifier is inductively defined:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>inductive Exists {α : Sort u} (p : α → Prop) : Prop where
@@ -5281,7 +5321,7 @@ variant of <code>Σ x : α, p</code>.</p>
 <p>The notation <code>{x : α // p x}</code> is syntactic sugar for <code>Subtype (fun x : α =&gt; p x)</code>.
 It is modeled after subset notation in set theory: the idea is that <code>{x : α // p x}</code>
 denotes the collection of elements of <code>α</code> that have property <code>p</code>.</p>
-<h2 id="defining-the-natural-numbers"><a class="header" href="#defining-the-natural-numbers"><a name="_defining_the_natural_numbers"></a>Defining the Natural Numbers</a></h2>
+<h2><a class="header" href="#defining-the-natural-numbers" id="defining-the-natural-numbers">Defining the Natural Numbers</a></h2>
 <p>The inductively defined types we have seen so far are &quot;flat&quot;:
 constructors wrap data and insert it into a type, and the
 corresponding recursor unpacks the data and acts on it. Things get
@@ -5304,7 +5344,7 @@ it is exhaustively (and freely) generated by starting with <code>zero</code>
 and applying <code>succ</code> repeatedly.</p>
 <p>As before, the recursor for <code>Nat</code> is designed to define a dependent
 function <code>f</code> from <code>Nat</code> to any domain, that is, an element <code>f</code>
-of <code>(n : nat) → motive n</code> for some <code>motive : Nat → Sort u</code>.
+of <code>(n : Nat) → motive n</code> for some <code>motive : Nat → Sort u</code>.
 It has to handle two cases: the case where the input is <code>zero</code>, and the case where
 the input is of the form <code>succ n</code> for some <code>n : Nat</code>. In the first
 case, we simply specify a target value with the appropriate type, as
@@ -5329,8 +5369,8 @@ terms of <code>n</code> and <code>f n</code>. If we check the type of the recurs
 In type theory it is common to say <code>motive</code> is the <em>motive</em> for the elimination/recursion,
 since it describes the kind of object we wish to construct.
 The next two arguments specify how to compute the zero and successor cases, as described above.
-They are also known as the <code>minor premises</code>.
-Finally, the <code>t : Nat</code>, is the input to the function. It is also known as the <code>major premise</code>.</p>
+They are also known as the <em>minor premises</em>.
+Finally, the <code>t : Nat</code>, is the input to the function. It is also known as the <em>major premise</em>.</p>
 <p>The <code>Nat.recOn</code> is similar to <code>Nat.rec</code> but the major premise occurs before the minor premises.</p>
 <pre><code>@Nat.recOn :
   {motive : Nat → Sort u}
@@ -5401,9 +5441,9 @@ theorem zero_add (n : Nat) : 0 + n = n :=
    (show 0 + 0 = 0 from rfl)
    (fun (n : Nat) (ih : 0 + n = n) =&gt;
     show 0 + succ n = succ n from
-    calc
-       0 + succ n = succ (0 + n) := rfl
-                _ = succ n       := by rw [ih])
+    calc 0 + succ n
+      _ = succ (0 + n) := rfl
+      _ = succ n       := by rw [ih])
 <span class="boring">end Hidden
 </span></code></pre>
 <p>Notice that, once again, when <code>Nat.recOn</code> is used in the context of
@@ -5431,11 +5471,11 @@ theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
     (show m + n + 0 = m + (n + 0) from rfl)
     (fun k (ih : m + n + k = m + (n + k)) =&gt;
       show m + n + succ k = m + (n + succ k) from
-      calc
-          m + n + succ k = succ (m + n + k) := rfl
-            _ = succ (m + (n + k)) := by rw [ih]
-            _ = m + succ (n + k) := rfl
-            _ = m + (n + succ k) := rfl)
+      calc m + n + succ k
+        _ = succ (m + n + k)   := rfl
+        _ = succ (m + (n + k)) := by rw [ih]
+        _ = m + succ (n + k)   := rfl
+        _ = m + (n + succ k)   := rfl)
 <span class="boring">end Hidden
 </span></code></pre>
 <p>One again, you can reduce the proof to:</p>
@@ -5452,9 +5492,10 @@ theorem add_comm (m n : Nat) : m + n = n + m :=
    (show m + 0 = 0 + m by rw [Nat.zero_add, Nat.add_zero])
    (fun (n : Nat) (ih : m + n = n + m) =&gt;
     show m + succ n = succ n + m from
-    calc m + succ n = succ (m + n) := rfl
-                  _ = succ (n + m) := by rw [ih]
-                  _ = succ n +  m  := sorry)
+    calc m + succ n
+      _ = succ (m + n) := rfl
+      _ = succ (n + m) := by rw [ih]
+      _ = succ n + m   := sorry)
 </code></pre>
 <p>At this point, we see that we need another supporting fact, namely, that <code>succ (n + m) = succ n + m</code>.
 You can prove this by induction on <code>m</code>:</p>
@@ -5465,9 +5506,10 @@ theorem succ_add (n m : Nat) : succ n + m = succ (n + m) :=
     (show succ n + 0 = succ (n + 0) from rfl)
     (fun (m : Nat) (ih : succ n + m = succ (n + m)) =&gt;
      show succ n + succ m = succ (n + succ m) from
-     calc succ n + succ m = succ (succ n + m) := rfl
-           _  = succ (succ (n + m))           := by rw [ih]
-           _  = succ (n + succ m)             := rfl)
+     calc succ n + succ m
+       _ = succ (succ n + m)   := rfl
+       _ = succ (succ (n + m)) := by rw [ih]
+       _ = succ (n + succ m)   := rfl)
 </code></pre>
 <p>You can then replace the <code>sorry</code> in the previous proof with <code>succ_add</code>. Yet again, the proofs can be compressed:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
@@ -5483,14 +5525,14 @@ theorem add_comm (m n : Nat) : m + n = n + m :=
     (fun m ih =&gt; by simp [add_succ, succ_add, ih])
 <span class="boring">end Hidden
 </span></code></pre>
-<h2 id="other-recursive-data-types"><a class="header" href="#other-recursive-data-types">Other Recursive Data Types</a></h2>
+<h2><a class="header" href="#other-recursive-data-types" id="other-recursive-data-types">Other Recursive Data Types</a></h2>
 <p>Let us consider some more examples of inductively defined types. For
 any type, <code>α</code>, the type <code>List α</code> of lists of elements of <code>α</code> is
 defined in the library.</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>inductive List (α : Type u) where
-| nil  : List α
-| cons : α → List α → List α
+  | nil  : List α
+  | cons : α → List α → List α
 
 namespace List
 
@@ -5563,7 +5605,7 @@ def omega : CBTree :=
 
 end CBTree
 </code></pre>
-<h2 id="tactics-for-inductive-types"><a class="header" href="#tactics-for-inductive-types">Tactics for Inductive Types</a></h2>
+<h2><a class="header" href="#tactics-for-inductive-types" id="tactics-for-inductive-types">Tactics for Inductive Types</a></h2>
 <p>Given the fundamental importance of inductive types in Lean, it should
 not be surprising that there are a number of tactics designed to work
 with them effectively. We describe some of them here.</p>
@@ -5576,7 +5618,7 @@ goal to cases in which <code>x</code> is replaced by each of the constructions.<
   intro n
   cases n
   . exact hz  -- goal is p 0
-  . apply hs  -- goal is a : ℕ ⊢ p (succ a)
+  . apply hs  -- goal is a : Nat ⊢ p (succ a)
 </code></pre>
 <p>There are extra bells and whistles. For one thing, <code>cases</code> allows
 you to choose the names for each alternative using a
@@ -5605,7 +5647,7 @@ example (n : Nat) (h : n ≠ 0) : succ (pred n) = n := by
 example : f 0 = 3 := rfl
 example : f 5 = 7 := rfl
 </code></pre>
-<p>Once again, cases will revert, split, and then reintroduce depedencies in the context.</p>
+<p>Once again, cases will revert, split, and then reintroduce dependencies in the context.</p>
 <pre><code class="language-lean">def Tuple (α : Type) (n : Nat) :=
   { as : List α // as.length = n }
 
@@ -5618,7 +5660,7 @@ def myTuple : Tuple Nat 3 :=
 example : f myTuple = 7 :=
   rfl
 </code></pre>
-<p>Here is an example with multiple constructors with arguments.</p>
+<p>Here is an example of multiple constructors with arguments.</p>
 <pre><code class="language-lean">inductive Foo where
   | bar1 : Nat → Nat → Foo
   | bar2 : Nat → Nat → Nat → Foo
@@ -5630,11 +5672,10 @@ def silly (x : Foo) : Nat := by
 </code></pre>
 <p>The alternatives for each constructor don't need to be solved
 in the order the constructors were declared.</p>
-<pre><code class="language-lean">inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
-def silly (x : Foo) : Nat := by
+<pre><code class="language-lean"><span class="boring">inductive Foo where
+</span><span class="boring">  | bar1 : Nat → Nat → Foo
+</span><span class="boring">  | bar2 : Nat → Nat → Nat → Foo
+</span>def silly (x : Foo) : Nat := by
   cases x with
   | bar2 c d e =&gt; exact e
   | bar1 a b =&gt; exact b
@@ -5642,24 +5683,22 @@ def silly (x : Foo) : Nat := by
 <p>The syntax of the <code>with</code> is convenient for writing structured proofs.
 Lean also provides a complementary <code>case</code> tactic, which allows you to focus on goal
 assign variable names.</p>
-<pre><code class="language-lean">inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
-def silly (x : Foo) : Nat := by
+<pre><code class="language-lean"><span class="boring">inductive Foo where
+</span><span class="boring">  | bar1 : Nat → Nat → Foo
+</span><span class="boring">  | bar2 : Nat → Nat → Nat → Foo
+</span>def silly (x : Foo) : Nat := by
   cases x
-  case bar2 c d e =&gt; exact e
   case bar1 a b =&gt; exact b
+  case bar2 c d e =&gt; exact e
 </code></pre>
 <p>The <code>case</code> tactic is clever, in that it will match the constructor to the appropriate goal. For example, we can fill the goals above in the opposite order:</p>
-<pre><code class="language-lean">inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
-def silly (x : Foo) : Nat := by
+<pre><code class="language-lean"><span class="boring">inductive Foo where
+</span><span class="boring">  | bar1 : Nat → Nat → Foo
+</span><span class="boring">  | bar2 : Nat → Nat → Nat → Foo
+</span>def silly (x : Foo) : Nat := by
   cases x
-  case bar1 a b =&gt; exact b
   case bar2 c d e =&gt; exact e
+  case bar1 a b =&gt; exact b
 </code></pre>
 <p>You can also use <code>cases</code> with an arbitrary expression. Assuming that
 expression occurs in the goal, the cases tactic will generalize over
@@ -5671,7 +5710,7 @@ example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
         : p (m + 3 * k) := by
   cases m + 3 * k
   exact hz   -- goal is p 0
-  apply hs   -- goal is a : ℕ ⊢ p (succ a)
+  apply hs   -- goal is a : Nat ⊢ p (succ a)
 </code></pre>
 <p>Think of this as saying &quot;split on cases as to whether <code>m + 3 * k</code> is
 zero or the successor of some number.&quot; The result is functionally
@@ -5683,7 +5722,7 @@ example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
   generalize m + 3 * k = n
   cases n
   exact hz   -- goal is p 0
-  apply hs   -- goal is a : ℕ ⊢ p (succ a)
+  apply hs   -- goal is a : Nat ⊢ p (succ a)
 </code></pre>
 <p>Notice that the expression <code>m + 3 * k</code> is erased by <code>generalize</code>; all
 that matters is whether it is of the form <code>0</code> or <code>succ a</code>. This
@@ -5702,8 +5741,8 @@ the context. Here is an example:</p>
 </code></pre>
 <p>The theorem <code>Nat.lt_or_ge m n</code> says <code>m &lt; n ∨ m ≥ n</code>, and it is
 natural to think of the proof above as splitting on these two
-cases. In the first branch, we have the hypothesis <code>h₁ : m &lt; n</code>, and
-in the second we have the hypothesis <code>h₂ : m ≥ n</code>. The proof above
+cases. In the first branch, we have the hypothesis <code>hlt : m &lt; n</code>, and
+in the second we have the hypothesis <code>hge : m ≥ n</code>. The proof above
 is functionally equivalent to the following:</p>
 <pre><code class="language-lean">example (p : Prop) (m n : Nat)
         (h₁ : m &lt; n → p) (h₂ : m ≥ n → p) : p := by
@@ -5749,6 +5788,7 @@ argument can only be a term in the local context. Here is an example:</p>
 </span></code></pre>
 <p>Here are some additional examples:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">theorem add_zero (n : Nat) : n + 0 = n := Nat.add_zero n
 </span>open Nat
 
 theorem zero_add (n : Nat) : 0 + n = n := by
@@ -5781,13 +5821,13 @@ example (x : Nat) {y : Nat} (h : y &gt; 0) : x % y &lt; y := by
     rw [Nat.mod_eq_sub_mod h₁.2]
     exact ih h
   | base x y h₁ =&gt;
-     have : ¬ 0 &lt; y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
-     match this with
-     | Or.inl h₁ =&gt; exact absurd h h₁
-     | Or.inr h₁ =&gt;
-       have hgt : y &gt; x := Nat.gt_of_not_le h₁
-       rw [← Nat.mod_eq_of_lt hgt] at hgt
-       assumption
+    have : ¬ 0 &lt; y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
+    match this with
+    | Or.inl h₁ =&gt; exact absurd h h₁
+    | Or.inr h₁ =&gt;
+      have hgt : y &gt; x := Nat.gt_of_not_le h₁
+      rw [← Nat.mod_eq_of_lt hgt] at hgt
+      assumption
 </code></pre>
 <p>You can use the <code>match</code> notation in tactics too:</p>
 <pre><code class="language-lean">example : p ∨ q → q ∨ p := by
@@ -5829,7 +5869,6 @@ context, and the second adds <code>h'' : m = n</code>.</p>
 are set equal to one another, and uses them to close the goal.</p>
 <pre><code class="language-lean">open Nat
 
-
 example (m n : Nat) (h : succ m = 0) : n = n + 7 := by
   injection h
 
@@ -5840,7 +5879,7 @@ example (h : 7 = 4) : False := by
   contradiction
 </code></pre>
 <p>As the second example shows, the <code>contradiction</code> tactic also detects contradictions of this form.</p>
-<h2 id="inductive-families"><a class="header" href="#inductive-families"><a name="_inductive_families"></a>Inductive Families</a></h2>
+<h2><a class="header" href="#inductive-families" id="inductive-families">Inductive Families</a></h2>
 <p>We are almost done describing the full range of inductive definitions
 accepted by Lean. So far, you have seen that Lean allows you to
 introduce inductive types with any number of recursive
@@ -5891,7 +5930,7 @@ Note that <code>Eq a a</code> is the only inhabited type in the family of types
 </code></pre>
 <p>It is a remarkable fact that all the basic axioms for equality follow
 from the constructor, <code>refl</code>, and the eliminator, <code>Eq.rec</code>. The
-definition of equality is atypical, however; see the discussion in <a href="inductive_types.html#_axiomatic_details">Section Axiomatic Details</a>.</p>
+definition of equality is atypical, however; see the discussion in <a href="inductive_types.html#axiomatic-details">Section Axiomatic Details</a>.</p>
 <p>The recursor <code>Eq.rec</code> is also used to define substitution:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>theorem subst {α : Type u} {a b : α} {p : α → Prop} (h₁ : Eq a b) (h₂ : p a) : p b :=
@@ -5941,7 +5980,7 @@ theorem congr {α β : Type u} {a b : α} (f : α → β) (h : Eq a b) : Eq (f a
 inductive definitions, for example, the principles of
 <em>induction-recursion</em> and <em>induction-induction</em>. These are not
 supported by Lean.</p>
-<h2 id="axiomatic-details"><a class="header" href="#axiomatic-details"><a name="_axiomatic_details"></a>Axiomatic Details</a></h2>
+<h2><a class="header" href="#axiomatic-details" id="axiomatic-details">Axiomatic Details</a></h2>
 <p>We have described inductive types and their syntax through
 examples. This section provides additional information for those
 interested in the axiomatic foundations.</p>
@@ -6001,8 +6040,8 @@ type. We can use an element <code>h : Eq a b</code> to cast an element
 because the cast does not produce new data; it only reinterprets the
 data we already have. Singleton elimination is also used with
 heterogeneous equality and well-founded recursion, which will be
-discussed in a <a href="./induction_and_recursion.html#_well_founded_recursion_and_induction">Chapter Induction and Recursion</a>.</p>
-<h2 id="mutual-and-nested-inductive-types"><a class="header" href="#mutual-and-nested-inductive-types">Mutual and Nested Inductive Types</a></h2>
+discussed in a <a href="./induction_and_recursion.html#well-founded-recursion-and-induction">Chapter Induction and Recursion</a>.</p>
+<h2><a class="header" href="#mutual-and-nested-inductive-types" id="mutual-and-nested-inductive-types">Mutual and Nested Inductive Types</a></h2>
 <p>We now consider two generalizations of inductive types that are often
 useful, which Lean supports by &quot;compiling&quot; them down to the more
 primitive kinds of inductive types described above. In other words,
@@ -6062,7 +6101,7 @@ arguments to <code>mk</code>, but, rather, nested inside the <code>List</code> t
 constructor. Lean then automatically builds the
 isomorphism between <code>TreeList α</code> and <code>List (Tree α)</code> in its kernel,
 and defines the constructors for <code>Tree</code> in terms of the isomorphism.</p>
-<h2 id="exercises-3"><a class="header" href="#exercises-3">Exercises</a></h2>
+<h2><a class="header" href="#exercises-3" id="exercises-3">Exercises</a></h2>
 <ol>
 <li>
 <p>Try defining other operations on the natural numbers, such as
@@ -6099,7 +6138,7 @@ functions that measure the complexity of a formula, and a function
 that substitutes another formula for a given variable.</p>
 </li>
 </ol>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="induction-and-recursion"><a class="header" href="#induction-and-recursion">Induction and Recursion</a></h1>
+<h1><a class="header" href="#induction-and-recursion" id="induction-and-recursion">Induction and Recursion</a></h1>
 <p>In the previous chapter, we saw that inductive definitions provide a
 powerful means of introducing new types in Lean. Moreover, the
 constructors and the recursors provide the only means of defining
@@ -6114,7 +6153,7 @@ cases that can arise. Behind the scenes, these descriptions are
 refer to as the &quot;equation compiler.&quot; The equation compiler is not part
 of the trusted code base; its output consists of terms that are
 checked independently by the kernel.</p>
-<h2 id="pattern-matching"><a class="header" href="#pattern-matching"><a name="_pattern_matching"></a>Pattern Matching</a></h2>
+<h2><a class="header" href="#pattern-matching" id="pattern-matching">Pattern Matching</a></h2>
 <p>The interpretation of schematic patterns is the first step of the
 compilation process. We have seen that the <code>casesOn</code> recursor can
 be used to define functions and prove theorems by cases, according to
@@ -6164,7 +6203,7 @@ def isZero : Nat → Bool
   | x+1 =&gt; false
 </code></pre>
 <p>Because addition and the zero notation have been assigned the
-<code>[matchPattern]</code> attribute, they can be used in pattern matching. Lean
+<code>[match_pattern]</code> attribute, they can be used in pattern matching. Lean
 simply normalizes these expressions until the constructors <code>zero</code>
 and <code>succ</code> are exposed.</p>
 <p>Pattern matching works with any inductive type, such as products and option types:</p>
@@ -6286,12 +6325,12 @@ known as a <em>wildcard pattern</em>, or an <em>anonymous variable</em>. In cont
 to usage outside the equation compiler, here the underscore does <em>not</em>
 indicate an implicit argument. The use of underscores for wildcards is
 common in functional programming languages, and so Lean adopts that
-notation. <a href="induction_and_recursion.html#_wildcards_and_overlapping_patterns">Section Wildcards and Overlapping Patterns</a>
-expands on the notion of a wildcard, and <a href="induction_and_recursion.html#_inaccessible_patterns">Section Inaccessible Patterns</a> explains how
+notation. <a href="induction_and_recursion.html#wildcards-and-overlapping-patterns">Section Wildcards and Overlapping Patterns</a>
+expands on the notion of a wildcard, and <a href="induction_and_recursion.html#inaccessible-patterns">Section Inaccessible Patterns</a> explains how
 you can use implicit arguments in patterns as well.</p>
 <p>As described in <a href="./inductive_types.html">Chapter Inductive Types</a>,
 inductive data types can depend on parameters. The following example defines
-the <code>tail</code> function using pattern matching. The argument <code>α : Type</code>
+the <code>tail</code> function using pattern matching. The argument <code>α : Type u</code>
 is a parameter and occurs before the colon to indicate it does not participate in the pattern matching.
 Lean also allows parameters to occur after <code>:</code>, but it cannot pattern match on them.</p>
 <pre><code class="language-lean">def tail1 {α : Type u} : List α → List α
@@ -6308,8 +6347,8 @@ not participate in a case split.</p>
 <p>Lean can also handle more complex forms of pattern matching, in which
 arguments to dependent types pose additional constraints on the
 various cases. Such examples of <em>dependent pattern matching</em> are
-considered in the <a href="induction_and_recursion.html#_dependent_pattern_matching">Section Dependent Pattern Matching</a>.</p>
-<h2 id="wildcards-and-overlapping-patterns"><a class="header" href="#wildcards-and-overlapping-patterns"><a name="_wildcards_and_overlapping_patterns"></a>Wildcards and Overlapping Patterns</a></h2>
+considered in the <a href="induction_and_recursion.html#dependent-pattern-matching">Section Dependent Pattern Matching</a>.</p>
+<h2><a class="header" href="#wildcards-and-overlapping-patterns" id="wildcards-and-overlapping-patterns">Wildcards and Overlapping Patterns</a></h2>
 <p>Consider one of the examples from the last section:</p>
 <pre><code class="language-lean">def foo : Nat → Nat → Nat
   | 0,   n   =&gt; 0
@@ -6353,7 +6392,7 @@ that there is an element of <code>α</code>; in the <a href="./type_classes.html
 we will see that Lean can be instructed that suitable
 base types are inhabited, and can automatically infer that other
 constructed types are inhabited. On this basis, the
-standard library provides a default element, <code>defaulty</code>, of
+standard library provides a default element, <code>default</code>, of
 any inhabited type.</p>
 <p>We can also use the type <code>Option α</code> to simulate incomplete patterns.
 The idea is to return <code>some a</code> for the provided patterns, and use
@@ -6398,7 +6437,7 @@ not been covered.</p>
 
 #print foo.match_1
 </code></pre>
-<h2 id="structural-recursion-and-induction"><a class="header" href="#structural-recursion-and-induction">Structural Recursion and Induction</a></h2>
+<h2><a class="header" href="#structural-recursion-and-induction" id="structural-recursion-and-induction">Structural Recursion and Induction</a></h2>
 <p>What makes the equation compiler powerful is that it also supports
 recursive definitions. In the next three sections, we will describe,
 respectively:</p>
@@ -6419,15 +6458,15 @@ is any type, which can depend on <code>a</code> and <code>b</code>. Each line sh
 contain the same number of patterns, one for each element of <code>β</code>. As we
 have seen, a pattern is either a variable, a constructor applied to
 other patterns, or an expression that normalizes to something of that
-form (where the non-constructors are marked with the <code>[matchPattern]</code>
+form (where the non-constructors are marked with the <code>[match_pattern]</code>
 attribute). The appearances of constructors prompt case splits, with
 the arguments to the constructors represented by the given
-variables. In <a href="induction_and_recursion.html#_dependent_pattern_matching">Section Dependent Pattern Matching</a>,
+variables. In <a href="induction_and_recursion.html#dependent-pattern-matching">Section Dependent Pattern Matching</a>,
 we will see that it is sometimes necessary to include explicit terms in patterns that
 are needed to make an expression type check, though they do not play a
 role in pattern matching. These are called &quot;inaccessible patterns&quot; for
 that reason. But we will not need to use such inaccessible patterns
-before <a href="induction_and_recursion.html#_dependent_pattern_matching">Section Dependent Pattern Matching</a>.</p>
+before <a href="induction_and_recursion.html#dependent-pattern-matching">Section Dependent Pattern Matching</a>.</p>
 <p>As we saw in the last section, the terms <code>t₁, ..., tₙ</code> can make use
 of any of the parameters <code>a</code>, as well as any of the variables that
 are introduced in the corresponding patterns. What makes recursion and
@@ -6508,7 +6547,7 @@ example : fib 7 = 21 := rfl
 definitionally equal to <code>succ (succ n)</code>) is defined in terms of the
 values at <code>n + 1</code> (which is definitionally equivalent to <code>succ n</code>)
 and the value at <code>n</code>. This is a notoriously inefficient way of
-computing the fibonacci function, however, with an execution time that
+computing the Fibonacci function, however, with an execution time that
 is exponential in <code>n</code>. Here is a better way:</p>
 <pre><code class="language-lean">def fibFast (n : Nat) : Nat :=
   (loop n).2
@@ -6576,7 +6615,7 @@ example : append [1, 2, 3] [4, 5] = [1, 2, 3, 4, 5] := rfl
 -- [5, 7, 9]
 </code></pre>
 <p>You are encouraged to experiment with similar examples in the exercises below.</p>
-<h2 id="local-recursive-declarations"><a class="header" href="#local-recursive-declarations">Local recursive declarations</a></h2>
+<h2><a class="header" href="#local-recursive-declarations" id="local-recursive-declarations">Local recursive declarations</a></h2>
 <p>You can define local recursive declarations using the <code>let rec</code> keyword.</p>
 <pre><code class="language-lean">def replicate (n : Nat) (a : α) : List α :=
   let rec loop : Nat → List α → List α
@@ -6624,7 +6663,7 @@ where
     | 0   =&gt; simp [replicate.loop]
     | n+1 =&gt; simp [replicate.loop, aux n, Nat.add_succ, Nat.succ_add]
 </code></pre>
-<h2 id="well-founded-recursion-and-induction"><a class="header" href="#well-founded-recursion-and-induction">Well-Founded Recursion and Induction</a></h2>
+<h2><a class="header" href="#well-founded-recursion-and-induction" id="well-founded-recursion-and-induction">Well-Founded Recursion and Induction</a></h2>
 <p>When structural recursion cannot be used, we can prove termination using well-founded recursion.
 We need a well-founded relation and a proof that each recursive application is decreasing with respect to
 this relation. Dependent type theory is powerful enough to encode and justify
@@ -6715,7 +6754,7 @@ convenient. It accepts the following:</p>
 tries structural recursion, and only when that fails, does it fall
 back on well-founded recursion. Lean uses the tactic <code>decreasing_tactic</code>
 to show that the recursive applications are smaller. The auxiliary
-propostion <code>x - y &lt; x</code> in the example above should be viewed as a hint
+proposition <code>x - y &lt; x</code> in the example above should be viewed as a hint
 for this tactic.</p>
 <p>The defining equation for <code>div</code> does <em>not</em> hold definitionally, but
 we can unfold <code>div</code> using the <code>unfold</code> tactic. We use <a href="./conv.html"><code>conv</code></a> to select which
@@ -6723,7 +6762,7 @@ we can unfold <code>div</code> using the <code>unfold</code> tactic. We use <a h
 <pre><code class="language-lean"><span class="boring">def div (x y : Nat) : Nat :=
 </span><span class="boring"> if h : 0 &lt; y ∧ y ≤ x then
 </span><span class="boring">   have : x - y &lt; x := Nat.sub_lt (Nat.lt_of_lt_of_le h.1 h.2) h.1
-</span><span class="boring">div (x - y) y + 1
+</span><span class="boring">   div (x - y) y + 1
 </span><span class="boring"> else
 </span><span class="boring">   0
 </span>example (x y : Nat) : div x y = if 0 &lt; y ∧ y ≤ x then div (x - y) y + 1 else 0 := by
@@ -6761,7 +6800,7 @@ termination_by ack x y =&gt; (x, y)
 </code></pre>
 <p>Note that a lexicographic order is used in the example above because the instance
 <code>WellFoundedRelation (α × β)</code> uses a lexicographic order. Lean also defines the instance</p>
-<pre><code>instance (priority := low) [SizeOf α] : WellFoundedRelation α :=
+<pre><code class="language-lean">instance (priority := low) [SizeOf α] : WellFoundedRelation α :=
   sizeOfWFRel
 </code></pre>
 <p>In the following example, we prove termination by showing that <code>as.size - i</code> is decreasing
@@ -6838,7 +6877,7 @@ decreasing_by sorry
 <p>By default, the tactic <code>decreasing_tactic</code> is used to show that recursive applications are smaller with respect to the selected well-founded relation. If <code>decreasing_tactic</code> fails, the error message includes the remaining goal <code>... |- G</code>. Note that, the <code>decreasing_tactic</code> uses <code>assumption</code>. So, you can include a <code>have</code>-expression to prove goal <code>G</code>. You can also provide your own tactic using <code>decreasing_by</code>.</p>
 </li>
 </ul>
-<h2 id="mutual-recursion"><a class="header" href="#mutual-recursion">Mutual Recursion</a></h2>
+<h2><a class="header" href="#mutual-recursion" id="mutual-recursion">Mutual Recursion</a></h2>
 <p>Lean also supports mutual recursive definitions. The syntax is similar to that for mutual inductive types. Here is an example:</p>
 <pre><code class="language-lean">mutual
   def even : Nat → Bool
@@ -6872,7 +6911,7 @@ theorem even_eq_not_odd : ∀ a, even a = not (odd a) := by
     | odd_succ : ∀ n, Even n → Odd (n + 1)
 end
 </code></pre>
-<p>The constructors, <code>even_zero</code>, <code>even_succ</code>, and <code>odd_succ</code> provide positive means for showing that a number is even or odd. We need to use the fact that the inductive type is generated by these constructors to know that the zero is not odd, and that the latter two implications reverse. As usual, the constructors are kept in a namespace that is named after the type being defined, and the command <code>open Even Odd</code> allows us to access them move conveniently.</p>
+<p>The constructors, <code>even_zero</code>, <code>even_succ</code>, and <code>odd_succ</code> provide positive means for showing that a number is even or odd. We need to use the fact that the inductive type is generated by these constructors to know that zero is not odd, and that the latter two implications reverse. As usual, the constructors are kept in a namespace that is named after the type being defined, and the command <code>open Even Odd</code> allows us to access them more conveniently.</p>
 <pre><code class="language-lean"><span class="boring">mutual
 </span><span class="boring"> inductive Even : Nat → Prop where
 </span><span class="boring">   | even_zero : Even 0
@@ -6886,15 +6925,15 @@ theorem not_odd_zero : ¬ Odd 0 :=
   fun h =&gt; nomatch h
 
 theorem even_of_odd_succ : ∀ n, Odd (n + 1) → Even n
-  | _,  odd_succ n h =&gt; h
+  | _, odd_succ n h =&gt; h
 
 theorem odd_of_even_succ : ∀ n, Even (n + 1) → Odd n
-  | _, even_succ n h =&gt;  h
+  | _, even_succ n h =&gt; h
 </code></pre>
 <p>For another example, suppose we use a nested inductive type to define a set of terms inductively, so that a term is either a constant (with a name given by a string), or the result of applying a constant to a list of constants.</p>
 <pre><code class="language-lean">inductive Term where
   | const : String → Term
-  | app   : String → List term → Term
+  | app   : String → List Term → Term
 </code></pre>
 <p>We can then use a mutual recursive definition to count the number of constants occurring in a term, as well as the number occurring in a list of terms.</p>
 <pre><code class="language-lean"><span class="boring">inductive Term where
@@ -6918,7 +6957,7 @@ def sample := app &quot;f&quot; [app &quot;g&quot; [const &quot;x&quot;], const 
 
 end Term
 </code></pre>
-<p>As a final example, we define a function <code>replaceConst a b e</code> that replaces a constant <code>a</code> with <code>b</code> in a term <code>e</code>, and then prove the numbers of constants is the same. Note that, our proof uses mutual recursion (aka induction).</p>
+<p>As a final example, we define a function <code>replaceConst a b e</code> that replaces a constant <code>a</code> with <code>b</code> in a term <code>e</code>, and then prove the number of constants is the same. Note that, our proof uses mutual recursion (aka induction).</p>
 <pre><code class="language-lean"><span class="boring">inductive Term where
 </span><span class="boring"> | const : String → Term
 </span><span class="boring"> | app   : String → List Term → Term
@@ -6933,12 +6972,12 @@ end Term
 </span><span class="boring">end
 </span>mutual
   def replaceConst (a b : String) : Term → Term
-   | const c =&gt; if a == c then const b else const c
-   | app f cs =&gt; app f (replaceConstLst a b cs)
+    | const c =&gt; if a == c then const b else const c
+    | app f cs =&gt; app f (replaceConstLst a b cs)
 
   def replaceConstLst (a b : String) : List Term → List Term
-   | [] =&gt; []
-   | c :: cs =&gt; replaceConst a b c :: replaceConstLst a b cs
+    | [] =&gt; []
+    | c :: cs =&gt; replaceConst a b c :: replaceConstLst a b cs
 end
 
 mutual
@@ -6957,17 +6996,17 @@ mutual
             numConsts_replaceConstLst a b cs]
 end
 </code></pre>
-<h2 id="dependent-pattern-matching"><a class="header" href="#dependent-pattern-matching">Dependent Pattern Matching</a></h2>
+<h2><a class="header" href="#dependent-pattern-matching" id="dependent-pattern-matching">Dependent Pattern Matching</a></h2>
 <p>All the examples of pattern matching we considered in
-<a href="induction_and_recursion.html#_pattern_matching">Section Pattern Matching</a> can easily be written using <code>cases_on</code>
+<a href="induction_and_recursion.html#pattern-matching">Section Pattern Matching</a> can easily be written using <code>cases_on</code>
 and <code>rec_on</code>. However, this is often not the case with indexed
-inductive families such as <code>vector α n</code>, since case splits impose
+inductive families such as <code>Vector α n</code>, since case splits impose
 constraints on the values of the indices. Without the equation
 compiler, we would need a lot of boilerplate code to define very
 simple functions such as <code>map</code>, <code>zip</code>, and <code>unzip</code> using
 recursors. To understand the difficulty, consider what it would take
 to define a function <code>tail</code> which takes a vector
-<code>v : vector α (succ n)</code> and deletes the first element. A first thought might be to
+<code>v : Vector α (succ n)</code> and deletes the first element. A first thought might be to
 use the <code>casesOn</code> function:</p>
 <pre><code class="language-lean">inductive Vector (α : Type u) : Nat → Type u
   | nil  : Vector α 0
@@ -7059,7 +7098,7 @@ families are far from straightforward. For example:</p>
 <p>The <code>map</code> function is even more tedious to define by hand than the
 <code>tail</code> function. We encourage you to try it, using <code>recOn</code>,
 <code>casesOn</code> and <code>noConfusion</code>.</p>
-<h2 id="inaccessible-patterns"><a class="header" href="#inaccessible-patterns">Inaccessible Patterns</a></h2>
+<h2><a class="header" href="#inaccessible-patterns" id="inaccessible-patterns">Inaccessible Patterns</a></h2>
 <p>Sometimes an argument in a dependent matching pattern is not essential
 to the definition, but nonetheless has to be included to specialize
 the type of the expression appropriately. Lean allows users to mark
@@ -7097,7 +7136,7 @@ def inverse' {f : α → β} : (b : β) → ImageOf f b → α
 <code>f</code> is <em>not</em> a pattern matching variable.</p>
 <p>Inaccessible patterns can be used to clarify and control definitions that
 make use of dependent pattern matching. Consider the following
-definition of the function <code>Vector.add,</code> which adds two vectors of
+definition of the function <code>Vector.add</code>, which adds two vectors of
 elements of a type, assuming that type has an associated addition
 function:</p>
 <pre><code class="language-lean">inductive Vector (α : Type u) : Nat → Type u
@@ -7128,11 +7167,9 @@ the equation compiler to avoid the case split on <code>n</code></p>
 </span><span class="boring">  | nil  : Vector α 0
 </span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
 </span><span class="boring">namespace Vector
-</span>
-def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
-  | .(_),   nil,       nil       =&gt; nil
+</span>def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
+  | .(_), nil,       nil       =&gt; nil
   | .(_), cons a as, cons b bs =&gt; cons (a + b) (add as bs)
-
 <span class="boring">end Vector
 </span></code></pre>
 <p>Marking the position as an inaccessible pattern tells the
@@ -7145,11 +7182,9 @@ matching.</p>
 </span><span class="boring">  | nil  : Vector α 0
 </span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
 </span><span class="boring">namespace Vector
-</span>
-def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
-  | _,   nil,       nil       =&gt; nil
+</span>def add [Add α] : {n : Nat} → Vector α n → Vector α n → Vector α n
+  | _, nil,       nil       =&gt; nil
   | _, cons a as, cons b bs =&gt; cons (a + b) (add as bs)
-
 <span class="boring">end Vector
 </span></code></pre>
 <p>As we mentioned above, the argument <code>{n : Nat}</code> is part of the
@@ -7162,11 +7197,9 @@ these extra discriminants automatically for us.</p>
 </span><span class="boring">  | nil  : Vector α 0
 </span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
 </span><span class="boring">namespace Vector
-</span>
-def add [Add α] {n : Nat} : Vector α n → Vector α n → Vector α n
+</span>def add [Add α] {n : Nat} : Vector α n → Vector α n → Vector α n
   | nil,       nil       =&gt; nil
   | cons a as, cons b bs =&gt; cons (a + b) (add as bs)
-
 <span class="boring">end Vector
 </span></code></pre>
 <p>When combined with the <em>auto bound implicits</em> feature, you can simplify
@@ -7175,11 +7208,9 @@ the declare further and write:</p>
 </span><span class="boring">  | nil  : Vector α 0
 </span><span class="boring">  | cons : α → {n : Nat} → Vector α n → Vector α (n+1)
 </span><span class="boring">namespace Vector
-</span>
-def add [Add α] : Vector α n → Vector α n → Vector α n
+</span>def add [Add α] : Vector α n → Vector α n → Vector α n
   | nil,       nil       =&gt; nil
   | cons a as, cons b bs =&gt; cons (a + b) (add as bs)
-
 <span class="boring">end Vector
 </span></code></pre>
 <p>Using these new features, you can write the other vector functions defined
@@ -7206,7 +7237,7 @@ def zip : Vector α n → Vector β n → Vector (α × β) n
   | cons a as, cons b bs =&gt; cons (a, b) (zip as bs)
 <span class="boring">end Vector
 </span></code></pre>
-<h2 id="match-expressions"><a class="header" href="#match-expressions">Match Expressions</a></h2>
+<h2><a class="header" href="#match-expressions" id="match-expressions">Match Expressions</a></h2>
 <p>Lean also provides a compiler for <em>match-with</em> expressions found in
 many functional languages.</p>
 <pre><code class="language-lean">def isNotZero (m : Nat) : Bool :=
@@ -7262,13 +7293,12 @@ def bar₄ (p : Nat × Nat) : Nat :=
 <pre><code class="language-lean">variable (p q : Nat → Prop)
 
 example : (∃ x, p x) → (∃ y, q y) → ∃ x y, p x ∧ q y
- | ⟨x, px⟩, ⟨y, qy⟩ =&gt; ⟨x, y, px, qy⟩
+  | ⟨x, px⟩, ⟨y, qy⟩ =&gt; ⟨x, y, px, qy⟩
 
 example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
         : ∃ x y, p x ∧ q y :=
   match h₀, h₁ with
   | ⟨x, px⟩, ⟨y, qy⟩ =&gt; ⟨x, y, px, qy⟩
-
 
 example : (∃ x, p x) → (∃ y, q y) → ∃ x y, p x ∧ q y :=
   fun ⟨x, px⟩ ⟨y, qy⟩ =&gt; ⟨x, y, px, qy⟩
@@ -7279,7 +7309,7 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
   let ⟨y, qy⟩ := h₁
   ⟨x, y, px, qy⟩
 </code></pre>
-<h2 id="local-recursive-declarations-1"><a class="header" href="#local-recursive-declarations-1">Local Recursive Declarations</a></h2>
+<h2><a class="header" href="#local-recursive-declarations-1" id="local-recursive-declarations-1">Local Recursive Declarations</a></h2>
 <p>You can define local recursive declarations using the <code>let rec</code> keyword.</p>
 <pre><code class="language-lean">def replicate (n : Nat) (a : α) : List α :=
   let rec loop : Nat → List α → List α
@@ -7327,7 +7357,7 @@ where
     | 0   =&gt; simp [replicate.loop]
     | n+1 =&gt; simp [replicate.loop, aux n, Nat.add_succ, Nat.succ_add]
 </code></pre>
-<h2 id="exercises-4"><a class="header" href="#exercises-4">Exercises</a></h2>
+<h2><a class="header" href="#exercises-4" id="exercises-4">Exercises</a></h2>
 <ol>
 <li>
 <p>Open a namespace <code>Hidden</code> to avoid naming conflicts, and use the
@@ -7347,7 +7377,7 @@ the natural numbers. Similarly, see if you can figure out how to
 define <code>WellFounded.fix</code> on your own.</p>
 </li>
 <li>
-<p>Following the examples in <a href="induction_and_recursion.html#_dependent_pattern_matching">Section Dependent Pattern Matching</a>,
+<p>Following the examples in <a href="induction_and_recursion.html#dependent-pattern-matching">Section Dependent Pattern Matching</a>,
 define a function that will append two vectors.
 This is tricky; you will have to define an auxiliary function.</p>
 </li>
@@ -7427,7 +7457,7 @@ theorem fuse_eq (v : Nat → Nat)
   sorry
 </code></pre>
 <p>The last two theorems show that the definitions preserve the value.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="structures-and-records"><a class="header" href="#structures-and-records">Structures and Records</a></h1>
+<h1><a class="header" href="#structures-and-records" id="structures-and-records">Structures and Records</a></h1>
 <p>We have seen that Lean's foundational system includes inductive
 types. We have, moreover, noted that it is a remarkable fact that it
 is possible to construct a substantial edifice of mathematics based on
@@ -7451,7 +7481,7 @@ automatically generates all the projection functions. The
 <code>structure</code> command also allows us to define new structures based on
 previously defined ones. Moreover, Lean provides convenient notation
 for defining instances of a given structure.</p>
-<h2 id="declaring-structures"><a class="header" href="#declaring-structures">Declaring Structures</a></h2>
+<h2><a class="header" href="#declaring-structures" id="declaring-structures">Declaring Structures</a></h2>
 <p>The structure command is essentially a &quot;front end&quot; for defining
 inductive data types. Every <code>structure</code> declaration introduces a
 namespace with the same name. The general form is as follows:</p>
@@ -7561,7 +7591,7 @@ def f : Nat → Nat := fun x =&gt; x * x
 #eval xs.map f  -- [1, 4, 9]
 </code></pre>
 <p>Here <code>xs.map f</code> is interpreted as <code>List.map f xs</code>.</p>
-<h2 id="objects"><a class="header" href="#objects">Objects</a></h2>
+<h2><a class="header" href="#objects" id="objects">Objects</a></h2>
 <p>We have been using constructors to create elements of a structure
 type. For structures containing many fields, this is often
 inconvenient, because we have to remember the order in which the
@@ -7633,7 +7663,7 @@ example : r.x = 6 := rfl
 example : r.y = 2 := rfl
 example : r.z = 5 := rfl
 </code></pre>
-<h2 id="inheritance"><a class="header" href="#inheritance">Inheritance</a></h2>
+<h2><a class="header" href="#inheritance" id="inheritance">Inheritance</a></h2>
 <p>We can <em>extend</em> existing structures by adding new fields. This feature
 allows us to simulate a form of <em>inheritance</em>.</p>
 <pre><code class="language-lean">structure Point (α : Type u) where
@@ -7670,16 +7700,16 @@ def rgp : RedGreenPoint Nat :=
 example : rgp.x   = 10 := rfl
 example : rgp.red = 200 := rfl
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="type-classes"><a class="header" href="#type-classes">Type classes</a></h1>
+<h1><a class="header" href="#type-classes" id="type-classes">Type Classes</a></h1>
 <p>Type classes were introduced as a principled way of enabling
 ad-hoc polymorphism in functional programming languages. We first observe that it
 would be easy to implement an ad-hoc polymorphic function (such as addition) if the
 function simply took the type-specific implementation of addition as an argument
 and then called that implementation on the remaining arguments. For example,
-suppose we declare a structure in Lean to hold implementations of addition</p>
+suppose we declare a structure in Lean to hold implementations of addition.</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span>structure Add (a : Type) where
-  add : a -&gt; a -&gt; a
+  add : a → a → a
 
 #check @Add.add
 -- Add.add : {a : Type} → Add a → a → a → a
@@ -7688,10 +7718,10 @@ suppose we declare a structure in Lean to hold implementations of addition</p>
 <p>In the above Lean code, the field <code>add</code> has type
 <code>Add.add : {a : Type} → Add a → a → a → a</code>
 where the curly braces around the type <code>a</code> mean that it is an implicit argument.
-We could implement <code>double</code> by</p>
+We could implement <code>double</code> by:</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span><span class="boring">structure Add (a : Type) where
-</span><span class="boring"> add : a -&gt; a -&gt; a
+</span><span class="boring"> add : a → a → a
 </span>def double (s : Add a) (x : a) : a :=
   s.add x x
 
@@ -7703,7 +7733,6 @@ We could implement <code>double</code> by</p>
 
 #eval double { add := Int.add } 10
 -- 20
-
 <span class="boring">end Ex
 </span></code></pre>
 <p>Note that you can double a natural number <code>n</code> by <code>double { add := Nat.add } n</code>.
@@ -7714,10 +7743,10 @@ polymorphism.</p>
 <p>The main idea behind type classes is to make arguments such as <code>Add a</code> implicit,
 and to use a database of user-defined instances to synthesize the desired instances
 automatically through a process known as typeclass resolution. In Lean, by changing
-<code>structure</code> to <code>class</code> in the example above, the type of <code>Add.add</code> becomes</p>
+<code>structure</code> to <code>class</code> in the example above, the type of <code>Add.add</code> becomes:</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span>class Add (a : Type) where
-  add : a -&gt; a -&gt; a
+  add : a → a → a
 
 #check @Add.add
 -- Add.add : {a : Type} → [self : Add a] → a → a → a
@@ -7726,10 +7755,10 @@ automatically through a process known as typeclass resolution. In Lean, by chang
 <p>where the square brackets indicate that the argument of type <code>Add a</code> is <em>instance implicit</em>,
 i.e. that it should be synthesized using typeclass resolution. This version of
 <code>add</code> is the Lean analogue of the Haskell term <code>add :: Add a =&gt; a -&gt; a -&gt; a</code>.
-Similarly, we can register instances by</p>
+Similarly, we can register instances by:</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span><span class="boring">class Add (a : Type) where
-</span><span class="boring"> add : a -&gt; a -&gt; a
+</span><span class="boring"> add : a → a → a
 </span>instance : Add Nat where
   add := Nat.add
 
@@ -7738,15 +7767,14 @@ instance : Add Int where
 
 instance : Add Float where
   add := Float.add
-
 <span class="boring">end Ex
 </span></code></pre>
 <p>Then for <code>n : Nat</code> and <code>m : Nat</code>, the term <code>Add.add n m</code> triggers typeclass resolution with
 the goal of <code>Add Nat</code>, and typeclass resolution will synthesize the instance for <code>Nat</code> above.
-We can now reimplement <code>double</code> using an instance implicit by</p>
+We can now reimplement <code>double</code> using an instance implicit by:</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span><span class="boring">class Add (a : Type) where
-</span><span class="boring">  add : a -&gt; a -&gt; a
+</span><span class="boring">  add : a → a → a
 </span><span class="boring">instance : Add Nat where
 </span><span class="boring"> add := Nat.add
 </span><span class="boring">instance : Add Int where
@@ -7804,7 +7832,7 @@ Let us start with the first step of the program above, declaring an appropriate 
 -- Inhabited.default : {a : Type u} → [self : Inhabited a] → a
 <span class="boring">end Ex
 </span></code></pre>
-<p>Note <code>Inhabited.default</code> doesn't have any explicit argument.</p>
+<p>Note <code>Inhabited.default</code> doesn't have any explicit arguments.</p>
 <p>An element of the class <code>Inhabited a</code> is simply an expression of the form <code>Inhabited.mk x</code>, for some element <code>x : a</code>.
 The projection <code>Inhabited.default</code> will allow us to &quot;extract&quot; such an element of <code>a</code> from an element of <code>Inhabited a</code>.
 Now we populate the class with some instances:</p>
@@ -7851,7 +7879,7 @@ instance : Inhabited Prop where
 -- true
 <span class="boring">end Ex
 </span></code></pre>
-<h2 id="chaining-instances"><a class="header" href="#chaining-instances">Chaining Instances</a></h2>
+<h2><a class="header" href="#chaining-instances" id="chaining-instances">Chaining Instances</a></h2>
 <p>If that were the extent of type class inference, it would not be all that impressive;
 it would be simply a mechanism of storing a list of instances for the elaborator to find in a lookup table.
 What makes type class inference powerful is that one can <em>chain</em> instances. That is,
@@ -7879,7 +7907,7 @@ This causes class inference to chain through instances recursively, backtracking
 <span class="boring">end Ex
 </span></code></pre>
 <p>Similarly, we can inhabit type function with suitable constant functions:</p>
-<pre><code class="language-lean">instance [Inhabited b] : Inhabited (a -&gt; b) where
+<pre><code class="language-lean">instance [Inhabited b] : Inhabited (a → b) where
   default := fun _ =&gt; default
 </code></pre>
 <p>As an exercise, try defining default instances for other types, such as <code>List</code> and <code>Sum</code> types.</p>
@@ -7896,7 +7924,7 @@ theorem ex : foo.default = (default, default) :=
 <p>You can use the command <code>#print</code> to inspect how simple <code>inferInstance</code> is.</p>
 <pre><code class="language-lean">#print inferInstance
 </code></pre>
-<h2 id="tostring"><a class="header" href="#tostring">ToString</a></h2>
+<h2><a class="header" href="#tostring" id="tostring">ToString</a></h2>
 <p>The polymorphic method <code>toString</code> has type <code>{α : Type u} → [ToString α] → α → String</code>. You implement the instance
 for your own types and use chaining to convert complex values into strings. Lean comes with <code>ToString</code> instances
 for most builtin types.</p>
@@ -7910,7 +7938,7 @@ instance : ToString Person where
 #eval toString { name := &quot;Leo&quot;, age := 542 : Person }
 #eval toString ({ name := &quot;Daniel&quot;, age := 18 : Person }, &quot;hello&quot;)
 </code></pre>
-<h2 id="numerals"><a class="header" href="#numerals">Numerals</a></h2>
+<h2><a class="header" href="#numerals" id="numerals">Numerals</a></h2>
 <p>Numerals are polymorphic in Lean. You can use a numeral (e.g., <code>2</code>) to denote an element of any type that implements
 the type class <code>OfNat</code>.</p>
 <pre><code class="language-lean">structure Rational where
@@ -7949,10 +7977,10 @@ instance [s : Monoid α] : OfNat α (nat_lit 1) where
 def getUnit [Monoid α] : α :=
   1
 </code></pre>
-<h2 id="output-parameters"><a class="header" href="#output-parameters">Output parameters</a></h2>
+<h2><a class="header" href="#output-parameters" id="output-parameters">Output Parameters</a></h2>
 <p>By default, Lean only tries to synthesize an instance <code>Inhabited T</code> when the term <code>T</code> is known and does not
 contain missing parts. The following command produces the error
-&quot;failed to create type class instance for <code>Inhabited (Nat × ?m.1499)</code>&quot; because the type has a missing part (i.e., the <code>_</code>).</p>
+&quot;typeclass instance problem is stuck, it is often due to metavariables <code>?m.7</code>&quot; because the type has a missing part (i.e., the <code>_</code>).</p>
 <pre><code class="language-lean">#check_failure (inferInstance : Inhabited (Nat × _))
 </code></pre>
 <p>You can view the parameter of the type class <code>Inhabited</code> as an <em>input</em> value for the type class synthesizer.
@@ -7977,7 +8005,7 @@ instance : HMul Nat (Array Nat) (Array Nat) where
 <span class="boring">end Ex
 </span></code></pre>
 <p>The parameters <code>α</code> and <code>β</code> are considered input parameters and <code>γ</code> an output one.
-Given an application <code>hMul a b</code>, after types of <code>a</code> and <code>b</code> are known, the type class
+Given an application <code>hMul a b</code>, after the types of <code>a</code> and <code>b</code> are known, the type class
 synthesizer is invoked, and the resulting type is obtained from the output parameter <code>γ</code>.
 In the example above, we defined two instances. The first one is the homogeneous
 multiplication for natural numbers. The second is the scalar multiplication for arrays.
@@ -8006,7 +8034,7 @@ instance [HMul α β γ] : HMul α (Array β) (Array γ) where
 <p>You can use our new scalar array multiplication instance on arrays of type <code>Array β</code>
 with a scalar of type <code>α</code> whenever you have an instance <code>HMul α β γ</code>.
 In the last <code>#eval</code>, note that the instance was used twice on an array of arrays.</p>
-<h2 id="default-instances"><a class="header" href="#default-instances">Default instances</a></h2>
+<h2><a class="header" href="#default-instances" id="default-instances">Default Instances</a></h2>
 <p>In the class <code>HMul</code>, the parameters <code>α</code> and <code>β</code> are treated as input values.
 Thus, type class synthesis only starts after these two types are known. This may often
 be too restrictive.</p>
@@ -8021,7 +8049,7 @@ instance : HMul Int Int Int where
 
 def xs : List Int := [1, 2, 3]
 
--- Error &quot;failed to create type class instance for HMul Int ?m.1767 (?m.1797 x)&quot;
+-- Error &quot;typeclass instance problem is stuck, it is often due to metavariables HMul ?m.89 ?m.90 ?m.91&quot;
 #check_failure fun y =&gt; xs.map (fun x =&gt; hMul x y)
 <span class="boring">end Ex
 </span></code></pre>
@@ -8034,16 +8062,16 @@ this kind of situation. We can achieve exactly that using <em>default instances<
 
 export HMul (hMul)
 
-@[defaultInstance]
+@[default_instance]
 instance : HMul Int Int Int where
   hMul := Int.mul
 
 def xs : List Int := [1, 2, 3]
 
-#check fun y =&gt; xs.map (fun x =&gt; hMul x y)  -- Int -&gt; List Int
+#check fun y =&gt; xs.map (fun x =&gt; hMul x y)  -- Int → List Int
 <span class="boring">end Ex
 </span></code></pre>
-<p>By tagging the instance above with the attribute <code>defaultInstance</code>, we are instructing Lean
+<p>By tagging the instance above with the attribute <code>default_instance</code>, we are instructing Lean
 to use this instance on pending type class synthesis problems.
 The actual Lean implementation defines homogeneous and heterogeneous classes for arithmetical operators.
 Moreover, <code>a+b</code>, <code>a*b</code>, <code>a-b</code>, <code>a/b</code>, and <code>a%b</code> are notations for the heterogeneous versions.
@@ -8055,7 +8083,7 @@ priority to override the builtin ones.</p>
   den : Nat
   inv : den ≠ 0
 
-@[defaultInstance 200]
+@[default_instance 200]
 instance : OfNat Rational n where
   ofNat := { num := n, den := 1, inv := by decide }
 
@@ -8065,7 +8093,7 @@ instance : ToString Rational where
 #check 2 -- Rational
 </code></pre>
 <p>Priorities are also useful to control the interaction between different default instances.
-For example, suppose <code>xs</code> has type <code>α</code>, when elaboration <code>xs.map (fun x =&gt; 2 * x)</code>, we want the homogeneous instance for multiplication
+For example, suppose <code>xs</code> has type <code>List α</code>. When elaborating <code>xs.map (fun x =&gt; 2 * x)</code>, we want the homogeneous instance for multiplication
 to have higher priority than the default instance for <code>OfNat</code>. This is particularly important when we have implemented only the instance
 <code>HMul α α α</code>, and did not implement <code>HMul Nat α α</code>.
 Now, we reveal how the notation <code>a*b</code> is defined in Lean.</p>
@@ -8073,7 +8101,7 @@ Now, we reveal how the notation <code>a*b</code> is defined in Lean.</p>
 </span>class OfNat (α : Type u) (n : Nat) where
   ofNat : α
 
-@[defaultInstance]
+@[default_instance]
 instance (n : Nat) : OfNat Nat n where
   ofNat := n
 
@@ -8083,15 +8111,15 @@ class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
 class Mul (α : Type u) where
   mul : α → α → α
 
-@[defaultInstance 10]
+@[default_instance 10]
 instance [Mul α] : HMul α α α where
   hMul a b := Mul.mul a b
 
-infixl:70 &quot; * &quot;  =&gt; HMul.hMul
+infixl:70 &quot; * &quot; =&gt; HMul.hMul
 <span class="boring">end Ex
 </span></code></pre>
 <p>The <code>Mul</code> class is convenient for types that only implement the homogeneous multiplication.</p>
-<h2 id="local-instances"><a class="header" href="#local-instances">Local Instances</a></h2>
+<h2><a class="header" href="#local-instances" id="local-instances">Local Instances</a></h2>
 <p>Type classes are implemented using attributes in Lean. Thus, you can
 use the <code>local</code> modifier to indicate that they only have effect until
 the current <code>section</code> or <code>namespace</code> is closed, or until the end
@@ -8132,7 +8160,7 @@ attribute [-instance] addPoint
 --  p + p + p  -- Error: failed to synthesize instance
 </code></pre>
 <p>We recommend you only use this command to diagnose problems.</p>
-<h2 id="scoped-instances"><a class="header" href="#scoped-instances">Scoped Instances</a></h2>
+<h2><a class="header" href="#scoped-instances" id="scoped-instances">Scoped Instances</a></h2>
 <p>You can also declare scoped instances in namespaces. This kind of instance is
 only active when you are inside of the namespace or open the namespace.</p>
 <pre><code class="language-lean">structure Point where
@@ -8182,7 +8210,7 @@ open scoped Point -- activates instance `Add Point`
 
 -- #check fun (p : Point) =&gt; double p -- Error: unknown identifier 'double'
 </code></pre>
-<h2 id="decidable-propositions"><a class="header" href="#decidable-propositions">Decidable Propositions</a></h2>
+<h2><a class="header" href="#decidable-propositions" id="decidable-propositions">Decidable Propositions</a></h2>
 <p>Let us consider another example of a type class defined in the
 standard library, namely the type class of <code>Decidable</code>
 propositions. Roughly speaking, an element of <code>Prop</code> is said to be
@@ -8225,7 +8253,7 @@ follows:</p>
 <p>That is, in <code>dite c t e</code>, we can assume <code>hc : c</code> in the &quot;then&quot;
 branch, and <code>hnc : ¬ c</code> in the &quot;else&quot; branch. To make <code>dite</code> more
 convenient to use, Lean allows us to write <code>if h : c then t else e</code>
-instead of <code>dite c (λ h : c, t) (λ h : ¬ c, e)</code>.</p>
+instead of <code>dite c (λ h : c =&gt; t) (λ h : ¬ c =&gt; e)</code>.</p>
 <p>Without classical logic, we cannot prove that every proposition is
 decidable. But we can prove that <em>certain</em> propositions are
 decidable. For example, we can prove the decidability of basic
@@ -8254,7 +8282,7 @@ decidable. You can import the classical axioms and make the generic
 instance of decidability available by opening the <code>Classical</code> namespace.</p>
 <pre><code class="language-lean">open Classical
 </code></pre>
-<p>Thereafter <code>decidable p</code> has an instance for every <code>p</code>.
+<p>Thereafter <code>Decidable p</code> has an instance for every <code>p</code>.
 Thus all theorems in the library
 that rely on decidability assumptions are freely available when you
 want to reason classically. In <a href="./axioms_and_computation.html">Chapter Axioms and Computation</a>,
@@ -8304,11 +8332,11 @@ decision procedure for <code>p</code>, and, if it is successful, evaluates to
 either <code>true</code> or <code>false</code>. In particular, if <code>p</code> is a true closed
 expression, <code>decide p</code> will reduce definitionally to the Boolean <code>true</code>.
 On the assumption that <code>decide p = true</code> holds, <code>of_decide_eq_true</code>
-produces a proof of <code>p</code>. The tactic <code>decide</code> puts it all together: to
+produces a proof of <code>p</code>. The tactic <code>decide</code> puts it all together to
 prove a target <code>p</code>. By the previous observations,
 <code>decide</code> will succeed any time the inferred decision procedure
 for <code>c</code> has enough information to evaluate, definitionally, to the <code>isTrue</code> case.</p>
-<h2 id="managing-type-class-inference"><a class="header" href="#managing-type-class-inference">Managing Type Class Inference</a></h2>
+<h2><a class="header" href="#managing-type-class-inference" id="managing-type-class-inference">Managing Type Class Inference</a></h2>
 <p>If you are ever in a situation where you need to supply an expression
 that Lean can infer by type class inference, you can ask Lean to carry
 out the inference using <code>inferInstance</code>:</p>
@@ -8332,8 +8360,7 @@ in a concise manner:</p>
 under a definition. For example, Lean cannot
 find an instance of <code>Inhabited (Set α)</code>. We can declare one
 explicitly:</p>
-<pre><code class="language-lean">
-def Set (α : Type u) := α → Prop
+<pre><code class="language-lean">def Set (α : Type u) := α → Prop
 
 -- fails
 -- example : Inhabited (Set α) :=
@@ -8346,7 +8373,7 @@ instance : Inhabited (Set α) :=
 expected instance, or, worse, falls into an infinite loop and times
 out. To help debug in these situations, Lean enables you to request a
 trace of the search:</p>
-<pre><code>set_option trace.Meta.synthInstance true
+<pre><code class="language-lean">set_option trace.Meta.synthInstance true
 </code></pre>
 <p>If you are using VS Code, you can read the results by hovering over
 the relevant theorem or definition, or opening the messages window
@@ -8355,7 +8382,7 @@ independent Lean process on your file, and the output buffer will show
 a trace every time the type class resolution procedure is subsequently
 triggered.</p>
 <p>You can also limit the search using the following options:</p>
-<pre><code>set_option synthInstance.maxHeartbeats 10000
+<pre><code class="language-lean">set_option synthInstance.maxHeartbeats 10000
 set_option synthInstance.maxSize 400
 </code></pre>
 <p>Option <code>synthInstance.maxHeartbeats</code> specifies the maximum amount of
@@ -8373,7 +8400,7 @@ which are declared last are tried first. Moreover, if instances are
 declared in other modules, the order in which they are tried depends
 on the order in which namespaces are opened. Instances declared in
 namespaces which are opened later are tried earlier.</p>
-<p>You can change the order that type classes instances are tried by
+<p>You can change the order that type class instances are tried by
 assigning them a <em>priority</em>. When an instance is declared, it is
 assigned a default priority value. You can assign other priorities
 when defining an instance. The following example illustrates how this
@@ -8400,7 +8427,7 @@ instance (priority := default+2) i3 : Foo where
 example : Foo.a = 3 :=
   rfl
 </code></pre>
-<h2 id="coercions-using-type-classes"><a class="header" href="#coercions-using-type-classes">Coercions using Type Classes</a></h2>
+<h2><a class="header" href="#coercions-using-type-classes" id="coercions-using-type-classes">Coercions using Type Classes</a></h2>
 <p>The most basic type of coercion maps elements of one type to another. For example, a coercion from <code>Nat</code> to <code>Int</code> allows us to view any element <code>n : Nat</code> as an element of <code>Int</code>. But some coercions depend on parameters; for example, for any type <code>α</code>, we can view any element <code>as : List α</code> as an element of <code>Set α</code>, namely, the set of elements occurring in the list. The corresponding coercion is defined on the &quot;family&quot; of types <code>List α</code>, parameterized by <code>α</code>.</p>
 <p>Lean allows us to declare three kinds of coercions:</p>
 <ul>
@@ -8432,7 +8459,7 @@ example : Foo.a = 3 :=
 instance : Coe (List α) (Set α) where
   coe a := a.toSet
 
-def s : Set Nat  := {1}
+def s : Set Nat := {1}
 #check s ∪ [2, 3]
 -- s ∪ List.toSet [2, 3] : Set Nat
 </code></pre>
@@ -8449,7 +8476,7 @@ def s : Set Nat  := {1}
 </span><span class="boring">  | a::as =&gt; {a} ∪ as.toSet
 </span><span class="boring">instance : Coe (List α) (Set α) where
 </span><span class="boring">  coe a := a.toSet
-</span>def s : Set Nat  := {1}
+</span>def s : Set Nat := {1}
 
 #check let x := ↑[2, 3]; s ∪ x
 -- let x := List.toSet [2, 3]; s ∪ x : Set Nat
@@ -8461,7 +8488,7 @@ def s : Set Nat  := {1}
   coe := decide p
 </code></pre>
 <p>Lean will also chain (non-dependent) coercions as necessary. Actually, the type class <code>CoeT</code> is the transitive closure of <code>Coe</code>.</p>
-<p>Let us now consider the second kind of coercion. By the <em>class of sorts</em>, we mean the collection of universes <code>Type u</code>. A coercion of the second kind is of the form</p>
+<p>Let us now consider the second kind of coercion. By the <em>class of sorts</em>, we mean the collection of universes <code>Type u</code>. A coercion of the second kind is of the form:</p>
 <pre><code>    c : (x1 : A1) → ... → (xn : An) → F x1 ... xn → Type u
 </code></pre>
 <p>where <code>F</code> is a family of types as above. This allows us to write <code>s : t</code> whenever <code>t</code> is of type <code>F a1 ... an</code>. In other words, the coercion allows us to view the elements of <code>F a1 ... an</code> as types. This is very useful when defining algebraic structures in which one component, the carrier of the structure, is a <code>Type</code>. For example, we can define a semigroup as follows:</p>
@@ -8496,7 +8523,7 @@ example (S : Semigroup) (a b c : S) : (a * b) * c = a * (b * c) :=
   Semigroup.mul_assoc _ a b c
 </code></pre>
 <p>It is the coercion that makes it possible to write <code>(a b c : S)</code>. Note that, we define an instance of <code>CoeSort Semigroup (Type u)</code> instead of <code>Coe Semigroup (Type u)</code>.</p>
-<p>By the <em>class of function types</em>, we mean the collection of Pi types <code>(z : B) → C</code>. The third kind of coercion has the form</p>
+<p>By the <em>class of function types</em>, we mean the collection of Pi types <code>(z : B) → C</code>. The third kind of coercion has the form:</p>
 <pre><code>    c : (x1 : A1) → ... → (xn : An) → (y : F x1 ... xn) → (z : B) → C
 </code></pre>
 <p>where <code>F</code> is again a family of types and <code>B</code> and <code>C</code> can depend on <code>x1, ..., xn, y</code>. This makes it possible to write <code>t s</code> whenever <code>t</code> is an element of <code>F a1 ... an</code>. In other words, the coercion enables us to view elements of <code>F a1 ... an</code> as functions. Continuing the example above, we can define the notion of a morphism between semigroups <code>S1</code> and <code>S2</code>. That is, a function from the carrier of <code>S1</code> to the carrier of <code>S2</code> (note the implicit coercion) that respects the multiplication. The projection <code>morphism.mor</code> takes a morphism to the underlying function:</p>
@@ -8535,17 +8562,17 @@ theorem resp_mul {S1 S2 : Semigroup} (f : Morphism S1 S2) (a b : S1)
 
 example (S1 S2 : Semigroup) (f : Morphism S1 S2) (a : S1) :
       f (a * a * a) = f a * f a * f a :=
-  calc f (a * a * a) = f (a * a) * f a := by rw [resp_mul f]
-                _    = f a * f a * f a := by rw [resp_mul f]
-
+  calc f (a * a * a)
+    _ = f (a * a) * f a := by rw [resp_mul f]
+    _ = f a * f a * f a := by rw [resp_mul f]
 </code></pre>
 <p>With the coercion in place, we can write <code>f (a * a * a)</code> instead of <code>f.mor (a * a * a)</code>. When the <code>Morphism</code>, <code>f</code>, is used where a function is expected, Lean inserts the coercion. Similar to <code>CoeSort</code>, we have yet another class <code>CoeFun</code> for this class of coercions. The field <code>F</code> is used to specify the function type we are coercing to. This type may depend on the type we are coercing from.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="the-conversion-tactic-mode"><a class="header" href="#the-conversion-tactic-mode">The Conversion Tactic Mode</a></h1>
+<h1><a class="header" href="#the-conversion-tactic-mode" id="the-conversion-tactic-mode">The Conversion Tactic Mode</a></h1>
 <p>Inside a tactic block, one can use the keyword <code>conv</code> to enter
 conversion mode. This mode allows to travel inside assumptions and
 goals, even inside function abstractions and dependent arrows, to apply rewriting or
 simplifying steps.</p>
-<h2 id="basic-navigation-and-rewriting"><a class="header" href="#basic-navigation-and-rewriting">Basic navigation and rewriting</a></h2>
+<h2><a class="header" href="#basic-navigation-and-rewriting" id="basic-navigation-and-rewriting">Basic navigation and rewriting</a></h2>
 <p>As a first example, let us prove example
 <code>(a b c : Nat) : a * (b * c) = a * (c * b)</code>
 (examples in this file are somewhat artificial since
@@ -8553,21 +8580,21 @@ other tactics could finish them immediately). The naive
 first attempt is to enter tactic mode and try <code>rw [Nat.mul_comm]</code>. But this
 transforms the goal into <code>b * c * a = a * (c * b)</code>, after commuting the
 very first multiplication appearing in the term. There are several
-ways to fix this issue, and one way is to use a more precise tool :
+ways to fix this issue, and one way is to use a more precise tool:
 the conversion mode. The following code block shows the current target
 after each line.</p>
 <pre><code class="language-lean">example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv =&gt;
-    -- |- a * (b * c) = a * (c * b)
+    -- ⊢ a * (b * c) = a * (c * b)
     lhs
-    -- |- a * (b * c)
+    -- ⊢ a * (b * c)
     congr
-    -- 2 goals : |- a and |- b * c
+    -- 2 goals: ⊢ a, ⊢ b * c
     rfl
-    -- |- b * c
+    -- ⊢ b * c
     rw [Nat.mul_comm]
 </code></pre>
-<p>The above snippet show three navigation commands:</p>
+<p>The above snippet shows three navigation commands:</p>
 <ul>
 <li><code>lhs</code> navigates to the left hand side of a relation (here equality), there is also a <code>rhs</code> navigating to the right hand side.</li>
 <li><code>congr</code> creates as many targets as there are (nondependent and explicit) arguments to the current head function
@@ -8580,7 +8607,7 @@ tactic mode.</p>
 binders. Suppose we want to prove example
 <code>(fun x : Nat =&gt; 0 + x) = (fun x =&gt; x)</code>.
 The naive first attempt is to enter tactic mode and try
-<code>rw [zero_add]</code>. But this fails with a frustrating</p>
+<code>rw [Nat.zero_add]</code>. But this fails with a frustrating</p>
 <pre><code>error: tactic 'rewrite' failed, did not find instance of the pattern
        in the target expression
   0 + ?n
@@ -8602,8 +8629,8 @@ Note that this example is somewhat artificial, one could also do:</p>
 <pre><code class="language-lean">example : (fun x : Nat =&gt; 0 + x) = (fun x =&gt; x) := by
   simp
 </code></pre>
-<p>All this is also available to rewrite an hypothesis <code>h</code> from the local context using <code>conv at h</code>.</p>
-<h2 id="pattern-matching-1"><a class="header" href="#pattern-matching-1">Pattern matching</a></h2>
+<p><code>conv</code> can also rewrite a hypothesis <code>h</code> from the local context, using <code>conv at h</code>.</p>
+<h2><a class="header" href="#pattern-matching-1" id="pattern-matching-1">Pattern matching</a></h2>
 <p>Navigation using the above commands can be tedious. One can shortcut it using pattern matching as follows:</p>
 <pre><code class="language-lean">example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv in b * c =&gt; rw [Nat.mul_comm]
@@ -8618,7 +8645,7 @@ Note that this example is somewhat artificial, one could also do:</p>
 <pre><code class="language-lean">example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv in _ * c =&gt; rw [Nat.mul_comm]
 </code></pre>
-<h2 id="structuring-conversion-tactics"><a class="header" href="#structuring-conversion-tactics">Structuring conversion tactics</a></h2>
+<h2><a class="header" href="#structuring-conversion-tactics" id="structuring-conversion-tactics">Structuring conversion tactics</a></h2>
 <p>Curly brackets and <code>.</code> can also be used in <code>conv</code> mode to structure tactics.</p>
 <pre><code class="language-lean">example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
   conv =&gt;
@@ -8627,22 +8654,22 @@ Note that this example is somewhat artificial, one could also do:</p>
     . rw [Nat.zero_add]
     . rw [Nat.mul_comm]
 </code></pre>
-<h2 id="other-tactics-inside-conversion-mode"><a class="header" href="#other-tactics-inside-conversion-mode">Other tactics inside conversion mode</a></h2>
+<h2><a class="header" href="#other-tactics-inside-conversion-mode" id="other-tactics-inside-conversion-mode">Other tactics inside conversion mode</a></h2>
 <ul>
 <li><code>arg i</code> enter the <code>i</code>-th nondependent explicit argument of an application.</li>
 </ul>
 <pre><code class="language-lean">example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv =&gt;
-    -- |- a * (b * c) = a * (c * b)
+    -- ⊢ a * (b * c) = a * (c * b)
     lhs
-    -- |- a * (b * c)
+    -- ⊢ a * (b * c)
     arg 2
-    -- |- b * c
+    -- ⊢ b * c
     rw [Nat.mul_comm]
 </code></pre>
 <ul>
 <li>
-<p><code>args</code> alternative name for <code>congr</code></p>
+<p><code>args</code> alternative name for <code>congr</code>.</p>
 </li>
 <li>
 <p><code>simp</code> applies the simplifier to the current goal. It supports the same options available in regular tactic mode.</p>
@@ -8658,12 +8685,13 @@ example (g : Nat → Nat) (h₁ : g x = x + 1) (h₂ : x &gt; 0) : g x = f x := 
   exact h₁
 </code></pre>
 <ul>
-<li><code>enter [1, x, 2, y]</code> iterate <code>arg</code> and <code>intro</code> with the given arguments. It is just the macro.</li>
+<li><code>enter [1, x, 2, y]</code> iterate <code>arg</code> and <code>intro</code> with the given arguments. It is just the macro:</li>
 </ul>
-<pre><code>syntax enterArg := ident &lt;|&gt; num
+<pre><code>syntax enterArg := ident &lt;|&gt; group(&quot;@&quot;? num)
 syntax &quot;enter &quot; &quot;[&quot; (colGt enterArg),+ &quot;]&quot;: conv
 macro_rules
-  | `(conv| enter [$i:numLit]) =&gt; `(conv| arg $i)
+  | `(conv| enter [$i:num]) =&gt; `(conv| arg $i)
+  | `(conv| enter [@$i:num]) =&gt; `(conv| arg @$i)
   | `(conv| enter [$id:ident]) =&gt; `(conv| ext $id)
   | `(conv| enter [$arg:enterArg, $args,*]) =&gt; `(conv| (enter [$arg]; enter [$args,*]))
 </code></pre>
@@ -8672,7 +8700,7 @@ macro_rules
 <p><code>done</code> fail if there are unsolved goals.</p>
 </li>
 <li>
-<p><code>traceState</code> display the current tactic state.</p>
+<p><code>trace_state</code> display the current tactic state.</p>
 </li>
 <li>
 <p><code>whnf</code> put term in weak head normal form.</p>
@@ -8689,11 +8717,11 @@ applying custom congruence and extensionality lemmas.</p>
         : g x x + x = 1 + x := by
   conv =&gt;
     lhs
-    -- |- g x x + x
+    -- ⊢ g x x + x
     arg 1
-    -- |- g x x
+    -- ⊢ g x x
     rw [h₁]
-    -- 2 goals: |- 1, |- x ≠ 0
+    -- 2 goals: ⊢ 1, ⊢ x ≠ 0
     . skip
     . tactic =&gt; exact h₂
 </code></pre>
@@ -8711,7 +8739,7 @@ applying custom congruence and extensionality lemmas.</p>
     . skip
     . apply h₂
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="axioms-and-computation"><a class="header" href="#axioms-and-computation">Axioms and Computation</a></h1>
+<h1><a class="header" href="#axioms-and-computation" id="axioms-and-computation">Axioms and Computation</a></h1>
 <p>We have seen that the version of the Calculus of Constructions that
 has been implemented in Lean includes dependent function types,
 inductive types, and a hierarchy of universes that starts with an
@@ -8769,7 +8797,7 @@ adds three additional components:</p>
 compatible with bytecode evaluation, whereas the third is not amenable
 to computational interpretation. We will spell out the details more
 precisely below.</p>
-<h2 id="historical-and-philosophical-context"><a class="header" href="#historical-and-philosophical-context">Historical and Philosophical Context</a></h2>
+<h2><a class="header" href="#historical-and-philosophical-context" id="historical-and-philosophical-context">Historical and Philosophical Context</a></h2>
 <p>For most of its history, mathematics was essentially computational:
 geometry dealt with constructions of geometric objects, algebra was
 concerned with algorithmic solutions to systems of equations, and
@@ -8795,7 +8823,7 @@ roots; every meaningful mathematical theorem should have a direct
 computational interpretation. From a <em>classical</em> point of view, it is
 more fruitful to maintain a separation of concerns: we can use one
 language and body of methods to write computer programs, while
-maintaining the freedom to use a nonconstructive theories and methods
+maintaining the freedom to use nonconstructive theories and methods
 to reason about them. Lean is designed to support both of these
 approaches. Core parts of the library are developed constructively,
 but the system also provides support for carrying out classical
@@ -8830,7 +8858,7 @@ bytecode evaluation, as described above. It is only the choice
 principles discussed in :numref:<code>choice</code> that completely erase the
 distinction between the proof-irrelevant and data-relevant parts of
 the theory.</p>
-<h2 id="propositional-extensionality"><a class="header" href="#propositional-extensionality">Propositional Extensionality</a></h2>
+<h2><a class="header" href="#propositional-extensionality" id="propositional-extensionality">Propositional Extensionality</a></h2>
 <p>Propositional extensionality is the following axiom:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>axiom propext {a b : Prop} : (a ↔ b) → a = b
@@ -8874,7 +8902,7 @@ axioms`` command to display the axioms it depends on.
     #print axioms thm₂  -- propext
     -- END
 -->
-<h2 id="function-extensionality"><a class="header" href="#function-extensionality">Function Extensionality</a></h2>
+<h2><a class="header" href="#function-extensionality" id="function-extensionality">Function Extensionality</a></h2>
 <p>Similar to propositional extensionality, function extensionality
 asserts that any two functions of type <code>(x : α) → β x</code> that agree on
 all their inputs are equal.</p>
@@ -8927,7 +8955,7 @@ example, and prove set identities:</p>
 </span><span class="boring">def mem (x : α) (a : Set α) := a x
 </span><span class="boring">infix:50 (priority := high) &quot;∈&quot; =&gt; mem
 </span><span class="boring">theorem setext {a b : Set α} (h : ∀ x, x ∈ a ↔ x ∈ b) : a = b :=
-</span><span class="boring"> funext (fun x =&gt; propext (h x))
+</span><span class="boring">  funext (fun x =&gt; propext (h x))
 </span>def empty : Set α := fun x =&gt; False
 
 notation (priority := high) &quot;∅&quot; =&gt; empty
@@ -9012,7 +9040,7 @@ bookkeeping needed to make the reductions type correct. In that case,
 adding new axioms in <code>Prop</code> does not matter; by proof irrelevance,
 an expression in <code>Prop</code> carries no information, and can be safely
 ignored by the reduction procedures.</p>
-<h2 id="quotients"><a class="header" href="#quotients">Quotients</a></h2>
+<h2><a class="header" href="#quotients" id="quotients">Quotients</a></h2>
 <p>Let <code>α</code> be any type, and let <code>r</code> be an equivalence relation on
 <code>α</code>. It is mathematically common to form the &quot;quotient&quot; <code>α / r</code>,
 that is, the type of elements of <code>α</code> &quot;modulo&quot; <code>r</code>. Set
@@ -9067,7 +9095,7 @@ clear.</p>
 #check (Quot.mk mod7Rel 4 : Quot mod7Rel)
 
 def f (x : Nat) : Bool :=
-   x % 7 = 0
+  x % 7 = 0
 
 theorem f_respects (a b : Nat) (h : mod7Rel a b) : f a = f b := by
   simp [mod7Rel, f] at *
@@ -9151,7 +9179,7 @@ end Setoid
 <span class="boring">end Hidden
 </span></code></pre>
 <p>Given a type <code>α</code>, a relation <code>r</code> on <code>α</code>, and a proof <code>p</code>
-that <code>r</code> is an equivalence relation, we can define <code>Setoid.mk p</code>
+that <code>r</code> is an equivalence relation, we can define <code>Setoid.mk r p</code>
 as an instance of the setoid class.</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>def Quotient {α : Sort u} (s : Setoid α) :=
@@ -9195,12 +9223,12 @@ readable way by using dependent pattern matching to perform
 case-analysis and break the hypotheses into pieces that are then
 reassembled to produce the conclusion.</p>
 <pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
-</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 </span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
 </span>private theorem eqv.refl (p : α × α) : p ~ p :=
   Or.inl ⟨rfl, rfl⟩
 
-private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
   | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
     Or.inl (by simp_all)
   | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
@@ -9217,17 +9245,17 @@ private theorem eqv.trans : ∀ {p₁ p₂ p₃ : α × α}, p₁ ~ p₂ → p�
     Or.inl (by simp_all)
 
 private theorem is_equivalence : Equivalence (@eqv α) :=
-   { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
+  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 </code></pre>
 <p>Now that we have proved that <code>eqv</code> is an equivalence relation, we
 can construct a <code>Setoid (α × α)</code>, and use it to define the type
 <code>UProd α</code> of unordered pairs.</p>
 <pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
-</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 </span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
 </span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
-</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
-</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
 </span><span class="boring">    Or.inl (by simp_all)
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
@@ -9244,8 +9272,8 @@ can construct a <code>Setoid (α × α)</code>, and use it to define the type
 </span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
 </span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 </span>instance uprodSetoid (α : Type u) : Setoid (α × α) where
-   r     := eqv
-   iseqv := is_equivalence
+  r     := eqv
+  iseqv := is_equivalence
 
 def UProd (α : Type u) : Type u :=
   Quotient (uprodSetoid α)
@@ -9264,14 +9292,14 @@ pairs as <code>Quotient.mk (a₁, a₂)</code>. This is useful for illustrative
 purposes, but it is not a good idea in general, since the notation
 will shadow other uses of curly brackets, such as for records and
 sets.</p>
-<p>We can easily prove that <code>{a₁, a₂} = {a₂, a₁}</code> using <code>quot.sound</code>,
+<p>We can easily prove that <code>{a₁, a₂} = {a₂, a₁}</code> using <code>Quot.sound</code>,
 since we have <code>(a₁, a₂) ~ (a₂, a₁)</code>.</p>
 <pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
-</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 </span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
 </span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
-</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
-</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
 </span><span class="boring">    Or.inl (by simp_all)
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
@@ -9288,8 +9316,8 @@ since we have <code>(a₁, a₂) ~ (a₂, a₁)</code>.</p>
 </span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
 </span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 </span><span class="boring">instance uprodSetoid (α : Type u) : Setoid (α × α) where
-</span><span class="boring">   r     := eqv
-</span><span class="boring">   iseqv := is_equivalence
+</span><span class="boring">  r     := eqv
+</span><span class="boring">  iseqv := is_equivalence
 </span><span class="boring">def UProd (α : Type u) : Type u :=
 </span><span class="boring">  Quotient (uprodSetoid α)
 </span><span class="boring">namespace UProd
@@ -9308,11 +9336,11 @@ proposition <code>mem_fn a u</code> on (ordered) pairs; then we show that
 <code>mem_respects</code>. This is an idiom that is used extensively in the
 Lean standard library.</p>
 <pre><code class="language-lean"><span class="boring">private def eqv (p₁ p₂ : α × α) : Prop :=
-</span><span class="boring"> (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
+</span><span class="boring">  (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 </span><span class="boring">infix:50 &quot; ~ &quot; =&gt; eqv
 </span><span class="boring">private theorem eqv.refl (p : α × α) : p ~ p :=
-</span><span class="boring"> Or.inl ⟨rfl, rfl⟩
-</span><span class="boring">private theorem eqv.symm  : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
+</span><span class="boring">  Or.inl ⟨rfl, rfl⟩
+</span><span class="boring">private theorem eqv.symm : ∀ {p₁ p₂ : α × α}, p₁ ~ p₂ → p₂ ~ p₁
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inl ⟨a₁b₁, a₂b₂⟩) =&gt;
 </span><span class="boring">    Or.inl (by simp_all)
 </span><span class="boring">  | (a₁, a₂), (b₁, b₂), (Or.inr ⟨a₁b₂, a₂b₁⟩) =&gt;
@@ -9329,8 +9357,8 @@ Lean standard library.</p>
 </span><span class="boring">private theorem is_equivalence : Equivalence (@eqv α) :=
 </span><span class="boring">  { refl := eqv.refl, symm := eqv.symm, trans := eqv.trans }
 </span><span class="boring">instance uprodSetoid (α : Type u) : Setoid (α × α) where
-</span><span class="boring">   r     := eqv
-</span><span class="boring">   iseqv := is_equivalence
+</span><span class="boring">  r     := eqv
+</span><span class="boring">  iseqv := is_equivalence
 </span><span class="boring">def UProd (α : Type u) : Type u :=
 </span><span class="boring">  Quotient (uprodSetoid α)
 </span><span class="boring">namespace UProd
@@ -9339,8 +9367,7 @@ Lean standard library.</p>
 </span><span class="boring">notation &quot;{ &quot; a₁ &quot;, &quot; a₂ &quot; }&quot; =&gt; mk a₁ a₂
 </span><span class="boring">theorem mk_eq_mk (a₁ a₂ : α) : {a₁, a₂} = {a₂, a₁} :=
 </span><span class="boring">  Quot.sound (Or.inr ⟨rfl, rfl⟩)
-</span>
-private def mem_fn (a : α) : α × α → Prop
+</span>private def mem_fn (a : α) : α × α → Prop
   | (a₁, a₂) =&gt; a = a₁ ∨ a = a₂
 
 -- auxiliary lemma for proving mem_respects
@@ -9381,7 +9408,7 @@ theorem mem_or_mem_of_mem_mk {a b c : α} : c ∈ {a, b} → c = a ∨ c = b :=
 for lifting binary functions, and <code>Quotient.ind₂</code> for induction on
 two variables.</p>
 <p>We close this section with some hints as to why the quotient
-construction implies function extenionality. It is not hard to show
+construction implies function extensionality. It is not hard to show
 that extensional equality on the <code>(x : α) → β x</code> is an equivalence
 relation, and so we can consider the type <code>extfun α β</code> of functions
 &quot;up to equivalence.&quot; Of course, application respects that equivalence
@@ -9394,7 +9421,7 @@ extensionally equal, we have the following chain of equalities:</p>
 <pre><code>    f₁ = extfun_app ⟦f₁⟧ = extfun_app ⟦f₂⟧ = f₂
 </code></pre>
 <p>As a result, <code>f₁</code> is equal to <code>f₂</code>.</p>
-<h2 id="choice"><a class="header" href="#choice">Choice</a></h2>
+<h2><a class="header" href="#choice" id="choice">Choice</a></h2>
 <p>To state the final axiom defined in the standard library, we need the
 <code>Nonempty</code> type, which is defined as follows:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
@@ -9433,7 +9460,7 @@ subtypes as follows:</p>
 <code>indefiniteDescription</code>, and so requires us to mark the definition
 as <code>noncomputable</code>. Also in the <code>Classical</code> namespace, the
 function <code>choose</code> and the property <code>choose_spec</code> decompose the two
-parts of the output of <code>indefinite_description</code>:</p>
+parts of the output of <code>indefiniteDescription</code>:</p>
 <pre><code class="language-lean"><span class="boring">open Classical
 </span><span class="boring">namespace Hidden
 </span>noncomputable def choose {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
@@ -9447,7 +9474,7 @@ theorem choose_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (choose
 property of being <code>Nonempty</code> and the more constructive property of
 being <code>Inhabited</code>:</p>
 <pre><code class="language-lean"><span class="boring">open Classical
-</span>theorem inhabited_of_nonempty :Nonempty α → Inhabited α :=
+</span>theorem inhabited_of_nonempty : Nonempty α → Inhabited α :=
   fun h =&gt; choice (let ⟨a⟩ := h; ⟨⟨a⟩⟩)
 </code></pre>
 <p>In the next section, we will see that <code>propext</code>, <code>funext</code>, and
@@ -9471,16 +9498,16 @@ definition is conventionally known as <em>Hilbert's epsilon function</em>:</p>
          → (α → Prop) → α)
 
 #check (@epsilon_spec :
-          ∀ {a : Sort u} {p : a → Prop}(hex : ∃ (y : a), p y),
-            p (@epsilon _ (nonempty_of_exists hex) p))
+         ∀ {α : Sort u} {p : α → Prop} (hex : ∃ (y : α), p y),
+           p (@epsilon _ (nonempty_of_exists hex) p))
 </code></pre>
-<h2 id="the-law-of-the-excluded-middle"><a class="header" href="#the-law-of-the-excluded-middle">The Law of the Excluded Middle</a></h2>
+<h2><a class="header" href="#the-law-of-the-excluded-middle" id="the-law-of-the-excluded-middle">The Law of the Excluded Middle</a></h2>
 <p>The law of the excluded middle is the following</p>
 <pre><code class="language-lean">open Classical
 
 #check (@em : ∀ (p : Prop), p ∨ ¬p)
 </code></pre>
-<p><a href="http://en.wikipedia.org/wiki/Diaconescu%27s_theorem">Diaconescu's theorem</a> states
+<p><a href="https://en.wikipedia.org/wiki/Diaconescu%27s_theorem">Diaconescu's theorem</a> states
 that the axiom of choice is sufficient to derive the law of excluded
 middle. More precisely, it shows that the law of the excluded middle
 follows from <code>Classical.choice</code>, <code>propext</code>, and <code>funext</code>. We
@@ -9595,7 +9622,7 @@ definition of <code>u</code> and <code>v</code>, this implies that they are equa
 </span><span class="boring">    | Or.inl hut, Or.inl hvf =&gt;
 </span><span class="boring">      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
 </span><span class="boring">      Or.inl hne
-</span><span class="boring"> have p_implies_uv : p → u = v :=
+</span><span class="boring">  have p_implies_uv : p → u = v :=
 </span><span class="boring">    fun hp =&gt;
 </span><span class="boring">    have hpred : U = V :=
 </span><span class="boring">      funext fun x =&gt;
@@ -9615,7 +9642,7 @@ definition of <code>u</code> and <code>v</code>, this implies that they are equa
 </span></code></pre>
 <p>Consequences of excluded middle include double-negation elimination,
 proof by cases, and proof by contradiction, all of which are described
-in the <a href="./propositions_and_proofs.html#classical_logic">Section Classical Logic</a>.
+in the <a href="./propositions_and_proofs.html#classical-logic">Section Classical Logic</a>.
 The law of the excluded middle and propositional extensionality imply propositional completeness:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>open Classical
@@ -9635,20 +9662,20 @@ propositions is defined as follows:</p>
 <span class="boring">end Hidden
 </span></code></pre>
 <p>In contrast to <code>p ∨ ¬ p</code>, which can only eliminate to <code>Prop</code>, the
-type <code>decidable p</code> is equivalent to the sum type <code>Sum p (¬ p)</code>, which
+type <code>Decidable p</code> is equivalent to the sum type <code>Sum p (¬ p)</code>, which
 can eliminate to any type. It is this data that is needed to write an
 if-then-else expression.</p>
 <p>As an example of classical reasoning, we use <code>choose</code> to show that if
 <code>f : α → β</code> is injective and <code>α</code> is inhabited, then <code>f</code> has a
 left inverse. To define the left inverse <code>linv</code>, we use a dependent
 if-then-else expression. Recall that <code>if h : c then t else e</code> is
-notation for <code>dite c (fun  h : c =&gt; t) (fun h : ¬ c =&gt; e)</code>. In the definition
+notation for <code>dite c (fun h : c =&gt; t) (fun h : ¬ c =&gt; e)</code>. In the definition
 of <code>linv</code>, choice is used twice: first, to show that
 <code>(∃ a : A, f a = b)</code> is &quot;decidable,&quot; and then to choose an <code>a</code> such that
 <code>f a = b</code>. Notice that <code>propDecidable</code> is a scoped instance and is activated
 by the <code>open Classical</code> command. We use this instance to justify
 the if-then-else expression. (See also the discussion in
-<a href="./type_classes.html#decidable_propositions">Section Decidable Propositions</a>).</p>
+<a href="./type_classes.html#decidable-propositions">Section Decidable Propositions</a>).</p>
 <pre><code class="language-lean">open Classical
 
 noncomputable def linv [Inhabited α] (f : α → β) : β → α :=
@@ -9660,9 +9687,9 @@ theorem linv_comp_self {f : α → β} [Inhabited α]
   funext fun a =&gt;
     have ex  : ∃ a₁ : α, f a₁ = f a := ⟨a, rfl⟩
     have feq : f (choose ex) = f a  := choose_spec ex
-    calc linv f (f a) = choose ex := dif_pos ex
-               _      = a         := inj feq
-
+    calc linv f (f a)
+      _ = choose ex := dif_pos ex
+      _ = a         := inj feq
 </code></pre>
 <p>From a classical point of view, <code>linv</code> is a function. From a
 constructive point of view, it is unacceptable; because there is no
@@ -9673,7 +9700,9 @@ informative.</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
 
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -9681,34 +9710,52 @@ informative.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
 
+                
             </nav>
 
         </div>
 
+        
 
+        
 
+        
 
+        
         <script type="text/javascript">
             window.playground_copyable = true;
+            window.clip_buttons = true;
+            window.tryit_buttons = false;
+            window.side_bar = true;
         </script>
+        
 
+        
 
+        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        
 
+        
+        
         <script type="text/javascript">
         window.addEventListener('load', function() {
             window.setTimeout(window.print, 100);
         });
         </script>
+        
+        
 
     </body>
 </html>

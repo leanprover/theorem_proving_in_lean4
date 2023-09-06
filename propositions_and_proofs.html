@@ -4,25 +4,37 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Propositions and Proofs - Theorem Proving in Lean 4</title>
+        
+        
 
 
         <!-- Custom HTML head -->
         
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
         <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
         <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -30,7 +42,9 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        
 
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -89,7 +103,8 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -105,27 +120,33 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
+                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
+                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
+                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-
+                        
                     </div>
                 </div>
 
+                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -133,6 +154,7 @@
                         </ul>
                     </div>
                 </div>
+                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -145,12 +167,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="propositions-and-proofs"><a class="header" href="#propositions-and-proofs">Propositions and Proofs</a></h1>
+                        <h1><a class="header" href="#propositions-and-proofs" id="propositions-and-proofs">Propositions and Proofs</a></h1>
 <p>By now, you have seen some ways of defining objects and functions in
 Lean. In this chapter, we will begin to explain how to write
 mathematical assertions and proofs in the language of dependent type
 theory as well.</p>
-<h2 id="propositions-as-types"><a class="header" href="#propositions-as-types">Propositions as Types</a></h2>
+<h2><a class="header" href="#propositions-as-types" id="propositions-as-types">Propositions as Types</a></h2>
 <p>One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
 and a proof language on top of the definition language. But there is
@@ -282,7 +304,7 @@ theory, we need to exhibit a term <code>p : Prop</code>. To <em>prove</em> that
 assertion, we need to exhibit a term <code>t : p</code>. Lean's task, as a
 proof assistant, is to help us to construct such a term, <code>t</code>, and to
 verify that it is well-formed and has the correct type.</p>
-<h2 id="working-with-propositions-as-types"><a class="header" href="#working-with-propositions-as-types">Working with Propositions as Types</a></h2>
+<h2><a class="header" href="#working-with-propositions-as-types" id="working-with-propositions-as-types">Working with Propositions as Types</a></h2>
 <p>In the propositions-as-types paradigm, theorems involving only <code>→</code>
 can be proved using lambda abstraction and application. In Lean, the
 <code>theorem</code> command introduces a new theorem:</p>
@@ -431,7 +453,7 @@ theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
 <p>Note that it is often useful to use numeric unicode subscripts,
 entered as <code>\0</code>, <code>\1</code>, <code>\2</code>, ..., for hypotheses, as we did in
 this example.</p>
-<h2 id="propositional-logic"><a class="header" href="#propositional-logic">Propositional Logic</a></h2>
+<h2><a class="header" href="#propositional-logic" id="propositional-logic">Propositional Logic</a></h2>
 <p>Lean defines all the standard logical connectives and notation. The propositional connectives come with the following notation:</p>
 <table><thead><tr><th>Ascii</th><th>Unicode</th><th>Editor shortcut</th><th>Definition</th></tr></thead><tbody>
 <tr><td>True</td><td></td><td></td><td>True</td></tr>
@@ -465,7 +487,7 @@ defined in Lean's library in the file <code>Prelude.core</code> (see
 <a href="./interacting_with_lean.html#importing-files">importing files</a> for more information on the library
 hierarchy), and each connective comes with its canonical introduction
 and elimination rules.</p>
-<h3 id="conjunction"><a class="header" href="#conjunction">Conjunction</a></h3>
+<h3><a class="header" href="#conjunction" id="conjunction">Conjunction</a></h3>
 <p>The expression <code>And.intro h1 h2</code> builds a proof of <code>p ∧ q</code> using
 proofs <code>h1 : p</code> and <code>h2 : q</code>. It is common to describe
 <code>And.intro</code> as the <em>and-introduction</em> rule. In the next example we
@@ -554,7 +576,7 @@ example (h : p ∧ q) : q ∧ p ∧ q :=
   ⟨h.right, h.left, h.right⟩
 </code></pre>
 <p>This is often useful as well.</p>
-<h3 id="disjunction"><a class="header" href="#disjunction">Disjunction</a></h3>
+<h3><a class="header" href="#disjunction" id="disjunction">Disjunction</a></h3>
 <p>The expression <code>Or.intro_left q hp</code> creates a proof of <code>p ∨ q</code>
 from a proof <code>hp : p</code>. Similarly, <code>Or.intro_right p hq</code> creates a
 proof for <code>p ∨ q</code> using a proof <code>hq : q</code>. These are the left and
@@ -603,7 +625,7 @@ example (h : p ∨ q) : q ∨ p :=
 </code></pre>
 <p>Once again, you should exercise judgment as to whether such
 abbreviations enhance or diminish readability.</p>
-<h3 id="negation-and-falsity"><a class="header" href="#negation-and-falsity">Negation and Falsity</a></h3>
+<h3><a class="header" href="#negation-and-falsity" id="negation-and-falsity">Negation and Falsity</a></h3>
 <p>Negation, <code>¬p</code>, is actually defined to be <code>p → False</code>, so we
 obtain <code>¬p</code> by deriving a contradiction from <code>p</code>. Similarly, the
 expression <code>hnp hp</code> produces a proof of <code>False</code> from <code>hp : p</code>
@@ -620,7 +642,7 @@ example (hpq : p → q) (hnq : ¬q) : ¬p :=
 <code>False.elim</code>, which expresses the fact that anything follows from a
 contradiction. This rule is sometimes called <em>ex falso</em> (short for <em>ex
 falso sequitur quodlibet</em>), or the <em>principle of explosion</em>.</p>
-<pre><code class="language-lean">variable (tp q : Prop)
+<pre><code class="language-lean">variable (p q : Prop)
 
 example (hp : p) (hnp : ¬p) : q := False.elim (hnp hp)
 </code></pre>
@@ -641,7 +663,7 @@ example (hnp : ¬p) (hq : q) (hqp : q → p) : r :=
 <p>Incidentally, just as <code>False</code> has only an elimination rule, <code>True</code>
 has only an introduction rule, <code>True.intro : true</code>.  In other words,
 <code>True</code> is simply true, and has a canonical proof, <code>True.intro</code>.</p>
-<h3 id="logical-equivalence"><a class="header" href="#logical-equivalence">Logical Equivalence</a></h3>
+<h3><a class="header" href="#logical-equivalence" id="logical-equivalence">Logical Equivalence</a></h3>
 <p>The expression <code>Iff.intro h1 h2</code> produces a proof of <code>p ↔ q</code> from
 <code>h1 : p → q</code> and <code>h2 : q → p</code>.  The expression <code>Iff.mp h</code>
 produces a proof of <code>p → q</code> from <code>h : p ↔ q</code>. Similarly,
@@ -672,7 +694,7 @@ theorem and_swap : p ∧ q ↔ q ∧ p :=
 
 example (h : p ∧ q) : q ∧ p := (and_swap p q).mp h
 </code></pre>
-<h2 id="introducing-auxiliary-subgoals"><a class="header" href="#introducing-auxiliary-subgoals">Introducing Auxiliary Subgoals</a></h2>
+<h2><a class="header" href="#introducing-auxiliary-subgoals" id="introducing-auxiliary-subgoals">Introducing Auxiliary Subgoals</a></h2>
 <p>This is a good place to introduce another device Lean offers to help
 structure long proofs, namely, the <code>have</code> construct, which
 introduces an auxiliary subgoal in a proof. Here is a small example,
@@ -706,7 +728,7 @@ example (h : p ∧ q) : q ∧ p :=
 to show that it indeed suffices to show <code>q</code>, by proving the original
 goal of <code>q ∧ p</code> with the additional hypothesis <code>hq : q</code>. Finally,
 we have to show <code>q</code>.</p>
-<h2 id="classical-logic"><a class="header" href="#classical-logic">Classical Logic</a></h2>
+<h2><a class="header" href="#classical-logic" id="classical-logic">Classical Logic</a></h2>
 <p>The introduction and elimination rules we have seen so far are all
 constructive, which is to say, they reflect a computational
 understanding of the logical connectives based on the
@@ -781,7 +803,7 @@ are permissible, and Lean supports the use of classical reasoning in
 such contexts without relying on excluded middle.</p>
 <p>The full list of axioms that are used in Lean to support classical
 reasoning are discussed in <a href="./axioms_and_computation.html">Axioms and Computation</a>.</p>
-<h2 id="examples-of-propositional-validities"><a class="header" href="#examples-of-propositional-validities">Examples of Propositional Validities</a></h2>
+<h2><a class="header" href="#examples-of-propositional-validities" id="examples-of-propositional-validities">Examples of Propositional Validities</a></h2>
 <p>Lean's standard library contains proofs of many valid statements of
 propositional logic, all of which you are free to use in proofs of
 your own. The following list includes a number of common identities.</p>
@@ -878,7 +900,7 @@ example (p q : Prop) : ¬(p ∧ ¬q) → (p → q) :=
       (fun hq : q =&gt; hq)
       (fun hnq : ¬q =&gt; absurd (And.intro hp hnq) h)
 </code></pre>
-<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<h2><a class="header" href="#exercises" id="exercises">Exercises</a></h2>
 <p>Prove the following identities, replacing the &quot;sorry&quot; placeholders with actual proofs.</p>
 <pre><code class="language-lean">variable (p q r : Prop)
 
@@ -927,13 +949,17 @@ example : (((p → q) → p) → p) := sorry
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
                             <a rel="prev" href="dependent_type_theory.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+                        
 
+                        
                             <a rel="next" href="quantifiers_and_equality.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -941,35 +967,52 @@ example : (((p → q) → p) → p) := sorry
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
                     <a rel="prev" href="dependent_type_theory.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+                
 
+                
                     <a rel="next" href="quantifiers_and_equality.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
+                
             </nav>
 
         </div>
 
+        
 
+        
 
+        
 
+        
         <script type="text/javascript">
             window.playground_copyable = true;
+            window.clip_buttons = true;
+            window.tryit_buttons = false;
+            window.side_bar = true;
         </script>
+        
 
+        
 
+        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        
 
+        
 
     </body>
 </html>

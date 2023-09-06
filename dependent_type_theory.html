@@ -4,25 +4,37 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Dependent Type Theory - Theorem Proving in Lean 4</title>
+        
+        
 
 
         <!-- Custom HTML head -->
         
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
         <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
         <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -30,7 +42,9 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        
 
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -89,7 +103,8 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -105,27 +120,33 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
+                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
+                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
+                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-
+                        
                     </div>
                 </div>
 
+                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -133,6 +154,7 @@
                         </ul>
                     </div>
                 </div>
+                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -145,7 +167,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="dependent-type-theory"><a class="header" href="#dependent-type-theory">Dependent Type Theory</a></h1>
+                        <h1><a class="header" href="#dependent-type-theory" id="dependent-type-theory">Dependent Type Theory</a></h1>
 <p>Dependent type theory is a powerful and expressive language, allowing
 you to express complex mathematical assertions, write complex hardware
 and software specifications, and reason about both of these in a
@@ -153,7 +175,7 @@ natural and uniform way. Lean is based on a version of dependent type
 theory known as the <em>Calculus of Constructions</em>, with a countable
 hierarchy of non-cumulative universes and inductive types. By the end
 of this chapter, you will understand much of what this means.</p>
-<h2 id="simple-type-theory"><a class="header" href="#simple-type-theory">Simple Type Theory</a></h2>
+<h2><a class="header" href="#simple-type-theory" id="simple-type-theory">Simple Type Theory</a></h2>
 <p>&quot;Type theory&quot; gets its name from the fact that every expression has an
 associated <em>type</em>. For example, in a given context, <code>x + 0</code> may
 denote a natural number and <code>f</code> may denote a function on the natural
@@ -269,7 +291,7 @@ type <code>Nat × Nat</code>. This gives you a way of creating pairs of natural
 numbers. Conversely, if you have <code>p : Nat × Nat</code>, then you can write
 <code>p.1 : Nat</code> and <code>p.2 : Nat</code>. This gives you a way of extracting
 its two components.</p>
-<h2 id="types-as-objects"><a class="header" href="#types-as-objects">Types as objects</a></h2>
+<h2><a class="header" href="#types-as-objects" id="types-as-objects">Types as objects</a></h2>
 <p>One way in which Lean's dependent type theory extends simple type
 theory is that types themselves --- entities like <code>Nat</code> and <code>Bool</code>
 --- are first-class citizens, which is to say that they themselves are
@@ -343,10 +365,10 @@ an abbreviation for <code>Type 0</code>:</p>
 Movement along the x-axis represents a change in the universe, while movement
 along the y-axis represents a change in what is sometimes referred to as
 &quot;degree&quot;.</p>
-<table><thead><tr><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th><th style="text-align: center"></th></tr></thead><tbody>
-<tr><td style="text-align: center">sort</td><td style="text-align: center">Prop (Sort 0)</td><td style="text-align: center">Type (Sort 1)</td><td style="text-align: center">Type 1 (Sort 2)</td><td style="text-align: center">Type 2 (Sort 3)</td><td style="text-align: center">...</td></tr>
-<tr><td style="text-align: center">type</td><td style="text-align: center">True</td><td style="text-align: center">Bool</td><td style="text-align: center">Nat -&gt; Type</td><td style="text-align: center">Type -&gt; Type 1</td><td style="text-align: center">...</td></tr>
-<tr><td style="text-align: center">term</td><td style="text-align: center">trivial</td><td style="text-align: center">true</td><td style="text-align: center">fun n =&gt; Fin n</td><td style="text-align: center">fun (_ : Type) =&gt; Type</td><td style="text-align: center">...</td></tr>
+<table><thead><tr><th align="center"></th><th align="center"></th><th align="center"></th><th align="center"></th><th align="center"></th><th align="center"></th></tr></thead><tbody>
+<tr><td align="center">sort</td><td align="center">Prop (Sort 0)</td><td align="center">Type (Sort 1)</td><td align="center">Type 1 (Sort 2)</td><td align="center">Type 2 (Sort 3)</td><td align="center">...</td></tr>
+<tr><td align="center">type</td><td align="center">True</td><td align="center">Bool</td><td align="center">Nat -&gt; Type</td><td align="center">Type -&gt; Type 1</td><td align="center">...</td></tr>
+<tr><td align="center">term</td><td align="center">trivial</td><td align="center">true</td><td align="center">fun n =&gt; Fin n</td><td align="center">fun (_ : Type) =&gt; Type</td><td align="center">...</td></tr>
 </tbody></table>
 <p>Some operations, however, need to be <em>polymorphic</em> over type
 universes. For example, <code>List α</code> should make sense for any type
@@ -373,7 +395,7 @@ def F (α : Type u) : Type u := Prod α α
 
 #check F    -- Type u → Type u
 </code></pre>
-<h2 id="function-abstraction-and-evaluation"><a class="header" href="#function-abstraction-and-evaluation">Function Abstraction and Evaluation</a></h2>
+<h2><a class="header" href="#function-abstraction-and-evaluation" id="function-abstraction-and-evaluation">Function Abstraction and Evaluation</a></h2>
 <p>Lean provides a <code>fun</code> (or <code>λ</code>) keyword to create a function
 from an expression as follows:</p>
 <pre><code class="language-lean">#check fun (x : Nat) =&gt; x + 5   -- Nat → Nat
@@ -481,7 +503,7 @@ expressions and proofs. It is less efficient than ``#eval``, and
 treats all foreign functions as opaque constants. You will learn later
 that there are some other differences between the two commands.
 -->
-<h2 id="definitions"><a class="header" href="#definitions">Definitions</a></h2>
+<h2><a class="header" href="#definitions" id="definitions">Definitions</a></h2>
 <p>Recall that the <code>def</code> keyword provides one important way of declaring new named
 objects.</p>
 <pre><code class="language-lean">def double (x : Nat) : Nat :=
@@ -580,7 +602,7 @@ output of the second matches the input of the first.  For example:</p>
 
 #eval compose Nat Nat Nat double square 3  -- 18
 </code></pre>
-<h2 id="local-definitions"><a class="header" href="#local-definitions">Local Definitions</a></h2>
+<h2><a class="header" href="#local-definitions" id="local-definitions">Local Definitions</a></h2>
 <p>Lean also allows you to introduce &quot;local&quot; definitions using the
 <code>let</code> keyword. The expression <code>let a := t1; t2</code> is
 definitionally equal to the result of replacing every occurrence of
@@ -619,7 +641,7 @@ why the definition of <code>foo</code> below type checks, but the definition of
   def bar := (fun a =&gt; fun x : a =&gt; x + 2) Nat
 -/
 </code></pre>
-<h1 id="variables-and-sections"><a class="header" href="#variables-and-sections">Variables and Sections</a></h1>
+<h1><a class="header" href="#variables-and-sections" id="variables-and-sections">Variables and Sections</a></h1>
 <p>Consider the following three function definitions:</p>
 <pre><code class="language-lean">def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
@@ -686,7 +708,7 @@ to name a section, which is to say, you can use an anonymous
 <code>section</code> / <code>end</code> pair. If you do name a section, however, you
 have to close it using the same name. Sections can also be nested,
 which allows you to declare new variables incrementally.</p>
-<h1 id="namespaces"><a class="header" href="#namespaces">Namespaces</a></h1>
+<h1><a class="header" href="#namespaces" id="namespaces">Namespaces</a></h1>
 <p>Lean provides you with the ability to group definitions into nested,
 hierarchical <em>namespaces</em>:</p>
 <pre><code class="language-lean">namespace Foo
@@ -794,7 +816,7 @@ same as a <code>section ... end</code> block. In particular, if you use the
 <code>variable</code> command within a namespace, its scope is limited to the
 namespace. Similarly, if you use an <code>open</code> command within a
 namespace, its effects disappear when the namespace is closed.</p>
-<h2 id="what-makes-dependent-type-theory-dependent"><a class="header" href="#what-makes-dependent-type-theory-dependent">What makes dependent type theory dependent?</a></h2>
+<h2><a class="header" href="#what-makes-dependent-type-theory-dependent" id="what-makes-dependent-type-theory-dependent">What makes dependent type theory dependent?</a></h2>
 <p>The short explanation is that types can depend on parameters. You
 have already seen a nice example of this: the type <code>List α</code> depends
 on the argument <code>α</code>, and this dependence is what distinguishes
@@ -875,7 +897,7 @@ def h2 (x : Nat) : Nat :=
 #eval h2 5 -- 5
 </code></pre>
 <p>The functions <code>f</code> and <code>g</code> above denote the same function.</p>
-<h2 id="implicit-arguments"><a class="header" href="#implicit-arguments">Implicit Arguments</a></h2>
+<h2><a class="header" href="#implicit-arguments" id="implicit-arguments">Implicit Arguments</a></h2>
 <p>Suppose we have an implementation of lists as:</p>
 <pre><code class="language-lean"><span class="boring">universe u
 </span><span class="boring">def Lst (α : Type u) : Type u := List α
@@ -1034,13 +1056,17 @@ output indicates that the first argument is implicit.</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
                             <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+                        
 
+                        
                             <a rel="next" href="propositions_and_proofs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -1048,35 +1074,52 @@ output indicates that the first argument is implicit.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
                     <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+                
 
+                
                     <a rel="next" href="propositions_and_proofs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
+                
             </nav>
 
         </div>
 
+        
 
+        
 
+        
 
+        
         <script type="text/javascript">
             window.playground_copyable = true;
+            window.clip_buttons = true;
+            window.tryit_buttons = false;
+            window.side_bar = true;
         </script>
+        
 
+        
 
+        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        
 
+        
 
     </body>
 </html>

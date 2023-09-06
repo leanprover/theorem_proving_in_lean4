@@ -4,25 +4,37 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Inductive Types - Theorem Proving in Lean 4</title>
+        
+        
 
 
         <!-- Custom HTML head -->
         
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
         <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
         <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -30,7 +42,9 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        
 
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -89,7 +103,8 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -105,27 +120,33 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
+                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
+                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
+                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-
+                        
                     </div>
                 </div>
 
+                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -133,6 +154,7 @@
                         </ul>
                     </div>
                 </div>
+                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -145,7 +167,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="inductive-types"><a class="header" href="#inductive-types">Inductive Types</a></h1>
+                        <h1><a class="header" href="#inductive-types" id="inductive-types">Inductive Types</a></h1>
 <p>We have seen that Lean's formal foundation includes basic types,
 <code>Prop, Type 0, Type 1, Type 2, ...</code>, and allows for the formation of
 dependent function types, <code>(x : α) → β</code>. In the examples, we have
@@ -160,11 +182,11 @@ types; everything else follows from those.</p>
 <p>Intuitively, an inductive type is built up from a specified list of
 constructors. In Lean, the syntax for specifying such a type is as
 follows:</p>
-<pre><code>    inductive Foo where
-      | constructor₁ : ... → Foo
-      | constructor₂ : ... → Foo
-      ...
-      | constructorₙ : ... → Foo
+<pre><code>inductive Foo where
+  | constructor₁ : ... → Foo
+  | constructor₂ : ... → Foo
+  ...
+  | constructorₙ : ... → Foo
 </code></pre>
 <p>The intuition is that each constructor specifies a way of building new
 objects of <code>Foo</code>, possibly from previously constructed values. The
@@ -198,7 +220,7 @@ notion of an inductive type is so fundamental, we feel it is important
 to start with a low-level, hands-on understanding. We will start with
 some basic examples of inductive types, and work our way up to more
 elaborate and complex examples.</p>
-<h2 id="enumerated-types"><a class="header" href="#enumerated-types">Enumerated Types</a></h2>
+<h2><a class="header" href="#enumerated-types" id="enumerated-types">Enumerated Types</a></h2>
 <p>The simplest kind of inductive type is a type with a finite, enumerated list of elements.</p>
 <pre><code class="language-lean">inductive Weekday where
   | sunday : Weekday
@@ -316,7 +338,7 @@ set_option pp.all true
 -/
 </code></pre>
 <p>When declaring an inductive datatype, you can use <code>deriving Repr</code> to instruct
-Lean to generate a fuction that converts <code>Weekday</code> objects into text.
+Lean to generate a function that converts <code>Weekday</code> objects into text.
 This function is used by the <code>#eval</code> command to display <code>Weekday</code> objects.</p>
 <pre><code class="language-lean">inductive Weekday where
   | sunday
@@ -346,8 +368,7 @@ then allowed to use the shorter name when we open the namespace.</p>
 </span><span class="boring"> | friday : Weekday
 </span><span class="boring"> | saturday : Weekday
 </span><span class="boring"> deriving Repr
-</span>
-namespace Weekday
+</span>namespace Weekday
 def next (d : Weekday) : Weekday :=
   match d with
   | sunday    =&gt; monday
@@ -449,7 +470,7 @@ constructor:</p>
 </span>def next_previous (d : Weekday) : next (previous d) = d := by
   cases d &lt;;&gt; rfl
 </code></pre>
-<p><a href="#tactics_for_inductive_types">Tactics for Inductive Types</a> below will introduce additional
+<p><a href="#tactics-for-inductive-types">Tactics for Inductive Types</a> below will introduce additional
 tactics that are specifically designed to make use of inductive types.</p>
 <p>Notice that, under the propositions-as-types correspondence, we can
 use <code>match</code> to prove theorems as well as define functions.  In other
@@ -482,7 +503,7 @@ binary operation like <code>and</code> using <code>match</code>:</p>
 <span class="boring">end Hidden
 </span></code></pre>
 <p>Similarly, most identities can be proved by introducing suitable <code>match</code>, and then using <code>rfl</code>.</p>
-<h2 id="constructors-with-arguments"><a class="header" href="#constructors-with-arguments">Constructors with Arguments</a></h2>
+<h2><a class="header" href="#constructors-with-arguments" id="constructors-with-arguments">Constructors with Arguments</a></h2>
 <p>Enumerated types are a very special case of inductive types, in which
 the constructors take no arguments at all. In general, a
 &quot;construction&quot; can depend on data, which is then represented in the
@@ -544,9 +565,9 @@ case we have to specify an output value in terms of <code>a</code>, or the
 input is of the form <code>inr b</code>, in which case we have to specify an
 output value in terms of <code>b</code>.</p>
 <pre><code class="language-lean">def sum_example (s : Sum Nat Nat) : Nat :=
-Sum.casesOn (motive := fun _ =&gt; Nat) s
-   (fun n =&gt; 2 * n)
-   (fun n =&gt; 2 * n + 1)
+  Sum.casesOn (motive := fun _ =&gt; Nat) s
+    (fun n =&gt; 2 * n)
+    (fun n =&gt; 2 * n + 1)
 
 #eval sum_example (Sum.inl 3)
 #eval sum_example (Sum.inr 3)
@@ -559,7 +580,7 @@ case, it returns <code>2 * n + 1</code>.</p>
 which are arguments to the constructors as well as <code>Prod</code>. Lean
 detects when these arguments can be inferred from later arguments to a
 constructor or the return type, and makes them implicit in that case.</p>
-<p>In <a href="#_defining_the_natural_numbers">Section Defining the Natural Numbers</a>
+<p>In <a href="#defining-the-natural-numbers">Section Defining the Natural Numbers</a>
 we will see what happens when the
 constructor of an inductive type takes arguments from the inductive
 type itself. What characterizes the examples we consider in this
@@ -652,7 +673,7 @@ at every input. The <code>Option</code> type provides a way of representing part
 element of <code>Option β</code> is either <code>none</code> or of the form <code>some b</code>,
 for some value <code>b : β</code>. Thus we can think of an element <code>f</code> of the
 type <code>α → Option β</code> as being a partial function from <code>α</code> to <code>β</code>:
-for every <code>a : α</code>, <code>f a</code> either returns <code>none</code>, indicating the
+for every <code>a : α</code>, <code>f a</code> either returns <code>none</code>, indicating
 <code>f a</code> is &quot;undefined&quot;, or <code>some b</code>.</p>
 <p>An element of <code>Inhabited α</code> is simply a witness to the fact that
 there is an element of <code>α</code>. Later, we will see that <code>Inhabited</code> is
@@ -665,7 +686,7 @@ that it behaves as expected. We also encourage you to show that
 <code>Bool</code> and <code>Nat</code> are inhabited, that the product of two inhabited
 types is inhabited, and that the type of functions to an inhabited
 type is inhabited.</p>
-<h2 id="inductively-defined-propositions"><a class="header" href="#inductively-defined-propositions">Inductively Defined Propositions</a></h2>
+<h2><a class="header" href="#inductively-defined-propositions" id="inductively-defined-propositions">Inductively Defined Propositions</a></h2>
 <p>Inductively defined types can live in any type universe, including the
 bottom-most one, <code>Prop</code>. In fact, this is exactly how the logical
 connectives are defined.</p>
@@ -691,7 +712,7 @@ speaking, what characterizes inductive types in <code>Prop</code> is that one
 can only eliminate to other types in <code>Prop</code>. This is consistent with
 the understanding that if <code>p : Prop</code>, an element <code>hp : p</code> carries
 no data. There is a small exception to this rule, however, which we
-will discuss below, in <a href="#_inductive_families">Section Inductive Families</a>.</p>
+will discuss below, in <a href="#inductive-families">Section Inductive Families</a>.</p>
 <p>Even the existential quantifier is inductively defined:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>inductive Exists {α : Sort u} (p : α → Prop) : Prop where
@@ -723,7 +744,7 @@ variant of <code>Σ x : α, p</code>.</p>
 <p>The notation <code>{x : α // p x}</code> is syntactic sugar for <code>Subtype (fun x : α =&gt; p x)</code>.
 It is modeled after subset notation in set theory: the idea is that <code>{x : α // p x}</code>
 denotes the collection of elements of <code>α</code> that have property <code>p</code>.</p>
-<h2 id="defining-the-natural-numbers"><a class="header" href="#defining-the-natural-numbers"><a name="_defining_the_natural_numbers"></a>Defining the Natural Numbers</a></h2>
+<h2><a class="header" href="#defining-the-natural-numbers" id="defining-the-natural-numbers">Defining the Natural Numbers</a></h2>
 <p>The inductively defined types we have seen so far are &quot;flat&quot;:
 constructors wrap data and insert it into a type, and the
 corresponding recursor unpacks the data and acts on it. Things get
@@ -746,7 +767,7 @@ it is exhaustively (and freely) generated by starting with <code>zero</code>
 and applying <code>succ</code> repeatedly.</p>
 <p>As before, the recursor for <code>Nat</code> is designed to define a dependent
 function <code>f</code> from <code>Nat</code> to any domain, that is, an element <code>f</code>
-of <code>(n : nat) → motive n</code> for some <code>motive : Nat → Sort u</code>.
+of <code>(n : Nat) → motive n</code> for some <code>motive : Nat → Sort u</code>.
 It has to handle two cases: the case where the input is <code>zero</code>, and the case where
 the input is of the form <code>succ n</code> for some <code>n : Nat</code>. In the first
 case, we simply specify a target value with the appropriate type, as
@@ -771,8 +792,8 @@ terms of <code>n</code> and <code>f n</code>. If we check the type of the recurs
 In type theory it is common to say <code>motive</code> is the <em>motive</em> for the elimination/recursion,
 since it describes the kind of object we wish to construct.
 The next two arguments specify how to compute the zero and successor cases, as described above.
-They are also known as the <code>minor premises</code>.
-Finally, the <code>t : Nat</code>, is the input to the function. It is also known as the <code>major premise</code>.</p>
+They are also known as the <em>minor premises</em>.
+Finally, the <code>t : Nat</code>, is the input to the function. It is also known as the <em>major premise</em>.</p>
 <p>The <code>Nat.recOn</code> is similar to <code>Nat.rec</code> but the major premise occurs before the minor premises.</p>
 <pre><code>@Nat.recOn :
   {motive : Nat → Sort u}
@@ -843,9 +864,9 @@ theorem zero_add (n : Nat) : 0 + n = n :=
    (show 0 + 0 = 0 from rfl)
    (fun (n : Nat) (ih : 0 + n = n) =&gt;
     show 0 + succ n = succ n from
-    calc
-       0 + succ n = succ (0 + n) := rfl
-                _ = succ n       := by rw [ih])
+    calc 0 + succ n
+      _ = succ (0 + n) := rfl
+      _ = succ n       := by rw [ih])
 <span class="boring">end Hidden
 </span></code></pre>
 <p>Notice that, once again, when <code>Nat.recOn</code> is used in the context of
@@ -873,11 +894,11 @@ theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
     (show m + n + 0 = m + (n + 0) from rfl)
     (fun k (ih : m + n + k = m + (n + k)) =&gt;
       show m + n + succ k = m + (n + succ k) from
-      calc
-          m + n + succ k = succ (m + n + k) := rfl
-            _ = succ (m + (n + k)) := by rw [ih]
-            _ = m + succ (n + k) := rfl
-            _ = m + (n + succ k) := rfl)
+      calc m + n + succ k
+        _ = succ (m + n + k)   := rfl
+        _ = succ (m + (n + k)) := by rw [ih]
+        _ = m + succ (n + k)   := rfl
+        _ = m + (n + succ k)   := rfl)
 <span class="boring">end Hidden
 </span></code></pre>
 <p>One again, you can reduce the proof to:</p>
@@ -894,9 +915,10 @@ theorem add_comm (m n : Nat) : m + n = n + m :=
    (show m + 0 = 0 + m by rw [Nat.zero_add, Nat.add_zero])
    (fun (n : Nat) (ih : m + n = n + m) =&gt;
     show m + succ n = succ n + m from
-    calc m + succ n = succ (m + n) := rfl
-                  _ = succ (n + m) := by rw [ih]
-                  _ = succ n +  m  := sorry)
+    calc m + succ n
+      _ = succ (m + n) := rfl
+      _ = succ (n + m) := by rw [ih]
+      _ = succ n + m   := sorry)
 </code></pre>
 <p>At this point, we see that we need another supporting fact, namely, that <code>succ (n + m) = succ n + m</code>.
 You can prove this by induction on <code>m</code>:</p>
@@ -907,9 +929,10 @@ theorem succ_add (n m : Nat) : succ n + m = succ (n + m) :=
     (show succ n + 0 = succ (n + 0) from rfl)
     (fun (m : Nat) (ih : succ n + m = succ (n + m)) =&gt;
      show succ n + succ m = succ (n + succ m) from
-     calc succ n + succ m = succ (succ n + m) := rfl
-           _  = succ (succ (n + m))           := by rw [ih]
-           _  = succ (n + succ m)             := rfl)
+     calc succ n + succ m
+       _ = succ (succ n + m)   := rfl
+       _ = succ (succ (n + m)) := by rw [ih]
+       _ = succ (n + succ m)   := rfl)
 </code></pre>
 <p>You can then replace the <code>sorry</code> in the previous proof with <code>succ_add</code>. Yet again, the proofs can be compressed:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
@@ -925,14 +948,14 @@ theorem add_comm (m n : Nat) : m + n = n + m :=
     (fun m ih =&gt; by simp [add_succ, succ_add, ih])
 <span class="boring">end Hidden
 </span></code></pre>
-<h2 id="other-recursive-data-types"><a class="header" href="#other-recursive-data-types">Other Recursive Data Types</a></h2>
+<h2><a class="header" href="#other-recursive-data-types" id="other-recursive-data-types">Other Recursive Data Types</a></h2>
 <p>Let us consider some more examples of inductively defined types. For
 any type, <code>α</code>, the type <code>List α</code> of lists of elements of <code>α</code> is
 defined in the library.</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>inductive List (α : Type u) where
-| nil  : List α
-| cons : α → List α → List α
+  | nil  : List α
+  | cons : α → List α → List α
 
 namespace List
 
@@ -1005,7 +1028,7 @@ def omega : CBTree :=
 
 end CBTree
 </code></pre>
-<h2 id="tactics-for-inductive-types"><a class="header" href="#tactics-for-inductive-types">Tactics for Inductive Types</a></h2>
+<h2><a class="header" href="#tactics-for-inductive-types" id="tactics-for-inductive-types">Tactics for Inductive Types</a></h2>
 <p>Given the fundamental importance of inductive types in Lean, it should
 not be surprising that there are a number of tactics designed to work
 with them effectively. We describe some of them here.</p>
@@ -1018,7 +1041,7 @@ goal to cases in which <code>x</code> is replaced by each of the constructions.<
   intro n
   cases n
   . exact hz  -- goal is p 0
-  . apply hs  -- goal is a : ℕ ⊢ p (succ a)
+  . apply hs  -- goal is a : Nat ⊢ p (succ a)
 </code></pre>
 <p>There are extra bells and whistles. For one thing, <code>cases</code> allows
 you to choose the names for each alternative using a
@@ -1047,7 +1070,7 @@ example (n : Nat) (h : n ≠ 0) : succ (pred n) = n := by
 example : f 0 = 3 := rfl
 example : f 5 = 7 := rfl
 </code></pre>
-<p>Once again, cases will revert, split, and then reintroduce depedencies in the context.</p>
+<p>Once again, cases will revert, split, and then reintroduce dependencies in the context.</p>
 <pre><code class="language-lean">def Tuple (α : Type) (n : Nat) :=
   { as : List α // as.length = n }
 
@@ -1060,7 +1083,7 @@ def myTuple : Tuple Nat 3 :=
 example : f myTuple = 7 :=
   rfl
 </code></pre>
-<p>Here is an example with multiple constructors with arguments.</p>
+<p>Here is an example of multiple constructors with arguments.</p>
 <pre><code class="language-lean">inductive Foo where
   | bar1 : Nat → Nat → Foo
   | bar2 : Nat → Nat → Nat → Foo
@@ -1072,11 +1095,10 @@ def silly (x : Foo) : Nat := by
 </code></pre>
 <p>The alternatives for each constructor don't need to be solved
 in the order the constructors were declared.</p>
-<pre><code class="language-lean">inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
-def silly (x : Foo) : Nat := by
+<pre><code class="language-lean"><span class="boring">inductive Foo where
+</span><span class="boring">  | bar1 : Nat → Nat → Foo
+</span><span class="boring">  | bar2 : Nat → Nat → Nat → Foo
+</span>def silly (x : Foo) : Nat := by
   cases x with
   | bar2 c d e =&gt; exact e
   | bar1 a b =&gt; exact b
@@ -1084,24 +1106,22 @@ def silly (x : Foo) : Nat := by
 <p>The syntax of the <code>with</code> is convenient for writing structured proofs.
 Lean also provides a complementary <code>case</code> tactic, which allows you to focus on goal
 assign variable names.</p>
-<pre><code class="language-lean">inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
-def silly (x : Foo) : Nat := by
+<pre><code class="language-lean"><span class="boring">inductive Foo where
+</span><span class="boring">  | bar1 : Nat → Nat → Foo
+</span><span class="boring">  | bar2 : Nat → Nat → Nat → Foo
+</span>def silly (x : Foo) : Nat := by
   cases x
-  case bar2 c d e =&gt; exact e
   case bar1 a b =&gt; exact b
+  case bar2 c d e =&gt; exact e
 </code></pre>
 <p>The <code>case</code> tactic is clever, in that it will match the constructor to the appropriate goal. For example, we can fill the goals above in the opposite order:</p>
-<pre><code class="language-lean">inductive Foo where
-  | bar1 : Nat → Nat → Foo
-  | bar2 : Nat → Nat → Nat → Foo
-
-def silly (x : Foo) : Nat := by
+<pre><code class="language-lean"><span class="boring">inductive Foo where
+</span><span class="boring">  | bar1 : Nat → Nat → Foo
+</span><span class="boring">  | bar2 : Nat → Nat → Nat → Foo
+</span>def silly (x : Foo) : Nat := by
   cases x
-  case bar1 a b =&gt; exact b
   case bar2 c d e =&gt; exact e
+  case bar1 a b =&gt; exact b
 </code></pre>
 <p>You can also use <code>cases</code> with an arbitrary expression. Assuming that
 expression occurs in the goal, the cases tactic will generalize over
@@ -1113,7 +1133,7 @@ example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
         : p (m + 3 * k) := by
   cases m + 3 * k
   exact hz   -- goal is p 0
-  apply hs   -- goal is a : ℕ ⊢ p (succ a)
+  apply hs   -- goal is a : Nat ⊢ p (succ a)
 </code></pre>
 <p>Think of this as saying &quot;split on cases as to whether <code>m + 3 * k</code> is
 zero or the successor of some number.&quot; The result is functionally
@@ -1125,7 +1145,7 @@ example (p : Nat → Prop) (hz : p 0) (hs : ∀ n, p (succ n)) (m k : Nat)
   generalize m + 3 * k = n
   cases n
   exact hz   -- goal is p 0
-  apply hs   -- goal is a : ℕ ⊢ p (succ a)
+  apply hs   -- goal is a : Nat ⊢ p (succ a)
 </code></pre>
 <p>Notice that the expression <code>m + 3 * k</code> is erased by <code>generalize</code>; all
 that matters is whether it is of the form <code>0</code> or <code>succ a</code>. This
@@ -1144,8 +1164,8 @@ the context. Here is an example:</p>
 </code></pre>
 <p>The theorem <code>Nat.lt_or_ge m n</code> says <code>m &lt; n ∨ m ≥ n</code>, and it is
 natural to think of the proof above as splitting on these two
-cases. In the first branch, we have the hypothesis <code>h₁ : m &lt; n</code>, and
-in the second we have the hypothesis <code>h₂ : m ≥ n</code>. The proof above
+cases. In the first branch, we have the hypothesis <code>hlt : m &lt; n</code>, and
+in the second we have the hypothesis <code>hge : m ≥ n</code>. The proof above
 is functionally equivalent to the following:</p>
 <pre><code class="language-lean">example (p : Prop) (m n : Nat)
         (h₁ : m &lt; n → p) (h₂ : m ≥ n → p) : p := by
@@ -1191,6 +1211,7 @@ argument can only be a term in the local context. Here is an example:</p>
 </span></code></pre>
 <p>Here are some additional examples:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
+</span><span class="boring">theorem add_zero (n : Nat) : n + 0 = n := Nat.add_zero n
 </span>open Nat
 
 theorem zero_add (n : Nat) : 0 + n = n := by
@@ -1223,13 +1244,13 @@ example (x : Nat) {y : Nat} (h : y &gt; 0) : x % y &lt; y := by
     rw [Nat.mod_eq_sub_mod h₁.2]
     exact ih h
   | base x y h₁ =&gt;
-     have : ¬ 0 &lt; y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
-     match this with
-     | Or.inl h₁ =&gt; exact absurd h h₁
-     | Or.inr h₁ =&gt;
-       have hgt : y &gt; x := Nat.gt_of_not_le h₁
-       rw [← Nat.mod_eq_of_lt hgt] at hgt
-       assumption
+    have : ¬ 0 &lt; y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
+    match this with
+    | Or.inl h₁ =&gt; exact absurd h h₁
+    | Or.inr h₁ =&gt;
+      have hgt : y &gt; x := Nat.gt_of_not_le h₁
+      rw [← Nat.mod_eq_of_lt hgt] at hgt
+      assumption
 </code></pre>
 <p>You can use the <code>match</code> notation in tactics too:</p>
 <pre><code class="language-lean">example : p ∨ q → q ∨ p := by
@@ -1271,7 +1292,6 @@ context, and the second adds <code>h'' : m = n</code>.</p>
 are set equal to one another, and uses them to close the goal.</p>
 <pre><code class="language-lean">open Nat
 
-
 example (m n : Nat) (h : succ m = 0) : n = n + 7 := by
   injection h
 
@@ -1282,7 +1302,7 @@ example (h : 7 = 4) : False := by
   contradiction
 </code></pre>
 <p>As the second example shows, the <code>contradiction</code> tactic also detects contradictions of this form.</p>
-<h2 id="inductive-families"><a class="header" href="#inductive-families"><a name="_inductive_families"></a>Inductive Families</a></h2>
+<h2><a class="header" href="#inductive-families" id="inductive-families">Inductive Families</a></h2>
 <p>We are almost done describing the full range of inductive definitions
 accepted by Lean. So far, you have seen that Lean allows you to
 introduce inductive types with any number of recursive
@@ -1333,7 +1353,7 @@ Note that <code>Eq a a</code> is the only inhabited type in the family of types
 </code></pre>
 <p>It is a remarkable fact that all the basic axioms for equality follow
 from the constructor, <code>refl</code>, and the eliminator, <code>Eq.rec</code>. The
-definition of equality is atypical, however; see the discussion in <a href="#_axiomatic_details">Section Axiomatic Details</a>.</p>
+definition of equality is atypical, however; see the discussion in <a href="#axiomatic-details">Section Axiomatic Details</a>.</p>
 <p>The recursor <code>Eq.rec</code> is also used to define substitution:</p>
 <pre><code class="language-lean"><span class="boring">namespace Hidden
 </span>theorem subst {α : Type u} {a b : α} {p : α → Prop} (h₁ : Eq a b) (h₂ : p a) : p b :=
@@ -1383,7 +1403,7 @@ theorem congr {α β : Type u} {a b : α} (f : α → β) (h : Eq a b) : Eq (f a
 inductive definitions, for example, the principles of
 <em>induction-recursion</em> and <em>induction-induction</em>. These are not
 supported by Lean.</p>
-<h2 id="axiomatic-details"><a class="header" href="#axiomatic-details"><a name="_axiomatic_details"></a>Axiomatic Details</a></h2>
+<h2><a class="header" href="#axiomatic-details" id="axiomatic-details">Axiomatic Details</a></h2>
 <p>We have described inductive types and their syntax through
 examples. This section provides additional information for those
 interested in the axiomatic foundations.</p>
@@ -1443,8 +1463,8 @@ type. We can use an element <code>h : Eq a b</code> to cast an element
 because the cast does not produce new data; it only reinterprets the
 data we already have. Singleton elimination is also used with
 heterogeneous equality and well-founded recursion, which will be
-discussed in a <a href="./induction_and_recursion.html#_well_founded_recursion_and_induction">Chapter Induction and Recursion</a>.</p>
-<h2 id="mutual-and-nested-inductive-types"><a class="header" href="#mutual-and-nested-inductive-types">Mutual and Nested Inductive Types</a></h2>
+discussed in a <a href="./induction_and_recursion.html#well-founded-recursion-and-induction">Chapter Induction and Recursion</a>.</p>
+<h2><a class="header" href="#mutual-and-nested-inductive-types" id="mutual-and-nested-inductive-types">Mutual and Nested Inductive Types</a></h2>
 <p>We now consider two generalizations of inductive types that are often
 useful, which Lean supports by &quot;compiling&quot; them down to the more
 primitive kinds of inductive types described above. In other words,
@@ -1504,7 +1524,7 @@ arguments to <code>mk</code>, but, rather, nested inside the <code>List</code> t
 constructor. Lean then automatically builds the
 isomorphism between <code>TreeList α</code> and <code>List (Tree α)</code> in its kernel,
 and defines the constructors for <code>Tree</code> in terms of the isomorphism.</p>
-<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<h2><a class="header" href="#exercises" id="exercises">Exercises</a></h2>
 <ol>
 <li>
 <p>Try defining other operations on the natural numbers, such as
@@ -1546,13 +1566,17 @@ that substitutes another formula for a given variable.</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
                             <a rel="prev" href="interacting_with_lean.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+                        
 
+                        
                             <a rel="next" href="induction_and_recursion.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -1560,35 +1584,52 @@ that substitutes another formula for a given variable.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
                     <a rel="prev" href="interacting_with_lean.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+                
 
+                
                     <a rel="next" href="induction_and_recursion.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
+                
             </nav>
 
         </div>
 
+        
 
+        
 
+        
 
+        
         <script type="text/javascript">
             window.playground_copyable = true;
+            window.clip_buttons = true;
+            window.tryit_buttons = false;
+            window.side_bar = true;
         </script>
+        
 
+        
 
+        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        
 
+        
 
     </body>
 </html>

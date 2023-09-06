@@ -4,25 +4,37 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Type Classes - Theorem Proving in Lean 4</title>
+        
+        
 
 
         <!-- Custom HTML head -->
         
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
         <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
         <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -30,7 +42,9 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        
 
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -89,7 +103,8 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -105,27 +120,33 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
+                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
+                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
+                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-
+                        
                     </div>
                 </div>
 
+                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -133,6 +154,7 @@
                         </ul>
                     </div>
                 </div>
+                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -145,16 +167,16 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="type-classes"><a class="header" href="#type-classes">Type classes</a></h1>
+                        <h1><a class="header" href="#type-classes" id="type-classes">Type Classes</a></h1>
 <p>Type classes were introduced as a principled way of enabling
 ad-hoc polymorphism in functional programming languages. We first observe that it
 would be easy to implement an ad-hoc polymorphic function (such as addition) if the
 function simply took the type-specific implementation of addition as an argument
 and then called that implementation on the remaining arguments. For example,
-suppose we declare a structure in Lean to hold implementations of addition</p>
+suppose we declare a structure in Lean to hold implementations of addition.</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span>structure Add (a : Type) where
-  add : a -&gt; a -&gt; a
+  add : a → a → a
 
 #check @Add.add
 -- Add.add : {a : Type} → Add a → a → a → a
@@ -163,10 +185,10 @@ suppose we declare a structure in Lean to hold implementations of addition</p>
 <p>In the above Lean code, the field <code>add</code> has type
 <code>Add.add : {a : Type} → Add a → a → a → a</code>
 where the curly braces around the type <code>a</code> mean that it is an implicit argument.
-We could implement <code>double</code> by</p>
+We could implement <code>double</code> by:</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span><span class="boring">structure Add (a : Type) where
-</span><span class="boring"> add : a -&gt; a -&gt; a
+</span><span class="boring"> add : a → a → a
 </span>def double (s : Add a) (x : a) : a :=
   s.add x x
 
@@ -178,7 +200,6 @@ We could implement <code>double</code> by</p>
 
 #eval double { add := Int.add } 10
 -- 20
-
 <span class="boring">end Ex
 </span></code></pre>
 <p>Note that you can double a natural number <code>n</code> by <code>double { add := Nat.add } n</code>.
@@ -189,10 +210,10 @@ polymorphism.</p>
 <p>The main idea behind type classes is to make arguments such as <code>Add a</code> implicit,
 and to use a database of user-defined instances to synthesize the desired instances
 automatically through a process known as typeclass resolution. In Lean, by changing
-<code>structure</code> to <code>class</code> in the example above, the type of <code>Add.add</code> becomes</p>
+<code>structure</code> to <code>class</code> in the example above, the type of <code>Add.add</code> becomes:</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span>class Add (a : Type) where
-  add : a -&gt; a -&gt; a
+  add : a → a → a
 
 #check @Add.add
 -- Add.add : {a : Type} → [self : Add a] → a → a → a
@@ -201,10 +222,10 @@ automatically through a process known as typeclass resolution. In Lean, by chang
 <p>where the square brackets indicate that the argument of type <code>Add a</code> is <em>instance implicit</em>,
 i.e. that it should be synthesized using typeclass resolution. This version of
 <code>add</code> is the Lean analogue of the Haskell term <code>add :: Add a =&gt; a -&gt; a -&gt; a</code>.
-Similarly, we can register instances by</p>
+Similarly, we can register instances by:</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span><span class="boring">class Add (a : Type) where
-</span><span class="boring"> add : a -&gt; a -&gt; a
+</span><span class="boring"> add : a → a → a
 </span>instance : Add Nat where
   add := Nat.add
 
@@ -213,15 +234,14 @@ instance : Add Int where
 
 instance : Add Float where
   add := Float.add
-
 <span class="boring">end Ex
 </span></code></pre>
 <p>Then for <code>n : Nat</code> and <code>m : Nat</code>, the term <code>Add.add n m</code> triggers typeclass resolution with
 the goal of <code>Add Nat</code>, and typeclass resolution will synthesize the instance for <code>Nat</code> above.
-We can now reimplement <code>double</code> using an instance implicit by</p>
+We can now reimplement <code>double</code> using an instance implicit by:</p>
 <pre><code class="language-lean"><span class="boring">namespace Ex
 </span><span class="boring">class Add (a : Type) where
-</span><span class="boring">  add : a -&gt; a -&gt; a
+</span><span class="boring">  add : a → a → a
 </span><span class="boring">instance : Add Nat where
 </span><span class="boring"> add := Nat.add
 </span><span class="boring">instance : Add Int where
@@ -279,7 +299,7 @@ Let us start with the first step of the program above, declaring an appropriate 
 -- Inhabited.default : {a : Type u} → [self : Inhabited a] → a
 <span class="boring">end Ex
 </span></code></pre>
-<p>Note <code>Inhabited.default</code> doesn't have any explicit argument.</p>
+<p>Note <code>Inhabited.default</code> doesn't have any explicit arguments.</p>
 <p>An element of the class <code>Inhabited a</code> is simply an expression of the form <code>Inhabited.mk x</code>, for some element <code>x : a</code>.
 The projection <code>Inhabited.default</code> will allow us to &quot;extract&quot; such an element of <code>a</code> from an element of <code>Inhabited a</code>.
 Now we populate the class with some instances:</p>
@@ -326,7 +346,7 @@ instance : Inhabited Prop where
 -- true
 <span class="boring">end Ex
 </span></code></pre>
-<h2 id="chaining-instances"><a class="header" href="#chaining-instances">Chaining Instances</a></h2>
+<h2><a class="header" href="#chaining-instances" id="chaining-instances">Chaining Instances</a></h2>
 <p>If that were the extent of type class inference, it would not be all that impressive;
 it would be simply a mechanism of storing a list of instances for the elaborator to find in a lookup table.
 What makes type class inference powerful is that one can <em>chain</em> instances. That is,
@@ -354,7 +374,7 @@ This causes class inference to chain through instances recursively, backtracking
 <span class="boring">end Ex
 </span></code></pre>
 <p>Similarly, we can inhabit type function with suitable constant functions:</p>
-<pre><code class="language-lean">instance [Inhabited b] : Inhabited (a -&gt; b) where
+<pre><code class="language-lean">instance [Inhabited b] : Inhabited (a → b) where
   default := fun _ =&gt; default
 </code></pre>
 <p>As an exercise, try defining default instances for other types, such as <code>List</code> and <code>Sum</code> types.</p>
@@ -371,7 +391,7 @@ theorem ex : foo.default = (default, default) :=
 <p>You can use the command <code>#print</code> to inspect how simple <code>inferInstance</code> is.</p>
 <pre><code class="language-lean">#print inferInstance
 </code></pre>
-<h2 id="tostring"><a class="header" href="#tostring">ToString</a></h2>
+<h2><a class="header" href="#tostring" id="tostring">ToString</a></h2>
 <p>The polymorphic method <code>toString</code> has type <code>{α : Type u} → [ToString α] → α → String</code>. You implement the instance
 for your own types and use chaining to convert complex values into strings. Lean comes with <code>ToString</code> instances
 for most builtin types.</p>
@@ -385,7 +405,7 @@ instance : ToString Person where
 #eval toString { name := &quot;Leo&quot;, age := 542 : Person }
 #eval toString ({ name := &quot;Daniel&quot;, age := 18 : Person }, &quot;hello&quot;)
 </code></pre>
-<h2 id="numerals"><a class="header" href="#numerals">Numerals</a></h2>
+<h2><a class="header" href="#numerals" id="numerals">Numerals</a></h2>
 <p>Numerals are polymorphic in Lean. You can use a numeral (e.g., <code>2</code>) to denote an element of any type that implements
 the type class <code>OfNat</code>.</p>
 <pre><code class="language-lean">structure Rational where
@@ -424,10 +444,10 @@ instance [s : Monoid α] : OfNat α (nat_lit 1) where
 def getUnit [Monoid α] : α :=
   1
 </code></pre>
-<h2 id="output-parameters"><a class="header" href="#output-parameters">Output parameters</a></h2>
+<h2><a class="header" href="#output-parameters" id="output-parameters">Output Parameters</a></h2>
 <p>By default, Lean only tries to synthesize an instance <code>Inhabited T</code> when the term <code>T</code> is known and does not
 contain missing parts. The following command produces the error
-&quot;failed to create type class instance for <code>Inhabited (Nat × ?m.1499)</code>&quot; because the type has a missing part (i.e., the <code>_</code>).</p>
+&quot;typeclass instance problem is stuck, it is often due to metavariables <code>?m.7</code>&quot; because the type has a missing part (i.e., the <code>_</code>).</p>
 <pre><code class="language-lean">#check_failure (inferInstance : Inhabited (Nat × _))
 </code></pre>
 <p>You can view the parameter of the type class <code>Inhabited</code> as an <em>input</em> value for the type class synthesizer.
@@ -452,7 +472,7 @@ instance : HMul Nat (Array Nat) (Array Nat) where
 <span class="boring">end Ex
 </span></code></pre>
 <p>The parameters <code>α</code> and <code>β</code> are considered input parameters and <code>γ</code> an output one.
-Given an application <code>hMul a b</code>, after types of <code>a</code> and <code>b</code> are known, the type class
+Given an application <code>hMul a b</code>, after the types of <code>a</code> and <code>b</code> are known, the type class
 synthesizer is invoked, and the resulting type is obtained from the output parameter <code>γ</code>.
 In the example above, we defined two instances. The first one is the homogeneous
 multiplication for natural numbers. The second is the scalar multiplication for arrays.
@@ -481,7 +501,7 @@ instance [HMul α β γ] : HMul α (Array β) (Array γ) where
 <p>You can use our new scalar array multiplication instance on arrays of type <code>Array β</code>
 with a scalar of type <code>α</code> whenever you have an instance <code>HMul α β γ</code>.
 In the last <code>#eval</code>, note that the instance was used twice on an array of arrays.</p>
-<h2 id="default-instances"><a class="header" href="#default-instances">Default instances</a></h2>
+<h2><a class="header" href="#default-instances" id="default-instances">Default Instances</a></h2>
 <p>In the class <code>HMul</code>, the parameters <code>α</code> and <code>β</code> are treated as input values.
 Thus, type class synthesis only starts after these two types are known. This may often
 be too restrictive.</p>
@@ -496,7 +516,7 @@ instance : HMul Int Int Int where
 
 def xs : List Int := [1, 2, 3]
 
--- Error &quot;failed to create type class instance for HMul Int ?m.1767 (?m.1797 x)&quot;
+-- Error &quot;typeclass instance problem is stuck, it is often due to metavariables HMul ?m.89 ?m.90 ?m.91&quot;
 #check_failure fun y =&gt; xs.map (fun x =&gt; hMul x y)
 <span class="boring">end Ex
 </span></code></pre>
@@ -509,16 +529,16 @@ this kind of situation. We can achieve exactly that using <em>default instances<
 
 export HMul (hMul)
 
-@[defaultInstance]
+@[default_instance]
 instance : HMul Int Int Int where
   hMul := Int.mul
 
 def xs : List Int := [1, 2, 3]
 
-#check fun y =&gt; xs.map (fun x =&gt; hMul x y)  -- Int -&gt; List Int
+#check fun y =&gt; xs.map (fun x =&gt; hMul x y)  -- Int → List Int
 <span class="boring">end Ex
 </span></code></pre>
-<p>By tagging the instance above with the attribute <code>defaultInstance</code>, we are instructing Lean
+<p>By tagging the instance above with the attribute <code>default_instance</code>, we are instructing Lean
 to use this instance on pending type class synthesis problems.
 The actual Lean implementation defines homogeneous and heterogeneous classes for arithmetical operators.
 Moreover, <code>a+b</code>, <code>a*b</code>, <code>a-b</code>, <code>a/b</code>, and <code>a%b</code> are notations for the heterogeneous versions.
@@ -530,7 +550,7 @@ priority to override the builtin ones.</p>
   den : Nat
   inv : den ≠ 0
 
-@[defaultInstance 200]
+@[default_instance 200]
 instance : OfNat Rational n where
   ofNat := { num := n, den := 1, inv := by decide }
 
@@ -540,7 +560,7 @@ instance : ToString Rational where
 #check 2 -- Rational
 </code></pre>
 <p>Priorities are also useful to control the interaction between different default instances.
-For example, suppose <code>xs</code> has type <code>α</code>, when elaboration <code>xs.map (fun x =&gt; 2 * x)</code>, we want the homogeneous instance for multiplication
+For example, suppose <code>xs</code> has type <code>List α</code>. When elaborating <code>xs.map (fun x =&gt; 2 * x)</code>, we want the homogeneous instance for multiplication
 to have higher priority than the default instance for <code>OfNat</code>. This is particularly important when we have implemented only the instance
 <code>HMul α α α</code>, and did not implement <code>HMul Nat α α</code>.
 Now, we reveal how the notation <code>a*b</code> is defined in Lean.</p>
@@ -548,7 +568,7 @@ Now, we reveal how the notation <code>a*b</code> is defined in Lean.</p>
 </span>class OfNat (α : Type u) (n : Nat) where
   ofNat : α
 
-@[defaultInstance]
+@[default_instance]
 instance (n : Nat) : OfNat Nat n where
   ofNat := n
 
@@ -558,15 +578,15 @@ class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
 class Mul (α : Type u) where
   mul : α → α → α
 
-@[defaultInstance 10]
+@[default_instance 10]
 instance [Mul α] : HMul α α α where
   hMul a b := Mul.mul a b
 
-infixl:70 &quot; * &quot;  =&gt; HMul.hMul
+infixl:70 &quot; * &quot; =&gt; HMul.hMul
 <span class="boring">end Ex
 </span></code></pre>
 <p>The <code>Mul</code> class is convenient for types that only implement the homogeneous multiplication.</p>
-<h2 id="local-instances"><a class="header" href="#local-instances">Local Instances</a></h2>
+<h2><a class="header" href="#local-instances" id="local-instances">Local Instances</a></h2>
 <p>Type classes are implemented using attributes in Lean. Thus, you can
 use the <code>local</code> modifier to indicate that they only have effect until
 the current <code>section</code> or <code>namespace</code> is closed, or until the end
@@ -607,7 +627,7 @@ attribute [-instance] addPoint
 --  p + p + p  -- Error: failed to synthesize instance
 </code></pre>
 <p>We recommend you only use this command to diagnose problems.</p>
-<h2 id="scoped-instances"><a class="header" href="#scoped-instances">Scoped Instances</a></h2>
+<h2><a class="header" href="#scoped-instances" id="scoped-instances">Scoped Instances</a></h2>
 <p>You can also declare scoped instances in namespaces. This kind of instance is
 only active when you are inside of the namespace or open the namespace.</p>
 <pre><code class="language-lean">structure Point where
@@ -657,7 +677,7 @@ open scoped Point -- activates instance `Add Point`
 
 -- #check fun (p : Point) =&gt; double p -- Error: unknown identifier 'double'
 </code></pre>
-<h2 id="decidable-propositions"><a class="header" href="#decidable-propositions">Decidable Propositions</a></h2>
+<h2><a class="header" href="#decidable-propositions" id="decidable-propositions">Decidable Propositions</a></h2>
 <p>Let us consider another example of a type class defined in the
 standard library, namely the type class of <code>Decidable</code>
 propositions. Roughly speaking, an element of <code>Prop</code> is said to be
@@ -700,7 +720,7 @@ follows:</p>
 <p>That is, in <code>dite c t e</code>, we can assume <code>hc : c</code> in the &quot;then&quot;
 branch, and <code>hnc : ¬ c</code> in the &quot;else&quot; branch. To make <code>dite</code> more
 convenient to use, Lean allows us to write <code>if h : c then t else e</code>
-instead of <code>dite c (λ h : c, t) (λ h : ¬ c, e)</code>.</p>
+instead of <code>dite c (λ h : c =&gt; t) (λ h : ¬ c =&gt; e)</code>.</p>
 <p>Without classical logic, we cannot prove that every proposition is
 decidable. But we can prove that <em>certain</em> propositions are
 decidable. For example, we can prove the decidability of basic
@@ -729,7 +749,7 @@ decidable. You can import the classical axioms and make the generic
 instance of decidability available by opening the <code>Classical</code> namespace.</p>
 <pre><code class="language-lean">open Classical
 </code></pre>
-<p>Thereafter <code>decidable p</code> has an instance for every <code>p</code>.
+<p>Thereafter <code>Decidable p</code> has an instance for every <code>p</code>.
 Thus all theorems in the library
 that rely on decidability assumptions are freely available when you
 want to reason classically. In <a href="./axioms_and_computation.html">Chapter Axioms and Computation</a>,
@@ -779,11 +799,11 @@ decision procedure for <code>p</code>, and, if it is successful, evaluates to
 either <code>true</code> or <code>false</code>. In particular, if <code>p</code> is a true closed
 expression, <code>decide p</code> will reduce definitionally to the Boolean <code>true</code>.
 On the assumption that <code>decide p = true</code> holds, <code>of_decide_eq_true</code>
-produces a proof of <code>p</code>. The tactic <code>decide</code> puts it all together: to
+produces a proof of <code>p</code>. The tactic <code>decide</code> puts it all together to
 prove a target <code>p</code>. By the previous observations,
 <code>decide</code> will succeed any time the inferred decision procedure
 for <code>c</code> has enough information to evaluate, definitionally, to the <code>isTrue</code> case.</p>
-<h2 id="managing-type-class-inference"><a class="header" href="#managing-type-class-inference">Managing Type Class Inference</a></h2>
+<h2><a class="header" href="#managing-type-class-inference" id="managing-type-class-inference">Managing Type Class Inference</a></h2>
 <p>If you are ever in a situation where you need to supply an expression
 that Lean can infer by type class inference, you can ask Lean to carry
 out the inference using <code>inferInstance</code>:</p>
@@ -807,8 +827,7 @@ in a concise manner:</p>
 under a definition. For example, Lean cannot
 find an instance of <code>Inhabited (Set α)</code>. We can declare one
 explicitly:</p>
-<pre><code class="language-lean">
-def Set (α : Type u) := α → Prop
+<pre><code class="language-lean">def Set (α : Type u) := α → Prop
 
 -- fails
 -- example : Inhabited (Set α) :=
@@ -821,7 +840,7 @@ instance : Inhabited (Set α) :=
 expected instance, or, worse, falls into an infinite loop and times
 out. To help debug in these situations, Lean enables you to request a
 trace of the search:</p>
-<pre><code>set_option trace.Meta.synthInstance true
+<pre><code class="language-lean">set_option trace.Meta.synthInstance true
 </code></pre>
 <p>If you are using VS Code, you can read the results by hovering over
 the relevant theorem or definition, or opening the messages window
@@ -830,7 +849,7 @@ independent Lean process on your file, and the output buffer will show
 a trace every time the type class resolution procedure is subsequently
 triggered.</p>
 <p>You can also limit the search using the following options:</p>
-<pre><code>set_option synthInstance.maxHeartbeats 10000
+<pre><code class="language-lean">set_option synthInstance.maxHeartbeats 10000
 set_option synthInstance.maxSize 400
 </code></pre>
 <p>Option <code>synthInstance.maxHeartbeats</code> specifies the maximum amount of
@@ -848,7 +867,7 @@ which are declared last are tried first. Moreover, if instances are
 declared in other modules, the order in which they are tried depends
 on the order in which namespaces are opened. Instances declared in
 namespaces which are opened later are tried earlier.</p>
-<p>You can change the order that type classes instances are tried by
+<p>You can change the order that type class instances are tried by
 assigning them a <em>priority</em>. When an instance is declared, it is
 assigned a default priority value. You can assign other priorities
 when defining an instance. The following example illustrates how this
@@ -875,7 +894,7 @@ instance (priority := default+2) i3 : Foo where
 example : Foo.a = 3 :=
   rfl
 </code></pre>
-<h2 id="coercions-using-type-classes"><a class="header" href="#coercions-using-type-classes">Coercions using Type Classes</a></h2>
+<h2><a class="header" href="#coercions-using-type-classes" id="coercions-using-type-classes">Coercions using Type Classes</a></h2>
 <p>The most basic type of coercion maps elements of one type to another. For example, a coercion from <code>Nat</code> to <code>Int</code> allows us to view any element <code>n : Nat</code> as an element of <code>Int</code>. But some coercions depend on parameters; for example, for any type <code>α</code>, we can view any element <code>as : List α</code> as an element of <code>Set α</code>, namely, the set of elements occurring in the list. The corresponding coercion is defined on the &quot;family&quot; of types <code>List α</code>, parameterized by <code>α</code>.</p>
 <p>Lean allows us to declare three kinds of coercions:</p>
 <ul>
@@ -907,7 +926,7 @@ example : Foo.a = 3 :=
 instance : Coe (List α) (Set α) where
   coe a := a.toSet
 
-def s : Set Nat  := {1}
+def s : Set Nat := {1}
 #check s ∪ [2, 3]
 -- s ∪ List.toSet [2, 3] : Set Nat
 </code></pre>
@@ -924,7 +943,7 @@ def s : Set Nat  := {1}
 </span><span class="boring">  | a::as =&gt; {a} ∪ as.toSet
 </span><span class="boring">instance : Coe (List α) (Set α) where
 </span><span class="boring">  coe a := a.toSet
-</span>def s : Set Nat  := {1}
+</span>def s : Set Nat := {1}
 
 #check let x := ↑[2, 3]; s ∪ x
 -- let x := List.toSet [2, 3]; s ∪ x : Set Nat
@@ -936,7 +955,7 @@ def s : Set Nat  := {1}
   coe := decide p
 </code></pre>
 <p>Lean will also chain (non-dependent) coercions as necessary. Actually, the type class <code>CoeT</code> is the transitive closure of <code>Coe</code>.</p>
-<p>Let us now consider the second kind of coercion. By the <em>class of sorts</em>, we mean the collection of universes <code>Type u</code>. A coercion of the second kind is of the form</p>
+<p>Let us now consider the second kind of coercion. By the <em>class of sorts</em>, we mean the collection of universes <code>Type u</code>. A coercion of the second kind is of the form:</p>
 <pre><code>    c : (x1 : A1) → ... → (xn : An) → F x1 ... xn → Type u
 </code></pre>
 <p>where <code>F</code> is a family of types as above. This allows us to write <code>s : t</code> whenever <code>t</code> is of type <code>F a1 ... an</code>. In other words, the coercion allows us to view the elements of <code>F a1 ... an</code> as types. This is very useful when defining algebraic structures in which one component, the carrier of the structure, is a <code>Type</code>. For example, we can define a semigroup as follows:</p>
@@ -971,7 +990,7 @@ example (S : Semigroup) (a b c : S) : (a * b) * c = a * (b * c) :=
   Semigroup.mul_assoc _ a b c
 </code></pre>
 <p>It is the coercion that makes it possible to write <code>(a b c : S)</code>. Note that, we define an instance of <code>CoeSort Semigroup (Type u)</code> instead of <code>Coe Semigroup (Type u)</code>.</p>
-<p>By the <em>class of function types</em>, we mean the collection of Pi types <code>(z : B) → C</code>. The third kind of coercion has the form</p>
+<p>By the <em>class of function types</em>, we mean the collection of Pi types <code>(z : B) → C</code>. The third kind of coercion has the form:</p>
 <pre><code>    c : (x1 : A1) → ... → (xn : An) → (y : F x1 ... xn) → (z : B) → C
 </code></pre>
 <p>where <code>F</code> is again a family of types and <code>B</code> and <code>C</code> can depend on <code>x1, ..., xn, y</code>. This makes it possible to write <code>t s</code> whenever <code>t</code> is an element of <code>F a1 ... an</code>. In other words, the coercion enables us to view elements of <code>F a1 ... an</code> as functions. Continuing the example above, we can define the notion of a morphism between semigroups <code>S1</code> and <code>S2</code>. That is, a function from the carrier of <code>S1</code> to the carrier of <code>S2</code> (note the implicit coercion) that respects the multiplication. The projection <code>morphism.mor</code> takes a morphism to the underlying function:</p>
@@ -1010,9 +1029,9 @@ theorem resp_mul {S1 S2 : Semigroup} (f : Morphism S1 S2) (a b : S1)
 
 example (S1 S2 : Semigroup) (f : Morphism S1 S2) (a : S1) :
       f (a * a * a) = f a * f a * f a :=
-  calc f (a * a * a) = f (a * a) * f a := by rw [resp_mul f]
-                _    = f a * f a * f a := by rw [resp_mul f]
-
+  calc f (a * a * a)
+    _ = f (a * a) * f a := by rw [resp_mul f]
+    _ = f a * f a * f a := by rw [resp_mul f]
 </code></pre>
 <p>With the coercion in place, we can write <code>f (a * a * a)</code> instead of <code>f.mor (a * a * a)</code>. When the <code>Morphism</code>, <code>f</code>, is used where a function is expected, Lean inserts the coercion. Similar to <code>CoeSort</code>, we have yet another class <code>CoeFun</code> for this class of coercions. The field <code>F</code> is used to specify the function type we are coercing to. This type may depend on the type we are coercing from.</p>
 
@@ -1020,13 +1039,17 @@ example (S1 S2 : Semigroup) (f : Morphism S1 S2) (a : S1) :
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
                             <a rel="prev" href="structures_and_records.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+                        
 
+                        
                             <a rel="next" href="conv.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -1034,35 +1057,52 @@ example (S1 S2 : Semigroup) (f : Morphism S1 S2) (a : S1) :
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
                     <a rel="prev" href="structures_and_records.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+                
 
+                
                     <a rel="next" href="conv.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
+                
             </nav>
 
         </div>
 
+        
 
+        
 
+        
 
+        
         <script type="text/javascript">
             window.playground_copyable = true;
+            window.clip_buttons = true;
+            window.tryit_buttons = false;
+            window.side_bar = true;
         </script>
+        
 
+        
 
+        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        
 
+        
 
     </body>
 </html>

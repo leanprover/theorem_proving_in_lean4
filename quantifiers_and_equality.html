@@ -4,25 +4,37 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Quantifiers and Equality - Theorem Proving in Lean 4</title>
+        
+        
 
 
         <!-- Custom HTML head -->
         
+
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
         <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
         <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -30,7 +42,9 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        
 
+        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -89,7 +103,8 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -105,27 +120,33 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
+                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
+                        
                     </div>
 
                     <h1 class="menu-title">Theorem Proving in Lean 4</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
+                        
                         <a href="https://github.com/leanprover/theorem_proving_in_lean4" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-
+                        
                     </div>
                 </div>
 
+                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -133,6 +154,7 @@
                         </ul>
                     </div>
                 </div>
+                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -145,12 +167,12 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="quantifiers-and-equality"><a class="header" href="#quantifiers-and-equality">Quantifiers and Equality</a></h1>
+                        <h1><a class="header" href="#quantifiers-and-equality" id="quantifiers-and-equality">Quantifiers and Equality</a></h1>
 <p>The last chapter introduced you to methods that construct proofs of
 statements involving the propositional connectives. In this chapter,
 we extend the repertoire of logical constructions to include the
 universal and existential quantifiers, and the equality relation.</p>
-<h2 id="the-universal-quantifier"><a class="header" href="#the-universal-quantifier">The Universal Quantifier</a></h2>
+<h2><a class="header" href="#the-universal-quantifier" id="the-universal-quantifier">The Universal Quantifier</a></h2>
 <p>Notice that if <code>α</code> is any type, we can represent a unary predicate
 <code>p</code> on <code>α</code> as an object of type <code>α → Prop</code>. In that case, given
 <code>x : α</code>, <code>p x</code> denotes the assertion that <code>p</code> holds of
@@ -293,7 +315,7 @@ can form propositions that quantify over <code>α → Prop</code>. In particular
 we can define predicates on <code>α</code> by quantifying over all predicates
 on <code>α</code>, which is exactly the type of circularity that was once
 considered problematic.</p>
-<h2 id="equality"><a class="header" href="#equality">Equality</a></h2>
+<h2><a class="header" href="#equality" id="equality">Equality</a></h2>
 <p>Let us now turn to one of the most fundamental relations defined in
 Lean's library, namely, the equality relation. In <a href="inductive_types.html">Chapter Inductive Types</a>,
 we will explain <em>how</em> equality is defined from the primitives of Lean's logical framework.
@@ -419,18 +441,27 @@ reasoning is supported by a term rewriter, a simplifier, and other
 kinds of automation. The term rewriter and simplifier are described
 briefly in the next section, and then in greater detail in the next
 chapter.</p>
-<h2 id="calculational-proofs"><a class="header" href="#calculational-proofs">Calculational Proofs</a></h2>
+<h2><a class="header" href="#calculational-proofs" id="calculational-proofs">Calculational Proofs</a></h2>
 <p>A calculational proof is just a chain of intermediate results that are
 meant to be composed by basic principles such as the transitivity of
 equality. In Lean, a calculational proof starts with the keyword
 <code>calc</code>, and has the following syntax:</p>
 <pre><code>calc
   &lt;expr&gt;_0  'op_1'  &lt;expr&gt;_1  ':='  &lt;proof&gt;_1
-    '_'     'op_2'  &lt;expr&gt;_2  ':='  &lt;proof&gt;_2
-    ...
-    '_'     'op_n'  &lt;expr&gt;_n  ':='  &lt;proof&gt;_n
+  '_'       'op_2'  &lt;expr&gt;_2  ':='  &lt;proof&gt;_2
+  ...
+  '_'       'op_n'  &lt;expr&gt;_n  ':='  &lt;proof&gt;_n
 </code></pre>
-<p>Each <code>&lt;proof&gt;_i</code> is a proof for <code>&lt;expr&gt;_{i-1} op_i &lt;expr&gt;_i</code>.</p>
+<p>Note that the <code>calc</code> relations all have the same indentation. Each
+<code>&lt;proof&gt;_i</code> is a proof for <code>&lt;expr&gt;_{i-1} op_i &lt;expr&gt;_i</code>.</p>
+<p>We can also use <code>_</code> in the first relation (right after <code>&lt;expr&gt;_0</code>)
+which is useful to align the sequence of relation/proof pairs:</p>
+<pre><code>calc &lt;expr&gt;_0 
+    '_' 'op_1' &lt;expr&gt;_1 ':=' &lt;proof&gt;_1
+    '_' 'op_2' &lt;expr&gt;_2 ':=' &lt;proof&gt;_2
+    ...
+    '_' 'op_n' &lt;expr&gt;_n ':=' &lt;proof&gt;_n
+</code></pre>
 <p>Here is an example:</p>
 <pre><code class="language-lean">variable (a b c d e : Nat)
 variable (h1 : a = b)
@@ -554,9 +585,19 @@ natural and perspicuous way.</p>
 <pre><code class="language-lean">example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   calc
     (x + y) * (x + y) = (x + y) * x + (x + y) * y  := by rw [Nat.mul_add]
-        _ = x * x + y * x + (x + y) * y            := by rw [Nat.add_mul]
-        _ = x * x + y * x + (x * y + y * y)        := by rw [Nat.add_mul]
-        _ = x * x + y * x + x * y + y * y          := by rw [←Nat.add_assoc]
+    _ = x * x + y * x + (x + y) * y                := by rw [Nat.add_mul]
+    _ = x * x + y * x + (x * y + y * y)            := by rw [Nat.add_mul]
+    _ = x * x + y * x + x * y + y * y              := by rw [←Nat.add_assoc]
+</code></pre>
+<p>The alternative <code>calc</code> notation is worth considering here. When the
+first expression is taking this much space, using <code>_</code> in the first
+relation naturally aligns all relations:</p>
+<pre><code class="language-lean">example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+  calc (x + y) * (x + y)
+    _ = (x + y) * x + (x + y) * y       := by rw [Nat.mul_add]
+    _ = x * x + y * x + (x + y) * y     := by rw [Nat.add_mul]
+    _ = x * x + y * x + (x * y + y * y) := by rw [Nat.add_mul]
+    _ = x * x + y * x + x * y + y * y   := by rw [←Nat.add_assoc]
 </code></pre>
 <p>Here the left arrow before <code>Nat.add_assoc</code> tells rewrite to use the
 identity in the opposite direction. (You can enter it with <code>\l</code> or
@@ -568,7 +609,7 @@ both <code>rw</code> and <code>simp</code> can do the job on their own:</p>
 example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   by simp [Nat.mul_add, Nat.add_mul, Nat.add_assoc]
 </code></pre>
-<h2 id="the-existential-quantifier"><a class="header" href="#the-existential-quantifier">The Existential Quantifier</a></h2>
+<h2><a class="header" href="#the-existential-quantifier" id="the-existential-quantifier">The Existential Quantifier</a></h2>
 <p>Finally, consider the existential quantifier, which can be written as
 either <code>exists x : α, p x</code> or <code>∃ x : α, p x</code>.  Both versions are
 actually notationally convenient abbreviations for a more long-winded
@@ -704,9 +745,9 @@ theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
   Exists.elim h1 (fun w1 (hw1 : a = 2 * w1) =&gt;
   Exists.elim h2 (fun w2 (hw2 : b = 2 * w2) =&gt;
     Exists.intro (w1 + w2)
-      (calc
-        a + b = 2 * w1 + 2 * w2  := by rw [hw1, hw2]
-          _   = 2 * (w1 + w2)    := by rw [Nat.mul_add])))
+      (calc a + b
+        _ = 2 * w1 + 2 * w2 := by rw [hw1, hw2]
+        _ = 2 * (w1 + w2)   := by rw [Nat.mul_add])))
 </code></pre>
 <p>Using the various gadgets described in this chapter --- the match
 statement, anonymous constructors, and the <code>rewrite</code> tactic, we can
@@ -798,7 +839,7 @@ example : (∃ x, p x → r) ↔ (∀ x, p x) → r :=
                     show False from hnex hex)
               show False from hnap hap)))
 </code></pre>
-<h2 id="more-on-the-proof-language"><a class="header" href="#more-on-the-proof-language">More on the Proof Language</a></h2>
+<h2><a class="header" href="#more-on-the-proof-language" id="more-on-the-proof-language">More on the Proof Language</a></h2>
 <p>We have seen that keywords like <code>fun</code>, <code>have</code>, and <code>show</code> make
 it possible to write formal proof terms that mirror the structure of
 informal mathematical proofs. In this section, we discuss some
@@ -858,7 +899,7 @@ though using it for data is somewhat odd:</p>
 <pre><code class="language-lean">example (n : Nat) : Nat := ‹Nat›
 </code></pre>
 <p>Later, we show how you can extend the proof language using the Lean macro system.</p>
-<h2 id="exercises"><a class="header" href="#exercises">Exercises</a></h2>
+<h2><a class="header" href="#exercises" id="exercises">Exercises</a></h2>
 <ol>
 <li>Prove these equivalences:</li>
 </ol>
@@ -928,13 +969,17 @@ Quantifier section as you can.</li>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                        
                             <a rel="prev" href="propositions_and_proofs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
+                        
 
+                        
                             <a rel="next" href="tactics.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -942,35 +987,52 @@ Quantifier section as you can.</li>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
                     <a rel="prev" href="propositions_and_proofs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
+                
 
+                
                     <a rel="next" href="tactics.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
+                
             </nav>
 
         </div>
 
+        
 
+        
 
+        
 
+        
         <script type="text/javascript">
             window.playground_copyable = true;
+            window.clip_buttons = true;
+            window.tryit_buttons = false;
+            window.side_bar = true;
         </script>
+        
 
+        
 
+        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        
 
+        
 
     </body>
 </html>
