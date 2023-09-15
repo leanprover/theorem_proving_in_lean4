@@ -927,16 +927,17 @@ You should also try to understand why the reverse implication is not derivable i
 
 2. It is often possible to bring a component of a formula outside a
    universal quantifier, when it does not depend on the quantified
-   variable. Try proving these (one direction of the second of these
-   requires classical logic):
+   variable. Try proving these:
 
 ```lean
 variable (α : Type) (p q : α → Prop)
 variable (r : Prop)
 
 example : α → ((∀ x : α, r) ↔ r) := sorry
-example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
 example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
+
+open classical
+example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
 ```
 
 3. Consider the "barber paradox," that is, the claim that in a certain
