@@ -945,6 +945,7 @@ example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
    do not shave themselves. Prove that this is a contradiction:
 
 ```lean
+open classical
 variable (men : Type) (barber : men)
 variable (shaves : men → men → Prop)
 
