@@ -893,7 +893,8 @@ notion of a function type ``α → β`` by allowing ``β`` to depend on
 the Cartesian product ``α × β`` in the same way. Dependent products
 are also called *sigma* types, and you can also write them as
 `Σ a : α, β a`. You can use `⟨a, b⟩` or `Sigma.mk a b` to create a
-dependent pair.
+dependent pair.  The `⟨` and `⟩` Unicode characters may be typed with
+`\langle` and `\rangle`, respectively.
 
 ```lean
 universe u v
