@@ -286,20 +286,54 @@ def F.{u} (α : Type u) : Type u := Prod α α
 
 ## Function Abstraction and Evaluation
 
-Lean provides a `fun` (or `λ`) keyword to create a function
-from an expression as follows:
+Functions can be defined and given a name in Lean with the `def` keyword, which
+we've used before to associate a name with a value:
+
+```lean
+def inc (n: Nat) : Nat := n + 1
+
+#check inc      -- Nat → Nat
+#check inc 41   --       Nat
+#eval  inc 41   -- 42
+```
+
+Here, `inc` is defined to be a function of one argument, a `Nat` called `n`,
+and when called with such a `Nat`, returns that value plus one (an expression
+which is also a `Nat`).
+
+In many cases, Lean can *infer* the types of program terms like function
+arguments and bodies automatically.
+
+```lean
+def inc n := n + 1
+
+#check inc      -- Nat → Nat
+#check inc 41   --       Nat
+#eval  inc 41   -- 42
+```
+
+Lean is a *functional programming language*.  One attribute of such languages
+is that functions are ordinary values.  To this end, Lean also provides a `fun`
+(or `λ`) keyword to create a function as an expression without giving it a
+name, just as we could any other sort of program expression.  Such expressions
+are informally called a "lambda" expression, after the keyword that constructs
+it.
 
 ```lean
 #check fun (x : Nat) => x + 5   -- Nat → Nat
 #check λ (x : Nat) => x + 5     -- λ and fun mean the same thing
-#check fun x : Nat => x + 5     -- Nat inferred
-#check λ x : Nat => x + 5       -- Nat inferred
+#check fun x => x + 5           -- Argument type inferred from context
+#check λ x => x + 5             -- a fun's return type is always inferred
 ```
 
-You can evaluate a lambda function by passing the required parameters:
+Functions, named or otherwise, can have arguments *applied* to them. 
+During function application, each occurrence of a parameter variable, 
+in the body of the function, is replaced with the given argument:
 
 ```lean
-#eval (λ x : Nat => x + 5) 10    -- 15
+#eval (λ x : Nat => x + 5) (8 + 2)   -- 15
+#eval (λ x : Nat => x + 5) 10        -- 15
+#eval              10 + 5            -- 15
 ```
 
 Creating a function from another expression is a process known as
