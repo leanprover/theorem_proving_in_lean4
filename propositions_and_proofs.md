@@ -348,7 +348,7 @@ As another example, let us consider the composition function discussed
 in the last chapter, now with propositions instead of types.
 
 ```lean
-variable (p q r s : Prop)
+variable (p q r : Prop)
 
 theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
   fun h₃ : p =>
@@ -544,7 +544,7 @@ takes three arguments, ``hpq : p ∨ q``, ``hpr : p → r`` and
 ``Or.elim`` to prove ``p ∨ q → q ∨ p``.
 
 ```lean
-variable (p q r : Prop)
+variable (p q : Prop)
 
 example (h : p ∨ q) : q ∨ p :=
   Or.elim h
@@ -561,7 +561,7 @@ shorthand for ``Or.intro_right _`` and ``Or.intro_left _``. Thus the
 proof term above could be written more concisely:
 
 ```lean
-variable (p q r : Prop)
+variable (p q : Prop)
 
 example (h : p ∨ q) : q ∨ p :=
   Or.elim h (fun hp => Or.inr hp) (fun hq => Or.inl hq)
@@ -577,7 +577,7 @@ constructor notation. But we can still write ``h.elim`` instead of
 ``Or.elim h``:
 
 ```lean
-variable (p q r : Prop)
+variable (p q : Prop)
 
 example (h : p ∨ q) : q ∨ p :=
   h.elim (fun hp => Or.inr hp) (fun hq => Or.inl hq)
