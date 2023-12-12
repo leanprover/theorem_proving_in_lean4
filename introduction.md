@@ -45,8 +45,9 @@ Lean's underlying logic has a computational interpretation, and Lean can be view
 language. More to the point, it can be viewed as a system for writing programs with a precise semantics, as well as
 reasoning about the functions that the programs compute. Lean also has mechanisms to serve as its own *metaprogramming
 language*, which means that you can implement automation and extend the functionality of Lean using Lean itself. These
-aspects of Lean are explored in a companion tutorial to this one, [Programming in Lean 4](TBD), though computational
-aspects of the system will make an appearance here.
+aspects of Lean are explored in a companion tutorial to this one,
+[Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/),
+though computational aspects of the system will make an appearance here.
 
 About Lean
 ----------
