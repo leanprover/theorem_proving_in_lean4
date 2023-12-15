@@ -252,16 +252,16 @@ universes. For example, ``List α`` should make sense for any type
 type annotation of the function ``List``:
 
 ```lean
-#check List    -- Type u_1 → Type u_1
+#check List    -- Type u → Type u
 ```
 
-Here ``u_1`` is a variable ranging over type levels. The output of the
+Here ``u`` is a variable ranging over type levels. The output of the
 ``#check`` command means that whenever ``α`` has type ``Type n``,
 ``List α`` also has type ``Type n``. The function ``Prod`` is
 similarly polymorphic:
 
 ```lean
-#check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
+#check Prod    -- Type u → Type v → Type (max u v)
 ```
 
 To define polymorphic constants, Lean allows you to
@@ -928,10 +928,10 @@ Suppose we have an implementation of lists as:
 # def Lst.cons (α : Type u) (a : α) (as : Lst α) : Lst α := List.cons a as
 # def Lst.nil (α : Type u) : Lst α := List.nil
 # def Lst.append (α : Type u) (as bs : Lst α) : Lst α := List.append as bs
-#check Lst          -- Type u_1 → Type u_1
-#check Lst.cons     -- (α : Type u_1) → α → Lst α → Lst α
-#check Lst.nil      -- (α : Type u_1) → Lst α
-#check Lst.append   -- (α : Type u_1) → Lst α → Lst α → Lst α
+#check Lst          -- Type u → Type u
+#check Lst.cons     -- (α : Type u) → α → Lst α → Lst α
+#check Lst.nil      -- (α : Type u) → Lst α
+#check Lst.append   -- (α : Type u) → Lst α → Lst α → Lst α
 ```
 
 Then, you can construct lists of `Nat` as follows.
@@ -1093,7 +1093,7 @@ notation ``@foo`` denotes the same function with all the arguments
 made explicit.
 
 ```lean
-#check @id        -- {α : Type u_1} → α → α
+#check @id        -- {α : Sort u_1} → α → α
 #check @id Nat    -- Nat → Nat
 #check @id Bool   -- Bool → Bool
 
