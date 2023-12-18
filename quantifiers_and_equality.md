@@ -95,9 +95,9 @@ variable (a b c : α)
 variable (hab : r a b) (hbc : r b c)
 
 #check trans_r    -- ∀ (x y z : α), r x y → r y z → r x z
-#check trans_r a b c
-#check trans_r a b c hab
-#check trans_r a b c hab hbc
+#check trans_r a b c -- r a b → r b c → r a c
+#check trans_r a b c hab -- r b c → r a c
+#check trans_r a b c hab hbc -- r a c
 ```
 
 Think about what is going on here. When we instantiate ``trans_r`` at
