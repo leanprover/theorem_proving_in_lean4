@@ -574,7 +574,7 @@ example (x : Nat) (h : x > 0) : ∃ y, y < x :=
 example (x y z : Nat) (hxy : x < y) (hyz : y < z) : ∃ w, x < w ∧ w < z :=
   Exists.intro y (And.intro hxy hyz)
 
-#check @Exists.intro
+#check @Exists.intro -- ∀ {α : Sort u_1} {p : α → Prop} (w : α), p w → Exists p
 ```
 
 We can use the anonymous constructor notation ``⟨t, h⟩`` for
