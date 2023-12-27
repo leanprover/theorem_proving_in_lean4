@@ -43,8 +43,9 @@ interpreted relative to the Lean *search path*. Information as to how
 the search path is determined can be found on the
 [documentation pages](https://leanprover.github.io/documentation/).
 By default, it includes the standard library directory, and (in some contexts)
-the root of the user's local project. One can also specify imports relative to the current directory; for example,
-importing is transitive. In other words, if you import ``Foo`` and ``Foo`` imports ``Bar``,
+the root of the user's local project.
+
+Importing is transitive. In other words, if you import ``Foo`` and ``Foo`` imports ``Bar``,
 then you also have access to the contents of ``Bar``, and do not need to import it explicitly.
 
 More on Sections
