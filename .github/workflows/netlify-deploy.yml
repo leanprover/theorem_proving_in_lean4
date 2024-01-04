@@ -1,4 +1,4 @@
-name: mdbook deploy to github pages
+name: mdbook deploy to Netlify
 
 on:
   push:
