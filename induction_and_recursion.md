@@ -821,7 +821,7 @@ def ack : Nat → Nat → Nat
   | 0,   y   => y+1
   | x+1, 0   => ack x 1
   | x+1, y+1 => ack x (ack (x+1) y)
-termination_by ack x y => (x, y)
+termination_by x y => (x, y)
 ```
 
 Note that a lexicographic order is used in the example above because the instance
@@ -848,7 +848,7 @@ where
         r
     else
       r
-termination_by go i r => as.size - i
+  termination_by as.size - i
 ```
 
 Note that, auxiliary function `go` is recursive in this example, but `takeWhile` is not.
@@ -874,11 +874,12 @@ def ack : Nat → Nat → Nat
   | 0,   y   => y+1
   | x+1, 0   => ack x 1
   | x+1, y+1 => ack x (ack (x+1) y)
-termination_by ack x y => (x, y)
+termination_by x y => (x, y)
 decreasing_by
-  simp_wf -- unfolds well-founded recursion auxiliary definitions
-  first | apply Prod.Lex.right; simp_arith
-        | apply Prod.Lex.left; simp_arith
+  all_goals simp_wf -- unfolds well-founded recursion auxiliary definitions
+  · apply Prod.Lex.left; simp_arith
+  · apply Prod.Lex.right; simp_arith
+  · apply Prod.Lex.left; simp_arith
 ```
 
 We can use `decreasing_by sorry` to instruct Lean to "trust" us that the function terminates.
