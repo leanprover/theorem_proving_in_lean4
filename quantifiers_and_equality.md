@@ -737,11 +737,11 @@ theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
   | ⟨w1, hw1⟩, ⟨w2, hw2⟩ => ⟨w1 + w2, by rw [hw1, hw2, Nat.mul_add]⟩
 ```
 
-Just as the classical "or" is stronger than the constructive "or", so,
-too, is the classical "exists" stronger than the constructive
+Just as the constructive "or" is stronger than the classical "or", so,
+too, is the constructive "exists" stronger than the classical
 "exists". For example, the following implication requires classical
 reasoning because, from a constructive standpoint, knowing that it is
-not the case that every ``x`` satisfies ``¬ p`` is not the same as
+not the case that every ``x`` satisfies ``¬ p`` doesn't indicate
 having a particular ``x`` that satisfies ``p``.
 
 ```lean
