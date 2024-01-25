@@ -20,7 +20,7 @@ The goal of Lean's front end is to interpret user input, construct
 formal expressions, and check that they are well formed and type
 correct. Lean also supports the use of various editors, which provide
 continuous checking and feedback. More information can be found on the
-Lean [documentation pages](https://leanprover.github.io/documentation/).
+Lean [documentation pages](https://lean-lang.org/documentation/).
 
 The definitions and theorems in Lean's standard library are spread
 across multiple files. Users may also wish to make use of additional
@@ -41,7 +41,7 @@ import Bar.Baz.Blah
 imports the file ``Bar/Baz/Blah.olean``, where the descriptions are
 interpreted relative to the Lean *search path*. Information as to how
 the search path is determined can be found on the
-[documentation pages](https://leanprover.github.io/documentation/).
+[documentation pages](https://lean-lang.org/documentation/).
 By default, it includes the standard library directory, and (in some contexts)
 the root of the user's local project. One can also specify imports relative to the current directory; for example,
 importing is transitive. In other words, if you import ``Foo`` and ``Foo`` imports ``Bar``,
