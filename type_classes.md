@@ -105,7 +105,7 @@ def double [Add a] (x : a) : a :=
 -- 20
 
 #eval double (10 : Int)
--- 100
+-- 20
 
 #eval double (7 : Float)
 -- 14.000000
