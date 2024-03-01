@@ -386,9 +386,9 @@ The results are broken down into small steps: ``th1`` shows that a
 relation that is reflexive and euclidean is symmetric, and ``th2``
 shows that a relation that is symmetric and euclidean is
 transitive. Then ``th3`` combines the two results. But notice that we
-have to manually disable the implicit arguments in ``th1``, ``th2``,
-and ``euclr``, because otherwise too many implicit arguments are
-inserted. The problem goes away if we use weak implicit arguments:
+have to manually disable the implicit arguments in ``euclr``, because
+otherwise too many implicit arguments are inserted. The problem goes
+away if we use weak implicit arguments:
 
 ```lean
 def reflexive {α : Type u} (r : α → α → Prop) : Prop :=
