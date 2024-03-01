@@ -489,8 +489,8 @@ def F (α : Type u) : Type u := Prod α α
 from an expression as follows:</p>
 <pre><code class="language-lean">#check fun (x : Nat) =&gt; x + 5   -- Nat → Nat
 #check λ (x : Nat) =&gt; x + 5     -- λ and fun mean the same thing
-#check fun x : Nat =&gt; x + 5     -- Nat inferred
-#check λ x : Nat =&gt; x + 5       -- Nat inferred
+#check fun x =&gt; x + 5     -- Nat inferred
+#check λ x =&gt; x + 5       -- Nat inferred
 </code></pre>
 <p>You can evaluate a lambda function by passing the required parameters:</p>
 <pre><code class="language-lean">#eval (λ x : Nat =&gt; x + 5) 10    -- 15
