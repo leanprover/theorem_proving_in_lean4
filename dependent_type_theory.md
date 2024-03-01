@@ -843,7 +843,7 @@ function for lists of type ``α``. In other words, for every ``α``,
 
 It is clear that ``cons α`` should have type ``α → List α → List α``.
 But what type should ``cons`` have?  A first guess might be
-``Type → α → list α → list α``, but, on reflection, this does not make
+``Type → α → List α → List α``, but, on reflection, this does not make
 sense: the ``α`` in this expression does not refer to anything,
 whereas it should refer to the argument of type ``Type``.  In other
 words, *assuming* ``α : Type`` is the first argument to the function,
