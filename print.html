@@ -1997,9 +1997,9 @@ variable (a b c : α)
 variable (hab : r a b) (hbc : r b c)
 
 #check trans_r    -- ∀ (x y z : α), r x y → r y z → r x z
-#check trans_r a b c
-#check trans_r a b c hab
-#check trans_r a b c hab hbc
+#check trans_r a b c -- r a b → r b c → r a c
+#check trans_r a b c hab -- r b c → r a c
+#check trans_r a b c hab hbc -- r a c
 </code></pre>
 <p>Think about what is going on here. When we instantiate <code>trans_r</code> at
 the values <code>a b c</code>, we end up with a proof of <code>r a b → r b c → r a c</code>.
@@ -2071,17 +2071,17 @@ Lean's library, namely, the equality relation. In <a href="inductive_types.html"
 we will explain <em>how</em> equality is defined from the primitives of Lean's logical framework.
 In the meanwhile, here we explain how to use it.</p>
 <p>Of course, a fundamental property of equality is that it is an equivalence relation:</p>
-<pre><code class="language-lean">#check Eq.refl    -- ∀ (a : ?m.1), a = a
-#check Eq.symm    -- ?m.2 = ?m.3 → ?m.3 = ?m.2
-#check Eq.trans   -- ?m.2 = ?m.3 → ?m.3 = ?m.4 → ?m.2 = ?m.4
+<pre><code class="language-lean">#check Eq.refl    -- Eq.refl.{u_1} {α : Sort u_1} (a : α) : a = a
+#check Eq.symm    -- Eq.symm.{u} {α : Sort u} {a b : α} (h : a = b) : b = a
+#check Eq.trans   -- Eq.trans.{u} {α : Sort u} {a b c : α} (h₁ : a = b) (h₂ : b = c) : a = c
 </code></pre>
 <p>We can make the output easier to read by telling Lean not to insert
 the implicit arguments (which are displayed here as metavariables).</p>
 <pre><code class="language-lean">universe u
 
-#check @Eq.refl.{u}   -- ∀ {α : Sort u} (a : α), a = a
-#check @Eq.symm.{u}   -- ∀ {α : Sort u} {a b : α}, a = b → b = a
-#check @Eq.trans.{u}  -- ∀ {α : Sort u} {a b c : α}, a = b → b = c → a = c
+#check @Eq.refl.{u}   -- @Eq.refl : ∀ {α : Sort u} (a : α), a = a
+#check @Eq.symm.{u}   -- @Eq.symm : ∀ {α : Sort u} {a b : α}, a = b → b = a
+#check @Eq.trans.{u}  -- @Eq.trans : ∀ {α : Sort u} {a b c : α}, a = b → b = c → a = c
 </code></pre>
 <p>The inscription <code>.{u}</code> tells Lean to instantiate the constants at the universe <code>u</code>.</p>
 <p>Thus, for example, we can specialize the example from the previous section to the equality relation:</p>
@@ -2378,7 +2378,7 @@ example (x : Nat) (h : x &gt; 0) : ∃ y, y &lt; x :=
 example (x y z : Nat) (hxy : x &lt; y) (hyz : y &lt; z) : ∃ w, x &lt; w ∧ w &lt; z :=
   Exists.intro y (And.intro hxy hyz)
 
-#check @Exists.intro
+#check @Exists.intro -- ∀ {α : Sort u_1} {p : α → Prop} (w : α), p w → Exists p
 </code></pre>
 <p>We can use the anonymous constructor notation <code>⟨t, h⟩</code> for
 <code>Exists.intro t h</code>, when the type is clear from the context.</p>
