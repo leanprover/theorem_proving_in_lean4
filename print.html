@@ -925,7 +925,7 @@ function for lists of type <code>α</code>. In other words, for every <code>α</
 <code>as : List α</code>, and returns a new list, so you have <code>cons α a as : List α</code>.</p>
 <p>It is clear that <code>cons α</code> should have type <code>α → List α → List α</code>.
 But what type should <code>cons</code> have?  A first guess might be
-<code>Type → α → list α → list α</code>, but, on reflection, this does not make
+<code>Type → α → List α → List α</code>, but, on reflection, this does not make
 sense: the <code>α</code> in this expression does not refer to anything,
 whereas it should refer to the argument of type <code>Type</code>.  In other
 words, <em>assuming</em> <code>α : Type</code> is the first argument to the function,
