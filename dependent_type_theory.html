@@ -373,14 +373,14 @@ along the y-axis represents a change in what is sometimes referred to as
 <p>Some operations, however, need to be <em>polymorphic</em> over type
 universes. For example, <code>List α</code> should make sense for any type
 <code>α</code>, no matter which type universe <code>α</code> lives in. This explains the
-type annotation of the function <code>List</code>:</p>
-<pre><code class="language-lean">#check List    -- Type u_1 → Type u_1
+type signature of the function <code>List</code>:</p>
+<pre><code class="language-lean">#check List    -- List.{u} (α : Type u) : Type u
 </code></pre>
-<p>Here <code>u_1</code> is a variable ranging over type levels. The output of the
+<p>Here <code>u</code> is a variable ranging over type levels. The output of the
 <code>#check</code> command means that whenever <code>α</code> has type <code>Type n</code>,
 <code>List α</code> also has type <code>Type n</code>. The function <code>Prod</code> is
 similarly polymorphic:</p>
-<pre><code class="language-lean">#check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
+<pre><code class="language-lean">#check Prod    -- Prod.{u, v} (α : Type u) (β : Type v) : Type (max u v)
 </code></pre>
 <p>To define polymorphic constants, Lean allows you to
 declare universe variables explicitly using the <code>universe</code> command:</p>
@@ -904,10 +904,10 @@ def h2 (x : Nat) : Nat :=
 </span><span class="boring">def Lst.cons (α : Type u) (a : α) (as : Lst α) : Lst α := List.cons a as
 </span><span class="boring">def Lst.nil (α : Type u) : Lst α := List.nil
 </span><span class="boring">def Lst.append (α : Type u) (as bs : Lst α) : Lst α := List.append as bs
-</span>#check Lst          -- Type u_1 → Type u_1
-#check Lst.cons     -- (α : Type u_1) → α → Lst α → Lst α
-#check Lst.nil      -- (α : Type u_1) → Lst α
-#check Lst.append   -- (α : Type u_1) → Lst α → Lst α → Lst α
+</span>#check Lst          -- Lst.{u} (α : Type u) : Type u
+#check Lst.cons     -- Lst.cons.{u} (α : Type u) (a : α) (as : Lst α) : Lst α
+#check Lst.nil      -- Lst.nil.{u} (α : Type u) : Lst α
+#check Lst.append   -- Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
 </code></pre>
 <p>Then, you can construct lists of <code>Nat</code> as follows.</p>
 <pre><code class="language-lean"><span class="boring">universe u
@@ -1041,7 +1041,7 @@ declared an argument to a function to be implicit, but now want to
 provide the argument explicitly. If <code>foo</code> is such a function, the
 notation <code>@foo</code> denotes the same function with all the arguments
 made explicit.</p>
-<pre><code class="language-lean">#check @id        -- {α : Type u_1} → α → α
+<pre><code class="language-lean">#check @id        -- {α : Sort u_1} → α → α
 #check @id Nat    -- Nat → Nat
 #check @id Bool   -- Bool → Bool
 
