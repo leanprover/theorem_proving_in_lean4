@@ -502,7 +502,7 @@ are introduced in the corresponding patterns. What makes recursion and
 induction possible is that they can also involve recursive calls to
 <code>foo</code>. In this section, we will deal with <em>structural recursion</em>, in
 which the arguments to <code>foo</code> occurring on the right-hand side of the
-<code>:=</code> are subterms of the patterns on the left-hand side. The idea is
+<code>=&gt;</code> are subterms of the patterns on the left-hand side. The idea is
 that they are structurally smaller, and hence appear in the inductive
 type at an earlier stage. Here are some examples of structural
 recursion from the last chapter, now defined using the equation
@@ -1028,8 +1028,8 @@ end
 </code></pre>
 <h2><a class="header" href="#dependent-pattern-matching" id="dependent-pattern-matching">Dependent Pattern Matching</a></h2>
 <p>All the examples of pattern matching we considered in
-<a href="#pattern-matching">Section Pattern Matching</a> can easily be written using <code>cases_on</code>
-and <code>rec_on</code>. However, this is often not the case with indexed
+<a href="#pattern-matching">Section Pattern Matching</a> can easily be written using <code>casesOn</code>
+and <code>recOn</code>. However, this is often not the case with indexed
 inductive families such as <code>Vector α n</code>, since case splits impose
 constraints on the values of the indices. Without the equation
 compiler, we would need a lot of boilerplate code to define very
