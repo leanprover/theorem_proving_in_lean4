@@ -43,10 +43,10 @@ constant of such a type.
 #   proof : p
 #check Proof   -- Proof : Prop → Type
 
-axiom and_comm (p q : Prop) : Proof (Implies (And p q) (And q p))
+axiom and_commutative (p q : Prop) : Proof (Implies (And p q) (And q p))
 
 variable (p q : Prop)
-#check and_comm p q     -- Proof (Implies (And p q) (And q p))
+#check and_commutative p q     -- Proof (Implies (And p q) (And q p))
 ```
 
 In addition to axioms, however, we would also need rules to build new
