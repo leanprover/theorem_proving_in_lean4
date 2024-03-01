@@ -1062,7 +1062,7 @@ Dependent Pattern Matching
 --------------------------
 
 All the examples of pattern matching we considered in
-[Section Pattern Matching](#pattern_matching) can easily be written using ``casesOn``
+[Section Pattern Matching](#pattern-matching) can easily be written using ``casesOn``
 and ``recOn``. However, this is often not the case with indexed
 inductive families such as ``Vector α n``, since case splits impose
 constraints on the values of the indices. Without the equation
