@@ -17,7 +17,7 @@ refer to as the "equation compiler." The equation compiler is not part
 of the trusted code base; its output consists of terms that are
 checked independently by the kernel.
 
-<a name="_pattern_matching"></a>Pattern Matching
+Pattern Matching
 ----------------
 
 The interpretation of schematic patterns is the first step of the
@@ -234,8 +234,8 @@ known as a *wildcard pattern*, or an *anonymous variable*. In contrast
 to usage outside the equation compiler, here the underscore does *not*
 indicate an implicit argument. The use of underscores for wildcards is
 common in functional programming languages, and so Lean adopts that
-notation. [Section Wildcards and Overlapping Patterns](#_wildcards_and_overlapping_patterns)
-expands on the notion of a wildcard, and [Section Inaccessible Patterns](#_inaccessible_patterns) explains how
+notation. [Section Wildcards and Overlapping Patterns](#wildcards-and-overlapping-patterns)
+expands on the notion of a wildcard, and [Section Inaccessible Patterns](#inaccessible-patterns) explains how
 you can use implicit arguments in patterns as well.
 
 As described in [Chapter Inductive Types](./inductive_types.md),
@@ -261,9 +261,9 @@ not participate in a case split.
 Lean can also handle more complex forms of pattern matching, in which
 arguments to dependent types pose additional constraints on the
 various cases. Such examples of *dependent pattern matching* are
-considered in the [Section Dependent Pattern Matching](#_dependent_pattern_matching).
+considered in the [Section Dependent Pattern Matching](#dependent-pattern-matching).
 
-<a name="_wildcards_and_overlapping_patterns"></a>Wildcards and Overlapping Patterns
+Wildcards and Overlapping Patterns
 ----------------------------------
 
 Consider one of the examples from the last section:
@@ -406,12 +406,12 @@ other patterns, or an expression that normalizes to something of that
 form (where the non-constructors are marked with the ``[match_pattern]``
 attribute). The appearances of constructors prompt case splits, with
 the arguments to the constructors represented by the given
-variables. In [Section Dependent Pattern Matching](#_dependent_pattern_matching),
+variables. In [Section Dependent Pattern Matching](#dependent-pattern-matching),
 we will see that it is sometimes necessary to include explicit terms in patterns that
 are needed to make an expression type check, though they do not play a
 role in pattern matching. These are called "inaccessible patterns" for
 that reason. But we will not need to use such inaccessible patterns
-before [Section Dependent Pattern Matching](#_dependent_pattern_matching).
+before [Section Dependent Pattern Matching](#dependent-pattern-matching).
 
 As we saw in the last section, the terms ``t₁, ..., tₙ`` can make use
 of any of the parameters ``a``, as well as any of the variables that
@@ -821,7 +821,7 @@ def ack : Nat → Nat → Nat
   | 0,   y   => y+1
   | x+1, 0   => ack x 1
   | x+1, y+1 => ack x (ack (x+1) y)
-termination_by ack x y => (x, y)
+termination_by x y => (x, y)
 ```
 
 Note that a lexicographic order is used in the example above because the instance
@@ -848,7 +848,7 @@ where
         r
     else
       r
-termination_by go i r => as.size - i
+  termination_by as.size - i
 ```
 
 Note that, auxiliary function `go` is recursive in this example, but `takeWhile` is not.
@@ -874,11 +874,12 @@ def ack : Nat → Nat → Nat
   | 0,   y   => y+1
   | x+1, 0   => ack x 1
   | x+1, y+1 => ack x (ack (x+1) y)
-termination_by ack x y => (x, y)
+termination_by x y => (x, y)
 decreasing_by
-  simp_wf -- unfolds well-founded recursion auxiliary definitions
-  first | apply Prod.Lex.right; simp_arith
-        | apply Prod.Lex.left; simp_arith
+  all_goals simp_wf -- unfolds well-founded recursion auxiliary definitions
+  · apply Prod.Lex.left; simp_arith
+  · apply Prod.Lex.right; simp_arith
+  · apply Prod.Lex.left; simp_arith
 ```
 
 We can use `decreasing_by sorry` to instruct Lean to "trust" us that the function terminates.
@@ -1061,7 +1062,7 @@ Dependent Pattern Matching
 --------------------------
 
 All the examples of pattern matching we considered in
-[Section Pattern Matching](#_pattern_matching) can easily be written using ``casesOn``
+[Section Pattern Matching](#pattern_matching) can easily be written using ``casesOn``
 and ``recOn``. However, this is often not the case with indexed
 inductive families such as ``Vector α n``, since case splits impose
 constraints on the values of the indices. Without the equation
@@ -1509,7 +1510,7 @@ Exercises
    the natural numbers. Similarly, see if you can figure out how to
    define ``WellFounded.fix`` on your own.
 
-4. Following the examples in [Section Dependent Pattern Matching](#_dependent_pattern_matching),
+4. Following the examples in [Section Dependent Pattern Matching](#dependent-pattern-matching),
    define a function that will append two vectors.
    This is tricky; you will have to define an auxiliary function.
 

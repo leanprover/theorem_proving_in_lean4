@@ -1,9 +1,10 @@
 name: mdbook deploy to github pages
 
-# Controls when the action will run: only on manual dispatch from github UI
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - master
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -28,3 +29,4 @@ jobs:
       with:
         branch: gh-pages
         folder: out
+

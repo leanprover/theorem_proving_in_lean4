@@ -343,7 +343,7 @@ def next_previous (d : Weekday) : next (previous d) = d := by
   cases d <;> rfl
 ```
 
-[Tactics for Inductive Types](#tactics_for_inductive_types) below will introduce additional
+[Tactics for Inductive Types](#tactics-for-inductive-types) below will introduce additional
 tactics that are specifically designed to make use of inductive types.
 
 Notice that, under the propositions-as-types correspondence, we can
@@ -481,7 +481,7 @@ which are arguments to the constructors as well as ``Prod``. Lean
 detects when these arguments can be inferred from later arguments to a
 constructor or the return type, and makes them implicit in that case.
 
-In [Section Defining the Natural Numbers](#_defining_the_natural_numbers)
+In [Section Defining the Natural Numbers](#defining-the-natural-numbers)
 we will see what happens when the
 constructor of an inductive type takes arguments from the inductive
 type itself. What characterizes the examples we consider in this
@@ -648,7 +648,7 @@ speaking, what characterizes inductive types in ``Prop`` is that one
 can only eliminate to other types in ``Prop``. This is consistent with
 the understanding that if ``p : Prop``, an element ``hp : p`` carries
 no data. There is a small exception to this rule, however, which we
-will discuss below, in [Section Inductive Families](#_inductive_families).
+will discuss below, in [Section Inductive Families](#inductive-families).
 
 Even the existential quantifier is inductively defined:
 
@@ -693,7 +693,7 @@ The notation ``{x : α // p x}`` is syntactic sugar for ``Subtype (fun x : α =>
 It is modeled after subset notation in set theory: the idea is that ``{x : α // p x}``
 denotes the collection of elements of ``α`` that have property ``p``.
 
-<a name="_defining_the_natural_numbers"></a>Defining the Natural Numbers
+Defining the Natural Numbers
 ----------------------------
 
 The inductively defined types we have seen so far are "flat":
@@ -838,9 +838,9 @@ theorem zero_add (n : Nat) : 0 + n = n :=
    (show 0 + 0 = 0 from rfl)
    (fun (n : Nat) (ih : 0 + n = n) =>
     show 0 + succ n = succ n from
-    calc
-       0 + succ n = succ (0 + n) := rfl
-                _ = succ n       := by rw [ih])
+    calc 0 + succ n
+      _ = succ (0 + n) := rfl
+      _ = succ n       := by rw [ih])
 # end Hidden
 ```
 
@@ -874,11 +874,11 @@ theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
     (show m + n + 0 = m + (n + 0) from rfl)
     (fun k (ih : m + n + k = m + (n + k)) =>
       show m + n + succ k = m + (n + succ k) from
-      calc
-          m + n + succ k = succ (m + n + k) := rfl
-            _ = succ (m + (n + k)) := by rw [ih]
-            _ = m + succ (n + k) := rfl
-            _ = m + (n + succ k) := rfl)
+      calc m + n + succ k
+        _ = succ (m + n + k)   := rfl
+        _ = succ (m + (n + k)) := by rw [ih]
+        _ = m + succ (n + k)   := rfl
+        _ = m + (n + succ k)   := rfl)
 # end Hidden
 ```
 
@@ -901,9 +901,10 @@ theorem add_comm (m n : Nat) : m + n = n + m :=
    (show m + 0 = 0 + m by rw [Nat.zero_add, Nat.add_zero])
    (fun (n : Nat) (ih : m + n = n + m) =>
     show m + succ n = succ n + m from
-    calc m + succ n = succ (m + n) := rfl
-                  _ = succ (n + m) := by rw [ih]
-                  _ = succ n + m   := sorry)
+    calc m + succ n
+      _ = succ (m + n) := rfl
+      _ = succ (n + m) := by rw [ih]
+      _ = succ n + m   := sorry)
 ```
 
 At this point, we see that we need another supporting fact, namely, that ``succ (n + m) = succ n + m``.
@@ -917,9 +918,10 @@ theorem succ_add (n m : Nat) : succ n + m = succ (n + m) :=
     (show succ n + 0 = succ (n + 0) from rfl)
     (fun (m : Nat) (ih : succ n + m = succ (n + m)) =>
      show succ n + succ m = succ (n + succ m) from
-     calc succ n + succ m = succ (succ n + m) := rfl
-           _  = succ (succ (n + m))           := by rw [ih]
-           _  = succ (n + succ m)             := rfl)
+     calc succ n + succ m
+       _ = succ (succ n + m)   := rfl
+       _ = succ (succ (n + m)) := by rw [ih]
+       _ = succ (n + succ m)   := rfl)
 ```
 
 You can then replace the ``sorry`` in the previous proof with ``succ_add``. Yet again, the proofs can be compressed:
@@ -1380,7 +1382,7 @@ example (h : 7 = 4) : False := by
 
 As the second example shows, the ``contradiction`` tactic also detects contradictions of this form.
 
-<a name="_inductive_families"></a>Inductive Families
+Inductive Families
 ------------------
 
 We are almost done describing the full range of inductive definitions
@@ -1447,7 +1449,7 @@ universe u v
 
 It is a remarkable fact that all the basic axioms for equality follow
 from the constructor, ``refl``, and the eliminator, ``Eq.rec``. The
-definition of equality is atypical, however; see the discussion in [Section Axiomatic Details](#_axiomatic_details).
+definition of equality is atypical, however; see the discussion in [Section Axiomatic Details](#axiomatic-details).
 
 The recursor ``Eq.rec`` is also used to define substitution:
 
@@ -1512,7 +1514,7 @@ inductive definitions, for example, the principles of
 *induction-recursion* and *induction-induction*. These are not
 supported by Lean.
 
-<a name="_axiomatic_details"></a>Axiomatic Details
+Axiomatic Details
 -----------------
 
 We have described inductive types and their syntax through
@@ -1583,7 +1585,7 @@ type. We can use an element ``h : Eq a b`` to cast an element
 because the cast does not produce new data; it only reinterprets the
 data we already have. Singleton elimination is also used with
 heterogeneous equality and well-founded recursion, which will be
-discussed in a [Chapter Induction and Recursion](./induction_and_recursion.md#_well_founded_recursion_and_induction).
+discussed in a [Chapter Induction and Recursion](./induction_and_recursion.md#well-founded-recursion-and-induction).
 
 Mutual and Nested Inductive Types
 ---------------------------------
