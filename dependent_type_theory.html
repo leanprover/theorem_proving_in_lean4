@@ -877,7 +877,8 @@ notion of a function type <code>α → β</code> by allowing <code>β</code> to 
 the Cartesian product <code>α × β</code> in the same way. Dependent products
 are also called <em>sigma</em> types, and you can also write them as
 <code>Σ a : α, β a</code>. You can use <code>⟨a, b⟩</code> or <code>Sigma.mk a b</code> to create a
-dependent pair.</p>
+dependent pair.  The <code>⟨</code> and <code>⟩</code> characters may be typed with
+<code>\langle</code> and <code>\rangle</code> or <code>\&lt;</code> and <code>\&gt;</code>, respectively.</p>
 <pre><code class="language-lean">universe u v
 
 def f (α : Type u) (β : α → Type v) (a : α) (b : β a) : (a : α) × β a :=
