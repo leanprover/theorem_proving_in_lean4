@@ -249,10 +249,10 @@ along the y-axis represents a change in what is sometimes referred to as
 Some operations, however, need to be *polymorphic* over type
 universes. For example, ``List α`` should make sense for any type
 ``α``, no matter which type universe ``α`` lives in. This explains the
-type annotation of the function ``List``:
+type signature of the function ``List``:
 
 ```lean
-#check List    -- Type u → Type u
+#check List    -- List.{u} (α : Type u) : Type u
 ```
 
 Here ``u`` is a variable ranging over type levels. The output of the
@@ -261,7 +261,7 @@ Here ``u`` is a variable ranging over type levels. The output of the
 similarly polymorphic:
 
 ```lean
-#check Prod    -- Type u → Type v → Type (max u v)
+#check Prod    -- Prod.{u, v} (α : Type u) (β : Type v) : Type (max u v)
 ```
 
 To define polymorphic constants, Lean allows you to
@@ -928,10 +928,10 @@ Suppose we have an implementation of lists as:
 # def Lst.cons (α : Type u) (a : α) (as : Lst α) : Lst α := List.cons a as
 # def Lst.nil (α : Type u) : Lst α := List.nil
 # def Lst.append (α : Type u) (as bs : Lst α) : Lst α := List.append as bs
-#check Lst          -- Type u → Type u
-#check Lst.cons     -- (α : Type u) → α → Lst α → Lst α
-#check Lst.nil      -- (α : Type u) → Lst α
-#check Lst.append   -- (α : Type u) → Lst α → Lst α → Lst α
+#check Lst          -- Lst.{u} (α : Type u) : Type u
+#check Lst.cons     -- Lst.cons.{u} (α : Type u) (a : α) (as : Lst α) : Lst α
+#check Lst.nil      -- Lst.nil.{u} (α : Type u) : Lst α
+#check Lst.append   -- Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
 ```
 
 Then, you can construct lists of `Nat` as follows.
