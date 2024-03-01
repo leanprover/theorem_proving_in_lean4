@@ -901,7 +901,7 @@ theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
         _ = m + (n + succ k)   := rfl)
 <span class="boring">end Hidden
 </span></code></pre>
-<p>One again, you can reduce the proof to:</p>
+<p>Once again, you can reduce the proof to:</p>
 <pre><code class="language-lean">open Nat
 theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
   Nat.recOn (motive := fun k =&gt; m + n + k = m + (n + k)) k
