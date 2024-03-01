@@ -735,7 +735,7 @@ private theorem mem_swap {a : α} :
 private theorem mem_respects
       : {p₁ p₂ : α × α} → (a : α) → p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
   | (a₁, a₂), (b₁, b₂), a, Or.inl ⟨a₁b₁, a₂b₂⟩ => by simp_all
-  | (a₁, a₂), (b₁, b₂), a, Or.inr ⟨a₁b₂, a₂b₁⟩ => by simp_all; apply mem_swap
+  | (a₁, a₂), (b₁, b₂), a, Or.inr ⟨a₁b₂, a₂b₁⟩ => by simp_all; rw [mem_swap]
 
 def mem (a : α) (u : UProd α) : Prop :=
   Quot.liftOn u (fun p => mem_fn a p) (fun p₁ p₂ e => mem_respects a e)
@@ -1100,9 +1100,10 @@ theorem linv_comp_self {f : α → β} [Inhabited α]
     have ex  : ∃ a₁ : α, f a₁ = f a := ⟨a, rfl⟩
     have feq : f (choose ex) = f a  := choose_spec ex
     calc linv f (f a)
-      _ = choose ex := dif_pos ex
+      _ = choose ex := by simp
       _ = a         := inj feq
 ```
+
 
 From a classical point of view, ``linv`` is a function. From a
 constructive point of view, it is unacceptable; because there is no
