@@ -419,7 +419,7 @@ are introduced in the corresponding patterns. What makes recursion and
 induction possible is that they can also involve recursive calls to
 ``foo``. In this section, we will deal with *structural recursion*, in
 which the arguments to ``foo`` occurring on the right-hand side of the
-``:=`` are subterms of the patterns on the left-hand side. The idea is
+``=>`` are subterms of the patterns on the left-hand side. The idea is
 that they are structurally smaller, and hence appear in the inductive
 type at an earlier stage. Here are some examples of structural
 recursion from the last chapter, now defined using the equation
@@ -1062,8 +1062,8 @@ Dependent Pattern Matching
 --------------------------
 
 All the examples of pattern matching we considered in
-[Section Pattern Matching](#pattern-matching) can easily be written using ``cases_on``
-and ``rec_on``. However, this is often not the case with indexed
+[Section Pattern Matching](#pattern-matching) can easily be written using ``casesOn``
+and ``recOn``. However, this is often not the case with indexed
 inductive families such as ``Vector α n``, since case splits impose
 constraints on the values of the indices. Without the equation
 compiler, we would need a lot of boilerplate code to define very
