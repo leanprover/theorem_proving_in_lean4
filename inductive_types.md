@@ -882,7 +882,7 @@ theorem add_assoc (m n k : Nat) : m + n + k = m + (n + k) :=
 # end Hidden
 ```
 
-One again, you can reduce the proof to:
+Once again, you can reduce the proof to:
 
 ```lean
 open Nat
