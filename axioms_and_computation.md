@@ -629,7 +629,7 @@ notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 end UProd
 ```
 
-Notice that we locally define the notation ``{a₁, a₂}`` for ordered
+Notice that we locally define the notation ``{a₁, a₂}`` for unordered
 pairs as ``Quotient.mk (a₁, a₂)``. This is useful for illustrative
 purposes, but it is not a good idea in general, since the notation
 will shadow other uses of curly brackets, such as for records and
