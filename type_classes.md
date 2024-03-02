@@ -92,7 +92,7 @@ We can now reimplement `double` using an instance implicit by:
 # instance : Add Nat where
 #  add := Nat.add
 # instance : Add Int where
-#  add := Int.add
+#  add := Int.mul
 # instance : Add Float where
 #  add := Float.add
 def double [Add a] (x : a) : a :=
