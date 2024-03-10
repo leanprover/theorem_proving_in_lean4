@@ -508,7 +508,7 @@ example (h₁ : divides x y) (h₂ : y = z) : divides x (2*z) :=
 
 The example above also makes it clear that you can use `calc` even if you
 do not have an infix notation for your relation. 
-Finally, we remark that, in the example above, we use the double pipe `‖` symbol instead of the vertical bar `∣` or ASCII `|`. We do that to avoid overloading the former two symbols which are already defined in the standard library. In practice, use the standard library's `∣` to express divisibilty.
+Finally, we remark that, in the example above, we use the double pipe `‖` symbol instead of the vertical bar `∣` or ASCII `|`. We do that to avoid ambiguity with the already defined `∣` and overloading `|` used in the `match .. with` expression. In practice, it is probably better to use the standard library's `∣` (or `Dvd.dvd`) to express divisibility instead of defining it yourself.
 
 With ``calc``, we can write the proof in the last section in a more
 natural and perspicuous way.
