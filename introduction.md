@@ -61,6 +61,10 @@ To install Lean in your computer consider using the [Quickstart](https://github.
 
 This tutorial describes the current version of Lean, known as Lean 4.
 
+You may want to reconsider your decision to learn Lean if you plan to use it for
+projects based on constructive logic. See [Section Historical and Philosophical
+Context](./axioms_and_computation.md#historical-and-philosophical-context).
+
 About this Book
 ---------------
 
