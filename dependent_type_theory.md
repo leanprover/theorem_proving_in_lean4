@@ -1,9 +1,9 @@
 Dependent Type Theory
 =====================
 
-Dependent type theory is a powerful and expressive language, allowing
+*Dependent type theory* is a powerful and expressive language, allowing
 you to express complex mathematical assertions, write complex hardware
-and software specifications, and reason about both of these in a
+and software specifications, and reason about all of these in a
 natural and uniform way. Lean is based on a version of dependent type
 theory known as the *Calculus of Constructions*, with a countable
 hierarchy of non-cumulative universes and inductive types. By the end
@@ -14,8 +14,8 @@ of this chapter, you will understand much of what this means.
 "Type theory" gets its name from the fact that every expression has an
 associated *type*. For example, in a given context, ``x + 0`` may
 denote a natural number and ``f`` may denote a function on the natural
-numbers. For those who like precise definitions, a Lean natural number
-is an arbitrary-precision unsigned integer.
+numbers. (For those who like precise definitions, a Lean natural number
+is an arbitrary-precision unsigned integer.)
 
 Here are some examples of how you can declare objects in Lean and
 check their types:
@@ -55,14 +55,12 @@ in many programming languages.
 The ``def`` keyword declares new constant symbols into the
 working environment. In the example above, `def m : Nat := 1`
 defines a new constant `m` of type `Nat` whose value is `1`.
-The ``#check`` command asks Lean to report their
-types; in Lean, auxiliary commands that query the system for
-information typically begin with the hash (#) symbol.
-The `#eval` command asks Lean to evaluate the given expression.
-You should try
-declaring some constants and type checking some expressions on your
-own. Declaring new objects in this manner is a good way to experiment
-with the system.
+
+In Lean, auxiliary commands that query the system for information typically begin with the hash (#) symbol.
+The ``#check`` command asks Lean to report the type of a given expression
+types; the `#eval` command asks Lean to evaluate the given expression.
+Try declaring some constants and type checking some expressions on your
+own; this is a good way to experiment with the system.
 
 What makes simple type theory powerful is that you can build new types
 out of others. For example, if ``a`` and ``b`` are types, ``a -> b``
@@ -223,8 +221,8 @@ hierarchy of types:
 Think of ``Type 0`` as a universe of "small" or "ordinary" types.
 ``Type 1`` is then a larger universe of types, which contains ``Type
 0`` as an element, and ``Type 2`` is an even larger universe of types,
-which contains ``Type 1`` as an element. The list is indefinite, so
-that there is a ``Type n`` for every natural number ``n``. ``Type`` is
+which contains ``Type 1`` as an element. The list is infinite:
+there is a ``Type n`` for every natural number ``n``. ``Type`` is
 an abbreviation for ``Type 0``:
 
 ```lean
@@ -490,7 +488,7 @@ def add (x : Nat) (y : Nat) :=
 #eval add 3 2               -- 5
 ```
 
-For convenience, the parameter list can be abbreviated like this (though the resulting function will have the same type):
+For convenience, the parameter list can be abbreviated as follows:
 
 ```lean
 # def double (x : Nat) : Nat :=
@@ -500,11 +498,12 @@ def add (x y : Nat) :=
 
 #eval add (double 3) (7 + 9)  -- 22
 ```
+The resulting function will display a different *signature*, but the function itself will have the same type as before.
 
 Notice that the example uses the `double` function to create the first
 parameter to `add`.
 
-<!-- a quick note about currying would be in order here -->
+<!-- a quick note about currying would be in order here, and perhaps a definition of "signature" -->
 
 You can use more interesting expressions inside a `def`:
 
@@ -568,13 +567,14 @@ def square (x : Nat) : Nat :=
 
 Lean has syntax to make the three type parameters (`α β γ`) implicit,
 so that they don't have to be explicitly included each time that `compose` is called ---
-see the (Additional Conveniences)[https://lean-lang.org/functional_programming_in_lean/getting-to-know/conveniences.html]
-section of [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/title.html).
+see the [Implicit Arguments](#Implicit-Arguments) section below.
+<!-- See also the [Additional Conveniences](https://lean-lang.org/functional_programming_in_lean/getting-to-know/conveniences.html)
+section of [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/title.html). -->
 
 Local Definitions
 -----------------
 
-Lean also allows you to introduce "local" definitions using the
+You can introduce "local" definitions in Lean using the
 ``let`` keyword. The expression ``let a := t1; t2`` is
 definitionally equal to the result of replacing every occurrence of
 ``a`` in ``t2`` by ``t1``.
@@ -610,7 +610,7 @@ similar to the meaning of ``(fun a => t2) t1``, but the two are not
 the same. In the first expression, you should think of every instance
 of ``a`` in ``t2`` as a syntactic abbreviation for ``t1``. In the
 second expression, ``a`` is a variable, and the expression
-``fun a => t2`` has to make sense independently of the value of ``a``.
+``fun a => t2`` must make sense independently of the value of ``a``.
 The ``let`` construct is a stronger means of abbreviation, and there
 are expressions of the form ``let a := t1; t2`` that cannot be
 expressed as ``(fun a => t2) t1``. As an exercise, try to understand
@@ -637,8 +637,8 @@ def doThrice (α : Type) (h : α → α) (x : α) : α :=
   h (h (h x))
 ```
 
-Lean provides you with the ``variable`` command to make such
-declarations look more compact:
+Lean provides the ``variable`` command to make such
+declarations more compact:
 
 ```lean
 variable (α β γ : Type)
@@ -705,7 +705,7 @@ which allows you to declare new variables incrementally.
 
 # Namespaces
 
-Lean provides you with the ability to group definitions into nested,
+Lean lets you group definitions into nested,
 hierarchical *namespaces*:
 
 ```lean
@@ -940,7 +940,7 @@ Suppose we have an implementation of lists as:
 #check Lst.append   -- Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
 ```
 
-Then, you can construct lists of `Nat` as follows.
+Then, you can construct lists of `Nat` as follows:
 
 ```lean
 # universe u
@@ -1069,7 +1069,7 @@ One can always specify the type ``T`` of an expression ``e`` by
 writing ``(e : T)``. This instructs Lean's elaborator to use the value
 ``T`` as the type of ``e`` when trying to resolve implicit
 arguments. In the second pair of examples below, this mechanism is
-used to specify the desired types of the expressions ``id`` and
+used to specify the desired types for the expressions ``id`` and
 ``List.nil``:
 
 ```lean
@@ -1081,10 +1081,10 @@ used to specify the desired types of the expressions ``id`` and
 ```
 
 Numerals are overloaded in Lean, but when the type of a numeral cannot
-be inferred, Lean assumes, by default, that it is a natural number. So
-the expressions in the first two ``#check`` commands below are
-elaborated in the same way, whereas the third ``#check`` command
-interprets ``2`` as an integer.
+be inferred, Lean assumes, by default, that it is a natural number. Thus,
+the expressions in the first two ``#check`` commands below are both
+elaborated as `Nat`, whereas the third ``#check`` command
+interprets ``2`` as an `Int`. <!-- difference between Nat and Int has not been explained yet. -->
 
 ```lean
 #check 2            -- Nat
@@ -1107,6 +1107,7 @@ made explicit.
 #check @id Bool true -- Bool
 ```
 
-Notice that now the first ``#check`` command gives the type of the
-identifier, ``id``, without inserting any placeholders. Moreover, the
-output indicates that the first argument is implicit.
+Notice that the ``#check @id`` command now gives the full type of the
+identifier, ``id``, without having to insert any placeholders. Moreover, the
+curly brackets in the
+output indicats that the first argument, `α`, is implicit.
