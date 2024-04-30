@@ -18,7 +18,7 @@ numbers. For those who like precise definitions, a Lean natural number
 is an arbitrary-precision unsigned integer.
 
 Here are some examples of how you can declare objects in Lean and
-check their types.
+check their types:
 
 ```lean
 /- Define some constants. -/
@@ -145,8 +145,7 @@ its two components.
 One way in which Lean's dependent type theory extends simple type
 theory is that types themselves --- entities like ``Nat`` and ``Bool``
 --- are first-class citizens, which is to say that they themselves are
-objects. For that to be the case, each of them also has to have a
-type.
+objects. For that to be the case, each must also have a type.
 
 ```lean
 #check Nat               -- Type
@@ -256,15 +255,15 @@ type signature of the function ``List``:
 ```
 
 Here ``u`` is a variable ranging over type levels. The output of the
-``#check`` command means that whenever ``α`` has type ``Type n``,
-``List α`` also has type ``Type n``. The function ``Prod`` is
+``#check List`` command means that whenever ``α`` has type ``Type u``,
+``List α`` also has type ``Type u``. The function ``Prod`` is
 similarly polymorphic:
 
 ```lean
 #check Prod    -- Prod.{u, v} (α : Type u) (β : Type v) : Type (max u v)
 ```
 
-To define polymorphic constants, Lean allows you to
+To define polymorphic constants, Lean lets you
 declare universe variables explicitly using the `universe` command:
 
 ```lean
@@ -440,9 +439,8 @@ def double (x : Nat) : Nat :=
 
 This might look more familiar to you if you know how functions work in
 other programming languages. The name `double` is defined as a
-function that takes an input parameter `x` of type `Nat`, where the
-result of the call is `x + x`, so it is returning type `Nat`. You
-can then invoke this function using:
+function that takes an input parameter `x` of type `Nat` and returns `x + x`, so its return type is `Nat`.
+You can then invoke this function using:
 
 ```lean
 # def double (x : Nat) : Nat :=
@@ -450,7 +448,7 @@ can then invoke this function using:
 #eval double 3    -- 6
 ```
 
-In this case you can think of `def` as a kind of named `lambda`.
+You can think of `def` as a kind of named `lambda`.
 The following yields the same result:
 
 ```lean
@@ -482,31 +480,33 @@ So `def` can also be used to simply name a value like this:
 def pi := 3.141592654
 ```
 
-`def` can take multiple input parameters.  Let's create one
+`def` can take multiple input parameters.  Let's define a function
 that adds two natural numbers:
 
 ```lean
-def add (x y : Nat) :=
+def add (x : Nat) (y : Nat) :=
   x + y
 
 #eval add 3 2               -- 5
 ```
 
-The parameter list can be separated like this:
+For convenience, the parameter list can be abbreviated like this (though the resulting function will have the same type):
 
 ```lean
 # def double (x : Nat) : Nat :=
 #  x + x
-def add (x : Nat) (y : Nat) :=
+def add (x y : Nat) :=
   x + y
 
 #eval add (double 3) (7 + 9)  -- 22
 ```
 
-Notice here we called the `double` function to create the first
+Notice that the example uses the `double` function to create the first
 parameter to `add`.
 
-You can use other more interesting expressions inside a `def`:
+<!-- a quick note about currying would be in order here -->
+
+You can use more interesting expressions inside a `def`:
 
 ```lean
 def greater (x y : Nat) :=
@@ -516,8 +516,8 @@ def greater (x y : Nat) :=
 
 You can probably guess what this one will do.
 
-You can also define a function that takes another function as input.
-The following calls a given function twice passing the output of the
+You can also define functions that take other functions as input (known as "higher-order functions").
+The following calls a given function twice, passing the output of the
 first invocation to the second:
 
 ```lean
@@ -529,26 +529,26 @@ def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
 #eval doTwice double 2   -- 8
 ```
 
-Now to get a bit more abstract, you can also specify arguments that
-are like type parameters:
+Getting a bit more abstract, you can also specify arguments that
+are like type parameters, like `(α β γ : Type)` here:
 
 ```lean
 def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
 ```
 
-This means `compose` is a function that takes any two functions as input
-arguments, so long as those functions each take only one input.
-The type algebra `β → γ` and `α → β` means it is a requirement
+This defines `compose` as a function that takes three type arguments (`α β γ : Type`) and two other functions,
+locally named `f` and `g`. Furthermore,
+the type constraints `β → γ` and `α → β` require
 that the type of the output of the second function must match the
 type of the input to the first function - which makes sense, otherwise
 the two functions would not be composable.
 
-`compose` also takes a 3rd argument of type `α` which
-it uses to invoke the second function (locally named `f`) and it
-passes the result of that function (which is type `β`) as input to the
-first function (locally named `g`).  The first function returns a type
-`γ` so that is also the return type of the `compose` function.
+`compose` also takes a last argument of type `α`, which
+it uses to invoke the second function (`f`). 
+The result of that function, of type `β`, is passed as the input to the
+first function (`g`).  The first function returns a result of type
+`γ`, so that is also the return type of the `compose` function.
 
 `compose` is also very general in that it works over any type
 `α β γ`.  This means `compose` can compose just about any 2 functions
@@ -565,6 +565,11 @@ def square (x : Nat) : Nat :=
 
 #eval compose Nat Nat Nat double square 3  -- 18
 ```
+
+Lean has syntax to make the three type parameters (`α β γ`) implicit,
+so that they don't have to be explicitly included each time that `compose` is called ---
+see the (Additional Conveniences)[https://lean-lang.org/functional_programming_in_lean/getting-to-know/conveniences.html]
+section of [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/title.html).
 
 Local Definitions
 -----------------
@@ -738,7 +743,7 @@ identifier you declare has a full name with prefix "``Foo.``". Within
 the namespace, you can refer to identifiers by their shorter names,
 but once you end the namespace, you have to use the longer names.
 Unlike `section`, namespaces require a name. There is only one
-anonymous namespace at the root level.
+anonymous namespace: the one at the root level.
 
 The ``open`` command brings the shorter names into the current
 context. Often, when you import a module, you will want to open one or

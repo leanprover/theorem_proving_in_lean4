@@ -17,8 +17,8 @@ Importing Files
 ---------------
 
 The goal of Lean's front end is to interpret user input, construct
-formal expressions, and check that they are well formed and type
-correct. Lean also supports the use of various editors, which provide
+formal expressions, and check that they are well-formed and type-correct.
+Lean also supports the use of various editors, which provide
 continuous checking and feedback. More information can be found on the
 Lean [documentation pages](https://lean-lang.org/documentation/).
 
@@ -542,7 +542,7 @@ The new notation is preferred to the binary notation since the latter,
 before chaining, would stop parsing after `1 + 2`.  If there are
 multiple notations accepting the same longest parse, the choice will
 be delayed until elaboration, which will fail unless exactly one
-overload is type correct.
+overload is type-correct.
 
 Coercions
 ---------

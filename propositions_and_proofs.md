@@ -2,7 +2,7 @@ Propositions and Proofs
 =======================
 
 By now, you have seen some ways of defining objects and functions in
-Lean. In this chapter, we will begin to explain how to write
+Lean. In this chapter, we begin to explain how to write
 mathematical assertions and proofs in the language of dependent type
 theory as well.
 
@@ -13,10 +13,11 @@ One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
 and a proof language on top of the definition language. But there is
 no reason to multiply languages in this way: dependent type theory is
-flexible and expressive, and there is no reason we cannot represent
+flexible and expressive, and it turns out that there is no reason we cannot represent
 assertions and proofs in the same general framework.
 
-For example, we could introduce a new type, ``Prop``, to represent
+As an example of layering an assertion language on top,
+we could introduce a new type, ``Prop``, to represent
 propositions, and introduce constructors to build new propositions
 from others.
 
@@ -77,7 +78,7 @@ We could render this as follows:
 axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
 ```
 
-This approach would provide us with a reasonable way of building assertions and proofs.
+This approach would give us a reasonable way of building assertions and proofs.
 Determining that an expression ``t`` is a correct proof of assertion ``p`` would then
 simply be a matter of checking that ``t`` has type ``Proof p``.
 
@@ -115,9 +116,9 @@ proposition ``p`` represents a sort of data type, namely, a
 specification of the type of data that constitutes a proof. A proof of
 ``p`` is then simply an object ``t : p`` of the right type.
 
-Those not inclined to this ideology can view it, rather, as a simple
+Those not inclined to this philosophy can view it, rather, as a simple
 coding trick. To each proposition ``p`` we associate a type that is
-empty if ``p`` is false and has a single element, say ``*``, if ``p``
+empty if ``p`` is false, and has a single element, say ``*``, if ``p``
 is true. In the latter case, let us say that (the type associated
 with) ``p`` is *inhabited*. It just so happens that the rules for
 function application and abstraction can conveniently help us keep
@@ -136,7 +137,7 @@ that even though we can treat proofs ``t : p`` as ordinary objects in
 the language of dependent type theory, they carry no information
 beyond the fact that ``p`` is true.
 
-The two ways we have suggested thinking about the
+The two ways we have suggested for thinking about the
 propositions-as-types paradigm differ in a fundamental way. From the
 constructive point of view, proofs are abstract mathematical objects
 that are *denoted* by suitable expressions in dependent type
@@ -160,7 +161,8 @@ In any case, all that really matters is the bottom line. To formally
 express a mathematical assertion in the language of dependent type
 theory, we need to exhibit a term ``p : Prop``. To *prove* that
 assertion, we need to exhibit a term ``t : p``. Lean's task, as a
-proof assistant, is to help us to construct such a term, ``t``, and to
+proof assistant, is to help us to construct such a term ``t``, and to
+    - construct such a type ``t`` ??? ---
 verify that it is well-formed and has the correct type.
 
 Working with Propositions as Types
@@ -191,7 +193,7 @@ true.
 Note that the ``theorem`` command is really a version of the
 ``def`` command: under the propositions and types
 correspondence, proving the theorem ``p → q → p`` is really the same
-as defining an element of the associated type. To the kernel type
+as defining an element of the associated type. To the Lean kernel type
 checker, there is no difference between the two.
 
 There are a few pragmatic differences between definitions and
@@ -202,7 +204,7 @@ theorem is complete, typically we only need to know that the proof
 exists; it doesn't matter what the proof is. In light of that fact,
 Lean tags proofs as *irreducible*, which serves as a hint to the
 parser (more precisely, the *elaborator*) that there is generally no
-need to unfold it when processing a file. In fact, Lean is generally
+need to unfold them when processing a file. In fact, Lean is generally
 able to process and check proofs in parallel, since assessing the
 correctness of one proof does not require knowing the details of
 another.
@@ -260,10 +262,9 @@ axiom hp : p
 theorem t2 : q → p := t1 hp
 ```
 
-Here, the ``axiom`` declaration postulates the existence of an
-element of the given type and may compromise logical consistency. For
-example, we can use it to postulate the empty type `False` has an
-element.
+The ``axiom`` declaration postulates the existence of an
+element of the given type, and may compromise logical consistency. For
+example, it can postulate that the empty type `False` has an element:
 
 ```lean
 axiom unsound : False

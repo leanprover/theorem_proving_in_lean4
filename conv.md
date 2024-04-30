@@ -35,7 +35,8 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
 
 The above snippet shows three navigation commands:
 
-- `lhs` navigates to the left hand side of a relation (here equality), there is also a `rhs` navigating to the right hand side.
+- `lhs` navigates to the left-hand side of a relation (equality, in this case).
+There is also a `rhs` to navigate to the right-hand side.
 - `congr` creates as many targets as there are (nondependent and explicit) arguments to the current head function
   (here the head function is multiplication).
 - `rfl` closes target using reflexivity.

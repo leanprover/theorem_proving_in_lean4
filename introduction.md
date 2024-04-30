@@ -13,13 +13,13 @@ as to their correctness becomes a form of theorem proving. Conversely, the proof
 lengthy computation, in which case verifying the truth of the theorem requires verifying that the computation does what
 it is supposed to do.
 
-The gold standard for supporting a mathematical claim is to provide a proof, and twentieth-century developments in logic
-show most if not all conventional proof methods can be reduced to a small set of axioms and rules in any of a number of
+The gold standard for supporting a mathematical claim is to provide a proof. Twentieth-century developments in logic
+show that most if not all conventional proof methods can be reduced to a small set of axioms and rules in any of a number of
 foundational systems. With this reduction, there are two ways that a computer can help establish a claim: it can help
 find a proof in the first place, and it can help verify that a purported proof is correct.
 
-*Automated theorem proving* focuses on the "finding" aspect. Resolution theorem provers, tableau theorem provers, fast
-satisfiability solvers, and so on provide means of establishing the validity of formulas in propositional and
+*Automated theorem proving* focuses on the "finding" aspect. Resolution theorem provers, tableau theorem provers
+and satisfiability solvers, for example, provide means of establishing the validity of formulas in propositional and
 first-order logic. Other systems provide search procedures and decision procedures for specific languages and domains,
 such as linear or nonlinear expressions over the integers or the real numbers. Architectures like SMT ("satisfiability
 modulo theories") combine domain-general search methods with domain-specific procedures. Computer algebra systems and
