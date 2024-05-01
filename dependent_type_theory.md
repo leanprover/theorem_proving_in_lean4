@@ -515,7 +515,7 @@ def greater (x y : Nat) :=
 
 You can probably guess what this one will do.
 
-You can also define functions that take other functions as input (known as "higher-order functions").
+You can also define functions that take other functions as input (known as *higher-order functions*).
 The following calls a given function twice, passing the output of the
 first invocation to the second:
 
@@ -528,15 +528,15 @@ def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
 #eval doTwice double 2   -- 8
 ```
 
-Getting a bit more abstract, you can also specify arguments that
-are like type parameters, like `(α β γ : Type)` here:
+Getting a bit more abstract, you can also specify arguments that work as type parameters,
+such as `(α β γ : Type)` here:
 
 ```lean
 def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
 ```
 
-This defines `compose` as a function that takes three type arguments (`α β γ : Type`) and two other functions,
+This defines `compose` as a function that takes three type arguments (`α β γ : Type`) and two other functions as arguments,
 locally named `f` and `g`. Furthermore,
 the type constraints `β → γ` and `α → β` require
 that the type of the output of the second function must match the
