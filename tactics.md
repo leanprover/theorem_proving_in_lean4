@@ -53,7 +53,7 @@ separated by semicolons or line breaks. You can prove the above theorem
 in this way:
 
 ```lean
-theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := be
+theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
      apply And.intro
      exact hp
      apply And.intro
@@ -97,7 +97,8 @@ subgoals:
     ⊢ q ∧ p
 ```
 
-Spelling out this `apply` step: `And.intro` is `a → b → a ∧ b`; unifying the conclusion `a ∧ b` with the goal `p ∧ q ∧ p`
+Spelling out this `apply` step: `And.intro` is the rule `a → b → a ∧ b`; unifying its conclusion, `a ∧ b`,
+with the current goal `p ∧ q ∧ p`,
 gives us `p` for `a`, and `q ∧ p` for `b`; thus, we get `p` and `q ∧ p` as the new subgoals.
 
 The first of these two new subgoals is met (discharged) with the command ``exact hp``. The ``exact``
