@@ -272,7 +272,7 @@ def F (α : Type u) : Type u := Prod α α
 #check F    -- Type u → Type u
 ```
 
-You can avoid the universe command by providing the universe parameters when defining F.
+You can avoid the `universe` command by providing the universe parameters when defining `F`:
 
 ```lean
 def F.{u} (α : Type u) : Type u := Prod α α
@@ -283,8 +283,8 @@ def F.{u} (α : Type u) : Type u := Prod α α
 
 ## Function Abstraction and Evaluation
 
-Lean provides a `fun` (or `λ`) keyword to create a function
-from an expression as follows:
+Lean uses the keyword `fun` (or `λ`, entered as ``\lambda``) to create a function
+from an expression, as follows:
 
 ```lean
 #check fun (x : Nat) => x + 5   -- Nat → Nat
@@ -335,12 +335,12 @@ Think about what these expressions mean. The expression
 ``fun x : Nat => x`` denotes the identity function on ``Nat``, the
 expression ``fun x : Nat => true`` denotes the constant function that
 always returns ``true``, and ``fun x : Nat => g (f x)`` denotes the
-composition of ``f`` and ``g``.  You can, in general, leave off the
+composition of ``f`` and ``g``.  You can, in general, skip the
 type annotation and let Lean infer it for you.  So, for example, you
 can write ``fun x => g (f x)`` instead of ``fun x : Nat => g (f x)``.
 
-You can pass functions as parameters and by giving them names `f`
-and `g` you can then use those functions in the implementation:
+You can pass functions as parameters and use them in the implementation,
+as with `f` and `g` below:
 
 ```lean
 #check fun (g : String → Bool) (f : Nat → String) (x : Nat) => g (f x)
@@ -352,11 +352,11 @@ You can also pass types as parameters:
 ```lean
 #check fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)
 ```
-The last expression, for example, denotes the function that takes
+This last expression, for example, denotes the function that takes
 three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ``
 and ``f : α → β``, and returns the composition of ``g`` and ``f``.
 (Making sense of the type of this function requires an understanding
-of dependent products, which will be explained below.)
+of *dependent products*, which will be explained below.)
 
 The general form of a lambda expression is ``fun x : α => t``, where
 the variable ``x`` is a "bound variable": it is really a placeholder,
@@ -614,7 +614,7 @@ second expression, ``a`` is a variable, and the expression
 The ``let`` construct is a stronger means of abbreviation, and there
 are expressions of the form ``let a := t1; t2`` that cannot be
 expressed as ``(fun a => t2) t1``. As an exercise, try to understand
-why the definition of ``foo`` below type checks, but the definition of
+why the definition of ``foo`` below type-checks, but the definition of
 ``bar`` does not.
 
 ```lean
@@ -738,12 +738,13 @@ open Foo
 #check Foo.fa
 ```
 
-When you declare that you are working in the namespace ``Foo``, every
-identifier you declare has a full name with prefix "``Foo.``". Within
-the namespace, you can refer to identifiers by their shorter names,
-but once you end the namespace, you have to use the longer names.
-Unlike `section`, namespaces require a name. There is only one
-anonymous namespace: the one at the root level.
+Inside the scope of the namespace ``Foo``, every
+identifier you declare will be given a full name with prefix "``Foo.``".
+Within the namespace, you can use their shorter names,
+but once you end the namespace, you must use the longer, *fully qualified* names.
+
+Unlike `section`, namespaces require a name. (There is only one
+anonymous namespace: the one at the root level.)
 
 The ``open`` command brings the shorter names into the current
 context. Often, when you import a module, you will want to open one or
@@ -880,7 +881,7 @@ depend on ``a``, ``(a : α) → β`` is no different from the type
 ``α → β``.  Indeed, in dependent type theory (and in Lean), ``α → β``
 is just notation for ``(a : α) → β`` when ``β`` does not depend on ``a``.
 
-Returning to the example of lists, you can use the command `#check` to
+Returning to the example of lists, you can use `#check` to
 inspect the type of the following `List` functions.  The ``@`` symbol
 and the difference between the round and curly braces will be
 explained momentarily.

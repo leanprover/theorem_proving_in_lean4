@@ -16,7 +16,7 @@ no reason to multiply languages in this way: dependent type theory is
 flexible and expressive, and it turns out that there is no reason we cannot represent
 assertions and proofs in the same general framework.
 
-As an example of layering an assertion language on top,
+As an example of layering languages on top,
 we could introduce a new type, ``Prop``, to represent
 propositions, and introduce constructors to build new propositions
 from others.
@@ -52,7 +52,7 @@ variable (p q : Prop)
 
 In addition to axioms, however, we would also need rules to build new
 proofs from old ones. For example, in many proof systems for
-propositional logic, we have the rule of modus ponens:
+propositional logic, we have the rule of *modus ponens*:
 
 > From a proof of ``Implies p q`` and a proof of ``p``, we obtain a proof of ``q``.
 
@@ -78,7 +78,7 @@ We could render this as follows:
 axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
 ```
 
-This approach would give us a reasonable way of building assertions and proofs.
+This would give us a reasonable way of building assertions and proofs.
 Determining that an expression ``t`` is a correct proof of assertion ``p`` would then
 simply be a matter of checking that ``t`` has type ``Proof p``.
 
@@ -93,7 +93,7 @@ show that we can pass back and forth between ``Implies p q`` and
 ``p → q``. In other words, implication between propositions ``p`` and ``q``
 corresponds to having a function that takes any element of ``p`` to an
 element of ``q``. As a result, the introduction of the connective
-``Implies`` is entirely redundant: we can use the usual function space
+``Implies`` is entirely redundant: we can use the function space
 constructor ``p → q`` from dependent type theory as our notion of
 implication.
 
@@ -107,7 +107,7 @@ syntactic sugar for ``Sort 0``, the very bottom of the type hierarchy
 described in the last chapter. Moreover, ``Type u`` is also just
 syntactic sugar for ``Sort (u+1)``. ``Prop`` has some special
 features, but like the other type universes, it is closed under the
-arrow constructor: if we have ``p q : Prop``, then ``p → q : Prop``.
+arrow constructor: if ``p q : Prop``, then ``p → q : Prop``.
 
 There are at least two ways of thinking about propositions as
 types. To some who take a constructive view of logic and mathematics,
@@ -151,19 +151,22 @@ proposition in question is true. In other words, the expressions
 In the exposition below, we will slip back and forth between these two
 ways of talking, at times saying that an expression "constructs" or
 "produces" or "returns" a proof of a proposition, and at other times
-simply saying that it "is" such a proof. This is similar to the way
-that computer scientists occasionally blur the distinction between
+simply saying that it "is" such a proof. This is similar to how
+computer scientists occasionally blur the distinction between
 syntax and semantics by saying, at times, that a program "computes" a
 certain function, and at other times speaking as though the program
 "is" the function in question.
 
-In any case, all that really matters is the bottom line. To formally
+In any case, all that really matters is the bottom line: To formally
 express a mathematical assertion in the language of dependent type
 theory, we need to exhibit a term ``p : Prop``. To *prove* that
-assertion, we need to exhibit a term ``t : p``. Lean's task, as a
-proof assistant, is to help us to construct such a term ``t``, and to
-    - construct such a type ``t`` ??? ---
+assertion, we need to exhibit a term ``t : p`` that has `p` as its type.
+Lean's task, as a proof assistant, is to help us to construct such a term ``t``, and to
 verify that it is well-formed and has the correct type.
+
+<!-- Add a side-node for proofs-as-programs correspondence?
+ From Wikipedia: "a proof is a program, and the formula it proves is the type for the program"
+-->
 
 Working with Propositions as Types
 ----------------------------------
@@ -297,7 +300,7 @@ theorem t1 : ∀ {p q : Prop}, p → q → p :=
 ```
 
 If ``p`` and ``q`` have been declared as variables, Lean will
-generalize them for us automatically:
+generalize them automatically:
 
 ```lean
 variable {p q : Prop}
