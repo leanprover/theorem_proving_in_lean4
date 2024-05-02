@@ -61,7 +61,9 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
      exact hp
 ```
 
-(We often put the ``by`` keyword on the preceding line.) 
+(We often put the ``by`` keyword on the preceding line.)
+
+<!-- Say someting about indentation sensitivity? -->
 
 <!-- repeating the proof is a bit wasteful here.
 
@@ -155,7 +157,7 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
   exact And.intro hq hp
 ```
 
-Unsurprisingly, it produces exactly the same proof term.
+Unsurprisingly, it produces exactly the same proof term:
 
 ```lean
 # theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
@@ -173,11 +175,13 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
 
 Tactics that may produce multiple subgoals often *tag* them. For
 example, the tactic ``apply And.intro`` tagged the first subgoal as
-``left``, and the second as ``right``. In the case of the ``apply``
-tactic, the tags are inferred from the parameters' names used in the
-``And.intro`` declaration. You can structure your tactics using the
+``left``, and the second as ``right``. In this ``apply`` tactic invocation,
+the tags are inferred from the parameters' names used in the
+``And.intro`` declaration.
+
+You can structure your tactics using the
 notation ``case <tag> => <tactics>``. The following is a structured
-version of our first tactic proof in this chapter.
+version of our first tactic proof in this chapter:
 
 ```lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
@@ -209,7 +213,7 @@ block.
 
 For simple subgoals, it may not be worth selecting a subgoal using its
 tag, but you may still want to structure the proof. Lean also provides
-the "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
+the indentation-sensitive "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
 structuring proofs:
 
 ```lean
