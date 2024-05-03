@@ -13,8 +13,10 @@ One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
 and a proof language on top of the definition language. But there is
 no reason to multiply languages in this way: dependent type theory is
-flexible and expressive, and there is no reason we cannot represent
+flexible and expressive, and it turns out that there is no reason we cannot represent
 assertions and proofs in the same general framework.
+
+<!-- it is not clear if this is meant as an example of layering languages on top or not -->
 
 For example, we could introduce a new type, ``Prop``, to represent
 propositions, and introduce constructors to build new propositions
@@ -51,7 +53,7 @@ variable (p q : Prop)
 
 In addition to axioms, however, we would also need rules to build new
 proofs from old ones. For example, in many proof systems for
-propositional logic, we have the rule of modus ponens:
+propositional logic, we have the rule of *modus ponens*:
 
 > From a proof of ``Implies p q`` and a proof of ``p``, we obtain a proof of ``q``.
 
@@ -136,7 +138,7 @@ that even though we can treat proofs ``t : p`` as ordinary objects in
 the language of dependent type theory, they carry no information
 beyond the fact that ``p`` is true.
 
-The two ways we have suggested thinking about the
+The two ways we have suggested for thinking about the
 propositions-as-types paradigm differ in a fundamental way. From the
 constructive point of view, proofs are abstract mathematical objects
 that are *denoted* by suitable expressions in dependent type
@@ -156,7 +158,7 @@ syntax and semantics by saying, at times, that a program "computes" a
 certain function, and at other times speaking as though the program
 "is" the function in question.
 
-In any case, all that really matters is the bottom line. To formally
+In any case, all that really matters is the bottom line: To formally
 express a mathematical assertion in the language of dependent type
 theory, we need to exhibit a term ``p : Prop``. To *prove* that
 assertion, we need to exhibit a term ``t : p``. Lean's task, as a
@@ -191,7 +193,7 @@ true.
 Note that the ``theorem`` command is really a version of the
 ``def`` command: under the propositions and types
 correspondence, proving the theorem ``p → q → p`` is really the same
-as defining an element of the associated type. To the kernel type
+as defining an element of the associated type. To the Lean kernel type
 checker, there is no difference between the two.
 
 There are a few pragmatic differences between definitions and
@@ -202,7 +204,7 @@ theorem is complete, typically we only need to know that the proof
 exists; it doesn't matter what the proof is. In light of that fact,
 Lean tags proofs as *irreducible*, which serves as a hint to the
 parser (more precisely, the *elaborator*) that there is generally no
-need to unfold it when processing a file. In fact, Lean is generally
+need to unfold them when processing a file. In fact, Lean is generally
 able to process and check proofs in parallel, since assessing the
 correctness of one proof does not require knowing the details of
 another.
@@ -260,10 +262,10 @@ axiom hp : p
 theorem t2 : q → p := t1 hp
 ```
 
-Here, the ``axiom`` declaration postulates the existence of an
-element of the given type and may compromise logical consistency. For
-example, we can use it to postulate the empty type `False` has an
-element.
+The ``axiom`` declaration postulates the existence of an
+element of the given type, and may compromise logical consistency. For
+example, we can use it to postulate that the empty type `False` has an
+element:
 
 ```lean
 axiom unsound : False

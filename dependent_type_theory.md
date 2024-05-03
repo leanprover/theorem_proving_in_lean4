@@ -224,8 +224,8 @@ hierarchy of types:
 Think of ``Type 0`` as a universe of "small" or "ordinary" types.
 ``Type 1`` is then a larger universe of types, which contains ``Type
 0`` as an element, and ``Type 2`` is an even larger universe of types,
-which contains ``Type 1`` as an element. The list is indefinite, so
-that there is a ``Type n`` for every natural number ``n``. ``Type`` is
+which contains ``Type 1`` as an element. The list is infinite:
+there is a ``Type n`` for every natural number ``n``. ``Type`` is
 an abbreviation for ``Type 0``:
 
 ```lean
@@ -256,8 +256,8 @@ type signature of the function ``List``:
 ```
 
 Here ``u`` is a variable ranging over type levels. The output of the
-``#check`` command means that whenever ``α`` has type ``Type n``,
-``List α`` also has type ``Type n``. The function ``Prod`` is
+``#check List`` command means that whenever ``α`` has type ``Type u``,
+``List α`` also has type ``Type u``. The function ``Prod`` is
 similarly polymorphic:
 
 ```lean
@@ -275,7 +275,7 @@ def F (α : Type u) : Type u := Prod α α
 #check F    -- Type u → Type u
 ```
 
-You can avoid the universe command by providing the universe parameters when defining F.
+You can avoid the `universe` command by providing the universe parameters when defining `F`.
 
 ```lean
 def F.{u} (α : Type u) : Type u := Prod α α
@@ -359,7 +359,7 @@ The last expression, for example, denotes the function that takes
 three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ``
 and ``f : α → β``, and returns the composition of ``g`` and ``f``.
 (Making sense of the type of this function requires an understanding
-of dependent products, which will be explained below.)
+of *dependent products*, which will be explained below.)
 
 The general form of a lambda expression is ``fun x : α => t``, where
 the variable ``x`` is a "bound variable": it is really a placeholder,
@@ -482,29 +482,32 @@ So `def` can also be used to simply name a value like this:
 def pi := 3.141592654
 ```
 
-`def` can take multiple input parameters.  Let's create one
+`def` can take multiple input parameters.  Let's define a function
 that adds two natural numbers:
 
 ```lean
-def add (x y : Nat) :=
+def add (x Nat) (y : Nat) :=
   x + y
 
 #eval add 3 2               -- 5
 ```
 
-The parameter list can be separated like this:
+For convenience, the parameter list can be abbreviated as follows:
 
 ```lean
 # def double (x : Nat) : Nat :=
 #  x + x
-def add (x : Nat) (y : Nat) :=
+def add (x y : Nat) :=
   x + y
 
 #eval add (double 3) (7 + 9)  -- 22
 ```
+The resulting function will display a different *signature*, but the function itself will have the same type as before.
 
-Notice here we called the `double` function to create the first
+Notice that we used the `double` function to create the first
 parameter to `add`.
+
+<!-- a quick note about currying would be in order here, and perhaps a definition of "signature" -->
 
 You can use other more interesting expressions inside a `def`:
 
@@ -517,7 +520,7 @@ def greater (x y : Nat) :=
 You can probably guess what this one will do.
 
 You can also define a function that takes another function as input.
-The following calls a given function twice passing the output of the
+The following calls a given function twice, passing the output of the
 first invocation to the second:
 
 ```lean
@@ -529,31 +532,30 @@ def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
 #eval doTwice double 2   -- 8
 ```
 
-Now to get a bit more abstract, you can also specify arguments that
-are like type parameters:
+Now to get a bit more abstract, you can also specify arguments that work as type parameters,
+such as `(α β γ : Type)` here:
 
 ```lean
 def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
 ```
 
-This means `compose` is a function that takes any two functions as input
-arguments, so long as those functions each take only one input.
-The type algebra `β → γ` and `α → β` means it is a requirement
+This defines `compose` as a function that takes three type arguments (`α β γ : Type`) and two other functions as arguments,
+locally named `f` and `g`. Furthermore,
+the type constraints `β → γ` and `α → β` require
 that the type of the output of the second function must match the
 type of the input to the first function - which makes sense, otherwise
 the two functions would not be composable.
 
-`compose` also takes a 3rd argument of type `α` which
-it uses to invoke the second function (locally named `f`) and it
-passes the result of that function (which is type `β`) as input to the
-first function (locally named `g`).  The first function returns a type
-`γ` so that is also the return type of the `compose` function.
+`compose` also takes one last argument `x` of type `α`, which
+it uses to invoke the second function (`f`).
+The result of that function, of type `β`, is passed as the input to the
+first function (`g`).  The first function returns a result of type
+`γ`, so that is also the return type of the `compose` function.
 
-`compose` is also very general in that it works over any type
-`α β γ`.  This means `compose` can compose just about any 2 functions
-so long as they each take one parameter, and so long as the type of
-output of the second matches the input of the first.  For example:
+`compose` is also very general in that it works over any types
+`α β γ`.  This means that it can compose just about any two functions,
+as long as the type of the output of the second matches the input of the first.  For example:
 
 ```lean
 # def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
@@ -565,6 +567,10 @@ def square (x : Nat) : Nat :=
 
 #eval compose Nat Nat Nat double square 3  -- 18
 ```
+
+Lean has syntax to make the three type parameters (`α β γ`) implicit,
+so that they don't have to be explicitly included each time that `compose` is called ---
+see the [Implicit Arguments](#Implicit-Arguments) section below.
 
 Local Definitions
 -----------------
@@ -733,12 +739,13 @@ open Foo
 #check Foo.fa
 ```
 
-When you declare that you are working in the namespace ``Foo``, every
-identifier you declare has a full name with prefix "``Foo.``". Within
-the namespace, you can refer to identifiers by their shorter names,
-but once you end the namespace, you have to use the longer names.
-Unlike `section`, namespaces require a name. There is only one
-anonymous namespace at the root level.
+Inside the scope of the namespace ``Foo``, every
+identifier you declare is given a full name with prefix "``Foo.``".
+Within the namespace, you can use the shorter names,
+but once you end the namespace, you must use the longer, *fully qualified* names.
+
+Unlike `section`, namespaces require a name. (There is only one
+anonymous namespace: the one at the root level.)
 
 The ``open`` command brings the shorter names into the current
 context. Often, when you import a module, you will want to open one or
@@ -935,7 +942,7 @@ Suppose we have an implementation of lists as:
 #check Lst.append   -- Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
 ```
 
-Then, you can construct lists of `Nat` as follows.
+Then, you can construct lists of `Nat` as follows:
 
 ```lean
 # universe u
@@ -1076,10 +1083,10 @@ used to specify the desired types of the expressions ``id`` and
 ```
 
 Numerals are overloaded in Lean, but when the type of a numeral cannot
-be inferred, Lean assumes, by default, that it is a natural number. So
+be inferred, Lean assumes, by default, that it is a natural number. Thus,
 the expressions in the first two ``#check`` commands below are
-elaborated in the same way, whereas the third ``#check`` command
-interprets ``2`` as an integer.
+both elaborated as `Nat`, whereas the third ``#check`` command
+interprets ``2`` as an `Int`.
 
 ```lean
 #check 2            -- Nat
@@ -1102,6 +1109,8 @@ made explicit.
 #check @id Bool true -- Bool
 ```
 
-Notice that now the first ``#check`` command gives the type of the
-identifier, ``id``, without inserting any placeholders. Moreover, the
-output indicates that the first argument is implicit.
+Notice that the ``#check @id`` command now gives the full type of the
+identifier, ``id``, without any placeholders. Moreover, the
+curly brackets in the
+output indicate that the first argument, `α`, is implicit.
+

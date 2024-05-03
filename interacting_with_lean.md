@@ -17,8 +17,8 @@ Importing Files
 ---------------
 
 The goal of Lean's front end is to interpret user input, construct
-formal expressions, and check that they are well formed and type
-correct. Lean also supports the use of various editors, which provide
+formal expressions, and check that they are well-formed and type-correct.
+Lean also supports the use of various editors, which provide
 continuous checking and feedback. More information can be found on the
 Lean [documentation pages](https://lean-lang.org/documentation/).
 
