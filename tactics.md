@@ -108,7 +108,7 @@ it in a tactic proof, since its failure signals that something has
 gone wrong. It is also more robust than ``apply``, since the
 elaborator takes the expected type, given by the target of the goal,
 into account when processing the expression that is being applied. In
-this case, however, ``apply`` would work just as well.
+this example, however, ``apply`` would work just as well.
 
 You can see the resulting proof term with the ``#print`` command:
 

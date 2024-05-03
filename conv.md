@@ -14,7 +14,7 @@ As a first example, let us prove example
 (examples in this file are somewhat artificial since
 other tactics could finish them immediately). The naive
 first attempt is to enter tactic mode and try `rw [Nat.mul_comm]`. But this
-transforms the goal into `b * c * a = a * (c * b)`, after commuting the
+transforms the goal into `b * c * a = a * (c * b)`, because it commutes the
 very first multiplication appearing in the term. There are several
 ways to fix this issue, and one way is to use a more precise tool:
 the conversion mode. The following code block shows the current target
@@ -155,7 +155,12 @@ example (g : Nat → Nat) (h₁ : g x = x + 1) (h₂ : x > 0) : g x = f x := by
   exact h₁
 ```
 
+
 - `enter [1, x, 2, y]` iterate `arg` and `intro` with the given arguments. It is just the macro:
+
+<!-- using a specific example here is confusing.
+For example, the reader might think that only versions this particular form (alternating index, name) can be used.
+An example that uses, say, [1,2,x] would be useful. -->
 
 ```
 syntax enterArg := ident <|> group("@"? num)
