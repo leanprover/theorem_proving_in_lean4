@@ -2,7 +2,7 @@ The Conversion Tactic Mode
 =========================
 
 Inside a tactic block, one can use the keyword `conv` to enter
-conversion mode. This mode allows to travel inside assumptions and
+*conversion mode*. This mode allows to travel inside assumptions and
 goals, even inside function abstractions and dependent arrows, to apply rewriting or
 simplifying steps.
 
@@ -113,7 +113,7 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
 Structuring conversion tactics
 -------
 
-Curly brackets and `.` can also be used in `conv` mode to structure tactics.
+Curly brackets and `.` can also be used in `conv` mode to structure tactics:
 
 ```lean
 example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
@@ -193,7 +193,7 @@ example (g : Nat → Nat → Nat)
     . tactic => exact h₂
 ```
 
-- `apply <term>` is syntax sugar for `tactic => apply <term>`
+- `apply <term>` is syntax sugar for `tactic => apply <term>`.
 
 ```lean
 example (g : Nat → Nat → Nat)
