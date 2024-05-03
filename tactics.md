@@ -135,7 +135,7 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
   exact And.intro hq hp
 ```
 
-Unsurprisingly, it produces exactly the same proof term.
+Unsurprisingly, it produces exactly the same proof term:
 
 ```lean
 # theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
@@ -190,7 +190,7 @@ block.
 For simple subgoals, it may not be worth selecting a subgoal using its
 tag, but you may still want to structure the proof. Lean also provides
 the "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
-structuring proof.
+structuring proofs:
 
 ```lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by

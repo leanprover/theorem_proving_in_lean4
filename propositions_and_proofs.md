@@ -51,7 +51,7 @@ variable (p q : Prop)
 
 In addition to axioms, however, we would also need rules to build new
 proofs from old ones. For example, in many proof systems for
-propositional logic, we have the rule of modus ponens:
+propositional logic, we have the rule of *modus ponens*:
 
 > From a proof of ``Implies p q`` and a proof of ``p``, we obtain a proof of ``q``.
 
