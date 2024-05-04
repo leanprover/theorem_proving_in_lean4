@@ -213,7 +213,7 @@ stored in the environment for later use. But some commands have other
 effects on the environment, either assigning attributes to objects in
 the environment, defining notation, or declaring instances of type
 classes, as described in [Chapter Type Classes](./type_classes.md). Most of
-these commands have global effects, which is to say, that they remain
+these commands have global effects, which is to say, they remain
 in effect not only in the current file, but also in any file that
 imports it. However, such commands often support the ``local`` modifier,
 which indicates that they only have effect until

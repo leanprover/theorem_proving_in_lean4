@@ -202,13 +202,13 @@ theorem is complete, typically we only need to know that the proof
 exists; it doesn't matter what the proof is. In light of that fact,
 Lean tags proofs as *irreducible*, which serves as a hint to the
 parser (more precisely, the *elaborator*) that there is generally no
-need to unfold it when processing a file. In fact, Lean is generally
+need to unfold them when processing a file. In fact, Lean is generally
 able to process and check proofs in parallel, since assessing the
 correctness of one proof does not require knowing the details of
 another.
 
 As with definitions, the ``#print`` command will show you the proof of
-a theorem.
+a theorem:
 
 ```lean
 # variable {p : Prop}
@@ -221,7 +221,7 @@ theorem t1 : p → q → p := fun hp : p => fun hq : q => hp
 Notice that the lambda abstractions ``hp : p`` and ``hq : q`` can be
 viewed as temporary assumptions in the proof of ``t1``.  Lean also
 allows us to specify the type of the final term ``hp``, explicitly,
-with a ``show`` statement.
+with a ``show`` statement:
 
 ```lean
 # variable {p : Prop}
@@ -248,7 +248,7 @@ theorem t1 (hp : p) (hq : q) : p := hp
 #print t1    -- p → q → p
 ```
 
-Now we can apply the theorem ``t1`` just as a function application.
+We can use the theorem ``t1`` just as a function application:
 
 ```lean
 # variable {p : Prop}
@@ -260,10 +260,10 @@ axiom hp : p
 theorem t2 : q → p := t1 hp
 ```
 
-Here, the ``axiom`` declaration postulates the existence of an
+The ``axiom`` declaration postulates the existence of an
 element of the given type and may compromise logical consistency. For
-example, we can use it to postulate the empty type `False` has an
-element.
+example, we can use it to postulate that the empty type `False` has an
+element:
 
 ```lean
 axiom unsound : False
