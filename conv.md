@@ -158,9 +158,9 @@ example (g : Nat → Nat) (h₁ : g x = x + 1) (h₂ : x > 0) : g x = f x := by
 
 - `enter [1, x, 2, y]` iterate `arg` and `intro` with the given arguments. It is just the macro:
 
-<!-- using a specific example here is confusing.
+<!-- using the specific example [1, x, 2, y] here is confusing.
 For example, the reader might think that only versions this particular form (alternating index, name) can be used.
-An example that uses, say, [1,2,x] would be useful. -->
+Adding, say, [1,2,x] as another example would also be useful. -->
 
 ```
 syntax enterArg := ident <|> group("@"? num)
