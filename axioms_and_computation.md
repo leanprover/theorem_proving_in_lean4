@@ -24,10 +24,7 @@ reduce to a numeral.
 
 Lean's standard library defines an additional axiom, propositional
 extensionality, and a quotient construction which in turn implies the
-principle of function extensionality.
-<!-- Is function extensionality implied only by the quotient construction? In this case, "that" is better than "which;"
-otherwise, use "that together" instead of "which". -->
-These extensions are used, for
+principle of function extensionality. These extensions are used, for
 example, to develop theories of sets and finite sets. We will see
 below that using these theorems can block evaluation in Lean's kernel,
 so that closed terms of type ``Nat`` no longer evaluate to numerals. But

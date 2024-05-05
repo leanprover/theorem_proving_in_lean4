@@ -355,7 +355,7 @@ You can also pass types as parameters:
 ```lean
 #check fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)
 ```
-The last expression, for example, denotes the function that takes
+This expression, for example, denotes the function that takes
 three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ``
 and ``f : α → β``, and returns the composition of ``g`` and ``f``.
 (Making sense of the type of this function requires an understanding
@@ -532,7 +532,8 @@ def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
 #eval doTwice double 2   -- 8
 ```
 
-Now to get a bit more abstract, you can also specify arguments that work as type parameters,
+Now to get a bit more abstract, you can also specify arguments that
+are like type parameters,
 such as `(α β γ : Type)` here:
 
 ```lean
@@ -554,8 +555,8 @@ first function (`g`).  The first function returns a result of type
 `γ`, so that is also the return type of the `compose` function.
 
 `compose` is also very general in that it works over any types
-`α β γ`.  This means that it can compose just about any two functions,
-as long as the type of the output of the second matches the input of the first.  For example:
+`α β γ`.  This means `compose` can compose just about any two functions
+as long as the output type of the second matches the input type of the first.  For example:
 
 ```lean
 # def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=

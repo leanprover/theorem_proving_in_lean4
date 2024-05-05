@@ -323,6 +323,9 @@ be written ``∀ (p q : Prop) (hp : p) (hq : q), p``, since the arrow
 denotes nothing more than an arrow type in which the target does not
 depend on the bound variable.
 
+<!-- Perhaps point out that `variable {p : Prop}` does not mean that `p` is an axiom, but
+     `variable (hp : p)` does, letting us prove `theorem pholds : p := hp` -->
+
 When we generalize ``t1`` in such a way, we can then apply it to
 different pairs of propositions, to obtain different instances of the
 general theorem.
