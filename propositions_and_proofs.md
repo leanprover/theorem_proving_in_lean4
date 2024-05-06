@@ -13,14 +13,14 @@ One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
 and a proof language on top of the definition language. But there is
 no reason to multiply languages in this way: dependent type theory is
-flexible and expressive, and it turns out that there is no reason we cannot represent
+flexible and expressive, and it turns out that we can represent
 assertions and proofs in the same general framework.
 
 <!-- it is not clear if this is meant as an example of layering languages on top or not -->
 
-For example, we could introduce a new type, ``Prop``, to represent
+For example, we can introduce a new type, ``Prop``, to represent
 propositions, and introduce constructors to build new propositions
-from others.
+from others:
 
 ```lean
 # def Implies (p q : Prop) : Prop := p → q
