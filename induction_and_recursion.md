@@ -328,7 +328,7 @@ any inhabited type.
 We can also use the type ``Option α`` to simulate incomplete patterns.
 The idea is to return ``some a`` for the provided patterns, and use
 ``none`` for the incomplete cases. The following example demonstrates
-both approaches:
+both approaches.
 
 ```lean
 def f1 : Nat → Nat → Nat
@@ -688,7 +688,7 @@ if ``x`` has no predecessors, it is accessible. Given any type ``α``,
 we should be able to assign a value to each accessible element of
 ``α``, recursively, by assigning values to all its predecessors first.
 
-The statement that ``r`` is well-founded, denoted ``WellFounded r``,
+The statement that ``r`` is well founded, denoted ``WellFounded r``,
 is exactly the statement that every element of the type is
 accessible. By the above considerations, if ``r`` is a well-founded
 relation on a type ``α``, we should have a principle of well-founded
@@ -707,7 +707,7 @@ noncomputable def f {α : Sort u}
 
 There is a long cast of characters here, but the first block we have
 already seen: the type, ``α``, the relation, ``r``, and the
-assumption, ``h``, that ``r`` is well-founded. The variable ``C``
+assumption, ``h``, that ``r`` is well founded. The variable ``C``
 represents the motive of the recursive definition: for each element
 ``x : α``, we would like to construct an element of ``C x``. The
 function ``F`` provides the inductive recipe for doing that: it tells
@@ -715,7 +715,7 @@ us how to construct an element ``C x``, given elements of ``C y`` for
 each predecessor ``y`` of ``x``.
 
 Note that ``WellFounded.fix`` works equally well as an induction
-principle. It says that if ``≺`` is well-founded and you want to prove
+principle. It says that if ``≺`` is well founded and you want to prove
 ``∀ x, C x``, it suffices to show that for an arbitrary ``x``, if we
 have ``∀ y ≺ x, C y``, then we have ``C x``.
 
@@ -810,7 +810,7 @@ def natToBin : Nat → List Nat
 ```
 
 As a final example, we observe that Ackermann's function can be
-defined directly, because it is justified by the well-foundedness of
+defined directly, because it is justified by the well foundedness of
 the lexicographic order on the natural numbers. The `termination_by` clause
 instructs Lean to use a lexicographic order. This clause is actually mapping
 the function arguments to elements of type `Nat × Nat`. Then, Lean uses typeclass

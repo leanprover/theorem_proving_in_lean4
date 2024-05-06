@@ -341,7 +341,7 @@ In a sense, however, a cast does not change the meaning of an
 expression. Rather, it is a mechanism to reason about the expression's
 type. Given an appropriate semantics, it then makes sense to reduce
 terms in ways that preserve their meaning, ignoring the intermediate
-bookkeeping needed to make the reductions type-correct. In that case,
+bookkeeping needed to make the reductions type correct. In that case,
 adding new axioms in ``Prop`` does not matter; by proof irrelevance,
 an expression in ``Prop`` carries no information, and can be safely
 ignored by the reduction procedures.
