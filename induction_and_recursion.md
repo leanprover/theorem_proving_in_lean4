@@ -894,7 +894,8 @@ decreasing_by sorry
 #eval natToBin 1234567
 ```
 
-Recall that using `sorry` is equivalent to using a new axiom, and should be avoided. In the following example, we used the `sorry` to prove `False`. The command `#print axioms` shows that `unsound` depends on the unsound axiom `sorryAx` used to implement `sorry`.
+Recall that using `sorry` is equivalent to using a new axiom, and should be avoided. In the following example, we used the `sorry` to prove `False`.
+The command `#print axioms unsound` shows that `unsound` depends on the unsound axiom `sorryAx` used to implement `sorry`.
 
 ```lean
 def unsound (x : Nat) : False :=
@@ -1348,7 +1349,7 @@ Match Expressions
 -----------------
 
 Lean also provides a compiler for *match-with* expressions found in
-many functional languages.
+many functional languages:
 
 ```lean
 def isNotZero (m : Nat) : Bool :=
@@ -1393,7 +1394,7 @@ example : foo 7 true false = 9 := rfl
 ```
 
 Lean uses the ``match`` construct internally to implement pattern-matching in all parts of the system.
-Thus, all four of these definitions have the same net effect.
+Thus, all four of these definitions have the same net effect:
 
 ```lean
 def bar₁ : Nat × Nat → Nat
@@ -1436,7 +1437,7 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
 Local Recursive Declarations
 ---------
 
-You can define local recursive declarations using the `let rec` keyword.
+You can define local recursive declarations using the `let rec` keyword:
 
 ```lean
 def replicate (n : Nat) (a : α) : List α :=
@@ -1455,7 +1456,7 @@ Note that, Lean "closes" the declaration by adding any local variable occurring 
 `let rec` declaration as additional parameters. For example, the local variable `a` occurs
 at `let rec loop`.
 
-You can also use `let rec` in tactic mode and for creating proofs by induction.
+You can also use `let rec` in tactic mode and for creating proofs by induction:
 
 ```lean
 # def replicate (n : Nat) (a : α) : List α :=
@@ -1473,7 +1474,7 @@ theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
 ```
 
 You can also introduce auxiliary recursive declarations using a `where` clause after your definition.
-Lean converts them into a `let rec`.
+Lean converts them into a `let rec`:
 
 ```lean
 def replicate (n : Nat) (a : α) : List α :=
