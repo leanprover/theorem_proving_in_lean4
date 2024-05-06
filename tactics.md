@@ -110,6 +110,8 @@ elaborator takes the expected type, given by the target of the goal,
 into account when processing the expression that is being applied. In
 this example, however, ``apply`` would work just as well.
 
+The second subgoal, which requires showing `q ∧ p`, is discharged by `apply And.intro; exact hq; exact hp`.
+
 You can see the resulting proof term with the ``#print`` command:
 
 ```lean
