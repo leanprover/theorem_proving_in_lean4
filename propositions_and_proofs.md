@@ -16,8 +16,6 @@ no reason to multiply languages in this way: dependent type theory is
 flexible and expressive, and it turns out that we can represent
 assertions and proofs in the same general framework.
 
-<!-- it is not clear if this is meant as an example of layering languages on top or not -->
-
 For example, we can introduce a new type, ``Prop``, to represent
 propositions, and introduce constructors to build new propositions
 from others:
@@ -51,9 +49,9 @@ variable (p q : Prop)
 #check and_comm p q     -- Proof (Implies (And p q) (And q p))
 ```
 
-In addition to axioms, however, we would also need rules to build new
+In addition to axioms, however, we also need rules to build new
 proofs from old ones. For example, in many proof systems for
-propositional logic, we have the rule of modus ponens:
+propositional logic, we have the rule of *modus ponens*:
 
 > From a proof of ``Implies p q`` and a proof of ``p``, we obtain a proof of ``q``.
 
@@ -79,7 +77,8 @@ We could render this as follows:
 axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
 ```
 
-This approach would provide us with a reasonable way of building assertions and proofs.
+This approach would provide us with a reasonable way of building assertions and proofs,
+staying inside the framework of dependent type theory.
 Determining that an expression ``t`` is a correct proof of assertion ``p`` would then
 simply be a matter of checking that ``t`` has type ``Proof p``.
 
