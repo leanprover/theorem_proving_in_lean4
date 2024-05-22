@@ -609,7 +609,7 @@ second expression, ``a`` is a variable, and the expression
 The ``let`` construct is a stronger means of abbreviation, and there
 are expressions of the form ``let a := t1; t2`` that cannot be
 expressed as ``(fun a => t2) t1``. As an exercise, try to understand
-why the definition of ``foo`` below type-checks, but the definition of
+why the definition of ``foo`` below type checks, but the definition of
 ``bar`` does not.
 
 ```lean
