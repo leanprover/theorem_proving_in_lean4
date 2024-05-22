@@ -17,8 +17,8 @@ Importing Files
 ---------------
 
 The goal of Lean's front end is to interpret user input, construct
-formal expressions, and check that they are well formed and type
-correct. Lean also supports the use of various editors, which provide
+formal expressions, and check that they are well-formed and type-correct.
+Lean also supports the use of various editors, which provide
 continuous checking and feedback. More information can be found on the
 Lean [documentation pages](https://lean-lang.org/documentation/).
 
@@ -213,7 +213,7 @@ stored in the environment for later use. But some commands have other
 effects on the environment, either assigning attributes to objects in
 the environment, defining notation, or declaring instances of type
 classes, as described in [Chapter Type Classes](./type_classes.md). Most of
-these commands have global effects, which is to say, that they remain
+these commands have global effects, which is to say, they remain
 in effect not only in the current file, but also in any file that
 imports it. However, such commands often support the ``local`` modifier,
 which indicates that they only have effect until
@@ -542,7 +542,7 @@ The new notation is preferred to the binary notation since the latter,
 before chaining, would stop parsing after `1 + 2`.  If there are
 multiple notations accepting the same longest parse, the choice will
 be delayed until elaboration, which will fail unless exactly one
-overload is type correct.
+overload is type-correct.
 
 Coercions
 ---------

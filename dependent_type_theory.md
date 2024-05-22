@@ -224,8 +224,8 @@ hierarchy of types:
 Think of ``Type 0`` as a universe of "small" or "ordinary" types.
 ``Type 1`` is then a larger universe of types, which contains ``Type
 0`` as an element, and ``Type 2`` is an even larger universe of types,
-which contains ``Type 1`` as an element. The list is indefinite, so
-that there is a ``Type n`` for every natural number ``n``. ``Type`` is
+which contains ``Type 1`` as an element. The list is infinite:
+there is a ``Type n`` for every natural number ``n``. ``Type`` is
 an abbreviation for ``Type 0``:
 
 ```lean
@@ -275,7 +275,7 @@ def F (α : Type u) : Type u := Prod α α
 #check F    -- Type u → Type u
 ```
 
-You can avoid the universe command by providing the universe parameters when defining F.
+You can avoid the `universe` command by providing the universe parameters when defining `F`:
 
 ```lean
 def F.{u} (α : Type u) : Type u := Prod α α
@@ -359,7 +359,7 @@ The last expression, for example, denotes the function that takes
 three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ``
 and ``f : α → β``, and returns the composition of ``g`` and ``f``.
 (Making sense of the type of this function requires an understanding
-of dependent products, which will be explained below.)
+of *dependent products*, which will be explained below.)
 
 The general form of a lambda expression is ``fun x : α => t``, where
 the variable ``x`` is a "bound variable": it is really a placeholder,
@@ -935,7 +935,7 @@ Suppose we have an implementation of lists as:
 #check Lst.append   -- Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
 ```
 
-Then, you can construct lists of `Nat` as follows.
+Then, you can construct lists of `Nat` as follows:
 
 ```lean
 # universe u

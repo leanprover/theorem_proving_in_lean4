@@ -688,7 +688,7 @@ if ``x`` has no predecessors, it is accessible. Given any type ``α``,
 we should be able to assign a value to each accessible element of
 ``α``, recursively, by assigning values to all its predecessors first.
 
-The statement that ``r`` is well founded, denoted ``WellFounded r``,
+The statement that ``r`` is well-founded, denoted ``WellFounded r``,
 is exactly the statement that every element of the type is
 accessible. By the above considerations, if ``r`` is a well-founded
 relation on a type ``α``, we should have a principle of well-founded
@@ -707,7 +707,7 @@ noncomputable def f {α : Sort u}
 
 There is a long cast of characters here, but the first block we have
 already seen: the type, ``α``, the relation, ``r``, and the
-assumption, ``h``, that ``r`` is well founded. The variable ``C``
+assumption, ``h``, that ``r`` is well-founded. The variable ``C``
 represents the motive of the recursive definition: for each element
 ``x : α``, we would like to construct an element of ``C x``. The
 function ``F`` provides the inductive recipe for doing that: it tells
@@ -715,7 +715,7 @@ us how to construct an element ``C x``, given elements of ``C y`` for
 each predecessor ``y`` of ``x``.
 
 Note that ``WellFounded.fix`` works equally well as an induction
-principle. It says that if ``≺`` is well founded and you want to prove
+principle. It says that if ``≺`` is well-founded and you want to prove
 ``∀ x, C x``, it suffices to show that for an arbitrary ``x``, if we
 have ``∀ y ≺ x, C y``, then we have ``C x``.
 
@@ -810,7 +810,7 @@ def natToBin : Nat → List Nat
 ```
 
 As a final example, we observe that Ackermann's function can be
-defined directly, because it is justified by the well foundedness of
+defined directly, because it is justified by the well-foundedness of
 the lexicographic order on the natural numbers. The `termination_by` clause
 instructs Lean to use a lexicographic order. This clause is actually mapping
 the function arguments to elements of type `Nat × Nat`. Then, Lean uses typeclass
@@ -894,7 +894,8 @@ decreasing_by sorry
 #eval natToBin 1234567
 ```
 
-Recall that using `sorry` is equivalent to using a new axiom, and should be avoided. In the following example, we used the `sorry` to prove `False`. The command `#print axioms` shows that `unsound` depends on the unsound axiom `sorryAx` used to implement `sorry`.
+Recall that using `sorry` is equivalent to using a new axiom, and should be avoided. In the following example, we used the `sorry` to prove `False`.
+The command `#print axioms unsound` shows that `unsound` depends on the unsound axiom `sorryAx` used to implement `sorry`.
 
 ```lean
 def unsound (x : Nat) : False :=
@@ -1348,7 +1349,7 @@ Match Expressions
 -----------------
 
 Lean also provides a compiler for *match-with* expressions found in
-many functional languages.
+many functional languages:
 
 ```lean
 def isNotZero (m : Nat) : Bool :=
@@ -1393,7 +1394,7 @@ example : foo 7 true false = 9 := rfl
 ```
 
 Lean uses the ``match`` construct internally to implement pattern-matching in all parts of the system.
-Thus, all four of these definitions have the same net effect.
+Thus, all four of these definitions have the same net effect:
 
 ```lean
 def bar₁ : Nat × Nat → Nat
@@ -1436,7 +1437,7 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
 Local Recursive Declarations
 ---------
 
-You can define local recursive declarations using the `let rec` keyword.
+You can define local recursive declarations using the `let rec` keyword:
 
 ```lean
 def replicate (n : Nat) (a : α) : List α :=
@@ -1455,7 +1456,7 @@ Note that, Lean "closes" the declaration by adding any local variable occurring 
 `let rec` declaration as additional parameters. For example, the local variable `a` occurs
 at `let rec loop`.
 
-You can also use `let rec` in tactic mode and for creating proofs by induction.
+You can also use `let rec` in tactic mode and for creating proofs by induction:
 
 ```lean
 # def replicate (n : Nat) (a : α) : List α :=
@@ -1473,7 +1474,7 @@ theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
 ```
 
 You can also introduce auxiliary recursive declarations using a `where` clause after your definition.
-Lean converts them into a `let rec`.
+Lean converts them into a `let rec`:
 
 ```lean
 def replicate (n : Nat) (a : α) : List α :=
