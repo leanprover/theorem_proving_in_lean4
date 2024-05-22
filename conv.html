@@ -169,7 +169,7 @@
                     <main>
                         <h1><a class="header" href="#the-conversion-tactic-mode" id="the-conversion-tactic-mode">The Conversion Tactic Mode</a></h1>
 <p>Inside a tactic block, one can use the keyword <code>conv</code> to enter
-conversion mode. This mode allows to travel inside assumptions and
+<em>conversion mode</em>. This mode allows to travel inside assumptions and
 goals, even inside function abstractions and dependent arrows, to apply rewriting or
 simplifying steps.</p>
 <h2><a class="header" href="#basic-navigation-and-rewriting" id="basic-navigation-and-rewriting">Basic navigation and rewriting</a></h2>
@@ -196,7 +196,8 @@ after each line.</p>
 </code></pre>
 <p>The above snippet shows three navigation commands:</p>
 <ul>
-<li><code>lhs</code> navigates to the left hand side of a relation (here equality), there is also a <code>rhs</code> navigating to the right hand side.</li>
+<li><code>lhs</code> navigates to the left-hand side of a relation (equality, in this case).
+There is also a <code>rhs</code> to navigate to the right-hand side.</li>
 <li><code>congr</code> creates as many targets as there are (nondependent and explicit) arguments to the current head function
 (here the head function is multiplication).</li>
 <li><code>rfl</code> closes target using reflexivity.</li>
@@ -246,7 +247,7 @@ Note that this example is somewhat artificial, one could also do:</p>
   conv in _ * c =&gt; rw [Nat.mul_comm]
 </code></pre>
 <h2><a class="header" href="#structuring-conversion-tactics" id="structuring-conversion-tactics">Structuring conversion tactics</a></h2>
-<p>Curly brackets and <code>.</code> can also be used in <code>conv</code> mode to structure tactics.</p>
+<p>Curly brackets and <code>.</code> can also be used in <code>conv</code> mode to structure tactics:</p>
 <pre><code class="language-lean">example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
   conv =&gt;
     lhs
@@ -326,7 +327,7 @@ applying custom congruence and extensionality lemmas.</p>
     . tactic =&gt; exact h₂
 </code></pre>
 <ul>
-<li><code>apply &lt;term&gt;</code> is syntax sugar for <code>tactic =&gt; apply &lt;term&gt;</code></li>
+<li><code>apply &lt;term&gt;</code> is syntax sugar for <code>tactic =&gt; apply &lt;term&gt;</code>.</li>
 </ul>
 <pre><code class="language-lean">example (g : Nat → Nat → Nat)
         (h₁ : ∀ x, x ≠ 0 → g x x = 1)

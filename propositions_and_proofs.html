@@ -208,7 +208,7 @@ variable (p q : Prop)
 </code></pre>
 <p>In addition to axioms, however, we would also need rules to build new
 proofs from old ones. For example, in many proof systems for
-propositional logic, we have the rule of modus ponens:</p>
+propositional logic, we have the rule of <em>modus ponens</em>:</p>
 <blockquote>
 <p>From a proof of <code>Implies p q</code> and a proof of <code>p</code>, we obtain a proof of <code>q</code>.</p>
 </blockquote>
@@ -336,12 +336,12 @@ theorem is complete, typically we only need to know that the proof
 exists; it doesn't matter what the proof is. In light of that fact,
 Lean tags proofs as <em>irreducible</em>, which serves as a hint to the
 parser (more precisely, the <em>elaborator</em>) that there is generally no
-need to unfold it when processing a file. In fact, Lean is generally
+need to unfold them when processing a file. In fact, Lean is generally
 able to process and check proofs in parallel, since assessing the
 correctness of one proof does not require knowing the details of
 another.</p>
 <p>As with definitions, the <code>#print</code> command will show you the proof of
-a theorem.</p>
+a theorem:</p>
 <pre><code class="language-lean"><span class="boring">variable {p : Prop}
 </span><span class="boring">variable {q : Prop}
 </span>theorem t1 : p → q → p := fun hp : p =&gt; fun hq : q =&gt; hp
@@ -351,7 +351,7 @@ a theorem.</p>
 <p>Notice that the lambda abstractions <code>hp : p</code> and <code>hq : q</code> can be
 viewed as temporary assumptions in the proof of <code>t1</code>.  Lean also
 allows us to specify the type of the final term <code>hp</code>, explicitly,
-with a <code>show</code> statement.</p>
+with a <code>show</code> statement:</p>
 <pre><code class="language-lean"><span class="boring">variable {p : Prop}
 </span><span class="boring">variable {q : Prop}
 </span>theorem t1 : p → q → p :=
@@ -371,7 +371,7 @@ variables to the left of the colon:</p>
 
 #print t1    -- p → q → p
 </code></pre>
-<p>Now we can apply the theorem <code>t1</code> just as a function application.</p>
+<p>We can use the theorem <code>t1</code> just as a function application:</p>
 <pre><code class="language-lean"><span class="boring">variable {p : Prop}
 </span><span class="boring">variable {q : Prop}
 </span>theorem t1 (hp : p) (hq : q) : p := hp
@@ -380,10 +380,10 @@ axiom hp : p
 
 theorem t2 : q → p := t1 hp
 </code></pre>
-<p>Here, the <code>axiom</code> declaration postulates the existence of an
+<p>The <code>axiom</code> declaration postulates the existence of an
 element of the given type and may compromise logical consistency. For
-example, we can use it to postulate the empty type <code>False</code> has an
-element.</p>
+example, we can use it to postulate that the empty type <code>False</code> has an
+element:</p>
 <pre><code class="language-lean">axiom unsound : False
 -- Everything follows from false
 theorem ex : 1 = 0 :=

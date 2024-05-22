@@ -180,8 +180,8 @@ away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.</p>
 <h2><a class="header" href="#importing-files" id="importing-files">Importing Files</a></h2>
 <p>The goal of Lean's front end is to interpret user input, construct
-formal expressions, and check that they are well formed and type
-correct. Lean also supports the use of various editors, which provide
+formal expressions, and check that they are well-formed and type-correct.
+Lean also supports the use of various editors, which provide
 continuous checking and feedback. More information can be found on the
 Lean <a href="https://lean-lang.org/documentation/">documentation pages</a>.</p>
 <p>The definitions and theorems in Lean's standard library are spread
@@ -329,7 +329,7 @@ stored in the environment for later use. But some commands have other
 effects on the environment, either assigning attributes to objects in
 the environment, defining notation, or declaring instances of type
 classes, as described in <a href="./type_classes.html">Chapter Type Classes</a>. Most of
-these commands have global effects, which is to say, that they remain
+these commands have global effects, which is to say, they remain
 in effect not only in the current file, but also in any file that
 imports it. However, such commands often support the <code>local</code> modifier,
 which indicates that they only have effect until
@@ -605,7 +605,7 @@ If two notations overlap, we again apply the longest parse rule:</p>
 before chaining, would stop parsing after <code>1 + 2</code>.  If there are
 multiple notations accepting the same longest parse, the choice will
 be delayed until elaboration, which will fail unless exactly one
-overload is type correct.</p>
+overload is type-correct.</p>
 <h2><a class="header" href="#coercions" id="coercions">Coercions</a></h2>
 <p>In Lean, the type of natural numbers, <code>Nat</code>, is different from the
 type of integers, <code>Int</code>. But there is a function <code>Int.ofNat</code> that

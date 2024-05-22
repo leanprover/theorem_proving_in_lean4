@@ -355,8 +355,8 @@ hierarchy of types:</p>
 </code></pre>
 <p>Think of <code>Type 0</code> as a universe of &quot;small&quot; or &quot;ordinary&quot; types.
 <code>Type 1</code> is then a larger universe of types, which contains <code>Type 0</code> as an element, and <code>Type 2</code> is an even larger universe of types,
-which contains <code>Type 1</code> as an element. The list is indefinite, so
-that there is a <code>Type n</code> for every natural number <code>n</code>. <code>Type</code> is
+which contains <code>Type 1</code> as an element. The list is infinite:
+there is a <code>Type n</code> for every natural number <code>n</code>. <code>Type</code> is
 an abbreviation for <code>Type 0</code>:</p>
 <pre><code class="language-lean">#check Type
 #check Type 0
@@ -390,7 +390,7 @@ def F (α : Type u) : Type u := Prod α α
 
 #check F    -- Type u → Type u
 </code></pre>
-<p>You can avoid the universe command by providing the universe parameters when defining F.</p>
+<p>You can avoid the <code>universe</code> command by providing the universe parameters when defining <code>F</code>:</p>
 <pre><code class="language-lean">def F.{u} (α : Type u) : Type u := Prod α α
 
 #check F    -- Type u → Type u
@@ -447,7 +447,7 @@ and <code>g</code> you can then use those functions in the implementation:</p>
 three types, <code>α</code>, <code>β</code>, and <code>γ</code>, and two functions, <code>g : β → γ</code>
 and <code>f : α → β</code>, and returns the composition of <code>g</code> and <code>f</code>.
 (Making sense of the type of this function requires an understanding
-of dependent products, which will be explained below.)</p>
+of <em>dependent products</em>, which will be explained below.)</p>
 <p>The general form of a lambda expression is <code>fun x : α =&gt; t</code>, where
 the variable <code>x</code> is a &quot;bound variable&quot;: it is really a placeholder,
 whose &quot;scope&quot; does not extend beyond the expression <code>t</code>.  For
@@ -910,7 +910,7 @@ def h2 (x : Nat) : Nat :=
 #check Lst.nil      -- Lst.nil.{u} (α : Type u) : Lst α
 #check Lst.append   -- Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
 </code></pre>
-<p>Then, you can construct lists of <code>Nat</code> as follows.</p>
+<p>Then, you can construct lists of <code>Nat</code> as follows:</p>
 <pre><code class="language-lean"><span class="boring">universe u
 </span><span class="boring">def Lst (α : Type u) : Type u := List α
 </span><span class="boring">def Lst.cons (α : Type u) (a : α) (as : Lst α) : Lst α := List.cons a as

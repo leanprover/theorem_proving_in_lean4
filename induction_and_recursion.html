@@ -715,7 +715,7 @@ in the sense that all its predecessors are accessible. In particular,
 if <code>x</code> has no predecessors, it is accessible. Given any type <code>α</code>,
 we should be able to assign a value to each accessible element of
 <code>α</code>, recursively, by assigning values to all its predecessors first.</p>
-<p>The statement that <code>r</code> is well founded, denoted <code>WellFounded r</code>,
+<p>The statement that <code>r</code> is well-founded, denoted <code>WellFounded r</code>,
 is exactly the statement that every element of the type is
 accessible. By the above considerations, if <code>r</code> is a well-founded
 relation on a type <code>α</code>, we should have a principle of well-founded
@@ -731,14 +731,14 @@ exactly that purpose.</p>
 </code></pre>
 <p>There is a long cast of characters here, but the first block we have
 already seen: the type, <code>α</code>, the relation, <code>r</code>, and the
-assumption, <code>h</code>, that <code>r</code> is well founded. The variable <code>C</code>
+assumption, <code>h</code>, that <code>r</code> is well-founded. The variable <code>C</code>
 represents the motive of the recursive definition: for each element
 <code>x : α</code>, we would like to construct an element of <code>C x</code>. The
 function <code>F</code> provides the inductive recipe for doing that: it tells
 us how to construct an element <code>C x</code>, given elements of <code>C y</code> for
 each predecessor <code>y</code> of <code>x</code>.</p>
 <p>Note that <code>WellFounded.fix</code> works equally well as an induction
-principle. It says that if <code>≺</code> is well founded and you want to prove
+principle. It says that if <code>≺</code> is well-founded and you want to prove
 <code>∀ x, C x</code>, it suffices to show that for an arbitrary <code>x</code>, if we
 have <code>∀ y ≺ x, C y</code>, then we have <code>C x</code>.</p>
 <p>In the example above we use the modifier <code>noncomputable</code> because the code
@@ -816,7 +816,7 @@ prevent the interpreter from evaluating the function successfully.</p>
 #eval natToBin 1234567
 </code></pre>
 <p>As a final example, we observe that Ackermann's function can be
-defined directly, because it is justified by the well foundedness of
+defined directly, because it is justified by the well-foundedness of
 the lexicographic order on the natural numbers. The <code>termination_by</code> clause
 instructs Lean to use a lexicographic order. This clause is actually mapping
 the function arguments to elements of type <code>Nat × Nat</code>. Then, Lean uses typeclass
@@ -881,7 +881,8 @@ decreasing_by sorry
 
 #eval natToBin 1234567
 </code></pre>
-<p>Recall that using <code>sorry</code> is equivalent to using a new axiom, and should be avoided. In the following example, we used the <code>sorry</code> to prove <code>False</code>. The command <code>#print axioms</code> shows that <code>unsound</code> depends on the unsound axiom <code>sorryAx</code> used to implement <code>sorry</code>.</p>
+<p>Recall that using <code>sorry</code> is equivalent to using a new axiom, and should be avoided. In the following example, we used the <code>sorry</code> to prove <code>False</code>.
+The command <code>#print axioms unsound</code> shows that <code>unsound</code> depends on the unsound axiom <code>sorryAx</code> used to implement <code>sorry</code>.</p>
 <pre><code class="language-lean">def unsound (x : Nat) : False :=
   unsound (x + 1)
 decreasing_by sorry
@@ -1269,7 +1270,7 @@ def zip : Vector α n → Vector β n → Vector (α × β) n
 </span></code></pre>
 <h2><a class="header" href="#match-expressions" id="match-expressions">Match Expressions</a></h2>
 <p>Lean also provides a compiler for <em>match-with</em> expressions found in
-many functional languages.</p>
+many functional languages:</p>
 <pre><code class="language-lean">def isNotZero (m : Nat) : Bool :=
   match m with
   | 0   =&gt; false
@@ -1305,7 +1306,7 @@ example : filter isNotZero [1, 0, 0, 3, 0] = [1, 3] := rfl
 example : foo 7 true false = 9 := rfl
 </code></pre>
 <p>Lean uses the <code>match</code> construct internally to implement pattern-matching in all parts of the system.
-Thus, all four of these definitions have the same net effect.</p>
+Thus, all four of these definitions have the same net effect:</p>
 <pre><code class="language-lean">def bar₁ : Nat × Nat → Nat
   | (m, n) =&gt; m + n
 
@@ -1340,7 +1341,7 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
   ⟨x, y, px, qy⟩
 </code></pre>
 <h2><a class="header" href="#local-recursive-declarations-1" id="local-recursive-declarations-1">Local Recursive Declarations</a></h2>
-<p>You can define local recursive declarations using the <code>let rec</code> keyword.</p>
+<p>You can define local recursive declarations using the <code>let rec</code> keyword:</p>
 <pre><code class="language-lean">def replicate (n : Nat) (a : α) : List α :=
   let rec loop : Nat → List α → List α
     | 0,   as =&gt; as
@@ -1355,7 +1356,7 @@ it created the declaration <code>replicate.loop</code> for the <code>let rec loo
 Note that, Lean &quot;closes&quot; the declaration by adding any local variable occurring in the
 <code>let rec</code> declaration as additional parameters. For example, the local variable <code>a</code> occurs
 at <code>let rec loop</code>.</p>
-<p>You can also use <code>let rec</code> in tactic mode and for creating proofs by induction.</p>
+<p>You can also use <code>let rec</code> in tactic mode and for creating proofs by induction:</p>
 <pre><code class="language-lean"><span class="boring">def replicate (n : Nat) (a : α) : List α :=
 </span><span class="boring"> let rec loop : Nat → List α → List α
 </span><span class="boring">   | 0,   as =&gt; as
@@ -1370,7 +1371,7 @@ at <code>let rec loop</code>.</p>
   exact aux n []
 </code></pre>
 <p>You can also introduce auxiliary recursive declarations using a <code>where</code> clause after your definition.
-Lean converts them into a <code>let rec</code>.</p>
+Lean converts them into a <code>let rec</code>:</p>
 <pre><code class="language-lean">def replicate (n : Nat) (a : α) : List α :=
   loop n []
 where

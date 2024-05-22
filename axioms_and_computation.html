@@ -333,7 +333,7 @@ axioms`` command to display the axioms it depends on.
 <h2><a class="header" href="#function-extensionality" id="function-extensionality">Function Extensionality</a></h2>
 <p>Similar to propositional extensionality, function extensionality
 asserts that any two functions of type <code>(x : α) → β x</code> that agree on
-all their inputs are equal.</p>
+all their inputs are equal:</p>
 <pre><code class="language-lean">universe u v
 #check (@funext :
            {α : Type u}
@@ -415,7 +415,7 @@ theorem inter.comm (a b : Set α) : a ∩ b = b ∩ a :=
 <span class="boring">end Set
 </span></code></pre>
 <p>The following is an example of how function extensionality blocks
-computation inside the Lean kernel.</p>
+computation inside the Lean kernel:</p>
 <pre><code class="language-lean">def f (x : Nat) := x
 def g (x : Nat) := 0 + x
 
@@ -442,7 +442,7 @@ nontrivial examples, eliminating cast changes the type of the term,
 which might make an ambient expression type incorrect. The virtual
 machine, however, has no trouble evaluating the expression to
 <code>0</code>. Here is a similarly contrived example that shows how
-<code>propext</code> can get in the way.</p>
+<code>propext</code> can get in the way:</p>
 <pre><code class="language-lean">theorem tteq : (True ∧ True) = True :=
   propext (Iff.intro (fun ⟨h, _⟩ =&gt; h) (fun h =&gt; ⟨h, h⟩))
 
@@ -458,13 +458,13 @@ def val : Nat :=
 <p>Current research programs, including work on <em>observational type
 theory</em> and <em>cubical type theory</em>, aim to extend type theory in ways
 that permit reductions for casts involving function extensionality,
-quotients, and more. But the solutions are not so clear cut, and the
+quotients, and more. But the solutions are not so clear-cut, and the
 rules of Lean's underlying calculus do not sanction such reductions.</p>
 <p>In a sense, however, a cast does not change the meaning of an
 expression. Rather, it is a mechanism to reason about the expression's
 type. Given an appropriate semantics, it then makes sense to reduce
 terms in ways that preserve their meaning, ignoring the intermediate
-bookkeeping needed to make the reductions type correct. In that case,
+bookkeeping needed to make the reductions type-correct. In that case,
 adding new axioms in <code>Prop</code> does not matter; by proof irrelevance,
 an expression in <code>Prop</code> carries no information, and can be safely
 ignored by the reduction procedures.</p>
