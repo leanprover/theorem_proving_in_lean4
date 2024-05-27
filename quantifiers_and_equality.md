@@ -480,7 +480,7 @@ small example demonstrates how to extend the `calc` notation using new `Trans` i
 def divides (x y : Nat) : Prop :=
   ∃ k, k*x = y
 
-def divides_trans (h₁ : divides x y) (h₂ : divides y z) : divides x z :=
+def divides_trans {x y z : Nat} (h₁ : divides x y) (h₂ : divides y z) : divides x z :=
   let ⟨k₁, d₁⟩ := h₁
   let ⟨k₂, d₂⟩ := h₂
   ⟨k₁ * k₂, by rw [Nat.mul_comm k₁ k₂, Nat.mul_assoc, d₁, d₂]⟩
@@ -497,7 +497,7 @@ example (h₁ : divides x y) (h₂ : y = z) : divides x (2*z) :=
     _ = z           := h₂
     divides _ (2*z) := divides_mul ..
 
-infix:50 " ∣ " => divides
+infix:50 (priority := high) " ∣ "  => divides
 
 example (h₁ : divides x y) (h₂ : y = z) : divides x (2*z) :=
   calc
