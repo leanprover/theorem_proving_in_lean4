@@ -497,20 +497,18 @@ example (h₁ : divides x y) (h₂ : y = z) : divides x (2*z) :=
     _ = z           := h₂
     divides _ (2*z) := divides_mul ..
 
-infix:50 " ∣ " => divides
+infix:51 " ‖ " => divides 
 
 example (h₁ : divides x y) (h₂ : y = z) : divides x (2*z) :=
   calc
-    x ∣ y   := h₁
+    x ‖ y   := h₁
     _ = z   := h₂
-    _ ∣ 2*z := divides_mul ..
+    _ ‖ 2*z := divides_mul ..
 ```
 
 The example above also makes it clear that you can use `calc` even if you
-do not have an infix notation for your relation. Finally we remark that
-the vertical bar `∣` in the example above is the unicode one. We use
-unicode to make sure we do not overload the ASCII `|` used in the
-`match .. with` expression.
+do not have an infix notation for your relation. 
+Finally, we remark that, in the example above, we use the double pipe `‖` symbol instead of the vertical bar `∣` or ASCII `|`. We do that to avoid ambiguity with the already defined `∣` and overloading `|` used in the `match .. with` expression. In practice, it is probably better to use the standard library's `∣` (or `Dvd.dvd`) to express divisibility instead of defining it yourself.
 
 With ``calc``, we can write the proof in the last section in a more
 natural and perspicuous way.
