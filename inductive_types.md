@@ -956,7 +956,7 @@ inductive List (α : Type u) where
 
 namespace List
 
-def append (as bs : List α) : List α :=
+def append {α : Type u} (as bs : List α) : List α :=
   match as with
   | nil       => bs
   | cons a as => cons a (append as bs)
