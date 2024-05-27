@@ -262,11 +262,7 @@ theorem t2 : q → p := t1 hp
 ```
 
 The ``axiom`` declaration postulates the existence of an
-<<<<<<< HEAD
 element of the given type, and may compromise logical consistency. For
-=======
-element of the given type and may compromise logical consistency. For
->>>>>>> master
 example, we can use it to postulate that the empty type `False` has an
 element:
 

@@ -211,11 +211,7 @@ block.
 
 For simple subgoals, it may not be worth selecting a subgoal using its
 tag, but you may still want to structure the proof. Lean also provides
-<<<<<<< HEAD
 the indentation-sensitive "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
-=======
-the "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
->>>>>>> master
 structuring proofs:
 
 ```lean
