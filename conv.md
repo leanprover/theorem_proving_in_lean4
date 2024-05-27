@@ -2,7 +2,7 @@ The Conversion Tactic Mode
 =========================
 
 Inside a tactic block, one can use the keyword `conv` to enter
-conversion mode. This mode allows to travel inside assumptions and
+*conversion mode*. This mode allows to travel inside assumptions and
 goals, even inside function abstractions and dependent arrows, to apply rewriting or
 simplifying steps.
 
@@ -35,8 +35,13 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
 
 The above snippet shows three navigation commands:
 
+<<<<<<< HEAD
 - `lhs` navigates to the left-hand side of a relation (here equality).
 There is also a `rhs` to navigate to the right-hand side.
+=======
+- `lhs` navigates to the left-hand side of a relation (equality, in this case).
+   There is also a `rhs` to navigate to the right-hand side.
+>>>>>>> master
 - `congr` creates as many targets as there are (nondependent and explicit) arguments to the current head function
   (here the head function is multiplication).
 - `rfl` closes target using reflexivity.
@@ -113,7 +118,7 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
 Structuring conversion tactics
 -------
 
-Curly brackets and `.` can also be used in `conv` mode to structure tactics.
+Curly brackets and `.` can also be used in `conv` mode to structure tactics:
 
 ```lean
 example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
@@ -198,7 +203,7 @@ example (g : Nat → Nat → Nat)
     . tactic => exact h₂
 ```
 
-- `apply <term>` is syntax sugar for `tactic => apply <term>`
+- `apply <term>` is syntax sugar for `tactic => apply <term>`.
 
 ```lean
 example (g : Nat → Nat → Nat)

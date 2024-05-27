@@ -211,7 +211,11 @@ block.
 
 For simple subgoals, it may not be worth selecting a subgoal using its
 tag, but you may still want to structure the proof. Lean also provides
+<<<<<<< HEAD
 the indentation-sensitive "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
+=======
+the "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
+>>>>>>> master
 structuring proofs:
 
 ```lean
@@ -365,14 +369,14 @@ example : ∀ a b c d : Nat, a = b → a = d → a = c → c = b := by
   exact h1
 ```
 
-The ``rfl`` tactic is syntactic sugar for ``exact rfl``.
+The ``rfl`` tactic is syntactic sugar for ``exact rfl``:
 
 ```lean
 example (y : Nat) : (fun x : Nat => 0) y = 0 :=
   by rfl
 ```
 
-The ``repeat`` combinator can be used to apply a tactic several times.
+The ``repeat`` combinator can be used to apply a tactic several times:
 
 ```lean
 example : ∀ a b c : Nat, a = b → a = c → c = b := by
@@ -383,7 +387,7 @@ example : ∀ a b c : Nat, a = b → a = c → c = b := by
 ```
 
 Another tactic that is sometimes useful is the ``revert`` tactic,
-which is, in a sense, an inverse to ``intro``.
+which is, in a sense, an inverse to ``intro``:
 
 ```lean
 example (x : Nat) : x = x := by
@@ -434,7 +438,7 @@ example (x y : Nat) (h : x = y) : y = x := by
 You can only ``revert`` an element of the local context, that is, a
 local variable or hypothesis. But you can replace an arbitrary
 expression in the goal by a fresh variable using the ``generalize``
-tactic.
+tactic:
 
 ```lean
 example : 3 = 3 := by
@@ -485,7 +489,7 @@ Some additional tactics are useful for constructing and destructing
 propositions and data. For example, when applied to a goal of the form
 ``p ∨ q``, you use tactics such as ``apply Or.inl`` and ``apply
 Or.inr``.  Conversely, the ``cases`` tactic can be used to decompose a
-disjunction.
+disjunction:
 
 ```lean
 example (p q : Prop) : p ∨ q → q ∨ p := by
@@ -496,7 +500,7 @@ example (p q : Prop) : p ∨ q → q ∨ p := by
 ```
 
 Note that the syntax is similar to the one used in `match` expressions.
-The new subgoals can be solved in any order.
+The new subgoals can be solved in any order:
 
 ```lean
 example (p q : Prop) : p ∨ q → q ∨ p := by
@@ -507,7 +511,7 @@ example (p q : Prop) : p ∨ q → q ∨ p := by
 ```
 
 You can also use a (unstructured) ``cases`` without the ``with`` and a tactic
-for each alternative.
+for each alternative:
 
 ```lean
 example (p q : Prop) : p ∨ q → q ∨ p := by
@@ -520,7 +524,7 @@ example (p q : Prop) : p ∨ q → q ∨ p := by
 ```
 
 The (unstructured) ``cases`` is particularly useful when you can close several
-subgoals using the same tactic.
+subgoals using the same tactic:
 
 ```lean
 example (p : Prop) : p ∨ p → p := by
@@ -530,7 +534,7 @@ example (p : Prop) : p ∨ p → p := by
 ```
 
 You can also use the combinator ``tac1 <;> tac2`` to apply ``tac2`` to each
-subgoal produced by tactic ``tac1``.
+subgoal produced by tactic ``tac1``:
 
 ```lean
 example (p : Prop) : p ∨ p → p := by
@@ -538,7 +542,7 @@ example (p : Prop) : p ∨ p → p := by
   cases h <;> assumption
 ```
 
-You can combine the unstructured ``cases`` tactic with the ``case`` and ``.`` notation.
+You can combine the unstructured ``cases`` tactic with the ``case`` and ``.`` notation:
 
 ```lean
 example (p q : Prop) : p ∨ q → q ∨ p := by
@@ -570,7 +574,7 @@ example (p q : Prop) : p ∨ q → q ∨ p := by
 ```
 
 The ``cases`` tactic can also be used to
-decompose a conjunction.
+decompose a conjunction:
 
 ```lean
 example (p q : Prop) : p ∧ q → q ∧ p := by
@@ -582,7 +586,9 @@ example (p q : Prop) : p ∧ q → q ∧ p := by
 In this example, there is only one goal after the ``cases`` tactic is
 applied, with ``h : p ∧ q`` replaced by a pair of assumptions,
 ``hp : p`` and ``hq : q``. The ``constructor`` tactic applies the unique
-constructor for conjunction, ``And.intro``. With these tactics, an
+constructor for conjunction, ``And.intro``.
+
+With these tactics, an
 example from the previous section can be rewritten as follows:
 
 ```lean
@@ -701,7 +707,7 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
     | Or.inr ⟨hp, hr⟩ => constructor; exact hp; apply Or.inr; exact hr
 ```
 
-You can "combine" ``intro h`` with ``match h ...`` and write the previous examples as follows
+You can "combine" ``intro h`` with ``match h ...`` and write the previous examples as follows:
 
 ```lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
@@ -830,7 +836,7 @@ example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
 The types in a ``have`` tactic can be omitted, so you can write ``have
 hp := h.left`` and ``have hqr := h.right``.  In fact, with this
 notation, you can even omit both the type and the label, in which case
-the new fact is introduced with the label ``this``.
+the new fact is introduced with the label ``this``:
 
 ```lean
 example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
@@ -847,7 +853,7 @@ example (p q r : Prop) : p ∧ (q ∨ r) → (p ∧ q) ∨ (p ∧ r) := by
 Lean also has a ``let`` tactic, which is similar to the ``have``
 tactic, but is used to introduce local definitions instead of
 auxiliary facts. It is the tactic analogue of a ``let`` in a proof
-term.
+term:
 
 ```lean
 example : ∃ x, x + 2 = 8 := by
@@ -866,7 +872,7 @@ been fully solved at the end of the block. This can be helpful in
 indicating the separate proofs of multiple subgoals introduced by a
 tactic. The notation ``.`` is whitespace sensitive and relies on the indentation
 to detect whether the tactic block ends. Alternatively, you can
-define tactic blocks using curly braces and semicolons.
+define tactic blocks using curly braces and semicolons:
 
 ```lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
@@ -959,7 +965,7 @@ example (p q : Prop) (hq : q) : p ∨ q := by
 ```
 
 In the first example, the left branch succeeds, whereas in the second one, it is the right one that succeeds.
-In the next three examples, the same compound tactic succeeds in each case.
+In the next three examples, the same compound tactic succeeds in each case:
 
 ```lean
 example (p q r : Prop) (hp : p) : p ∨ q ∨ r :=
@@ -986,7 +992,7 @@ nothing (and succeeds in doing so). In the next example, the second
 ``constructor`` succeeds on the right conjunct ``q ∧ r`` (remember that
 disjunction and conjunction associate to the right) but fails on the
 first. The ``try`` tactic ensures that the sequential composition
-succeeds.
+succeeds:
 
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
@@ -1009,7 +1015,7 @@ example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
 
 In this case, the ``any_goals`` tactic provides a more robust solution.
 It is similar to ``all_goals``, except it succeeds if its argument
-succeeds on at least one goal.
+succeeds on at least one goal:
 
 ```lean
 example (p q r : Prop) (hp : p) (hq : q) (hr : r) : p ∧ q ∧ r := by
@@ -1479,15 +1485,15 @@ example (xs ys : List Nat) (p : List Nat → Prop)
   simp only [List.reverse_append] at h; assumption
 ```
 
-The `simp` tactic has many configuration options. For example, we can enable contextual simplifications as follows.
+The `simp` tactic has many configuration options. For example, we can enable contextual simplifications as follows:
 
 ```lean
 example : if x = 0 then y + x = y else x ≠ 0 := by
   simp (config := { contextual := true })
 ```
 
-when `contextual := true`, `simp` uses the fact that `x = 0` when simplifying `y + x = y`, and
-`x ≠ 0` when simplifying the other branch. Here is another example.
+With `contextual := true`, the `simp` tactic uses the fact that `x = 0` when simplifying `y + x = y`, and
+`x ≠ 0` when simplifying the other branch. Here is another example:
 
 ```lean
 example : ∀ (x : Nat) (h : x = 0), y + x = y := by
@@ -1495,7 +1501,7 @@ example : ∀ (x : Nat) (h : x = 0), y + x = y := by
 ```
 
 Another useful configuration option is `arith := true` which enables arithmetical simplifications. It is so useful
-that `simp_arith` is a shorthand for `simp (config := { arith := true })`.
+that `simp_arith` is a shorthand for `simp (config := { arith := true })`:
 
 ```lean
 example : 0 < 1 + x ∧ x + y + 2 ≥ y + 1 := by
@@ -1506,7 +1512,7 @@ Split Tactic
 ------------
 
 The ``split`` tactic is useful for breaking nested `if-then-else` and `match` expressions in cases.
-For a `match` expression with `n` cases, the `split` tactic generates at most `n` subgoals. Here is an example.
+For a `match` expression with `n` cases, the `split` tactic generates at most `n` subgoals. Here is an example:
 
 ```lean
 def f (x y z : Nat) : Nat :=
@@ -1541,7 +1547,7 @@ example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 
 
 The tactic `split <;> first | contradiction | rfl` first applies the `split` tactic,
 and then for each generated goal it tries `contradiction`, and then `rfl` if `contradiction` fails.
-Like `simp`, we can apply `split` to a particular hypothesis.
+Like `simp`, we can apply `split` to a particular hypothesis:
 
 ```lean
 def g (xs ys : List Nat) : Nat :=
@@ -1560,7 +1566,7 @@ Extensible Tactics
 In the following example, we define the notation `triv` using the command `syntax`.
 Then, we use the command `macro_rules` to specify what should
 be done when `triv` is used. You can provide different expansions, and the tactic
-interpreter will try all of them until one succeeds.
+interpreter will try all of them until one succeeds:
 
 ```lean
 -- Define a new tactic notation

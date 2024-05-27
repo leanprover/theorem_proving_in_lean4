@@ -275,7 +275,7 @@ def F (α : Type u) : Type u := Prod α α
 #check F    -- Type u → Type u
 ```
 
-You can avoid the universe command by providing the universe parameters when defining F.
+You can avoid the `universe` command by providing the universe parameters when defining `F`:
 
 ```lean
 def F.{u} (α : Type u) : Type u := Prod α α
@@ -943,7 +943,7 @@ Suppose we have an implementation of lists as:
 #check Lst.append   -- Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
 ```
 
-Then, you can construct lists of `Nat` as follows.
+Then, you can construct lists of `Nat` as follows:
 
 ```lean
 # universe u

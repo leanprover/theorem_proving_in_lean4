@@ -192,7 +192,7 @@ Function Extensionality
 
 Similar to propositional extensionality, function extensionality
 asserts that any two functions of type ``(x : α) → β x`` that agree on
-all their inputs are equal.
+all their inputs are equal:
 
 ```lean
 universe u v
@@ -285,7 +285,7 @@ theorem inter.comm (a b : Set α) : a ∩ b = b ∩ a :=
 ```
 
 The following is an example of how function extensionality blocks
-computation inside the Lean kernel.
+computation inside the Lean kernel:
 
 ```lean
 def f (x : Nat) := x
@@ -315,7 +315,7 @@ nontrivial examples, eliminating cast changes the type of the term,
 which might make an ambient expression type incorrect. The virtual
 machine, however, has no trouble evaluating the expression to
 ``0``. Here is a similarly contrived example that shows how
-``propext`` can get in the way.
+``propext`` can get in the way:
 
 ```lean
 theorem tteq : (True ∧ True) = True :=
@@ -334,14 +334,14 @@ def val : Nat :=
 Current research programs, including work on *observational type
 theory* and *cubical type theory*, aim to extend type theory in ways
 that permit reductions for casts involving function extensionality,
-quotients, and more. But the solutions are not so clear cut, and the
+quotients, and more. But the solutions are not so clear-cut, and the
 rules of Lean's underlying calculus do not sanction such reductions.
 
 In a sense, however, a cast does not change the meaning of an
 expression. Rather, it is a mechanism to reason about the expression's
 type. Given an appropriate semantics, it then makes sense to reduce
 terms in ways that preserve their meaning, ignoring the intermediate
-bookkeeping needed to make the reductions type correct. In that case,
+bookkeeping needed to make the reductions type-correct. In that case,
 adding new axioms in ``Prop`` does not matter; by proof irrelevance,
 an expression in ``Prop`` carries no information, and can be safely
 ignored by the reduction procedures.
