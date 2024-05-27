@@ -95,10 +95,9 @@ computational interpretation. From a *classical* point of view, it is
 more fruitful to maintain a separation of concerns: we can use one
 language and body of methods to write computer programs, while
 maintaining the freedom to use nonconstructive theories and methods
-to reason about them. Lean is designed to support both of these
-approaches. Core parts of the library are developed constructively,
-but the system also provides support for carrying out classical
-mathematical reasoning.
+to reason about them. Although Lean's core logic is constructive,
+Lean does not shy away from the use of classical reasoning in its
+libraries and tactics.
 
 Computationally, the purest part of dependent type theory avoids the
 use of ``Prop`` entirely. Inductive types and dependent function types
