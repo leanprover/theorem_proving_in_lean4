@@ -52,20 +52,6 @@ wherever a term is expected, Lean allows us to insert instead a ``by
 separated by semicolons or line breaks. You can prove the theorem above
 in that way:
 
-<!-- repeating the example just for the "by" seems wasteful
-```lean
-theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
-  by apply And.intro
-     exact hp
-     apply And.intro
-     exact hq
-     exact hp
-```
-
-We often put the ``by`` keyword on the preceding line, and write the
-example above as:
--->
-
 ```lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
   apply And.intro
@@ -74,7 +60,7 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
   exact hq
   exact hp
 ```
-(We often put the ``by`` keyword on the preceding line.)
+(We often put the ``by`` keyword on the same line as the `:=`.)
 
 The ``apply <e>`` tactic applies an expression `<e>`, viewed as a
 function of zero or more arguments. It unifies the conclusion (that is, the result of applying `e`)
