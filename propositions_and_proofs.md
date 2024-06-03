@@ -13,12 +13,12 @@ One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
 and a proof language on top of the definition language. But there is
 no reason to multiply languages in this way: dependent type theory is
-flexible and expressive, and there is no reason we cannot represent
+flexible and expressive, and it turns out that we can represent
 assertions and proofs in the same general framework.
 
-For example, we could introduce a new type, ``Prop``, to represent
+For example, we can introduce a new type, ``Prop``, to represent
 propositions, and introduce constructors to build new propositions
-from others.
+from others:
 
 ```lean
 # def Implies (p q : Prop) : Prop := p → q
@@ -49,7 +49,7 @@ variable (p q : Prop)
 #check and_comm p q     -- Proof (Implies (And p q) (And q p))
 ```
 
-In addition to axioms, however, we would also need rules to build new
+In addition to axioms, however, we also need rules to build new
 proofs from old ones. For example, in many proof systems for
 propositional logic, we have the rule of *modus ponens*:
 
@@ -77,7 +77,8 @@ We could render this as follows:
 axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
 ```
 
-This approach would provide us with a reasonable way of building assertions and proofs.
+This approach would provide us with a reasonable way of building assertions and proofs,
+staying inside the framework of dependent type theory.
 Determining that an expression ``t`` is a correct proof of assertion ``p`` would then
 simply be a matter of checking that ``t`` has type ``Proof p``.
 
@@ -136,7 +137,7 @@ that even though we can treat proofs ``t : p`` as ordinary objects in
 the language of dependent type theory, they carry no information
 beyond the fact that ``p`` is true.
 
-The two ways we have suggested thinking about the
+The two ways we have suggested for thinking about the
 propositions-as-types paradigm differ in a fundamental way. From the
 constructive point of view, proofs are abstract mathematical objects
 that are *denoted* by suitable expressions in dependent type
@@ -156,7 +157,7 @@ syntax and semantics by saying, at times, that a program "computes" a
 certain function, and at other times speaking as though the program
 "is" the function in question.
 
-In any case, all that really matters is the bottom line. To formally
+In any case, all that really matters is the bottom line: To formally
 express a mathematical assertion in the language of dependent type
 theory, we need to exhibit a term ``p : Prop``. To *prove* that
 assertion, we need to exhibit a term ``t : p``. Lean's task, as a
@@ -191,7 +192,7 @@ true.
 Note that the ``theorem`` command is really a version of the
 ``def`` command: under the propositions and types
 correspondence, proving the theorem ``p → q → p`` is really the same
-as defining an element of the associated type. To the kernel type
+as defining an element of the associated type. To the Lean kernel type
 checker, there is no difference between the two.
 
 There are a few pragmatic differences between definitions and
@@ -261,7 +262,7 @@ theorem t2 : q → p := t1 hp
 ```
 
 The ``axiom`` declaration postulates the existence of an
-element of the given type and may compromise logical consistency. For
+element of the given type, and may compromise logical consistency. For
 example, we can use it to postulate that the empty type `False` has an
 element:
 
@@ -320,6 +321,9 @@ Lean detects that the proof uses ``hp`` and automatically adds
 be written ``∀ (p q : Prop) (hp : p) (hq : q), p``, since the arrow
 denotes nothing more than an arrow type in which the target does not
 depend on the bound variable.
+
+<!-- Perhaps point out that `variable {p : Prop}` does not mean that `p` is an axiom, but
+     `variable (hp : p)` does, letting us prove `theorem pholds : p := hp` -->
 
 When we generalize ``t1`` in such a way, we can then apply it to
 different pairs of propositions, to obtain different instances of the
