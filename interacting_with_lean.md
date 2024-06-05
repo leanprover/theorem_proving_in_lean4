@@ -2,7 +2,7 @@ Interacting with Lean
 =====================
 
 You are now familiar with the fundamentals of dependent type theory,
-both as a language for defining mathematical objects and a language
+both as a language for defining mathematical objects and a languagestd
 for constructing proofs. The one thing you are missing is a mechanism
 for defining new data types. We will fill this gap in the next
 chapter, which introduces the notion of an *inductive data type*. But
@@ -690,7 +690,7 @@ library can be found online, on GitHub:
 
 - [https://github.com/leanprover/lean4/tree/master/src/Init](https://github.com/leanprover/lean4/tree/master/src/Init)
 
-- [https://github.com/leanprover/std4/tree/main/Std](https://github.com/leanprover/std4/tree/main/Std)
+- [https://github.com/leanprover-community/batteries/tree/main/Batteries](https://github.com/leanprover-community/batteries/tree/main/Batteries)
 
 You can see the contents of these directories and files using GitHub's
 browser interface. If you have installed Lean on your own computer,
