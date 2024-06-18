@@ -944,7 +944,7 @@ example (x : α) : g (b? := some x) = fun (a c : α) => a + x + c := rfl
 
 example (x : α) : g x = fun (c : α) => x + c := rfl
 
-example (x y : α) : g x y = fun (c : α) => x + y + c := rfl
+example (x y : α) : g x (some y) = fun (c : α) => x + y + c := rfl
 ```
 
 You can use `..` to provide missing explicit arguments as `_`.
