@@ -21,16 +21,15 @@ propositions, and introduce constructors to build new propositions
 from others.
 
 ```lean
-# def Implies (p q : Prop) : Prop := p → q
 #check And     -- Prop → Prop → Prop
 #check Or      -- Prop → Prop → Prop
 #check Not     -- Prop → Prop
-#check Implies -- Prop → Prop → Prop
+#check implies -- Prop → Prop → Prop
 
 variable (p q r : Prop)
 #check And p q                      -- Prop
 #check Or (And p q) r               -- Prop
-#check Implies (And p q) (And q p)  -- Prop
+#check implies (And p q) (And q p)  -- Prop
 ```
 
 We could then introduce, for each element ``p : Prop``, another type
@@ -38,48 +37,46 @@ We could then introduce, for each element ``p : Prop``, another type
 constant of such a type.
 
 ```lean
-# def Implies (p q : Prop) : Prop := p → q
-# structure Proof (p : Prop) : Type where
-#   proof : p
+structure Proof (p : Prop) : Type where proof : p
+
 #check Proof   -- Proof : Prop → Type
 
-axiom and_comm (p q : Prop) : Proof (Implies (And p q) (And q p))
+axiom and_comm (p q : Prop) : Proof (implies (And p q) (And q p))
 
 variable (p q : Prop)
-#check and_comm p q     -- Proof (Implies (And p q) (And q p))
+#check and_comm p q     -- Proof (implies (And p q) (And q p))
 ```
 
 In addition to axioms, however, we would also need rules to build new
 proofs from old ones. For example, in many proof systems for
 propositional logic, we have the rule of *modus ponens*:
 
-> From a proof of ``Implies p q`` and a proof of ``p``, we obtain a proof of ``q``.
+> From a proof of ``implies p q`` and a proof of ``p``, we obtain a proof of ``q``.
 
 We could represent this as follows:
 
 ```lean
-# def Implies (p q : Prop) : Prop := p → q
 # structure Proof (p : Prop) : Type where
 #   proof : p
-axiom modus_ponens : (p q : Prop) → Proof (Implies p q) → Proof p → Proof q
+axiom modus_ponens : (p q : Prop) → Proof (implies p q) → Proof p → Proof q
 ```
 
 Systems of natural deduction for propositional logic also typically rely on the following rule:
 
-> Suppose that, assuming ``p`` as a hypothesis, we have a proof of ``q``. Then we can "cancel" the hypothesis and obtain a proof of ``Implies p q``.
+> Suppose that, assuming ``p`` as a hypothesis, we have a proof of ``q``. Then we can "cancel" the hypothesis and obtain a proof of ``implies p q``.
 
 We could render this as follows:
 
 ```lean
-# def Implies (p q : Prop) : Prop := p → q
 # structure Proof (p : Prop) : Type where
 #   proof : p
-axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
+axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (implies p q)
 ```
 
-This approach would provide us with a reasonable way of building assertions and proofs.
-Determining that an expression ``t`` is a correct proof of assertion ``p`` would then
-simply be a matter of checking that ``t`` has type ``Proof p``.
+This approach would provide us with a reasonable way of building
+assertions and proofs. Determining that an expression ``t`` is a correct
+proof of assertion ``p`` would then simply be a matter of checking that
+``t`` has type ``Proof p``.
 
 Some simplifications are possible, however. To start with, we can
 avoid writing the term ``Proof`` repeatedly by conflating ``Proof p``
@@ -88,11 +85,11 @@ can interpret ``p`` as a type, namely, the type of its proofs. We can
 then read ``t : p`` as the assertion that ``t`` is a proof of ``p``.
 
 Moreover, once we make this identification, the rules for implication
-show that we can pass back and forth between ``Implies p q`` and
+show that we can pass back and forth between ``implies p q`` and
 ``p → q``. In other words, implication between propositions ``p`` and ``q``
 corresponds to having a function that takes any element of ``p`` to an
 element of ``q``. As a result, the introduction of the connective
-``Implies`` is entirely redundant: we can use the usual function space
+``implies`` is entirely redundant: we can use the usual function space
 constructor ``p → q`` from dependent type theory as our notion of
 implication.
 
@@ -127,14 +124,15 @@ the inhabitant of ``p`` as being the "fact that ``p`` is true." A
 proof of ``p → q`` uses "the fact that ``p`` is true" to obtain "the
 fact that ``q`` is true."
 
-Indeed, if ``p : Prop`` is any proposition, Lean's kernel treats any
-two elements ``t1 t2 : p`` as being definitionally equal, much the
-same way as it treats ``(fun x => t) s`` and ``t[s/x]`` as
+Indeed, if ``p : Prop`` is any proposition, Lean's kernel treats any two
+elements ``t1 t2 : p`` as being definitionally equal, much the same way
+as it treats ``(fun x => t) s`` and ``t[s/x]`` (that is, replacing all
+occurrences of the term `x` in the expression `t` with `s`)
 definitionally equal. This is known as *proof irrelevance,* and is
-consistent with the interpretation in the last paragraph. It means
-that even though we can treat proofs ``t : p`` as ordinary objects in
-the language of dependent type theory, they carry no information
-beyond the fact that ``p`` is true.
+consistent with the interpretation in the last paragraph. It means that
+even though we can treat proofs ``t : p`` as ordinary objects in the
+language of dependent type theory, they carry no information beyond the
+fact that ``p`` is true.
 
 The two ways we have suggested thinking about the
 propositions-as-types paradigm differ in a fundamental way. From the
@@ -176,6 +174,10 @@ variable {q : Prop}
 
 theorem t1 : p → q → p := fun hp : p => fun hq : q => hp
 ```
+
+The type of ``t1`` is ``∀ {p q : Prop}, p → q → p``. We can read this as
+the assertion "for every pair of propositions ``p q``, we have ``p → q →
+p``."
 
 Compare this proof to the expression ``fun x : α => fun y : β => x``
 of type ``α → β → α``, where ``α`` and ``β`` are data types.
@@ -277,7 +279,8 @@ is true, as witnessed by ``hp``. Applying the theorem
 ``t1 : p → q → p`` to the fact ``hp : p`` that ``p`` is true yields the theorem
 ``t1 hp : q → p``.
 
-Recall that we can also write theorem ``t1`` as follows:
+Recall that we can also write theorem ``t1`` as follows, instead of
+defining `p` and `q` as `variable`s:
 
 ```lean
 theorem t1 {p q : Prop} (hp : p) (hq : q) : p := hp
@@ -285,10 +288,9 @@ theorem t1 {p q : Prop} (hp : p) (hq : q) : p := hp
 #print t1
 ```
 
-The type of ``t1`` is now ``∀ {p q : Prop}, p → q → p``. We can read
-this as the assertion "for every pair of propositions ``p q``, we have
-``p → q → p``." For example, we can move all parameters to the right
-of the colon:
+The type of ``t1`` remains ``∀ {p q : Prop}, p → q → p``.  To more
+closely reflect this, we can move all parameters to the right of the
+colon and introduce the `∀` quantifier (typed with `\forall`):
 
 ```lean
 theorem t1 : ∀ {p q : Prop}, p → q → p :=
@@ -346,7 +348,7 @@ As another example, let us consider the composition function discussed
 in the last chapter, now with propositions instead of types.
 
 ```lean
-variable (p q r s : Prop)
+variable (p q r : Prop)
 
 theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
   fun h₃ : p =>
@@ -371,7 +373,7 @@ Lean defines all the standard logical connectives and notation. The propositiona
 | Not               | ¬         | ``\not``, ``\neg``           | Not          |
 | /\\               | ∧         | ``\and``                     | And          |
 | \\/               | ∨         | ``\or``                      | Or           |
-| ->                | →         | ``\to``, ``\r``, ``\imp``    |              |
+| ->                | →         | ``\to``, ``\r``, ``\imp``    | implies      |
 | <->               | ↔         | ``\iff``, ``\lr``            | Iff          |
 
 They all take values in ``Prop``.
@@ -542,7 +544,7 @@ takes three arguments, ``hpq : p ∨ q``, ``hpr : p → r`` and
 ``Or.elim`` to prove ``p ∨ q → q ∨ p``.
 
 ```lean
-variable (p q r : Prop)
+variable (p q : Prop)
 
 example (h : p ∨ q) : q ∨ p :=
   Or.elim h
@@ -559,7 +561,7 @@ shorthand for ``Or.intro_right _`` and ``Or.intro_left _``. Thus the
 proof term above could be written more concisely:
 
 ```lean
-variable (p q r : Prop)
+variable (p q : Prop)
 
 example (h : p ∨ q) : q ∨ p :=
   Or.elim h (fun hp => Or.inr hp) (fun hq => Or.inl hq)
@@ -575,7 +577,7 @@ constructor notation. But we can still write ``h.elim`` instead of
 ``Or.elim h``:
 
 ```lean
-variable (p q r : Prop)
+variable (p q : Prop)
 
 example (h : p ∨ q) : q ∨ p :=
   h.elim (fun hp => Or.inr hp) (fun hq => Or.inl hq)
