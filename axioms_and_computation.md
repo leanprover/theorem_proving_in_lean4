@@ -103,9 +103,9 @@ namespace or used lemmas within it. Technically, it is still possible to
 build alternative tactics for constructive logic outside the core
 library and use them alongside the constructive tactics from the core.
 However, the developers of Lean's core library currently do not want to
-implement these tactics themselves, nor do they accept any changes that
+implement these tactics themselves, nor do they accept changes that
 attempt to modify the tactics in the core to avoid using classical
-reasoning, regardless of how simple the change may be.
+reasoning.
 
 Computationally, the purest part of dependent type theory avoids the
 use of ``Prop`` entirely. Inductive types and dependent function types
