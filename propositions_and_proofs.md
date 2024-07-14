@@ -633,7 +633,7 @@ example (hnp : ¬p) (hq : q) (hqp : q → p) : r :=
 ```
 
 Incidentally, just as ``False`` has only an elimination rule, ``True``
-has only an introduction rule, ``True.intro : true``.  In other words,
+has only an introduction rule, ``True.intro : True``.  In other words,
 ``True`` is simply true, and has a canonical proof, ``True.intro``.
 
 ### Logical Equivalence
