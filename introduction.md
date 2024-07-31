@@ -90,10 +90,11 @@ theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=
   show q ∧ p from And.intro hq hp
 ```
 
-If you are reading the book inside of [VS Code](https://code.visualstudio.com/), you will see a button that reads "try it!" Pressing the button copies the example to your editor with enough surrounding context to make the code compile correctly. You can type
-things into the editor and modify the examples, and Lean will check the results and provide feedback continuously as you
-type. We recommend running the examples and experimenting with the code on your own as you work through the chapters
-that follow. You can open this book on VS Code by using the command "Lean 4: Open Documentation View".
+Next to every code example in this book, you will see a button that reads "Copy to clipboard". 
+Pressing the button copies the example with enough surrounding context to make the code compile correctly.
+You can paste the example code into [VS Code](https://code.visualstudio.com/) and modify the examples, and Lean will check the results and provide feedback continuously as you type. 
+We recommend running the examples and experimenting with the code on your own as you work through the chapters that follow. 
+You can open this book in VS Code by using the command "Lean 4: Docs: Show Documentation Resources" and selecting "Theorem Proving in Lean 4" in the tab that opens.
 
 Acknowledgments
 ---------------
