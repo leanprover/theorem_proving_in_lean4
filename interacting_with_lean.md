@@ -13,6 +13,10 @@ Not all of the information found here will be useful to you right
 away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.
 
+### Contents
+
+<!-- toc -->
+
 Importing Files
 ---------------
 

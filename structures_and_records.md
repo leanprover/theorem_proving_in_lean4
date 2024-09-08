@@ -27,6 +27,10 @@ automatically generates all the projection functions. The
 previously defined ones. Moreover, Lean provides convenient notation
 for defining instances of a given structure.
 
+### Contents
+
+<!-- toc -->
+
 Declaring Structures
 --------------------
 

@@ -6,6 +6,10 @@ Lean. In this chapter, we will begin to explain how to write
 mathematical assertions and proofs in the language of dependent type
 theory as well.
 
+### Contents
+
+<!-- toc -->
+
 Propositions as Types
 ---------------------
 

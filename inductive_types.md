@@ -62,6 +62,10 @@ to start with a low-level, hands-on understanding. We will start with
 some basic examples of inductive types, and work our way up to more
 elaborate and complex examples.
 
+### Contents
+
+<!-- toc -->
+
 Enumerated Types
 ----------------
 

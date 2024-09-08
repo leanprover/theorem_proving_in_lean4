@@ -64,6 +64,10 @@ compatible with bytecode evaluation, whereas the third is not amenable
 to computational interpretation. We will spell out the details more
 precisely below.
 
+### Contents
+
+<!-- toc -->
+
 Historical and Philosophical Context
 ------------------------------------
 

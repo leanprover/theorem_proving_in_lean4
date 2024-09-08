@@ -22,6 +22,10 @@ instruction. But they can also be shorter and easier to
 write. Moreover, tactics offer a gateway to using Lean's automation,
 since automated procedures are themselves tactics.
 
+### Contents
+
+<!-- toc -->
+
 Entering Tactic Mode
 --------------------
 
