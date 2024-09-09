@@ -11,23 +11,27 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Download mdbook for Lean
+    - name: Download mdbook and dependencies for Lean
       shell: bash
       run: |
-        curl -O --location https://github.com/leanprover/mdBook/releases/download/v0.4.6/mdbook-linux.tar.gz
-        tar xvf mdbook-linux.tar.gz
-        ./mdbook-linux/mdbook --help
-        ldd ./mdbook-linux/mdbook
-        curl -O --location https://github.com/badboy/mdbook-toc/releases/download/0.14.2/mdbook-toc-0.14.2-x86_64-unknown-linux-gnu.tar.gz
-        tar xvf mdbook-toc-0.14.2-x86_64-unknown-linux-gnu.tar.gz
         mkdir -p $HOME/.local/bin
         echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+        curl -O --location https://github.com/leanprover/mdBook/releases/download/v0.4.6/mdbook-linux.tar.gz
+        tar xvf mdbook-linux.tar.gz
+        cp ./mdbook-linux/mdbook $HOME/.local/bin/
+        ldd ./mdbook-linux/mdbook
+        mdbook --help
+
+        curl -O --location https://github.com/badboy/mdbook-toc/releases/download/0.14.2/mdbook-toc-0.14.2-x86_64-unknown-linux-gnu.tar.gz
+        tar xvf mdbook-toc-0.14.2-x86_64-unknown-linux-gnu.tar.gz
         cp ./mdbook-toc $HOME/.local/bin/
-        ldd mdbook-toc
+        ldd ./mdbook-toc
+        mdbook-toc --help
     - name: Run mdbook build
       shell: bash
       run: |
-        ./mdbook-linux/mdbook build
+        mdbook build
         rm -rf ./out/.git
         rm -rf ./out/.github
     - name: Deploy 🚀
