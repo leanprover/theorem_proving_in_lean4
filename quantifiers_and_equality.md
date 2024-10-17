@@ -6,6 +6,10 @@ statements involving the propositional connectives. In this chapter,
 we extend the repertoire of logical constructions to include the
 universal and existential quantifiers, and the equality relation.
 
+### Contents
+
+<!-- toc -->
+
 The Universal Quantifier
 ------------------------
 
@@ -363,7 +367,7 @@ We can also use `_` in the first relation (right after ``<expr>_0``)
 which is useful to align the sequence of relation/proof pairs:
 
 ```
-calc <expr>_0 
+calc <expr>_0
     '_' 'op_1' <expr>_1 ':=' <proof>_1
     '_' 'op_2' <expr>_2 ':=' <proof>_2
     ...

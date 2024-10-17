@@ -17,6 +17,10 @@ refer to as the "equation compiler." The equation compiler is not part
 of the trusted code base; its output consists of terms that are
 checked independently by the kernel.
 
+### Contents
+
+<!-- toc -->
+
 Pattern Matching
 ----------------
 

@@ -6,6 +6,10 @@ Inside a tactic block, one can use the keyword `conv` to enter
 goals, even inside function abstractions and dependent arrows, to apply rewriting or
 simplifying steps.
 
+### Contents
+
+<!-- toc -->
+
 Basic navigation and rewriting
 -------
 

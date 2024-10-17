@@ -9,6 +9,10 @@ theory known as the *Calculus of Constructions*, with a countable
 hierarchy of non-cumulative universes and inductive types. By the end
 of this chapter, you will understand much of what this means.
 
+### Contents
+
+<!-- toc -->
+
 ## Simple Type Theory
 
 "Type theory" gets its name from the fact that every expression has an

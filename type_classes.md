@@ -1,5 +1,9 @@
 # Type Classes
 
+### Contents
+
+<!-- toc -->
+
 Type classes were introduced as a principled way of enabling
 ad-hoc polymorphism in functional programming languages. We first observe that it
 would be easy to implement an ad-hoc polymorphic function (such as addition) if the
