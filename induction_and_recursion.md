@@ -796,7 +796,11 @@ The following example is similar: it converts any natural number to a
 binary expression, represented as a list of 0's and 1's. We have to
 provide evidence that the recursive call is
 decreasing, which we do here with a ``sorry``. The ``sorry`` does not
-prevent the interpreter from evaluating the function successfully.
+prevent the interpreter from evaluating the function successfully, but
+by default it will refuse to do so as evaluating a non-terminating
+function could cause Lean to crash.
+We can use the command ``#eval!`` to override this behavior and evaluate it
+anyway.
 
 ```lean
 def natToBin : Nat → List Nat
@@ -806,7 +810,7 @@ def natToBin : Nat → List Nat
     have : (n + 2) / 2 < n + 2 := sorry
     natToBin ((n + 2) / 2) ++ [n % 2]
 
-#eval natToBin 1234567
+#eval! natToBin 1234567
 ```
 
 As a final example, we observe that Ackermann's function can be
@@ -882,7 +886,8 @@ decreasing_by
   · apply Prod.Lex.left; simp_arith
 ```
 
-We can use `decreasing_by sorry` to instruct Lean to "trust" us that the function terminates.
+We can use `decreasing_by sorry` to instruct Lean to "trust" us that the function terminates
+and use the command ``#eval!`` to evaluate it.
 
 ```lean
 def natToBin : Nat → List Nat
@@ -891,7 +896,7 @@ def natToBin : Nat → List Nat
   | n + 2 => natToBin ((n + 2) / 2) ++ [n % 2]
 decreasing_by sorry
 
-#eval natToBin 1234567
+#eval! natToBin 1234567
 ```
 
 Recall that using `sorry` is equivalent to using a new axiom, and should be avoided. In the following example, we used the `sorry` to prove `False`.
