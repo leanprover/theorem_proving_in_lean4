@@ -290,6 +290,8 @@ theorem List.isPrefix_self (as : List α) : as ≤ as :=
   ⟨[], by simp⟩
 ```
 
+<!-- This example is confusing because the `instance:...` command does not mention ≤ -->
+
 That assignment can also be made local:
 
 ```lean

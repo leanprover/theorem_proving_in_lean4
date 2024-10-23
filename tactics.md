@@ -53,18 +53,6 @@ separated by semicolons or line breaks. You can prove the theorem above
 in that way:
 
 ```lean
-theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
-  by apply And.intro
-     exact hp
-     apply And.intro
-     exact hq
-     exact hp
-```
-
-We often put the ``by`` keyword on the preceding line, and write the
-example above as:
-
-```lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
   apply And.intro
   exact hp
@@ -72,12 +60,13 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
   exact hq
   exact hp
 ```
+(We often put the ``by`` keyword on the same line as the `:=`.)
 
-The ``apply`` tactic applies an expression, viewed as denoting a
-function with zero or more arguments. It unifies the conclusion with
-the expression in the current goal, and creates new goals for the
-remaining arguments, provided that no later arguments depend on
-them. In the example above, the command ``apply And.intro`` yields two
+The ``apply <e>`` tactic applies an expression `<e>`, viewed as a
+function of zero or more arguments. It unifies the conclusion (that is, the result of applying `e`)
+with the current goal expression, and creates new goals for the
+arguments of `e`, provided that no later arguments depend on them.
+In the example above, the command ``apply And.intro`` yields two
 subgoals:
 
 ```
@@ -94,14 +83,20 @@ subgoals:
     ⊢ q ∧ p
 ```
 
-The first goal is met with the command ``exact hp``. The ``exact``
-command is just a variant of ``apply`` which signals that the
-expression given should fill the goal exactly. It is good form to use
+Spelling out this `apply` step: `And.intro` is the rule `a → b → a ∧ b`; unifying its conclusion, `a ∧ b`,
+with the current goal `p ∧ q ∧ p`,
+gives us `p` for `a`, and `q ∧ p` for `b`; thus, we get `p` and `q ∧ p` as the new subgoals.
+
+The first of these two new subgoals is discharged with the command ``exact hp``. The ``exact``
+command is just a variant of ``apply`` that requires that the
+expression given should match the goal exactly. It is good form to use
 it in a tactic proof, since its failure signals that something has
 gone wrong. It is also more robust than ``apply``, since the
 elaborator takes the expected type, given by the target of the goal,
 into account when processing the expression that is being applied. In
-this case, however, ``apply`` would work just as well.
+this example, however, ``apply`` would work just as well.
+
+The second subgoal, which requires showing `q ∧ p`, is discharged by `apply And.intro; exact hq; exact hp`.
 
 You can see the resulting proof term with the ``#print`` command:
 
@@ -114,6 +109,15 @@ You can see the resulting proof term with the ``#print`` command:
 #  exact hp
 #print test
 ```
+
+Lean will print:
+```
+∀ (p q : Prop), p → q → p ∧ q ∧ p :=
+                fun p q hp hq => { left := hp, right := { left := hq, right := hp } }
+```
+
+This is the actual proof term that the tactics constructed. It can now be verified independently
+of the tactics and the rest of the Lean machinery if we so choose, by a trusted third-party tool, for example.
 
 You can write a tactic script incrementally. In VS Code, you can open
 a window to display messages by pressing ``Ctrl-Shift-Enter``, and
@@ -144,20 +148,22 @@ Unsurprisingly, it produces exactly the same proof term:
 #print test
 ```
 
-Multiple tactic applications can be written in a single line by concatenating with a semicolon.
+Multiple tactic applications can be written in a single line, concatenated with semicolons:
 
 ```lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
   apply And.intro hp; exact And.intro hq hp
 ```
 
-Tactics that may produce multiple subgoals often tag them. For
+Tactics that may produce multiple subgoals often *tag* them. For
 example, the tactic ``apply And.intro`` tagged the first subgoal as
-``left``, and the second as ``right``. In the case of the ``apply``
-tactic, the tags are inferred from the parameters' names used in the
-``And.intro`` declaration. You can structure your tactics using the
+``left``, and the second as ``right``. In this ``apply`` tactic invocation,
+the tags are inferred from the parameters' names used in the
+``And.intro`` declaration.
+
+You can structure your tactics using the
 notation ``case <tag> => <tactics>``. The following is a structured
-version of our first tactic proof in this chapter.
+version of our first tactic proof in this chapter:
 
 ```lean
 theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
@@ -168,6 +174,8 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
     case left => exact hq
     case right => exact hp
 ```
+
+<!-- Say someting about indentation sensitivity? -->
 
 You can solve the subgoal ``right`` before ``left`` using the ``case``
 notation:
@@ -189,7 +197,7 @@ block.
 
 For simple subgoals, it may not be worth selecting a subgoal using its
 tag, but you may still want to structure the proof. Lean also provides
-the "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
+the indentation-sensitive "bullet" notation ``. <tactics>`` (or ``· <tactics>``) for
 structuring proofs:
 
 ```lean
