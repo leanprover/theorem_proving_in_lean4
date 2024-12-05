@@ -598,7 +598,7 @@ def listAdd [Add α] : List α → List α → List α
 
 You are encouraged to experiment with similar examples in the exercises below.
 
-Local recursive declarations
+Local Recursive Declarations
 ---------
 
 You can define local recursive declarations using the `let rec` keyword.
@@ -633,7 +633,7 @@ theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
               : (replicate.loop a n as).length = n + as.length := by
     match n with
     | 0   => simp [replicate.loop]
-    | n+1 => simp [replicate.loop, aux n, Nat.add_succ, Nat.succ_add]
+    | n+1 => simp [replicate.loop, aux n, Nat.add_assoc, Nat.succ_add]
   exact aux n []
 ```
 
@@ -655,7 +655,7 @@ where
       : (replicate.loop a n as).length = n + as.length := by
     match n with
     | 0   => simp [replicate.loop]
-    | n+1 => simp [replicate.loop, aux n, Nat.add_succ, Nat.succ_add]
+    | n+1 => simp [replicate.loop, aux n, Nat.add_assoc, Nat.succ_add]
 ```
 
 Well-Founded Recursion and Induction
