@@ -178,9 +178,9 @@ fields were defined. Lean therefore provides the following alternative
 notations for defining elements of a structure type.
 
 ```
-    { (<field-name> := <expr>)* : structure-type }
+    { (<field-name> := <expr>,)* : structure-type }
     or
-    { (<field-name> := <expr>)* }
+    { (<field-name> := <expr>,)* }
 ```
 
 The suffix ``: structure-type`` can be omitted whenever the name of
