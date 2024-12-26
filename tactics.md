@@ -1100,7 +1100,7 @@ example (a b c : Nat) : a + b + c = a + c + b := by
 In the first example above, the first step rewrites ``a + b + c`` to
 ``a + (b + c)``. The next step applies commutativity to the term
 ``b + c``; without specifying the argument, the tactic would instead rewrite
-``a + (b + c)`` to ``(b + c) + a``. Finally, the last step applies
+``a + (b + c)`` to ``a + (c + b)``. Finally, the last step applies
 associativity in the reverse direction, rewriting ``a + (c + b)`` to
 ``a + c + b``. The next two examples instead apply associativity to
 move the parenthesis to the right on both sides, and then switch ``b``
