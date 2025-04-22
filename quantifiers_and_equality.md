@@ -379,6 +379,7 @@ variable (h2 : b = c + 1)
 variable (h3 : c = d)
 variable (h4 : e = 1 + d)
 
+include a b c d e h1 h2 h3 h4 in
 theorem T : a = e :=
   calc
     a = b      := h1
@@ -400,6 +401,7 @@ as follows:
 # variable (h2 : b = c + 1)
 # variable (h3 : c = d)
 # variable (h4 : e = 1 + d)
+include a b c d e h1 h2 h3 h4 in
 theorem T : a = e :=
   calc
     a = b      := by rw [h1]
@@ -423,6 +425,7 @@ shortened to this:
 # variable (h2 : b = c + 1)
 # variable (h3 : c = d)
 # variable (h4 : e = 1 + d)
+include a b c d e h1 h2 h3 h4 in
 theorem T : a = e :=
   calc
     a = d + 1  := by rw [h1, h2, h3]
@@ -438,6 +441,7 @@ Or even this:
 # variable (h2 : b = c + 1)
 # variable (h3 : c = d)
 # variable (h4 : e = 1 + d)
+include a b c d e h1 h2 h3 h4 in
 theorem T : a = e :=
   by rw [h1, h2, h3, Nat.add_comm, h4]
 ```
@@ -454,6 +458,7 @@ result, we can also prove the theorem as follows:
 # variable (h2 : b = c + 1)
 # variable (h3 : c = d)
 # variable (h4 : e = 1 + d)
+include a b c d e h1 h2 h3 h4 in
 theorem T : a = e :=
   by simp [h1, h2, h3, Nat.add_comm, h4]
 ```
