@@ -4,3 +4,5 @@
 out/
 .vs/
 .vscode/
+*/_out/*
+.DS_Store
