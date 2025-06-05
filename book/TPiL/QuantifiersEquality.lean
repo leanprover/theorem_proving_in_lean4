@@ -5,7 +5,9 @@ open Verso.Genre Manual
 open TPiL
 
 #doc (Manual) "Quantifiers and Equality" =>
-
+%%%
+tag := "quantifiers-and-equality"
+%%%
 
 ```setup
 variable {α : Type u} (p : α → Prop) (x y t : α) (r : α → α → Prop) {β : α → Type v}

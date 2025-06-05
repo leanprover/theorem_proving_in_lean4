@@ -507,8 +507,9 @@ block_extension Block.lean
     (allowToggle : Bool)
     (pre : Option Highlighted)
     (code : Array (Highlighted × Option (Highlighted.Span.Kind × String)))
-    (post : Option Highlighted) where
-  data := .arr #[.bool allowToggle, toJson pre, toJson code, toJson post]
+    (post : Option Highlighted)
+    (goalVisibility : HighlightHtmlM.VisibleProofStates := .none) where
+  data := .arr #[.bool allowToggle, toJson pre, toJson code, toJson post, toJson goalVisibility]
   traverse _ _ _ := pure none
   toTeX := none
   extraCss := [highlightingStyle]
@@ -518,8 +519,8 @@ block_extension Block.lean
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
-      let .arr #[.bool allowToggle, hlPreJson, hlJson, hlPostJson] := data
-        | HtmlT.logError "Expected four-element JSON for Lean code"
+      let .arr #[.bool allowToggle, hlPreJson, hlJson, hlPostJson, goalVisibilityJson] := data
+        | HtmlT.logError "Expected five-element JSON for Lean code"
           pure .empty
       let pre ←
         match FromJson.fromJson? (α := Option Highlighted) hlPreJson with
@@ -539,6 +540,12 @@ block_extension Block.lean
           HtmlT.logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
+      let visibility ←
+        match FromJson.fromJson? (α := HighlightHtmlM.VisibleProofStates) goalVisibilityJson with
+        | .error err =>
+          HtmlT.logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
+          return .empty
+        | .ok hl => pure hl
 
       let codeIndent := code.foldl (init := pre.map (·.indentation)) (fun i? y => i?.map (min · y.1.indentation)) |>.getD 0
 
@@ -548,7 +555,8 @@ block_extension Block.lean
       if allowToggle then
         if let some p := pre then
           let p := p.deIndent codeIndent
-          codeHtml := codeHtml ++ {{ <div class="hidden">{{← trimOneLeadingNl p|>.blockHtml "examples" (trim := false) }}</div> }}
+          let inner ← withVisibleProofStates visibility <|  trimOneLeadingNl p |>.blockHtml "examples" (trim := false)
+          codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
           codeString := codeString ++ p.toString
 
       let outClass
@@ -559,7 +567,7 @@ block_extension Block.lean
       for (cmd, out?) in code do
         let cmd := cmd.deIndent codeIndent
 
-        codeHtml := codeHtml ++ (← trimOneLeadingNl cmd |>.blockHtml "examples" (trim := false))
+        codeHtml := codeHtml ++ (← withVisibleProofStates visibility <| trimOneLeadingNl cmd |>.blockHtml "examples" (trim := false))
         codeString := codeString ++ cmd.toString
         if let some (k, out) := out? then
           codeHtml := codeHtml ++ {{ <div class={{outClass k}}><pre>{{out}}</pre></div> }}
@@ -567,7 +575,8 @@ block_extension Block.lean
       if allowToggle then
         if let some p := post then
           let p := p.deIndent codeIndent
-          codeHtml := codeHtml ++ {{ <div class="hidden">{{← trimOneLeadingNl p|>.blockHtml "examples" (trim := false) }}</div> }}
+          let inner ← withVisibleProofStates visibility <|  trimOneLeadingNl p |>.blockHtml "examples" (trim := false)
+          codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
           codeString := codeString ++ p.toString
 
       let i ← uniqueId
@@ -582,6 +591,130 @@ block_extension Block.lean
         {{script}}
         </script>
       }}
+
+def proofStateStyle := r#"
+.hl.lean.proof-state-view {
+  white-space: collapse;
+}
+.hl.lean.proof-state-view .tactic-state {
+  display: block;
+  left: 0;
+  padding: 0;
+  border: none;
+}
+
+.hl.lean.proof-state-view .tactic-state:has(.goal + .goal) {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.hl.lean.proof-state-view .tactic-state .goal {
+  margin: 0 !important;
+  align-self: flex-start;
+}
+"#
+
+block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted)) where
+  data := toJson goals
+  traverse _ _ _ := pure none
+  toTeX := none
+  extraCss := [highlightingStyle]
+  extraJs := [highlightingJs]
+  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy)]
+  extraCssFiles := [("tippy-border.css", tippy.border.css), ("proof-state.css", proofStateStyle)]
+  toHtml :=
+    open Verso.Output.Html in
+    some <| fun _ _ _ data _ => do
+      let goals ←
+        match fromJson? (α := Array (Highlighted.Goal Highlighted)) data with
+        | .ok v => pure v
+        | .error e =>
+          HtmlT.logError <| "Failed to deserialize proof state: " ++ e
+          return .empty
+      pure {{
+        <div class="hl lean proof-state-view" data-lean-context="examples">
+          <span class="tactic-state">
+            {{← if goals.isEmpty then
+                pure {{"All goals completed! 🐙"}}
+              else
+                withCollapsedSubgoals .never <|
+                  .seq <$> goals.mapIndexedM (fun ⟨i, _⟩ x => x.toHtml (·.toHtml) i)}}
+          </span>
+        </div>
+      }}
+
+inline_extension Inline.goal (goal : Highlighted.Goal Highlighted) where
+  data := toJson goal
+  traverse _ _ _ := pure none
+  toTeX := none
+  extraCss := [highlightingStyle]
+  extraJs := [highlightingJs]
+  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy)]
+  extraCssFiles := [("tippy-border.css", tippy.border.css)]
+  toHtml :=
+    open Verso.Output.Html in
+    some <| fun _ _ data _ => do
+      let goal ←
+        match fromJson? (α := Highlighted.Goal Highlighted) data with
+        | .ok v => pure v
+        | .error e =>
+          HtmlT.logError <| "Failed to deserialize proof goal: " ++ e
+          return .empty
+      pure {{
+        <code class="proof-goal-ref hl lean">
+          <span class="tactic">
+            {{goal.name.map (·.toString) |>.getD "<anonymous>"}}
+            <span class="tactic-state">
+              {{← goal.toHtml (·.toHtml) 0}}
+            </span>
+          </span>
+        </code>
+      }}
+
+def kbdCSS := r#"
+.kbd > code:not(:first-child)::before {
+  content: "-";
+}
+"#
+
+inline_extension Inline.kbd (items : Array String) where
+  data := toJson items
+  traverse _ _ _ := pure none
+  toTeX := none
+  extraCss := [kbdCSS]
+  toHtml :=
+    open Verso.Output.Html in
+    some <| fun _ _ data _ => do
+      let items ←
+        match fromJson? (α := Array String) data with
+        | .ok v => pure v
+        | .error e =>
+          HtmlT.logError <| "Failed to deserialize keyboard shortcut: " ++ e
+          return .empty
+      if let #[item] := items then
+        pure {{<code>{{item}}</code>}}
+      else
+        let items : Array Html := items.map (fun (s : String) => {{<code>s!"{s}"</code>}})
+        pure {{<span class="kbd">{{items}}</span>}}
+
+private def oneCodeStr [Monad m] [MonadError m] (inlines : Array (TSyntax `inline)) : m StrLit := do
+  let #[code] := inlines
+    | (if inlines.size == 0 then (throwError ·) else (throwErrorAt (mkNullNode inlines) ·)) "Expected one code element"
+  let `(inline|code($code)) := code
+    | throwErrorAt code "Expected a code element"
+  return code
+
+private def codeStrs [Monad m] [MonadError m] (inlines : Array (TSyntax `inline)) : m (Array StrLit) := do
+  let mut out := #[]
+  for i in inlines do
+    match i with
+    | `(inline|code($code)) =>
+      out := out.push code
+    | `(inline|$s:str) =>
+      unless s.getString.all (·.isWhitespace) do
+        throwErrorAt s "Expected a code literal"
+    | other => throwErrorAt other "Expected a code literal"
+  return out
 
 
 structure Kept (α : Type u) where
@@ -614,8 +747,36 @@ instance : ForIn m (Kept α) α := ⟨ForM.forIn⟩
 initialize recentHighlightsExt : EnvExtension (Kept Highlighted) ←
   registerEnvExtension (pure ⟨.replicate 12 .empty, 0, by simp⟩)
 
+
+def allProofInfo (hl : Highlighted) : Array Highlighted :=
+  go #[] hl
+where
+  go (acc : Array Highlighted) : Highlighted → Array Highlighted
+    | .seq xs =>
+      xs.foldl (init := acc) go
+    | .span _ x => go acc x
+    | .tactics gs _ _ x => gs.foldl (init := (go acc x)) (fromGoal · ·)
+    | .point .. | .text .. | .token .. => acc
+  fromGoal (acc : Array Highlighted) (g : Highlighted.Goal Highlighted) :=
+    g.hypotheses.foldl (init := acc.push g.conclusion) fun acc (x, k, hl) =>
+      acc.push (Highlighted.token ⟨k, x.toString⟩ ++ .text " : " ++ hl)
+
+
 def saveBackref (hl : Highlighted) : DocElabM Unit := do
+  -- Construct a document with all the proof states in it, so references can target them but they
+  -- don't eat up individual slots in the history ring
+  let hl := allProofInfo hl |>.foldl (init := hl) (· ++ .text "\n" ++ ·)
   modifyEnv (recentHighlightsExt.modifyState · (·.add hl))
+
+structure ProofState where
+  goals : Array (Highlighted.Goal Highlighted)
+  start : Nat
+  stop : Nat
+  «syntax» : Highlighted
+deriving Repr
+
+initialize proofStatesExt : EnvExtension (HashMap String ProofState) ←
+  registerEnvExtension (pure {})
 
 /-- Extracts all messages from the given code. -/
 def allInfo (hl : Highlighted) : Array (Highlighted.Span.Kind × String × Option Highlighted) :=
@@ -661,27 +822,120 @@ where
 
 section
 
+inductive ShowProofStates where
+  | none
+  | named (which : Array String)
+  | all
+
 structure LeanConfig where
   checkOutput : Bool
   suppressNamespaces : Option String
   allowVisible : Bool
+  showProofStates : ShowProofStates
 
 variable [Monad m] [MonadError m ] [MonadLiftT CoreM m]
 
+instance : FromArgVal ShowProofStates m where
+  fromArgVal := {
+    description := "`all`, `none`, or a string literal",
+    get := fun
+      | .name x =>
+        match x.getId with
+        | `all => pure .all
+        | `none => pure .none
+        | _ => do
+          let h ← MessageData.hint m!"Use 'all', 'none', or a string" #["all", "none", "NAME1 NAME2 ...".quote] (ref? := x)
+          throwErrorAt x m!"Expected 'all' or 'none' or a string literal\n{h}"
+      | .str s => pure <| .named <| (s.getString.splitOn " ").toArray
+      | .num n => do
+        let h ← MessageData.hint m!"Use 'all', 'none', or a string" #["all", "none", "NAME1 NAME2 ...".quote] (ref? := n)
+        throwErrorAt n m!"Expected 'all' or 'none' or a string literal\n{h}"
+  }
+
 instance : FromArgs LeanConfig m where
-  fromArgs := LeanConfig.mk <$> .namedD `check .bool true <*> .named `suppressNamespaces .string true <*> .namedD `allowVisible .bool true
+  fromArgs :=
+    LeanConfig.mk <$>
+      .namedD `check .bool true <*>
+      .named `suppressNamespaces .string true <*>
+      .namedD `allowVisible .bool true <*>
+      .namedD' `showProofStates .none
 end
+
+def isNewline (hl : Highlighted) : Bool :=
+  match hl with
+  | .text str => str == "\n"
+  | .token .. => false
+  | .seq xs => Id.run do
+    for h : i in [0:xs.size] do
+      if xs[i].isEmpty then continue
+      else if isNewline xs[i] then return xs.extract (i+1) |>.all (·.isEmpty)
+      else return false
+    return false
+  | .tactics _ _ _ x | .span _ x => isNewline x
+  | .point .. => false
+
+
+
+open SubVerso.Module in
+/--
+Leading anchor comments are always incorrect. They probably result from Lean placing them with the
+_next_ command, so we should move them back up before processing them.
+-/
+def fixupAnchorComments (items : Array ModuleItem) : Array ModuleItem := Id.run do
+  let mut out := #[]
+  let mut prev? : Option ModuleItem := none
+
+  for i in items do
+    let mut i := i
+    if prev?.isSome then
+      let mut lines := i.code.lines
+      while h : lines.size > 0 do
+        if isNewline lines[0] || (proofState? lines[0].toString |>.isOk) then
+          prev? := prev?.map (fun i => {i with code := i.code ++ lines[0]})
+          lines := lines.drop 1
+        else break
+      i := {i with code := .seq lines}
+      if let some prev := prev? then
+        out := out.push prev
+    prev? := some i
+  if let some prev := prev? then
+    out := out.push prev
+
+  return out
 
 @[code_block_expander lean]
 def lean : CodeBlockExpander
   | args, code => do
-    let {checkOutput, suppressNamespaces, allowVisible} ← parseThe LeanConfig args
+    let {checkOutput, suppressNamespaces, allowVisible, showProofStates} ← parseThe LeanConfig args
+    let mut showProofStates := showProofStates
     let codeStr := code.getString
     let contents ← extractFile codeStr suppressNamespaces
     let contents := contents.filter (!·.code.isEmpty)
     let (pre, mid, post) := splitExample' contents
+    let mid := fixupAnchorComments mid
     let pre : Option Highlighted := pre.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
-    let mid : Array (Highlighted × Option (Highlighted.Span.Kind × String)) ← mid.mapM fun item => do
+    let mut toShow : Array (Highlighted × Option (Highlighted.Span.Kind × String)) := #[]
+    let mut visibility : HighlightHtmlM.VisibleProofStates :=
+      match showProofStates with
+      | .none => .none
+      | .all => .all
+      | .named _ => .states #[]
+    for item in mid do
+      let code ←
+        match item.code.anchored (textAnchors := false) with
+        | .ok a =>
+          for (k, v) in a.proofStates.toArray do
+            if let .tactics goals start stop hl := v then
+              modifyEnv (proofStatesExt.modifyState · (·.insert k ⟨goals, start, stop, hl⟩))
+              if let (.states ss, .named xs) := (visibility, showProofStates) then
+                if k ∈ xs then
+                  visibility := .states (ss.push (start, stop))
+                  showProofStates := .named (xs.filter (· ≠ k))
+            else throwError "Unexpected syntax for proof state '{k}':{indentD <| repr v}"
+          pure a.code
+        | .error e =>
+          throwError "Error while extracting proof states:{indentD e}"
+      let item := {item with code}
       match item.kind with
       | ``Lean.Parser.Command.check | ``Lean.Parser.Command.eval | ``Lean.reduceCmd
       | ``Lean.Parser.Command.print | ``Lean.Parser.Command.printAxioms | ``Lean.Parser.Command.printEqns =>
@@ -692,16 +946,86 @@ def lean : CodeBlockExpander
             if let some (_, txt) := info? then
               if !eqMessages comment txt then throwError "Mismatch! Expected {comment} but got {txt}"
             else logError "Expected {comment} but no info was found."
-            pure (code, info?)
+            toShow := toShow.push (code, info?)
           else
-            pure (item.code, info?)
-        else pure (item.code, info?)
-      | _ => pure (item.code, none)
+            toShow := toShow.push (item.code, info?)
+        else toShow := toShow.push (item.code, info?)
+      | _ => toShow := toShow.push (item.code, none)
     let post : Option Highlighted := post.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
-    saveBackref (.seq <| mid.map (·.1))
-    return #[← ``(Block.other (Block.lean $(quote allowVisible) $(quote pre) $(quote mid) $(quote post)) #[])]
+    saveBackref (.seq <| toShow.map (·.1))
+    if let .named xs := showProofStates then
+      unless xs.isEmpty do
+        logWarning m!"Unused proof state names: {m!", ".joinSep (xs.map (m!"'{·}'")).toList}"
+    return #[← ``(Block.other (Block.lean $(quote allowVisible) $(quote pre) $(quote toShow) $(quote post) $(quote visibility)) #[])]
 where
   eqMessages (s1 s2 : String) := SubVerso.Examples.Messages.messagesMatch (s1.replace "\n" " ") (s2.replace "\n" " ")
+
+section
+
+structure ProofStateConfig where
+  name : StrLit
+
+structure GoalConfig where
+  name : StrLit
+
+variable [Monad m] [MonadError m ] [MonadLiftT CoreM m]
+
+private def strOrName : ValDesc m StrLit where
+  description := "identifier or string literal"
+  get
+    | .name x => pure <| Syntax.mkStrLit x.getId.toString (info := x.raw.getHeadInfo)
+    | .str s => pure s
+    | .num n => throwErrorAt n "Expected identifier or string literal"
+
+instance : FromArgs ProofStateConfig m where
+  fromArgs := ProofStateConfig.mk <$> .positional `name strOrName
+
+instance : FromArgs GoalConfig m where
+  fromArgs := GoalConfig.mk <$> .positional `name strOrName
+
+end
+
+@[code_block_expander proofState]
+def proofState : CodeBlockExpander
+  | args, code => do
+    let {name} ← parseThe ProofStateConfig args
+    let some {goals, ..} := (proofStatesExt.getState (← getEnv))[name.getString]?
+      | let allStates := (proofStatesExt.getState (← getEnv)).keys
+        let h ←
+          if allStates.isEmpty then
+            pure <| MessageData.hint' "Name a proof state with a suitable PROOF_STATE: comment"
+          else
+            MessageData.hint "Use a proof state name:" (allStates.toArray.map ({suggestion := .string ·})) (ref? := some name)
+        logErrorAt name m!"Not found: {name.getString}\n{h}"
+        return #[← ``(sorry)]
+    let mut goalView := ""
+    for g in goals do
+      goalView := goalView ++ g.toString ++ "\n\n"
+    goalView := goalView.trimRight ++ "\n"
+    _ ← ExpectString.expectString "proof" code goalView
+    return #[← ``(Block.other (Block.goals $(quote goals)) #[])]
+
+@[role_expander goal]
+def goal : RoleExpander
+  | args, inls => do
+    let {name} ← parseThe GoalConfig args
+    let caseTag ← oneCodeStr inls
+    let some {goals, ..} := (proofStatesExt.getState (← getEnv))[name.getString]?
+      | logErrorAt name m!"Not found: {name.getString}"
+        return #[← ``(sorry)]
+    let goal? := goals.find? fun
+      | {name := some x, ..} => caseTag.getString == x.toString
+      | _ => false
+    let some goal := goal?
+      | let validTags := goals.filterMap (Name.toString <$> ·.name)
+        let h ←
+          if validTags.isEmpty then
+            pure <| MessageData.hint' m!""
+          else
+            MessageData.hint m!"Use a case label:" (validTags.map ({suggestion := .string ·})) (ref? := some caseTag)
+        logErrorAt caseTag m!"Not found: {caseTag.getString}\n{h}"
+        return #[← ``(sorry)]
+    return #[← ``(Inline.other (Inline.goal $(quote goal)) #[])]
 
 structure Helper where
   highlight (term : String) (type? : Option String) : IO Highlighted
@@ -884,16 +1208,25 @@ def TODO : DirectiveExpander
 def TODOinline : RoleExpander
   | _, _ => pure #[]
 
-
-private def oneCodeStr [Monad m] [MonadError m] (inlines : Array (TSyntax `inline)) : m StrLit := do
-  let #[code] := inlines
-    | (if inlines.size == 0 then (throwError ·) else (throwErrorAt (mkNullNode inlines) ·)) "Expected one code element"
-  let `(inline|code($code)) := code
-    | throwErrorAt code "Expected a code element"
-  return code
-
 @[role_expander kw]
 def kw : RoleExpander
+  | args, inls => do
+    ArgParse.done.run args
+    let kw ← oneCodeStr inls
+    let hl : Highlighted := .token ⟨.keyword none none none, kw.getString⟩ -- TODO kw xref
+    return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote kw.getString)])]
+
+@[role_expander attr]
+def attr : RoleExpander
+  | args, inls => do
+    ArgParse.done.run args
+    let kw ← oneCodeStr inls
+    let hl : Highlighted := .token ⟨.keyword none none none, kw.getString⟩ -- TODO attr xref
+    return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote kw.getString)])]
+
+
+@[role_expander tactic]
+def tactic : RoleExpander
   | args, inls => do
     ArgParse.done.run args
     let kw ← oneCodeStr inls
@@ -904,8 +1237,8 @@ def kw : RoleExpander
 def kbd : RoleExpander
   | args, inls => do
     ArgParse.done.run args
-    let kw ← oneCodeStr inls
-    return #[← ``(Inline.code $(quote kw.getString))]
+    let kbd ← codeStrs inls
+    return #[← ``(Inline.other (Inline.kbd $(quote <| kbd.map (·.getString))) #[])]
 
 @[role_expander option]
 def option : RoleExpander
@@ -1014,10 +1347,16 @@ def empty : RoleExpander
 private def keywords := [
   "#print", "#eval", "#print axioms",
   "noncomputable",
-  "def", "example", "#reduce", "#check", "macro_rules", "axiom", "if", "then", "else", "show", "have", "calc", "simp", "rw",
+  "def", "example", "#reduce", "#check", "macro_rules", "axiom", "if", "then", "else", "show", "have", "calc",
   "universe", "section", "end", "variable", "open", "set_option",
   "let", "fun"
 ]
+
+private def tactics := [
+  "if", "then", "else", "show", "have", "calc", "simp", "rw",
+  "let", "fun", "<;>"
+]
+
 
 private def leanLits := [
   "→", "->", ";", "×", ".", "_", "⟨", "⟩"
@@ -1026,7 +1365,7 @@ private def leanLits := [
 
 open MessageData (hint) in
 /--
-Internal detail of anchor suggestion mechanism.
+Internal detail of suggestion mechanism.
 -/
 @[inline_expander Verso.Syntax.code]
 private def suggest : InlineExpander
@@ -1053,12 +1392,20 @@ private def suggest : InlineExpander
         suggs := suggs.push <| "{lean}`" ++ str' ++ "`"
       catch e =>
         exns := exns.push e
+      if str' ∈ tactics then
+        suggs := suggs.push <| "{tactic}`" ++ str' ++ "`"
+
       for prev in recentHighlightsExt.getState (← getEnv) do
         if let some _ := prev.matchingExpr? str' then
           suggs := suggs.push <| "{leanRef}`" ++ str' ++ "`"
           break
       if str' ∈ leanLits then
         suggs := suggs.push <| "{lit}`" ++ str' ++ "`"
+
+      for (name, {goals := gs, ..}) in proofStatesExt.getState (← getEnv) do
+        let name := if name.any (·.isWhitespace) then name.quote else name
+        if gs.any (Name.toString <$> ·.name |>.isEqSome str') then
+          suggs := suggs.push <| "{goal " ++ name ++ "}`" ++ str' ++ "`"
 
       if suggs.isEmpty then
         let h ← hint m!"Add the `lit` role to indicate that it denotes literal characters:" #["{lit}`" ++ str' ++ "`"]
