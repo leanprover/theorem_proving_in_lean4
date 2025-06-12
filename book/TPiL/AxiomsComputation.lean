@@ -5,6 +5,9 @@ open Verso.Genre Manual
 open TPiL
 
 #doc (Manual) "Axioms and Computation" =>
+%%%
+tag := "axioms-and-computation"
+%%%
 
 We have seen that the version of the Calculus of Constructions that
 has been implemented in Lean includes dependent function types,
@@ -21,8 +24,8 @@ computational content of definitions and theorems, in ways we will
 explore here.
 
 Lean is designed to support both computational and classical
-reasoning. Users that are so inclined can stick to a "computationally
-pure" fragment, which guarantees that closed expressions in the system
+reasoning. Users that are so inclined can stick to a “computationally
+pure” fragment, which guarantees that closed expressions in the system
 evaluate to canonical normal forms. In particular, any closed
 computationally pure expression of type {lean}`Nat`, for example, will
 reduce to a numeral.
@@ -43,7 +46,7 @@ compatible with compilation to bytecode.
 
 The standard library also defines a choice principle that is entirely
 antithetical to a computational interpretation, since it magically
-produces "data" from a proposition asserting its existence. Its use is
+produces “data” from a proposition asserting its existence. Its use is
 essential to some classical constructions, and users can import it
 when needed. But expressions that use this construction to produce
 data do not have computational content, and in Lean we are required to
@@ -81,7 +84,7 @@ geometry dealt with constructions of geometric objects, algebra was
 concerned with algorithmic solutions to systems of equations, and
 analysis provided means to compute the future behavior of systems
 evolving over time. From the proof of a theorem to the effect that
-"for every {lean}`x`, there is a {lean}`y` such that ...", it was generally
+“for every {lean}`x`, there is a {lean}`y` such that ...”, it was generally
 straightforward to extract an algorithm to compute such a {lean}`y` given
 {lean}`x`.
 :::
@@ -91,7 +94,7 @@ mathematical arguments pushed mathematicians to develop new styles of
 reasoning that suppress algorithmic information and invoke
 descriptions of mathematical objects that abstract away the details of
 how those objects are represented. The goal was to obtain a powerful
-"conceptual" understanding without getting bogged down in
+“conceptual” understanding without getting bogged down in
 computational details, but this had the effect of admitting
 mathematical theorems that are simply _false_ on a direct
 computational reading.
@@ -119,7 +122,7 @@ notation "... " e "..." => e
 Computationally, the purest part of dependent type theory avoids the
 use of {lean}`Prop` entirely. Inductive types and dependent function types
 can be viewed as data types, and terms of these types can be
-"evaluated" by applying reduction rules until no more rules can be
+“evaluated” by applying reduction rules until no more rules can be
 applied. In principle, any closed term (that is, term with no free
 variables) of type {lean}`Nat` should evaluate to a numeral, {lean}`succ (... (succ zero)...)`.
 :::
@@ -134,10 +137,10 @@ Introducing a proof-irrelevant {lean}`Prop` and marking theorems
 irreducible represents a first step towards separation of
 concerns. The intention is that elements of a type {lean}`p : Prop` should
 play no role in computation, and so the particular construction of a
-term {lean}`prf : p` is "irrelevant" in that sense. One can still define
+term {lean}`prf : p` is “irrelevant” in that sense. One can still define
 computational objects that incorporate elements of type {lean}`Prop`; the
 point is that these elements can help us reason about the effects of
-the computation, but can be ignored when we extract "code" from the
+the computation, but can be ignored when we extract “code” from the
 term. Elements of type {lean}`Prop` are not entirely innocuous,
 however. They include equations {lean}`s = t : α` for any type {lean}`α`, and
 such equations can be used as casts, to type check terms. Below, we
@@ -243,7 +246,7 @@ universe u v
 :::
 
 From a classical, set-theoretic perspective, this is exactly what it
-means for two functions to be equal. This is known as an "extensional"
+means for two functions to be equal. This is known as an “extensional”
 view of functions. From a constructive perspective, however, it is
 sometimes more natural to think of functions as algorithms, or
 computer programs, that are presented in some explicit way. It is
@@ -252,7 +255,7 @@ answer for every input despite the fact that they are syntactically
 quite different. In much the same way, you might want to maintain a
 view of functions that does not force you to identify two functions
 that have the same input / output behavior. This is known as an
-"intensional" view of functions.
+“intensional” view of functions.
 
 In fact, function extensionality follows from the existence of
 quotients, which we describe in the next section. In the Lean standard
@@ -396,12 +399,12 @@ notation "⟦" x "⟧" => Quot.mk _ x
 
 ```
 Let {lean}`α` be any type, and let {lean}`r` be an equivalence relation on
-{lean}`α`. It is mathematically common to form the "quotient" {lean}`α / r`,
-that is, the type of elements of {lean}`α` "modulo" {lean}`r`. Set
+{lean}`α`. It is mathematically common to form the “quotient” {lean}`α / r`,
+that is, the type of elements of {lean}`α` “modulo” {lean}`r`. Set
 theoretically, one can view {lean}`α / r` as the set of equivalence
 classes of {lean}`α` modulo {lean}`r`. If {lean}`f : α → β` is any function that
 respects the equivalence relation in the sense that for every
-{lean}`x y : α`, {lean}`r x y` implies {lean}`f x = f y`, then {lean}`f` "lifts" to a function
+{lean}`x y : α`, {lean}`r x y` implies {lean}`f x = f y`, then {lean}`f` “lifts” to a function
 {lean}`f' : α / r → β` defined on each equivalence class {lean type:="Quot r"}`⟦x⟧` by
 {lean}`f' ⟦x⟧ = f x`. Lean's standard library extends the Calculus of
 Constructions with additional constants that perform exactly these
@@ -910,7 +913,7 @@ We close this section with some hints as to why the quotient
 construction implies function extensionality. It is not hard to show
 that extensional equality on the {lean}`(x : α) → β x` is an equivalence
 relation, and so we can consider the type {lean}`extfun α β` of functions
-"up to equivalence." Of course, application respects that equivalence
+“up to equivalence.” Of course, application respects that equivalence
 in the sense that if {lean}`f₁` is equivalent to {lean}`f₂`, then {lean}`f₁ a` is
 equal to {lean}`f₂ a`. Thus application gives rise to a function
 {lean}`extfun_app : extfun α β → (x : α) → β x`. But for every {lean}`f`,
@@ -1257,7 +1260,7 @@ end Hidden
 
 Consequences of excluded middle include double-negation elimination,
 proof by cases, and proof by contradiction, all of which are described
-in the [Section Classical Logic](./propositions_and_proofs.md#classical-logic).
+in the {ref "classical-logic"}[Section Classical Logic].
 The law of the excluded middle and propositional extensionality imply propositional completeness:
 
 ```lean (suppressNamespaces := "Hidden") (allowVisible := false)
@@ -1303,11 +1306,11 @@ left inverse. To define the left inverse {leanRef}`linv`, we use a dependent
 if-then-else expression. Recall that {lean}`if h : c then t else e` is
 notation for {lean}`dite c (fun h : c => t) (fun h : ¬ c => e)`. In the definition
 of {leanRef}`linv`, choice is used twice: first, to show that
-{leanRef}`(∃ a : α, f a = b)` is "decidable," and then to choose an {leanRef}`a` such that
+{leanRef}`(∃ a : α, f a = b)` is “decidable,” and then to choose an {leanRef}`a` such that
 {leanRef}`f a = b`. Notice that {lean}`propDecidable` is a scoped instance and is activated
 by the {leanRef}`open Classical` command. We use this instance to justify
 the if-then-else expression. (See also the discussion in
-[Section Decidable Propositions](./type_classes.md#decidable-propositions)).
+{ref "decidable-propositions"}[Section Decidable Propositions]).
 
 
 ```lean

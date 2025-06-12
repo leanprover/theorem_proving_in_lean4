@@ -22,7 +22,7 @@ of this chapter, you will understand much of what this means.
 
 # Simple Type Theory
 
-"Type theory" gets its name from the fact that every expression has an
+“Type theory” gets its name from the fact that every expression has an
 associated _type_. For example, in a given context, {lit}`x + 0` may
 denote a natural number and {lit}`f` may denote a function on the natural
 numbers. For those who like precise definitions, a Lean natural number
@@ -63,7 +63,7 @@ def b2 : Bool := false
 Any text between {lit}`/-` and {lit}`-/` constitutes a comment block that is
 ignored by Lean. Similarly, two dashes {lean}`--` indicate that the rest of
 the line contains a comment that is also ignored. Comment blocks can
-be nested, making it possible to "comment out" chunks of code, just as
+be nested, making it possible to “comment out” chunks of code, just as
 in many programming languages.
 
 The {kw}`def` keyword declares new constant symbols into the
@@ -94,7 +94,7 @@ and the Unicode symbol {lit}`→` as a more compact version of {lit}`->`.
 :::
 
 ```lean (check := false)
-#check Nat → Nat      -- type the arrow as "\to" or "\r"
+#check Nat → Nat      -- type the arrow as “\to” or "\r"
 #check Nat -> Nat     -- alternative ASCII notation
 
 #check Nat × Nat      -- type the product as "\times"
@@ -149,14 +149,16 @@ another function that takes a natural number and returns a natural
 number. In type theory, this is generally more convenient than
 writing {lean}`Nat.add` as a function that takes a pair of natural numbers as
 input and returns a natural number as output. For example, it allows
-you to "partially apply" the function {lean}`Nat.add`.  The example above shows
+you to “partially apply” the function {lean}`Nat.add`.  The example above shows
 that {lean}`Nat.add 3` has type {lean}`Nat → Nat`, that is, {lean}`Nat.add 3` returns a
-function that "waits" for a second argument, {lean}`n`, which is then
+function that “waits” for a second argument, {lean}`n`, which is then
 equivalent to writing {lean}`Nat.add 3 n`.
 :::comment
+```
 <!-- Taking a function ``h`` of type ``Nat
-× Nat → Nat`` and "redefining" it to look like ``g`` is a process
+× Nat → Nat`` and “redefining” it to look like ``g`` is a process
 known as _currying_. -->
+```
 :::
 
 
@@ -171,8 +173,7 @@ its two components.
 # Types as objects
 
 One way in which Lean's dependent type theory extends simple type
-theory is that types themselves --- entities like {lean}`Nat` and {lean}`Bool`
---- are first-class citizens, which is to say that they themselves are
+theory is that types themselves—entities like {lean}`Nat` and {lean}`Bool`—are first-class citizens, which is to say that they themselves are
 objects. For that to be the case, each of them also has to have a
 type.
 
@@ -256,7 +257,7 @@ hierarchy of types:
 universe n
 variable (n : Nat)
 ````
-Think of {lean}`Type 0` as a universe of "small" or "ordinary" types.
+Think of {lean}`Type 0` as a universe of “small” or “ordinary” types.
 {lean}`Type 1` is then a larger universe of types, which contains {lean}`Type 0`
 as an element, and {lean}`Type 2` is an even larger universe of types,
 which contains {lean}`Type 1` as an element. The list is infinite:
@@ -273,7 +274,7 @@ an abbreviation for {lean}`Type 0`:
 The following table may help concretize the relationships being discussed.
 Movement along the x-axis represents a change in the universe, while movement
 along the y-axis represents a change in what is sometimes referred to as
-"degree".
+“degree”.
 
 :::table
 
@@ -449,16 +450,16 @@ def b : γ := whatever
 ````
 
 The general form of a lambda expression is {lean}`fun (x : α) => t`, where
-the variable {leanRef}`x` is a "bound variable": it is really a placeholder,
-whose "scope" does not extend beyond the expression {leanRef}`t`.  For
+the variable {leanRef}`x` is a “bound variable”: it is really a placeholder,
+whose “scope” does not extend beyond the expression {leanRef}`t`.  For
 example, the variable {lit}`b` in the expression {lean}`fun (b : β) (x : α) => b`
 has nothing to do with the constant {lean}``b`` declared earlier.  In fact,
 the expression denotes the same function as {lean}`fun (u : β) (z : α) => u`.
 
 
 Formally, expressions that are the same up to a renaming of bound
-variables are called _alpha equivalent_, and are considered "the
-same." Lean recognizes this equivalence.
+variables are called _alpha equivalent_, and are considered “the
+same.” Lean recognizes this equivalence.
 :::
 
 :::setup
@@ -484,7 +485,7 @@ def g (s : String) : Bool := s.length > 0
 
 As expected, the expression {lean}`(fun x : Nat =>  x) 1` has type {lean}`Nat`.
 In fact, more should be true: applying the expression {lean}`(fun x : Nat => x)` to
-{lean}`1` should "return" the value {lean}`1`. And, indeed, it does:
+{lean}`1` should “return” the value {lean}`1`. And, indeed, it does:
 
 ```lean
 #eval (fun x : Nat => x) 1     -- 1
@@ -495,7 +496,7 @@ You will see later how these terms are evaluated. For now, notice that
 this is an important feature of dependent type theory: every term has
 a computational behavior, and supports a notion of _normalization_. In
 principle, two terms that reduce to the same value are called
-_definitionally equal_. They are considered "the same" by Lean's type
+_definitionally equal_. They are considered “the same” by Lean's type
 checker, and Lean does its best to recognize and support these
 identifications.
 
@@ -505,6 +506,7 @@ use the command {kw}`#eval` to execute expressions, and it is the
 preferred way of testing your functions.
 
 :::comment
+````
 <!--
 Note that `#eval` and
 `#reduce` are _not_ equivalent. The command `#eval` first compiles
@@ -521,6 +523,7 @@ expressions and proofs. It is less efficient than ``#eval``, and
 treats all foreign functions as opaque constants. You will learn later
 that there are some other differences between the two commands.
 -->
+````
 :::
 
 # Definitions
@@ -639,7 +642,7 @@ This means {leanRef}`compose` is a function that takes any two functions as inpu
 arguments, so long as those functions each take only one input.
 The type algebra {leanRef}`β → γ` and {leanRef}`α → β` means it is a requirement
 that the type of the output of the second function must match the
-type of the input to the first function - which makes sense, otherwise
+type of the input to the first function—which makes sense, otherwise
 the two functions would not be composable.
 
 {leanRef}`compose` also takes a 3rd argument of type {leanRef}`α` which
@@ -672,7 +675,7 @@ def square (x : Nat) : Nat :=
 variable (t1 : α) (t2 : β)
 ````
 
-Lean also allows you to introduce "local" definitions using the
+Lean also allows you to introduce “local” definitions using the
 {kw}`let` keyword. The expression {lean}`let a := t1; t2` is
 definitionally equal to the result of replacing every occurrence of
 {leanRef}`a` in {leanRef}`t2` by {leanRef}`t1`.
@@ -742,6 +745,9 @@ def foo := let a := Nat; fun x : a => x + 2
 ::::
 
 # Variables and Sections
+%%%
+tag := "variables-and-sections"
+%%%
 
 Consider the following three function definitions:
 ```lean
@@ -822,6 +828,9 @@ have to close it using the same name. Sections can also be nested,
 which allows you to declare new variables incrementally.
 
 # Namespaces
+%%%
+tag := "namespaces"
+%%%
 
 Lean provides you with the ability to group definitions into nested,
 hierarchical _namespaces_:
@@ -857,7 +866,7 @@ open Foo
 ```
 
 When you declare that you are working in the namespace {leanRef}`Foo`, every
-identifier you declare has a full name with prefix "{lit}`Foo.`". Within
+identifier you declare has a full name with prefix “{lit}`Foo.`”. Within
 the namespace, you can refer to identifiers by their shorter names,
 but once you end the namespace, you have to use the longer names.
 Unlike {kw}`section`, namespaces require a name. There is only one
@@ -1076,6 +1085,9 @@ The functions {leanRef}`f` and {leanRef}`g` above denote the same function.
 
 
 # Implicit Arguments
+%%%
+tag := "implicit-arguments"
+%%%
 
 Suppose we have an implementation of lists as:
 
@@ -1127,7 +1139,7 @@ This is a central feature of dependent type theory: terms carry a lot
 of information, and often some of that information can be inferred
 from the context. In Lean, one uses an underscore, {lit}`_`, to specify
 that the system should fill in the information automatically. This is
-known as an "implicit argument."
+known as an “implicit argument.”
 
 ```lean
 universe u
@@ -1219,7 +1231,7 @@ above.
 Lean has very complex mechanisms for instantiating implicit arguments,
 and we will see that they can be used to infer function types,
 predicates, and even proofs. The process of instantiating these
-"holes," or "placeholders," in a term is often known as
+“holes,” or “placeholders,” in a term is often known as
 _elaboration_. The presence of implicit arguments means that at times
 there may be insufficient information to fix the meaning of an
 expression precisely. An expression like {lean}`id` or {lean}`List.nil` is

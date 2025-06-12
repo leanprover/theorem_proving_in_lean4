@@ -11,16 +11,16 @@ In this chapter, we describe an alternative approach to constructing
 proofs, using _tactics_.  A proof term is a representation of a
 mathematical proof; tactics are commands, or instructions, that
 describe how to build such a proof. Informally, you might begin a
-mathematical proof by saying "to prove the forward direction, unfold
-the definition, apply the previous lemma, and simplify." Just as these
+mathematical proof by saying “to prove the forward direction, unfold
+the definition, apply the previous lemma, and simplify.” Just as these
 are instructions that tell the reader how to find the relevant proof,
 tactics are instructions that tell Lean how to construct a proof
 term. They naturally support an incremental style of writing proofs,
 in which you decompose a proof and work on goals one step at a time.
 
 We will describe proofs that consist of sequences of tactics as
-"tactic-style" proofs, to contrast with the ways of writing proof
-terms we have seen so far, which we will call "term-style"
+“tactic-style” proofs, to contrast with the ways of writing proof
+terms we have seen so far, which we will call “term-style”
 proofs. Each style has its own advantages and disadvantages. For
 example, tactic-style proofs can be harder to read, because they
 require the reader to predict or guess the results of each
@@ -56,7 +56,7 @@ You can write this goal as follows:
 ```
 
 
-Indeed, if you replace the "sorry" by an underscore in the example
+Indeed, if you replace the “sorry” by an underscore in the example
 above, Lean will report that it is exactly this goal that has been
 left unsolved.
 
@@ -217,13 +217,13 @@ the proof state is:
 ⊢ q
 ```
 
-We say that {leanRef}`case` is "focusing" on the selected goal.  Moreover, Lean flags an error
+We say that {leanRef}`case` is “focusing” on the selected goal.  Moreover, Lean flags an error
 if the selected goal is not fully solved at the end of the {leanRef}`case`
 block.
 
 For simple subgoals, it may not be worth selecting a subgoal using its
 tag, but you may still want to structure the proof. Lean also provides
-the "bullet" notation {lit}`. <tactics>` (or {lit}`· <tactics>`) for
+the “bullet” notation {lit}`. <tactics>` (or {lit}`· <tactics>`) for
 structuring proofs:
 
 ```lean
@@ -724,7 +724,7 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
       | intro hp hr => constructor; exact hp; apply Or.inr; exact hr
 ```
 
-You will see in [Chapter Inductive Types](./inductive_types.md) that
+You will see in {ref "inductive-types"}[Chapter Inductive Types] that
 these tactics are quite general. The {leanRef}`cases` tactic can be used to
 decompose any element of an inductively defined type; {leanRef}`constructor`
 always applies the first applicable constructor of an inductively defined type.
@@ -795,7 +795,7 @@ example (P : Nat → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : Nat) : P
 ```
 
 The {leanRef}`cases` tactic, and its companion, the {tactic}`induction` tactic, are discussed in greater detail in
-the [Tactics for Inductive Types](./inductive_types.md#tactics-for-inductive-types) section.
+the {ref "tactics-for-inductive-types"}[Tactics for Inductive Types] section.
 
 :::leanFirst
 The {leanRef}`contradiction` tactic searches for a contradiction among the hypotheses of the current goal:
@@ -826,7 +826,7 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
 :::
 
 :::leanFirst
-You can "combine" {leanRef}`intro` with {tactic}`match` and write the previous examples as follows:
+You can “combine” {leanRef}`intro` with {tactic}`match` and write the previous examples as follows:
 
 ```lean
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
@@ -1110,7 +1110,7 @@ doesn't work, it invokes the assumption tactic.
 
 :::leanFirst
 You will have no doubt noticed by now that tactics can fail. Indeed,
-it is the "failure" state that causes the _first_ combinator to
+it is the “failure” state that causes the _first_ combinator to
 backtrack and try the next tactic. The {leanRef}`try` combinator builds a
 tactic that always succeeds, though possibly in a trivial way:
 {tactic}`try`{lit}` t` executes {lit}`t` and reports success, even if {lit}`t` fails. It is
@@ -1178,7 +1178,7 @@ the same effect as {lit}`t`.
 # Rewriting
 
 The {tactic}`rw` tactic and the {tactic}`simp` tactic
-were introduced briefly in [Calculational Proofs](./quantifiers_and_equality.md#calculational-proofs). In this
+were introduced briefly in {ref "calculational-proofs"}[Calculational Proofs]. In this
 section and the next, we discuss them in greater detail.
 
 :::setup
@@ -1306,6 +1306,9 @@ example (n : Nat) (h : n = 0) (t : Tuple α n) : Tuple α 0 := by
 :::
 
 # Using the Simplifier
+%%%
+tag := "using-the-simplifier"
+%%%
 
 Whereas {tactic}`rw` is designed as a surgical tool for manipulating a
 goal, the simplifier offers a more powerful form of automation. A
@@ -1350,7 +1353,7 @@ example (x y z : Nat) (p : Nat → Prop)
   simp at h; assumption
 ```
 
-Moreover, you can use a "wildcard" asterisk to simplify all the hypotheses and the goal:
+Moreover, you can use a “wildcard” asterisk to simplify all the hypotheses and the goal:
 
 ```lean
 attribute [local simp] Nat.mul_comm Nat.mul_assoc Nat.mul_left_comm
@@ -1587,7 +1590,7 @@ example (xs ys : List Nat) (p : List Nat → Prop)
 Once the attribute is applied, however, there is no way to permanently
 remove it; it persists in any file that imports the one where the
 attribute is assigned. As we will discuss further in
-[Attributes](./interacting_with_lean.md#attributes), one can limit the scope of an attribute to the
+{ref "attributes"}[Attributes], one can limit the scope of an attribute to the
 current file or section using the {leanRef}`local` modifier:
 
 ```lean
@@ -1616,8 +1619,8 @@ end
 Outside the section, the simplifier will no longer use
 {leanRef}`reverse_mk_symm` by default.
 
-Note that the various {leanRef}`simp` options we have discussed --- giving an
-explicit list of rules, and using {leanRef}`at` to specify the location --- can be combined,
+Note that the various {leanRef}`simp` options we have discussed—giving an
+explicit list of rules, and using {leanRef}`at` to specify the location—can be combined,
 but the order they are listed is rigid. You can see the correct order
 in an editor by placing the cursor on the {leanRef}`simp` identifier to see
 the documentation string that is associated with it.

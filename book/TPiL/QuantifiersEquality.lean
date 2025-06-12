@@ -28,8 +28,8 @@ relation on {lean}`α`: given {lean}`x y : α`, {lean}`r x y` denotes the assert
 that {lean}`x` is related to {lean}`y`.
 
 The universal quantifier, {lean}`∀ x : α, p x` is supposed to denote the
-assertion that "for every {lean}`x : α`, {lean}`p x`" holds. As with the
-propositional connectives, in systems of natural deduction, "forall"
+assertion that “for every {lean}`x : α`, {lean}`p x`” holds. As with the
+propositional connectives, in systems of natural deduction, “forall”
 is governed by an introduction and elimination rule. Informally, the
 introduction rule states:
 
@@ -131,7 +131,7 @@ variable (hab : r a b) (hbc : r b c)
 
 Think about what is going on here. When we instantiate {leanRef}`trans_r` at
 the values {leanRef}`a b c`, we end up with a proof of {leanRef}`r`{lit}` `{leanRef}`a b`{lit}` → `{leanRef}`r`{lit}` `{leanRef}`b c`{lit}` → `{leanRef}`r`{lit}` `{leanRef}`a`{lit}` `{leanRef}`c`.
-Applying this to the "hypothesis" {leanRef}`hab : r a b`, we get a proof
+Applying this to the “hypothesis” {leanRef}`hab : r a b`, we get a proof
 of the implication {leanRef}`r`{lit}` `{leanRef}`b c`{lit}` → `{leanRef}`r`{lit}` `{leanRef}`a`{lit}` `{leanRef}`c`. Finally, applying it to the
 hypothesis {leanRef}`hbc` yields a proof of the conclusion {leanRef}`r`{lit}` `{leanRef}`a`{lit}` `{leanRef}`c`.
 
@@ -189,7 +189,7 @@ maximum of {lit}`i` and {lit}`j` if {lit}`j` is not {lit}`0`, and {lit}`0` other
 
 The idea is as follows. If {lit}`j` is not {lit}`0`, then {lean}`(x : α) → β` is
 an element of {lean}`Sort (max i j)`. In other words, the type of
-dependent functions from {lean}`α` to {lean}`β` "lives" in the universe whose
+dependent functions from {lean}`α` to {lean}`β` “lives” in the universe whose
 index is the maximum of {lit}`i` and {lit}`j`. Suppose, however, that {lean}`β`
 is of {lean}`Sort 0`, that is, an element of {lean}`Prop`. In that case,
 {lean}`(x : α) → β` is an element of {lean}`Sort 0` as well, no matter which
@@ -199,13 +199,13 @@ proposition. This reflects the interpretation of {lean}`Prop` as the type
 of propositions rather than data, and it is what makes {lean}`Prop`
 _impredicative_.
 
-The term "predicative" stems from foundational developments around the
+The term “predicative” stems from foundational developments around the
 turn of the twentieth century, when logicians such as Poincaré and
-Russell blamed set-theoretic paradoxes on the "vicious circles" that
+Russell blamed set-theoretic paradoxes on the “vicious circles” that
 arise when we define a property by quantifying over a collection that
 includes the very property being defined. Notice that if {lean}`α` is any
 type, we can form the type {lean}`α → Prop` of all predicates on {lean}`α`
-(the "power type of {lean}`α`"). The impredicativity of {lean}`Prop` means that we
+(the “power type of {lean}`α`”). The impredicativity of {lean}`Prop` means that we
 can form propositions that quantify over {lean}`α → Prop`. In particular,
 we can define predicates on {lean}`α` by quantifying over all predicates
 on {lean}`α`, which is exactly the type of circularity that was once
@@ -391,6 +391,9 @@ briefly in the next section, and then in greater detail in the next
 chapter.
 
 # Calculational Proofs
+%%%
+tag := "calculational-proofs"
+%%%
 
 A calculational proof is just a chain of intermediate results that are
 meant to be composed by basic principles such as the transitivity of
@@ -462,7 +465,7 @@ theorem T
 ```
 
 Essentially, the {kw}`rw` tactic uses a given equality (which can be a
-hypothesis, a theorem name, or a complex term) to "rewrite" the
+hypothesis, a theorem name, or a complex term) to “rewrite” the
 goal. If doing so reduces the goal to an identity {lean}`t = t`, the
 tactic applies reflexivity to prove it.
 
@@ -530,7 +533,7 @@ example (a b c d : Nat) (h1 : a = b) (h2 : b ≤ c) (h3 : c + 1 < d) : a < d :=
     _ < d     := h3
 ```
 
-You can "teach" {kw}`calc` new transitivity theorems by adding new instances
+You can “teach” {kw}`calc` new transitivity theorems by adding new instances
 of the {lean}`Trans` type class. Type classes are introduced later, but the following
 small example demonstrates how to extend the {kw}`calc` notation using new {lean}`Trans` instances.
 
@@ -749,7 +752,7 @@ The {kw}`match` expression is part of Lean's function definition system,
 which provides convenient and expressive ways of defining complex
 functions.  Once again, it is the Curry-Howard isomorphism that allows
 us to co-opt this mechanism for writing proofs as well.  The {kw}`match`
-statement "destructs" the existential assertion into the components
+statement “destructs” the existential assertion into the components
 {leanRef}`w` and {leanRef}`hw`, which can then be used in the body of the statement
 to prove the proposition. We can annotate the types used in the match
 for greater clarity:
@@ -793,7 +796,7 @@ example : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
   fun ⟨w, hpw, hqw⟩ => ⟨w, hqw, hpw⟩
 ```
 
-We will see in [Chapter Induction and Recursion](./induction_and_recursion.md) that all these variations are
+We will see in {ref "induction-and-recursion"}[Chapter Induction and Recursion] that all these variations are
 instances of a more general pattern-matching construct.
 
 :::setup
@@ -818,7 +821,7 @@ theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
         _ = 2 * (w1 + w2)   := by rw [Nat.mul_add])))
 ```
 
-Using the various gadgets described in this chapter --- the match
+Using the various gadgets described in this chapter—the match
 statement, anonymous constructors, and the {kw}`rewrite` tactic, we can
 write this proof concisely as follows:
 
@@ -831,9 +834,9 @@ theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
 ```
 
 :::leanFirst
-Just as the constructive "or" is stronger than the classical "or," so,
-too, is the constructive "exists" stronger than the classical
-"exists". For example, the following implication requires classical
+Just as the constructive “or” is stronger than the classical “or,” so,
+too, is the constructive “exists” stronger than the classical
+“exists”. For example, the following implication requires classical
 reasoning because, from a constructive standpoint, knowing that it is
 not the case that every {leanRef}`x` satisfies {leanRef}`¬ p` is not the same as
 having a particular {leanRef}`x` that satisfies {leanRef}`p`.
@@ -931,7 +934,7 @@ it possible to write formal proof terms that mirror the structure of
 informal mathematical proofs. In this section, we discuss some
 additional features of the proof language that are often convenient.
 
-To start with, we can use anonymous "have" expressions to introduce an
+To start with, we can use anonymous {kw}`have` expressions to introduce an
 auxiliary goal without having to label it. We can refer to the last
 expression introduced in this way using the keyword {lit}`this`:
 
@@ -973,7 +976,7 @@ variable {p : Prop} (prf : p)
 We can also ask Lean to fill in the proof by writing {lean}`‹p›`, where
 {lean}`p` is the proposition whose proof we want Lean to find in the
 context.  You can type these corner quotes using {kbd}`\f<` and {kbd}`\f>`,
-respectively. The letter "f" is for "French," since the unicode
+respectively. The letter “f” is for “French,” since the unicode
 symbols can also be used as French quotation marks. In fact, the
 notation is defined in Lean as follows:
 :::
@@ -1038,7 +1041,7 @@ Later, we show how you can extend the proof language using the Lean macro system
     example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
     ```
 
-3. Consider the "barber paradox," that is, the claim that in a certain
+3. Consider the “barber paradox,” that is, the claim that in a certain
    town there is a (male) barber that shaves all and only the men who
    do not shave themselves. Prove that this is a contradiction:
 

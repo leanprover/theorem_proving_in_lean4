@@ -4,6 +4,12 @@ import TPiL.DependentTypeTheory
 import TPiL.PropositionsAndProofs
 import TPiL.QuantifiersEquality
 import TPiL.Tactics
+import TPiL.InteractingWithLean
+import TPiL.InductiveTypes
+import TPiL.InductionAndRecursion
+import TPiL.StructuresAndRecords
+import TPiL.TypeClasses
+import TPiL.Conv
 import TPiL.AxiomsComputation
 
 open Verso.Genre Manual
@@ -12,7 +18,7 @@ open Verso Code External
 #doc (Manual) "Theorem Proving in Lean 4" =>
 
 %%%
-authors := ["Jeremy Avigad", "Leonardo de Moura", "Soonho Kong", "Sebastian Ullrich"] -- TODO: , with contributions from the Lean Community"
+authors := ["Jeremy Avigad", "Leonardo de Moura", "Soonho Kong", "Sebastian Ullrich", "with contributions from the Lean Community"]
 %%%
 
 
@@ -31,5 +37,17 @@ written for Lean 2, and the Lean 3 version is available
 {include 1 TPiL.QuantifiersEquality}
 
 {include 1 TPiL.Tactics}
+
+{include 1 TPiL.InteractingWithLean}
+
+{include 1 TPiL.InductiveTypes}
+
+{include 1 TPiL.InductionAndRecursion}
+
+{include 1 TPiL.StructuresAndRecords}
+
+{include 1 TPiL.TypeClasses}
+
+{include 1 TPiL.Conv}
 
 {include 1 TPiL.AxiomsComputation}

@@ -58,7 +58,7 @@ variable (t1 t2 : p) {α : Type u} {β : Type v}
 ```
 
 We could then introduce, for each element {lean}`p : Prop`, another type
-{lean}`Proof p`, for the type of proofs of {lean}`p`.  An "axiom" would be a
+{lean}`Proof p`, for the type of proofs of {lean}`p`.  An “axiom”would be a
 constant of such a type.
 
 
@@ -95,7 +95,7 @@ axiom modus_ponens : (p q : Prop) → Proof (Implies p q) → Proof p → Proof 
 
 Systems of natural deduction for propositional logic also typically rely on the following rule:
 
-> Suppose that, assuming {lean}`p` as a hypothesis, we have a proof of {lean}`q`. Then we can "cancel" the hypothesis and obtain a proof of {lean}`Implies p q`.
+> Suppose that, assuming {lean}`p` as a hypothesis, we have a proof of {lean}`q`. Then we can “cancel”the hypothesis and obtain a proof of {lean}`Implies p q`.
 
 We could render this as follows:
 
@@ -153,9 +153,9 @@ with) {lean}`p` is _inhabited_. It just so happens that the rules for
 function application and abstraction can conveniently help us keep
 track of which elements of {lean}`Prop` are inhabited. So constructing an
 element {lean}`t : p` tells us that {lean}`p` is indeed true. You can think of
-the inhabitant of {lean}`p` as being the "fact that {lean}`p` is true." A
-proof of {lean}`p → q` uses "the fact that {lean}`p` is true" to obtain "the
-fact that {lean}`q` is true."
+the inhabitant of {lean}`p` as being the “fact that {lean}`p` is true.”A
+proof of {lean}`p → q` uses “the fact that {lean}`p` is true”to obtain “the
+fact that {lean}`q` is true.”
 
 Indeed, if {lean}`p : Prop` is any proposition, Lean's kernel treats any
 two elements {lean}`t1 t2 : p` as being definitionally equal, much the
@@ -178,13 +178,13 @@ proposition in question is true. In other words, the expressions
 _themselves_ are the proofs.
 
 In the exposition below, we will slip back and forth between these two
-ways of talking, at times saying that an expression "constructs" or
-"produces" or "returns" a proof of a proposition, and at other times
-simply saying that it "is" such a proof. This is similar to the way
+ways of talking, at times saying that an expression “constructs”or
+“produces” or “returns”a proof of a proposition, and at other times
+simply saying that it “is”such a proof. This is similar to the way
 that computer scientists occasionally blur the distinction between
-syntax and semantics by saying, at times, that a program "computes" a
+syntax and semantics by saying, at times, that a program “computes”a
 certain function, and at other times speaking as though the program
-"is" the function in question.
+“is” the function in question.
 
 In any case, all that really matters is the bottom line. To formally
 express a mathematical assertion in the language of dependent type
@@ -225,7 +225,7 @@ checker, there is no difference between the two.
 
 There are a few pragmatic differences between definitions and
 theorems, however. In normal circumstances, it is never necessary to
-unfold the "definition" of a theorem; by proof irrelevance, any two
+unfold the “definition”of a theorem; by proof irrelevance, any two
 proofs of that theorem are definitionally equal. Once the proof of a
 theorem is complete, typically we only need to know that the proof
 exists; it doesn't matter what the proof is. In light of that fact,
@@ -309,7 +309,7 @@ theorem ex : 1 = 0 :=
 ```
 variable {p q : Prop} (hp : p) {t1 : p → q → p}
 ```
-Declaring an "axiom" {lean}`hp : p` is tantamount to declaring that {lean}`p`
+Declaring an “axiom”{lean}`hp : p` is tantamount to declaring that {lean}`p`
 is true, as witnessed by {lean}`hp`. Applying the theorem
 {lean}`t1 : p → q → p` to the fact {lean}`hp : p` that {lean}`p` is true yields the theorem
 {lean}`t1 hp : q → p`.
@@ -325,8 +325,8 @@ theorem t1 {p q : Prop} (hp : p) (hq : q) : p := hp
 ```
 
 The type of {leanRef}`t1` is now {lean}`∀ {p q : Prop}, p → q → p`. We can read
-this as the assertion "for every pair of propositions {lean}`p`{lit}` `{lean}`q`, we have
-{lean}`p → q → p`." For example, we can move all parameters to the right
+this as the assertion “for every pair of propositions {lean}`p`{lit}` `{lean}`q`, we have
+{lean}`p → q → p`.” For example, we can move all parameters to the right
 of the colon:
 
 ```lean
@@ -342,29 +342,6 @@ variable {p q : Prop}
 
 theorem t1 : p → q → p := fun (hp : p) (hq : q) => hp
 ```
-
-:::setup
-```
-variable {p q : Prop}
-variable (hp : p)
-```
-In fact, by the propositions-as-types correspondence, we can declare
-the assumption {lean}`hp` that {lean}`p` holds, as another variable:
-
-```lean
-variable {p q : Prop}
-variable (hp : p)
-
-theorem t1 : q → p := fun (hq : q) => sorry -- TODO was hp
-```
-
-Lean detects that the proof uses {lean}`hp` and automatically adds
-{lean}`hp : p` as a premise. In all cases, the command `#print t1` still yields
-{lean}`∀ p q : Prop, p → q → p`. Remember that this type can just as well
-be written {lean}`∀ (p q : Prop) (hp : p) (hq : q), p`, since the arrow
-denotes nothing more than an arrow type in which the target does not
-depend on the bound variable.
-:::
 
 When we generalize {leanRef}`t1` in such a way, we can then apply it to
 different pairs of propositions, to obtain different instances of the
@@ -480,22 +457,24 @@ example, {lean}`a ∧ b → c ∨ d ∧ e` means {lean}`(a ∧ b) → (c ∨ (d 
 Remember that {lit}`→` associates to the right (nothing changes
 now that the arguments are elements of {lean}`Prop`, instead of some other
 {lean}`Type`), as do the other binary connectives. So if we have
-{lean}`p q r : Prop`, the expression {lean}`p → q → r` reads "if {lean}`p`, then if {lean}`q`,
-then {lean}`r`." This is just the "curried" form of {lean}`p ∧ q → r`.
+{lean}`p q r : Prop`, the expression {lean}`p → q → r` reads “if {lean}`p`, then if {lean}`q`,
+then {lean}`r`.” This is just the “curried”form of {lean}`p ∧ q → r`.
 
 :::
 
 In the last chapter we observed that lambda abstraction can be viewed
-as an "introduction rule" for {lit}`→`. In the current setting, it shows
-how to "introduce" or establish an implication. Application can be
-viewed as an "elimination rule," showing how to "eliminate" or use an
+as an “introduction rule”for {lit}`→`. In the current setting, it shows
+how to “introduce”or establish an implication. Application can be
+viewed as an “elimination rule,”showing how to “eliminate”or use an
 implication in a proof. The other propositional connectives are
-defined in Lean's library in the file `Prelude.core` (see
-[importing files](./interacting_with_lean.md#importing-files) for more information on the library
-hierarchy), and each connective comes with its canonical introduction
-and elimination rules.
+defined in Lean's library, and are automatically imported. Each connective
+comes with its canonical introduction and elimination rules.
 
 ## Conjunction
+%%%
+tag := "conjunction"
+%%%
+
 :::setup
 ```
 variable (p q : Prop) (h1 : p) (h2 : q)
@@ -550,20 +529,21 @@ example (h : p ∧ q) : q ∧ p :=
 
 :::setup
 ```
-variable (p q : Prop) (hp : p) (hq : q)
+variable (p q : Prop) (hp : p) (hq : q) (α β : Type) (a : α) (b : β)
 
 ```
 Notice that and-introduction and and-elimination are similar to the
 pairing and projection operations for the Cartesian product. The
 difference is that given {lean}`hp : p` and {lean}`hq : q`, {lean}`And.intro hp hq` has type
-{lean}`p ∧ q : Prop`, while {lit}`Prod hp hq` has type
-`p × q : Type`. The similarity between {lit}`∧` and {lit}`×` is another instance
+{lean}`p ∧ q : Prop`, while given {lean}`a : α` and {lean}`b : β`, {lean}`Prod.mk a b` has type
+{lean}`α × β : Type`. {lean}`Prod` cannot be used with {lean}`Prop`s, and {lean}`And` cannot be used with {lean}`Type`s.
+The similarity between {lit}`∧` and {lit}`×` is another instance
 of the Curry-Howard isomorphism, but in contrast to implication and
 the function space constructor, {lit}`∧` and {lit}`×` are treated separately
 in Lean. With the analogy, however, the proof we have just constructed
 is similar to a function that swaps the elements of a pair.
 
-We will see in [Chapter Structures and Records](./structures_and_records.md) that certain
+We will see in {ref "structures-and-records"}[Chapter Structures and Records] that certain
 types in Lean are _structures_, which is to say, the type is defined
 with a single canonical _constructor_ which builds an element of the
 type from a sequence of suitable arguments. For every {lean}`p q : Prop`,
@@ -635,7 +615,7 @@ for straightforward constructions like the one above, when the type of
 {leanRef}`h` and the goal of the construction are salient, the notation is
 clean and effective.
 
-It is common to iterate constructions like "And." Lean also allows you
+It is common to iterate constructions like “And.”Lean also allows you
 to flatten nested constructors that associate to the right, so that
 these two proofs are equivalent:
 
@@ -869,7 +849,7 @@ the final goal.
 :::
 
 Lean also supports a structured way of reasoning backwards from a
-goal, which models the "suffices to show" construction in ordinary
+goal, which models the “suffices to show”construction in ordinary
 mathematics. The next example simply permutes the last two lines in
 the previous proof.
 
@@ -888,6 +868,9 @@ goal of {leanRef}`q ∧ p` with the additional hypothesis {leanRef}`hq : q`. Fin
 we have to show {leanRef}`q`.
 
 # Classical Logic
+%%%
+tag := "classical-logic"
+%%%
 
 The introduction and elimination rules we have seen so far are all
 constructive, which is to say, they reflect a computational
@@ -908,7 +891,7 @@ variable (p : Prop)
 variable (p q RH : Prop)
 ```
 
-Intuitively, the constructive "Or" is very strong: asserting {lean}`p ∨ q`
+Intuitively, the constructive “Or”is very strong: asserting {lean}`p ∨ q`
 amounts to knowing which is the case. If {lean}`RH` represents the Riemann
 hypothesis, a classical mathematician is willing to assert
 {lean}`RH ∨ ¬RH`, even though we cannot yet assert either disjunct.
@@ -1002,7 +985,7 @@ are permissible, and Lean supports the use of classical reasoning in
 such contexts without relying on excluded middle.
 
 The full list of axioms that are used in Lean to support classical
-reasoning are discussed in [Axioms and Computation](./axioms_and_computation.md).
+reasoning are discussed in {ref "axioms-and-computation"}[Axioms and Computation].
 
 # Examples of Propositional Validities
 
@@ -1058,8 +1041,8 @@ These require classical reasoning:
 
 The {lean}`sorry` identifier magically produces a proof of anything, or
 provides an object of any data type at all. Of course, it is unsound
-as a proof method -- for example, you can use it to prove {lean}`False` --
-and Lean produces severe warnings when files use or import theorems
+as a proof method—for example, you can use it to prove {lean}`False`—and
+Lean produces severe warnings when files use or import theorems
 which depend on it. But it is very useful for building long proofs
 incrementally. Start writing the proof from the top down, using
 {lean}`sorry` to fill in subproofs. Make sure Lean accepts the term with
@@ -1070,8 +1053,8 @@ until no more remain.
 Here is another useful trick. Instead of using {lean}`sorry`, you can use
 an underscore {lit}`_` as a placeholder. Recall this tells Lean that
 the argument is implicit, and should be filled in automatically. If
-Lean tries to do so and fails, it returns with an error message "don't
-know how to synthesize placeholder," followed by the type of
+Lean tries to do so and fails, it returns with an error message “don't
+know how to synthesize placeholder,” followed by the type of
 the term it is expecting, and all the objects and hypotheses available
 in the context. In other words, for each unresolved placeholder, Lean
 reports the subgoal that needs to be filled at that point. You can
@@ -1118,7 +1101,7 @@ example (p q : Prop) : ¬(p ∧ ¬q) → (p → q) :=
 
 # Exercises
 
-Prove the following identities, replacing the "sorry" placeholders with actual proofs.
+Prove the following identities, replacing the “sorry”placeholders with actual proofs.
 
 ```lean
 variable (p q r : Prop)
@@ -1149,7 +1132,7 @@ example : p ∧ False ↔ False := sorry
 example : (p → q) → (¬q → ¬p) := sorry
 ```
 
-Prove the following identities, replacing the "sorry" placeholders
+Prove the following identities, replacing the “sorry”placeholders
 with actual proofs. These require classical reasoning.
 
 ```lean

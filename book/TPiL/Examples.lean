@@ -41,8 +41,11 @@ def extractFile (contents : String) (suppressNamespaces : Option String) : m (Ar
   let jsonFile := s!"{modBase}.json"
 
   let jsonPath := (projectDir / "Examples" / jsonFile)
+  let jsonExists : Bool ←
+    if (← jsonPath.pathExists) then (IO.FS.readFile jsonPath) <&> (!·.isEmpty)
+    else pure false
 
-  unless (← jsonPath.pathExists) do
+  unless jsonExists do
     IO.FS.writeFile (projectDir / "Examples" / filename) contents
 
     -- Validate that the path is really a Lean project
@@ -103,7 +106,10 @@ def extractFile (contents : String) (suppressNamespaces : Option String) : m (Ar
   let jsonString ← IO.FS.readFile (projectDir / "Examples" / jsonFile)
 
   let .ok (.arr json) := Json.parse jsonString
-    | throwError s!"Expected JSON array"
+    | if jsonString.isEmpty then
+        throwError s!"Expected JSON array in {projectDir / "Examples" / jsonFile}, got empty output"
+      else
+        throwError s!"Expected JSON array in {projectDir / "Examples" / jsonFile}, got {jsonString}"
   match json.mapM fromJson? with
   | .error err =>
     throwError s!"Couldn't parse JSON from output file: {err}\nIn:\n{json}"
@@ -759,13 +765,14 @@ where
     | .point .. | .text .. | .token .. => acc
   fromGoal (acc : Array Highlighted) (g : Highlighted.Goal Highlighted) :=
     g.hypotheses.foldl (init := acc.push g.conclusion) fun acc (x, k, hl) =>
-      acc.push (Highlighted.token ⟨k, x.toString⟩ ++ .text " : " ++ hl)
+      acc.push (Highlighted.token ⟨k, x.toString⟩ ++ .text " " ++ .token ⟨.unknown, ":"⟩ ++ .text " " ++ hl)
 
 
 def saveBackref (hl : Highlighted) : DocElabM Unit := do
   -- Construct a document with all the proof states in it, so references can target them but they
   -- don't eat up individual slots in the history ring
   let hl := allProofInfo hl |>.foldl (init := hl) (· ++ .text "\n" ++ ·)
+
   modifyEnv (recentHighlightsExt.modifyState · (·.add hl))
 
 structure ProofState where
@@ -832,6 +839,7 @@ structure LeanConfig where
   suppressNamespaces : Option String
   allowVisible : Bool
   showProofStates : ShowProofStates
+  «show» : Bool
 
 variable [Monad m] [MonadError m ] [MonadLiftT CoreM m]
 
@@ -858,7 +866,9 @@ instance : FromArgs LeanConfig m where
       .namedD `check .bool true <*>
       .named `suppressNamespaces .string true <*>
       .namedD `allowVisible .bool true <*>
-      .namedD' `showProofStates .none
+      .namedD' `showProofStates .none <*>
+      .namedD' `show .true
+
 end
 
 def isNewline (hl : Highlighted) : Bool :=
@@ -903,10 +913,21 @@ def fixupAnchorComments (items : Array ModuleItem) : Array ModuleItem := Id.run 
 
   return out
 
+private def showGoals (goals : Array (Highlighted.Goal Highlighted)) : MessageData := Id.run do
+  if goals.isEmpty then return m!"No goals"
+  let mut out := m!""
+  for g in goals do
+    if let some n := g.name then
+      out := out ++ m!"case {n.toString}\n"
+    for (x, _, h) in g.hypotheses do
+      out := out ++ m!"  {x.toString} : {h.toString}\n"
+    out := out ++ m!"  {g.goalPrefix} {g.conclusion.toString}\n\n"
+  pure out
+
 @[code_block_expander lean]
 def lean : CodeBlockExpander
   | args, code => do
-    let {checkOutput, suppressNamespaces, allowVisible, showProofStates} ← parseThe LeanConfig args
+    let {checkOutput, suppressNamespaces, allowVisible, showProofStates, «show»} ← parseThe LeanConfig args
     let mut showProofStates := showProofStates
     let codeStr := code.getString
     let contents ← extractFile codeStr suppressNamespaces
@@ -926,6 +947,7 @@ def lean : CodeBlockExpander
         | .ok a =>
           for (k, v) in a.proofStates.toArray do
             if let .tactics goals start stop hl := v then
+              logSilentInfo m!"Proof state {k} on `{v.toString}`:\n{showGoals goals}"
               modifyEnv (proofStatesExt.modifyState · (·.insert k ⟨goals, start, stop, hl⟩))
               if let (.states ss, .named xs) := (visibility, showProofStates) then
                 if k ∈ xs then
@@ -952,11 +974,17 @@ def lean : CodeBlockExpander
         else toShow := toShow.push (item.code, info?)
       | _ => toShow := toShow.push (item.code, none)
     let post : Option Highlighted := post.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
-    saveBackref (.seq <| toShow.map (·.1))
+    let visible := .seq <| toShow.map (·.1)
+    saveBackref visible
+    for (_, msg, _)  in allInfo visible do
+      logSilentInfo msg
     if let .named xs := showProofStates then
       unless xs.isEmpty do
         logWarning m!"Unused proof state names: {m!", ".joinSep (xs.map (m!"'{·}'")).toList}"
-    return #[← ``(Block.other (Block.lean $(quote allowVisible) $(quote pre) $(quote toShow) $(quote post) $(quote visibility)) #[])]
+    if «show» then
+      return #[← ``(Block.other (Block.lean $(quote allowVisible) $(quote pre) $(quote toShow) $(quote post) $(quote visibility)) #[])]
+    else
+      return #[]
 where
   eqMessages (s1 s2 : String) := SubVerso.Examples.Messages.messagesMatch (s1.replace "\n" " ") (s2.replace "\n" " ")
 
@@ -1029,6 +1057,9 @@ def goal : RoleExpander
 
 structure Helper where
   highlight (term : String) (type? : Option String) : IO Highlighted
+  command (cmd : String) : IO Highlighted
+  signature (code : String) : IO Highlighted
+  name (code : String) : IO Highlighted
 
 open System in
 open SubVerso.Helper in
@@ -1079,7 +1110,7 @@ def Helper.fromModule (setup : String) : IO Helper := do
   setupFile.lock (exclusive := true)
   try
     let args := #["run", "--install", toolchain, "lake", "env", "subverso-helper", mod]
-    let hl ← do
+    let (hlTm, hlCmd, hlSig, hlName) ← do
       let (procIn, proc) ← do
         let proc ← IO.Process.spawn {
           cmd, args, cwd := projectDir
@@ -1091,7 +1122,7 @@ def Helper.fromModule (setup : String) : IO Helper := do
         }
         proc.takeStdin
       let mutex ← Std.Mutex.new (IO.FS.Stream.ofHandle procIn, IO.FS.Stream.ofHandle proc.stdout)
-      pure <| fun tm ty? => do
+      let hlTm := fun (tm : String) (ty? : Option String) => show IO Highlighted from do
         mutex.atomically do
           let (procIn, procOut) ← get
           if let some code ← proc.tryWait then
@@ -1105,8 +1136,51 @@ def Helper.fromModule (setup : String) : IO Helper := do
               msg := msg ++ s!" Details:\n  {details}"
             throw <| .userError msg
           | none => throw <| .userError "Helper process no longer running"
+      let hlCmd := fun (cmd : String) => show IO Highlighted from do
+        mutex.atomically do
+          let (procIn, procOut) ← get
+          if let some code ← proc.tryWait then
+            throw <| .userError s!"Process terminated: {code}"
+          send procIn (Request.command cmd)
+          match (← receiveThe Response procOut) with
+          | some (.result (.highlighted hl)) => pure hl
+          | some (.error code e more) =>
+            let mut msg := s!"{e} ({code})."
+            if let some details := more then
+              msg := msg ++ s!" Details:\n  {details}"
+            throw <| .userError msg
+          | none => throw <| .userError "Helper process no longer running"
+      let hlSig := fun (cmd : String) => show IO Highlighted from do
+        mutex.atomically do
+          let (procIn, procOut) ← get
+          if let some code ← proc.tryWait then
+            throw <| .userError s!"Process terminated: {code}"
+          send procIn (Request.signature cmd)
+          match (← receiveThe Response procOut) with
+          | some (.result (.highlighted hl)) => pure hl
+          | some (.error code e more) =>
+            let mut msg := s!"{e} ({code})."
+            if let some details := more then
+              msg := msg ++ s!" Details:\n  {details}"
+            throw <| .userError msg
+          | none => throw <| .userError "Helper process no longer running"
+      let hlName := fun (cmd : String) => show IO Highlighted from do
+        mutex.atomically do
+          let (procIn, procOut) ← get
+          if let some code ← proc.tryWait then
+            throw <| .userError s!"Process terminated: {code}"
+          send procIn (Request.name cmd)
+          match (← receiveThe Response procOut) with
+          | some (.result (.highlighted hl)) => pure hl
+          | some (.error code e more) =>
+            let mut msg := s!"{e} ({code})."
+            if let some details := more then
+              msg := msg ++ s!" Details:\n  {details}"
+            throw <| .userError msg
+          | none => throw <| .userError "Helper process no longer running"
+      pure (hlTm, hlCmd, hlSig, hlName)
 
-    return Helper.mk hl
+    return Helper.mk hlTm hlCmd hlSig hlName
   finally
     setupFile.unlock
 where
@@ -1260,10 +1334,10 @@ def multiVar? (str : String) : Option (Array String × String) := do
   let mut out := #[]
   let mut str := str.trim
   repeat
-    let pref1 := str.takeWhile (·.isAlpha)
+    let pref1 := str.takeWhile alpha
     if pref1.length < 1 then failure
     str := str.drop pref1.length
-    let pref2 := str.takeWhile (fun c => c.isAlpha || c.isDigit)
+    let pref2 := str.takeWhile (fun c => alpha c || c.isDigit)
     str := str.drop pref2.length
     let pref := pref1 ++ pref2
     let c := str.get? ⟨0⟩
@@ -1278,6 +1352,8 @@ def multiVar? (str : String) : Option (Array String × String) := do
       if str.isEmpty then failure
       return (out, str)
   failure
+where
+  alpha c := c.isAlpha || c ∈ ['α', 'β', 'γ']
 
 def highlightInline (code : String) (type? : Option String := none) : DocElabM Highlighted := do
   let helper ← currentHelper
@@ -1299,6 +1375,17 @@ def highlightInline (code : String) (type? : Option String := none) : DocElabM H
     catch e2 =>
       throwError "Failed to highlight code. Errors:{indentD e1.toMessageData}\nand:{indentD e2.toMessageData}"
 
+def highlightCommand (code : String) : DocElabM Highlighted := do
+  let helper ← currentHelper
+  helper.command code
+
+def highlightSignature (code : String) : DocElabM Highlighted := do
+  let helper ← currentHelper
+  helper.signature code
+
+def highlightName (code : String) : DocElabM Highlighted := do
+  let helper ← currentHelper
+  helper.name code
 
 @[role_expander lean]
 def leanInline : RoleExpander
@@ -1313,6 +1400,110 @@ def leanInline : RoleExpander
       saveBackref hl
 
       return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote hl.toString)])]
+    catch
+      | .error ref e =>
+        logErrorAt ref e
+        return #[← ``(sorry)]
+      | e => throw e
+
+@[role_expander name]
+def name : RoleExpander
+  | args, inls => do
+    let show? ← ArgParse.run (.named `show .string true) args
+    let code ← oneCodeStr inls
+    let codeStr := code.getString
+
+    try
+      let hl ← highlightName codeStr
+      let hl :=
+        if let some s := show? then
+          if let .token ⟨k, _⟩ := hl then
+            .token ⟨k, s⟩
+          else hl
+        else hl
+
+      saveBackref hl
+      match hl with
+      | .token ⟨k, _⟩ =>
+        match k with
+        | .const _ sig doc? _ =>
+          Hover.addCustomHover code <|
+            s!"```\n{sig}\n```\n" ++
+            (doc?.map ("\n\n***\n\n" ++ ·) |>.getD "")
+        | .var _ sig =>
+          Hover.addCustomHover code <|
+            s!"```\n{sig}\n```\n"
+        | _ => pure ()
+      | _ => pure ()
+
+      return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote hl.toString)])]
+    catch
+      | .error ref e =>
+        logErrorAt ref e
+        return #[← ``(sorry)]
+      | e => throw e
+
+
+@[role_expander leanCommand]
+def leanCommand : RoleExpander
+  | args, inls => do
+    let type? ← ArgParse.done.run args
+    let code ← oneCodeStr inls
+    let codeStr := code.getString
+
+    try
+      let hl ← highlightCommand codeStr
+
+      saveBackref hl
+      for (k, msg, _) in allInfo hl do
+        let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
+        logSilentInfo m!"{k}: {msg}"
+
+      return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote hl.toString)])]
+    catch
+      | .error ref e =>
+        logErrorAt ref e
+        return #[← ``(sorry)]
+      | e => throw e
+
+
+@[code_block_expander leanCommand]
+def leanCommandBlock : CodeBlockExpander
+  | args, code => do
+    let type? ← ArgParse.done.run args
+    let codeStr := code.getString
+
+    try
+      let hl ← highlightCommand codeStr
+
+      saveBackref hl
+      for (k, msg, _) in allInfo hl do
+        let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
+        logSilentInfo m!"{k}: {msg}"
+
+      return #[← ``(Block.other (Block.lean false none #[($(quote hl), none)] none) #[])]
+    catch
+      | .error ref e =>
+        logErrorAt ref e
+        return #[← ``(sorry)]
+      | e => throw e
+
+
+@[code_block_expander signature]
+def signature : CodeBlockExpander
+  | args, code => do
+    let type? ← ArgParse.done.run args
+    let codeStr := code.getString
+
+    try
+      let hl ← highlightSignature codeStr
+
+      saveBackref hl
+      for (k, msg, _) in allInfo hl do
+        let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
+        logSilentInfo m!"{k}: {msg}"
+
+      return #[← ``(Block.other (Block.lean false none #[($(quote hl), none)] none) #[])]
     catch
       | .error ref e =>
         logErrorAt ref e
@@ -1345,9 +1536,10 @@ def empty : RoleExpander
     return #[]
 
 private def keywords := [
-  "#print", "#eval", "#print axioms",
-  "noncomputable",
-  "def", "example", "#reduce", "#check", "macro_rules", "axiom", "if", "then", "else", "show", "have", "calc",
+  "#print", "#eval", "#print axioms", "#reduce", "#check",
+  "noncomputable", "protected", "partial",
+  "import", "export", "local",
+  "def", "example", "instance", "macro_rules", "axiom", "if", "then", "else", "show", "have", "calc",
   "universe", "section", "end", "variable", "open", "set_option",
   "let", "fun"
 ]
