@@ -1004,7 +1004,8 @@ def lean : CodeBlockExpander
       let item := {item with code}
       match item.kind with
       | ``Lean.Parser.Command.check | ``Lean.Parser.Command.eval | ``Lean.reduceCmd
-      | ``Lean.Parser.Command.print | ``Lean.Parser.Command.printAxioms | ``Lean.Parser.Command.printEqns =>
+      | ``Lean.Parser.Command.print | ``Lean.Parser.Command.printAxioms | ``Lean.Parser.Command.printEqns
+      | ``Lean.guardMsgsCmd =>
         let info? : Option (_ × String) := allInfo item.code |>.firstM fun (sev, str, hl?) =>
           if hl? matches some (.token ⟨.keyword .., _⟩) then some (sev, str) else none
         if let some (sev, txt) := info? then

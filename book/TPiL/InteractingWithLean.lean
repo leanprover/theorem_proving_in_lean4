@@ -18,6 +18,79 @@ Not all of the information found here will be useful to you right
 away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.
 
+# Messages
+
+Lean produces three kinds of messages:
+
+: Errors
+
+  Errors are produced when an inconsistency in the code means that it can't
+  be processed. Examples include syntax errors (e.g. a missing {lit}`)`) and type
+  errors such as attempting to add a natural number to a function.
+
+: Warnings
+
+  Warnings describe potential problems with the code, such as the presence of {lean}`sorry`.
+  Unlike with errors, the code is not meaningless; however, warnings deserve careful attention.
+
+: Information
+
+  Information doesn't indicate any problem with the code, and includes output from commands such as {kw}`#check` and {kw}`#eval`.
+
+Lean can check that a command produces the expected messages. If the messages match,
+then any errors are disregarded; this can be used to ensure that the right errors occur.
+If they don't, an error is produced. You can use the {kw}`#guard_msgs` command to indicate
+which messages are expected.
+
+Here is an example:
+````lean
+/--
+error: type mismatch
+  "Not a number"
+has type
+  String : Type
+but is expected to have type
+  Nat : Type
+-/
+#guard_msgs in
+def x : Nat := "Not a number"
+````
+
+:::leanFirst
+Including a message category in parentheses after {leanRef}`#guard_msgs` causes it to check only
+the specified category, letting others through. In this example, {leanRef}`#eval` issues an error
+due to the presence of {lean}`sorry`, but the warning that is always issued for {lean}`sorry` is displayed
+as usual:
+````lean
+/--
+error: aborting evaluation since the expression depends on the
+'sorry' axiom, which can lead to runtime instability and crashes.
+
+To attempt to evaluate anyway despite the risks, use the '#eval!'
+command.
+-/
+#guard_msgs(error) in
+#eval (sorry : Nat)
+````
+:::
+
+Without the configuration, both messages are captured:
+````lean
+/--
+error: aborting evaluation since the expression depends on the
+'sorry' axiom, which can lead to runtime instability and crashes.
+
+To attempt to evaluate anyway despite the risks, use the '#eval!'
+command.
+---
+warning: declaration uses 'sorry'
+-/
+#guard_msgs in
+#eval (sorry : Nat)
+````
+
+Some examples in this book use {leanRef}`#guard_msgs` to indicate expected errors.
+
 # Importing Files
 
 The goal of Lean's front end is to interpret user input, construct
@@ -38,9 +111,8 @@ If you want to use additional files, however, they need to be imported
 manually, via an {kw}`import` statement at the beginning of a file. The
 command
 
-```
-import Bar.Baz.Blah
-```
+> {kw}`import`{lit}` Bar.Baz.Blah`
+
 
 imports the file {lit}`Bar/Baz/Blah.olean`, where the descriptions are
 interpreted relative to the Lean _search path_. Information as to how
@@ -69,6 +141,7 @@ variable (x y : Nat)
 def double := x + x
 
 #check double y
+
 #check double (2 * x)
 
 attribute [local simp] Nat.add_assoc Nat.add_comm Nat.add_left_comm
@@ -77,6 +150,7 @@ theorem t1 : double (x + y) = double x + double y := by
   simp [double]
 
 #check t1 y
+
 #check t1 (2 * x)
 
 theorem t2 : double (x * y) = double x * y := by
@@ -110,6 +184,7 @@ end Foo
 open Foo
 
 #check bar
+
 #check Foo.bar
 ```
 
@@ -145,13 +220,20 @@ def add (α β : Type) : Type := Sum α β
 
 open Bool
 open String
--- #check add -- ambiguous
+
+-- This reference is ambiguous:
+-- #check add
+
 #check String.add           -- String.add (a b : String) : String
+
 #check Bool.add             -- Bool.add (a b : Bool) : Bool
+
 #check _root_.add           -- add (α β : Type) : Type
 
 #check add "hello" "world"  -- "hello".add "world" : String
+
 #check add true false       -- true.add false : Bool
+
 #check add Nat Nat          -- _root_.add Nat Nat : Type
 ```
 
@@ -162,31 +244,37 @@ protected def Foo.bar : Nat := 1
 
 open Foo
 
--- #check bar -- error
+/-- error: unknown identifier 'bar' -/
+#guard_msgs in
+#check bar -- error
+
 #check Foo.bar
 ```
 
 This is often used for names like {name}`Nat.rec` and {name}`Nat.recOn`, to prevent
 overloading of common names.
 
-The {kw}`open` command admits variations. The command
+The {leanRef}`open` command admits variations. The command
 
 ```lean
 open Nat (succ zero gcd)
+
 #check zero     -- Nat.zero : Nat
+
 #eval gcd 15 6  -- 3
 ```
 
 creates aliases for only the identifiers listed. The command
 
-:::TODO
-check error in CI
-:::
-
 ```lean
 open Nat hiding succ gcd
+
 #check zero     -- Nat.zero : Nat
--- #eval gcd 15 6  -- error
+
+/-- error: unknown identifier 'gcd' -/
+#guard_msgs in
+#eval gcd 15 6  -- error
+
 #eval Nat.gcd 15 6  -- 3
 ```
 
@@ -194,6 +282,7 @@ creates aliases for everything in the {lit}`Nat` namespace _except_ the identifi
 
 ```lean
 open Nat renaming mul → times, add → plus
+
 #eval plus (times 2 2) 3  -- 7
 ```
 
@@ -260,7 +349,7 @@ attribute [simp] List.isPrefix_self
 ```
 
 In all these cases, the attribute remains in effect in any file that
-imports the one in which the declaration occurs. Adding the {lit}`local`
+imports the one in which the declaration occurs. Adding the {kw}`local`
 modifier restricts the scope:
 
 ```lean
@@ -279,9 +368,10 @@ example : isPrefix [1, 2, 3] [1, 2, 3] := by
 
 end
 
--- Error:
--- example : isPrefix [1, 2, 3] [1, 2, 3] := by
---  simp
+/-- error: simp made no progress -/
+#guard_msgs in
+example : isPrefix [1, 2, 3] [1, 2, 3] := by
+  simp
 ```
 
 :::leanFirst
@@ -320,9 +410,16 @@ example (as : List α) : as ≤ as :=
 
 end
 
--- Error:
--- example (as : List α) : as ≤ as :=
---  ⟨[], by simp⟩
+/--
+error: failed to synthesize
+  LE (List α)
+
+Additional diagnostic information may be available using the
+`set_option diagnostics true` command.
+-/
+#guard_msgs in
+example (as : List α) : as ≤ as :=
+  ⟨[], by simp⟩
 ```
 
 In {ref "notation"}[Section Notation] below, we will discuss Lean's
@@ -402,30 +499,30 @@ def symmetric {α : Type u} (r : α → α → Prop) : Prop :=
 def transitive {α : Type u} (r : α → α → Prop) : Prop :=
   ∀ {a b c : α}, r a b → r b c → r a c
 
-def euclidean {α : Type u} (r : α → α → Prop) : Prop :=
+def Euclidean {α : Type u} (r : α → α → Prop) : Prop :=
   ∀ {a b c : α}, r a b → r a c → r b c
 
 theorem th1 {α : Type u} {r : α → α → Prop}
-            (reflr : reflexive r) (euclr : euclidean r)
+            (reflr : reflexive r) (euclr : Euclidean r)
             : symmetric r :=
   fun {a b : α} =>
   fun (h : r a b) =>
   show r b a from euclr h (reflr _)
 
 theorem th2 {α : Type u} {r : α → α → Prop}
-            (symmr : symmetric r) (euclr : euclidean r)
+            (symmr : symmetric r) (euclr : Euclidean r)
             : transitive r :=
   fun {a b c : α} =>
   fun (rab : r a b) (rbc : r b c) =>
   euclr (symmr rab) rbc
 
 theorem th3 {α : Type u} {r : α → α → Prop}
-            (reflr : reflexive r) (euclr : euclidean r)
+            (reflr : reflexive r) (euclr : Euclidean r)
             : transitive r :=
  th2 (th1 reflr @euclr) @euclr
 
 variable (r : α → α → Prop)
-variable (euclr : euclidean r)
+variable (euclr : Euclidean r)
 
 #check euclr
 ```
@@ -448,32 +545,32 @@ def symmetric {α : Type u} (r : α → α → Prop) : Prop :=
 def transitive {α : Type u} (r : α → α → Prop) : Prop :=
   ∀ {{a b c : α}}, r a b → r b c → r a c
 
-def euclidean {α : Type u} (r : α → α → Prop) : Prop :=
+def Euclidean {α : Type u} (r : α → α → Prop) : Prop :=
   ∀ {{a b c : α}}, r a b → r a c → r b c
 
 theorem th1 {α : Type u} {r : α → α → Prop}
-            (reflr : reflexive r) (euclr : euclidean r)
+            (reflr : reflexive r) (euclr : Euclidean r)
             : symmetric r :=
   fun {a b : α} =>
   fun (h : r a b) =>
   show r b a from euclr h (reflr _)
 
 theorem th2 {α : Type u} {r : α → α → Prop}
-            (symmr : symmetric r) (euclr : euclidean r)
+            (symmr : symmetric r) (euclr : Euclidean r)
             : transitive r :=
   fun {a b c : α} =>
   fun (rab : r a b) (rbc : r b c) =>
   euclr (symmr rab) rbc
 
 theorem th3 {α : Type u} {r : α → α → Prop}
-            (reflr : reflexive r) (euclr : euclidean r)
+            (reflr : reflexive r) (euclr : Euclidean r)
             : transitive r :=
   th2 (th1 reflr euclr) euclr
 
 variable (r : α → α → Prop)
-variable (euclr : euclidean r)
+variable (euclr : Euclidean r)
 
-#check euclr  -- euclr : euclidean r
+#check euclr  -- euclr : Euclidean r
 ```
 
 There is a third kind of implicit argument that is denoted with square
@@ -517,7 +614,7 @@ overloading existing) prefix, infix, and postfix operators.
 ```lean
 class Inv (α : Type u) where
   inv : α → α
----
+-------
 infixl:65   " + " => HAdd.hAdd  -- left-associative
 infix:50    " = " => Eq         -- non-associative
 infixr:80   " ^ " => HPow.hPow  -- right-associative
@@ -526,7 +623,7 @@ postfix:max "⁻¹"  => Inv.inv
 ```
 
 After the initial command name describing the operator kind (its
-“fixity”), we give the _parsing precedence_ of the operator preceded
+“{deftech}[fixity]”), we give the _parsing precedence_ of the operator preceded
 by a colon {lit}`:`, then a new or existing token surrounded by double
 quotes (the whitespace is used for pretty printing), then the function
 this operator should be translated to after the arrow {lit}`=>`.
@@ -538,12 +635,13 @@ can make this more precise by looking at the commands the above unfold to:
 ```lean
 class Inv (α : Type u) where
   inv : α → α
----
+----------
 notation:65 lhs:65 " + " rhs:66 => HAdd.hAdd lhs rhs
 notation:50 lhs:51 " = " rhs:51 => Eq lhs rhs
 notation:80 lhs:81 " ^ " rhs:80 => HPow.hPow lhs rhs
 notation:100 "-" arg:100 => Neg.neg arg
-notation:1024 arg:1024 "⁻¹" => Inv.inv arg  -- `max` is a shorthand for precedence 1024
+ -- `max` is a shorthand for precedence 1024:
+notation:1024 arg:1024 "⁻¹" => Inv.inv arg
 ```
 
 :::setup
@@ -559,9 +657,9 @@ the right-hand side of {lit}`=>` and will be replaced by the respective
 term parsed at that position. A placeholder with precedence {lean}`p`
 accepts only notations with precedence at least {lean}`p` in that place.
 Thus the string {lean}`a + b + c` cannot be parsed as the equivalent of
-{lean}`a + (b + c)` because the right-hand side operand of an {kw}`infixl` notation
+{lean}`a + (b + c)` because the right-hand side operand of an {leanRef}`infixl` notation
 has precedence one greater than the notation itself.  In contrast,
-{kw}`infixr` reuses the notation's precedence for the right-hand side
+{leanRef}`infixr` reuses the notation's precedence for the right-hand side
 operand, so {lean}`a ^ b ^ c` _can_ be parsed as {lean}`a ^ (b ^ c)`.  Note that
 if we used {leanRef}`notation` directly to introduce an infix notation like
 :::
@@ -627,7 +725,9 @@ variable (m n : Nat)
 variable (i j : Int)
 
 #check i + m      -- i + ↑m : Int
+
 #check i + m + j  -- i + ↑m + j : Int
+
 #check i + m + n  -- i + ↑m + ↑n : Int
 ```
 
@@ -647,22 +747,29 @@ or an axiom, Lean indicates that fact, and shows the type.
 ```lean
 -- examples with equality
 #check Eq
+
 #check @Eq
+
 #check Eq.symm
+
 #check @Eq.symm
 
 #print Eq.symm
 
 -- examples with And
 #check And
+
 #check And.intro
+
 #check @And.intro
 
 -- a user-defined function
 def foo {α : Type u} (x : α) : α := x
 
 #check foo
+
 #check @foo
+
 #print foo
 ```
 
@@ -674,9 +781,9 @@ tag := "setting-options"
 Lean maintains a number of internal variables that can be set by users
 to control its behavior. The syntax for doing so is as follows:
 
-```
-set_option <name> <value>
-```
+
+{kw}`set_option`{lit}` <name> <value>`
+
 
 One very useful family of options controls the way Lean's _pretty printer_ displays terms. The following options take an input of true or false:
 
@@ -694,7 +801,9 @@ set_option pp.universes true
 set_option pp.notation false
 
 #check 2 + 2 = 4
+
 #reduce (fun x => x + 2) = (fun x => x + 3)
+
 #check (fun x => x + 1) 1
 ```
 
@@ -781,8 +890,11 @@ by {lit}`_`s. Often the name of theorem simply describes the conclusion:
 
 ```lean
 #check Nat.succ_ne_zero
+
 #check Nat.zero_add
+
 #check Nat.mul_one
+
 #check Nat.le_of_succ_le_succ
 ```
 
@@ -805,8 +917,11 @@ example, the product type comes with the following operations:
 
 ```lean
 #check @Prod.mk
+
 #check @Prod.fst
+
 #check @Prod.snd
+
 #check @Prod.rec
 ```
 
@@ -823,15 +938,25 @@ for them as well:
 
 ```lean
 #check @And.intro
+
 #check @And.casesOn
+
 #check @And.left
+
 #check @And.right
+
 #check @Or.inl
+
 #check @Or.inr
+
 #check @Or.elim
+
 #check @Exists.intro
+
 #check @Exists.elim
+
 #check @Eq.refl
+
 #check @Eq.subst
 ```
 
@@ -844,8 +969,9 @@ polymorphic {leanRef}`compose` is even more verbose than the one previously defi
 
 ```lean
 universe u v w
+
 def compose {α : Type u} {β : Type v} {γ : Type w}
-            (g : β → γ) (f : α → β) (x : α) : γ :=
+    (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
 ```
 :::
@@ -855,8 +981,8 @@ You can avoid the {kw}`universe` command by providing the universe parameters wh
 
 ```lean
 def compose.{u, v, w}
-            {α : Type u} {β : Type v} {γ : Type w}
-            (g : β → γ) (f : α → β) (x : α) : γ :=
+    {α : Type u} {β : Type v} {γ : Type w}
+    (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
 ```
 :::
@@ -864,8 +990,7 @@ def compose.{u, v, w}
 ::::leanFirst
 Lean 4 supports a new feature called _auto bound implicit arguments_. It makes functions such as
 {leanRef}`compose` much more convenient to write. When Lean processes the header of a declaration,
-any unbound identifier is automatically added as an implicit argument _if_ it is a single lower case or
-greek letter. With this feature we can write {leanRef}`compose` as
+any unbound identifier is automatically added as an implicit argument. With this feature we can write {leanRef}`compose` as
 
 :::TODO
 
@@ -889,9 +1014,23 @@ the command {leanCommand}`set_option autoImplicit false`.
 
 ```lean
 set_option autoImplicit false
-/- The following definition produces `unknown identifier` errors -/
--- def compose (g : β → γ) (f : α → β) (x : α) : γ :=
---   g (f x)
+
+/--
+error: unknown identifier 'β'
+---
+error: unknown identifier 'γ'
+---
+error: unknown identifier 'α'
+---
+error: unknown identifier 'β'
+---
+error: unknown identifier 'α'
+---
+error: unknown identifier 'γ'
+-/
+#guard_msgs in
+def compose (g : β → γ) (f : α → β) (x : α) : γ :=
+  g (f x)
 ```
 
 # Implicit Lambdas
@@ -900,11 +1039,13 @@ set_option autoImplicit false
 Update this text after archaeology
 :::
 
-In Lean 3 stdlib, we find many
-instances of the dreadful `@`+`_` idiom.
-It is often used when the expected type is a function type with implicit arguments,
-and we have a constant (`reader_t.pure` in the example) which also takes implicit arguments. In Lean 4, the elaborator automatically introduces lambdas
-for consuming implicit arguments. We are still exploring this feature and analyzing its impact, but the experience so far has been very positive. Here is the example from the link above using Lean 4 implicit lambdas.
+:::leanFirst
+When the expected type of an expression is a function that is awaiting implicit
+arguments, the elaborator automatically introduces the corresponding lambdas.
+For example, {leanRef}`pure`'s type states that the first argument is an implicit type
+{leanRef}`α`, but {leanRef}`ReaderT.pure`'s first agument is the reader monad's context type {leanRef}`ρ`.
+It is automatically surrounded with a {kw}`fun`{lit}` {α} => ...`, which allows the elaborator to
+correctly fill in the implicit arguments in the body.
 
 ```lean
 variable (ρ : Type) (m : Type → Type) [Monad m]
@@ -913,12 +1054,14 @@ instance : Monad (ReaderT ρ m) where
   pure := ReaderT.pure
   bind := ReaderT.bind
 ```
+:::
 
-Users can disable the implicit lambda feature by using `@` or writing
-a lambda expression with `{}` or `[]` binder annotations.  Here are
+Users can disable the implicit lambda feature by using {lit}`@` or writing
+a lambda expression with {lit}`{}` or {lit}`[]` binder annotations.  Here are
 few examples
 
 ```lean
+set_option linter.unusedVariables false
 namespace Ex2
 ------
 def id1 : {α : Type} → α → α :=
@@ -958,7 +1101,9 @@ then they are made into arguments from left to right. Here are a few examples:
 namespace Ex3
 ------
 #check (· + 1) -- fun x => x + 1 : Nat → Nat
+
 #check (2 - ·) -- fun x => 2 - x : Nat → Nat
+
 #eval [1, 2, 3, 4, 5].foldl (· * ·) 1 -- 120
 
 def f (x y z : Nat) :=
@@ -994,8 +1139,9 @@ def sum (xs : List Nat) :=
 #eval sum [1, 2, 3, 4]
 -- 10
 
-example {a b : Nat} {p : Nat → Nat → Nat → Prop} (h₁ : p a b b) (h₂ : b = a)
-    : p a a b :=
+example {a b : Nat} {p : Nat → Nat → Nat → Prop}
+    (h₁ : p a b b) (h₂ : b = a) :
+    p a a b :=
   Eq.subst (motive := fun x => p a x b) h₂ h₁
 ```
 
@@ -1062,8 +1208,3 @@ inferred by Lean, and we want to avoid a sequence of {lit}`_`s.
 example (f : Nat → Nat) (a b c : Nat) : f (a + b + c) = f (a + (b + c)) :=
   congrArg f (Nat.add_assoc ..)
 ```
-
-:::TODO
-
-{kw}`#guard_msgs`
-:::
