@@ -385,7 +385,7 @@ expression. Rather, it is a mechanism to reason about the expression's
 type. Given an appropriate semantics, it then makes sense to reduce
 terms in ways that preserve their meaning, ignoring the intermediate
 bookkeeping needed to make the reductions type-correct. In that case,
-adding new axioms in {lean}`Prop` does not matter; by proof irrelevance,
+adding new axioms in {lean}`Prop` does not matter; by {tech}[proof irrelevance],
 an expression in {lean}`Prop` carries no information, and can be safely
 ignored by the reduction procedures.
 

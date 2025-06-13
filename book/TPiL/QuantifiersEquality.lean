@@ -77,7 +77,7 @@ special case of {lean}`∀ x : p, q` in which the expression {lean}`q` does not
 depend on {leanRef}`x`.
 :::
 
-Here is an example of how the propositions-as-types correspondence gets put into practice.
+Here is an example of how the {tech}[propositions-as-types] correspondence gets put into practice.
 
 ```lean
 example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ y : α, p y :=
@@ -734,7 +734,7 @@ Otherwise, they are very similar. Given a predicate {lean}`p : α → Prop` and 
 for a term {lean}`a : α` with {lean}`h : p a` and {lean}`h' : β a`, the term {lean}`Exists.intro a h` has
 type {lean}`(∃ x : α, p x) : Prop`, while {lean}`Sigma.mk a h'` has type
 {lean}`(Σ x : α, β x)`. The similarity between {lit}`∃` and {lit}`Σ` is another
-instance of the Curry-Howard isomorphism.
+instance of the {tech}[Curry-Howard isomorphism].
 :::
 
 Lean provides a more convenient way to eliminate from an existential
@@ -750,7 +750,7 @@ example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
 
 The {kw}`match` expression is part of Lean's function definition system,
 which provides convenient and expressive ways of defining complex
-functions.  Once again, it is the Curry-Howard isomorphism that allows
+functions.  Once again, it is the {tech}[Curry-Howard isomorphism] that allows
 us to co-opt this mechanism for writing proofs as well.  The {kw}`match`
 statement “destructs” the existential assertion into the components
 {leanRef}`w` and {leanRef}`hw`, which can then be used in the body of the statement

@@ -13,7 +13,7 @@ tag := "induction-and-recursion"
 In the previous chapter, we saw that inductive definitions provide a
 powerful means of introducing new types in Lean. Moreover, the
 constructors and the recursors provide the only means of defining
-functions on these types. By the propositions-as-types correspondence,
+functions on these types. By the {tech}[propositions-as-types] correspondence,
 this means that induction is the fundamental method of proof.
 
 Lean provides natural ways of defining recursive functions, performing

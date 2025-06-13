@@ -492,7 +492,7 @@ def examplesCss := r#"
   margin: 0;
 }
 .example .information pre {
-  margin: 0;
+  margin: 0 0 0.25em 0;
 }
 "#
 
@@ -509,10 +509,16 @@ def trimOneLeadingNl : Highlighted → Highlighted
   | .tactics i s e hl => .tactics i s e (trimOneLeadingNl hl)
   | .span i hl => .span i (trimOneLeadingNl hl)
 
+structure ExampleItem where
+  code : Highlighted
+  output : Option (Highlighted.Span.Kind × String)
+  trailing : String
+deriving ToJson, FromJson, Repr, Quote
+
 block_extension Block.lean
     (allowToggle : Bool)
     (pre : Option Highlighted)
-    (code : Array (Highlighted × Option (Highlighted.Span.Kind × String)))
+    (code : Array ExampleItem)
     (post : Option Highlighted)
     (goalVisibility : HighlightHtmlM.VisibleProofStates := .none) where
   data := .arr #[.bool allowToggle, toJson pre, toJson code, toJson post, toJson goalVisibility]
@@ -535,7 +541,7 @@ block_extension Block.lean
           return .empty
         | .ok hl => pure hl
       let code ←
-        match FromJson.fromJson? (α := Array (Highlighted × Option (Highlighted.Span.Kind × String))) hlJson with
+        match FromJson.fromJson? (α := Array ExampleItem) hlJson with
         | .error err =>
           HtmlT.logError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
           return .empty
@@ -570,13 +576,15 @@ block_extension Block.lean
         | .warning => "warning"
         | .error => "error"
 
-      for (cmd, out?) in code do
+      for ⟨cmd, out?, ws⟩ in code do
         let cmd := cmd.deIndent codeIndent
 
         codeHtml := codeHtml ++ (← withVisibleProofStates visibility <| trimOneLeadingNl cmd |>.blockHtml "examples" (trim := false))
         codeString := codeString ++ cmd.toString
         if let some (k, out) := out? then
           codeHtml := codeHtml ++ {{ <div class={{outClass k}}><pre>{{out}}</pre></div> }}
+        unless ws.isEmpty do
+          codeHtml := codeHtml ++ (← (Highlighted.text ws).blockHtml "examples" (trim := false))
 
       if allowToggle then
         if let some p := post then
@@ -594,7 +602,7 @@ block_extension Block.lean
       return {{
         <div class="example" id={{i}}>{{codeHtml}}</div>
         <script>
-        {{script}}
+        {{Html.text false script}}
         </script>
       }}
 
@@ -678,8 +686,31 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted) where
       }}
 
 def kbdCSS := r#"
-.kbd > code:not(:first-child)::before {
-  content: "-";
+code.unicode-abbrev {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+kbd {
+  white-space: nowrap;
+}
+
+kbd > code {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+  color: #333;
+  display: inline-block;
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
 }
 "#
 
@@ -698,10 +729,14 @@ inline_extension Inline.kbd (items : Array String) where
           HtmlT.logError <| "Failed to deserialize keyboard shortcut: " ++ e
           return .empty
       if let #[item] := items then
-        pure {{<code>{{item}}</code>}}
+        if item.startsWith "\\" then
+          pure {{<code class="unicode-abbrev">{{item}}</code>}}
+        else
+          let items : Array Html := item.toList.toArray.map fun c =>  {{<code>{{s!"{c}"}}</code>}}
+          pure {{<kbd>{{items}}</kbd>}}
       else
         let items : Array Html := items.map (fun (s : String) => {{<code>s!"{s}"</code>}})
-        pure {{<span class="kbd">{{items}}</span>}}
+        pure {{<kbd>{{items}}</kbd>}}
 
 private def oneCodeStr [Monad m] [MonadError m] (inlines : Array (TSyntax `inline)) : m StrLit := do
   let #[code] := inlines
@@ -816,16 +851,25 @@ def trailingText (hl : Highlighted) : Highlighted × String :=
     (.span i hl', txt)
   | .text txt => (.empty, txt)
 
-/-- Extracts a trailing comment from code, if present -/
-def trailingComment (hl : Highlighted) : Highlighted × Option String :=
+/--
+Extracts a trailing comment from code, if present.
+
+Returns the code along with the comment and its trailing whitespace.
+-/
+def trailingComment (hl : Highlighted) : Highlighted × Option (String × String) :=
   let (hl', txt) := trailingText hl
   if let some txt' := commentContents txt then
     (hl', some txt')
   else (hl, none)
 where
   commentContents s :=
-    let s := s.trim
-    if "--".isPrefixOf s then some (s.dropWhile (· == '-') |>.trimLeft) else none
+    let s := s.trimLeft
+    if "--".isPrefixOf s then
+      let s := s.dropWhile (· == '-') |>.trimLeft
+      let ws := s.takeRightWhile (·.isWhitespace)
+      some (s.dropRight ws.length, ws)
+    else
+      none
 
 section
 
@@ -935,7 +979,7 @@ def lean : CodeBlockExpander
     let (pre, mid, post) := splitExample' contents
     let mid := fixupAnchorComments mid
     let pre : Option Highlighted := pre.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
-    let mut toShow : Array (Highlighted × Option (Highlighted.Span.Kind × String)) := #[]
+    let mut toShow : Array ExampleItem := #[]
     let mut visibility : HighlightHtmlM.VisibleProofStates :=
       match showProofStates with
       | .none => .none
@@ -961,18 +1005,18 @@ def lean : CodeBlockExpander
       match item.kind with
       | ``Lean.Parser.Command.check | ``Lean.Parser.Command.eval | ``Lean.reduceCmd
       | ``Lean.Parser.Command.print | ``Lean.Parser.Command.printAxioms | ``Lean.Parser.Command.printEqns =>
-        let info? := allInfo item.code |>.firstM fun (sev, str, hl?) =>
+        let info? : Option (_ × String) := allInfo item.code |>.firstM fun (sev, str, hl?) =>
           if hl? matches some (.token ⟨.keyword .., _⟩) then some (sev, str) else none
-        if checkOutput then
-          if let (code, some comment) := trailingComment item.code then
-            if let some (_, txt) := info? then
-              if !eqMessages comment txt then throwError "Mismatch! Expected {comment} but got {txt}"
-            else logError "Expected {comment} but no info was found."
-            toShow := toShow.push (code, info?)
+        if let some (sev, txt) := info? then
+          if let (code, some (comment, ws)) := trailingComment item.code then
+            if checkOutput && !eqMessages comment txt then
+              throwError "Mismatch! Expected {comment} but got {txt}"
+            toShow := toShow.push ⟨code, some (sev, txt), dropOneNl ws⟩
           else
-            toShow := toShow.push (item.code, info?)
-        else toShow := toShow.push (item.code, info?)
-      | _ => toShow := toShow.push (item.code, none)
+            let (code', ws) := trailingText item.code
+            toShow := toShow.push ⟨code', some (sev, txt), dropOneNl ws⟩
+        else toShow := toShow.push ⟨item.code, none, ""⟩
+        | _ => toShow := toShow.push ⟨item.code, none, ""⟩
     let post : Option Highlighted := post.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
     let visible := .seq <| toShow.map (·.1)
     saveBackref visible
@@ -987,6 +1031,8 @@ def lean : CodeBlockExpander
       return #[]
 where
   eqMessages (s1 s2 : String) := SubVerso.Examples.Messages.messagesMatch (s1.replace "\n" " ") (s2.replace "\n" " ")
+  dropOneNl (s : String) : String :=
+    if s.back == '\n' then s.dropRight 1 else s
 
 section
 
@@ -1481,7 +1527,7 @@ def leanCommandBlock : CodeBlockExpander
         let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
         logSilentInfo m!"{k}: {msg}"
 
-      return #[← ``(Block.other (Block.lean false none #[($(quote hl), none)] none) #[])]
+      return #[← ``(Block.other (Block.lean false none #[ExampleItem.mk $(quote hl) none ""] none) #[])]
     catch
       | .error ref e =>
         logErrorAt ref e
@@ -1503,7 +1549,7 @@ def signature : CodeBlockExpander
         let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
         logSilentInfo m!"{k}: {msg}"
 
-      return #[← ``(Block.other (Block.lean false none #[($(quote hl), none)] none) #[])]
+      return #[← ``(Block.other (Block.lean false none #[ExampleItem.mk $(quote hl) none ""] none) #[])]
     catch
       | .error ref e =>
         logErrorAt ref e

@@ -36,13 +36,19 @@ from others.
 def Implies (p q : Prop) : Prop := p → q
 ------
 #check And     -- And (a b : Prop) : Prop
+
 #check Or      -- Or (a b : Prop) : Prop
+
 #check Not     -- Not (a : Prop) : Prop
+
 #check Implies -- Implies (p q : Prop) : Prop
 
 variable (p q r : Prop)
+
 #check And p q                      -- p ∧ q : Prop
+
 #check Or (And p q) r               -- p ∧ q ∨ r : Prop
+
 #check Implies (And p q) (And q p)  -- Implies (p ∧ q) (q ∧ p) : Prop
 ```
 
@@ -58,7 +64,7 @@ variable (t1 t2 : p) {α : Type u} {β : Type v}
 ```
 
 We could then introduce, for each element {lean}`p : Prop`, another type
-{lean}`Proof p`, for the type of proofs of {lean}`p`.  An “axiom”would be a
+{lean}`Proof p`, for the type of proofs of {lean}`p`.  An “axiom” would be a
 constant of such a type.
 
 
@@ -72,6 +78,7 @@ structure Proof (p : Prop) : Type where
 axiom and_commut (p q : Prop) : Proof (Implies (And p q) (And q p))
 
 variable (p q : Prop)
+
 #check and_commut p q     -- and_commut p q : Proof (Implies (p ∧ q) (q ∧ p))
 ```
 
@@ -90,12 +97,14 @@ def Implies (p q : Prop) : Prop := p → q
 structure Proof (p : Prop) : Type where
   proof : p
 ------
-axiom modus_ponens : (p q : Prop) → Proof (Implies p q) → Proof p → Proof q
+axiom modus_ponens (p q : Prop) :
+  Proof (Implies p q) → Proof p →
+  Proof q
 ```
 
 Systems of natural deduction for propositional logic also typically rely on the following rule:
 
-> Suppose that, assuming {lean}`p` as a hypothesis, we have a proof of {lean}`q`. Then we can “cancel”the hypothesis and obtain a proof of {lean}`Implies p q`.
+> Suppose that, assuming {lean}`p` as a hypothesis, we have a proof of {lean}`q`. Then we can “cancel” the hypothesis and obtain a proof of {lean}`Implies p q`.
 
 We could render this as follows:
 
@@ -104,7 +113,8 @@ def Implies (p q : Prop) : Prop := p → q
 structure Proof (p : Prop) : Type where
   proof : p
 ------
-axiom implies_intro : (p q : Prop) → (Proof p → Proof q) → Proof (Implies p q)
+axiom implies_intro (p q : Prop) :
+  (Proof p → Proof q) → Proof (Implies p q)
 ```
 
 This approach would provide us with a reasonable way of building assertions and proofs.
@@ -130,8 +140,8 @@ This is the approach followed in the Calculus of Constructions, and
 hence in Lean as well. The fact that the rules for implication in a
 proof system for natural deduction correspond exactly to the rules
 governing abstraction and application for functions is an instance of
-the _Curry-Howard isomorphism_, sometimes known as the
-_propositions-as-types_ paradigm. In fact, the type {lean}`Prop` is
+the {deftech}_Curry-Howard isomorphism_, sometimes known as the
+{deftech}_propositions-as-types_ paradigm. In fact, the type {lean}`Prop` is
 syntactic sugar for {lean}`Sort 0`, the very bottom of the type hierarchy
 described in the last chapter. Moreover, {lean}`Type u` is also just
 syntactic sugar for {lean}`Sort (u+1)`. {lean}`Prop` has some special
@@ -153,21 +163,21 @@ with) {lean}`p` is _inhabited_. It just so happens that the rules for
 function application and abstraction can conveniently help us keep
 track of which elements of {lean}`Prop` are inhabited. So constructing an
 element {lean}`t : p` tells us that {lean}`p` is indeed true. You can think of
-the inhabitant of {lean}`p` as being the “fact that {lean}`p` is true.”A
-proof of {lean}`p → q` uses “the fact that {lean}`p` is true”to obtain “the
+the inhabitant of {lean}`p` as being the “fact that {lean}`p` is true.” A
+proof of {lean}`p → q` uses “the fact that {lean}`p` is true” to obtain “the
 fact that {lean}`q` is true.”
 
 Indeed, if {lean}`p : Prop` is any proposition, Lean's kernel treats any
 two elements {lean}`t1 t2 : p` as being definitionally equal, much the
 same way as it treats {lit}`(fun x => t) s` and {lit}`t[s/x]` as
-definitionally equal. This is known as _proof irrelevance,_ and is
+definitionally equal. This is known as {deftech}_proof irrelevance_, and is
 consistent with the interpretation in the last paragraph. It means
 that even though we can treat proofs {lean}`t : p` as ordinary objects in
 the language of dependent type theory, they carry no information
 beyond the fact that {lean}`p` is true.
 
 The two ways we have suggested thinking about the
-propositions-as-types paradigm differ in a fundamental way. From the
+{tech}[propositions-as-types] paradigm differ in a fundamental way. From the
 constructive point of view, proofs are abstract mathematical objects
 that are _denoted_ by suitable expressions in dependent type
 theory. In contrast, if we think in terms of the coding trick
@@ -178,11 +188,11 @@ proposition in question is true. In other words, the expressions
 _themselves_ are the proofs.
 
 In the exposition below, we will slip back and forth between these two
-ways of talking, at times saying that an expression “constructs”or
-“produces” or “returns”a proof of a proposition, and at other times
-simply saying that it “is”such a proof. This is similar to the way
+ways of talking, at times saying that an expression “constructs” or
+“produces” or “returns” a proof of a proposition, and at other times
+simply saying that it “is” such a proof. This is similar to the way
 that computer scientists occasionally blur the distinction between
-syntax and semantics by saying, at times, that a program “computes”a
+syntax and semantics by saying, at times, that a program “computes” a
 certain function, and at other times speaking as though the program
 “is” the function in question.
 
@@ -195,11 +205,13 @@ verify that it is well-formed and has the correct type.
 
 # Working with Propositions as Types
 
-In the propositions-as-types paradigm, theorems involving only {lit}`→`
+In the {tech}[propositions-as-types] paradigm, theorems involving only {lit}`→`
 can be proved using lambda abstraction and application. In Lean, the
 {kw}`theorem` command introduces a new theorem:
 
 ```lean
+set_option linter.unusedVariables false
+---
 variable {p : Prop}
 variable {q : Prop}
 
@@ -225,7 +237,7 @@ checker, there is no difference between the two.
 
 There are a few pragmatic differences between definitions and
 theorems, however. In normal circumstances, it is never necessary to
-unfold the “definition”of a theorem; by proof irrelevance, any two
+unfold the “definition” of a theorem; by {tech}[proof irrelevance], any two
 proofs of that theorem are definitionally equal. Once the proof of a
 theorem is complete, typically we only need to know that the proof
 exists; it doesn't matter what the proof is. In light of that fact,
@@ -234,12 +246,17 @@ parser (more precisely, the _elaborator_) that there is generally no
 need to unfold them when processing a file. In fact, Lean is generally
 able to process and check proofs in parallel, since assessing the
 correctness of one proof does not require knowing the details of
-another.
+another. Additionally, {ref "variables-and-sections"}[section variables]
+that are referred to in the body of a definition are automatically added as
+parameters, but only the variables referred to in a theorem's type are added.
+This is because the way in which a statement is proved should not influence
+the statement that is being proved.
 
 As with definitions, the {kw}`#print` command will show you the proof of
 a theorem:
 
 ```lean
+set_option linter.unusedVariables false
 variable {p : Prop}
 variable {q : Prop}
 ------
@@ -254,6 +271,7 @@ allows us to specify the type of the final term {leanRef}`hp`, explicitly,
 with a {kw}`show` statement:
 
 ```lean
+set_option linter.unusedVariables false
 variable {p : Prop}
 variable {q : Prop}
 ------
@@ -272,6 +290,7 @@ As with ordinary definitions, we can move the lambda-abstracted
 variables to the left of the colon:
 
 ```lean
+set_option linter.unusedVariables false
 variable {p : Prop}
 variable {q : Prop}
 ------
@@ -283,6 +302,7 @@ theorem t1 (hp : p) (hq : q) : p := hp
 We can use the theorem {leanRef}`t1` just as a function application:
 
 ```lean
+set_option linter.unusedVariables false
 variable {p : Prop}
 variable {q : Prop}
 ------
@@ -309,7 +329,7 @@ theorem ex : 1 = 0 :=
 ```
 variable {p q : Prop} (hp : p) {t1 : p → q → p}
 ```
-Declaring an “axiom”{lean}`hp : p` is tantamount to declaring that {lean}`p`
+Declaring an “axiom” {lean}`hp : p` is tantamount to declaring that {lean}`p`
 is true, as witnessed by {lean}`hp`. Applying the theorem
 {lean}`t1 : p → q → p` to the fact {lean}`hp : p` that {lean}`p` is true yields the theorem
 {lean}`t1 hp : q → p`.
@@ -319,6 +339,8 @@ is true, as witnessed by {lean}`hp`. Applying the theorem
 Recall that we can also write theorem {leanRef}`t1` as follows:
 
 ```lean
+set_option linter.unusedVariables false
+------
 theorem t1 {p q : Prop} (hp : p) (hq : q) : p := hp
 
 #print t1
@@ -330,11 +352,13 @@ this as the assertion “for every pair of propositions {lean}`p`{lit}` `{lean}`
 of the colon:
 
 ```lean
+set_option linter.unusedVariables false
+------
 theorem t1 : ∀ {p q : Prop}, p → q → p :=
   fun {p q : Prop} (hp : p) (hq : q) => hp
 ```
 
-If {lean}`p` and {lean}`q` have been declared as variables, Lean will
+If {lean}`p` and {lean}`q` have been declared as {ref "variables-and-sections"}[variables], Lean will
 generalize them for us automatically:
 
 ```lean
@@ -348,6 +372,8 @@ different pairs of propositions, to obtain different instances of the
 general theorem.
 
 ```lean
+set_option linter.unusedVariables false
+------
 theorem t1 (p q : Prop) (hp : p) (hq : q) : p := hp
 
 variable (p q r s : Prop)
@@ -357,10 +383,11 @@ variable (p q r s : Prop)
 #check t1 (r → s) (s → r)    -- t1 (r → s) (s → r) : (r → s) → (s → r) → r → s
 
 variable (h : r → s)
+
 #check t1 (r → s) (s → r) h  -- t1 (r → s) (s → r) h : (s → r) → r → s
 ```
 
-Once again, using the propositions-as-types correspondence, the
+Once again, using the {tech}[propositions-as-types] correspondence, the
 variable {leanRef}`h` of type {leanRef}`r → s` can be viewed as the hypothesis, or
 premise, that {leanRef}`r → s` holds.
 
@@ -393,46 +420,46 @@ Lean defines all the standard logical connectives and notation. The propositiona
  * Definition
 
 *
- * True
+ * {lean}`True`
  * {empty}[]
  * {empty}[]
- * True
+ * {lean}`True`
 
 *
- * False
+ * {lean}`False`
  * {empty}[]
  * {empty}[]
- * False
+ * {lean}`False`
 
 *
- * Not
- * ¬
+ * {lean}`Not`
+ * {lit}`¬`
  * {kbd}`\not`, {kbd}`\neg`
- * Not
+ * {lean}`Not`
 
 *
- * /\
- * ∧
+ * {lit}`/\`
+ * {lit}`∧`
  * {kbd}`\and`
- * And
+ * {lean}`And`
 
 *
- * \/
- * ∨
+ * {lit}`\/`
+ * {lit}`∨`
  * {kbd}`\or`
- * Or
+ * {lean}`Or`
 
 *
- * ->
- * →
+ * {lit}`->`
+ * {lit}`→`
  * {kbd}`\to`, {kbd}`\r`, {kbd}`\imp`
  * {empty}[]
 
 *
- * <->
- * ↔
+ * {lit}`<->`
+ * {lit}`↔`
  * {kbd}`\iff`, {kbd}`\lr`
- * Iff
+ * {lean}`Iff`
 
 :::
 
@@ -442,7 +469,9 @@ They all take values in {lean}`Prop`.
 variable (p q : Prop)
 
 #check p → q → p ∧ q
+
 #check ¬p → p ↔ False
+
 #check p ∨ q → q ∨ p
 ```
 
@@ -458,14 +487,14 @@ Remember that {lit}`→` associates to the right (nothing changes
 now that the arguments are elements of {lean}`Prop`, instead of some other
 {lean}`Type`), as do the other binary connectives. So if we have
 {lean}`p q r : Prop`, the expression {lean}`p → q → r` reads “if {lean}`p`, then if {lean}`q`,
-then {lean}`r`.” This is just the “curried”form of {lean}`p ∧ q → r`.
+then {lean}`r`.” This is just the “curried” form of {lean}`p ∧ q → r`.
 
 :::
 
 In the last chapter we observed that lambda abstraction can be viewed
-as an “introduction rule”for {lit}`→`. In the current setting, it shows
-how to “introduce”or establish an implication. Application can be
-viewed as an “elimination rule,”showing how to “eliminate”or use an
+as an “introduction rule” for {lit}`→`. In the current setting, it shows
+how to “introduce” or establish an implication. Application can be
+viewed as an “elimination rule,” showing how to “eliminate” or use an
 implication in a proof. The other propositional connectives are
 defined in Lean's library, and are automatically imported. Each connective
 comes with its canonical introduction and elimination rules.
@@ -538,7 +567,7 @@ difference is that given {lean}`hp : p` and {lean}`hq : q`, {lean}`And.intro hp 
 {lean}`p ∧ q : Prop`, while given {lean}`a : α` and {lean}`b : β`, {lean}`Prod.mk a b` has type
 {lean}`α × β : Type`. {lean}`Prod` cannot be used with {lean}`Prop`s, and {lean}`And` cannot be used with {lean}`Type`s.
 The similarity between {lit}`∧` and {lit}`×` is another instance
-of the Curry-Howard isomorphism, but in contrast to implication and
+of the {tech}[Curry-Howard isomorphism], but in contrast to implication and
 the function space constructor, {lit}`∧` and {lit}`×` are treated separately
 in Lean. With the analogy, however, the proof we have just constructed
 is similar to a function that swaps the elements of a pair.
@@ -586,6 +615,7 @@ thing:
 variable (xs : List Nat)
 
 #check List.length xs
+
 #check xs.length
 ```
 
@@ -615,7 +645,7 @@ for straightforward constructions like the one above, when the type of
 {leanRef}`h` and the goal of the construction are salient, the notation is
 clean and effective.
 
-It is common to iterate constructions like “And.”Lean also allows you
+It is common to iterate constructions like “And.” Lean also allows you
 to flatten nested constructors that associate to the right, so that
 these two proofs are equivalent:
 
@@ -849,7 +879,7 @@ the final goal.
 :::
 
 Lean also supports a structured way of reasoning backwards from a
-goal, which models the “suffices to show”construction in ordinary
+goal, which models the “suffices to show” construction in ordinary
 mathematics. The next example simply permutes the last two lines in
 the previous proof.
 
@@ -875,7 +905,7 @@ tag := "classical-logic"
 The introduction and elimination rules we have seen so far are all
 constructive, which is to say, they reflect a computational
 understanding of the logical connectives based on the
-propositions-as-types correspondence. Ordinary classical logic adds to
+{tech}[propositions-as-types] correspondence. Ordinary classical logic adds to
 this the law of the excluded middle, {lean}`p ∨ ¬p`. To use this
 principle, you have to open the classical namespace.
 
@@ -883,6 +913,7 @@ principle, you have to open the classical namespace.
 open Classical
 
 variable (p : Prop)
+
 #check em p
 ```
 
@@ -891,7 +922,7 @@ variable (p : Prop)
 variable (p q RH : Prop)
 ```
 
-Intuitively, the constructive “Or”is very strong: asserting {lean}`p ∨ q`
+Intuitively, the constructive “Or” is very strong: asserting {lean}`p ∨ q`
 amounts to knowing which is the case. If {lean}`RH` represents the Riemann
 hypothesis, a classical mathematician is willing to assert
 {lean}`RH ∨ ¬RH`, even though we cannot yet assert either disjunct.
@@ -1101,7 +1132,7 @@ example (p q : Prop) : ¬(p ∧ ¬q) → (p → q) :=
 
 # Exercises
 
-Prove the following identities, replacing the “sorry”placeholders with actual proofs.
+Prove the following identities, replacing the {lean}`sorry` placeholders with actual proofs.
 
 ```lean
 variable (p q r : Prop)
@@ -1132,7 +1163,7 @@ example : p ∧ False ↔ False := sorry
 example : (p → q) → (¬q → ¬p) := sorry
 ```
 
-Prove the following identities, replacing the “sorry”placeholders
+Prove the following identities, replacing the {lean}`sorry` placeholders
 with actual proofs. These require classical reasoning.
 
 ```lean

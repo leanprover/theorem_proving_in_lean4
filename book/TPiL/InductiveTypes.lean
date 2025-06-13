@@ -389,9 +389,9 @@ def next_previous (d : Weekday) : next (previous d) = d := by
 {ref "tactics-for-inductive-types"}[Tactics for Inductive Types] below will introduce additional
 tactics that are specifically designed to make use of inductive types.
 
-Notice that, under the propositions-as-types correspondence, we can
+Notice that, under the {tech}[propositions-as-types] correspondence, we can
 use {kw}`match` to prove theorems as well as define functions.  In other
-words, under the propositions-as-types correspondence, the proof by
+words, under the {tech}[propositions-as-types] correspondence, the proof by
 cases is a kind of definition by cases, where what is being “defined”
 is a proof instead of a piece of data.
 

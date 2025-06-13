@@ -8,9 +8,9 @@ path = "../../lean/leandoc"
 #git = # "https://github.com/leanprover/verso.git"
 #rev = "main"
 
-[[require]]
-name = "subverso"
-path = "../../lean/subverso"
+#[[require]]
+#name = "subverso"
+#path = "../../lean/subverso"
 #git = # "https://github.com/leanprover/verso.git"
 #rev = "main"
 
