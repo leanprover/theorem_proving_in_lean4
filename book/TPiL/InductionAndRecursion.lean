@@ -417,7 +417,7 @@ def bar : Nat → List Nat → Bool → Nat
   | a+1, b :: _, _     => a + b
 ```
 
-It will also use an {kw}`if`{lit}` ... `{kw}`then`{lit}` ... `{lit}`else` instead of a {lit}`casesOn` in appropriate situations.
+It will also use an {kw}`if`{lit}`  ...  `{kw}`then`{lit}`  ...  `{lit}`else` instead of a {lit}`casesOn` in appropriate situations.
 
 ```lean
 def foo : Char → Nat

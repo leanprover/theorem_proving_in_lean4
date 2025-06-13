@@ -1093,7 +1093,7 @@ theorem add_comm (m n : Nat) : m + n = n + m :=
       _ = succ n + m   := sorry)
 ```
 
-At this point, we see that we need another supporting fact, namely, that {leanRef}`succ (n + m)`{lit}` = `{leanRef}`succ n + m`.
+At this point, we see that we need another supporting fact, namely, that {leanRef}`succ (n + m)`{lit}`  =  `{leanRef}`succ n + m`.
 You can prove this by induction on {leanRef}`m`:
 
 ```lean
@@ -1457,7 +1457,7 @@ example (p : Prop) (m n : Nat)
   --           ^ PROOF_STATE: two
 ```
 
-The theorem {leanRef}`Nat.lt_or_ge m n` says {leanRef}`m < n`{lit}` ∨ `{leanRef}`m ≥ n`, and it is
+The theorem {leanRef}`Nat.lt_or_ge m n` says {leanRef}`m < n`{lit}`  ∨  `{leanRef}`m ≥ n`, and it is
 natural to think of the proof above as splitting on these two
 cases. In the first branch, we have the hypothesis {leanRef}`hlt : m < n`, and
 in the second we have the hypothesis {leanRef}`hge : m ≥ n`. The proof above

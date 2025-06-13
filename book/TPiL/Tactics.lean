@@ -687,8 +687,8 @@ example (p q : Prop) : p ∧ q → q ∧ p := by
 
 
 In this example, there is only one goal after the {leanRef}`cases` tactic is
-applied, with {leanRef}`h`{lit}` : `{leanRef}`p ∧ q` replaced by a pair of assumptions,
-{leanRef}`hp`{lit}` : `{leanRef}`p` and {leanRef}`hq`{lit}` : `{leanRef}`q`:
+applied, with {leanRef}`h`{lit}`  :  `{leanRef}`p ∧ q` replaced by a pair of assumptions,
+{leanRef}`hp`{lit}`  :  `{leanRef}`p` and {leanRef}`hq`{lit}`  :  `{leanRef}`q`:
 
 ```proofState afterIntroCase
 case intro =>
@@ -1245,7 +1245,7 @@ example (f : Nat → Nat) (a b : Nat) (h₁ : a = b) (h₂ : f a = 0) : f b = 0 
 
 In this example, the term {leanRef}`←h₁` instructs the rewriter to replace
 {leanRef}`b` with {leanRef}`a`. In the editors, you can type the backwards arrow as
-{kbd}`\l`. You can also use the ascii equivalent, {lit}`<-`.
+{kbd}`\l`. You can also use the ASCII equivalent, {lit}`<-`.
 
 Sometimes the left-hand side of an identity can match more than one
 subterm in the pattern, in which case the {tactic}`rw` tactic chooses the
@@ -1272,7 +1272,7 @@ In the first example above, the first step rewrites {leanRef}`a + b + c` to
 {leanRef}`a`{lit}` + (`{leanRef}`b + c`{lit}`)`. The next step applies commutativity to the term
 {leanRef}`b + c`; without specifying the argument, the tactic would instead rewrite
 {leanRef}`a`{lit}` + (`{leanRef}`b + c`{lit})` to {lit}`(`{leanRef}`b + c`{lit}`) + `{leanRef}`a`. Finally, the last step applies
-associativity in the reverse direction, rewriting {leanRef}`a`{lit}` + (`{leanRef}c`{lit}` + `{leanRef}`b`{lit})` to
+associativity in the reverse direction, rewriting {leanRef}`a`{lit}` + (`{leanRef}c`{lit}`  +  `{leanRef}`b`{lit})` to
 {leanRef}`a + c + b`. The next two examples instead apply associativity to
 move the parenthesis to the right on both sides, and then switch `b`
 and `c`. Notice that the last example specifies that the rewrite
@@ -1280,7 +1280,7 @@ should take place on the right-hand side by specifying the second
 argument to `Nat.add_comm`.
 
 By default, the `rw` tactic affects only the goal. The notation
-{tactic}`rw`{lit}` [t] `{kw}`at`{lit} h` applies the rewrite `t` at hypothesis `h`.
+{tactic}`rw`{lit}`  [t]  `{kw}`at`{lit} h` applies the rewrite `t` at hypothesis `h`.
 
 ```lean
 example (f : Nat → Nat) (a : Nat) (h : a + 0 = 0) : f a = f 0 := by
@@ -1289,11 +1289,11 @@ example (f : Nat → Nat) (a : Nat) (h : a + 0 = 0) : f a = f 0 := by
 ```
 
 The first step, {leanRef}`rw [Nat.add_zero] at h`, rewrites the hypothesis {leanRef}`a + 0 = 0` to {leanRef}`a = 0`.
-Then the new hypothesis {leanRef}`a = 0` is used to rewrite the goal to {leanRef}`f 0`{lit}` = `{leanRef}`f 0`.
+Then the new hypothesis {leanRef}`a = 0` is used to rewrite the goal to {leanRef}`f 0`{lit}`  =  `{leanRef}`f 0`.
 
 :::leanFirst
 The {leanRef}`rw` tactic is not restricted to propositions.
-In the following example, we use {tactic}`rw`{lit}` [h] `{kw}`at`{lit}` t` to rewrite the hypothesis {leanRef}`t : Tuple α n` to {leanRef}`t : Tuple α`{lit}` 0`.
+In the following example, we use {tactic}`rw`{lit}`  [h]  `{kw}`at`{lit}` t` to rewrite the hypothesis {leanRef}`t : Tuple α n` to {leanRef}`t : Tuple α`{lit}` 0`.
 
 ```lean
 def Tuple (α : Type) (n : Nat) :=
@@ -1327,7 +1327,7 @@ example (x y z : Nat) (p : Nat → Prop) (h : p (x * y))
 
 In the first example, the left-hand side of the equality in the goal
 is simplified using the usual identities involving 0 and 1, reducing
-the goal to {leanRef}`x * y`{lit}` = `{leanRef}`x * y`. At that point, {leanRef}`simp` applies
+the goal to {leanRef}`x * y`{lit}`  =  `{leanRef}`x * y`. At that point, {leanRef}`simp` applies
 reflexivity to finish it off. In the second example, {leanRef}`simp` reduces
 the goal to {leanRef}`p (x * y)`, at which point the assumption {leanRef}`h`
 finishes it off. Here are some more examples

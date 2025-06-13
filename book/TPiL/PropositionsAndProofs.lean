@@ -404,7 +404,7 @@ theorem t2 (h₁ : q → r) (h₂ : p → q) : p → r :=
 
 As a theorem of propositional logic, what does {leanRef}`t2` say?
 
-Note that it is often useful to use numeric unicode subscripts,
+Note that it is often useful to use numeric Unicode subscripts,
 entered as {kbd}`\0`, {kbd}`\1`, {kbd}`\2`, ..., for hypotheses, as we did in
 this example.
 
@@ -414,7 +414,7 @@ Lean defines all the standard logical connectives and notation. The propositiona
 
 :::table (header := true)
 *
- * Ascii
+ * ASCII
  * Unicode
  * Editor shortcut
  * Definition

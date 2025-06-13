@@ -383,7 +383,7 @@ _before_ a subsequent explicit argument. It can be written with double braces, s
 {lean}`f : (x : Nat) → {{y : Nat}} → (z : Nat) → Nat`.
 With this annotation, the expression {lean}`f 7` would be parsed as is, whereas {lean}`f 7 3` would be
 parsed as {lean}`@f 7 _ 3`, just as it would be with the strong annotation.
-This annotation can also be written as {lit}`⦃y : Nat⦄`, where the unicode brackets are entered
+This annotation can also be written as {lit}`⦃y : Nat⦄`, where the Unicode brackets are entered
 as {kbd}`\{{` and {kbd}`\}}`, respectively.
 :::
 

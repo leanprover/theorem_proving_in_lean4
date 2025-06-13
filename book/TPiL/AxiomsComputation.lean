@@ -12,7 +12,7 @@ tag := "axioms-and-computation"
 We have seen that the version of the Calculus of Constructions that
 has been implemented in Lean includes dependent function types,
 inductive types, and a hierarchy of universes that starts with an
-impredicative, proof-irrelevant {lean}`Prop` at the bottom. In this
+{tech}[impredicative], {tech key:="proof irrelevance"}[proof-irrelevant] {lean}`Prop` at the bottom. In this
 chapter, we consider ways of extending the CIC with additional axioms
 and rules. Extending a foundational system in such a way is often
 convenient; it can make it possible to prove more theorems, as well as
@@ -814,7 +814,7 @@ end UProd
 
 :::leanFirst
 To complete the example, given {leanRef}`a : α` and {leanRef}`u : UProd α`, we
-define the proposition {leanRef in:="mem (a : α) (u : UProd α)"}`a`{lit}` ∈ `{leanRef in:="mem (a : α) (u : UProd α)"}`u` which should hold if {leanRef in:="mem (a : α) (u : UProd α)"}`a` is one of
+define the proposition {leanRef in:="mem (a : α) (u : UProd α)"}`a`{lit}`  ∈  `{leanRef in:="mem (a : α) (u : UProd α)"}`u` which should hold if {leanRef in:="mem (a : α) (u : UProd α)"}`a` is one of
 the elements of the unordered pair {leanRef in:="mem (a : α) (u : UProd α)"}`u`. First, we define a similar
 proposition {leanRef}`mem_fn`{leanRef in:="mem (a : α) (u : UProd α)"}` a`{leanRef in:="mem (a : α) (u : UProd α)"}` u` on (ordered) pairs; then we show that
 {leanRef}`mem_fn` respects the equivalence relation {leanRef}`eqv` with the lemma

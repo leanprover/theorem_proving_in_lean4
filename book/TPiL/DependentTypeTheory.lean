@@ -125,12 +125,12 @@ and the Unicode symbol {lit}`→` as a more compact version of {lit}`->`.
 
 Once again, you should try some examples on your own.
 
-Let's take a look at some basic syntax. You can enter the unicode
+Let's take a look at some basic syntax. You can enter the Unicode
 arrow {lit}`→` by typing {kbd}`\to` or {kbd}`\r` or {kbd}`\->`. You can also use the
 ASCII alternative {lit}`->`, so the expressions {lean}`Nat -> Nat` and {lean}`Nat → Nat`
 mean the same thing. Both expressions denote the type of
 functions that take a natural number as input and return a natural
-number as output. The unicode symbol {lit}`×` for the Cartesian product
+number as output. The Unicode symbol {lit}`×` for the Cartesian product
 is entered as {kbd}`\times`. You will generally use lower-case Greek
 letters like {lit}`α`, {lit}`β`, and {lit}`γ` to range over types. You can
 enter these particular ones with {kbd}`\a`, {kbd}`\b`, and {kbd}`\g`.
@@ -948,8 +948,8 @@ namespaces organize data and sections declare variables for insertion
 in definitions. Sections are also useful for delimiting the scope of
 commands such as {kw}`set_option` and {kw}`open`.
 
-In many respects, however, a {kw}`namespace`{lit}` ... `{kw}`end` block behaves the
-same as a {kw}`section`{lit}` ... `{kw}`end` block. In particular, if you use the
+In many respects, however, a {kw}`namespace`{lit}`  ...  `{kw}`end` block behaves the
+same as a {kw}`section`{lit}`  ...  `{kw}`end` block. In particular, if you use the
 {kw}`variable` command within a namespace, its scope is limited to the
 namespace. Similarly, if you use an {kw}`open` command within a
 namespace, its effects disappear when the namespace is closed.

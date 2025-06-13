@@ -1,7 +1,8 @@
 import VersoManual
 import TPiL.Examples
 
-open Verso.Genre Manual
+open Verso.Genre
+open Verso.Genre.Manual hiding tactic
 open TPiL
 
 #doc (Manual) "Quantifiers and Equality" =>
@@ -80,7 +81,8 @@ depend on {leanRef}`x`.
 Here is an example of how the {tech}[propositions-as-types] correspondence gets put into practice.
 
 ```lean
-example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ y : α, p y :=
+example (α : Type) (p q : α → Prop) :
+    (∀ x : α, p x ∧ q x) → ∀ y : α, p y :=
   fun h : ∀ x : α, p x ∧ q x =>
   fun y : α =>
   show p y from (h y).left
@@ -92,7 +94,7 @@ quantifier over {leanRef}`x` to the hypothesis in the example above. The
 canonical way to prove {lean}`∀ y : α, p y` is to take an arbitrary {leanRef}`y`,
 and prove {leanRef}`p y`. This is the introduction rule. Now, given that
 {leanRef}`h` has type {leanRef}`∀ x : α, p x ∧ q x`, the expression {leanRef}`h y` has type
-{leanRef}`p`{lit}` `{leanRef}`y`{lit}` ∧ `{leanRef}`q`{lit}` `{leanRef}`y`. This is the elimination rule. Taking the left conjunct
+{leanRef}`p`{lit}` `{leanRef}`y`{lit}`  ∧  `{leanRef}`q`{lit}` `{leanRef}`y`. This is the elimination rule. Taking the left conjunct
 gives the desired conclusion, {leanRef}`p y`.
 
 :::setup
@@ -108,7 +110,8 @@ proof:
 :::
 
 ```lean
-example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) → ∀ x : α, p x :=
+example (α : Type) (p q : α → Prop) :
+    (∀ x : α, p x ∧ q x) → ∀ x : α, p x :=
   fun h : ∀ x : α, p x ∧ q x =>
   fun z : α =>
   show p z from And.left (h z)
@@ -124,15 +127,18 @@ variable (a b c : α)
 variable (hab : r a b) (hbc : r b c)
 
 #check trans_r    -- trans_r : ∀ (x y z : α), r x y → r y z → r x z
+
 #check trans_r a b c -- trans_r a b c : r a b → r b c → r a c
+
 #check trans_r a b c hab -- trans_r a b c hab : r b c → r a c
+
 #check trans_r a b c hab hbc -- trans_r a b c hab hbc : r a c
 ```
 
 Think about what is going on here. When we instantiate {leanRef}`trans_r` at
-the values {leanRef}`a b c`, we end up with a proof of {leanRef}`r`{lit}` `{leanRef}`a b`{lit}` → `{leanRef}`r`{lit}` `{leanRef}`b c`{lit}` → `{leanRef}`r`{lit}` `{leanRef}`a`{lit}` `{leanRef}`c`.
+the values {leanRef}`a b c`, we end up with a proof of {leanRef}`r`{lit}` `{leanRef}`a b`{lit}`  →  `{leanRef}`r`{lit}` `{leanRef}`b c`{lit}`  →  `{leanRef}`r`{lit}` `{leanRef}`a`{lit}` `{leanRef}`c`.
 Applying this to the “hypothesis” {leanRef}`hab : r a b`, we get a proof
-of the implication {leanRef}`r`{lit}` `{leanRef}`b c`{lit}` → `{leanRef}`r`{lit}` `{leanRef}`a`{lit}` `{leanRef}`c`. Finally, applying it to the
+of the implication {leanRef}`r`{lit}` `{leanRef}`b c`{lit}`  →  `{leanRef}`r`{lit}` `{leanRef}`a`{lit}` `{leanRef}`c`. Finally, applying it to the
 hypothesis {leanRef}`hbc` yields a proof of the conclusion {leanRef}`r`{lit}` `{leanRef}`a`{lit}` `{leanRef}`c`.
 
 In situations like this, it can be tedious to supply the arguments
@@ -147,7 +153,9 @@ variable (a b c : α)
 variable (hab : r a b) (hbc : r b c)
 
 #check trans_r
+
 #check trans_r hab
+
 #check trans_r hab hbc
 ```
 
@@ -197,9 +205,9 @@ type universe {lean}`α` lives in. In other words, if {lean}`β` is a
 proposition depending on {lean}`α`, then {lean}`∀ x : α, β` is again a
 proposition. This reflects the interpretation of {lean}`Prop` as the type
 of propositions rather than data, and it is what makes {lean}`Prop`
-_impredicative_.
+{deftech}_impredicative_.
 
-The term “predicative” stems from foundational developments around the
+The term “{deftech}[predicative]” stems from foundational developments around the
 turn of the twentieth century, when logicians such as Poincaré and
 Russell blamed set-theoretic paradoxes on the “vicious circles” that
 arise when we define a property by quantifying over a collection that
@@ -215,7 +223,7 @@ considered problematic.
 # Equality
 
 Let us now turn to one of the most fundamental relations defined in
-Lean's library, namely, the equality relation. In [Chapter Inductive Types](inductive_types.md),
+Lean's library, namely, the equality relation. In {ref "inductive-types"}[Chapter Inductive Types],
 we will explain _how_ equality is defined from the primitives of Lean's logical framework.
 In the meanwhile, here we explain how to use it.
 
@@ -223,7 +231,9 @@ Of course, a fundamental property of equality is that it is an equivalence relat
 
 ```lean
 #check Eq.refl    -- Eq.refl.{u_1} {α : Sort u_1} (a : α) : a = a
+
 #check Eq.symm    -- Eq.symm.{u} {α : Sort u} {a b : α} (h : a = b) : b = a
+
 #check Eq.trans   -- Eq.trans.{u} {α : Sort u} {a b c : α} (h₁ : a = b) (h₂ : b = c) : a = c
 ```
 
@@ -234,7 +244,9 @@ the implicit arguments (which are displayed here as metavariables).
 universe u
 
 #check @Eq.refl.{u}   -- @Eq.refl : ∀ {α : Sort u} (a : α), a = a
+
 #check @Eq.symm.{u}   -- @Eq.symm : ∀ {α : Sort u} {a b : α}, a = b → b = a
+
 #check @Eq.trans.{u}  -- @Eq.trans : ∀ {α : Sort u} {a b c : α}, a = b → b = c → a = c
 ```
 
@@ -355,7 +367,9 @@ Here is an example of a calculation in the natural numbers that uses
 substitution combined with associativity and distributivity.
 
 ```lean
-example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+example (x y : Nat) :
+    (x + y) * (x + y) =
+    x * x + y * x + x * y + y * y :=
   have h1 : (x + y) * (x + y) = (x + y) * x + (x + y) * y :=
     Nat.mul_add (x + y) x y
   have h2 : (x + y) * (x + y) = x * x + y * x + (x * y + y * y) :=
@@ -365,8 +379,13 @@ example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
 
 :::setup
 ```
-variable {α : Type u} {x y : α} {h : x = y} {e : p x}
+variable {α : Type u}
 ```
+
+````lean show:= false
+example {α : Type u} {x y : α} {h : x = y} {p : α → Prop} {e : p x} : p y := h ▸ e
+````
+
 
 Notice that the second implicit parameter to {lean}`Eq.subst`, which
 provides the context in which the substitution is to occur, has type
@@ -375,7 +394,7 @@ of _higher-order unification_. In full generality, the problem of
 determining whether a higher-order unifier exists is undecidable, and
 Lean can at best provide imperfect and approximate solutions to the
 problem. As a result, {lean}`Eq.subst` doesn't always do what you want it
-to.  The macro {lean}`h ▸ e` uses more effective heuristics for computing
+to.  The macro {leanRef}`h ▸ e` uses more effective heuristics for computing
 this implicit parameter, and often succeeds in situations where
 applying {lean}`Eq.subst` fails.
 
@@ -442,9 +461,9 @@ theorem T
 ```
 
 This style of writing proofs is most effective when it is used in
-conjunction with the {kw}`simp` and {kw}`rewrite` tactics, which are
+conjunction with the {tactic}`simp` and {tactic}`rw` tactics, which are
 discussed in greater detail in the next chapter. For example, using
-the abbreviation {kw}`rw` for rewrite, the proof above could be written
+{tactic}`rw` for rewrite, the proof above could be written
 as follows:
 
 ```lean
@@ -493,7 +512,8 @@ Or even this:
 variable (a b c d e : Nat)
 ------
 theorem T
-    (h1 : a = b)    (h2 : b = c + 1)
+    (h1 : a = b)
+    (h2 : b = c + 1)
     (h3 : c = d)
     (h4 : e = 1 + d) :
     a = e :=
@@ -525,7 +545,8 @@ The {kw}`calc` command can be configured for any relation that supports
 some form of transitivity. It can even combine different relations.
 
 ```lean
-example (a b c d : Nat) (h1 : a = b) (h2 : b ≤ c) (h3 : c + 1 < d) : a < d :=
+variable (a b c d : Nat)
+example (h1 : a = b) (h2 : b ≤ c) (h3 : c + 1 < d) : a < d :=
   calc
     a = b     := h1
     _ < b + 1 := Nat.lt_succ_self b
@@ -571,18 +592,24 @@ The example above also makes it clear that you can use {kw}`calc` even if you do
 notation for your relation. Lean already includes the standard Unicode notation for divisibility
 (using {lit}`∣`, which can be entered as {kbd}`\dvd` or {kbd}`\mid`), so the example above uses the ordinary
 vertical bar to avoid a conflict. In practice, this is not a good idea, as it risks confusion with
-the ASCII {lit}`|` used in the {kw}`match`{lit}` ... `{kw}`with` expression.
+the ASCII {lit}`|` used in the {kw}`match`{lit}`  ...  `{kw}`with` expression.
 
 With {kw}`calc`, we can write the proof in the last section in a more
 natural and perspicuous way.
 
 ```lean
-example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+variable (x y : Nat)
+
+example : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   calc
-    (x + y) * (x + y) = (x + y) * x + (x + y) * y  := by rw [Nat.mul_add]
-    _ = x * x + y * x + (x + y) * y                := by rw [Nat.add_mul]
-    _ = x * x + y * x + (x * y + y * y)            := by rw [Nat.add_mul]
-    _ = x * x + y * x + x * y + y * y              := by rw [←Nat.add_assoc]
+    (x + y) * (x + y) = (x + y) * x + (x + y) * y  :=
+      by rw [Nat.mul_add]
+    _ = x * x + y * x + (x + y) * y                :=
+      by rw [Nat.add_mul]
+    _ = x * x + y * x + (x * y + y * y)            :=
+      by rw [Nat.add_mul]
+    _ = x * x + y * x + x * y + y * y              :=
+      by rw [←Nat.add_assoc]
 ```
 
 The alternative {kw}`calc` notation is worth considering here. When the
@@ -590,25 +617,32 @@ first expression is taking this much space, using {lit}`_` in the first
 relation naturally aligns all relations:
 
 ```lean
-example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
+variable (x y : Nat)
+
+example : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
   calc (x + y) * (x + y)
-    _ = (x + y) * x + (x + y) * y       := by rw [Nat.mul_add]
-    _ = x * x + y * x + (x + y) * y     := by rw [Nat.add_mul]
-    _ = x * x + y * x + (x * y + y * y) := by rw [Nat.add_mul]
-    _ = x * x + y * x + x * y + y * y   := by rw [←Nat.add_assoc]
+    _ = (x + y) * x + (x + y) * y       :=
+      by rw [Nat.mul_add]
+    _ = x * x + y * x + (x + y) * y     :=
+      by rw [Nat.add_mul]
+    _ = x * x + y * x + (x * y + y * y) :=
+      by rw [Nat.add_mul]
+    _ = x * x + y * x + x * y + y * y   :=
+      by rw [←Nat.add_assoc]
 ```
 
 Here the left arrow before {lean}`Nat.add_assoc` tells rewrite to use the
 identity in the opposite direction. (You can enter it with {kbd}`\l` or
-use the ascii equivalent, {lit}`<-`.) If brevity is what we are after,
-both {kw}`rw` and {kw}`simp` can do the job on their own:
+use the ASCII equivalent, {lit}`<-`.) If brevity is what we are after,
+both {tactic}`rw` and {tactic}`simp` can do the job on their own:
 
 ```lean
-example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-  by rw [Nat.mul_add, Nat.add_mul, Nat.add_mul, ←Nat.add_assoc]
+variable (x y : Nat)
+example : (x + y) * (x + y) = x * x + y * x + x * y + y * y := by
+  rw [Nat.mul_add, Nat.add_mul, Nat.add_mul, ←Nat.add_assoc]
 
-example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
-  by simp [Nat.mul_add, Nat.add_mul, Nat.add_assoc]
+example : (x + y) * (x + y) = x * x + y * x + x * y + y * y := by
+  simp [Nat.mul_add, Nat.add_mul, Nat.add_assoc]
 ```
 
 # The Existential Quantifier
@@ -682,9 +716,13 @@ theorem gex3 (hg : g 0 0 = 0) : ∃ x, g 0 0 = x := ⟨0, hg⟩
 theorem gex4 (hg : g 0 0 = 0) : ∃ x, g x x = 0 := ⟨0, hg⟩
 
 set_option pp.explicit true  -- display implicit arguments
+
 #print gex1
+
 #print gex2
+
 #print gex3
+
 #print gex4
 ```
 
@@ -801,18 +839,19 @@ instances of a more general pattern-matching construct.
 
 :::setup
 ````
-def is_even (a : Nat) := ∃ b, a = 2 * b
+def IsEven (a : Nat) := ∃ b, a = 2 * b
 variable (a : Nat)
 ````
 
-In the following example, we define {lean}`is_even a` as {lean}`∃ b, a = 2 * b`,
+In the following example, we define {lean}`IsEven a` as {lean}`∃ b, a = 2 * b`,
 and then we show that the sum of two even numbers is an even number.
 :::
 
 ```lean
-def is_even (a : Nat) := ∃ b, a = 2 * b
+def IsEven (a : Nat) := ∃ b, a = 2 * b
 
-theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
+theorem even_plus_even (h1 : IsEven a) (h2 : IsEven b) :
+    IsEven (a + b) :=
   Exists.elim h1 (fun w1 (hw1 : a = 2 * w1) =>
   Exists.elim h2 (fun w2 (hw2 : b = 2 * w2) =>
     Exists.intro (w1 + w2)
@@ -822,15 +861,17 @@ theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
 ```
 
 Using the various gadgets described in this chapter—the match
-statement, anonymous constructors, and the {kw}`rewrite` tactic, we can
+statement, anonymous constructors, and the {tactic}`rewrite` tactic, we can
 write this proof concisely as follows:
 
 ```lean
-def is_even (a : Nat) := ∃ b, a = 2 * b
+def IsEven (a : Nat) := ∃ b, a = 2 * b
 ------
-theorem even_plus_even (h1 : is_even a) (h2 : is_even b) : is_even (a + b) :=
+theorem even_plus_even (h1 : IsEven a) (h2 : IsEven b) :
+    IsEven (a + b) :=
   match h1, h2 with
-  | ⟨w1, hw1⟩, ⟨w2, hw2⟩ => ⟨w1 + w2, by rw [hw1, hw2, Nat.mul_add]⟩
+  | ⟨w1, hw1⟩, ⟨w2, hw2⟩ =>
+    ⟨w1 + w2, by rw [hw1, hw2, Nat.mul_add]⟩
 ```
 
 :::leanFirst
@@ -976,7 +1017,7 @@ variable {p : Prop} (prf : p)
 We can also ask Lean to fill in the proof by writing {lean}`‹p›`, where
 {lean}`p` is the proposition whose proof we want Lean to find in the
 context.  You can type these corner quotes using {kbd}`\f<` and {kbd}`\f>`,
-respectively. The letter “f” is for “French,” since the unicode
+respectively. The letter “f” is for “French,” since the Unicode
 symbols can also be used as French quotation marks. In fact, the
 notation is defined in Lean as follows:
 :::
@@ -1049,23 +1090,25 @@ Later, we show how you can extend the proof language using the Lean macro system
     variable (men : Type) (barber : men)
     variable (shaves : men → men → Prop)
 
-    example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False := sorry
+    example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False :=
+      sorry
     ```
 
-4. :::setup
+4. ::::setup
    ```
    variable {n : Nat}
    ```
+   :::leanFirst
    Remember that, without any parameters, an expression of type
-   {lean}`Prop` is just an assertion. Fill in the definitions of {lit}`prime`
-   and {lit}`Fermat_prime` below, and construct each of the given
+   {lean}`Prop` is just an assertion. Fill in the definitions of {leanRef}`prime`
+   and {leanRef}`Fermat_prime` below, and construct each of the given
    assertions. For example, you can say that there are infinitely many
    primes by asserting that for every natural number {lean}`n`, there is a
    prime number greater than {lean}`n`. Goldbach's weak conjecture states
    that every odd number greater than 5 is the sum of three
    primes. Look up the definition of a Fermat prime or any of the
    other statements, if necessary.
-   :::
+
     ```lean
     def even (n : Nat) : Prop := sorry
 
@@ -1083,6 +1126,8 @@ Later, we show how you can extend the proof language using the Lean macro system
 
     def Fermat's_last_theorem : Prop := sorry
     ```
+   :::
+   ::::
 
 5. Prove as many of the identities listed in the Existential
    Quantifier section as you can.
