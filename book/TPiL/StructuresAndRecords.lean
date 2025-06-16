@@ -79,14 +79,18 @@ structure Point (α : Type u) where
 ------
 -- a Type
 #check Point
+
 -- the eliminator
 #check @Point.rec
+
 -- the constructor
-#check @Point.mk
+#check @Point.mk -- @Point.mk : {α : Type u_1} → α → α → Point α
+
 -- a projection
-#check @Point.x
+#check @Point.x -- @Point.x : {α : Type u_1} → Point α → α
+
 -- a projection
-#check @Point.y
+#check @Point.y -- @Point.y : {α : Type u_1} → Point α → α
 ```
 
 If the constructor name is not provided, then a constructor is named
@@ -102,8 +106,9 @@ structure Point (α : Type u) where
   x : α
   y : α
 ------
-#eval Point.x (Point.mk 10 20)
-#eval Point.y (Point.mk 10 20)
+#eval Point.x (Point.mk 10 20) -- 10
+
+#eval Point.y (Point.mk 10 20) -- 20
 
 open Point
 
@@ -250,12 +255,17 @@ structure Point (α : Type u) where
   y : α
 
 #check { x := 10, y := 20 : Point Nat }  -- { x := 10, y := 20 } : Point Nat
-#check { y := 20, x := 10 : Point _ }
-#check ({ x := 10, y := 20 } : Point Nat)
+
+#check { y := 20, x := 10 : Point _ } -- { x := 10, y := 20 } : Point Nat
+
+#check ({ x := 10, y := 20 } : Point Nat) -- { x := 10, y := 20 } : Point Nat
 
 example : Point Nat :=
   { y := 20, x := 10 }
 ```
+
+Fields can be marked as implicit using curly braces.
+Implicit fields become implicit parameters to the constructor.
 
 If the value of a field is not specified, Lean tries to infer it. If
 the unspecified fields cannot be inferred, Lean flags an error
