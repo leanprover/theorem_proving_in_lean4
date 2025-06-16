@@ -301,6 +301,7 @@ def p : Point Nat :=
   { x := 1, y := 2 }
 
 #eval { p with y := 3 }  -- { x := 1, y := 3 }
+
 #eval { p with x := 4 }  -- { x := 4, y := 2 }
 
 structure Point3 (α : Type u) where

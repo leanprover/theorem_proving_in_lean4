@@ -171,11 +171,9 @@ has addition:
 instance [Add α] : Add (Array α) where
   add x y := Array.zipWith (· + ·) x y
 
-#eval Add.add #[1, 2] #[3, 4]
--- #[4, 6]
+#eval Add.add #[1, 2] #[3, 4] -- #[4, 6]
 
-#eval #[1, 2] + #[3, 4]
--- #[4, 6]
+#eval #[1, 2] + #[3, 4] -- #[4, 6]
 ```
 :::
 
@@ -236,12 +234,10 @@ instance : Inhabited Unit where
 instance : Inhabited Prop where
   default := True
 
-#eval (Inhabited.default : Nat)
--- 0
+#eval (Inhabited.default : Nat) -- 0
 
-#eval (Inhabited.default : Bool)
--- true
-------
+#eval (Inhabited.default : Bool) -- true
+--------
 end Ex
 ```
 
@@ -362,6 +358,7 @@ instance : ToString Person where
   toString p := p.name ++ "@" ++ toString p.age
 
 #eval toString { name := "Leo", age := 542 : Person } -- "Leo@542"
+
 #eval toString ({ name := "Daniel", age := 18 : Person }, "hello") -- "(Daniel@18, hello)"
 ```
 :::
@@ -386,6 +383,7 @@ instance : ToString Rational where
 #eval (2 : Rational) -- 2/1
 
 #check (2 : Rational) -- 2 : Rational
+
 #check (2 : Nat)      -- 2 : Nat
 ```
 
@@ -431,6 +429,10 @@ def getUnit [Monoid α] : α :=
 ```
 
 # Output Parameters
+:::TODO
+Semi-output params
+:::
+
 :::setup
 ````
 universe u
@@ -439,11 +441,16 @@ variable (T : Type u)
 
 By default, Lean only tries to synthesize an instance {lean}`Inhabited T` when the term {lean}`T` is known and does not
 contain missing parts. The following command produces the error
-{lit}`` typeclass instance problem is stuck, it is often due to metavariables `?m.7` `` because the type has a missing part (i.e., the {lit}`_`).
+{lit}``typeclass instance problem is stuck, it is often due to metavariables`` because the type has a missing part (i.e., the {lit}`_`).
 :::
 
 ```lean
-#check_failure (inferInstance : Inhabited (Nat × _))
+/--
+error: typeclass instance problem is stuck, it is often due to metavariables
+  Inhabited (Nat × ?m.7)
+-/
+#guard_msgs (error) in
+#eval (inferInstance : Inhabited (Nat × _))
 ```
 
 You can view the parameter of the type class {lean}`Inhabited` as an _input_ value for the type class synthesizer.
@@ -467,6 +474,7 @@ instance : HMul Nat (Array Nat) (Array Nat) where
   hMul a bs := bs.map (fun b => hMul a b)
 
 #eval hMul 4 3           -- 12
+
 #eval hMul 4 #[2, 3, 4]  -- #[8, 12, 16]
 ------
 end Ex
@@ -497,8 +505,11 @@ instance [HMul α β γ] : HMul α (Array β) (Array γ) where
   hMul a bs := bs.map (fun b => hMul a b)
 
 #eval hMul 4 3                    -- 12
+
 #eval hMul 4 #[2, 3, 4]           -- #[8, 12, 16]
+
 #eval hMul (-2) #[3, -1, 4]       -- #[-6, 2, -8]
+
 #eval hMul 2 #[#[2, 3], #[0, 4]]  -- #[#[4, 6], #[0, 8]]
 ------
 end Ex
@@ -527,7 +538,12 @@ instance : HMul Int Int Int where
 
 def xs : List Int := [1, 2, 3]
 
-#check_failure fun y => xs.map (fun x => hMul x y)
+/--
+error: typeclass instance problem is stuck, it is often due to metavariables
+  HMul Int ?m.225 (?m.256 y)
+-/
+#guard_msgs (error) in
+#eval fun y => xs.map (fun x => hMul x y)
 ------
 end Ex
 ```
@@ -646,9 +662,10 @@ end -- instance `Add Point` is not active anymore
 
 /--
 error: failed to synthesize
-  HAdd Point Point ?m.519
+  HAdd Point Point ?m.627
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Additional diagnostic information may be available using
+the `set_option diagnostics true` command.
 -/
 #guard_msgs in
 def triple (p : Point) :=
@@ -674,7 +691,7 @@ attribute [-instance] addPoint
 
 /--
 error: failed to synthesize
-  HAdd Point Point ?m.519
+  HAdd Point Point ?m.627
 
 Additional diagnostic information may be available using the `set_option diagnostics true` command.
 -/
@@ -708,7 +725,7 @@ end Point
 
 /--
 error: failed to synthesize
-  HAdd Point Point ?m.514
+  HAdd Point Point ?m.622
 
 Additional diagnostic information may be available using the `set_option diagnostics true` command.
 -/
@@ -746,7 +763,11 @@ end Point
 open scoped Point -- activates instance `Add Point`
 #check fun (p : Point) => p + p + p
 
--- #check fun (p : Point) => double p -- Error: unknown identifier 'double'
+/--
+error: unknown identifier 'double'
+-/
+#guard_msgs (error) in
+#check fun (p : Point) => double p
 ```
 
 # Decidable Propositions
@@ -795,7 +816,9 @@ sugar for {lean}`ite p a b`, where {lean}`ite` is defined as follows:
 ```lean
 namespace Hidden
 ------
-def ite {α : Sort u} (c : Prop) [h : Decidable c] (t e : α) : α :=
+def ite {α : Sort u}
+    (c : Prop) [h : Decidable c]
+    (t e : α) : α :=
   h.casesOn (motive := fun _ => α) (fun _ => e) (fun _ => t)
 ------
 end Hidden
@@ -809,7 +832,9 @@ follows:
 ```lean
 namespace Hidden
 ------
-def dite {α : Sort u} (c : Prop) [h : Decidable c] (t : c → α) (e : Not c → α) : α :=
+def dite {α : Sort u}
+    (c : Prop) [h : Decidable c]
+    (t : c → α) (e : Not c → α) : α :=
   Decidable.casesOn (motive := fun _ => α) h e t
 ------
 end Hidden
@@ -984,9 +1009,16 @@ explicitly:
 ```lean
 def Set (α : Type u) := α → Prop
 
--- fails
--- example : Inhabited (Set α) :=
---  inferInstance
+/--
+error: failed to synthesize
+  Inhabited (Set α)
+
+Additional diagnostic information may be available using
+the `set_option diagnostics true` command.
+-/
+#guard_msgs in
+example : Inhabited (Set α) :=
+  inferInstance
 
 instance : Inhabited (Set α) :=
   inferInstanceAs (Inhabited (α → Prop))
@@ -1042,7 +1074,7 @@ class Foo where
   a : Nat
   b : Nat
 
-instance (priority := default+1) i1 : Foo where
+instance (priority := default + 1) i1 : Foo where
   a := 1
   b := 1
 
@@ -1053,7 +1085,7 @@ instance i2 : Foo where
 example : Foo.a = 1 :=
   rfl
 
-instance (priority := default+2) i3 : Foo where
+instance (priority := default + 2) i3 : Foo where
   a := 3
   b := 3
 
@@ -1098,6 +1130,7 @@ This enables us to use boolean terms in {kw}`if`-{kw}`then`-{kw}`else` expressio
 
 ```lean
 #eval if true then 5 else 3
+
 #eval if false then 5 else 3
 ```
 
@@ -1121,8 +1154,8 @@ instance : Coe (List α) (Set α) where
   coe a := a.toSet
 
 def s : Set Nat := {1}
-#check s ∪ [2, 3]
--- s ∪ List.toSet [2, 3] : Set Nat
+
+#check s ∪ [2, 3] -- s ∪ [2, 3].toSet : Set Nat
 ```
 :::
 
@@ -1144,10 +1177,9 @@ instance : Coe (List α) (Set α) where
 ------
 def s : Set Nat := {1}
 
-#check let x := ↑[2, 3]; s ∪ x
--- let x := List.toSet [2, 3]; s ∪ x : Set Nat
-#check let x := [2, 3]; s ∪ x
--- let x := [2, 3]; s ∪ List.toSet x : Set Nat
+#check let x := ↑[2, 3]; s ∪ x -- let x := [2, 3].toSet; s ∪ x : Set Nat
+
+#check let x := [2, 3]; s ∪ x -- let x := [2, 3]; s ∪ x.toSet : Set Nat
 ```
 
 Lean also supports dependent coercions using the type class {lean}`CoeDep`. For example, we cannot coerce arbitrary propositions to {lean}`Bool`, only the ones that implement the {lean}`Decidable` typeclass.
@@ -1278,7 +1310,8 @@ structure Morphism (S1 S2 : Semigroup) where
   mor : S1 → S2
   resp_mul : ∀ a b : S1, mor (a * b) = (mor a) * (mor b)
 ------
-instance (S1 S2 : Semigroup) : CoeFun (Morphism S1 S2) (fun _ => S1 → S2) where
+instance (S1 S2 : Semigroup) :
+    CoeFun (Morphism S1 S2) (fun _ => S1 → S2) where
   coe m := m.mor
 
 theorem resp_mul {S1 S2 : Semigroup} (f : Morphism S1 S2) (a b : S1)

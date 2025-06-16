@@ -612,9 +612,6 @@ The most basic syntax extension commands allow introducing new (or
 overloading existing) prefix, infix, and postfix operators.
 
 ```lean
-class Inv (α : Type u) where
-  inv : α → α
--------
 infixl:65   " + " => HAdd.hAdd  -- left-associative
 infix:50    " = " => Eq         -- non-associative
 infixr:80   " ^ " => HPow.hPow  -- right-associative
@@ -633,9 +630,6 @@ operator binds to its arguments, encoding the order of operations.  We
 can make this more precise by looking at the commands the above unfold to:
 
 ```lean
-class Inv (α : Type u) where
-  inv : α → α
-----------
 notation:65 lhs:65 " + " rhs:66 => HAdd.hAdd lhs rhs
 notation:50 lhs:51 " = " rhs:51 => Eq lhs rhs
 notation:80 lhs:81 " ^ " rhs:80 => HPow.hPow lhs rhs

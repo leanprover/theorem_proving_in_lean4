@@ -1013,7 +1013,7 @@ def lean : CodeBlockExpander
           throwError "Error while extracting proof states:{indentD e}"
       let item := {item with code}
       match item.kind with
-      | ``Lean.Parser.Command.check | ``Lean.Parser.Command.eval | ``Lean.reduceCmd
+      | ``Lean.Parser.Command.check | ``Lean.Parser.Command.eval | ``Lean.reduceCmd | ``Lean.Parser.Command.check_failure
       | ``Lean.Parser.Command.print | ``Lean.Parser.Command.printAxioms | ``Lean.Parser.Command.printEqns
       | ``Lean.guardMsgsCmd =>
         let info? : Option (_ × String) := allInfo item.code |>.firstM fun (sev, str, hl?) =>
