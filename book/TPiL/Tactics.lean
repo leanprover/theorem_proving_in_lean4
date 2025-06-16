@@ -306,7 +306,7 @@ form {lean type:="∀ (x : α), p"}`fun x => e`).  As with lambda abstraction no
 :::
 
 ```lean
-example (α : Type) (p q : α → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
+example (p q : α → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
   intro ⟨w, hpw, hqw⟩
   exact ⟨w, hqw, hpw⟩
 ```
@@ -314,7 +314,7 @@ example (α : Type) (p q : α → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x �
 You can also provide multiple alternatives like in the {kw}`match` expression.
 
 ```lean
-example (α : Type) (p q : α → Prop) : (∃ x, p x ∨ q x) → ∃ x, q x ∨ p x := by
+example (p q : α → Prop) : (∃ x, p x ∨ q x) → ∃ x, q x ∨ p x := by
   intro
   | ⟨w, Or.inl h⟩ => exact ⟨w, Or.inr h⟩
   | ⟨w, Or.inr h⟩ => exact ⟨w, Or.inl h⟩
@@ -331,7 +331,9 @@ the current goal, and if there is one matching the conclusion, it
 applies it.
 
 ```lean
-example (x y z w : Nat) (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
+variable (x y z w : Nat)
+
+example (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
   apply Eq.trans h₁
   apply Eq.trans h₂
   assumption   -- applied h₃
@@ -341,7 +343,9 @@ example (x y z w : Nat) (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := 
 It will unify metavariables in the conclusion if necessary:
 
 ```lean
-example (x y z w : Nat) (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
+variable (x y z w : Nat)
+
+example (h₁ : x = y) (h₂ : y = z) (h₃ : z = w) : x = w := by
   apply Eq.trans
   assumption      -- solves x = ?b with h₁
   apply Eq.trans
@@ -564,7 +568,6 @@ context:
 example : 2 + 3 = 5 := by
   generalize h : 3 = x
   -- ^ PROOF_STATE: afterGen
-  -- goal is x : Nat, h : 3 = x ⊢ 2 + x = 5
   rw [← h]
 ```
 
@@ -718,10 +721,12 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
     cases h with
     | inl hpq =>
       cases hpq with
-      | intro hp hq => constructor; exact hp; apply Or.inl; exact hq
+      | intro hp hq =>
+        constructor; exact hp; apply Or.inl; exact hq
     | inr hpr =>
       cases hpr with
-      | intro hp hr => constructor; exact hp; apply Or.inr; exact hr
+      | intro hp hr =>
+        constructor; exact hp; apply Or.inr; exact hr
 ```
 
 You will see in {ref "inductive-types"}[Chapter Inductive Types] that
@@ -788,7 +793,9 @@ case distinction on a natural number:
 
 ```lean
 open Nat
-example (P : Nat → Prop) (h₀ : P 0) (h₁ : ∀ n, P (succ n)) (m : Nat) : P m := by
+example (P : Nat → Prop)
+    (h₀ : P 0) (h₁ : ∀ n, P (succ n))
+    (m : Nat) : P m := by
   cases m with
   | zero    => exact h₀
   | succ m' => exact h₁ m'
@@ -816,12 +823,16 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
   apply Iff.intro
   . intro h
     match h with
-    | ⟨_, Or.inl _⟩ => apply Or.inl; constructor <;> assumption
-    | ⟨_, Or.inr _⟩ => apply Or.inr; constructor <;> assumption
+    | ⟨_, Or.inl _⟩ =>
+      apply Or.inl; constructor <;> assumption
+    | ⟨_, Or.inr _⟩ =>
+      apply Or.inr; constructor <;> assumption
   . intro h
     match h with
-    | Or.inl ⟨hp, hq⟩ => constructor; exact hp; apply Or.inl; exact hq
-    | Or.inr ⟨hp, hr⟩ => constructor; exact hp; apply Or.inr; exact hr
+    | Or.inl ⟨hp, hq⟩ =>
+      constructor; exact hp; apply Or.inl; exact hq
+    | Or.inr ⟨hp, hr⟩ =>
+      constructor; exact hp; apply Or.inr; exact hr
 ```
 :::
 
@@ -832,11 +843,15 @@ You can “combine” {leanRef}`intro` with {tactic}`match` and write the previo
 example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
   apply Iff.intro
   . intro
-    | ⟨hp, Or.inl hq⟩ => apply Or.inl; constructor <;> assumption
-    | ⟨hp, Or.inr hr⟩ => apply Or.inr; constructor <;> assumption
+    | ⟨hp, Or.inl hq⟩ =>
+      apply Or.inl; constructor <;> assumption
+    | ⟨hp, Or.inr hr⟩ =>
+      apply Or.inr; constructor <;> assumption
   . intro
-    | Or.inl ⟨hp, hq⟩ => constructor; assumption; apply Or.inl; assumption
-    | Or.inr ⟨hp, hr⟩ => constructor; assumption; apply Or.inr; assumption
+    | Or.inl ⟨hp, hq⟩ =>
+      constructor; assumption; apply Or.inl; assumption
+    | Or.inr ⟨hp, hr⟩ =>
+      constructor; assumption; apply Or.inr; assumption
 ```
 :::
 
@@ -1094,14 +1109,14 @@ In the first example, the left branch succeeds, whereas in the second one, it is
 In the next three examples, the same compound tactic succeeds in each case:
 
 ```lean
-example (p q r : Prop) (hp : p) : p ∨ q ∨ r :=
-  by repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
+example (p q r : Prop) (hp : p) : p ∨ q ∨ r := by
+  repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
 
-example (p q r : Prop) (hq : q) : p ∨ q ∨ r :=
-  by repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
+example (p q r : Prop) (hq : q) : p ∨ q ∨ r := by
+  repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
 
-example (p q r : Prop) (hr : r) : p ∨ q ∨ r :=
-  by repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
+example (p q r : Prop) (hr : r) : p ∨ q ∨ r := by
+  repeat (first | apply Or.inl; assumption | apply Or.inr | assumption)
 ```
 
 The tactic tries to solve the left disjunct immediately by assumption;
@@ -1201,7 +1216,9 @@ use this basic form to rewrite the goal using a hypothesis.
 :::
 
 ```lean
-example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+variable (k : Nat) (f : Nat → Nat)
+
+example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
   rw [h₂] -- replace k with 0
   rw [h₁] -- replace f 0 with 0
 ```
@@ -1229,7 +1246,9 @@ Multiple rewrites can be combined using the notation {tactic}`rw`{lit}` [t_1, ..
 which is just shorthand for {tactic}`rw`{lit}` [t_1]; ...; `{tactic}`rw`{lit}` [t_n]`. The previous example can be written as follows:
 
 ```lean
-example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+variable (k : Nat) (f : Nat → Nat)
+
+example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
   rw [h₂, h₁]
 ```
 
@@ -1239,7 +1258,9 @@ right-hand side. The notation {lit}`←t` can be used to instruct the
 tactic to use the equality {lit}`t` in the reverse direction.
 
 ```lean
-example (f : Nat → Nat) (a b : Nat) (h₁ : a = b) (h₂ : f a = 0) : f b = 0 := by
+variable (a b : Nat) (f : Nat → Nat)
+
+example (h₁ : a = b) (h₂ : f a = 0) : f b = 0 := by
   rw [←h₁, h₂]
 ```
 
@@ -1425,7 +1446,9 @@ example {m n : Nat} (h : n = 1) (h' : 0 = m) : (f m n) = n := by
 A common idiom is to simplify a goal using local hypotheses:
 
 ```lean
-example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+variable (k : Nat) (f : Nat → Nat)
+
+example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
   simp [h₁, h₂]
 ```
 
@@ -1434,7 +1457,9 @@ To use all the hypotheses present in the local context when
 simplifying, we can use the wildcard symbol, {leanRef}`*`:
 
 ```lean
-example (f : Nat → Nat) (k : Nat) (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
+variable (k : Nat) (f : Nat → Nat)
+
+example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
   simp [*]
 ```
 :::
@@ -1719,7 +1744,9 @@ def f (x y z : Nat) : Nat :=
  | _, _, 5 => y
  | _, _, _ => 1
 ------
-example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+example (x y z : Nat) :
+  x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w →
+  f x y w = 1 := by
   intros; simp [f]; split <;> first | contradiction | rfl
 ```
 

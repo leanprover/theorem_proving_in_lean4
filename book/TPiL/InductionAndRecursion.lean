@@ -53,6 +53,8 @@ a value in each of those cases:
 :::
 
 ```lean
+set_option linter.unusedVariables false
+--------
 open Nat
 
 def sub1 : Nat → Nat
@@ -88,6 +90,8 @@ example (x : Nat) : isZero (x + 3) = false := rfl
 Instead of {leanRef}`zero` and {leanRef}`succ`, we can use more familiar notation:
 
 ```lean
+set_option linter.unusedVariables false
+--------
 def sub1 : Nat → Nat
   | 0     => 0
   | x + 1 => x
@@ -127,8 +131,8 @@ def not : Bool → Bool
   | false => true
 
 theorem not_not : ∀ (b : Bool), not (not b) = b
-  | true  => rfl  -- proof that not (not true) = true
-  | false => rfl  -- proof that not (not false) = false
+  | true  => show not (not true) = true from rfl
+  | false => show not (not false) = false from rfl
 ------
 end Hidden
 ```
@@ -152,9 +156,9 @@ constructors, as in the following examples.
 
 ```lean
 def sub2 : Nat → Nat
-  | 0   => 0
-  | 1   => 0
-  | x+2 => x
+  | 0     => 0
+  | 1     => 0
+  | x + 2 => x
 ```
 
 The equation compiler first splits on cases as to whether the input is
@@ -203,8 +207,11 @@ def sub2 : Nat → Nat :=
 Here are some more examples of nested pattern matching:
 
 ```lean
-example (p q : α → Prop)
-        : (∃ x, p x ∨ q x) → (∃ x, p x) ∨ (∃ x, q x)
+set_option linter.unusedVariables false
+--------
+example (p q : α → Prop) :
+        (∃ x, p x ∨ q x) →
+        (∃ x, p x) ∨ (∃ x, q x)
   | Exists.intro x (Or.inl px) => Or.inl (Exists.intro x px)
   | Exists.intro x (Or.inr qx) => Or.inr (Exists.intro x qx)
 
@@ -219,15 +226,19 @@ example, it would be more natural to define the previous example as a
 function of two arguments:
 
 ```lean
+set_option linter.unusedVariables false
+--------
 def foo : Nat → Nat → Nat
-  | 0,   n   => 0
-  | m+1, 0   => 1
-  | m+1, n+1 => 2
+  | 0,     n     => 0
+  | m + 1, 0     => 1
+  | m + 1, n + 1 => 2
 ```
 
 Here is another example:
 
 ```lean
+set_option linter.unusedVariables false
+--------
 def bar : List Nat → List Nat → Nat
   | [],      []      => 0
   | a :: as, []      => a
@@ -242,6 +253,7 @@ argument, even though the others are included among the list of
 patterns.
 
 ```lean
+set_option linter.unusedVariables false
 namespace Hidden
 ------
 def and : Bool → Bool → Bool
@@ -271,6 +283,8 @@ you can use implicit arguments in patterns as well.
 
 ::::setup
 ````
+set_option linter.unusedVariables false
+--------
 def tail : List α → List α
   | []      => []
   | a :: as => as
@@ -281,10 +295,12 @@ As described in {ref "inductive-types"}[Chapter Inductive Types],
 inductive data types can depend on parameters. The following example defines
 the {name}`tail` function using pattern matching. The argument {leanRef}`α : Type u`
 is a parameter and occurs before the colon to indicate it does not participate in the pattern matching.
-Lean also allows parameters to occur after {leanRef}`:`, but it cannot pattern match on them.
+Lean also allows parameters to occur after the {leanRef}`:`, but pattern matching on them requires an explicit {leanRef}`match`.
 
 
 ```lean
+set_option linter.unusedVariables false
+--------
 def tail1 {α : Type u} : List α → List α
   | []      => []
   | a :: as => as
@@ -313,15 +329,19 @@ tag := "wildcards-and-overlapping-patterns"
 Consider one of the examples from the last section:
 
 ```lean
+set_option linter.unusedVariables false
+--------
 def foo : Nat → Nat → Nat
-  | 0,   n   => 0
-  | m+1, 0   => 1
-  | m+1, n+1 => 2
+  | 0,     n     => 0
+  | m + 1, 0     => 1
+  | m + 1, n + 1 => 2
 ```
 
 An alternative presentation is:
 
 ```lean
+set_option linter.unusedVariables false
+--------
 def foo : Nat → Nat → Nat
   | 0, n => 0
   | m, 0 => 1
@@ -340,10 +360,10 @@ def foo : Nat → Nat → Nat
   | m, 0 => 1
   | m, n => 2
 ------
-example : foo 0     0     = 0 := rfl
-example : foo 0     (n+1) = 0 := rfl
-example : foo (m+1) 0     = 1 := rfl
-example : foo (m+1) (n+1) = 2 := rfl
+example : foo 0       0       = 0 := rfl
+example : foo 0       (n + 1) = 0 := rfl
+example : foo (m + 1) 0       = 1 := rfl
+example : foo (m + 1) (n + 1) = 2 := rfl
 ```
 
 Since the values of {leanRef (in:="m, n")}`m` and {leanRef (in:="m, n")}`n` are not needed, we can just as well use wildcard patterns instead.
@@ -417,9 +437,11 @@ def bar : Nat → List Nat → Bool → Nat
   | a+1, b :: _, _     => a + b
 ```
 
-It will also use an {kw}`if`{lit}`  ...  `{kw}`then`{lit}`  ...  `{lit}`else` instead of a {lit}`casesOn` in appropriate situations.
+It will also use an {kw}`if`{lit}`  ...  `{kw}`then`{lit}`  ...  `{kw}`else` instead of a {lit}`casesOn` in appropriate situations.
 
 ```lean
+set_option pp.proofs true
+-------
 def foo : Char → Nat
   | 'A' => 1
   | 'B' => 2
@@ -551,7 +573,9 @@ def fib : Nat → Nat
   | n+2 => fib (n+1) + fib n
 
 example : fib 0 = 1 := rfl
+
 example : fib 1 = 1 := rfl
+
 example : fib (n + 2) = fib (n + 1) + fib n := rfl
 
 example : fib 7 = 21 := rfl
@@ -663,8 +687,7 @@ def listAdd [Add α] : List α → List α → List α
   | _,       []      => []
   | a :: as, b :: bs => (a + b) :: listAdd as bs
 
-#eval listAdd [1, 2, 3] [4, 5, 6, 6, 9, 10]
--- [5, 7, 9]
+#eval listAdd [1, 2, 3] [4, 5, 6, 6, 9, 10] -- [5, 7, 9]
 ```
 
 You are encouraged to experiment with similar examples in the exercises below.
@@ -699,7 +722,8 @@ def replicate (n : Nat) (a : α) : List α :=
    | n+1, as => loop n (a::as)
  loop n []
 ------
-theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
+theorem length_replicate (n : Nat) (a : α) :
+    (replicate n a).length = n := by
   let rec aux (n : Nat) (as : List α) :
       (replicate.loop a n as).length = n + as.length := by
     match n with
@@ -719,7 +743,8 @@ where
     | 0,   as => as
     | n+1, as => loop n (a::as)
 
-theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
+theorem length_replicate (n : Nat) (a : α) :
+    (replicate n a).length = n := by
   exact aux n []
 where
   aux (n : Nat) (as : List α) :
@@ -798,7 +823,8 @@ we do: the standard library defines {name}`WellFounded.fix`, which serves
 exactly that purpose.
 
 ```lean
-noncomputable def f {α : Sort u}
+noncomputable
+def f {α : Sort u}
     (r : α → α → Prop)
     (h : WellFounded r)
     (C : α → Sort v)
@@ -898,11 +924,17 @@ def div (x y : Nat) : Nat :=
  else
    0
 ------
-example (x y : Nat) : div x y = if 0 < y ∧ y ≤ x then div (x - y) y + 1 else 0 := by
-  conv => lhs; unfold div -- unfold occurrence in the left-hand-side of the equation
+example (x y : Nat) :
+    div x y =
+    if 0 < y ∧ y ≤ x then
+      div (x - y) y + 1
+    else 0 := by
+   -- unfold occurrence in the left-hand-side of the equation:
+  conv => lhs; unfold div
   rfl
 
-example (x y : Nat) (h : 0 < y ∧ y ≤ x) : div x y = div (x - y) y + 1 := by
+example (x y : Nat) (h : 0 < y ∧ y ≤ x) :
+    div x y = div (x - y) y + 1 := by
   conv => lhs; unfold div
   simp [h]
 ```
@@ -1030,7 +1062,8 @@ def ack : Nat → Nat → Nat
   | x+1, y+1 => ack x (ack (x+1) y)
 termination_by x y => (x, y)
 decreasing_by
-  all_goals simp_wf -- unfolds well-founded recursion auxiliary definitions
+   -- unfolds well-founded recursion auxiliary definitions:
+  all_goals simp_wf
   · apply Prod.Lex.left; simp +arith
   · apply Prod.Lex.right; simp +arith
   · apply Prod.Lex.left; simp +arith
@@ -1081,6 +1114,175 @@ Summary:
 
 - By default, the tactic {tactic}`decreasing_tactic` is used to show that recursive applications are smaller with respect to the selected well-founded relation. If {tactic}`decreasing_tactic` fails, the error message includes the remaining goal {lit}`... |- G`. Note that, the {tactic}`decreasing_tactic` uses {tactic}`assumption`. So, you can include a {kw}`have`-expression to prove goal {lean}`G`. You can also provide your own tactic using {kw}`decreasing_by`.
 :::
+
+# Functional Induction
+
+Lean generates bespoke induction principles for recursive functions. These induction principles follow the recursive structure of the function's definition, rather than the structure of the datatype. Proofs about functions typically follow the recursive structure of the function itself, so these induction principles allow statements about the function to be proved more conveniently.
+
+:::leanFirst
+For example, using the functional induction principle for {leanRef}`ack` to prove that the result is always greater than {leanRef}`0` requires one case for each arm of the pattern match in {leanRef}`ack`:
+
+```lean
+def ack : Nat → Nat → Nat
+  | 0,   y   => y+1
+  | x+1, 0   => ack x 1
+  | x+1, y+1 => ack x (ack (x+1) y)
+
+theorem ack_gt_zero : ack n m > 0 := by
+  fun_induction ack with
+  | case1 y =>
+--          ^ PROOF_STATE: case1
+    simp
+  | case2 x ih =>
+--             ^ PROOF_STATE: case2
+    exact ih
+  | case3 x y ih1 ih2 =>
+--                    ^ PROOF_STATE: case3
+    simp [ack, *]
+```
+:::
+
+In {goal case1}`case1`, the goal is:
+````proofState case1
+case case1 =>
+  y: Nat
+⊢ y + 1 > 0
+````
+The {leanRef}`y + 1` in the goal corresponds to the value returned in the first case of {leanRef}`ack`.
+
+In {goal case2}`case2`, the goal is:
+````proofState case2
+case case2 =>
+  x: Nat
+  ih: ack x 1 > 0
+⊢ ack x 1 > 0
+````
+The {leanRef}`ack x 1` in the goal corresponds to the value of {leanRef}`ack` applied to the pattern variables {leanRef}`x + 1` and {leanRef}`0` returned in the second case of {leanRef}`ack`.
+This term is automatically simplified to the right-hand side.
+Happily, the inductive hypothesis {leanRef}`ih : ack x 1 > 0` corresponds to the recursive call, which is exactly the answer returned in this case.
+
+In {goal case3}`case3`, the goal is:
+````proofState case3
+case case3 =>
+  x: Nat
+  y: Nat
+  ih1: ack (x + 1) y > 0
+  ih2: ack x (ack (x + 1) y) > 0
+⊢ ack x (ack (x + 1) y) > 0
+````
+The {leanRef}`ack x (ack (x + 1) y)` in the goal corresponds to the value returned in the third case of {leanRef}`ack`, when {leanRef}`ack` applied to {leanRef}`x + 1` and {leanRef}`y + 1` has been reduced.
+The inductive hypotheses {leanRef}`ih1 : ack (x + 1) y > 0` and {leanRef}`ih2 : ack x (ack (x + 1) y) > 0` correspond to the recursive calls, with {leanRef}`ih1` matching the nested recursive call.
+Once again, the induction hypothesis is suitable.
+
+Using {leanRef}`fun_induction ack` results in goals and induction hypotheses that match the recursive structure of {leanRef}`ack`. As a result, the proof can be a single line:
+```lean
+def ack : Nat → Nat → Nat
+  | 0,   y   => y+1
+  | x+1, 0   => ack x 1
+  | x+1, y+1 => ack x (ack (x+1) y)
+-------------
+theorem ack_gt_zero : ack n m > 0 := by
+  fun_induction ack <;> simp [*, ack]
+```
+
+:::leanFirst
+There is also a {leanRef}`fun_cases` tactic which is analogous to the {tactic}`cases` tactic.
+It generates a case for each branch in a function's control flow.
+Both it and {leanRef}`fun_induction` additionally provide assumptions that rule out the paths that were not taken.
+
+This function {leanRef}`f` represents a five-way Boolean disjunction:
+```lean
+def f : Bool → Bool → Bool → Bool → Bool → Bool
+  | true, _, _, _ , _ => true
+  | _, true, _, _ , _ => true
+  | _, _, true, _ , _ => true
+  | _, _, _, true, _  => true
+  | _, _, _, _, x  => x
+
+```
+
+To prove that it is disjunction, the last case requires knowledge that none of the arguments are {leanRef}`true`.
+This knowledge is provided by the tactic:
+```lean
+def f : Bool → Bool → Bool → Bool → Bool → Bool
+  | true, _, _, _ , _ => true
+  | _, true, _, _ , _ => true
+  | _, _, true, _ , _ => true
+  | _, _, _, true, _  => true
+  | _, _, _, _, x  => x
+------
+theorem f_or : f b1 b2 b3 b4 b5 = (b1 || b2 || b3 || b4 || b5) := by
+  fun_cases f
+-- ^ PROOF_STATE: fOrAll
+  all_goals sorry
+```
+:::
+
+Each case includes an assumption that rules out the prior cases:
+
+```proofState fOrAll
+case case1 =>
+  b2: Bool
+  b3: Bool
+  b4: Bool
+  b5: Bool
+⊢ true = (true || b2 || b3 || b4 || b5)
+
+case case2 =>
+  b1: Bool
+  b3: Bool
+  b4: Bool
+  b5: Bool
+  x✝: b1 = true → False
+⊢ true = (b1 || true || b3 || b4 || b5)
+
+case case3 =>
+  b1: Bool
+  b2: Bool
+  b4: Bool
+  b5: Bool
+  x✝¹: b1 = true → False
+  x✝: b2 = true → False
+⊢ true = (b1 || b2 || true || b4 || b5)
+
+case case4 =>
+  b1: Bool
+  b2: Bool
+  b3: Bool
+  b5: Bool
+  x✝²: b1 = true → False
+  x✝¹: b2 = true → False
+  x✝: b3 = true → False
+⊢ true = (b1 || b2 || b3 || true || b5)
+
+case case5 =>
+  b1: Bool
+  b2: Bool
+  b3: Bool
+  b4: Bool
+  b5: Bool
+  x✝³: b1 = true → False
+  x✝²: b2 = true → False
+  x✝¹: b3 = true → False
+  x✝: b4 = true → False
+⊢ b5 = (b1 || b2 || b3 || b4 || b5)
+```
+
+:::leanFirst
+The {leanRef}`simp_all` tactic, which simplifies all the assumptions and the goal together, can dispatch all cases:
+```lean
+def f : Bool → Bool → Bool → Bool → Bool → Bool
+  | true, _, _, _ , _ => true
+  | _, true, _, _ , _ => true
+  | _, _, true, _ , _ => true
+  | _, _, _, true, _  => true
+  | _, _, _, _, x  => x
+------
+theorem f_or : f b1 b2 b3 b4 b5 = (b1 || b2 || b3 || b4 || b5) := by
+  fun_cases f <;> simp_all
+```
+:::
+
 
 # Mutual Recursion
 
@@ -1216,8 +1418,10 @@ mutual
   theorem numConsts_replaceConst (a b : String) (e : Term) :
       numConsts (replaceConst a b e) = numConsts e := by
     match e with
-    | const c => simp [replaceConst]; split <;> simp [numConsts]
-    | app f cs => simp [replaceConst, numConsts, numConsts_replaceConstLst a b cs]
+    | const c =>
+      simp [replaceConst]; split <;> simp [numConsts]
+    | app f cs =>
+      simp [replaceConst, numConsts, numConsts_replaceConstLst a b cs]
 
   theorem numConsts_replaceConstLst (a b : String) (es : List Term) :
       numConstsLst (replaceConstLst a b es) = numConstsLst es := by
@@ -1292,7 +1496,8 @@ Vect.casesOn.{u, v}
   {a : Nat}
   (t : Vect α a)
   (nil : motive 0 nil)
-  (cons : (a : α) → {n : Nat} → (a_1 : Vect α n) → motive (n + 1) (cons a a_1)) :
+  (cons : (a : α) → {n : Nat} → (a_1 : Vect α n) →
+    motive (n + 1) (cons a a_1)) :
   motive a t
 ```
 
@@ -1306,6 +1511,7 @@ is going on: if {lean}`v` has type {lean}`Vect α (n + 1)`, it _can't_ be
 One solution is to define an auxiliary function:
 
 ```lean
+set_option linter.unusedVariables false
 inductive Vect (α : Type u) : Nat → Type u
   | nil  : Vect α 0
   | cons : α → {n : Nat} → Vect α n → Vect α (n+1)
@@ -1342,6 +1548,7 @@ equations, and the equation compiler generates all the boilerplate
 code automatically for us. Here are a number of similar examples:
 
 ```lean
+set_option linter.unusedVariables false
 inductive Vect (α : Type u) : Nat → Type u
   | nil  : Vect α 0
   | cons : α → {n : Nat} → Vect α n → Vect α (n+1)
@@ -1373,6 +1580,7 @@ as {leanRef}`head`{lit}` `{leanRef}`nil`. The automatically generated definition
 families are far from straightforward. For example:
 
 ```lean
+set_option linter.unusedVariables false
 inductive Vect (α : Type u) : Nat → Type u
   | nil  : Vect α 0
   | cons : α → {n : Nat} → Vect α n → Vect α (n+1)
@@ -1551,6 +1759,7 @@ Using these new features, you can write the other vector functions defined
 in the previous sections more compactly as follows:
 
 ```lean
+set_option linter.unusedVariables false
 inductive Vect (α : Type u) : Nat → Type u
   | nil  : Vect α 0
   | cons : α → {n : Nat} → Vect α n → Vect α (n+1)
@@ -1582,10 +1791,12 @@ Lean also provides a compiler for {kw}`match`-{kw}`with` expressions found in
 many functional languages:
 
 ```lean
+set_option linter.unusedVariables false
+------
 def isNotZero (m : Nat) : Bool :=
   match m with
-  | 0   => false
-  | n+1 => true
+  | 0     => false
+  | n + 1 => true
 ```
 
 This does not look very different from an ordinary pattern matching
@@ -1593,10 +1804,12 @@ definition, but the point is that a {kw}`match` can be used anywhere in
 an expression, and with arbitrary arguments.
 
 ```lean
+set_option linter.unusedVariables false
+-------
 def isNotZero (m : Nat) : Bool :=
   match m with
-  | 0   => false
-  | n+1 => true
+  | 0     => false
+  | n + 1 => true
 
 def filter (p : α → Bool) : List α → List α
   | []      => []
@@ -1613,10 +1826,10 @@ Here is another example:
 ```lean
 def foo (n : Nat) (b c : Bool) :=
   5 + match n - 5, b && c with
-      | 0,   true  => 0
-      | m+1, true  => m + 7
-      | 0,   false => 5
-      | m+1, false => m + 3
+      | 0,     true  => 0
+      | m + 1, true  => m + 7
+      | 0,     false => 5
+      | m + 1, false => m + 3
 
 #eval foo 7 true false
 
@@ -1693,9 +1906,10 @@ def replicate (n : Nat) (a : α) : List α :=
    | n+1, as => loop n (a::as)
  loop n []
 ------
-theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
-  let rec aux (n : Nat) (as : List α)
-              : (replicate.loop a n as).length = n + as.length := by
+theorem length_replicate (n : Nat) (a : α) :
+    (replicate n a).length = n := by
+  let rec aux (n : Nat) (as : List α) :
+      (replicate.loop a n as).length = n + as.length := by
     match n with
     | 0   => simp [replicate.loop]
     | n+1 => simp +arith [replicate.loop, aux n]
@@ -1713,11 +1927,12 @@ where
     | 0,   as => as
     | n+1, as => loop n (a::as)
 
-theorem length_replicate (n : Nat) (a : α) : (replicate n a).length = n := by
+theorem length_replicate (n : Nat) (a : α) :
+    (replicate n a).length = n := by
   exact aux n []
 where
-  aux (n : Nat) (as : List α)
-      : (replicate.loop a n as).length = n + as.length := by
+  aux (n : Nat) (as : List α) :
+      (replicate.loop a n as).length = n + as.length := by
     match n with
     | 0   => simp [replicate.loop]
     | n+1 => simp +arith [replicate.loop, aux n]

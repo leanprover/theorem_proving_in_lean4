@@ -609,6 +609,12 @@ block_extension Block.lean
 def proofStateStyle := r#"
 .hl.lean.proof-state-view {
   white-space: collapse;
+  margin-left: 0.75em;
+}
+.hl.lean.proof-state-view .hypothesis {
+  display: table !important;
+  border-spacing: 0 0.2rem;
+  border-collapse: separate;
 }
 .hl.lean.proof-state-view .tactic-state {
   display: block;
@@ -619,12 +625,15 @@ def proofStateStyle := r#"
 
 .hl.lean.proof-state-view .tactic-state:has(.goal + .goal) {
   display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
   justify-content: space-evenly;
   width: 100%;
 }
 .hl.lean.proof-state-view .tactic-state .goal {
   margin: 0 !important;
   align-self: flex-start;
+  width: fit-content;
 }
 "#
 
@@ -711,6 +720,7 @@ kbd > code {
   line-height: 1;
   padding: 2px 4px;
   white-space: nowrap;
+  vertical-align: middle;
 }
 "#
 
