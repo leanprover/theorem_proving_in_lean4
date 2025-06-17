@@ -429,9 +429,6 @@ def getUnit [Monoid α] : α :=
 ```
 
 # Output Parameters
-:::TODO
-Semi-output params
-:::
 
 :::setup
 ````
@@ -454,7 +451,7 @@ error: typeclass instance problem is stuck, it is often due to metavariables
 ```
 
 You can view the parameter of the type class {lean}`Inhabited` as an _input_ value for the type class synthesizer.
-When a type class has multiple parameters, you can mark some of them as output parameters.
+When a type class has multiple parameters, you can mark some of them as {deftech}_output parameters_.
 Lean will start type class synthesizer even when these parameters have missing parts.
 In the following example, we use output parameters to define a _heterogeneous_ polymorphic
 multiplication.
@@ -518,6 +515,18 @@ end Ex
 You can use our new scalar array multiplication instance on arrays of type {leanRef}`Array β`
 with a scalar of type {leanRef}`α` whenever you have an instance {leanRef}`HMul α β γ`.
 In the last {kw}`#eval`, note that the instance was used twice on an array of arrays.
+
+Output parameters are ignored during instance synthesis. Even when instance synthesis occurs in a
+context in which the values of output parameters are already determined, their values are ignored.
+Once an instance is found using its input parameters, Lean ensures that the already-known values of
+the output parameters match those which were found.
+
+Lean also features {deftech}_semi-output parameters_, which have some features of input parameters
+and some features of output parameters. Like input parameters, semi-output parameters are considered
+when selecting instances. Like output parameters, they can be used to instantiate unknown values.
+However, they do not do so uniquely. Instance synthesis with semi-output parameters can be more difficult
+to predict, because the order in which instances are considered can determine which is selected, but it is
+also more flexible.
 
 # Default Instances
 
@@ -1181,6 +1190,7 @@ def s : Set Nat := {1}
 
 #check let x := [2, 3]; s ∪ x -- let x := [2, 3]; s ∪ x.toSet : Set Nat
 ```
+
 
 Lean also supports dependent coercions using the type class {lean}`CoeDep`. For example, we cannot coerce arbitrary propositions to {lean}`Bool`, only the ones that implement the {lean}`Decidable` typeclass.
 

@@ -4,8 +4,8 @@ defaultTargets = ["Examples"]
 
 [[require]]
 name = "subverso"
-git = "https://github.com/leanprover/subverso.git"
-rev = "main"
+git = "../../lean/subverso" # "https://github.com/leanprover/subverso.git"
+rev = "signature-noncomp"
 
 
 

@@ -606,6 +606,47 @@ block_extension Block.lean
         </script>
       }}
 
+block_extension Block.leanAnchor (code : Highlighted) (completeCode : String) where
+  data := .arr #[toJson code, toJson completeCode]
+  traverse _ _ _ := pure none
+  toTeX := none
+  extraCss := [highlightingStyle]
+  extraJs := [highlightingJs]
+  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy), ("copybutton.js", copyButtonJs)]
+  extraCssFiles := [("tippy-border.css", tippy.border.css), ("copybutton.css", copyButtonCss), ("examples.css", examplesCss)]
+  toHtml :=
+    open Verso.Output.Html in
+    some <| fun _ _ _ data _ => do
+      let .arr #[hlJson, completeCodeJson] := data
+        | HtmlT.logError "Expected two-element JSON for Lean code"
+          pure .empty
+      let code ←
+        match FromJson.fromJson? (α := Highlighted) hlJson with
+        | .error err =>
+          HtmlT.logError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
+          return .empty
+        | .ok hl => pure hl
+      let completeCode ←
+        match FromJson.fromJson? (α := String) completeCodeJson with
+        | .error err =>
+          HtmlT.logError <| "Couldn't deserialize Lean code string while rendering HTML: " ++ err
+          return .empty
+        | .ok hl => pure hl
+
+      let code := code.deIndent code.indentation
+
+      let codeHtml : Html := (← code.blockHtml "examples" (trim := false))
+
+      let i ← uniqueId
+      let mut script := s!"addCopyButtonToElement({i.quote}, {completeCode.quote});"
+
+      return {{
+        <div class="example" id={{i}}>{{codeHtml}}</div>
+        <script>
+        {{Html.text false script}}
+        </script>
+      }}
+
 def proofStateStyle := r#"
 .hl.lean.proof-state-view {
   white-space: collapse;
@@ -798,6 +839,13 @@ instance : ForIn m (Kept α) α := ⟨ForM.forIn⟩
 initialize recentHighlightsExt : EnvExtension (Kept Highlighted) ←
   registerEnvExtension (pure ⟨.replicate 12 .empty, 0, by simp⟩)
 
+/--
+A mapping from anchor names to the corresponding code. Each code element is paired with it's
+de-anchored context for copy-paste purposes.
+-/
+initialize savedAnchorExt : EnvExtension (HashMap String (Highlighted × String)) ←
+  registerEnvExtension (pure {})
+
 
 def allProofInfo (hl : Highlighted) : Array Highlighted :=
   go #[] hl
@@ -923,6 +971,16 @@ instance : FromArgs LeanConfig m where
       .namedD' `showProofStates .none <*>
       .namedD' `show .true
 
+structure SavedLeanConfig where
+  name : Option Ident
+  suppressNamespaces : Option String
+
+instance : FromArgs SavedLeanConfig m where
+  fromArgs :=
+    SavedLeanConfig.mk <$>
+      (some <$> .positional `name .ident <|> pure none) <*>
+      .named `suppressNamespaces .string true
+
 end
 
 def isNewline (hl : Highlighted) : Bool :=
@@ -1044,6 +1102,40 @@ where
   eqMessages (s1 s2 : String) := SubVerso.Examples.Messages.messagesMatch (s1.replace "\n" " ") (s2.replace "\n" " ")
   dropOneNl (s : String) : String :=
     if s.back == '\n' then s.dropRight 1 else s
+
+
+@[code_block_expander save]
+def save : CodeBlockExpander
+  | args, code => do
+    let {name, suppressNamespaces} ← parseThe SavedLeanConfig args
+    let codeStr := code.getString
+    let contents ← extractFile codeStr suppressNamespaces
+    let contents : Highlighted := .seq <| contents.map (·.code)
+    match contents.anchored with
+    | .error e => throwError s!"Error extracting anchors: {e}"
+    | .ok {anchors, proofStates, code} =>
+      let codeStr := code.toString
+      for (k, v) in anchors.toArray do
+        logSilentInfo m!"Anchor {k}:\n{v.toString}"
+        modifyEnv (savedAnchorExt.modifyState · (·.insert k (v, codeStr)))
+      for (k, v) in proofStates.toArray do
+        if let .tactics goals start stop hl := v then
+          logSilentInfo m!"Proof state {k} on `{v.toString}`:\n{showGoals goals}"
+          modifyEnv (proofStatesExt.modifyState · (·.insert k ⟨goals, start, stop, hl⟩))
+      if let some x := name then
+        modifyEnv (savedAnchorExt.modifyState · (·.insert x.getId.toString (code, codeStr)))
+    pure #[]
+
+@[code_block_expander savedAnchor]
+def savedAnchor : CodeBlockExpander
+  | args, code => do
+    let name ← ArgParse.run (.positional `name .ident) args
+    let env ← getEnv
+    let some (hl, complete) := (savedAnchorExt.getState env)[name.getId.toString]?
+      | throwErrorAt name m!"Not found: '{name.getId}'"
+    discard <| ExpectString.expectString "code" code hl.toString
+    saveBackref hl
+    return #[← ``(Block.other (Block.leanAnchor $(quote hl) $(quote complete)) #[])]
 
 section
 
@@ -1303,7 +1395,7 @@ open Lean Elab in
 def isLeanBlock : TSyntax `block → CoreM Bool
   | `(block|```$nameStx:ident $_args*|$_contents:str```) => do
     let name ← realizeGlobalConstNoOverloadWithInfo nameStx
-    return name == ``TPiL.lean
+    return name == ``TPiL.lean || name == `TPiL.signature || name == `TPiL.savedAnchor
   | _ => pure false
 
 

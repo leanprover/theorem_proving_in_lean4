@@ -37,12 +37,12 @@ example, to develop theories of sets and finite sets. We will see
 below that using these theorems can block evaluation in Lean's kernel,
 so that closed terms of type {lean}`Nat` no longer evaluate to numerals. But
 Lean erases types and propositional information when compiling
-definitions to bytecode for its virtual machine evaluator, and since
+definitions to executable code, and since
 these axioms only add new propositions, they are compatible with that
 computational interpretation. Even computationally inclined users may
 wish to use the classical law of the excluded middle to reason about
 computation. This also blocks evaluation in the kernel, but it is
-compatible with compilation to bytecode.
+compatible with compiled code.
 
 The standard library also defines a choice principle that is entirely
 antithetical to a computational interpretation, since it magically
@@ -55,8 +55,8 @@ mark such definitions as {kw}`noncomputable` to flag that fact.
 Using a clever trick (known as Diaconescu's theorem), one can use
 propositional extensionality, function extensionality, and choice to
 derive the law of the excluded middle. As noted above, however, use of
-the law of the excluded middle is still compatible with bytecode
-compilation and code extraction, as are other classical principles, as
+the law of the excluded middle is still compatible with
+compilation, as are other classical principles, as
 long as they are not used to manufacture data.
 
 To summarize, then, on top of the underlying framework of universes,
@@ -68,7 +68,7 @@ adds three additional components:
 - a choice principle, which produces data from an existential proposition.
 
 The first two of these block normalization within Lean, but are
-compatible with bytecode evaluation, whereas the third is not amenable
+compatible with code generation, whereas the third is not amenable
 to computational interpretation. We will spell out the details more
 precisely below.
 
@@ -153,8 +153,8 @@ precisely what Lean's virtual machine does.
 Having adopted a proof-irrelevant {lean}`Prop`, one might consider it
 legitimate to use, for example, the law of the excluded middle,
 {lean}`p ∨ ¬p`, where {lean}`p` is any proposition. Of course, this, too, can block
-computation according to the rules of CIC, but it does not block
-bytecode evaluation, as described above. It is only the choice
+computation according to the rules of CIC, but it does not prevent the generation
+of executable code, as described above. It is only the choice
 principles discussed in :numref:`choice` that completely erase the
 distinction between the proof-irrelevant and data-relevant parts of
 the theory.
@@ -233,16 +233,13 @@ Similar to propositional extensionality, function extensionality
 asserts that any two functions of type {leanRef}`(x : α) → β x` that agree on
 all their inputs are equal:
 
-```lean
-universe u v
-#check (@funext :
-         {α : Type u} →
-         {β : α → Type v} →
-         {f g : (x : α) → β x} →
-         (∀ (x : α), f x = g x) →
-         f = g)
-```
-
+````signature
+funext.{u, v}
+  {α : Sort u} {β : α → Sort v}
+  {f g : (x : α) → β x}
+  (h : ∀ (x : α), f x = g x) :
+  f = g
+````
 :::
 
 From a classical, set-theoretic perspective, this is exactly what it
@@ -605,15 +602,11 @@ generic theorems {lean}`Setoid.refl`, {lean}`Setoid.symm`, {lean}`Setoid.trans` 
 reason about the relation. Specifically with quotients we can use the
 theorem {lean}`Quotient.exact`:
 
-
-
-```lean
-universe u
-------
-#check (@Quotient.exact :
-         ∀ {α : Sort u} {s : Setoid α} {a b : α},
-           Quotient.mk s a = Quotient.mk s b → a ≈ b)
-```
+````signature
+Quotient.exact {α : Sort u} {s : Setoid α} {a b : α} :
+  Quotient.mk s a = Quotient.mk s b →
+  a ≈ b
+````
 
 Together with {lean}`Quotient.sound`, this implies that the elements of
 the quotient correspond exactly to the equivalence classes of elements
@@ -822,6 +815,7 @@ proposition {leanRef}`mem_fn`{leanRef in:="mem (a : α) (u : UProd α)"}` a`{lea
 Lean standard library.
 
 ```lean
+set_option linter.unusedVariables false
 private def eqv (p₁ p₂ : α × α) : Prop :=
   (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 infix:50 " ~ " => eqv
@@ -871,10 +865,12 @@ private theorem mem_swap {a : α} :
       | Or.inl h => exact Or.inr h
       | Or.inr h => exact Or.inl h
 
-private theorem mem_respects
-      : {p₁ p₂ : α × α} → (a : α) → p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
-  | (a₁, a₂), (b₁, b₂), a, Or.inl ⟨a₁b₁, a₂b₂⟩ => by simp_all
-  | (a₁, a₂), (b₁, b₂), a, Or.inr ⟨a₁b₂, a₂b₁⟩ => by simp_all only; apply mem_swap
+private theorem mem_respects : {p₁ p₂ : α × α} → (a : α) → p₁ ~ p₂ → mem_fn a p₁ = mem_fn a p₂
+  | (a₁, a₂), (b₁, b₂), a, Or.inl ⟨a₁b₁, a₂b₂⟩ => by
+    simp_all
+  | (a₁, a₂), (b₁, b₂), a, Or.inr ⟨a₁b₂, a₂b₁⟩ => by
+    simp_all only
+    apply mem_swap
 
 def mem (a : α) (u : UProd α) : Prop :=
   Quot.liftOn u (fun p => mem_fn a p) (fun p₁ p₂ e => mem_respects a e)
@@ -928,7 +924,7 @@ def extfun (α : Sort u) (β : α → Sort v) := Quot (fun (f g : (x : α) → �
 
 def extfun_app {α β} (f : extfun α β) (x : α) : β x :=
   Quot.lift (· x) (by intros; simp [*]) f
----
+----------
 example (f₁ f₂ : (x : α) → β x) (h : ∀ x, f₁ x = f₂ x) :=
   calc f₁
     _ = extfun_app (.mk _ f₁) := rfl
@@ -1005,8 +1001,8 @@ namespace Hidden
 universe u
 axiom choice {α : Sort u} : Nonempty α → α
 ------
-noncomputable def indefiniteDescription {α : Sort u} (p : α → Prop)
-                                        (h : ∃ x, p x) : {x // p x} :=
+noncomputable def indefiniteDescription {α : Sort u}
+    (p : α → Prop) (h : ∃ x, p x) : {x // p x} :=
   choice <| let ⟨x, px⟩ := h; ⟨⟨x, px⟩⟩
 ------
 end Hidden
@@ -1017,7 +1013,7 @@ end Hidden
 variable {α : Sort u} {h : Nonempty α}
 open Classical
 ````
-Because it depends on {lean}`choice`, Lean cannot generate bytecode for
+Because it depends on {lean}`choice`, Lean cannot generate executable code for
 {lean}`indefiniteDescription`, and so requires us to mark the definition
 as {kw}`noncomputable`. Also in the {lit}`Classical` namespace, the
 function {lean}`choose` and the property {lean}`choose_spec` decompose the two
@@ -1029,10 +1025,12 @@ parts of the output of {lean}`indefiniteDescription`:
 open Classical
 namespace Hidden
 ------
-noncomputable def choose {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : α :=
+variable {α : Sort u} {p : α → Prop}
+
+noncomputable def choose (h : ∃ x, p x) : α :=
   (indefiniteDescription p h).val
 
-theorem choose_spec {α : Sort u} {p : α → Prop} (h : ∃ x, p x) : p (choose h) :=
+theorem choose_spec (h : ∃ x, p x) : p (choose h) :=
   (indefiniteDescription p h).property
 ------
 end Hidden
@@ -1045,8 +1043,8 @@ being {lean}`Inhabited`:
 ```lean
 open Classical
 ------
-noncomputable def inhabited_of_nonempty : Nonempty α → Inhabited α :=
-  fun h => choice (let ⟨a⟩ := h; ⟨⟨a⟩⟩)
+noncomputable def inhabited_of_nonempty (h : Nonempty α) : Inhabited α :=
+  choice (let ⟨a⟩ := h; ⟨⟨a⟩⟩)
 ```
 :::
 
@@ -1055,42 +1053,44 @@ In the next section, we will see that {lean}`propext`, {lean}`funext`, and
 the decidability of all propositions. Using those, one can strengthen
 the principle of indefinite description as follows:
 
-```lean
+::::setup
+````
 open Classical
-universe u
-------
-#check (@strongIndefiniteDescription :
-         {α : Sort u} → (p : α → Prop)
-         → Nonempty α → {x // (∃ (y : α), p y) → p x})
+````
+
+```signature
+strongIndefiniteDescription {α : Sort u} (p : α → Prop)
+  (h : Nonempty α) :
+  {x // (∃ (y : α), p y) → p x}
 ```
+
 
 Assuming the ambient type {leanRef}`α` is nonempty,
 {leanRef}`strongIndefiniteDescription`{lit}` `{leanRef}`p` produces an element of {leanRef}`α`
 satisfying {leanRef}`p` if there is one. The data component of this
 definition is conventionally known as *Hilbert's epsilon function*:
 
-```lean
-open Classical
-universe u
-------
-#check (@epsilon :
-         {α : Sort u} → [Nonempty α]
-         → (α → Prop) → α)
+````signature
+epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α
+````
 
-#check (@epsilon_spec :
-         ∀ {α : Sort u} {p : α → Prop} (hex : ∃ (y : α), p y),
-           p (@epsilon _ (nonempty_of_exists hex) p))
-```
+````signature
+epsilon_spec {α : Sort u} {p : α → Prop}
+  (hex : ∃ (y : α), p y) :
+  p (@epsilon _ (nonempty_of_exists hex) p)
+````
+
+
+::::
 
 # The Law of the Excluded Middle
 
-The law of the excluded middle is the following
+The law of the excluded middle is the following:
 
-```lean
-open Classical
-
-#check (@em : ∀ (p : Prop), p ∨ ¬p)
+```signature
+Classical.em : ∀ (p : Prop), p ∨ ¬p
 ```
+
 
 [Diaconescu's theorem](https://en.wikipedia.org/wiki/Diaconescu%27s_theorem) states
 that the axiom of choice is sufficient to derive the law of excluded
@@ -1098,23 +1098,68 @@ middle. More precisely, it shows that the law of the excluded middle
 follows from {lean}`Classical.choice`, {lean}`propext`, and {lean}`funext`. We
 sketch the proof that is found in the standard library.
 
+```save emProof
+-- ANCHOR: emSetup
+open Classical
+theorem em (p : Prop) : p ∨ ¬p := by
+  let U (x : Prop) : Prop := x = True ∨ p
+  let V (x : Prop) : Prop := x = False ∨ p
+  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
+  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
+  -- ^ PROOF_STATE: em1
+-- ANCHOR_END: emSetup
+-- ANCHOR: emChoose
+  let u : Prop := choose exU
+  let v : Prop := choose exV
+  have u_def : U u := choose_spec exU
+  have v_def : V v := choose_spec exV
+  -- ^ PROOF_STATE: em2
+-- ANCHOR_END: emChoose
+-- ANCHOR: emCases
+  have not_uv_or_p : u ≠ v ∨ p := by
+    match u_def, v_def with
+    | Or.inr h, _ => exact Or.inr h
+    | _, Or.inr h => exact Or.inr h
+    | Or.inl hut, Or.inl hvf =>
+      apply Or.inl
+      simp [hvf, hut, true_ne_false]
+-- ANCHOR_END: emCases
+-- ANCHOR: emNext
+  have p_implies_uv : p → u = v :=
+    fun hp =>
+    have hpred : U = V :=
+      funext fun x =>
+        have hl : (x = True ∨ p) → (x = False ∨ p) :=
+          fun _ => Or.inr hp
+        have hr : (x = False ∨ p) → (x = True ∨ p) :=
+          fun _ => Or.inr hp
+        show (x = True ∨ p) = (x = False ∨ p) from
+          propext (Iff.intro hl hr)
+    have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := by
+      rw [hpred]; intros; rfl
+    show u = v from h₀ _ _
+-- ANCHOR_END: emNext
+-- ANCHOR: emDone
+  match not_uv_or_p with
+  | Or.inl hne =>
+    exact Or.inr (mt p_implies_uv hne)
+  | Or.inr h   =>
+    exact Or.inl h
+-- ANCHOR_END: emDone
+```
+
 :::leanFirst
 First, we import the necessary axioms, and define two predicates {leanRef}`U` and {leanRef}`V`:
 
-```lean  (suppressNamespaces := "Hidden") (allowVisible := false)
-namespace Hidden
-------
+```savedAnchor emSetup
 open Classical
-theorem em (p : Prop) : p ∨ ¬p :=
+theorem em (p : Prop) : p ∨ ¬p := by
   let U (x : Prop) : Prop := x = True ∨ p
   let V (x : Prop) : Prop := x = False ∨ p
-
   have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
   have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
--------
-  sorry
-end Hidden
 ```
+
 :::
 
 If {leanRef}`p` is true, then every element of {lean}`Prop` is in both {leanRef}`U` and {leanRef}`V`.
@@ -1123,54 +1168,27 @@ If {leanRef}`p` is false, then {leanRef}`U` is the singleton {leanRef}`True`, an
 :::leanFirst
 Next, we use {leanRef}`choose` to choose an element from each of {leanRef}`U` and {leanRef}`V`:
 
-```lean  (suppressNamespaces := "Hidden") (allowVisible := false)
-namespace Hidden
-open Classical
-theorem em (p : Prop) : p ∨ ¬p :=
-  let U (x : Prop) : Prop := x = True ∨ p
-  let V (x : Prop) : Prop := x = False ∨ p
-  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
-  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
-------
+```savedAnchor emChoose
   let u : Prop := choose exU
   let v : Prop := choose exV
-
   have u_def : U u := choose_spec exU
   have v_def : V v := choose_spec exV
--------
-  sorry
-end Hidden
 ```
 :::
 
 :::leanFirst
 Each of {leanRef}`U` and {leanRef}`V` is a disjunction, so {leanRef}`u_def` and {leanRef}`v_def`
-represent four cases. In one of these cases, {leanRef}`u`{leanRef}`= True` and
-{leanRef}`v`{leanRef}` = False`, and in all the other cases, {leanRef}`p` is true. Thus we have:
+represent four cases. In one of these cases, {leanRef}`u = True` and
+{leanRef}`v = False`, and in all the other cases, {leanRef}`p` is true. Thus we have:
 
-```lean
-namespace Hidden
-open Classical
-theorem em (p : Prop) : p ∨ ¬p :=
-  let U (x : Prop) : Prop := x = True ∨ p
-  let V (x : Prop) : Prop := x = False ∨ p
-  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
-  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
-  let u : Prop := choose exU
-  let v : Prop := choose exV
-  have u_def : U u := choose_spec exU
-  have v_def : V v := choose_spec exV
-------
-  have not_uv_or_p : u ≠ v ∨ p :=
+```savedAnchor emCases
+  have not_uv_or_p : u ≠ v ∨ p := by
     match u_def, v_def with
-    | Or.inr h, _ => Or.inr h
-    | _, Or.inr h => Or.inr h
+    | Or.inr h, _ => exact Or.inr h
+    | _, Or.inr h => exact Or.inr h
     | Or.inl hut, Or.inl hvf =>
-      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
-      Or.inl hne
-------
-  sorry
-end Hidden
+      apply Or.inl
+      simp [hvf, hut, true_ne_false]
 ```
 :::
 
@@ -1178,26 +1196,7 @@ On the other hand, if {leanRef}`p` is true, then, by function extensionality
 and propositional extensionality, {leanRef}`U` and {leanRef}`V` are equal. By the
 definition of {leanRef}`u` and {leanRef}`v`, this implies that they are equal as well.
 
-```lean
-namespace Hidden
-open Classical
-theorem em (p : Prop) : p ∨ ¬p :=
-  let U (x : Prop) : Prop := x = True ∨ p
-  let V (x : Prop) : Prop := x = False ∨ p
-  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
-  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
-  let u : Prop := choose exU
-  let v : Prop := choose exV
-  have u_def : U u := choose_spec exU
-  have v_def : V v := choose_spec exV
-  have not_uv_or_p : u ≠ v ∨ p :=
-    match u_def, v_def with
-    | Or.inr h, _ => Or.inr h
-    | _, Or.inr h => Or.inr h
-    | Or.inl hut, Or.inl hvf =>
-      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
-      Or.inl hne
-------
+```savedAnchor emNext
   have p_implies_uv : p → u = v :=
     fun hp =>
     have hpred : U = V :=
@@ -1211,52 +1210,19 @@ theorem em (p : Prop) : p ∨ ¬p :=
     have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := by
       rw [hpred]; intros; rfl
     show u = v from h₀ _ _
-------
-  sorry
-end Hidden
 ```
+
 
 Putting these last two facts together yields the desired conclusion:
 
-```lean (suppressNamespaces := "Hidden") (allowVisible := false)
-namespace Hidden
-open Classical
-theorem em (p : Prop) : p ∨ ¬p :=
-  let U (x : Prop) : Prop := x = True ∨ p
-  let V (x : Prop) : Prop := x = False ∨ p
-  have exU : ∃ x, U x := ⟨True, Or.inl rfl⟩
-  have exV : ∃ x, V x := ⟨False, Or.inl rfl⟩
-  let u : Prop := choose exU
-  let v : Prop := choose exV
-  have u_def : U u := choose_spec exU
-  have v_def : V v := choose_spec exV
-  have not_uv_or_p : u ≠ v ∨ p :=
-    match u_def, v_def with
-    | Or.inr h, _ => Or.inr h
-    | _, Or.inr h => Or.inr h
-    | Or.inl hut, Or.inl hvf =>
-      have hne : u ≠ v := by simp [hvf, hut, true_ne_false]
-      Or.inl hne
-  have p_implies_uv : p → u = v :=
-    fun hp =>
-    have hpred : U = V :=
-      funext fun x =>
-        have hl : (x = True ∨ p) → (x = False ∨ p) :=
-          fun _ => Or.inr hp
-        have hr : (x = False ∨ p) → (x = True ∨ p) :=
-          fun _ => Or.inr hp
-        show (x = True ∨ p) = (x = False ∨ p) from
-          propext (Iff.intro hl hr)
-    have h₀ : ∀ exU exV, @choose _ U exU = @choose _ V exV := by
-      rw [hpred]; intros; rfl
-    show u = v from h₀ _ _
-------
+```savedAnchor emDone
   match not_uv_or_p with
-  | Or.inl hne => Or.inr (mt p_implies_uv hne)
-  | Or.inr h   => Or.inl h
-------
-end Hidden
+  | Or.inl hne =>
+    exact Or.inr (mt p_implies_uv hne)
+  | Or.inr h   =>
+    exact Or.inl h
 ```
+
 
 Consequences of excluded middle include double-negation elimination,
 proof by cases, and proof by contradiction, all of which are described
@@ -1264,15 +1230,13 @@ in the {ref "classical-logic"}[Section Classical Logic].
 The law of the excluded middle and propositional extensionality imply propositional completeness:
 
 ```lean (suppressNamespaces := "Hidden") (allowVisible := false)
-namespace Hidden
-------
 open Classical
 theorem propComplete (a : Prop) : a = True ∨ a = False :=
   match em a with
-  | Or.inl ha => Or.inl (propext (Iff.intro (fun _ => ⟨⟩) (fun _ => ha)))
-  | Or.inr hn => Or.inr (propext (Iff.intro (fun h => hn h) (fun h => False.elim h)))
-------
-end Hidden
+  | Or.inl ha =>
+    Or.inl (propext (Iff.intro (fun _ => True.intro) (fun _ => ha)))
+  | Or.inr hn =>
+    Or.inr (propext (Iff.intro (fun h => hn h) (fun h => False.elim h)))
 ```
 
 Together with choice, we also get the stronger principle that every
@@ -1309,7 +1273,7 @@ of {leanRef}`linv`, choice is used twice: first, to show that
 {leanRef}`(∃ a : α, f a = b)` is “decidable,” and then to choose an {leanRef}`a` such that
 {leanRef}`f a = b`. Notice that {lean}`propDecidable` is a scoped instance and is activated
 by the {leanRef}`open Classical` command. We use this instance to justify
-the if-then-else expression. (See also the discussion in
+the {kw}`if`-{kw}`then`-{kw}`else` expression. (See also the discussion in
 {ref "decidable-propositions"}[Section Decidable Propositions]).
 
 

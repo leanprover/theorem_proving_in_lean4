@@ -37,7 +37,7 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
 
 example (a b c : Nat) : a * (b * c) = a * (c * b) := by
   conv =>
---     ^ PROOF_STATE: conv1
+--  ^ PROOF_STATE: conv1
     lhs
 --  ^ PROOF_STATE: conv2
     congr
@@ -77,7 +77,7 @@ error: tactic 'rewrite' failed, did not find instance of the pattern
 The solution is:
 
 ```lean
-example : (fun x : Nat => 0 + x) = (fun x => x) := by
+example : (fun x : Nat => 0 + x) = (fun x => x) :=  by
   conv =>
     lhs
     intro x
@@ -108,7 +108,8 @@ Navigation using the above commands can be tedious. One can shortcut it using pa
 
 ```lean
 example (a b c : Nat) : a * (b * c) = a * (c * b) := by
-  conv in b * c => rw [Nat.mul_comm]
+  conv in b * c =>
+    rw [Nat.mul_comm]
 ```
 
 which is just syntax sugar for
@@ -145,19 +146,19 @@ example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
 - :::leanFirst
   {leanRef}`arg`{lit}` i` enter the {lit}`i`-th nondependent explicit argument of an application.
 
-  ```lean
+  ```lean (showProofStates := "arg2 arg3")
   example (a b c : Nat) : a * (b * c) = a * (c * b) := by
     conv =>
-      -- ⊢ a * (b * c) = a * (c * b)
+    -- ^ PROOF_STATE: arg1
       lhs
-      -- ⊢ a * (b * c)
+    -- ^ PROOF_STATE: arg2
       arg 2
-      -- ⊢ b * c
+    -- ^ PROOF_STATE: arg3
       rw [Nat.mul_comm]
   ```
   :::
 
-- {tactic}`args` alternative name for {leanRef}`congr`.
+- {tactic}`args` is an alternative name for {leanRef}`congr`.
 
 -   {leanRef}`simp` applies the simplifier to the current goal. It supports the same options available in regular tactic mode.
 
@@ -165,26 +166,16 @@ example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
     def f (x : Nat) :=
       if x > 0 then x + 1 else x + 2
 
-    example (g : Nat → Nat) (h₁ : g x = x + 1) (h₂ : x > 0) : g x = f x := by
+    example (g : Nat → Nat)
+        (h₁ : g x = x + 1) (h₂ : x > 0) :
+        g x = f x := by
       conv =>
         rhs
         simp [f, h₂]
       exact h₁
     ```
 
--  :::leanFirst
-    {kw}`enter`{lit}` [1, x, 2, y]` iterate {leanRef}`arg` and {leanRef}`intro` with the given arguments. It is just the macro:
-
-    ```
-    syntax enterArg := ident <|> group("@"? num)
-    syntax "enter " "[" (colGt enterArg),+ "]": conv
-    macro_rules
-      | `(conv| enter [$i:num]) => `(conv| arg $i)
-      | `(conv| enter [@$i:num]) => `(conv| arg @$i)
-      | `(conv| enter [$id:ident]) => `(conv| ext $id)
-      | `(conv| enter [$arg:enterArg, $args,*]) => `(conv| (enter [$arg]; enter [$args,*]))
-    ```
-   :::
+- {kw}`enter`{lit}` [1, x, 2, y]` iterate {leanRef}`arg` and {leanRef}`intro` with the given arguments.
 
 - {tactic}`done` fail if there are unsolved goals.
 
@@ -196,20 +187,21 @@ example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
   is useful for discharging goals not supported by {leanRef}`conv` mode, and
   applying custom congruence and extensionality lemmas.
 
-  ```lean
+  ```lean (showProofStates := "convTac1 convTac2 convTac4")
   example (g : Nat → Nat → Nat)
           (h₁ : ∀ x, x ≠ 0 → g x x = 1)
           (h₂ : x ≠ 0)
           : g x x + x = 1 + x := by
     conv =>
       lhs
-      -- ⊢ g x x + x
+  --  ^    PROOF_STATE: convTac1
       arg 1
-      -- ⊢ g x x
+  --  ^    PROOF_STATE: convTac2
       rw [h₁]
-      -- 2 goals: ⊢ 1, ⊢ x ≠ 0
       . skip
-      . tactic => exact h₂
+      . tactic =>
+    --  ^    PROOF_STATE: convTac4
+         exact h₂
   ```
 
 - {kw}`apply`{lit}` <term>` is syntax sugar for {kw}`tactic`{lit}` => apply <term>`.

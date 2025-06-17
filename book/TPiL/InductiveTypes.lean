@@ -1832,7 +1832,7 @@ theorem subst {α : Type u} {a b : α} {p : α → Prop}
 set_option pp.all true
 #print subst
 
-#print subst.match_1
+#print subst.match_1_1
 
 #print Eq.casesOn
 
