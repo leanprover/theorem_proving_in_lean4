@@ -309,7 +309,7 @@ expressions that are checked by the kernel for correctness and then
 stored in the environment for later use. But some commands have other
 effects on the environment, either assigning attributes to objects in
 the environment, defining notation, or declaring instances of type
-classes, as described in {ref "type-classes"}[Chapter Type Classes]. Most of
+classes, as described in the chapter on {ref "type-classes"}[type classes]. Most of
 these commands have global effects, which is to say, they remain
 in effect not only in the current file, but also in any file that
 imports it. However, such commands often support the {kw}`local` modifier,
@@ -317,7 +317,7 @@ which indicates that they only have effect until
 the current {kw}`section` or {leanRef}`namespace` is closed, or until the end
 of the current file.
 
-In {ref "using-the-simplifier"}[Section Using the Simplifier],
+In {ref "using-the-simplifier"}[Using the Simplifier],
 we saw that theorems can be annotated with the {attr}`[simp]` attribute,
 which makes them available for use by the simplifier.
 The following example defines the prefix relation on lists,
@@ -377,7 +377,7 @@ example : isPrefix [1, 2, 3] [1, 2, 3] := by
 :::leanFirst
 For another example, we can use the {kw}`instance` command to assign the
 notation {lit}`≤` to the {leanRef}`isPrefix` relation. That command, which will
-be explained in {ref "type-classes"}[Chapter Type Classes], works by
+be explained in the chapter on {ref "type-classes"}[type classes], works by
 assigning an {attr}`[instance]` attribute to the associated definition.
 
 ```lean
@@ -422,9 +422,9 @@ example (as : List α) : as ≤ as :=
   ⟨[], by simp⟩
 ```
 
-In {ref "notation"}[Section Notation] below, we will discuss Lean's
+In {ref "notation"}[Notation] below, we will discuss Lean's
 mechanisms for defining notation, and see that they also support the
-{kw}`local` modifier. However, in {ref "setting-options"}[Section Setting Options], we will
+{kw}`local` modifier. However, in {ref "setting-options"}[Setting Options], we will
 discuss Lean's mechanisms for setting options, which does _not_ follow
 this pattern: options can _only_ be set locally, which is to say,
 their scope is always restricted to the current section or current
@@ -439,7 +439,7 @@ variable (α : Type u) (β : α → Type v) (t : {x : α} → β x)
 ````
 
 
-In {ref "implicit-arguments"}[Section Implicit Arguments],
+In {ref "implicit-arguments"}[Implicit Arguments],
 we saw that if Lean displays the type
 of a term {lean}`t` as {lean}`{x : α} → β x`, then the curly brackets
 indicate that {leanRef}`x` has been marked as an _implicit argument_ to
@@ -575,7 +575,7 @@ variable (euclr : Euclidean r)
 
 There is a third kind of implicit argument that is denoted with square
 brackets, {lit}`[` and {lit}`]`. These are used for type classes, as
-explained in {ref "type-classes"}[Chapter Type Classes].
+explained in the chapter on {ref "type-classes"}[type classes].
 
 # Notation
 %%%
@@ -901,8 +901,8 @@ Remember that identifiers in Lean can be organized into hierarchical
 namespaces. For example, the theorem named {lean}`le_of_succ_le_succ` in the
 namespace {lit}`Nat` has full name {lean}`Nat.le_of_succ_le_succ`, but the shorter
 name is made available by the command {kw}`open`{lit}` Nat` (for names not marked as
-{kw}`protected`). We will see in {ref "inductive-types"}[Chapter Inductive Types]
-and {ref "structures-and-records"}[Chapter Structures and Records]
+{kw}`protected`). We will see in the chapters on {ref "inductive-types"}[inductive types]
+and {ref "structures-and-records"}[structures and records]
 that defining structures and inductive data types in Lean generates
 associated operations, and these are stored in
 a namespace with the same name as the type under definition. For

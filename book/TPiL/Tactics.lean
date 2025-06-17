@@ -729,7 +729,7 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
         constructor; exact hp; apply Or.inr; exact hr
 ```
 
-You will see in {ref "inductive-types"}[Chapter Inductive Types] that
+You will see in {ref "inductive-types"}[Inductive Types] that
 these tactics are quite general. The {leanRef}`cases` tactic can be used to
 decompose any element of an inductively defined type; {leanRef}`constructor`
 always applies the first applicable constructor of an inductively defined type.
@@ -1808,8 +1808,8 @@ example (x : α) (h : p) : x = x ∧ p := by
 
 # Exercises
 
-1. Go back to the exercises in {ref "propositions-and-proofs"}[Chapter Propositions and Proofs] and
-{ref "quantifiers-and-equality"}[Chapter Quantifiers and Equality] and
+1. Go back to the exercises in {ref "propositions-and-proofs"}[Propositions and Proofs] and
+{ref "quantifiers-and-equality"}[Quantifiers and Equality] and
 redo as many as you can now with tactic proofs, using also {tactic}`rw`
 and {tactic}`simp` as appropriate.
 

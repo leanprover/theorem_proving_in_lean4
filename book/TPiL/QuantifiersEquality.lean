@@ -223,7 +223,7 @@ considered problematic.
 # Equality
 
 Let us now turn to one of the most fundamental relations defined in
-Lean's library, namely, the equality relation. In {ref "inductive-types"}[Chapter Inductive Types],
+Lean's library, namely, the equality relation. In the chapter on {ref "inductive-types"}[inductive types],
 we will explain _how_ equality is defined from the primitives of Lean's logical framework.
 In the meanwhile, here we explain how to use it.
 
@@ -834,7 +834,7 @@ example : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x :=
   fun ⟨w, hpw, hqw⟩ => ⟨w, hqw, hpw⟩
 ```
 
-We will see in {ref "induction-and-recursion"}[Chapter Induction and Recursion] that all these variations are
+We will see in {ref "induction-and-recursion"}[Induction and Recursion] that all these variations are
 instances of a more general pattern-matching construct.
 
 :::setup

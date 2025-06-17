@@ -277,8 +277,8 @@ known as a _wildcard pattern_, or an _anonymous variable_. In contrast
 to usage outside the equation compiler, here the underscore does _not_
 indicate an implicit argument. The use of underscores for wildcards is
 common in functional programming languages, and so Lean adopts that
-notation. {ref "wildcards-and-overlapping-patterns"}[Section Wildcards and Overlapping Patterns]
-expands on the notion of a wildcard, and {ref "inaccessible-patterns"}[Section Inaccessible Patterns] explains how
+notation. The section on {ref "wildcards-and-overlapping-patterns"}[wildcards and overlapping patterns]
+expands on the notion of a wildcard, and the description of {ref "inaccessible-patterns"}[inaccessible patterns] explains how
 you can use implicit arguments in patterns as well.
 
 ::::setup
@@ -291,7 +291,7 @@ def tail : List α → List α
 ````
 
 :::leanFirst
-As described in {ref "inductive-types"}[Chapter Inductive Types],
+As described in {ref "inductive-types"}[Inductive Types],
 inductive data types can depend on parameters. The following example defines
 the {name}`tail` function using pattern matching. The argument {leanRef}`α : Type u`
 is a parameter and occurs before the colon to indicate it does not participate in the pattern matching.
@@ -319,7 +319,7 @@ not participate in a case split.
 Lean can also handle more complex forms of pattern matching, in which
 arguments to dependent types pose additional constraints on the
 various cases. Such examples of _dependent pattern matching_ are
-considered in the {ref "dependent-pattern-matching"}[Section Dependent Pattern Matching].
+considered in the section on {ref "dependent-pattern-matching"}[dependent pattern matching].
 
 # Wildcards and Overlapping Patterns
 %%%
@@ -388,7 +388,7 @@ patterns_. In these languages, the interpreter produces an exception
 or returns an arbitrary value for incomplete cases. We can simulate
 the arbitrary value approach using the {lean}`Inhabited` type
 class. Roughly, an element of {lean}`Inhabited α` is a witness to the fact
-that there is an element of {lean}`α`; in the {ref "type-classes"}[Chapter Type Classes]
+that there is an element of {lean}`α`; in {ref "type-classes"}[the chapter on type classes]
 we will see that Lean can be instructed that suitable
 base types are inhabited, and can automatically infer that other
 constructed types are inhabited. On this basis, the
@@ -478,12 +478,12 @@ other patterns, or an expression that normalizes to something of that
 form (where the non-constructors are marked with the {attr}`[match_pattern]`
 attribute). The appearances of constructors prompt case splits, with
 the arguments to the constructors represented by the given
-variables. In {ref "dependent-pattern-matching"}[Section Dependent Pattern Matching],
-we will see that it is sometimes necessary to include explicit terms in patterns that
-are needed to make an expression type check, though they do not play a
-role in pattern matching. These are called “inaccessible patterns” for
+variables. In the section on {ref "dependent-pattern-matching"}[dependent pattern matching],
+we will see that some explicit terms in patterns are forced into a particular form
+in order to make an expression type check, though they do not play a
+role in pattern matching. These are called “{deftech}[inaccessible patterns]” for
 that reason. But we will not need to use such inaccessible patterns
-before {ref "dependent-pattern-matching"}[Section Dependent Pattern Matching].
+before covering {ref "dependent-pattern-matching"}[dependent pattern matching].
 
 As we saw in the last section, the terms {lit}`t₁, ..., tₙ` can make use
 of any of the parameters {lit}`a`, as well as any of the variables that
@@ -1468,8 +1468,8 @@ open Vect
 ````
 
 :::leanFirst
-All the examples of pattern matching we considered in
-{ref "pattern-matching"}[Section Pattern Matching] can easily be written using {lit}`casesOn`
+All the examples of pattern matching we considered in the section on
+{ref "pattern-matching"}[pattern matching] can easily be written using {lit}`casesOn`
 and {lit}`recOn`. However, this is often not the case with indexed
 inductive families such as {leanRef}`Vect α n`, since case splits impose
 constraints on the values of the indices. Without the equation
@@ -1962,7 +1962,7 @@ variable {xs : List α} {n : Nat}
    the natural numbers. Similarly, see if you can figure out how to
    define {name}`WellFounded.fix` on your own.
 
-4. Following the examples in {ref "dependent-pattern-matching"}[Section Dependent Pattern Matching],
+4. Following the examples in the section on {ref "dependent-pattern-matching"}[dependent pattern matching],
    define a function that will append two vectors.
    This is tricky; you will have to define an auxiliary function.
 

@@ -592,7 +592,7 @@ which are arguments to the constructors as well as {lean}`Prod`. Lean
 detects when these arguments can be inferred from later arguments to a
 constructor or the return type, and makes them implicit in that case.
 
-In {ref "defining-the-natural-numbers"}[Section Defining the Natural Numbers]
+In {ref "defining-the-natural-numbers"}[Defining the Natural Numbers]
 we will see what happens when the
 constructor of an inductive type takes arguments from the inductive
 type itself. What characterizes the examples we consider in this
@@ -681,7 +681,7 @@ structure Semigroup where
   mul_assoc : ∀ a b c, mul (mul a b) c = mul a (mul b c)
 ```
 
-We will see more examples in {ref "structures-and-records"}[Chapter Structures and Records].
+We will see more examples in the chapter on {ref "structures-and-records"}[structures and records].
 
 :::leanFirst
 We have already discussed the dependent product type {leanRef}`Sigma`:
@@ -778,7 +778,7 @@ speaking, what characterizes inductive types in {lean}`Prop` is that one
 can only eliminate to other types in {lean}`Prop`. This is consistent with
 the understanding that if {lean}`p : Prop`, an element {lean}`hp : p` carries
 no data. There is a small exception to this rule, however, which we
-will discuss below, in {ref "inductive-families"}[Section Inductive Families].
+will discuss below, in {ref "inductive-families"}[Inductive Families].
 
 
 Even the existential quantifier is inductively defined:
@@ -993,7 +993,7 @@ end Hidden
 ```
 
 We will explain how the {kw}`instance` command works in
-{ref "type-classes"}[Chapter Type Classes]. In the examples below, we will use
+the {ref "type-classes"}[Type Classes] chapter. In the examples below, we will use
 Lean's version of the natural numbers.
 
 ::::leanFirst
@@ -1521,7 +1521,7 @@ example (m n : Nat) : m - n = 0 ∨ m ≠ n := by
 
 Remember that if you {kw}`open `{lit}`Classical`, you can use the law of the
 excluded middle for any proposition at all. But using type class
-inference (see {ref "type-classes"}[Chapter Type Classes]), Lean can actually
+inference (see {ref "type-classes"}[Type Classes]), Lean can actually
 find the relevant decision procedure, which means that you can use the
 case split in a computable function.
 
@@ -1791,7 +1791,7 @@ universe u v
 
 It is a remarkable fact that all the basic axioms for equality follow
 from the constructor, {leanRef}`refl`, and the eliminator, {leanRef}`Eq.rec`. The
-definition of equality is atypical, however; see the discussion in {ref "axiomatic-details"}[Section Axiomatic Details].
+definition of equality is atypical, however; see the discussion in {ref "axiomatic-details"}[Axiomatic Details].
 
 The recursor {leanRef}`Eq.rec` is also used to define substitution:
 
@@ -1945,7 +1945,7 @@ type. We can use an element {leanRef}`h : Eq a b` to cast an element
 because the cast does not produce new data; it only reinterprets the
 data we already have. Singleton elimination is also used with
 heterogeneous equality and well-founded recursion, which will be
-discussed in a {ref "well-founded-recursion-and-induction"}[Chapter Induction and Recursion].
+discussed in a the chapter on {ref "well-founded-recursion-and-induction"}[induction and recursion].
 
 # Mutual and Nested Inductive Types
 

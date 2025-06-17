@@ -909,7 +909,7 @@ variable {p : Prop}
 Thereafter {lean}`Decidable p` has an instance for every {leanRef}`p`.
 Thus all theorems in the library
 that rely on decidability assumptions are freely available when you
-want to reason classically. In {ref "axioms-and-computation"}[Chapter Axioms and Computation],
+want to reason classically. In {ref "axioms-and-computation"}[Axioms and Computation],
 we will see that using the law of the
 excluded middle to define functions can prevent them from being used
 computationally. Thus, the standard library assigns a low priority to

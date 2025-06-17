@@ -1226,7 +1226,7 @@ Putting these last two facts together yields the desired conclusion:
 
 Consequences of excluded middle include double-negation elimination,
 proof by cases, and proof by contradiction, all of which are described
-in the {ref "classical-logic"}[Section Classical Logic].
+in the section on {ref "classical-logic"}[classical logic].
 The law of the excluded middle and propositional extensionality imply propositional completeness:
 
 ```lean (suppressNamespaces := "Hidden") (allowVisible := false)
@@ -1274,7 +1274,7 @@ of {leanRef}`linv`, choice is used twice: first, to show that
 {leanRef}`f a = b`. Notice that {lean}`propDecidable` is a scoped instance and is activated
 by the {leanRef}`open Classical` command. We use this instance to justify
 the {kw}`if`-{kw}`then`-{kw}`else` expression. (See also the discussion in
-{ref "decidable-propositions"}[Section Decidable Propositions]).
+{ref "decidable-propositions"}[Decidable Propositions]).
 
 
 ```lean

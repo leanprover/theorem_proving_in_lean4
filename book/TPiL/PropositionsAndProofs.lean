@@ -572,7 +572,7 @@ the function space constructor, {lit}`∧` and {lit}`×` are treated separately
 in Lean. With the analogy, however, the proof we have just constructed
 is similar to a function that swaps the elements of a pair.
 
-We will see in {ref "structures-and-records"}[Chapter Structures and Records] that certain
+We will see in {ref "structures-and-records"}[Structures and Records] that certain
 types in Lean are _structures_, which is to say, the type is defined
 with a single canonical _constructor_ which builds an element of the
 type from a sequence of suitable arguments. For every {lean}`p q : Prop`,
