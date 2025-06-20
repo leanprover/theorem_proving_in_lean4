@@ -8,8 +8,6 @@ on:
   pull_request:
     branches:
       - master
-  schedule:
-    - cron: '0 10 * * *'  # 11AM CET/3AM PT
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,24 +20,72 @@ jobs:
         # interferes with lean4-nightly authentication
         persist-credentials: false
         submodules: true
-    - name: Set paths
-      run: |
-        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+
     - name: Setup elan toolchain on this build
       run: |
         curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
         chmod u+x elan-init.sh
-        ./elan-init.sh -y --default-toolchain leanprover/lean4:nightly
-        echo Checking location "$HOME/.elan/bin"...
-        ls -al "$HOME/.elan/bin"
-        elan toolchain list
-    - name: Download mdbook for Lean
+        ./elan-init.sh -y --default-toolchain none
+
+    - name: Set elan paths
       run: |
-        curl -O --location https://github.com/leanprover/mdBook/releases/download/v0.4.15l2/mdbook-linux.tar.gz
-        tar xvf mdbook-linux.tar.gz
-        ./mdbook-linux/mdbook --help
-        ldd ./mdbook-linux/mdbook
-    - name: Run mdbook test
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+    - name: Install lean toolchain for examples
       run: |
-        ls -al
-        ./mdbook-linux/mdbook test
+        cd examples
+        lean --version
+
+    - name: Install lean toolchain for text
+      run: |
+        cd book
+        lean --version
+
+    - name: Cache book/.lake
+      uses: actions/cache@v4
+      with:
+        path: book/.lake
+        # The SHA is in the key to get the most recent cache possible, rather than just saving a single one for each Lean/deps version and not touching it.
+        key: ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-${{ steps.shortSHA.outputs.short_sha }}
+        # Try to restore cache for same OS/Lean/deps, but don't get less specific, because Lake isn't always happy to get build product version mismatches
+        restore-keys: |
+          ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-
+
+
+    - name: Build book
+      run: |
+        pushd book
+        lake exe fp-lean --depth 2 --without-html-single --verbose
+        popd
+
+    - name: Save book/.lake
+      uses: actions/cache/save@v4
+      with:
+        path: book/.lake
+        # The SHA is in the key to get the most recent cache possible, rather than just saving a single one for each Lean/deps version and not touching it.
+        key: ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-${{ steps.shortSHA.outputs.short_sha }}
+
+    - name: Deploy to Netlify hosting
+      uses: nwtgck/actions-netlify@v2.0
+      with:
+        publish-dir: book/_out/html-multi
+        production-branch: master
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: |
+          ${{ github.event_name == 'pull_request' && format('pr#{0}: {1}', github.event.number, github.event.pull_request.title) || format('ref/{0}: {1}', github.ref_name, steps.deploy-info.outputs.message) }}
+        alias: ${{ steps.deploy-info.outputs.alias }}
+        enable-commit-comment: false
+        enable-pull-request-comment: false
+        github-deployment-environment: "lean-lang.org/theorem_proving_in_lean4"
+        fails-without-credentials: true
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: "51300c89-2f6c-4bba-a575-8cf12e434502"
+
+    - name: GH pages deploy
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages
+        folder: book/_out/html-multi
+
