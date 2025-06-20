@@ -95,6 +95,11 @@ table.tabular {
 }
 
 
+/* TODO Upstream */
+.titlepage .authors .author:not(:last-child)::after {
+  content: ", "
+}
+
 /********/
 
 p {
