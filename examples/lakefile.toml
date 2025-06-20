@@ -1,0 +1,11 @@
+name = "tpil-examples"
+version = "0.1.0"
+defaultTargets = ["Examples"]
+
+[[require]]
+name = "subverso"
+git = "https://github.com/leanprover/subverso.git"
+rev = "main"
+
+[[lean_lib]]
+name = "Examples"

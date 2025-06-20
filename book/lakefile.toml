@@ -1,0 +1,22 @@
+name = "tpil"
+version = "0.1.0"
+defaultTargets = ["tpil"]
+
+[[require]]
+name = "verso"
+git = "https://github.com/leanprover/verso.git"
+rev = "main"
+
+
+
+[leanOptions]
+#weak.verso.examples.suggest = true
+weak.linter.typography.quotes = true
+weak.linter.typography.dashes = true
+
+[[lean_lib]]
+name = "TPiL"
+
+[[lean_exe]]
+name = "tpil"
+root = "Main"
