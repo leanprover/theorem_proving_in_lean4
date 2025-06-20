@@ -1,0 +1,66 @@
+
+
+.tpil-code-container {
+    position: relative;
+    margin: 20px 0;
+}
+
+.copy-btn,
+.toggle-btn {
+    position: absolute;
+    top: 0px;
+    background: inherit;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    padding: 8px;
+}
+
+.copy-btn:hover,
+.toggle-btn:hover {
+    opacity: 1;
+    background: #555;
+}
+
+.copy-btn {
+    right: 10px;
+    gap: 5px;
+}
+
+.toggle-btn {
+    right: 45px; /* Position to the left of copy button */
+}
+
+.copy-btn.copied {
+    background: #28a745;
+}
+
+.copy-icon,
+.toggle-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.hidden {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s ease-out, opacity 0.2s ease-out, margin 0.3s ease-out;
+  opacity: 0.8;
+}
+
+.tpil-hide-prefix .hidden {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin: 0;
+}
+
+.hidden > .hl.lean {
+  overflow: hidden;
+  margin-bottom: 0;
+}

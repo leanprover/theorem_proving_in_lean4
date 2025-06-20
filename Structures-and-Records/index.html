@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      (function(){
+  const {protocol:proto, host:hostName, pathname:path, search:srch, hash:hsh} = window.location;
+  if (!(path.endsWith("/") || path.endsWith(".html"))) {
+    window.location.replace(`${proto}//${hostName}${path}/${srch}${hsh}`);
+  }
+})()</script>
+    <base href="./../"><meta charset="utf-8">
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>Structures and Records</title><link rel="stylesheet" href="book.css">
+    <script>
+      const __versoSiteRoot = document.baseURI;</script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script>
+    <script src="-verso-data/katex/katex.js"></script>
+    <script src="-verso-data/katex/math.js"></script>
+    <script src="-verso-data/popper.js"></script>
+    <script src="-verso-data/tippy.js"></script>
+    <script src="-verso-data/copybutton.js"></script>
+    <link rel="stylesheet" href="static/theme.css">
+    <link rel="stylesheet" href="static/fonts/source-serif/source-serif-text.css">
+    <link rel="stylesheet" href="static/fonts/source-code-pro/source-code-pro.css">
+    <link rel="stylesheet" href="static/fonts/source-sans/source-sans-3.css">
+    <link rel="stylesheet" href="static/fonts/noto-sans-mono/noto-sans-mono.css">
+    <link rel="stylesheet" href="-verso-data/katex/katex.css">
+    <link rel="stylesheet" href="-verso-data/tippy-border.css">
+    <link rel="stylesheet" href="-verso-data/copybutton.css">
+    <link rel="stylesheet" href="-verso-data/examples.css">
+    <link rel="stylesheet" href="-verso-data/proof-state.css">
+    <style>
+table.tabular {
+  margin: auto;
+  border-spacing: 1rem;
+}
+table.tabular.left-align {
+  margin-right: auto;
+  margin-left: 0;
+}
+table.tabular.center-align {
+  margin: auto;
+}
+table.tabular.right-align {
+  margin-left auto;
+  margin-right: 0;
+}
+table.tabular td, table.tabular th {
+  text-align: left;
+  vertical-align: top;
+}
+table.tabular td > p:first-child, table.tabular th > p:first-child {
+  margin-top: 0;
+}
+table.tabular td > p:last-child, table.tabular th > p:first-child {
+  margin-bottom: 0;
+}
+</style><style>
+code.unicode-abbrev {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+kbd {
+  white-space: nowrap;
+}
+
+kbd > code {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+  color: #333;
+  display: inline-block;
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+</style><style>
+
+.hl.lean {
+  white-space: pre;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.hl.lean .keyword {
+  font-weight : bold;
+}
+
+.hl.lean .var {
+  font-style: italic;
+  position: relative;
+}
+
+.hover-container {
+  width: 0;
+  height: 0;
+  position: relative;
+  display: inline;
+}
+
+.hl.lean a {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+
+.hl.lean a:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+.hl.lean .hover-info {
+  white-space: normal;
+}
+
+.hl.lean .token .hover-info {
+  display: none;
+  position: absolute;
+  background-color: #e5e5e5;
+  border: 1px solid black;
+  padding: 0.5rem;
+  z-index: 300;
+  font-size: inherit;
+}
+
+.hl.lean .hover-info.messages {
+  max-height: 10rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  padding: 0 0.5rem 0 0;
+  display: block;
+}
+
+.hl.lean .hover-info code {
+  white-space: pre-wrap;
+}
+
+.hl.lean .hover-info.messages > code {
+  padding: 0.5rem;
+  display: block;
+  width: fit-content;
+}
+
+.hl.lean .hover-info.messages > code:only-child {
+  margin: 0;
+}
+
+.hl.lean .hover-info.messages > code {
+  margin: 0.1rem;
+}
+
+.hl.lean .hover-info.messages > code:not(:first-child) {
+  margin-top: 0rem;
+}
+
+.hl.lean.block {
+  display: block;
+}
+
+.hl.lean.inline {
+  display: inline;
+  white-space: pre-wrap;
+}
+
+.hl.lean .token {
+  transition: all 0.25s; /* Slight fade for highlights */
+}
+
+@media (hover: hover) {
+  .hl.lean .token.binding-hl, .hl.lean .literal.string:hover, .hl.lean .token.typed:hover {
+    background-color: #eee;
+    border-radius: 2px;
+    transition: none;
+  }
+}
+
+
+.hl.lean .has-info .token:not(.tactic-state):not(.tactic-state *), .hl.lean .has-info .inter-text:not(.tactic-state):not(.tactic-state *) {
+  text-decoration-style: wavy;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+}
+
+.hl.lean .has-info .hover-info {
+  display: none;
+  position: absolute;
+  transform: translate(0.25rem, 0.3rem);
+  border: 1px solid black;
+  padding: 0.5rem;
+  z-index: 400;
+  text-align: left;
+}
+
+.hl.lean .has-info.error :not(.tactic-state):not(.tactic-state *){
+  text-decoration-color: red;
+}
+
+@media (hover: hover) {
+  .hl.lean .has-info.error:hover {
+    background-color: #ffb3b3;
+  }
+}
+
+.hl.lean .hover-info.messages > code.error {
+  background-color: #e5e5e5;
+  border-left: 0.2rem solid #ffb3b3;
+}
+
+.tippy-box[data-theme~='error'] .hl.lean .hover-info.messages > code.error {
+  background: none;
+  border: none;
+}
+
+.error pre {
+    color: red;
+}
+
+.hl.lean .has-info.warning :not(.tactic-state):not(.tactic-state *) {
+  text-decoration-color: var(--verso-warning-color);
+}
+
+@media (hover: hover) {
+  .hl.lean .has-info.warning:hover {
+    background-color:var(--verso-warning-color);
+  }
+}
+
+.hl.lean .hover-info.messages > code.warning {
+  background-color: var(--verso-warning-color);
+}
+
+.hl.lean .hover-info.messages > code.error {
+  background-color: #e5e5e5;
+  border-left: 0.2rem solid var(--verso-warning-color);
+}
+
+.tippy-box[data-theme~='warning'] .hl.lean .hover-info.messages > code.warning {
+  background: none;
+  border: none;
+}
+
+
+.hl.lean .has-info.info :not(.tactic-state):not(.tactic-state *) {
+  text-decoration-color: blue;
+}
+
+@media (hover: hover) {
+  .hl.lean .has-info.info:hover {
+    background-color: #4777ff;
+  }
+}
+
+
+.hl.lean .hover-info.messages > code.info {
+  background-color: #e5e5e5;
+  border-left: 0.2rem solid #4777ff;
+}
+
+.tippy-box[data-theme~='info'] .hl.lean .hover-info.messages > code.info {
+  background: none;
+  border: none;
+}
+
+.hl.lean div.docstring {
+  font-family: sans-serif;
+  white-space: normal;
+  max-width: 40rem;
+  width: max-content;
+}
+
+.hl.lean div.docstring > :last-child {
+  margin-bottom: 0;
+}
+
+.hl.lean div.docstring > :first-child {
+  margin-top: 0;
+}
+
+.hl.lean .hover-info .sep {
+  display: block;
+  width: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  height: 1px;
+  border-top: 1px solid #ccc;
+}
+
+.hl.lean code {
+  font-family: monospace;
+}
+
+.hl.lean .tactic-state {
+  display: none;
+  position: relative;
+  width: fit-content;
+  border: 1px solid #888888;
+  border-radius: 0.1rem;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  background-color: #ffffff;
+}
+
+.hl.lean.popup .tactic-state {
+  position: static;
+  display: block;
+  width: auto;
+  border: none;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  background-color: #ffffff;
+}
+
+
+.hl.lean .tactic {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr;
+  vertical-align: top;
+}
+
+.hl.lean .tactic-toggle:checked ~ .tactic-state {
+  display: inline-block;
+  vertical-align: top;
+  grid-row: 2;
+  justify-self: start;
+}
+
+.hl.lean .tactic > label {
+  position: relative;
+  grid-row: 1;
+}
+
+@media (hover: hover) {
+  .hl.lean .tactic:has(.tactic-toggle:not(:checked)) > label:hover {
+    background-color: #eeeeee;
+  }
+}
+
+.hl.lean .tactic-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .tactic > label::after {
+  content: "";
+  border: 1px solid #bbbbbb;
+  border-radius: 1rem;
+  height: 0.25rem;
+  vertical-align: middle;
+  width: 0.6rem;
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
+  display: inline-block;
+  transition: all 0.5s;
+}
+
+/*
+@media (hover: hover) {
+  .hl.lean .tactic > label:hover::after {
+    border: 1px solid #aaaaaa;
+    background-color: #aaaaaa;
+    transition: all 0.5s;
+  }
+}
+*/
+
+.hl.lean .tactic > label:has(+ .tactic-toggle:checked)::after {
+  border: 1px solid #999999;
+  background-color: #999999;
+  transition: all 0.5s;
+}
+
+.hl.lean .tactic-state .goal + .goal {
+  margin-top: 1.5rem;
+}
+
+.hl.lean .tactic-state summary {
+  margin-left: -0.5rem;
+}
+
+.hl.lean .tactic-state details {
+  padding-left: 0.5rem;
+}
+
+.hl.lean .case-label {
+  display: block;
+  position: relative;
+}
+
+.hl.lean .case-label input[type="checkbox"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"])::before {
+  width: 1rem;
+  height: 1rem;
+  display: inline-block;
+  background-color: black;
+  content: ' ';
+  transition: ease 0.2s;
+  margin-right: 0.7rem;
+  clip-path: polygon(100% 0, 0 0, 50% 100%);
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:not(:checked))::before {
+  transform: rotate(-90deg);
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]) {
+
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:checked) {
+
+}
+
+
+.hl.lean .tactic-state .labeled-case > :not(:first-child) {
+  max-height: 0px;
+  display: block;
+  overflow: hidden;
+  transition: max-height 0.1s ease-in;
+  margin-left: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.hl.lean .labeled-case:has(.case-label input[type="checkbox"]:checked) > :not(:first-child) {
+  max-height: 100%;
+}
+
+
+.hl.lean .tactic-state .goal-name::before {
+  font-style: normal;
+  content: "case ";
+}
+
+.hl.lean .tactic-state .goal-name {
+  font-style: italic;
+  font-family: monospace;
+}
+
+.hl.lean .tactic-state .hypotheses {
+  display: table;
+}
+
+.hl.lean .tactic-state .hypothesis {
+  display: table-row;
+}
+
+.hl.lean .tactic-state .hypothesis > * {
+  display: table-cell;
+}
+
+
+.hl.lean .tactic-state .hypotheses .colon {
+  text-align: center;
+  min-width: 1rem;
+}
+
+.hl.lean .tactic-state .hypotheses .name {
+  text-align: right;
+}
+
+.hl.lean .tactic-state .hypotheses .name,
+.hl.lean .tactic-state .hypotheses .type,
+.hl.lean .tactic-state .conclusion .type {
+  font-family: monospace;
+}
+
+.tippy-box[data-theme~='lean'] {
+  background-color: #e5e5e5;
+  color: black;
+  border: 1px solid black;
+}
+.tippy-box[data-theme~='lean'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #e5e5e5;
+}
+.tippy-box[data-theme~='lean'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: #e5e5e5;
+}
+.tippy-box[data-theme~='lean'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: #e5e5e5;
+}
+.tippy-box[data-theme~='lean'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: #e5e5e5;
+}
+
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #e5e5e5;
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::after {
+  bottom: -11px;
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::after {
+  top: -11px;
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: #e5e5e5;
+  border-width: 11px 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::after {
+  right: -11px;
+  border-width: 11px 0 11px 11px;
+}
+
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: #e5e5e5;
+  border-width: 11px 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::after {
+  left: -11px;
+  border-width: 11px 11px 11px 0;
+}
+
+
+
+.tippy-box[data-theme~='warning'] {
+  background-color: #e5e5e5;
+  color: black;
+  border: 3px solid var(--verso-warning-color);
+}
+
+.tippy-box[data-theme~='error'] {
+  background-color: #e5e5e5;
+  color: black;
+  border: 3px solid #f7a7af;
+}
+
+.tippy-box[data-theme~='info'] {
+  background-color: #e5e5e5;
+  color: black;
+  border: 3px solid #99b3c2;
+}
+
+.tippy-box[data-theme~='tactic'] {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+.tippy-box[data-theme~='tactic'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: white;
+}
+.tippy-box[data-theme~='tactic'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: white;
+}
+.tippy-box[data-theme~='tactic'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: white;
+}
+.tippy-box[data-theme~='tactic'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: white;
+}
+
+.extra-doc-links {
+  list-style-type: none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.extra-doc-links > li {
+  display: inline-block;
+}
+
+.extra-doc-links > li:not(:last-child)::after {
+  content: '|';
+  display: inline-block;
+  margin: 0 0.25em;
+}
+</style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><script>
+      
+window.onload = () => {
+
+    // Don't show hovers inside of closed tactic states
+    function blockedByTactic(elem) {
+      let parent = elem.parentNode;
+      while (parent && "classList" in parent) {
+        if (parent.classList.contains("tactic")) {
+          const toggle = parent.querySelector("input.tactic-toggle");
+          if (toggle) {
+            return !toggle.checked;
+          }
+        }
+        parent = parent.parentNode;
+      }
+      return false;
+    }
+
+    function blockedByTippy(elem) {
+      // Don't show a new hover until the old ones are all closed.
+      // Scoped to the nearest "top-level block" to avoid being O(n) in the size of the document.
+      var block = elem;
+      const topLevel = new Set(["section", "body", "html", "nav", "header"]);
+      while (block.parentNode && !topLevel.has(block.parentNode.nodeName.toLowerCase())) {
+        block = block.parentNode;
+      }
+      for (const child of block.querySelectorAll(".token, .has-info")) {
+        if (child._tippy && child._tippy.state.isVisible) { return true };
+      }
+      return false;
+    }
+
+    for (const c of document.querySelectorAll(".hl.lean .token")) {
+        if (c.dataset.binding != "") {
+            c.addEventListener("mouseover", (event) => {
+                if (blockedByTactic(c)) {return;}
+                const context = c.closest(".hl.lean").dataset.leanContext;
+                for (const example of document.querySelectorAll(".hl.lean")) {
+                    if (example.dataset.leanContext == context) {
+                        for (const tok of example.querySelectorAll(".token")) {
+                            if (c.dataset.binding == tok.dataset.binding) {
+                                tok.classList.add("binding-hl");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        c.addEventListener("mouseout", (event) => {
+            for (const tok of document.querySelectorAll(".hl.lean .token")) {
+                tok.classList.remove("binding-hl");
+            }
+        });
+    }
+    /* Render docstrings */
+    if ('undefined' !== typeof marked) {
+        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement("div");
+            rendered.classList.add("docstring");
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+        }
+    }
+    // Add hovers
+    let siteRoot = typeof __versoSiteRoot !== 'undefined' ? __versoSiteRoot : "/";
+    let docsJson = siteRoot + "-verso-docs.json";
+    fetch(docsJson).then((resp) => resp.json()).then((versoDocData) => {
+
+      function hideParentTooltips(element) {
+        let parent = element.parentElement;
+        while (parent) {
+          const tippyInstance = parent._tippy;
+          if (tippyInstance) {
+            tippyInstance.hide();
+          }
+          parent = parent.parentElement;
+        }
+      }
+
+
+
+      const defaultTippyProps = {
+        /* DEBUG -- remove the space: * /
+        onHide(any) { return false; },
+        trigger: "click",
+        // */
+        /* theme: "lean", */
+        maxWidth: "none",
+        appendTo: () => document.body,
+        interactive: true,
+        delay: [100, null],
+        /* ignoreAttributes: true, */
+        followCursor: 'initial',
+        onShow(inst) {
+          if (inst.reference.className == 'tactic') {
+
+            const toggle = inst.reference.querySelector("input.tactic-toggle");
+            if (toggle && toggle.checked) {
+              return false;
+            }
+            hideParentTooltips(inst.reference);
+            //if (blockedByTippy(inst.reference)) { return false; }
+
+          } else if (inst.reference.querySelector(".hover-info") || "versoHover" in inst.reference.dataset) {
+            if (blockedByTactic(inst.reference)) { return false };
+            if (blockedByTippy(inst.reference)) { return false; }
+          } else { // Nothing to show here!
+            return false;
+          }
+        },
+        content (tgt) {
+          const content = document.createElement("span");
+          if (tgt.className == 'tactic') {
+            const state = tgt.querySelector(".tactic-state").cloneNode(true);
+            state.style.display = "block";
+            content.appendChild(state);
+            content.style.display = "block";
+            content.className = "hl lean popup";
+          } else {
+            content.className = "hl lean";
+            content.style.display = "block";
+            content.style.maxHeight = "300px";
+            content.style.overflowY = "auto";
+            content.style.overflowX = "hidden";
+            const hoverId = tgt.dataset.versoHover;
+            const hoverInfo = tgt.querySelector(".hover-info");
+            if (hoverId) { // Docstrings from the table
+              // TODO stop doing an implicit conversion from string to number here
+              let data = versoDocData[hoverId];
+              if (data) {
+                const info = document.createElement("span");
+                info.className = "hover-info";
+                info.style.display = "block";
+                info.innerHTML = data;
+                content.appendChild(info);
+                /* Render docstrings - TODO server-side */
+                if ('undefined' !== typeof marked) {
+                    for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
+                        const str = d.innerText;
+                        const html = marked.parse(str);
+                        const rendered = document.createElement("div");
+                        rendered.classList.add("docstring");
+                        rendered.innerHTML = html;
+                        d.parentNode.replaceChild(rendered, d);
+                    }
+                }
+              } else {
+                content.innerHTML = "Failed to load doc ID: " + hoverId;
+              }
+            } else if (hoverInfo) { // The inline info, still used for compiler messages
+              content.appendChild(hoverInfo.cloneNode(true));
+            }
+            const extraLinks = tgt.parentElement.dataset['versoLinks'];
+            if (extraLinks) {
+              try {
+                const extras = JSON.parse(extraLinks);
+                const links = document.createElement('ul');
+                links.className = 'extra-doc-links';
+                extras.forEach((l) => {
+                  const li = document.createElement('li');
+                  li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
+                  links.appendChild(li);
+                });
+                content.appendChild(links);
+              } catch (error) {
+                console.error(error);
+              }
+            }
+          }
+          return content;
+        }
+      };
+
+
+      document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'lean');
+      });
+      document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'warning message');
+      });
+      document.querySelectorAll('.hl.lean .has-info.info').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'info message');
+      });
+      document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'error message');
+      });
+      document.querySelectorAll('.hl.lean .tactic').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'tactic');
+      });
+      let insts = tippy('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort', defaultTippyProps);
+  });
+}
+</script>
+    </head>
+  <body>
+    <header>
+      <div class="header-logo-wrapper">
+        <a href="" id="logo"><img src="static/lean_logo.svg"></a></div>
+      <div class="header-title-wrapper">
+        <a href="" class="header-title"><h1>
+            Theorem Proving in Lean 4</h1>
+          </a></div>
+      </header>
+    <label for="toggle-toc" id="toggle-toc-click"><span class="line line1"></span><span class="line line2"></span><span class="line line3"></span></label><div class="with-toc">
+      <div class="toc-backdrop" onclick="document.getElementById('toggle-toc-click')?.click()"></div>
+      <nav id="toc">
+        <input type="checkbox" id="toggle-toc"><div class="first">
+          <a href="" class="toc-title"><h1>
+              Theorem Proving in Lean 4</h1>
+            </a><div class="split-tocs">
+            <div class="split-toc book">
+              <div class="title">
+                <label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot" checked="checked"></label><span class="">Table of Contents</span></div>
+              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#Intro">Introduction</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Dependent-Type-Theory/#dependent-type-theory">Dependent Type Theory</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Propositions-and-Proofs/#propositions-and-proofs">Propositions and Proofs</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="Quantifiers-and-Equality/#quantifiers-and-equality">Quantifiers and Equality</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics">Tactics</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean">Interacting with Lean</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Inductive-Types/#inductive-types">Inductive Types</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Induction-and-Recursion/#induction-and-recursion">Induction and Recursion</a></td></tr><tr class="current numbered"><td class="num">9.</td><td><a href="Structures-and-Records/#structures-and-records">Structures and Records</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Type-Classes/#type-classes">Type Classes</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="The-Conversion-Tactic-Mode/#conv">The Conversion Tactic Mode</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Axioms-and-Computation/#axioms-and-computation">Axioms and Computation</a></td></tr></table></div>
+            <div class="split-toc">
+              <div class="title">
+                <label for="--verso-manual-toc-structures-and-records" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-structures-and-records" checked="checked"></label><span class="number">9.</span> <span class="current"><a href="Structures-and-Records/#structures-and-records">Structures and Records</a></span></div>
+              <table><tr class="numbered"><td class="num">9.1.</td><td><a href="Structures-and-Records/#Theorem-Proving-in-Lean-4--Structures-and-Records--Declaring-Structures">Declaring Structures</a></td></tr><tr class="numbered"><td class="num">9.2.</td><td><a href="Structures-and-Records/#Theorem-Proving-in-Lean-4--Structures-and-Records--Objects">Objects</a></td></tr><tr class="numbered"><td class="num">9.3.</td><td><a href="Structures-and-Records/#Theorem-Proving-in-Lean-4--Structures-and-Records--Inheritance">Inheritance</a></td></tr></table></div>
+            </div>
+          </div>
+        <div class="last">
+          <ul id="meta-links">
+            <li>
+              <a href="https://github.com/leanprover/theorem_proving_in_lean4">Source Code</a></li>
+            <li>
+              <a href="https://github.com/leanprover/theorem_proving_in_lean4/issues">Report Issues</a></li>
+            </ul>
+          </div>
+        </nav>
+      <main><div class="content-wrapper">
+          <nav class="prev-next-buttons">
+            <a class="local-button active" href="Induction-and-Recursion/#induction-and-recursion" rel="prev" title="8. Induction and Recursion"><span class="arrow">←</span><span class="where">8. Induction and Recursion</span></a><a class="local-button active" href="Type-Classes/#type-classes" rel="next" title="10. Type Classes"><span class="where">10. Type Classes</span><span class="arrow">→</span></a></nav>
+          <section>
+            <h1>
+              9. Structures and Records<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=structures-and-records" title="Permalink">🔗</a></span></h1>
+            <p>
+              We have seen that Lean's foundational system includes inductive
+types. We have, moreover, noted that it is a remarkable fact that it
+is possible to construct a substantial edifice of mathematics based on
+nothing more than the type universes, dependent arrow types, and inductive types;
+everything else follows from those. The Lean standard library contains
+many instances of inductive types (e.g., <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a></code>, <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Tuples/#Prod___mk" title="Documentation for Prod in Lean Language Reference"><span class="const token" data-binding="const-Prod" data-verso-hover="20">Prod</span></a></code>, <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___nil" title="Documentation for List in Lean Language Reference"><span class="const token" data-binding="const-List" data-verso-hover="30">List</span></a></code>),
+and even the logical connectives are defined using inductive types.</p>
+            <p>
+              Recall that a non-recursive inductive type that contains only one
+constructor is called a <em>structure</em> or <em>record</em>. The product type is a
+structure, as is the dependent product (Sigma) type.
+In general, whenever we define a structure <code>S</code>, we usually
+define <em>projection</em> functions that allow us to “destruct” each
+instance of <code>S</code> and retrieve the values that are stored in its
+fields. The functions <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Tuples/#Prod___mk" title="Documentation for Prod.fst in Lean Language Reference"><span class="const token" data-binding="const-Prod.fst" data-verso-hover="539">Prod.fst</span></a></code> and <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Tuples/#Prod___mk" title="Documentation for Prod.snd in Lean Language Reference"><span class="const token" data-binding="const-Prod.snd" data-verso-hover="540">Prod.snd</span></a></code>, which return the
+first and second elements of a pair, are examples of such projections.</p>
+            <p>
+              When writing programs or formalizing mathematics, it is not uncommon
+to define structures containing many fields. The <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">structure</span></code>
+command, available in Lean, provides infrastructure to support this
+process. When we define a structure using this command, Lean
+automatically generates all the projection functions. The
+<code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">structure</span></code> command also allows us to define new structures based on
+previously defined ones. Moreover, Lean provides convenient notation
+for defining instances of a given structure.</p>
+            <section>
+              <h2 id="Theorem-Proving-in-Lean-4--Structures-and-Records--Declaring-Structures">
+                9.1. Declaring Structures</h2>
+              <p>
+                The structure command is essentially a “front end” for defining
+inductive data types. Every <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">structure</span></code> declaration introduces a
+namespace with the same name. The general form is as follows:</p>
+              <pre>    structure &lt;name&gt; &lt;parameters&gt; &lt;parent-structures&gt; where
+      &lt;constructor&gt; :: &lt;fields&gt;
+</pre><p>
+                Most parts are optional. Here is an example:</p>
+              <div class="example" id="--verso-unique-2349">
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">mk</span><span class="inter-text"> </span><span class="unknown token" data-binding="">::</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2349", "structure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\n");</script>
+              <p>
+                Values of type <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span></code> are created using <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.496" data-verso-hover="24">a</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.498" data-verso-hover="24">b</span></code>, and the
+fields of a point <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.508" data-verso-hover="1042">p</span></code> are accessed using <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">Point.x</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.520" data-verso-hover="1042">p</span></code> and
+<code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">Point.y</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.537" data-verso-hover="1042">p</span></code> (but <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.554" data-verso-hover="1042">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span></code> and <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.570" data-verso-hover="1042">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span></code> also work, see below).
+The structure command also generates useful recursors and
+theorems. Here are some of the constructions generated for the
+declaration above.</p>
+              <div class="example" id="--verso-unique-2350">
+                <div class="hidden">
+                  <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">mk</span><span class="inter-text"> </span><span class="unknown token" data-binding="">::</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+</span></code></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">-- a Type
+</span><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">Point.{u} (α : Type u) : Type u</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-79">#check</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span></code><div class="information">
+                  <pre>Point.{u} (α : Type u) : Type u</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="inter-text">-- the eliminator
+</span><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">@Point.rec : {α : Type u_2} →
+  {motive : Point α → Sort u_1} → ((x y : α) → motive { x := x, y := y }) → (t : Point α) → motive t</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-111">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">@</span><span class="const token" data-binding="const-Point.rec" data-verso-hover="1043">Point.rec</span></code><div class="information">
+                  <pre>@Point.rec : {α : Type u_2} →
+  {motive : Point α → Sort u_1} → ((x y : α) → motive { x := x, y := y }) → (t : Point α) → motive t</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="inter-text">-- the constructor
+</span><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">@Point.mk : {α : Type u_1} → α → α → Point α</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-149">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">@</span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span></code><div class="information">
+                  <pre>@Point.mk : {α : Type u_1} → α → α → Point α</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="inter-text">-- a projection
+</span><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">@Point.x : {α : Type u_1} → Point α → α</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-241">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">@</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">Point.x</span></code><div class="information">
+                  <pre>@Point.x : {α : Type u_1} → Point α → α</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="inter-text">-- a projection
+</span><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">@Point.y : {α : Type u_1} → Point α → α</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-324">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">@</span><span class="unknown token" data-binding="">Point.y</span></code><div class="information">
+                  <pre>@Point.y : {α : Type u_1} → Point α → α</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2350", "structure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\nstructure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\n-- a Type\n#check Point-- the eliminator\n#check @Point.rec-- the constructor\n#check @Point.mk-- a projection\n#check @Point.x-- a projection\n#check @Point.y");
+addToggleButtonToElement("--verso-unique-2350");</script>
+              <p>
+                If the constructor name is not provided, then a constructor is named
+<code>mk</code> by default.</p>
+              <p>
+                Here are some simple theorems and expressions that use the generated
+constructions. As usual, you can avoid the prefix <code class="hl lean inline" data-lean-context="examples"><span class="unknown token" data-binding="">Point</span></code> by using
+the command <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Namespaces-and-Sections/#Lean___Parser___Command___open" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.open-137" data-verso-hover="101">open</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">Point</span></code>.</p>
+              <div class="example" id="--verso-unique-2351">
+                <div class="hidden">
+                  <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+</span></code></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">10</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-61" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">Point.x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="unknown token" data-binding="">)</span></code><div class="information">
+                  <pre>10</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">20</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-99" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">Point.y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="unknown token" data-binding="">)</span></code><div class="information">
+                  <pre>20</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Namespaces-and-Sections/#Lean___Parser___Command___open" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.open-137" data-verso-hover="101">open</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">Point</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-149">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.626" data-verso-hover="24">a</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.628" data-verso-hover="24">b</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.624" data-verso-hover="381">α</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">mk</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.626" data-verso-hover="24">a</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.628" data-verso-hover="24">b</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.626" data-verso-hover="24">a</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Propositional-Equality/#rfl-next" title="Documentation for rfl in Lean Language Reference"><span class="const token" data-binding="const-rfl" data-verso-hover="224">rfl</span></a><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-195">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.653" data-verso-hover="24">a</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.655" data-verso-hover="24">b</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.651" data-verso-hover="381">α</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">mk</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.653" data-verso-hover="24">a</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.655" data-verso-hover="24">b</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.655" data-verso-hover="24">b</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2351", "structure Point (α : Type u) where\n  x : α\n  y : α\nstructure Point (α : Type u) where\n  x : α\n  y : α\n#eval Point.x (Point.mk 10 20)#eval Point.y (Point.mk 10 20)open Point\n\nexample (a b : α) : x (mk a b) = a :=\n  rfl\n\nexample (a b : α) : y (mk a b) = b :=\n  rfl\n");
+addToggleButtonToElement("--verso-unique-2351");</script>
+              <p>
+                Given <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.480" data-verso-hover="1044">p</span><span class="inter-text"> : </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a></code>, the dot notation <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.490" data-verso-hover="1044">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span></code> is shorthand for
+<code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">Point.x</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.497" data-verso-hover="1044">p</span></code>. This provides a convenient way of accessing the fields
+of a structure.</p>
+              <div class="example" id="--verso-unique-2352">
+                <div class="hidden">
+                  <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+ </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+ </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+</span></code></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-59">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">p.x : Nat</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-84">#check</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span></code><div class="information">
+                  <pre>p.x : Nat</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">10</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-109" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span></code><div class="information">
+                  <pre>10</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">20</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-127" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span></code><div class="information">
+                  <pre>20</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2352", "structure Point (α : Type u) where\n x : α\n y : α\nstructure Point (α : Type u) where\n x : α\n y : α\ndef p := Point.mk 10 20\n\n#check p.x#eval p.x#eval p.y");
+addToggleButtonToElement("--verso-unique-2352");</script>
+              <p>
+                The dot notation is convenient not just for accessing the projections
+of a record, but also for applying functions defined in a namespace
+with the same name. Recall from the <a href="Propositions-and-Proofs/#conjunction">Conjunction section</a> if <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.508" data-verso-hover="1042">p</span></code>
+has type <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span></code>, the expression <code>p.foo</code> is interpreted as
+<code>Point.foo p</code>, assuming that the first non-implicit argument to
+<code>foo</code> has type <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span></code>. The expression <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.add" data-verso-hover="1046">add</span><span class="inter-text"> </span><span class="const token" data-binding="const-q" data-verso-hover="1047">q</span></code> is therefore
+shorthand for <code>Point.add p q</code> in the example below.</p>
+              <div class="example" id="--verso-unique-2353">
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+</span><span class="keyword token" data-binding="kw-occ-null-54">deriving</span><span class="inter-text"> </span><span class="const token" data-binding="const-Repr" data-verso-hover="614">Repr</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-69">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.add" data-verso-hover="1046">Point.add</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1358" data-verso-hover="1044">p</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1361" data-verso-hover="1044">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">mk</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1358" data-verso-hover="1044">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">+</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1361" data-verso-hover="1044">q</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1358" data-verso-hover="1044">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">+</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1361" data-verso-hover="1044">q</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="unknown token" data-binding="">)</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-134">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">1</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">2</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-168">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-q" data-verso-hover="1047">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">4</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">{ x := 4, y := 6 }</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-203" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.add" data-verso-hover="1046">add</span><span class="inter-text"> </span><span class="const token" data-binding="const-q" data-verso-hover="1047">q</span></code><div class="information">
+                  <pre>{ x := 4, y := 6 }</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2353", "structure Point (α : Type u) where\n  x : α\n  y : α\nderiving Repr\n\ndef Point.add (p q : Point Nat) :=\n  mk (p.x + q.x) (p.y + q.y)\n\ndef p : Point Nat := Point.mk 1 2\ndef q : Point Nat := Point.mk 3 4\n\n#eval p.add q");</script>
+              <p>
+                In the next chapter, you will learn how to define a function like
+<code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.add" data-verso-hover="1046">add</span></code> so that it works generically for elements of <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1359" data-verso-hover="42">α</span></code>
+rather than just <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a></code>, assuming <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.1365" data-verso-hover="42">α</span></code> has an associated
+addition operation.</p>
+              <p>
+                More generally, given an expression <code>p.foo x y z</code> where <code>p : Point</code>,
+Lean will insert <code>p</code> at the first argument to <code>Point.foo</code> of type
+<code>Point</code>. For example, with the definition of scalar multiplication
+below, <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span></code> is interpreted as <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">Point.smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1700" data-verso-hover="1044">p</span></code>.</p>
+              <div class="example" id="--verso-unique-2354">
+                <div class="hidden">
+                  <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+ </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+ </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+ </span><span class="keyword token" data-binding="kw-occ-null-53">deriving</span><span class="inter-text"> </span><span class="const token" data-binding="const-Repr" data-verso-hover="614">Repr</span><span class="inter-text">
+</span></code></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-74">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">Point.smul</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1357" data-verso-hover="11">n</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1360" data-verso-hover="1044">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1357" data-verso-hover="11">n</span><span class="inter-text"> </span><span class="unknown token" data-binding="">*</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1360" data-verso-hover="1044">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1357" data-verso-hover="11">n</span><span class="inter-text"> </span><span class="unknown token" data-binding="">*</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1360" data-verso-hover="1044">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="unknown token" data-binding="">)</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-150">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">1</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">2</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">{ x := 3, y := 6 }</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-185" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span></code><div class="information">
+                  <pre>{ x := 3, y := 6 }</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-224">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="var token" data-binding="var-_uniq.1700" data-verso-hover="1044">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="unknown token" data-binding="">}</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1700" data-verso-hover="1044">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">Point.smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1700" data-verso-hover="1044">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2354", "structure Point (α : Type u) where\n x : α\n y : α\n deriving Repr\nstructure Point (α : Type u) where\n x : α\n y : α\n deriving Repr\ndef Point.smul (n : Nat) (p : Point Nat) :=\n  Point.mk (n * p.x) (n * p.y)\n\ndef p : Point Nat := Point.mk 1 2\n\n#eval p.smul 3example {p : Point Nat} : p.smul 3 = Point.smul 3 p := rfl\n");
+addToggleButtonToElement("--verso-unique-2354");</script>
+              <p>
+                It is common to use a similar trick with the <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">List.map</span></a></code> function,
+which takes a list as its second non-implicit argument:</p>
+              <div class="example" id="--verso-unique-2355">
+                <code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">@List.map : {α : Type u_1} → {β : Type u_2} → (α → β) → List α → List β</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-0">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">@</span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">List.map</span></a></code><div class="information">
+                  <pre>@List.map : {α : Type u_1} → {β : Type u_2} → (α → β) → List α → List β</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-18">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-xs" data-verso-hover="1049">xs</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___nil" title="Documentation for List in Lean Language Reference"><span class="const token" data-binding="const-List" data-verso-hover="30">List</span></a><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="unknown token" data-binding="">[</span><span class="typed token" data-binding="" data-verso-hover="11">1</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">2</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="unknown token" data-binding="">]</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-49">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-f" data-verso-hover="1050">f</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">→</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.fun-72">fun</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.44" data-verso-hover="11">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=&gt;</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.44" data-verso-hover="11">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">*</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.44" data-verso-hover="11">x</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">[1, 4, 9]</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-88" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="const token" data-binding="const-xs" data-verso-hover="1049">xs</span><span class="unknown token" data-binding="">.</span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">map</span></a><span class="inter-text"> </span><span class="const token" data-binding="const-f" data-verso-hover="1050">f</span></code><div class="information">
+                  <pre>[1, 4, 9]</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-118">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="var token" data-binding="var-_uniq.334" data-verso-hover="107">xs</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___nil" title="Documentation for List in Lean Language Reference"><span class="const token" data-binding="const-List" data-verso-hover="30">List</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.322" data-verso-hover="381">α</span><span class="unknown token" data-binding="">}</span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="var token" data-binding="var-_uniq.338" data-verso-hover="23">f</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.322" data-verso-hover="381">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">→</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.331" data-verso-hover="382">β</span><span class="unknown token" data-binding="">}</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text">
+    </span><span class="var token" data-binding="var-_uniq.334" data-verso-hover="107">xs</span><span class="unknown token" data-binding="">.</span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">map</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.338" data-verso-hover="23">f</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">List.map</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.338" data-verso-hover="23">f</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.334" data-verso-hover="107">xs</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2355", "#check @List.mapdef xs : List Nat := [1, 2, 3]\ndef f : Nat → Nat := fun x => x * x\n\n#eval xs.map fexample {xs : List α} {f : α → β} :\n    xs.map f = List.map f xs :=\n  rfl\n");</script>
+              <p>
+                Here <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-xs" data-verso-hover="1049">xs</span><span class="unknown token" data-binding="">.</span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">map</span></a><span class="inter-text"> </span><span class="const token" data-binding="const-f" data-verso-hover="1050">f</span></code> is interpreted as <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">List.map</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.338" data-verso-hover="23">f</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.334" data-verso-hover="107">xs</span></code>.</p>
+              </section>
+            <section>
+              <h2 id="Theorem-Proving-in-Lean-4--Structures-and-Records--Objects">
+                9.2. Objects</h2>
+              <p>
+                We have been using constructors to create elements of a structure
+type. For structures containing many fields, this is often
+inconvenient, because we have to remember the order in which the
+fields were defined. Lean therefore provides the following alternative
+notations for defining elements of a structure type.</p>
+              <pre>    { (&lt;field-name&gt; := &lt;expr&gt;)* : structure-type }
+    or
+    { (&lt;field-name&gt; := &lt;expr&gt;)* }
+</pre><p>
+                The suffix <code>: structure-type</code> can be omitted whenever the name of
+the structure can be inferred from the expected type. For example, we
+use this notation to define “points.” The order that the fields are
+specified does not matter, so all the expressions below define the
+same point.</p>
+              <div class="example" id="--verso-unique-2356">
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">{ x := 10, y := 20 } : Point Nat</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-55">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span></code><div class="information">
+                  <pre>{ x := 10, y := 20 } : Point Nat</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">{ x := 10, y := 20 } : Point Nat</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-133">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">_</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span></code><div class="information">
+                  <pre>{ x := 10, y := 20 } : Point Nat</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">{ x := 10, y := 20 } : Point Nat</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-208">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="unknown token" data-binding="">)</span></code><div class="information">
+                  <pre>{ x := 10, y := 20 } : Point Nat</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-287">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2356", "structure Point (α : Type u) where\n  x : α\n  y : α\n\n#check { x := 10, y := 20 : Point Nat }#check { y := 20, x := 10 : Point _ }#check ({ x := 10, y := 20 } : Point Nat)example : Point Nat :=\n  { y := 20, x := 10 }\n");</script>
+              <p>
+                Fields can be marked as implicit using curly braces.
+Implicit fields become implicit parameters to the constructor.</p>
+              <p>
+                If the value of a field is not specified, Lean tries to infer it. If
+the unspecified fields cannot be inferred, Lean flags an error
+indicating the corresponding placeholder could not be synthesized.</p>
+              <div class="example" id="--verso-unique-2357">
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-MyStruct" data-verso-hover="1052">MyStruct</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-19">where</span><span class="inter-text">
+    </span><span class="unknown token" data-binding="">{</span><span class="const token" data-binding="const-MyStruct.α" data-verso-hover="1053">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">}</span><span class="inter-text">
+    </span><span class="unknown token" data-binding="">{</span><span class="const token" data-binding="const-MyStruct.β" data-verso-hover="1054">β</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-v" data-verso-hover="115">v</span><span class="unknown token" data-binding="">}</span><span class="inter-text">
+    </span><span class="const token" data-binding="const-MyStruct.a" data-verso-hover="1055">a</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.5" data-verso-hover="42">α</span><span class="inter-text">
+    </span><span class="const token" data-binding="const-MyStruct.b" data-verso-hover="1056">b</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.7" data-verso-hover="149">β</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">{ α := Nat, β := Bool, a := 10, b := true } : MyStruct</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-84">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-MyStruct.a" data-verso-hover="1051">a</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-MyStruct.b" data-verso-hover="1057">b</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Booleans/#Bool___false" title="Documentation for Bool.true in Lean Language Reference"><span class="const token" data-binding="const-Bool.true" data-verso-hover="15">true</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-MyStruct" data-verso-hover="1052">MyStruct</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span></code><div class="information">
+                  <pre>{ α := Nat, β := Bool, a := 10, b := true } : MyStruct</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2357", "structure MyStruct where\n    {α : Type u}\n    {β : Type v}\n    a : α\n    b : β\n\n#check { a := 10, b := true : MyStruct }");</script>
+              <p>
+                <em>Record update</em> is another common operation which amounts to creating
+a new record object by modifying the value of one or more fields in an
+old one. Lean allows you to specify that unassigned fields in the
+specification of a record should be taken from a previously defined
+structure object <code>s</code> by adding the annotation <code>s </code><code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">with</span></code> before the field
+assignments. If more than one record object is provided, then they are
+visited in order until Lean finds one that contains the unspecified
+field. Lean raises an error if any of the field names remain
+unspecified after all the objects are visited.</p>
+              <div class="example" id="--verso-unique-2358">
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+</span><span class="keyword token" data-binding="kw-occ-null-54">deriving</span><span class="inter-text"> </span><span class="const token" data-binding="const-Repr" data-verso-hover="614">Repr</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-69">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">1</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">2</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">{ x := 1, y := 3 }</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-112" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-120">with</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span></code><div class="information">
+                  <pre>{ x := 1, y := 3 }</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">{ x := 4, y := 2 }</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___eval" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.eval-160" data-verso-hover="18">#eval</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-168">with</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">4</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span></code><div class="information">
+                  <pre>{ x := 4, y := 2 }</pre></div>
+                <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-208">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point3" data-verso-hover="1058">Point3</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1854" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-239">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point3.x" data-verso-hover="1059">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1854" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point3.y" data-verso-hover="1060">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1854" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point3.z" data-verso-hover="1061">z</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1854" data-verso-hover="42">α</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-273">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-q" data-verso-hover="1062">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point3" data-verso-hover="1058">Point3</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point3.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">5</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point3.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">5</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point3.z" data-verso-hover="1051">z</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">5</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-325">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-r" data-verso-hover="1063">r</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point3" data-verso-hover="1058">Point3</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-q" data-verso-hover="1062">q</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-351">with</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point3.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">6</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-371">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-r" data-verso-hover="1063">r</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point3.x" data-verso-hover="1059">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">6</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Propositional-Equality/#rfl-next" title="Documentation for rfl in Lean Language Reference"><span class="const token" data-binding="const-rfl" data-verso-hover="224">rfl</span></a><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-396">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-r" data-verso-hover="1063">r</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point3.y" data-verso-hover="1060">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">2</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Propositional-Equality/#rfl-next" title="Documentation for rfl in Lean Language Reference"><span class="const token" data-binding="const-rfl" data-verso-hover="224">rfl</span></a><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-421">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-r" data-verso-hover="1063">r</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point3.z" data-verso-hover="1061">z</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">5</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2358", "structure Point (α : Type u) where\n  x : α\n  y : α\nderiving Repr\n\ndef p : Point Nat :=\n  { x := 1, y := 2 }\n\n#eval { p with y := 3 }#eval { p with x := 4 }structure Point3 (α : Type u) where\n  x : α\n  y : α\n  z : α\n\ndef q : Point3 Nat :=\n  { x := 5, y := 5, z := 5 }\n\ndef r : Point3 Nat :=\n  { p, q with x := 6 }\n\nexample : r.x = 6 := rfl\nexample : r.y = 2 := rfl\nexample : r.z = 5 := rfl\n");</script>
+              </section>
+            <section>
+              <h2 id="Theorem-Proving-in-Lean-4--Structures-and-Records--Inheritance">
+                9.3. Inheritance</h2>
+              <p>
+                We can <em>extend</em> existing structures by adding new fields. This feature
+allows us to simulate a form of <em>inheritance</em>.</p>
+              <div class="example" id="--verso-unique-2359">
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.inductive-55" data-verso-hover="581">inductive</span><span class="inter-text"> </span><span class="const token" data-binding="const-Color" data-verso-hover="644">Color</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-71">where</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">|</span><span class="inter-text"> </span><span class="const token" data-binding="const-Color.red" data-verso-hover="1064">red</span><span class="inter-text"> </span><span class="unknown token" data-binding="">|</span><span class="inter-text"> </span><span class="const token" data-binding="const-Color.green" data-verso-hover="1065">green</span><span class="inter-text"> </span><span class="unknown token" data-binding="">|</span><span class="inter-text"> </span><span class="unknown token" data-binding="">blue</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-101">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-ColorPoint" data-verso-hover="1066">ColorPoint</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.599" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.extends-136">extends</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.599" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-153">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-ColorPoint.c" data-verso-hover="1067">c</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Color" data-verso-hover="644">Color</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2359", "structure Point (α : Type u) where\n  x : α\n  y : α\n\ninductive Color where\n  | red | green | blue\n\nstructure ColorPoint (α : Type u) extends Point α where\n  c : Color\n");</script>
+              <p>
+                In the next example, we define a structure using multiple inheritance,
+and then define an object using objects of the parent structures.</p>
+              <div class="example" id="--verso-unique-2360">
+                <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Point.z" data-verso-hover="1068">z</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-64">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-RGBValue" data-verso-hover="1069">RGBValue</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-83">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-RGBValue.red" data-verso-hover="1070">red</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text">
+  </span><span class="const token" data-binding="const-RGBValue.green" data-verso-hover="1071">green</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text">
+  </span><span class="const token" data-binding="const-RGBValue.blue" data-verso-hover="1072">blue</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-129">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-RedGreenPoint" data-verso-hover="1073">RedGreenPoint</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.1148" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.extends-167">extends</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1148" data-verso-hover="42">α</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-RGBValue" data-verso-hover="1069">RGBValue</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-194">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-RedGreenPoint.no_blue" data-verso-hover="1074">no_blue</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1170" data-verso-hover="11">blue</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">0</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-222">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.z" data-verso-hover="1051">z</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-276">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-rgp" data-verso-hover="1075">rgp</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-RedGreenPoint" data-verso-hover="1073">RedGreenPoint</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
+  </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-311">with</span><span class="inter-text"> </span><span class="const token" data-binding="const-RGBValue.red" data-verso-hover="1051">red</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">200</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-RGBValue.green" data-verso-hover="1051">green</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">40</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-RGBValue.blue" data-verso-hover="1051">blue</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">0</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-RedGreenPoint.no_blue" data-verso-hover="1076">no_blue</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Propositional-Equality/#rfl-next" title="Documentation for rfl in Lean Language Reference"><span class="const token" data-binding="const-rfl" data-verso-hover="224">rfl</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span><span class="inter-text">
+
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-372">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-rgp" data-verso-hover="1075">rgp</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text">   </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Propositional-Equality/#rfl-next" title="Documentation for rfl in Lean Language Reference"><span class="const token" data-binding="const-rfl" data-verso-hover="224">rfl</span></a><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-402">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-rgp" data-verso-hover="1075">rgp</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-RGBValue.red" data-verso-hover="1070">red</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">200</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
+</span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
+              <script>
+                addCopyButtonToElement("--verso-unique-2360", "structure Point (α : Type u) where\n  x : α\n  y : α\n  z : α\n\nstructure RGBValue where\n  red : Nat\n  green : Nat\n  blue : Nat\n\nstructure RedGreenPoint (α : Type u) extends Point α, RGBValue where\n  no_blue : blue = 0\n\ndef p : Point Nat :=\n  { x := 10, y := 10, z := 20 }\n\ndef rgp : RedGreenPoint Nat :=\n  { p with red := 200, green := 40, blue := 0, no_blue := rfl }\n\nexample : rgp.x   = 10 := rfl\nexample : rgp.red = 200 := rfl\n");</script>
+              </section>
+            </section>
+          <nav class="prev-next-buttons">
+            <a class="local-button active" href="Induction-and-Recursion/#induction-and-recursion" rel="prev" title="8. Induction and Recursion"><span class="arrow">←</span><span class="where">8. Induction and Recursion</span></a><a class="local-button active" href="Type-Classes/#type-classes" rel="next" title="10. Type Classes"><span class="where">10. Type Classes</span><span class="arrow">→</span></a></nav>
+          </div>
+        </main></div>
+    </body>
+  </html>
+
