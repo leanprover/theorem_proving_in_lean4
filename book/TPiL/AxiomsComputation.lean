@@ -155,7 +155,7 @@ legitimate to use, for example, the law of the excluded middle,
 {lean}`p ∨ ¬p`, where {lean}`p` is any proposition. Of course, this, too, can block
 computation according to the rules of CIC, but it does not prevent the generation
 of executable code, as described above. It is only the choice
-principles discussed in :numref:`choice` that completely erase the
+principles discussed in {ref "choice"}[the section on choice] that completely erase the
 distinction between the proof-irrelevant and data-relevant parts of
 the theory.
 
@@ -938,6 +938,9 @@ As a result, {leanRef}`f₁` is equal to {leanRef}`f₂`.
 :::
 
 # Choice
+%%%
+tag := "choice"
+%%%
 
 :::leanFirst
 To state the final axiom defined in the standard library, we need the

@@ -20,5 +20,6 @@ def config : Config where
   logo := some "/static/lean_logo.svg"
   sourceLink := some "https://github.com/leanprover/theorem_proving_in_lean4"
   issueLink := some "https://github.com/leanprover/theorem_proving_in_lean4/issues"
+  linkTargets := fun st => st.localTargets ++ st.remoteTargets
 
 def main := manualMain (%doc TPiL) (config := config.addKaTeX)
