@@ -75,9 +75,9 @@ precisely below.
 # Historical and Philosophical Context
 
 :::setup
-````
+```
 variable (x : α) (y : β)
-````
+```
 
 For most of its history, mathematics was essentially computational:
 geometry dealt with constructions of geometric objects, algebra was
@@ -114,10 +114,10 @@ but the system also provides support for carrying out classical
 mathematical reasoning.
 
 :::setup
-````
+```
 open Nat
 notation "... " e "..." => e
-````
+```
 
 Computationally, the purest part of dependent type theory avoids the
 use of {lean}`Prop` entirely. Inductive types and dependent function types
@@ -128,10 +128,10 @@ variables) of type {lean}`Nat` should evaluate to a numeral, {lean}`succ (... (s
 :::
 
 :::setup
-````
+```
 variable (p : Prop) (s t : α) (prf : p)
 notation x " = " y " : " α => @Eq α x y
-````
+```
 
 Introducing a proof-irrelevant {lean}`Prop` and marking theorems
 irreducible represents a first step towards separation of
@@ -196,7 +196,7 @@ theorem thm₂ (p : Prop → Prop) (h : a ↔ b) (h₁ : p a) : p b :=
 ```
 
 :::comment
-````
+```
 <!--
 The first example could be proved more laboriously without `propext`
 using the fact that the propositional connectives respect
@@ -223,7 +223,7 @@ axioms`` command to display the axioms it depends on.
     #print axioms thm₂  -- propext
     -- END
 -->
-````
+```
 :::
 
 # Function Extensionality
@@ -233,13 +233,13 @@ Similar to propositional extensionality, function extensionality
 asserts that any two functions of type {leanRef}`(x : α) → β x` that agree on
 all their inputs are equal:
 
-````signature
+```signature
 funext.{u, v}
   {α : Sort u} {β : α → Sort v}
   {f g : (x : α) → β x}
   (h : ∀ (x : α), f x = g x) :
   f = g
-````
+```
 :::
 
 From a classical, set-theoretic perspective, this is exactly what it
@@ -485,7 +485,7 @@ additional axioms.
 :::
 
 :::comment
-````
+```
 <!--
     variables α β : Type
     variable  r : α → α → Prop
@@ -497,7 +497,7 @@ additional axioms.
     #print axioms thm   -- no axioms
     -- END
 -->
-````
+```
 :::
 
 They are, like inductively defined types and the associated
@@ -521,9 +521,9 @@ definition makes use of {leanRef}`Quot.sound`, it will show up in the
 {kw}`#print axioms` command.
 
 :::setup
-````
+```
 variable (α : Type u) (r : α → α → Prop)  (r' r'': α → α → Prop) (a b : α)
-````
+```
 
 Of course, the quotient construction is most commonly used in
 situations when {lean}`r` is an equivalence relation. Given {lean}`r` as
@@ -586,9 +586,9 @@ end Hidden
 ```
 
 :::setup
-````
+```
 variable (α : Type u) [Setoid α] (a b : α)
-````
+```
 
 
 The constants {lean}`Quotient.mk`, {lean}`Quotient.ind`, {lean}`Quotient.lift`,
@@ -602,11 +602,11 @@ generic theorems {lean}`Setoid.refl`, {lean}`Setoid.symm`, {lean}`Setoid.trans` 
 reason about the relation. Specifically with quotients we can use the
 theorem {lean}`Quotient.exact`:
 
-````signature
+```signature
 Quotient.exact {α : Sort u} {s : Setoid α} {a b : α} :
   Quotient.mk s a = Quotient.mk s b →
   a ≈ b
-````
+```
 
 Together with {lean}`Quotient.sound`, this implies that the elements of
 the quotient correspond exactly to the equivalence classes of elements
@@ -615,9 +615,9 @@ in {lean}`α`.
 :::
 
 :::setup
-````
+```
 variable (α : Type u) (β : Type v)
-````
+```
 
 Recall that in the standard library, {lean}`α × β` represents the
 Cartesian product of the types {lean}`α` and {lean}`β`. To illustrate the use
@@ -714,7 +714,7 @@ end UProd
 :::
 
 :::setup
-````
+```
 private def eqv (p₁ p₂ : α × α) : Prop :=
   (p₁.1 = p₂.1 ∧ p₁.2 = p₂.2) ∨ (p₁.1 = p₂.2 ∧ p₁.2 = p₂.1)
 infix:50 " ~ " => eqv
@@ -755,7 +755,7 @@ notation "{ " a₁ ", " a₂ " }" => mk a₁ a₂
 end UProd
 
 variable (a₁ a₂ : α)
-````
+```
 
 Notice that we locally define the notation {lean}`{a₁, a₂}` for unordered
 pairs as {lean}`Quotient.mk' (a₁, a₂)`. This is useful for illustrative
@@ -895,7 +895,7 @@ for lifting binary functions, and {lit}`Quotient.ind₂` for induction on
 two variables.
 
 :::setup
-````
+```
 variable (α : Sort u) (β : α → Sort v) (f₁ f₂ f : (x : α) → β x) (a : α)
 
 def extfun (α : Sort u) (β : α → Sort v) := Quot (fun (f g : (x : α) → β x) => ∀ x, f x = g x)
@@ -903,7 +903,7 @@ def extfun (α : Sort u) (β : α → Sort v) := Quot (fun (f g : (x : α) → �
 def extfun_app {α β} : extfun α β → (x : α) → β x := fun f x =>
   Quot.lift (· x) (by intros; simp [*]) f
 
-````
+```
 
 We close this section with some hints as to why the quotient
 construction implies function extensionality. It is not hard to show
@@ -957,9 +957,9 @@ end Hidden
 :::
 
 :::setup
-````
+```
 variable {α : Sort u}
-````
+```
 
 Because {lean}`Nonempty α` has type {lean}`Prop` and its constructor contains data, it can only eliminate to {lean}`Prop`.
 In fact, {lean}`Nonempty α` is equivalent to {lean}`∃ x : α, True`:
@@ -982,10 +982,10 @@ end Hidden
 ```
 
 :::setup
-````
+```
 variable {α : Sort u} {h : Nonempty α}
 open Classical
-````
+```
 
 Given only the assertion {lean}`h` that {lean}`α` is nonempty, {lean}`choice h`
 magically produces an element of {lean}`α`. Of course, this blocks any
@@ -1012,10 +1012,10 @@ end Hidden
 ```
 
 :::setup
-````
+```
 variable {α : Sort u} {h : Nonempty α}
 open Classical
-````
+```
 Because it depends on {lean}`choice`, Lean cannot generate executable code for
 {lean}`indefiniteDescription`, and so requires us to mark the definition
 as {kw}`noncomputable`. Also in the {lit}`Classical` namespace, the
@@ -1057,9 +1057,9 @@ the decidability of all propositions. Using those, one can strengthen
 the principle of indefinite description as follows:
 
 ::::setup
-````
+```
 open Classical
-````
+```
 
 ```signature
 strongIndefiniteDescription {α : Sort u} (p : α → Prop)
@@ -1073,15 +1073,15 @@ Assuming the ambient type {leanRef}`α` is nonempty,
 satisfying {leanRef}`p` if there is one. The data component of this
 definition is conventionally known as *Hilbert's epsilon function*:
 
-````signature
+```signature
 epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α
-````
+```
 
-````signature
+```signature
 epsilon_spec {α : Sort u} {p : α → Prop}
   (hex : ∃ (y : α), p y) :
   p (@epsilon _ (nonempty_of_exists hex) p)
-````
+```
 
 
 ::::
@@ -1257,10 +1257,10 @@ end Hidden
 ```
 
 ::::setup
-````
+```
 variable {p : Prop} {f : α → β} {c : Prop} [Decidable c] {t e : α}
 open Classical (choose propDecidable)
-````
+```
 :::leanFirst
 In contrast to {lean}`p ∨ ¬ p`, which can only eliminate to {lean}`Prop`, the
 type {lean}`Decidable p` is equivalent to the sum type {lit}`Sum p (¬ p)`, which

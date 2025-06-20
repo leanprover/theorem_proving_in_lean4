@@ -98,9 +98,9 @@ and prove {leanRef}`p y`. This is the introduction rule. Now, given that
 gives the desired conclusion, {leanRef}`p y`.
 
 :::setup
-````
+```
 variable {x z : α}
-````
+```
 
 Remember that expressions which differ up to renaming of bound
 variables are considered to be equivalent. So, for example, we could
@@ -183,10 +183,10 @@ To get used to using universal quantifiers, you should try some of the
 exercises at the end of this section.
 
 :::setup
-````
+```
 universe i j
 variable (α : Sort i) (β : {x : α} → Sort j) {x : α}
-````
+```
 
 It is the typing rule for dependent arrow types, and the universal
 quantifier in particular, that distinguishes {lean}`Prop` from other
@@ -296,9 +296,9 @@ example : 2 + 3 = 5 := rfl
 ```
 
 :::setup
-````
+```
 variable {a b : α} {p : α → Prop} {h1 : a = b} {h2 : p a}
-````
+```
 
 Equality is much more than an equivalence relation, however. It has
 the important property that every assertion respects the equivalence,
@@ -382,9 +382,9 @@ example (x y : Nat) :
 variable {α : Type u}
 ```
 
-````lean show:= false
+```lean show:= false
 example {α : Type u} {x y : α} {h : x = y} {p : α → Prop} {e : p x} : p y := h ▸ e
-````
+```
 
 
 Notice that the second implicit parameter to {lean}`Eq.subst`, which
@@ -727,9 +727,9 @@ set_option pp.explicit true  -- display implicit arguments
 ```
 
 :::setup
-````
+```
 variable (q : Prop) (α : Type u) (p : α → Prop) (w : α) (x : α)
-````
+```
 
 We can view {lean}`Exists.intro` as an information-hiding operation, since
 it hides the witness to the body of the assertion. The existential
@@ -754,9 +754,9 @@ example (h : ∃ x, p x ∧ q x) : ∃ x, q x ∧ p x :=
 ```
 
 :::setup
-````
+```
 variable {α : Type u} (p : α → Prop) {β : α → Type} (a : α) (h : p a) (h' : β a)
-````
+```
 
 It may be helpful to compare the exists-elimination rule to the
 or-elimination rule: the assertion {lean}`∃ x : α, p x` can be thought of
@@ -838,10 +838,10 @@ We will see in {ref "induction-and-recursion"}[Induction and Recursion] that all
 instances of a more general pattern-matching construct.
 
 :::setup
-````
+```
 def IsEven (a : Nat) := ∃ b, a = 2 * b
 variable (a : Nat)
-````
+```
 
 In the following example, we define {lean}`IsEven a` as {lean}`∃ b, a = 2 * b`,
 and then we show that the sum of two even numbers is an even number.

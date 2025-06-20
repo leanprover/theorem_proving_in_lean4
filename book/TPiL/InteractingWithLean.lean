@@ -43,7 +43,7 @@ If they don't, an error is produced. You can use the {kw}`#guard_msgs` command t
 which messages are expected.
 
 Here is an example:
-````lean
+```lean
 /--
 error: type mismatch
   "Not a number"
@@ -54,14 +54,14 @@ but is expected to have type
 -/
 #guard_msgs in
 def x : Nat := "Not a number"
-````
+```
 
 :::leanFirst
 Including a message category in parentheses after {leanRef}`#guard_msgs` causes it to check only
 the specified category, letting others through. In this example, {leanRef}`#eval` issues an error
 due to the presence of {lean}`sorry`, but the warning that is always issued for {lean}`sorry` is displayed
 as usual:
-````lean
+```lean
 /--
 error: aborting evaluation since the expression depends on the
 'sorry' axiom, which can lead to runtime instability and crashes.
@@ -71,11 +71,11 @@ command.
 -/
 #guard_msgs(error) in
 #eval (sorry : Nat)
-````
+```
 :::
 
 Without the configuration, both messages are captured:
-````lean
+```lean
 /--
 error: aborting evaluation since the expression depends on the
 'sorry' axiom, which can lead to runtime instability and crashes.
@@ -87,7 +87,7 @@ warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 #eval (sorry : Nat)
-````
+```
 
 Some examples in this book use {leanRef}`#guard_msgs` to indicate expected errors.
 
@@ -434,9 +434,9 @@ file.
 
 :::setup
 
-````
+```
 variable (α : Type u) (β : α → Type v) (t : {x : α} → β x)
-````
+```
 
 
 In {ref "implicit-arguments"}[Implicit Arguments],
@@ -450,12 +450,12 @@ don't want that to happen, you have to write {lean}`@t` instead.
 
 
 :::setup
-````
+```
 def f (x : Nat) {y : Nat} (z : Nat) : Nat := x + y + z
 -- Equivalent:
 example := f 7
 example := @f 7 _
-````
+```
 
 Notice that implicit arguments are inserted eagerly. Suppose we define
 a function {lean}`f : (x : Nat) → {y : Nat} → (z : Nat) → Nat`.
@@ -464,7 +464,7 @@ arguments, it is parsed as {lean}`@f 7 _`.
 :::
 
 :::setup
-````
+```
 def f (x : Nat) {{y : Nat}} (z : Nat) : Nat := x + y + z
 -- Just f 7
 example := f 7
@@ -473,7 +473,7 @@ example := @f 7 _ 3
 example := f 7 3
 -- Alternative syntax:
 def f' (x : Nat) ⦃y : Nat⦄ (z : Nat) : Nat := x + y + z
-````
+```
 
 Lean offers a weaker annotation which specifies that a placeholder should only be added
 _before_ a subsequent explicit argument. It can be written with double braces, so the type of {lean}`f` would be
@@ -809,7 +809,7 @@ error message. Too much information can be overwhelming, though, and
 Lean's defaults are generally sufficient for ordinary interactions.
 
 :::comment
-```````
+```
 <!--
 # Elaboration Hints
 
@@ -842,7 +842,7 @@ Lean also has a family of attributes that control the elaboration strategy. A de
 Once again, these attributes can be assigned and reassigned after an object is defined, and you can use the `local` modifier to limit their scope. Moreover, using the `@` symbol in front of an identifier in an expression instructs the elaborator to use the `[elab_simple]` strategy; the idea is that, when you provide the tricky parameters explicitly, you want the elaborator to weigh that information heavily. In fact, Lean offers an alternative annotation, `@@`, which leaves parameters before the first higher-order parameter implicit. For example, `@@eq.subst` leaves the type of the equation implicit, but makes the context of the substitution explicit.
 
 -->
-```````
+```
 :::
 
 # Using the Library
@@ -893,9 +893,9 @@ by {lit}`_`s. Often the name of theorem simply describes the conclusion:
 ```
 
 :::setup
-````
+```
 open Nat
-````
+```
 
 Remember that identifiers in Lean can be organized into hierarchical
 namespaces. For example, the theorem named {lean}`le_of_succ_le_succ` in the

@@ -122,12 +122,12 @@ example (a b : α) : y (mk a b) = b :=
 
 
 :::setup
-````
+```
 structure Point (α : Type u) where
   x : α
   y : α
 variable (p : Point Nat)
-````
+```
 
 
 Given {lean}`p : Point Nat`, the dot notation {lean}`p.x` is shorthand for
@@ -173,14 +173,14 @@ def q : Point Nat := Point.mk 3 4
 :::
 
 :::setup
-````
+```
 structure Point (α : Type u) where
   x : α
   y : α
 deriving Repr
 
 variable {α : Type u}
-````
+```
 
 In the next chapter, you will learn how to define a function like
 {leanRef}`add` so that it works generically for elements of {lean}`Point α`

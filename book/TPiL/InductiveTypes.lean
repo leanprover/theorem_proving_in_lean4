@@ -11,9 +11,9 @@ tag := "inductive-types"
 %%%
 
 :::setup
-````
+```
 variable {α : Sort u} {β : Sort v}
-````
+```
 
 
 We have seen that Lean's formal foundation includes basic types,
@@ -143,7 +143,7 @@ inductive Weekday where
 ```
 
 :::setup
-````
+```
 inductive Weekday where
   | sunday
   | monday
@@ -152,7 +152,7 @@ inductive Weekday where
   | thursday
   | friday
   | saturday
-````
+```
 
 Think of {leanRef}`sunday`, {leanRef}`monday`, ... , {leanRef}`saturday` as
 being distinct elements of {leanRef}`Weekday`, with no other distinguishing
@@ -457,9 +457,9 @@ Similarly, most identities can be proved by introducing suitable {kw}`match`, an
 # Constructors with Arguments
 
 :::setup
-````
+```
 variable (α : Type u) (β : Type v) (a : α) (b : β)
-````
+```
 
 
 Enumerated types are a very special case of inductive types, in which
@@ -541,10 +541,10 @@ according to whether {leanRef}`b` is true or false.
 :::
 
 :::setup
-````
+```
 open Sum
 variable {α : Type u} {β : Type v} (a : α) (b : β)
-````
+```
 
 In contrast, the sum type has _two_ constructors, {lean}`inl` and {lean}`inr`
 (for “insert left” and “insert right”), each of which takes _one_
@@ -568,10 +568,10 @@ def sum_example (s : Sum Nat Nat) : Nat :=
 :::
 
 :::setup
-````
+```
 open Sum
 variable (n : Nat)
-````
+```
 
 This example is similar to the previous one, but now an input to
 {leanRef}`sum_example` is implicitly either of the form {lean}`inl n` or {lean}`inr n`.
@@ -581,10 +581,10 @@ case, it returns {lean}`2 * n + 1`.
 :::
 
 :::setup
-````
+```
 variable {α β : Type} {a : α} {b : β}
 open Sum
-````
+```
 
 
 Notice that the product type depends on parameters {lean}`α β : Type`
@@ -712,9 +712,9 @@ end Hidden
 ```
 
 :::setup
-````
+```
 variable {α : Type u} {β : Type v} {γ : Type u'} (b : β) (f : α → Option β) (a : α)
-````
+```
 
 In the semantics of dependent type theory, there is no built-in notion
 of a partial function. Every element of a function type {lean}`α → β` or a
@@ -766,9 +766,9 @@ end Hidden
 ```
 
 :::setup
-````
+```
 variable (p : Prop) (hp : p) (α : Type u) (β : Type v)
-````
+```
 
 You should think about how these give rise to the introduction and
 elimination rules that you have already seen. There are rules that
@@ -805,9 +805,9 @@ variant of {lean}`Σ x : α, β`.
 :::
 
 ::::setup
-````
+```
 variable (α : Type u) (β : Type v) (p : Prop)
-````
+```
 
 This is a good place to mention another inductive type, denoted
 {lean}`{x : α // p}`, which is sort of a hybrid between
@@ -823,9 +823,9 @@ end Hidden
 ```
 ::::
 ::::setup
-````
+```
 variable {α : Type u} {p : α → Prop}
-````
+```
 
 :::leanFirst
 In fact, in Lean, {leanRef}`Subtype` is defined using the structure command:
@@ -871,10 +871,10 @@ end Hidden
 ```
 
 :::setup
-````
+```
 open Nat
 variable {motive : Nat → Sort u} {f : (n : Nat) → motive n} {n : Nat}
-````
+```
 
 There are two constructors. We start with {lean}`zero : Nat`; it takes
 no arguments, so we have it from the start. In contrast, the
@@ -926,14 +926,14 @@ Nat.recOn.{u} :
 ```
 
 :::setup
-````
+```
 def add (m n : Nat) : Nat :=
   match n with
   | Nat.zero   => m
   | Nat.succ n => Nat.succ (add m n)
 variable {n m : Nat}
 open Nat
-````
+```
 
 Consider, for example, the addition function {lean}`add m n` on the
 natural numbers. Fixing {lean}`m`, we can define addition by recursion on
@@ -999,9 +999,9 @@ Lean's version of the natural numbers.
 ::::leanFirst
 
 :::setup
-````
+```
 variable {n : Nat} {motive : Nat → Sort u} {ih : motive n}
-````
+```
 
 Proving a fact like {lean}`0 + n = n`, however, requires a proof by induction.
 As observed above, the induction principle is just a special case of the recursion principle,
@@ -1050,9 +1050,9 @@ end Hidden
 ```
 
 :::setup
-````
+```
 variable (m n k : Nat)
-````
+```
 
 As another example, let us prove the associativity of addition,
 {lean}`∀ m n k, m + n + k = m + (n + k)`.
@@ -1234,12 +1234,12 @@ end Hidden
 ```
 
 :::setup
-````
+```
 universe u
 def length : {α : Type u} → List α → Nat := List.length
 def append : {α : Type u} → List α → List α → List α := List.append
 variable (as bs : List α)
-````
+```
 
 Try also defining the function {lean}`length : {α : Type u} → List α → Nat` that returns the length of a list,
 and prove that it behaves as expected (for example, {lean}`length (append as bs) = length as + length bs`).
@@ -1285,9 +1285,9 @@ not be surprising that there are a number of tactics designed to work
 with them effectively. We describe some of them here.
 
 :::setup
-````
+```
 variable {x : InductiveType}
-````
+```
 
 The {tactic}`cases` tactic works on elements of an inductively defined type,
 and does what the name suggests: it decomposes the element according
@@ -1611,14 +1611,14 @@ end Hidden
 
 The {leanRef}`induction` tactic also supports user-defined induction principles with
 multiple targets (aka major premises). This example uses {name}`Nat.mod.inductionOn`, which has the following signature:
-````signature
+```signature
 Nat.mod.inductionOn
   {motive : Nat → Nat → Sort u}
   (x y  : Nat)
   (ind  : ∀ x y, 0 < y ∧ y ≤ x → motive (x - y) y → motive x y)
   (base : ∀ x y, ¬(0 < y ∧ y ≤ x) → motive x y) :
   motive x y
-````
+```
 
 
 ```lean
@@ -1727,9 +1727,9 @@ inductive foo : ... → Sort u where
   | constructorₙ : ... → foo ...
 ```
 ::::setup
-````
+```
 universe u
-````
+```
 
 :::leanFirst
 In contrast to an ordinary inductive definition, which constructs an
@@ -1764,9 +1764,9 @@ end Hidden
 ```
 
 :::setup
-````
+```
 variable (α : Sort u) (a : α) (x : α)
-````
+```
 
 For each fixed {leanRef}`α : Sort u` and {leanRef}`a : α`, this definition
 constructs a family of types {lean}`Eq a x`, indexed by {lean}`x : α`.

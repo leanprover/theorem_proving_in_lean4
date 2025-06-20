@@ -41,10 +41,10 @@ provides an approach that is more convenient, and familiar to users of
 functional programming languages.
 
 :::setup
-````
+```
 open Nat
 variable (x : Nat)
-````
+```
 
 Consider the inductively defined type of natural numbers. Every
 natural number is either {lean}`zero` or {lean}`succ x`, and so you can define
@@ -183,12 +183,12 @@ example : sub2 5 = 3 := rfl
 ```
 
 :::setup
-````
+```
 def sub2 : Nat → Nat
   | 0     => 0
   | 1     => 0
   | x + 2 => x
-````
+```
 You can write {leanCommand}`#print sub2` to see how the function was compiled to
 recursors. (Lean will tell you that {leanRef}`sub2` has been defined in terms
 of an internal auxiliary function, {lean}`sub2.match_1`, but you can print
@@ -282,13 +282,13 @@ expands on the notion of a wildcard, and the description of {ref "inaccessible-p
 you can use implicit arguments in patterns as well.
 
 ::::setup
-````
+```
 set_option linter.unusedVariables false
 --------
 def tail : List α → List α
   | []      => []
   | a :: as => as
-````
+```
 
 :::leanFirst
 As described in {ref "inductive-types"}[Inductive Types],
@@ -379,9 +379,9 @@ You can check that this definition of {leanRef}`foo` satisfies the same
 definitional identities as before.
 
 :::setup
-````
+```
 variable (α : Type u) (a : α)
-````
+```
 
 Some functional programming languages support _incomplete
 patterns_. In these languages, the interpreter produces an exception
@@ -582,10 +582,10 @@ example : fib 7 = 21 := rfl
 ```
 :::
 :::setup
-````
+```
 variable (n : Nat)
 open Nat
-````
+```
 
 Here, the value of the {leanRef}`fib` function at {leanRef}`n + 2` (which is
 definitionally equal to {lean}`succ (succ n)`) is defined in terms of the
@@ -636,9 +636,9 @@ variable (C : Nat → Type u)
 ```
 :::
 :::setup
-````
+```
 variable (C : Nat → Type u) (n : Nat)
-````
+```
 The type {lean}`@Nat.below C (3 : Nat)` is a data structure that stores elements of {lean}`C 0`, {lean}`C 1`, and {lean}`C 2`.
 The course-of-values recursion is implemented by {name}`Nat.brecOn`. It enables us to define the value of a dependent
 function of type {lean}`(n : Nat) → C n` at a particular input {lean}`n` in terms of all the previous values of the function,
@@ -766,9 +766,9 @@ well-founded recursion. Let us start with the logical background that
 is needed to understand how it works.
 
 :::setup
-````
+```
 variable (α : Type u) (a : α) (r : α → α → Prop)
-````
+```
 
 Lean's standard library defines two predicates, {lean}`Acc r a` and
 {lean}`WellFounded r`, where {lean}`r` is a binary relation on a type {lean}`α`,
@@ -843,10 +843,10 @@ us how to construct an element {leanRef}`C x`, given elements of {leanRef}`C y` 
 each predecessor {leanRef}`y` of {leanRef}`x`.
 
 :::setup
-````
+```
 variable {x y : α} (C : α → Sort v) (r : α → α → Prop)
 
-````
+```
 
 Note that {name}`WellFounded.fix` works equally well as an induction
 principle. It says that if {leanRef}`≺` is well-founded and you want to prove
@@ -987,9 +987,9 @@ def ack : Nat → Nat → Nat
 ```
 
 :::setup
-````
+```
 variable {α : Type u} {β : Type v}
-````
+```
 
 Note that a lexicographic order is used in the example above because the instance
 {lean}`WellFoundedRelation (α × β)` uses a lexicographic order. Lean also defines the instance
@@ -1143,33 +1143,33 @@ theorem ack_gt_zero : ack n m > 0 := by
 :::
 
 In {goal case1}`case1`, the goal is:
-````proofState case1
+```proofState case1
 case case1 =>
   y: Nat
 ⊢ y + 1 > 0
-````
+```
 The {leanRef}`y + 1` in the goal corresponds to the value returned in the first case of {leanRef}`ack`.
 
 In {goal case2}`case2`, the goal is:
-````proofState case2
+```proofState case2
 case case2 =>
   x: Nat
   ih: ack x 1 > 0
 ⊢ ack x 1 > 0
-````
+```
 The {leanRef}`ack x 1` in the goal corresponds to the value of {leanRef}`ack` applied to the pattern variables {leanRef}`x + 1` and {leanRef}`0` returned in the second case of {leanRef}`ack`.
 This term is automatically simplified to the right-hand side.
 Happily, the inductive hypothesis {leanRef}`ih : ack x 1 > 0` corresponds to the recursive call, which is exactly the answer returned in this case.
 
 In {goal case3}`case3`, the goal is:
-````proofState case3
+```proofState case3
 case case3 =>
   x: Nat
   y: Nat
   ih1: ack (x + 1) y > 0
   ih2: ack x (ack (x + 1) y) > 0
 ⊢ ack x (ack (x + 1) y) > 0
-````
+```
 The {leanRef}`ack x (ack (x + 1) y)` in the goal corresponds to the value returned in the third case of {leanRef}`ack`, when {leanRef}`ack` applied to {leanRef}`x + 1` and {leanRef}`y + 1` has been reduced.
 The inductive hypotheses {leanRef}`ih1 : ack (x + 1) y > 0` and {leanRef}`ih2 : ack x (ack (x + 1) y) > 0` correspond to the recursive calls, with {leanRef}`ih1` matching the nested recursive call.
 Once again, the induction hypothesis is suitable.
@@ -1441,7 +1441,7 @@ tag := "dependent-pattern-matching"
 
 
 ::::setup
-````
+```
 inductive Vect (α : Type u) : Nat → Type u
   | nil  : Vect α 0
   | cons : α → {n : Nat} → Vect α n → Vect α (n+1)
@@ -1465,7 +1465,7 @@ def tail : Vect α (n + 1) → Vect α n
 
 variable {v : Vect α (n + 1)}
 open Vect
-````
+```
 
 :::leanFirst
 All the examples of pattern matching we considered in the section on
@@ -1597,11 +1597,11 @@ end Vect
 ```
 
 :::setup
-````
+```
 inductive Vect (α : Type u) : Nat → Type u
   | nil  : Vect α 0
   | cons : α → {n : Nat} → Vect α n → Vect α (n+1)
-````
+```
 
 The {leanRef}`zipWith` function is even more tedious to define by hand than the
 {leanRef}`tail` function. We encourage you to try it, using {name}`Vect.recOn`,

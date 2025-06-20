@@ -29,7 +29,8 @@ def versionString : RoleExpander
 #doc (Manual) "Theorem Proving in Lean 4" =>
 
 %%%
-authors := ["Jeremy Avigad", "Leonardo de Moura", "Soonho Kong", "Sebastian Ullrich", "with contributions from the Lean Community"]
+authors := ["Jeremy Avigad", "Leonardo de Moura", "Soonho Kong", "Sebastian Ullrich"]
+authorshipNote := some "with contributions from the Lean Community"
 %%%
 
 

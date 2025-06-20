@@ -294,9 +294,9 @@ example : ∀ a b c : Nat, a = b → a = c → c = b := by
 ```
 
 :::setup
-````
+```
 variable {α : Sort u} {p : Prop} {e : p}
-````
+```
 
 As the {leanRef}`apply` tactic is a command for constructing function
 applications interactively, the {leanRef}`intro` tactic is a command for
@@ -1197,10 +1197,10 @@ were introduced briefly in {ref "calculational-proofs"}[Calculational Proofs]. I
 section and the next, we discuss them in greater detail.
 
 :::setup
-````
+```
 variable (x y : α) (h : x = y)
 theorem add_comm : ∀ (x y : Nat), x + y = y + x := by omega
-````
+```
 
 The {tactic}`rw` tactic provides a basic mechanism for applying
 substitutions to goals and hypotheses, providing a convenient and
@@ -1224,9 +1224,9 @@ example (h₁ : f 0 = 0) (h₂ : k = 0) : f k = 0 := by
 ```
 
 :::setup
-````
+```
 variable (t : α)
-````
+```
 
 In the example above, the first use of {leanRef}`rw` replaces {leanRef}`k` with
 {leanRef}`0` in the goal {leanRef}`f k = 0`. Then, the second one replaces {leanRef}`f 0`
@@ -1391,9 +1391,9 @@ example (x y z : Nat) (p : Nat → Prop)
 ```
 
 :::setup
-````
+```
 variable (x y z : Nat)
-````
+```
 
 For operations that are commutative and associative, like
 multiplication on the natural numbers, the simplifier uses these two

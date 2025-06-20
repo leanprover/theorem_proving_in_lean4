@@ -30,14 +30,14 @@ end Ex
 
 
 ::::setup
-````
+```
 namespace Ex
 structure Add (α : Type) where
   add : α → α → α
 def double (s : Add α) (x : α) : α :=
   s.add x x
 variable {n : Nat}
-````
+```
 :::leanFirst
 In the above Lean code, the field {leanRef}`add` has type
 {lean}`Add.add : {α : Type} → Add α → α → α → α`
@@ -181,10 +181,10 @@ Note that {leanRef}`(· + ·)` is notation for {lean}`fun x y => x + y` in Lean.
 
 
 :::setup
-````
+```
 def head [Inhabited α] (xs : List α) : α := default
 variable {α : Type u} {x : α} {xs : List α} [Inhabited α]
-````
+```
 
 The example above demonstrates how type classes are used to overload notation.
 Now, we explore another application. We often need an arbitrary element of a given type.
@@ -340,9 +340,9 @@ You can use the command {leanRef}`#print` to inspect how simple {leanRef}`inferI
 :::
 
 # ToString
-````setup
+```setup
 universe u
-````
+```
 
 :::leanFirst
 The polymorphic method {leanRef}`toString` has type {lean}`{α : Type u} → [ToString α] → α → String`. You implement the instance
@@ -388,7 +388,7 @@ instance : ToString Rational where
 ```
 
 :::setup
-````
+```
 structure Rational where
   num : Int
   den : Nat
@@ -399,7 +399,7 @@ instance : OfNat Rational n where
 
 instance : ToString Rational where
   toString r := s!"{r.num}/{r.den}"
-````
+```
 Lean elaborates the terms {lean}`(2 : Nat)` and {lean}`(2 : Rational)` as
 {lean type:="Nat"}`@OfNat.ofNat Nat 2 (@instOfNatNat 2)` and
 {lean}`@OfNat.ofNat Rational 2 (@instOfNatRational 2)` respectively.
@@ -431,14 +431,14 @@ def getUnit [Monoid α] : α :=
 # Output Parameters
 
 :::setup
-````
+```
 universe u
 variable (T : Type u)
-````
+```
 
 By default, Lean only tries to synthesize an instance {lean}`Inhabited T` when the term {lean}`T` is known and does not
 contain missing parts. The following command produces the error
-{lit}``typeclass instance problem is stuck, it is often due to metavariables`` because the type has a missing part (i.e., the {lit}`_`).
+{lit}`typeclass instance problem is stuck, it is often due to metavariables` because the type has a missing part (i.e., the {lit}`_`).
 :::
 
 ```lean
@@ -581,10 +581,10 @@ end Ex
 ```
 
 :::setup
-````
+```
 variable {α : Type u} {β : Type v} {γ : Type w} {a : α} {b : β} {n : Nat}
 variable [HAdd α β γ] [HSub α β γ] [HMul α β γ] [HDiv α β γ] [HMod α β γ]
-````
+```
 By tagging the instance above with the attribute {attr}`[default_instance]`, we are instructing Lean
 to use this instance on pending type class synthesis problems.
 The actual Lean implementation defines homogeneous and heterogeneous classes for arithmetical operators.
@@ -610,9 +610,9 @@ instance : ToString Rational where
 ```
 
 :::setup
-````
+```
 variable {α : Type u} {xs : List α} [Mul α] [OfNat α 2]
-````
+```
 
 Priorities are also useful to control the interaction between different default instances.
 For example, suppose {lean}`xs` has type {lean}`List α`. When elaborating {lean}`xs.map (fun x => 2 * x)`, we want the homogeneous instance for multiplication
@@ -811,9 +811,9 @@ end Hidden
 ```
 
 :::setup
-````
+```
 variable {p : Prop} (t : Decidable p) (t' : p ∨ ¬p) (a b : α)
-````
+```
 
 Logically speaking, having an element {lean}`t : Decidable p` is stronger
 than having an element {lean}`t' : p ∨ ¬p`; it enables us to define values
@@ -851,12 +851,12 @@ end Hidden
 :::
 
 :::setup
-````
+```
 variable {c : Prop} [Decidable c] (t : c → α) (e : ¬c → α) (hc : c) (hnc : ¬c)
-````
-````lean (show := false)
+```
+```lean (show := false)
 example [Decidable c] (t e : α) : α := if h : c then t else e
-````
+```
 
 That is, in {lean}`dite c t e`, we can assume {lean}`hc : c` in the “then”
 branch, and {lean}`hnc : ¬c` in the “else” branch. To make {lean}`dite` more
@@ -902,10 +902,10 @@ open Classical
 ```
 
 :::setup
-````
+```
 open Classical
 variable {p : Prop}
-````
+```
 Thereafter {lean}`Decidable p` has an instance for every {leanRef}`p`.
 Thus all theorems in the library
 that rely on decidability assumptions are freely available when you
@@ -960,9 +960,9 @@ theorem ex : True ∧ 2 = 1 + 1 := by
 ```
 
 :::setup
-````
+```
 variable {p : Prop} [Decidable p]
-````
+```
 
 They work as follows. The expression {lean}`decide p` tries to infer a
 decision procedure for {leanRef}`p`, and, if it is successful, evaluates to
@@ -989,9 +989,9 @@ def bar : Inhabited (Nat → Nat) := inferInstance
 ```
 
 :::setup
-````
+```
 variable (t : T)
-````
+```
 
 In fact, you can use Lean's {lean}`(t : T)` notation to specify the class whose instance you are looking for,
 in a concise manner:
@@ -1105,11 +1105,11 @@ example : Foo.a = 3 :=
 # Coercions using Type Classes
 
 :::setup
-````
+```
 variable {n : Nat} {α : Type u} {as : List α}
 def Set (α : Type u) := α → Prop
 
-````
+```
 
 The most basic type of coercion maps elements of one type to another. For example, a coercion from {lean}`Nat` to {lean}`Int` allows us to view any element {lean}`n : Nat` as an element of {lean}`Int`. But some coercions depend on parameters; for example, for any type {lean}`α`, we can view any element {lean}`as : List α` as an element of {lean}`Set α`, namely, the set of elements occurring in the list. The corresponding coercion is defined on the “family” of types {lean}`List α`, parameterized by {lean}`α`.
 :::
@@ -1123,9 +1123,9 @@ Lean allows us to declare three kinds of coercions:
 The first kind of coercion allows us to view any element of a member of the source family as an element of a corresponding member of the target family. The second kind of coercion allows us to view any element of a member of the source family as a type. The third kind of coercion allows us to view any element of the source family as a function. Let us consider each of these in turn.
 
 :::setup
-````
+```
 variable {α : Type u} {β : Type v} [Coe α β]
-````
+```
 
 In Lean, coercions are implemented on top of the type class resolution framework. We define a coercion from {lean}`α` to {lean}`β` by declaring an instance of {lean}`Coe α β`. For example, we can define a coercion from {lean}`Bool` to {lean}`Prop` as follows:
 
@@ -1271,10 +1271,10 @@ It is the coercion that makes it possible to write {leanRef}`(a b c : S)`. Note 
 :::
 
 ::::setup
-````
+```
 variable (B : Type u) (C : Type v)
 
-````
+```
 
 By the _class of function types_, we mean the collection of Pi types {lean}`(z : B) → C`. The third kind of coercion has the form:
 

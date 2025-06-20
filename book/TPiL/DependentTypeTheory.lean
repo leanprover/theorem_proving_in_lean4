@@ -253,10 +253,10 @@ hierarchy of types:
 ```
 
 :::setup
-````
+```
 universe n
 variable (n : Nat)
-````
+```
 Think of {lean}`Type 0` as a universe of “small” or “ordinary” types.
 {lean}`Type 1` is then a larger universe of types, which contains {lean}`Type 0`
 as an element, and {lean}`Type 2` is an even larger universe of types,
@@ -376,9 +376,9 @@ You can evaluate a lambda function by passing the required parameters:
 ```
 
 :::setup
-````
+```
 variable {x : α} {t : β}
-````
+```
 
 Creating a function from another expression is a process known as
 _lambda abstraction_. Suppose you have the variable {lean}`x : α` and you can
@@ -442,18 +442,18 @@ and {leanRef}`f : α → β`, and returns the composition of {leanRef}`g` and {l
 of _dependent products_, which will be explained below.)
 
 :::setup
-````
+```
 variable (α : Type) (t : β)
 -- Avoid warnings
 axiom whatever : α
 def b : γ := whatever
-````
+```
 
 The general form of a lambda expression is {lean}`fun (x : α) => t`, where
 the variable {leanRef}`x` is a “bound variable”: it is really a placeholder,
 whose “scope” does not extend beyond the expression {leanRef}`t`.  For
 example, the variable {lit}`b` in the expression {lean}`fun (b : β) (x : α) => b`
-has nothing to do with the constant {lean}``b`` declared earlier.  In fact,
+has nothing to do with the constant {lean}`b` declared earlier.  In fact,
 the expression denotes the same function as {lean}`fun (u : β) (z : α) => u`.
 
 
@@ -463,9 +463,9 @@ same.” Lean recognizes this equivalence.
 :::
 
 :::setup
-````
+```
 variable (t : α → β) (s : α)
-````
+```
 Notice that applying a term {lean}`t : α → β` to a term {lean}`s : α` yields
 an expression {lean}`t s : β`. Returning to the previous example and
 renaming bound variables for clarity, notice the types of the
@@ -506,7 +506,7 @@ use the command {kw}`#eval` to execute expressions, and it is the
 preferred way of testing your functions.
 
 :::comment
-````
+```
 <!--
 Note that `#eval` and
 `#reduce` are _not_ equivalent. The command `#eval` first compiles
@@ -523,7 +523,7 @@ expressions and proofs. It is less efficient than ``#eval``, and
 treats all foreign functions as opaque constants. You will learn later
 that there are some other differences between the two commands.
 -->
-````
+```
 :::
 
 # Definitions
@@ -671,9 +671,9 @@ def square (x : Nat) : Nat :=
 # Local Definitions
 
 :::setup
-````
+```
 variable (t1 : α) (t2 : β)
-````
+```
 
 Lean also allows you to introduce “local” definitions using the
 {kw}`let` keyword. The expression {lean}`let a := t1; t2` is
@@ -719,15 +719,15 @@ def t (x : Nat) : Nat :=
 
 ::::leanFirst
 :::setup
-````
+```
 variable (t1 : α) (t2 : β)
-````
+```
 
 Notice that the meaning of the expression {lean}`let a := t1; t2` is very
 similar to the meaning of {lean}`(fun a => t2) t1`, but the two are not
 the same. In the first expression, you should think of every instance
-of {leanRef (in:="let a := t1; t2")}``a`` in {leanRef (in:="let a := t1; t2")}``t2`` as a syntactic abbreviation for {leanRef (in:="let a := t1; t2")}``t1``. In the
-second expression, {leanRef (in:="(fun a => t2) t1")}``a`` is a variable, and the expression
+of {leanRef (in:="let a := t1; t2")}`a` in {leanRef (in:="let a := t1; t2")}`t2` as a syntactic abbreviation for {leanRef (in:="let a := t1; t2")}`t1`. In the
+second expression, {leanRef (in:="(fun a => t2) t1")}`a` is a variable, and the expression
 {leanRef (in:="(fun a => t2) t1")}`fun a => t2` has to make sense independently of the value of {leanRef (in:="(fun a => t2) t1")}`a`.
 The {kw}`let` construct is a stronger means of abbreviation, and there
 are expressions of the form {lean}`let a := t1; t2` that cannot be
@@ -1010,9 +1010,9 @@ def cons (α : Type) (a : α) (as : List α) : List α :=
 ::::
 
 :::setup
-````
+```
 variable (α : Type) (β : α → Type) (a : α) (f : (a : α) → β a)
-````
+```
 
 This is an instance of a _dependent function type_, or *dependent
 arrow type*. Given {lean}`α : Type` and {lean}`β : α → Type`, think of {lean}`β`
@@ -1024,9 +1024,9 @@ returned by {lean}`f` depends on its input.
 :::
 
 :::setup
-````
+```
 variable (α : Type) (β : Type) (a : α) (f : (a : α) → β a)
-````
+```
 Notice that {lean}`(a : α) → β` makes sense for any expression {lean}`β : Type`.
 When the value of {lean}`β` depends on {leanRef}`a` (as does, for
 example, the expression {leanRef}`β a` in the previous paragraph),
@@ -1049,9 +1049,9 @@ explained momentarily.
 ```
 
 :::setup
-````
+```
 variable (α : Type) (β : α → Type) (a : α) (b : β a)
-````
+```
 Just as dependent function types {lean}`(a : α) → β a` generalize the
 notion of a function type {leanRef}`α → β` by allowing {leanRef in:="α → β"}`β` to depend on
 {lean}`α`, dependent Cartesian product types {lean}`(a : α) × β a` generalize
@@ -1239,9 +1239,9 @@ said to be _polymorphic_, because it can take on different meanings in
 different contexts.
 
 :::setup
-````
+```
 variable (T : Type) (e : T)
-````
+```
 
 One can always specify the type {lean}`T` of an expression {lean}`e` by
 writing {lean}`(e : T)`. This instructs Lean's elaborator to use the value
@@ -1272,9 +1272,9 @@ interprets {lean type:="Int"}`2` as an integer.
 ```
 
 :::setup
-````
+```
 variable (foo : {α : Type} → α → β)
-````
+```
 
 Sometimes, however, we may find ourselves in a situation where we have
 declared an argument to a function to be implicit, but now want to

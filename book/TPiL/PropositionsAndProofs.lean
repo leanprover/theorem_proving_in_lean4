@@ -595,12 +595,12 @@ variable (hp : p) (hq : q)
 These angle brackets are obtained by typing {kbd}`\<` and {kbd}`\>`, respectively.
 
 :::setup
-````
+```
 inductive Foo where | mk
 inductive Bar where | mk : Foo → Bar
 variable (e : Foo)
 def Foo.bar (x : Foo) : Bar := .mk x
-````
+```
 
 Lean provides another useful syntactic gadget. Given an expression
 {lean}`e` of an inductive type {lean}`Foo` (possibly applied to some
@@ -664,9 +664,9 @@ This is often useful as well.
 ## Disjunction
 
 :::setup
-````
+```
 variable (p q : Prop) (hp : p) (hq : q)
-````
+```
 
 
 The expression {lean}`Or.intro_left q hp` creates a proof of {lean}`p ∨ q`
@@ -682,9 +682,9 @@ example (hq : q) : p ∨ q := Or.intro_right p hq
 ```
 
 :::setup
-````
+```
 variable (p q r : Prop) (hpq : p ∨ q) (hpr : p → r) (hqr : q → r)
-````
+```
 
 The _or-elimination_ rule is slightly more complicated. The idea is
 that we can prove {lean}`r` from {lean}`p ∨ q`, by showing that {lean}`r` follows
@@ -725,9 +725,9 @@ type annotations in the longer version makes the proof more readable,
 and can help catch and debug errors.
 
 :::setup
-````
+```
 variable (h : p ∨ q)
-````
+```
 
 Because {lean}`Or` has two constructors, we cannot use anonymous
 constructor notation. But we can still write {lean}`h.elim` instead of
@@ -747,9 +747,9 @@ abbreviations enhance or diminish readability.
 ## Negation and Falsity
 
 :::setup
-````
+```
 variable (p q : Prop) (hnp : ¬ p) (hp : p)
-````
+```
 
 Negation, {lean}`¬p`, is actually defined to be {lean}`p → False`, so we
 obtain {lean}`¬p` by deriving a contradiction from {lean}`p`. Similarly, the
@@ -942,14 +942,14 @@ theorem dne {p : Prop} (h : ¬¬p) : p :=
 ```
 
 :::setup
-````
+```
 open Classical
 variable (p : Prop)
 theorem dne {p : Prop} (h : ¬¬p) : p :=
   Or.elim (em p)
     (fun hp : p => hp)
     (fun hnp : ¬p => absurd hnp h)
-````
+```
 
 
 Double-negation elimination allows one to prove any proposition,
@@ -1021,9 +1021,9 @@ reasoning are discussed in {ref "axioms-and-computation"}[Axioms and Computation
 # Examples of Propositional Validities
 
 :::setup
-````
+```
 variable (p q r s : Prop)
-````
+```
 
 
 Lean's standard library contains proofs of many valid statements of
