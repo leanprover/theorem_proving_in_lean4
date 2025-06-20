@@ -5,7 +5,7 @@ defaultTargets = ["tpil"]
 [[require]]
 name = "verso"
 git = "https://github.com/leanprover/verso.git"
-rev = "multiverso"
+rev = "main"
 
 
 
