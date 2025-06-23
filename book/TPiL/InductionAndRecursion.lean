@@ -451,6 +451,9 @@ def foo : Char → Nat
 ```
 
 # Structural Recursion and Induction
+%%%
+tag := "structural-recursion-and-induction"
+%%%
 
 What makes the equation compiler powerful is that it also supports
 recursive definitions. In the next three sections, we will describe,
@@ -693,6 +696,9 @@ def listAdd [Add α] : List α → List α → List α
 You are encouraged to experiment with similar examples in the exercises below.
 
 # Local recursive declarations
+%%%
+tag := "local-recursive-declarations"
+%%%
 
 You can define local recursive declarations using the {kw}`let rec` keyword.
 
@@ -1116,6 +1122,9 @@ Summary:
 :::
 
 # Functional Induction
+%%%
+tag := "functional-induction"
+%%%
 
 Lean generates bespoke induction principles for recursive functions. These induction principles follow the recursive structure of the function's definition, rather than the structure of the datatype. Proofs about functions typically follow the recursive structure of the function itself, so these induction principles allow statements about the function to be proved more conveniently.
 
@@ -1285,6 +1294,9 @@ theorem f_or : f b1 b2 b3 b4 b5 = (b1 || b2 || b3 || b4 || b5) := by
 
 
 # Mutual Recursion
+%%%
+tag := "mutual-recursion"
+%%%
 
 Lean also supports mutual recursive definitions. The syntax is similar to that for mutual inductive types. Here is an example:
 
@@ -1786,6 +1798,9 @@ end Vect
 ```
 
 # Match Expressions
+%%%
+tag := "match-expressions"
+%%%
 
 Lean also provides a compiler for {kw}`match`-{kw}`with` expressions found in
 many functional languages:
@@ -1878,6 +1893,9 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
 ```
 
 # Local Recursive Declarations
+%%%
+tag := "local-recursive-declarations"
+%%%
 
 You can define local recursive declarations using the {kw}`let rec` keyword:
 
@@ -1939,6 +1957,9 @@ where
 ```
 
 # Exercises
+%%%
+tag := none
+%%%
 
 ```setup
 

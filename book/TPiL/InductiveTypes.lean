@@ -91,6 +91,9 @@ some basic examples of inductive types, and work our way up to more
 elaborate and complex examples.
 
 # Enumerated Types
+%%%
+tag := "enumerated-types"
+%%%
 
 The simplest kind of inductive type is a type with a finite, enumerated list of elements.
 
@@ -455,6 +458,9 @@ end Hidden
 Similarly, most identities can be proved by introducing suitable {kw}`match`, and then using {lean}`rfl`.
 
 # Constructors with Arguments
+%%%
+tag := "constructors-with-arguments"
+%%%
 
 :::setup
 ```
@@ -742,6 +748,9 @@ type is inhabited.
 :::
 
 # Inductively Defined Propositions
+%%%
+tag := "inductively-defined-propositions"
+%%%
 
 Inductively defined types can live in any type universe, including the
 bottom-most one, {lean}`Prop`. In fact, this is exactly how the logical
@@ -1165,6 +1174,9 @@ end Hidden
 ```
 
 # Other Recursive Data Types
+%%%
+tag := "other-recursive-data-types"
+%%%
 
 :::leanFirst
 Let us consider some more examples of inductively defined types. For
@@ -1948,6 +1960,9 @@ heterogeneous equality and well-founded recursion, which will be
 discussed in a the chapter on {ref "well-founded-recursion-and-induction"}[induction and recursion].
 
 # Mutual and Nested Inductive Types
+%%%
+tag := "mutual-and-nested-inductive-types"
+%%%
 
 We now consider two generalizations of inductive types that are often
 useful, which Lean supports by “compiling” them down to the more
@@ -2027,6 +2042,9 @@ isomorphism between {leanRef}`TreeList α` and {leanRef}`List (Tree α)` in its 
 and defines the constructors for {leanRef}`Tree` in terms of the isomorphism.
 
 # Exercises
+%%%
+tag := none
+%%%
 
 ```setup
 open Nat

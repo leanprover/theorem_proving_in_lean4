@@ -19,6 +19,9 @@ away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.
 
 # Messages
+%%%
+tag := "messages"
+%%%
 
 Lean produces three kinds of messages:
 
@@ -92,6 +95,9 @@ warning: declaration uses 'sorry'
 Some examples in this book use {leanRef}`#guard_msgs` to indicate expected errors.
 
 # Importing Files
+%%%
+tag := "importing-files"
+%%%
 
 The goal of Lean's front end is to interpret user input, construct
 formal expressions, and check that they are well-formed and type-correct.
@@ -125,6 +131,9 @@ Importing is transitive. In other words, if you import {lit}`Foo` and {lit}`Foo`
 then you also have access to the contents of {lit}`Bar`, and do not need to import it explicitly.
 
 # More on Sections
+%%%
+tag := "more-on-sections"
+%%%
 
 Lean provides various sectioning mechanisms to help structure a
 theory. You saw in {ref "variables-and-sections"}[Variables and Sections] that the
@@ -167,6 +176,9 @@ Note that {leanRef}`double` does _not_ have {leanRef}`y` as argument. Variables 
 included in declarations where they are actually used.
 
 # More on Namespaces
+%%%
+tag := "more-on-namespaces"
+%%%
 
 In Lean, identifiers are given by hierarchical _names_ like
 {lit}`Foo.Bar.baz`. We saw in {ref "namespaces"}[Namespaces] that Lean provides
@@ -431,6 +443,9 @@ their scope is always restricted to the current section or current
 file.
 
 # More on Implicit Arguments
+%%%
+tag := "more-on-implicit-arguments"
+%%%
 
 :::setup
 
@@ -607,6 +622,9 @@ textually encode subproblems efficiently and readably can be of great
 benefit to both programmers and proof engineers alike.
 
 ## Notations and Precedence
+%%%
+tag := "notations-and-precedence"
+%%%
 
 The most basic syntax extension commands allow introducing new (or
 overloading existing) prefix, infix, and postfix operators.
@@ -706,6 +724,9 @@ be delayed until elaboration, which will fail unless exactly one
 overload is type-correct.
 
 # Coercions
+%%%
+tag := "coercions"
+%%%
 
 In Lean, the type of natural numbers, {lean}`Nat`, is different from the
 type of integers, {lean}`Int`. But there is a function {lean}`Int.ofNat` that
@@ -726,6 +747,9 @@ variable (i j : Int)
 ```
 
 # Displaying Information
+%%%
+tag := "displaying-information"
+%%%
 
 There are a number of ways in which you can query Lean for information
 about its current state and the objects and theorems that are
@@ -846,6 +870,9 @@ Once again, these attributes can be assigned and reassigned after an object is d
 :::
 
 # Using the Library
+%%%
+tag := "using-the-library"
+%%%
 
 To use Lean effectively you will inevitably need to make use of
 definitions and theorems in the library. Recall that the {kw}`import`
