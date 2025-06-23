@@ -29,6 +29,9 @@ write. Moreover, tactics offer a gateway to using Lean's automation,
 since automated procedures are themselves tactics.
 
 # Entering Tactic Mode
+%%%
+tag := "entering-tactic-mode"
+%%%
 
 
 :::leanFirst
@@ -236,6 +239,9 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
 ```
 
 # Basic Tactics
+%%%
+tag := "basic-tactics"
+%%%
 
 :::leanFirst
 In addition to {leanRef}`apply` and {leanRef}`exact`, another useful tactic is
@@ -583,6 +589,9 @@ Here the rewriting tactic {leanRef}`rw` uses {leanRef}`h` to replace
 {leanRef}`x` by {leanRef}`3` again. The {leanRef}`rw` tactic will be discussed below.
 
 # More Tactics
+%%%
+tag := "more-tactics"
+%%%
 
 :::leanFirst
 Some additional tactics are useful for constructing and destructing
@@ -856,6 +865,9 @@ example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by
 :::
 
 # Structuring Tactic Proofs
+%%%
+tag := "structuring-tactic-proofs"
+%%%
 
 Tactics often provide an efficient way of building a proof, but long
 sequences of instructions can obscure the structure of the
@@ -1070,6 +1082,9 @@ or
 ```
 
 # Tactic Combinators
+%%%
+tag := "tactic-combinators"
+%%%
 
 _Tactic combinators_ are operations that form new tactics from old
 ones. A sequencing combinator is already implicit in the {kw}`by` block:
@@ -1191,6 +1206,9 @@ ordinarily only effects the current goal, {tactic}`focus`{lit}` (`{tactic}`all_g
 the same effect as {lit}`t`.
 
 # Rewriting
+%%%
+tag := "rewriting"
+%%%
 
 The {tactic}`rw` tactic and the {tactic}`simp` tactic
 were introduced briefly in {ref "calculational-proofs"}[Calculational Proofs]. In this
@@ -1707,6 +1725,9 @@ example : 0 < 1 + x ∧ x + y + 2 ≥ y + 1 := by
 :::
 
 # Split Tactic
+%%%
+tag := "split-tactic"
+%%%
 
 ::::leanFirst
 
@@ -1766,6 +1787,9 @@ example (xs ys : List Nat) (h : g xs ys = 0) : False := by
 ```
 
 # Extensible Tactics
+%%%
+tag := "extensible-tactics"
+%%%
 
 :::leanFirst
 In the following example, we define the notation {leanRef}`triv` using the command {leanRef}`syntax`.
@@ -1807,6 +1831,9 @@ example (x : α) (h : p) : x = x ∧ p := by
 :::
 
 # Exercises
+%%%
+tag := none
+%%%
 
 1. Go back to the exercises in {ref "propositions-and-proofs"}[Propositions and Proofs] and
 {ref "quantifiers-and-equality"}[Quantifiers and Equality] and

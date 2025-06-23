@@ -20,6 +20,9 @@ we extend the repertoire of logical constructions to include the
 universal and existential quantifiers, and the equality relation.
 
 # The Universal Quantifier
+%%%
+tag := "the-universal-quantifier"
+%%%
 
 Notice that if {lean}`α` is any type, we can represent a unary predicate
 {lean}`p` on {lean}`α` as an object of type {lean}`α → Prop`. In that case, given
@@ -221,6 +224,9 @@ considered problematic.
 :::
 
 # Equality
+%%%
+tag := "equality"
+%%%
 
 Let us now turn to one of the most fundamental relations defined in
 Lean's library, namely, the equality relation. In the chapter on {ref "inductive-types"}[inductive types],
@@ -646,6 +652,9 @@ example : (x + y) * (x + y) = x * x + y * x + x * y + y * y := by
 ```
 
 # The Existential Quantifier
+%%%
+tag := "the-existential-quantifier"
+%%%
 
 Finally, consider the existential quantifier, which can be written as
 either {lean}`exists x : α, p x` or {lean}`∃ x : α, p x`.  Both versions are
@@ -969,6 +978,9 @@ example : (∃ x, p x → r) ↔ (∀ x, p x) → r :=
 ```
 
 # More on the Proof Language
+%%%
+tag := "more-on-the-proof-language"
+%%%
 
 We have seen that keywords like {kw}`fun`, {kw}`have`, and {kw}`show` make
 it possible to write formal proof terms that mirror the structure of
@@ -1055,6 +1067,9 @@ example (n : Nat) : Nat := ‹Nat›
 Later, we show how you can extend the proof language using the Lean macro system.
 
 # Exercises
+%%%
+tag := none
+%%%
 
 1. Prove these equivalences:
 

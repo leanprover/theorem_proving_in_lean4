@@ -266,6 +266,9 @@ end Ex
 ```
 
 # Chaining Instances
+%%%
+tag := "chaining-instances"
+%%%
 
 If that were the extent of type class inference, it would not be all that impressive;
 it would be simply a mechanism of storing a list of instances for the elaborator to find in a lookup table.
@@ -340,6 +343,9 @@ You can use the command {leanRef}`#print` to inspect how simple {leanRef}`inferI
 :::
 
 # ToString
+%%%
+tag := "ToString"
+%%%
 ```setup
 universe u
 ```
@@ -364,6 +370,9 @@ instance : ToString Person where
 :::
 
 # Numerals
+%%%
+tag := "numerals"
+%%%
 
 Numerals are polymorphic in Lean. You can use a numeral (e.g., {lit}`2`) to denote an element of any type that implements
 the type class {name}`OfNat`.
@@ -429,6 +438,9 @@ def getUnit [Monoid α] : α :=
 ```
 
 # Output Parameters
+%%%
+tag := "output-parameters"
+%%%
 
 :::setup
 ```
@@ -529,6 +541,9 @@ to predict, because the order in which instances are considered can determine wh
 also more flexible.
 
 # Default Instances
+%%%
+tag := "default-instances"
+%%%
 
 In the class {leanRef}`HMul`, the parameters {leanRef}`α` and {leanRef}`β` are treated as input values.
 Thus, type class synthesis only starts after these two types are known. This may often
@@ -648,6 +663,9 @@ end Ex
 The {leanRef}`Mul` class is convenient for types that only implement the homogeneous multiplication.
 
 # Local Instances
+%%%
+tag := "local-instances"
+%%%
 
 Type classes are implemented using attributes in Lean. Thus, you can
 use the {kw}`local` modifier to indicate that they only have effect until
@@ -712,6 +730,9 @@ def triple (p : Point) :=
 We recommend you only use this command to diagnose problems.
 
 # Scoped Instances
+%%%
+tag := "scoped-instances"
+%%%
 
 You can also declare scoped instances in namespaces. This kind of instance is
 only active when you are inside of the namespace or open the namespace.
@@ -976,6 +997,9 @@ prove a target {lean}`p`. By the previous observations,
 :::
 
 # Managing Type Class Inference
+%%%
+tag := "managing-type-class-inference"
+%%%
 
 If you are ever in a situation where you need to supply an expression
 that Lean can infer by type class inference, you can ask Lean to carry
@@ -1103,6 +1127,9 @@ example : Foo.a = 3 :=
 ```
 
 # Coercions using Type Classes
+%%%
+tag := "coercions-using-type-classes"
+%%%
 
 :::setup
 ```

@@ -21,6 +21,9 @@ hierarchy of non-cumulative universes and inductive types. By the end
 of this chapter, you will understand much of what this means.
 
 # Simple Type Theory
+%%%
+tag := "simple-type-theory"
+%%%
 
 “Type theory” gets its name from the fact that every expression has an
 associated _type_. For example, in a given context, {lit}`x + 0` may
@@ -171,6 +174,9 @@ its two components.
 ::::
 
 # Types as objects
+%%%
+tag := "types-as-objects"
+%%%
 
 One way in which Lean's dependent type theory extends simple type
 theory is that types themselves—entities like {lean}`Nat` and {lean}`Bool`—are first-class citizens, which is to say that they themselves are
@@ -353,6 +359,9 @@ def F.{u} (α : Type u) : Type u := Prod α α
 :::
 
 # Function Abstraction and Evaluation
+%%%
+tag := "function-abstraction-and-evaluation"
+%%%
 
 Lean provides a {kw}`fun` (or {kw}`λ`) keyword to create a function
 from an expression as follows:
@@ -527,6 +536,9 @@ that there are some other differences between the two commands.
 :::
 
 # Definitions
+%%%
+tag := "definitions"
+%%%
 
 Recall that the {kw}`def` keyword provides one important way of declaring new named
 objects.
@@ -669,6 +681,9 @@ def square (x : Nat) : Nat :=
 ```
 
 # Local Definitions
+%%%
+tag := "local-definitions"
+%%%
 
 :::setup
 ```
@@ -955,6 +970,9 @@ namespace. Similarly, if you use an {kw}`open` command within a
 namespace, its effects disappear when the namespace is closed.
 
 # What makes dependent type theory dependent?
+%%%
+tag := "what-makes-dependent-type-theory-dependent"
+%%%
 
 :::setup
 ```

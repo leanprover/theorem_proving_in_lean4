@@ -14,6 +14,9 @@ htmlSplit := .never
 %%%
 
 # Computers and Theorem Proving
+%%%
+tag := "computers-and-theorem-proving"
+%%%
 
 _Formal verification_ involves the use of logical and computational methods to establish claims that are expressed in
 precise mathematical terms. These can include ordinary mathematical theorems, as well as claims that pieces of hardware
@@ -60,6 +63,9 @@ aspects of Lean are described in the free online book, [Functional Programming i
 aspects of the system will make an appearance here.
 
 # About Lean
+%%%
+tag := "about-lean"
+%%%
 
 The _Lean_ project was launched by Leonardo de Moura at Microsoft Research Redmond in 2013. It is an ongoing, long-term
 effort, and much of the potential for automation will be realized only gradually over time. Lean is released under the
@@ -72,6 +78,9 @@ To install Lean in your computer consider using the [Quickstart](https://github.
 This tutorial describes the current version of Lean, known as Lean 4.
 
 # About this Book
+%%%
+tag := "about-this-book"
+%%%
 
 This book is designed to teach you to develop and verify proofs in Lean. Much of the background information you will
 need in order to do this is not specific to Lean at all. To start with, you will learn the logical system that Lean is
@@ -106,6 +115,9 @@ We recommend running the examples and experimenting with the code on your own as
 You can open this book in VS Code by using the command “Lean 4: Docs: Show Documentation Resources” and selecting “Theorem Proving in Lean 4” in the tab that opens.
 
 # Acknowledgments
+%%%
+tag := "acknowledgments"
+%%%
 
 This tutorial is an open access project maintained on Github. Many people have contributed to the effort, providing
 corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Mario Carneiro, Nathan

@@ -73,6 +73,9 @@ to computational interpretation. We will spell out the details more
 precisely below.
 
 # Historical and Philosophical Context
+%%%
+tag := "historical-and-philosophical-context"
+%%%
 
 :::setup
 ```
@@ -162,6 +165,9 @@ the theory.
 :::
 
 # Propositional Extensionality
+%%%
+tag := "propositional-extensionality"
+%%%
 
 Propositional extensionality is the following axiom:
 
@@ -227,6 +233,9 @@ axioms`` command to display the axioms it depends on.
 :::
 
 # Function Extensionality
+%%%
+tag := "function-extensionality"
+%%%
 
 :::leanFirst
 Similar to propositional extensionality, function extensionality
@@ -387,6 +396,9 @@ an expression in {lean}`Prop` carries no information, and can be safely
 ignored by the reduction procedures.
 
 # Quotients
+%%%
+tag := "quotients"
+%%%
 
 :::setup
 ```
@@ -1087,6 +1099,9 @@ epsilon_spec {α : Sort u} {p : α → Prop}
 ::::
 
 # The Law of the Excluded Middle
+%%%
+tag := "the-law-of-the-excluded-middle"
+%%%
 
 The law of the excluded middle is the following:
 

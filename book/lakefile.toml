@@ -13,6 +13,7 @@ rev = "main"
 #weak.verso.examples.suggest = true
 weak.linter.typography.quotes = true
 weak.linter.typography.dashes = true
+weak.linter.verso.manual.headerTags = true
 
 [[lean_lib]]
 name = "TPiL"

@@ -36,6 +36,9 @@ previously defined ones. Moreover, Lean provides convenient notation
 for defining instances of a given structure.
 
 # Declaring Structures
+%%%
+tag := "declaring-structures"
+%%%
 
 The structure command is essentially a “front end” for defining
 inductive data types. Every {kw}`structure` declaration introduces a
@@ -230,6 +233,9 @@ example {xs : List α} {f : α → β} :
 Here {leanRef}`xs.map f` is interpreted as {leanRef}`List.map f xs`.
 
 # Objects
+%%%
+tag := "objects"
+%%%
 
 We have been using constructors to create elements of a structure
 type. For structures containing many fields, this is often
@@ -321,6 +327,9 @@ example : r.z = 5 := rfl
 ```
 
 # Inheritance
+%%%
+tag := "inheritance"
+%%%
 
 We can _extend_ existing structures by adding new fields. This feature
 allows us to simulate a form of _inheritance_.

@@ -16,6 +16,9 @@ goals, even inside function abstractions and dependent arrows, to apply rewritin
 simplifying steps.
 
 # Basic navigation and rewriting
+%%%
+tag := "basic-navigation-and-rewriting"
+%%%
 
 :::leanFirst
 As a first example, let us prove example
@@ -103,6 +106,9 @@ example : (fun x : Nat => 0 + x) = (fun x => x) := by
 {leanRef}`conv` can also rewrite a hypothesis {lit}`h` from the local context, using {kw}`conv at`{lit}` h`.
 
 # Pattern matching
+%%%
+tag := "pattern-matching-conv"
+%%%
 
 Navigation using the above commands can be tedious. One can shortcut it using pattern matching as follows:
 
@@ -129,6 +135,9 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
 ```
 
 # Structuring conversion tactics
+%%%
+tag := "structuring-conversion-tactics"
+%%%
 
 Curly brackets and {lit}`.` can also be used in {leanRef}`conv` mode to structure tactics:
 
@@ -142,6 +151,9 @@ example (a b c : Nat) : (0 + a) * (b * c) = a * (c * b) := by
 ```
 
 # Other tactics inside conversion mode
+%%%
+tag := "other-tactics-inside-conversion-mode"
+%%%
 
 - :::leanFirst
   {leanRef}`arg`{lit}` i` enter the {lit}`i`-th nondependent explicit argument of an application.

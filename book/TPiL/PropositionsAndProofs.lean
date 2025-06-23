@@ -20,6 +20,9 @@ mathematical assertions and proofs in the language of dependent type
 theory as well.
 
 # Propositions as Types
+%%%
+tag := "propositions-as-types"
+%%%
 
 One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
@@ -204,6 +207,9 @@ proof assistant, is to help us to construct such a term, {lean}`t`, and to
 verify that it is well-formed and has the correct type.
 
 # Working with Propositions as Types
+%%%
+tag := "working-with-propositions-as-types"
+%%%
 
 In the {tech}[propositions-as-types] paradigm, theorems involving only {lit}`→`
 can be proved using lambda abstraction and application. In Lean, the
@@ -409,6 +415,9 @@ entered as {kbd}`\0`, {kbd}`\1`, {kbd}`\2`, ..., for hypotheses, as we did in
 this example.
 
 # Propositional Logic
+%%%
+tag := "propositional-logic"
+%%%
 
 Lean defines all the standard logical connectives and notation. The propositional connectives come with the following notation:
 
@@ -662,6 +671,9 @@ example (h : p ∧ q) : q ∧ p ∧ q :=
 This is often useful as well.
 
 ## Disjunction
+%%%
+tag := "disjunction"
+%%%
 
 :::setup
 ```
@@ -745,6 +757,9 @@ Once again, you should exercise judgment as to whether such
 abbreviations enhance or diminish readability.
 
 ## Negation and Falsity
+%%%
+tag := "negation-and-falsity"
+%%%
 
 :::setup
 ```
@@ -804,6 +819,9 @@ has only an introduction rule, {lean}`True.intro : True`.  In other words,
 {lean}`True` is simply true, and has a canonical proof, {lean}`True.intro`.
 
 ## Logical Equivalence
+%%%
+tag := "logical-equivalence"
+%%%
 
 :::setup
 
@@ -849,6 +867,9 @@ example (h : p ∧ q) : q ∧ p := (and_swap p q).mp h
 ```
 
 # Introducing Auxiliary Subgoals
+%%%
+tag := "introducing-auxiliary-subgoals"
+%%%
 
 This is a good place to introduce another device Lean offers to help
 structure long proofs, namely, the {kw}`have` construct, which
@@ -1019,6 +1040,9 @@ The full list of axioms that are used in Lean to support classical
 reasoning are discussed in {ref "axioms-and-computation"}[Axioms and Computation].
 
 # Examples of Propositional Validities
+%%%
+tag := "examples-of-propositional-validities"
+%%%
 
 :::setup
 ```
@@ -1131,6 +1155,9 @@ example (p q : Prop) : ¬(p ∧ ¬q) → (p → q) :=
 ```
 
 # Exercises
+%%%
+tag := none
+%%%
 
 Prove the following identities, replacing the {lean}`sorry` placeholders with actual proofs.
 
