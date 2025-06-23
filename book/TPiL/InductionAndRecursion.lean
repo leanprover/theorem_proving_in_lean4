@@ -1892,69 +1892,6 @@ example (h₀ : ∃ x, p x) (h₁ : ∃ y, q y)
   ⟨x, y, px, qy⟩
 ```
 
-# Local Recursive Declarations
-%%%
-tag := "local-recursive-declarations"
-%%%
-
-You can define local recursive declarations using the {kw}`let rec` keyword:
-
-```lean
-def replicate (n : Nat) (a : α) : List α :=
-  let rec loop : Nat → List α → List α
-    | 0,   as => as
-    | n+1, as => loop n (a::as)
-  loop n []
-
-#check @replicate.loop -- @replicate.loop : {α : Type u_1} → α → Nat → List α → List α
-```
-
-Lean creates an auxiliary declaration for each {leanRef}`let rec`. In the example above,
-it created the declaration {leanRef}`replicate.loop` for the {leanRef}`let rec loop` occurring at {leanRef}`replicate`.
-Note that, Lean “closes” the declaration by adding any local variable occurring in the
-{leanRef}`let rec` declaration as additional parameters. For example, the local variable {leanRef}`a` occurs
-at {leanRef}`let rec loop`.
-
-You can also use {leanRef}`let rec` in tactic mode and for creating proofs by induction:
-
-```lean
-def replicate (n : Nat) (a : α) : List α :=
- let rec loop : Nat → List α → List α
-   | 0,   as => as
-   | n+1, as => loop n (a::as)
- loop n []
-------
-theorem length_replicate (n : Nat) (a : α) :
-    (replicate n a).length = n := by
-  let rec aux (n : Nat) (as : List α) :
-      (replicate.loop a n as).length = n + as.length := by
-    match n with
-    | 0   => simp [replicate.loop]
-    | n+1 => simp +arith [replicate.loop, aux n]
-  exact aux n []
-```
-
-You can also introduce auxiliary recursive declarations using a {kw}`where` clause after your definition.
-Lean converts them into a {leanRef}`let rec`:
-
-```lean
-def replicate (n : Nat) (a : α) : List α :=
-  loop n []
-where
-  loop : Nat → List α → List α
-    | 0,   as => as
-    | n+1, as => loop n (a::as)
-
-theorem length_replicate (n : Nat) (a : α) :
-    (replicate n a).length = n := by
-  exact aux n []
-where
-  aux (n : Nat) (as : List α) :
-      (replicate.loop a n as).length = n + as.length := by
-    match n with
-    | 0   => simp [replicate.loop]
-    | n+1 => simp +arith [replicate.loop, aux n]
-```
 
 # Exercises
 %%%

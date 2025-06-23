@@ -107,7 +107,7 @@ example : (fun x : Nat => 0 + x) = (fun x => x) := by
 
 # Pattern matching
 %%%
-tag := "pattern-matching"
+tag := "pattern-matching-conv"
 %%%
 
 Navigation using the above commands can be tedious. One can shortcut it using pattern matching as follows:

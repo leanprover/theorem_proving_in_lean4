@@ -982,6 +982,9 @@ for them as well:
 ```
 
 # Auto Bound Implicit Arguments
+%%%
+tag := "auto-bound-implicit-arguments"
+%%%
 
 :::leanFirst
 In the previous section, we have shown how implicit arguments make functions more convenient to use.
@@ -1055,6 +1058,9 @@ def compose (g : β → γ) (f : α → β) (x : α) : γ :=
 ```
 
 # Implicit Lambdas
+%%%
+tag := "implicit-lambdas"
+%%%
 
 :::TODO
 Update this text after archaeology
@@ -1111,6 +1117,9 @@ end Ex2
 ```
 
 # Sugar for Simple Functions
+%%%
+tag := "sugar-for-simple-functions"
+%%%
 
 Lean includes a notation for describing simple functions using anonymous
 placeholders rather than {kw}`fun`. When {lit}`·` occurs as part of a term,
@@ -1144,6 +1153,9 @@ Nested parentheses introduce new functions. In the following example, two differ
 ```
 
 # Named Arguments
+%%%
+tag := "named-arguments"
+%%%
 
 Named arguments enable you to specify an argument for a parameter by
 matching the argument with its name rather than with its position in
