@@ -84,6 +84,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -187,6 +196,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -595,15 +605,6 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       
 window.onload = () => {
@@ -824,7 +825,7 @@ window.onload = () => {
             <div class="split-toc">
               <div class="title">
                 <label for="--verso-manual-toc-Theorem-Proving-in-Lean-4--Interacting-with-Lean" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-Theorem-Proving-in-Lean-4--Interacting-with-Lean" checked="checked"></label><span class="number">6.</span> <span class="current"><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean">Interacting with Lean</a></span></div>
-              <table><tr class="numbered"><td class="num">6.1.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Messages">Messages</a></td></tr><tr class="numbered"><td class="num">6.2.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Importing-Files">Importing Files</a></td></tr><tr class="numbered"><td class="num">6.3.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--More-on-Sections">More on Sections</a></td></tr><tr class="numbered"><td class="num">6.4.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--More-on-Namespaces">More on Namespaces</a></td></tr><tr class="numbered"><td class="num">6.5.</td><td><a href="Interacting-with-Lean/#attributes">Attributes</a></td></tr><tr class="numbered"><td class="num">6.6.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--More-on-Implicit-Arguments">More on Implicit Arguments</a></td></tr><tr class="numbered"><td class="num">6.7.</td><td><a href="Interacting-with-Lean/#notation">Notation</a></td></tr><tr class="numbered"><td class="num">6.8.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Coercions">Coercions</a></td></tr><tr class="numbered"><td class="num">6.9.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Displaying-Information">Displaying Information</a></td></tr><tr class="numbered"><td class="num">6.10.</td><td><a href="Interacting-with-Lean/#setting-options">Setting Options</a></td></tr><tr class="numbered"><td class="num">6.11.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Using-the-Library">Using the Library</a></td></tr><tr class="numbered"><td class="num">6.12.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Auto-Bound-Implicit-Arguments">Auto Bound Implicit Arguments</a></td></tr><tr class="numbered"><td class="num">6.13.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Implicit-Lambdas">Implicit Lambdas</a></td></tr><tr class="numbered"><td class="num">6.14.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Sugar-for-Simple-Functions">Sugar for Simple Functions</a></td></tr><tr class="numbered"><td class="num">6.15.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean--Named-Arguments">Named Arguments</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">6.1.</td><td><a href="Interacting-with-Lean/#messages">Messages</a></td></tr><tr class="numbered"><td class="num">6.2.</td><td><a href="Interacting-with-Lean/#importing-files">Importing Files</a></td></tr><tr class="numbered"><td class="num">6.3.</td><td><a href="Interacting-with-Lean/#more-on-sections">More on Sections</a></td></tr><tr class="numbered"><td class="num">6.4.</td><td><a href="Interacting-with-Lean/#more-on-namespaces">More on Namespaces</a></td></tr><tr class="numbered"><td class="num">6.5.</td><td><a href="Interacting-with-Lean/#attributes">Attributes</a></td></tr><tr class="numbered"><td class="num">6.6.</td><td><a href="Interacting-with-Lean/#more-on-implicit-arguments">More on Implicit Arguments</a></td></tr><tr class="numbered"><td class="num">6.7.</td><td><a href="Interacting-with-Lean/#notation">Notation</a></td></tr><tr class="numbered"><td class="num">6.8.</td><td><a href="Interacting-with-Lean/#coercions">Coercions</a></td></tr><tr class="numbered"><td class="num">6.9.</td><td><a href="Interacting-with-Lean/#displaying-information">Displaying Information</a></td></tr><tr class="numbered"><td class="num">6.10.</td><td><a href="Interacting-with-Lean/#setting-options">Setting Options</a></td></tr><tr class="numbered"><td class="num">6.11.</td><td><a href="Interacting-with-Lean/#using-the-library">Using the Library</a></td></tr><tr class="numbered"><td class="num">6.12.</td><td><a href="Interacting-with-Lean/#auto-bound-implicit-arguments">Auto Bound Implicit Arguments</a></td></tr><tr class="numbered"><td class="num">6.13.</td><td><a href="Interacting-with-Lean/#implicit-lambdas">Implicit Lambdas</a></td></tr><tr class="numbered"><td class="num">6.14.</td><td><a href="Interacting-with-Lean/#sugar-for-simple-functions">Sugar for Simple Functions</a></td></tr><tr class="numbered"><td class="num">6.15.</td><td><a href="Interacting-with-Lean/#named-arguments">Named Arguments</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
@@ -855,8 +856,8 @@ theory to explore some pragmatic aspects of interacting with Lean.</p>
 away. We recommend skimming this section to get a sense of Lean's
 features, and then returning to it as necessary.</p>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Messages">
-                6.1. Messages</h2>
+              <h2 id="messages">
+                6.1. Messages<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=messages" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean produces three kinds of messages:</p>
               <dl><dt> Errors</dt><dd><p>
@@ -944,8 +945,8 @@ To attempt to evaluate anyway despite the risks, use the '#eval!' command.</pre>
                 Some examples in this book use <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___guardMsgsCmd" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.guardMsgsCmd-0" data-verso-hover="475">#guard_msgs</span></a></code> to indicate expected errors.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Importing-Files">
-                6.2. Importing Files</h2>
+              <h2 id="importing-files">
+                6.2. Importing Files<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=importing-files" title="Permalink">🔗</a></span></h2>
               <p>
                 The goal of Lean's front end is to interpret user input, construct
 formal expressions, and check that they are well-formed and type-correct.
@@ -978,8 +979,8 @@ the root of the user's local project.</p>
 then you also have access to the contents of <code>Bar</code>, and do not need to import it explicitly.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--More-on-Sections">
-                6.3. More on Sections</h2>
+              <h2 id="more-on-sections">
+                6.3. More on Sections<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=more-on-sections" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean provides various sectioning mechanisms to help structure a
 theory. You saw in <a href="Dependent-Type-Theory/#variables-and-sections">Variables and Sections</a> that the
@@ -1027,8 +1028,8 @@ Note that <code class="hl lean inline" data-lean-context="examples"><span class=
 included in declarations where they are actually used.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--More-on-Namespaces">
-                6.4. More on Namespaces</h2>
+              <h2 id="more-on-namespaces">
+                6.4. More on Namespaces<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=more-on-namespaces" title="Permalink">🔗</a></span></h2>
               <p>
                 In Lean, identifiers are given by hierarchical <em>names</em> like
 <code>Foo.Bar.baz</code>. We saw in <a href="Dependent-Type-Theory/#namespaces">Namespaces</a> that Lean provides
@@ -1323,8 +1324,8 @@ their scope is always restricted to the current section or current
 file.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--More-on-Implicit-Arguments">
-                6.6. More on Implicit Arguments</h2>
+              <h2 id="more-on-implicit-arguments">
+                6.6. More on Implicit Arguments<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=more-on-implicit-arguments" title="Permalink">🔗</a></span></h2>
               <p>
                 In <a href="Dependent-Type-Theory/#implicit-arguments">Implicit Arguments</a>,
 we saw that if Lean displays the type
@@ -1471,8 +1472,8 @@ macros and to embed entire custom domain specific languages (DSLs) to
 textually encode subproblems efficiently and readably can be of great
 benefit to both programmers and proof engineers alike.</p>
               <section>
-                <h3 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Notation--Notations-and-Precedence">
-                  6.7.1. Notations and Precedence</h3>
+                <h3 id="notations-and-precedence">
+                  6.7.1. Notations and Precedence<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=notations-and-precedence" title="Permalink">🔗</a></span></h3>
                 <p>
                   The most basic syntax extension commands allow introducing new (or
 overloading existing) prefix, infix, and postfix operators.</p>
@@ -1569,8 +1570,8 @@ overload is type-correct.</p>
                 </section>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Coercions">
-                6.8. Coercions</h2>
+              <h2 id="coercions">
+                6.8. Coercions<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=coercions" title="Permalink">🔗</a></span></h2>
               <p>
                 In Lean, the type of natural numbers, <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a></code>, is different from the
 type of integers, <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Integers/#Int___ofNat" title="Documentation for Int in Lean Language Reference"><span class="const token" data-binding="const-Int" data-verso-hover="135">Int</span></a></code>. But there is a function <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Integers/#Int___ofNat" title="Documentation for Int.ofNat in Lean Language Reference"><span class="const token" data-binding="const-Int.ofNat" data-verso-hover="531">Int.ofNat</span></a></code> that
@@ -1595,8 +1596,8 @@ requested using the overloaded <code>↑</code> operator.</p>
                 addCopyButtonToElement("--verso-unique-1675", "variable (m n : Nat)\nvariable (i j : Int)\n\n#check i + m#check i + m + j#check i + m + n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Displaying-Information">
-                6.9. Displaying Information</h2>
+              <h2 id="displaying-information">
+                6.9. Displaying Information<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=displaying-information" title="Permalink">🔗</a></span></h2>
               <p>
                 There are a number of ways in which you can query Lean for information
 about its current state and the objects and theorems that are
@@ -1720,8 +1721,8 @@ error message. Too much information can be overwhelming, though, and
 Lean's defaults are generally sufficient for ordinary interactions.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Using-the-Library">
-                6.11. Using the Library</h2>
+              <h2 id="using-the-library">
+                6.11. Using the Library<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=using-the-library" title="Permalink">🔗</a></span></h2>
               <p>
                 To use Lean effectively you will inevitably need to make use of
 definitions and theorems in the library. Recall that the <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">import</span></code>
@@ -1856,8 +1857,8 @@ for them as well:</p>
                 addCopyButtonToElement("--verso-unique-1680", "#check @And.intro#check @And.casesOn#check @And.left#check @And.right#check @Or.inl#check @Or.inr#check @Or.elim#check @Exists.intro#check @Exists.elim#check @Eq.refl#check @Eq.subst");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Auto-Bound-Implicit-Arguments">
-                6.12. Auto Bound Implicit Arguments</h2>
+              <h2 id="auto-bound-implicit-arguments">
+                6.12. Auto Bound Implicit Arguments<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=auto-bound-implicit-arguments" title="Permalink">🔗</a></span></h2>
               <p>
                 In the previous section, we have shown how implicit arguments make functions more convenient to use.
 However, functions such as <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-compose" data-verso-hover="542">compose</span></code> are still quite verbose to define. Note that the universe
@@ -1924,8 +1925,8 @@ error: unknown identifier 'γ'
                 addCopyButtonToElement("--verso-unique-1684", "set_option autoImplicit false\n\n/--\nerror: unknown identifier 'β'\n---\nerror: unknown identifier 'γ'\n---\nerror: unknown identifier 'α'\n---\nerror: unknown identifier 'β'\n---\nerror: unknown identifier 'α'\n---\nerror: unknown identifier 'γ'\n-/\n#guard_msgs in\ndef compose (g : β → γ) (f : α → β) (x : α) : γ :=\n  g (f x)\n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Implicit-Lambdas">
-                6.13. Implicit Lambdas</h2>
+              <h2 id="implicit-lambdas">
+                6.13. Implicit Lambdas<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=implicit-lambdas" title="Permalink">🔗</a></span></h2>
               <p>
                 When the expected type of an expression is a function that is awaiting implicit
 arguments, the elaborator automatically introduces the corresponding lambdas.
@@ -1983,8 +1984,8 @@ few examples</p>
 addToggleButtonToElement("--verso-unique-1686");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Sugar-for-Simple-Functions">
-                6.14. Sugar for Simple Functions</h2>
+              <h2 id="sugar-for-simple-functions">
+                6.14. Sugar for Simple Functions<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=sugar-for-simple-functions" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean includes a notation for describing simple functions using anonymous
 placeholders rather than <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">fun</span></code>. When <code>·</code> occurs as part of a term,
@@ -2029,8 +2030,8 @@ addToggleButtonToElement("--verso-unique-1687");</script>
                 addCopyButtonToElement("--verso-unique-1688", "#check (Prod.mk · (· + 1))");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Interacting-with-Lean--Named-Arguments">
-                6.15. Named Arguments</h2>
+              <h2 id="named-arguments">
+                6.15. Named Arguments<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=named-arguments" title="Permalink">🔗</a></span></h2>
               <p>
                 Named arguments enable you to specify an argument for a parameter by
 matching the argument with its name rather than with its position in

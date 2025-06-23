@@ -84,6 +84,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -187,6 +196,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -595,15 +605,6 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       
 window.onload = () => {
@@ -824,7 +825,7 @@ window.onload = () => {
             <div class="split-toc">
               <div class="title">
                 <label for="--verso-manual-toc-inductive-types" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-inductive-types" checked="checked"></label><span class="number">7.</span> <span class="current"><a href="Inductive-Types/#inductive-types">Inductive Types</a></span></div>
-              <table><tr class="numbered"><td class="num">7.1.</td><td><a href="Inductive-Types/#Theorem-Proving-in-Lean-4--Inductive-Types--Enumerated-Types">Enumerated Types</a></td></tr><tr class="numbered"><td class="num">7.2.</td><td><a href="Inductive-Types/#Theorem-Proving-in-Lean-4--Inductive-Types--Constructors-with-Arguments">Constructors with Arguments</a></td></tr><tr class="numbered"><td class="num">7.3.</td><td><a href="Inductive-Types/#Theorem-Proving-in-Lean-4--Inductive-Types--Inductively-Defined-Propositions">Inductively Defined Propositions</a></td></tr><tr class="numbered"><td class="num">7.4.</td><td><a href="Inductive-Types/#defining-the-natural-numbers">Defining the Natural Numbers</a></td></tr><tr class="numbered"><td class="num">7.5.</td><td><a href="Inductive-Types/#Theorem-Proving-in-Lean-4--Inductive-Types--Other-Recursive-Data-Types">Other Recursive Data Types</a></td></tr><tr class="numbered"><td class="num">7.6.</td><td><a href="Inductive-Types/#tactics-for-inductive-types">Tactics for Inductive Types</a></td></tr><tr class="numbered"><td class="num">7.7.</td><td><a href="Inductive-Types/#inductive-families">Inductive Families</a></td></tr><tr class="numbered"><td class="num">7.8.</td><td><a href="Inductive-Types/#axiomatic-details">Axiomatic Details</a></td></tr><tr class="numbered"><td class="num">7.9.</td><td><a href="Inductive-Types/#Theorem-Proving-in-Lean-4--Inductive-Types--Mutual-and-Nested-Inductive-Types">Mutual and Nested Inductive Types</a></td></tr><tr class="numbered"><td class="num">7.10.</td><td><a href="Inductive-Types/#Theorem-Proving-in-Lean-4--Inductive-Types--Exercises">Exercises</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">7.1.</td><td><a href="Inductive-Types/#enumerated-types">Enumerated Types</a></td></tr><tr class="numbered"><td class="num">7.2.</td><td><a href="Inductive-Types/#constructors-with-arguments">Constructors with Arguments</a></td></tr><tr class="numbered"><td class="num">7.3.</td><td><a href="Inductive-Types/#inductively-defined-propositions">Inductively Defined Propositions</a></td></tr><tr class="numbered"><td class="num">7.4.</td><td><a href="Inductive-Types/#defining-the-natural-numbers">Defining the Natural Numbers</a></td></tr><tr class="numbered"><td class="num">7.5.</td><td><a href="Inductive-Types/#other-recursive-data-types">Other Recursive Data Types</a></td></tr><tr class="numbered"><td class="num">7.6.</td><td><a href="Inductive-Types/#tactics-for-inductive-types">Tactics for Inductive Types</a></td></tr><tr class="numbered"><td class="num">7.7.</td><td><a href="Inductive-Types/#inductive-families">Inductive Families</a></td></tr><tr class="numbered"><td class="num">7.8.</td><td><a href="Inductive-Types/#axiomatic-details">Axiomatic Details</a></td></tr><tr class="numbered"><td class="num">7.9.</td><td><a href="Inductive-Types/#mutual-and-nested-inductive-types">Mutual and Nested Inductive Types</a></td></tr><tr class="numbered"><td class="num">7.10.</td><td><a href="Inductive-Types/#Theorem-Proving-in-Lean-4--Inductive-Types--Exercises">Exercises</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
@@ -899,8 +900,8 @@ to start with a low-level, hands-on understanding. We will start with
 some basic examples of inductive types, and work our way up to more
 elaborate and complex examples.</p>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Inductive-Types--Enumerated-Types">
-                7.1. Enumerated Types</h2>
+              <h2 id="enumerated-types">
+                7.1. Enumerated Types<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=enumerated-types" title="Permalink">🔗</a></span></h2>
               <p>
                 The simplest kind of inductive type is a type with a finite, enumerated list of elements.</p>
               <div class="example" id="--verso-unique-1693">
@@ -1360,8 +1361,8 @@ addToggleButtonToElement("--verso-unique-1723");</script>
                 Similarly, most identities can be proved by introducing suitable <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">match</span></code>, and then using <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Propositional-Equality/#rfl-next" title="Documentation for rfl in Lean Language Reference"><span class="const token" data-binding="const-rfl" data-verso-hover="224">rfl</span></a></code>.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Inductive-Types--Constructors-with-Arguments">
-                7.2. Constructors with Arguments</h2>
+              <h2 id="constructors-with-arguments">
+                7.2. Constructors with Arguments<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=constructors-with-arguments" title="Permalink">🔗</a></span></h2>
               <p>
                 Enumerated types are a very special case of inductive types, in which
 the constructors take no arguments at all. In general, a
@@ -1636,8 +1637,8 @@ types is inhabited, and that the type of functions to an inhabited
 type is inhabited.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Inductive-Types--Inductively-Defined-Propositions">
-                7.3. Inductively Defined Propositions</h2>
+              <h2 id="inductively-defined-propositions">
+                7.3. Inductively Defined Propositions<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=inductively-defined-propositions" title="Permalink">🔗</a></span></h2>
               <p>
                 Inductively defined types can live in any type universe, including the
 bottom-most one, <code class="hl lean inline" data-lean-context="examples"><span class="sort token" data-binding="sort-14430969920833713138" data-verso-hover="2">Prop</span></code>. In fact, this is exactly how the logical
@@ -2049,8 +2050,8 @@ You can prove this by induction on <code class="hl lean inline" data-lean-contex
 addToggleButtonToElement("--verso-unique-1783");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Inductive-Types--Other-Recursive-Data-Types">
-                7.5. Other Recursive Data Types</h2>
+              <h2 id="other-recursive-data-types">
+                7.5. Other Recursive Data Types<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=other-recursive-data-types" title="Permalink">🔗</a></span></h2>
               <p>
                 Let us consider some more examples of inductively defined types. For
 any type, <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span></code>, the type <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Hidden.List" data-verso-hover="721">List</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span></code> of lists of elements of <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span></code> is
@@ -2859,8 +2860,8 @@ heterogeneous equality and well-founded recursion, which will be
 discussed in a the chapter on <a href="Induction-and-Recursion/#well-founded-recursion-and-induction">induction and recursion</a>.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Inductive-Types--Mutual-and-Nested-Inductive-Types">
-                7.9. Mutual and Nested Inductive Types</h2>
+              <h2 id="mutual-and-nested-inductive-types">
+                7.9. Mutual and Nested Inductive Types<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=mutual-and-nested-inductive-types" title="Permalink">🔗</a></span></h2>
               <p>
                 We now consider two generalizations of inductive types that are often
 useful, which Lean supports by “compiling” them down to the more

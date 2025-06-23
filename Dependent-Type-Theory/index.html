@@ -84,6 +84,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -187,6 +196,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -595,15 +605,6 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       
 window.onload = () => {
@@ -824,7 +825,7 @@ window.onload = () => {
             <div class="split-toc">
               <div class="title">
                 <label for="--verso-manual-toc-dependent-type-theory" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-dependent-type-theory" checked="checked"></label><span class="number">2.</span> <span class="current"><a href="Dependent-Type-Theory/#dependent-type-theory">Dependent Type Theory</a></span></div>
-              <table><tr class="numbered"><td class="num">2.1.</td><td><a href="Dependent-Type-Theory/#Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Simple-Type-Theory">Simple Type Theory</a></td></tr><tr class="numbered"><td class="num">2.2.</td><td><a href="Dependent-Type-Theory/#Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Types-as-objects">Types as objects</a></td></tr><tr class="numbered"><td class="num">2.3.</td><td><a href="Dependent-Type-Theory/#Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Function-Abstraction-and-Evaluation">Function Abstraction and Evaluation</a></td></tr><tr class="numbered"><td class="num">2.4.</td><td><a href="Dependent-Type-Theory/#Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Definitions">Definitions</a></td></tr><tr class="numbered"><td class="num">2.5.</td><td><a href="Dependent-Type-Theory/#Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Local-Definitions">Local Definitions</a></td></tr><tr class="numbered"><td class="num">2.6.</td><td><a href="Dependent-Type-Theory/#variables-and-sections">Variables and Sections</a></td></tr><tr class="numbered"><td class="num">2.7.</td><td><a href="Dependent-Type-Theory/#namespaces">Namespaces</a></td></tr><tr class="numbered"><td class="num">2.8.</td><td><a href="Dependent-Type-Theory/#Theorem-Proving-in-Lean-4--Dependent-Type-Theory--What-makes-dependent-type-theory-dependent___">What makes dependent type theory dependent?</a></td></tr><tr class="numbered"><td class="num">2.9.</td><td><a href="Dependent-Type-Theory/#implicit-arguments">Implicit Arguments</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">2.1.</td><td><a href="Dependent-Type-Theory/#simple-type-theory">Simple Type Theory</a></td></tr><tr class="numbered"><td class="num">2.2.</td><td><a href="Dependent-Type-Theory/#types-as-objects">Types as objects</a></td></tr><tr class="numbered"><td class="num">2.3.</td><td><a href="Dependent-Type-Theory/#function-abstraction-and-evaluation">Function Abstraction and Evaluation</a></td></tr><tr class="numbered"><td class="num">2.4.</td><td><a href="Dependent-Type-Theory/#definitions">Definitions</a></td></tr><tr class="numbered"><td class="num">2.5.</td><td><a href="Dependent-Type-Theory/#local-definitions">Local Definitions</a></td></tr><tr class="numbered"><td class="num">2.6.</td><td><a href="Dependent-Type-Theory/#variables-and-sections">Variables and Sections</a></td></tr><tr class="numbered"><td class="num">2.7.</td><td><a href="Dependent-Type-Theory/#namespaces">Namespaces</a></td></tr><tr class="numbered"><td class="num">2.8.</td><td><a href="Dependent-Type-Theory/#what-makes-dependent-type-theory-dependent">What makes dependent type theory dependent?</a></td></tr><tr class="numbered"><td class="num">2.9.</td><td><a href="Dependent-Type-Theory/#implicit-arguments">Implicit Arguments</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
@@ -851,8 +852,8 @@ theory known as the <em>Calculus of Constructions</em>, with a countable
 hierarchy of non-cumulative universes and inductive types. By the end
 of this chapter, you will understand much of what this means.</p>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Simple-Type-Theory">
-                2.1. Simple Type Theory</h2>
+              <h2 id="simple-type-theory">
+                2.1. Simple Type Theory<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=simple-type-theory" title="Permalink">🔗</a></span></h2>
               <p>
                 “Type theory” gets its name from the fact that every expression has an
 associated <em>type</em>. For example, in a given context, <code>x + 0</code> may
@@ -1020,8 +1021,8 @@ numbers. Conversely, if you have <code class="hl lean inline" data-lean-context=
 its two components.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Types-as-objects">
-                2.2. Types as objects</h2>
+              <h2 id="types-as-objects">
+                2.2. Types as objects<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=types-as-objects" title="Permalink">🔗</a></span></h2>
               <p>
                 One way in which Lean's dependent type theory extends simple type
 theory is that types themselves—entities like <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a></code> and <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Booleans/#Bool___false" title="Documentation for Bool in Lean Language Reference"><span class="const token" data-binding="const-Bool" data-verso-hover="14">Bool</span></a></code>—are first-class citizens, which is to say that they themselves are
@@ -1237,8 +1238,8 @@ declare universe variables explicitly using the <code class="hl lean inline" dat
                 addCopyButtonToElement("--verso-unique-14", "def F.{u} (α : Type u) : Type u := Prod α α\n\n#check F");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Function-Abstraction-and-Evaluation">
-                2.3. Function Abstraction and Evaluation</h2>
+              <h2 id="function-abstraction-and-evaluation">
+                2.3. Function Abstraction and Evaluation<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=function-abstraction-and-evaluation" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean provides a <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">fun</span></code> (or <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">λ</span></code>) keyword to create a function
 from an expression as follows:</p>
@@ -1402,8 +1403,8 @@ use the command <code class="hl lean inline" data-lean-context="examples"><span 
 preferred way of testing your functions.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Definitions">
-                2.4. Definitions</h2>
+              <h2 id="definitions">
+                2.4. Definitions<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=definitions" title="Permalink">🔗</a></span></h2>
               <p>
                 Recall that the <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">def</span></code> keyword provides one important way of declaring new named
 objects.</p>
@@ -1571,8 +1572,8 @@ output of the second matches the input of the first.  For example:</p>
 addToggleButtonToElement("--verso-unique-34");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Dependent-Type-Theory--Local-Definitions">
-                2.5. Local Definitions</h2>
+              <h2 id="local-definitions">
+                2.5. Local Definitions<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=local-definitions" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean also allows you to introduce “local” definitions using the
 <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">let</span></code> keyword. The expression <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.let-2" data-verso-hover="83">let</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.31" data-verso-hover="24">a</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.26" data-verso-hover="24">t1</span><span class="unknown token" data-binding="">;</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.18" data-verso-hover="84">t2</span></code> is
@@ -1904,8 +1905,8 @@ namespace. Similarly, if you use an <code class="hl lean inline" data-lean-conte
 namespace, its effects disappear when the namespace is closed.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Dependent-Type-Theory--What-makes-dependent-type-theory-dependent___">
-                2.8. What makes dependent type theory dependent?</h2>
+              <h2 id="what-makes-dependent-type-theory-dependent">
+                2.8. What makes dependent type theory dependent?<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=what-makes-dependent-type-theory-dependent" title="Permalink">🔗</a></span></h2>
               <p>
                 The short explanation is that types can depend on parameters. You
 have already seen a nice example of this: the type <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___nil" title="Documentation for List in Lean Language Reference"><span class="const token" data-binding="const-List" data-verso-hover="30">List</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.6" data-verso-hover="19">α</span></code> depends

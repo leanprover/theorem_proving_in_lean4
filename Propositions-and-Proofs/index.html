@@ -84,6 +84,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -187,6 +196,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -595,15 +605,6 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       
 window.onload = () => {
@@ -824,7 +825,7 @@ window.onload = () => {
             <div class="split-toc">
               <div class="title">
                 <label for="--verso-manual-toc-propositions-and-proofs" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-propositions-and-proofs" checked="checked"></label><span class="number">3.</span> <span class="current"><a href="Propositions-and-Proofs/#propositions-and-proofs">Propositions and Proofs</a></span></div>
-              <table><tr class="numbered"><td class="num">3.1.</td><td><a href="Propositions-and-Proofs/#Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Propositions-as-Types">Propositions as Types</a></td></tr><tr class="numbered"><td class="num">3.2.</td><td><a href="Propositions-and-Proofs/#Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Working-with-Propositions-as-Types">Working with Propositions as Types</a></td></tr><tr class="numbered"><td class="num">3.3.</td><td><a href="Propositions-and-Proofs/#Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Propositional-Logic">Propositional Logic</a></td></tr><tr class="numbered"><td class="num">3.4.</td><td><a href="Propositions-and-Proofs/#Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Introducing-Auxiliary-Subgoals">Introducing Auxiliary Subgoals</a></td></tr><tr class="numbered"><td class="num">3.5.</td><td><a href="Propositions-and-Proofs/#classical-logic">Classical Logic</a></td></tr><tr class="numbered"><td class="num">3.6.</td><td><a href="Propositions-and-Proofs/#Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Examples-of-Propositional-Validities">Examples of Propositional Validities</a></td></tr><tr class="numbered"><td class="num">3.7.</td><td><a href="Propositions-and-Proofs/#Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Exercises">Exercises</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">3.1.</td><td><a href="Propositions-and-Proofs/#propositions-as-types">Propositions as Types</a></td></tr><tr class="numbered"><td class="num">3.2.</td><td><a href="Propositions-and-Proofs/#working-with-propositions-as-types">Working with Propositions as Types</a></td></tr><tr class="numbered"><td class="num">3.3.</td><td><a href="Propositions-and-Proofs/#propositional-logic">Propositional Logic</a></td></tr><tr class="numbered"><td class="num">3.4.</td><td><a href="Propositions-and-Proofs/#introducing-auxiliary-subgoals">Introducing Auxiliary Subgoals</a></td></tr><tr class="numbered"><td class="num">3.5.</td><td><a href="Propositions-and-Proofs/#classical-logic">Classical Logic</a></td></tr><tr class="numbered"><td class="num">3.6.</td><td><a href="Propositions-and-Proofs/#examples-of-propositional-validities">Examples of Propositional Validities</a></td></tr><tr class="numbered"><td class="num">3.7.</td><td><a href="Propositions-and-Proofs/#Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Exercises">Exercises</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
@@ -848,8 +849,8 @@ Lean. In this chapter, we will begin to explain how to write
 mathematical assertions and proofs in the language of dependent type
 theory as well.</p>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Propositions-as-Types">
-                3.1. Propositions as Types</h2>
+              <h2 id="propositions-as-types">
+                3.1. Propositions as Types<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=propositions-as-types" title="Permalink">🔗</a></span></h2>
               <p>
                 One strategy for proving assertions about objects defined in the
 language of dependent type theory is to layer an assertion language
@@ -1041,8 +1042,8 @@ proof assistant, is to help us to construct such a term, <code class="hl lean in
 verify that it is well-formed and has the correct type.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Working-with-Propositions-as-Types">
-                3.2. Working with Propositions as Types</h2>
+              <h2 id="working-with-propositions-as-types">
+                3.2. Working with Propositions as Types<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=working-with-propositions-as-types" title="Permalink">🔗</a></span></h2>
               <p>
                 In the <a class="technical-term" href="Propositions-and-Proofs/#--tech-term-propositions-as-types">propositions-as-types</a> paradigm, theorems involving only <code>→</code>
 can be proved using lambda abstraction and application. In Lean, the
@@ -1281,8 +1282,8 @@ entered as <code class="unicode-abbrev">\0</code>, <code class="unicode-abbrev">
 this example.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Propositional-Logic">
-                3.3. Propositional Logic</h2>
+              <h2 id="propositional-logic">
+                3.3. Propositional Logic<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=propositional-logic" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean defines all the standard logical connectives and notation. The propositional connectives come with the following notation:</p>
               <table class="tabular"><thead><tr><th><p>
@@ -1510,8 +1511,8 @@ these two proofs are equivalent:</p>
                   This is often useful as well.</p>
                 </section>
               <section>
-                <h3 id="Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Propositional-Logic--Disjunction">
-                  3.3.2. Disjunction</h3>
+                <h3 id="disjunction">
+                  3.3.2. Disjunction<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=disjunction" title="Permalink">🔗</a></span></h3>
                 <p>
                   The expression <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Or.intro_left" data-verso-hover="169">Or.intro_left</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.12" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.14" data-verso-hover="4">hp</span></code> creates a proof of <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.19" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">∨</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.21" data-verso-hover="1">q</span></code>
 from a proof <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.31" data-verso-hover="4">hp</span><span class="inter-text"> : </span><span class="var token" data-binding="var-_uniq.36" data-verso-hover="1">p</span></code>. Similarly, <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Or.intro_right" data-verso-hover="170">Or.intro_right</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.44" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.50" data-verso-hover="6">hq</span></code> creates a
@@ -1580,8 +1581,8 @@ constructor notation. But we can still write <code class="hl lean inline" data-l
 abbreviations enhance or diminish readability.</p>
                 </section>
               <section>
-                <h3 id="Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Propositional-Logic--Negation-and-Falsity">
-                  3.3.3. Negation and Falsity</h3>
+                <h3 id="negation-and-falsity">
+                  3.3.3. Negation and Falsity<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=negation-and-falsity" title="Permalink">🔗</a></span></h3>
                 <p>
                   Negation, <code class="hl lean inline" data-lean-context="examples"><span class="unknown token" data-binding="">¬</span><span class="var token" data-binding="var-_uniq.10" data-verso-hover="1">p</span></code>, is actually defined to be <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.18" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">→</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Truth/#False" title="Documentation for False in Lean Language Reference"><span class="const token" data-binding="const-False" data-verso-hover="153">False</span></a></code>, so we
 obtain <code class="hl lean inline" data-lean-context="examples"><span class="unknown token" data-binding="">¬</span><span class="var token" data-binding="var-_uniq.30" data-verso-hover="1">p</span></code> by deriving a contradiction from <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.38" data-verso-hover="1">p</span></code>. Similarly, the
@@ -1638,8 +1639,8 @@ has only an introduction rule, <code class="hl lean inline" data-lean-context="e
 <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Truth/#True___intro" title="Documentation for True in Lean Language Reference"><span class="const token" data-binding="const-True" data-verso-hover="39">True</span></a></code> is simply true, and has a canonical proof, <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Truth/#True___intro" title="Documentation for True.intro in Lean Language Reference"><span class="const token" data-binding="const-True.intro" data-verso-hover="40">True.intro</span></a></code>.</p>
                 </section>
               <section>
-                <h3 id="Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Propositional-Logic--Logical-Equivalence">
-                  3.3.4. Logical Equivalence</h3>
+                <h3 id="logical-equivalence">
+                  3.3.4. Logical Equivalence<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=logical-equivalence" title="Permalink">🔗</a></span></h3>
                 <p>
                   The expression <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Logical-Connectives/#Iff___intro" title="Documentation for Iff.intro in Lean Language Reference"><span class="const token" data-binding="const-Iff.intro" data-verso-hover="180">Iff.intro</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.22" data-verso-hover="162">h1</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.26" data-verso-hover="179">h2</span></code> produces a proof of <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.40" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">↔</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.42" data-verso-hover="1">q</span></code> from
 <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.60" data-verso-hover="162">h1</span><span class="inter-text"> : </span><span class="var token" data-binding="var-_uniq.72" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">→</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.74" data-verso-hover="1">q</span></code> and <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.100" data-verso-hover="179">h2</span><span class="inter-text"> : </span><span class="var token" data-binding="var-_uniq.110" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">→</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.108" data-verso-hover="1">p</span></code>.  The expression <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Logical-Connectives/#Iff___intro" title="Documentation for Iff.mp in Lean Language Reference"><span class="const token" data-binding="const-Iff.mp" data-verso-hover="181">Iff.mp</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.138" data-verso-hover="182">h</span></code>
@@ -1682,8 +1683,8 @@ examples can therefore be written concisely as follows:</p>
                 </section>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Introducing-Auxiliary-Subgoals">
-                3.4. Introducing Auxiliary Subgoals</h2>
+              <h2 id="introducing-auxiliary-subgoals">
+                3.4. Introducing Auxiliary Subgoals<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=introducing-auxiliary-subgoals" title="Permalink">🔗</a></span></h2>
               <p>
                 This is a good place to introduce another device Lean offers to help
 structure long proofs, namely, the <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">have</span></code> construct, which
@@ -1836,8 +1837,8 @@ such contexts without relying on excluded middle.</p>
 reasoning are discussed in <a href="Axioms-and-Computation/#axioms-and-computation">Axioms and Computation</a>.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Propositions-and-Proofs--Examples-of-Propositional-Validities">
-                3.6. Examples of Propositional Validities</h2>
+              <h2 id="examples-of-propositional-validities">
+                3.6. Examples of Propositional Validities<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=examples-of-propositional-validities" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean's standard library contains proofs of many valid statements of
 propositional logic, all of which you are free to use in proofs of

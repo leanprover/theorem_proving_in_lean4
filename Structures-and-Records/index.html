@@ -84,6 +84,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -187,6 +196,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -595,15 +605,6 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       
 window.onload = () => {
@@ -824,7 +825,7 @@ window.onload = () => {
             <div class="split-toc">
               <div class="title">
                 <label for="--verso-manual-toc-structures-and-records" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-structures-and-records" checked="checked"></label><span class="number">9.</span> <span class="current"><a href="Structures-and-Records/#structures-and-records">Structures and Records</a></span></div>
-              <table><tr class="numbered"><td class="num">9.1.</td><td><a href="Structures-and-Records/#Theorem-Proving-in-Lean-4--Structures-and-Records--Declaring-Structures">Declaring Structures</a></td></tr><tr class="numbered"><td class="num">9.2.</td><td><a href="Structures-and-Records/#Theorem-Proving-in-Lean-4--Structures-and-Records--Objects">Objects</a></td></tr><tr class="numbered"><td class="num">9.3.</td><td><a href="Structures-and-Records/#Theorem-Proving-in-Lean-4--Structures-and-Records--Inheritance">Inheritance</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">9.1.</td><td><a href="Structures-and-Records/#declaring-structures">Declaring Structures</a></td></tr><tr class="numbered"><td class="num">9.2.</td><td><a href="Structures-and-Records/#objects">Objects</a></td></tr><tr class="numbered"><td class="num">9.3.</td><td><a href="Structures-and-Records/#inheritance">Inheritance</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
@@ -869,8 +870,8 @@ automatically generates all the projection functions. The
 previously defined ones. Moreover, Lean provides convenient notation
 for defining instances of a given structure.</p>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Structures-and-Records--Declaring-Structures">
-                9.1. Declaring Structures</h2>
+              <h2 id="declaring-structures">
+                9.1. Declaring Structures<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=declaring-structures" title="Permalink">🔗</a></span></h2>
               <p>
                 The structure command is essentially a “front end” for defining
 inductive data types. Every <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">structure</span></code> declaration introduces a
@@ -879,14 +880,14 @@ namespace with the same name. The general form is as follows:</p>
       &lt;constructor&gt; :: &lt;fields&gt;
 </pre><p>
                 Most parts are optional. Here is an example:</p>
-              <div class="example" id="--verso-unique-2349">
+              <div class="example" id="--verso-unique-2324">
                 <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">mk</span><span class="inter-text"> </span><span class="unknown token" data-binding="">::</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2349", "structure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\n");</script>
+                addCopyButtonToElement("--verso-unique-2324", "structure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\n");</script>
               <p>
                 Values of type <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span></code> are created using <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">Point.mk</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.496" data-verso-hover="24">a</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.498" data-verso-hover="24">b</span></code>, and the
 fields of a point <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.508" data-verso-hover="1042">p</span></code> are accessed using <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">Point.x</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.520" data-verso-hover="1042">p</span></code> and
@@ -894,7 +895,7 @@ fields of a point <code class="hl lean inline" data-lean-context="examples"><spa
 The structure command also generates useful recursors and
 theorems. Here are some of the constructions generated for the
 declaration above.</p>
-              <div class="example" id="--verso-unique-2350">
+              <div class="example" id="--verso-unique-2325">
                 <div class="hidden">
                   <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.mk" data-verso-hover="1039">mk</span><span class="inter-text"> </span><span class="unknown token" data-binding="">::</span><span class="inter-text">
@@ -924,8 +925,8 @@ declaration above.</p>
                   <pre>@Point.y : {α : Type u_1} → Point α → α</pre></div>
                 <code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2350", "structure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\nstructure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\n-- a Type\n#check Point-- the eliminator\n#check @Point.rec-- the constructor\n#check @Point.mk-- a projection\n#check @Point.x-- a projection\n#check @Point.y");
-addToggleButtonToElement("--verso-unique-2350");</script>
+                addCopyButtonToElement("--verso-unique-2325", "structure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\nstructure Point (α : Type u) where\n  mk ::\n  x : α\n  y : α\n-- a Type\n#check Point-- the eliminator\n#check @Point.rec-- the constructor\n#check @Point.mk-- a projection\n#check @Point.x-- a projection\n#check @Point.y");
+addToggleButtonToElement("--verso-unique-2325");</script>
               <p>
                 If the constructor name is not provided, then a constructor is named
 <code>mk</code> by default.</p>
@@ -933,7 +934,7 @@ addToggleButtonToElement("--verso-unique-2350");</script>
                 Here are some simple theorems and expressions that use the generated
 constructions. As usual, you can avoid the prefix <code class="hl lean inline" data-lean-context="examples"><span class="unknown token" data-binding="">Point</span></code> by using
 the command <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Namespaces-and-Sections/#Lean___Parser___Command___open" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.open-137" data-verso-hover="101">open</span></a><span class="inter-text"> </span><span class="unknown token" data-binding="">Point</span></code>.</p>
-              <div class="example" id="--verso-unique-2351">
+              <div class="example" id="--verso-unique-2326">
                 <div class="hidden">
                   <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
@@ -954,13 +955,13 @@ the command <code class="hl lean inline" data-lean-context="examples"><a href="h
   </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2351", "structure Point (α : Type u) where\n  x : α\n  y : α\nstructure Point (α : Type u) where\n  x : α\n  y : α\n#eval Point.x (Point.mk 10 20)#eval Point.y (Point.mk 10 20)open Point\n\nexample (a b : α) : x (mk a b) = a :=\n  rfl\n\nexample (a b : α) : y (mk a b) = b :=\n  rfl\n");
-addToggleButtonToElement("--verso-unique-2351");</script>
+                addCopyButtonToElement("--verso-unique-2326", "structure Point (α : Type u) where\n  x : α\n  y : α\nstructure Point (α : Type u) where\n  x : α\n  y : α\n#eval Point.x (Point.mk 10 20)#eval Point.y (Point.mk 10 20)open Point\n\nexample (a b : α) : x (mk a b) = a :=\n  rfl\n\nexample (a b : α) : y (mk a b) = b :=\n  rfl\n");
+addToggleButtonToElement("--verso-unique-2326");</script>
               <p>
                 Given <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.480" data-verso-hover="1044">p</span><span class="inter-text"> : </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a></code>, the dot notation <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.490" data-verso-hover="1044">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span></code> is shorthand for
 <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">Point.x</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.497" data-verso-hover="1044">p</span></code>. This provides a convenient way of accessing the fields
 of a structure.</p>
-              <div class="example" id="--verso-unique-2352">
+              <div class="example" id="--verso-unique-2327">
                 <div class="hidden">
                   <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
@@ -976,8 +977,8 @@ of a structure.</p>
                   <pre>20</pre></div>
                 <code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2352", "structure Point (α : Type u) where\n x : α\n y : α\nstructure Point (α : Type u) where\n x : α\n y : α\ndef p := Point.mk 10 20\n\n#check p.x#eval p.x#eval p.y");
-addToggleButtonToElement("--verso-unique-2352");</script>
+                addCopyButtonToElement("--verso-unique-2327", "structure Point (α : Type u) where\n x : α\n y : α\nstructure Point (α : Type u) where\n x : α\n y : α\ndef p := Point.mk 10 20\n\n#check p.x#eval p.x#eval p.y");
+addToggleButtonToElement("--verso-unique-2327");</script>
               <p>
                 The dot notation is convenient not just for accessing the projections
 of a record, but also for applying functions defined in a namespace
@@ -986,7 +987,7 @@ has type <code class="hl lean inline" data-lean-context="examples"><span class="
 <code>Point.foo p</code>, assuming that the first non-implicit argument to
 <code>foo</code> has type <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span></code>. The expression <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.add" data-verso-hover="1046">add</span><span class="inter-text"> </span><span class="const token" data-binding="const-q" data-verso-hover="1047">q</span></code> is therefore
 shorthand for <code>Point.add p q</code> in the example below.</p>
-              <div class="example" id="--verso-unique-2353">
+              <div class="example" id="--verso-unique-2328">
                 <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
@@ -1002,7 +1003,7 @@ shorthand for <code>Point.add p q</code> in the example below.</p>
                   <pre>{ x := 4, y := 6 }</pre></div>
                 <code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2353", "structure Point (α : Type u) where\n  x : α\n  y : α\nderiving Repr\n\ndef Point.add (p q : Point Nat) :=\n  mk (p.x + q.x) (p.y + q.y)\n\ndef p : Point Nat := Point.mk 1 2\ndef q : Point Nat := Point.mk 3 4\n\n#eval p.add q");</script>
+                addCopyButtonToElement("--verso-unique-2328", "structure Point (α : Type u) where\n  x : α\n  y : α\nderiving Repr\n\ndef Point.add (p q : Point Nat) :=\n  mk (p.x + q.x) (p.y + q.y)\n\ndef p : Point Nat := Point.mk 1 2\ndef q : Point Nat := Point.mk 3 4\n\n#eval p.add q");</script>
               <p>
                 In the next chapter, you will learn how to define a function like
 <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.add" data-verso-hover="1046">add</span></code> so that it works generically for elements of <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1359" data-verso-hover="42">α</span></code>
@@ -1013,7 +1014,7 @@ addition operation.</p>
 Lean will insert <code>p</code> at the first argument to <code>Point.foo</code> of type
 <code>Point</code>. For example, with the definition of scalar multiplication
 below, <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-p" data-verso-hover="1045">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span></code> is interpreted as <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">Point.smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1700" data-verso-hover="1044">p</span></code>.</p>
-              <div class="example" id="--verso-unique-2354">
+              <div class="example" id="--verso-unique-2329">
                 <div class="hidden">
                   <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
  </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
@@ -1031,12 +1032,12 @@ below, <code class="hl lean inline" data-lean-context="examples"><span class="co
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-224">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">{</span><span class="var token" data-binding="var-_uniq.1700" data-verso-hover="1044">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Natural-Numbers/#Nat___zero" title="Documentation for Nat in Lean Language Reference"><span class="const token" data-binding="const-Nat" data-verso-hover="10">Nat</span></a><span class="unknown token" data-binding="">}</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1700" data-verso-hover="1044">p</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.smul" data-verso-hover="1048">Point.smul</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">3</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1700" data-verso-hover="1044">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2354", "structure Point (α : Type u) where\n x : α\n y : α\n deriving Repr\nstructure Point (α : Type u) where\n x : α\n y : α\n deriving Repr\ndef Point.smul (n : Nat) (p : Point Nat) :=\n  Point.mk (n * p.x) (n * p.y)\n\ndef p : Point Nat := Point.mk 1 2\n\n#eval p.smul 3example {p : Point Nat} : p.smul 3 = Point.smul 3 p := rfl\n");
-addToggleButtonToElement("--verso-unique-2354");</script>
+                addCopyButtonToElement("--verso-unique-2329", "structure Point (α : Type u) where\n x : α\n y : α\n deriving Repr\nstructure Point (α : Type u) where\n x : α\n y : α\n deriving Repr\ndef Point.smul (n : Nat) (p : Point Nat) :=\n  Point.mk (n * p.x) (n * p.y)\n\ndef p : Point Nat := Point.mk 1 2\n\n#eval p.smul 3example {p : Point Nat} : p.smul 3 = Point.smul 3 p := rfl\n");
+addToggleButtonToElement("--verso-unique-2329");</script>
               <p>
                 It is common to use a similar trick with the <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">List.map</span></a></code> function,
 which takes a list as its second non-implicit argument:</p>
-              <div class="example" id="--verso-unique-2355">
+              <div class="example" id="--verso-unique-2330">
                 <code class="hl lean block" data-lean-context="examples"><span class="has-info info"><span class="hover-container"><span class="hover-info messages"><code class="message info">@List.map : {α : Type u_1} → {β : Type u_2} → (α → β) → List α → List β</code></span></span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Interacting-with-Lean/#Lean___Parser___Command___check" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.check-0">#check</span></a></span><span class="inter-text"> </span><span class="unknown token" data-binding="">@</span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">List.map</span></a></code><div class="information">
                   <pre>@List.map : {α : Type u_1} → {β : Type u_2} → (α → β) → List α → List β</pre></div>
                 <code class="hl lean block" data-lean-context="examples"><span class="inter-text">
@@ -1051,13 +1052,13 @@ which takes a list as its second non-implicit argument:</p>
   </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2355", "#check @List.mapdef xs : List Nat := [1, 2, 3]\ndef f : Nat → Nat := fun x => x * x\n\n#eval xs.map fexample {xs : List α} {f : α → β} :\n    xs.map f = List.map f xs :=\n  rfl\n");</script>
+                addCopyButtonToElement("--verso-unique-2330", "#check @List.mapdef xs : List Nat := [1, 2, 3]\ndef f : Nat → Nat := fun x => x * x\n\n#eval xs.map fexample {xs : List α} {f : α → β} :\n    xs.map f = List.map f xs :=\n  rfl\n");</script>
               <p>
                 Here <code class="hl lean inline" data-lean-context="examples"><span class="const token" data-binding="const-xs" data-verso-hover="1049">xs</span><span class="unknown token" data-binding="">.</span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">map</span></a><span class="inter-text"> </span><span class="const token" data-binding="const-f" data-verso-hover="1050">f</span></code> is interpreted as <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Types/Linked-Lists/#List___map" title="Documentation for List.map in Lean Language Reference"><span class="const token" data-binding="const-List.map" data-verso-hover="566">List.map</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.338" data-verso-hover="23">f</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.334" data-verso-hover="107">xs</span></code>.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Structures-and-Records--Objects">
-                9.2. Objects</h2>
+              <h2 id="objects">
+                9.2. Objects<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=objects" title="Permalink">🔗</a></span></h2>
               <p>
                 We have been using constructors to create elements of a structure
 type. For structures containing many fields, this is often
@@ -1073,7 +1074,7 @@ the structure can be inferred from the expected type. For example, we
 use this notation to define “points.” The order that the fields are
 specified does not matter, so all the expressions below define the
 same point.</p>
-              <div class="example" id="--verso-unique-2356">
+              <div class="example" id="--verso-unique-2331">
                 <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
@@ -1091,7 +1092,7 @@ same point.</p>
   </span><span class="unknown token" data-binding="">{</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1051">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">20</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1051">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">10</span><span class="inter-text"> </span><span class="unknown token" data-binding="">}</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2356", "structure Point (α : Type u) where\n  x : α\n  y : α\n\n#check { x := 10, y := 20 : Point Nat }#check { y := 20, x := 10 : Point _ }#check ({ x := 10, y := 20 } : Point Nat)example : Point Nat :=\n  { y := 20, x := 10 }\n");</script>
+                addCopyButtonToElement("--verso-unique-2331", "structure Point (α : Type u) where\n  x : α\n  y : α\n\n#check { x := 10, y := 20 : Point Nat }#check { y := 20, x := 10 : Point _ }#check ({ x := 10, y := 20 } : Point Nat)example : Point Nat :=\n  { y := 20, x := 10 }\n");</script>
               <p>
                 Fields can be marked as implicit using curly braces.
 Implicit fields become implicit parameters to the constructor.</p>
@@ -1099,7 +1100,7 @@ Implicit fields become implicit parameters to the constructor.</p>
                 If the value of a field is not specified, Lean tries to infer it. If
 the unspecified fields cannot be inferred, Lean flags an error
 indicating the corresponding placeholder could not be synthesized.</p>
-              <div class="example" id="--verso-unique-2357">
+              <div class="example" id="--verso-unique-2332">
                 <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-MyStruct" data-verso-hover="1052">MyStruct</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-19">where</span><span class="inter-text">
     </span><span class="unknown token" data-binding="">{</span><span class="const token" data-binding="const-MyStruct.α" data-verso-hover="1053">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">}</span><span class="inter-text">
     </span><span class="unknown token" data-binding="">{</span><span class="const token" data-binding="const-MyStruct.β" data-verso-hover="1054">β</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-v" data-verso-hover="115">v</span><span class="unknown token" data-binding="">}</span><span class="inter-text">
@@ -1110,7 +1111,7 @@ indicating the corresponding placeholder could not be synthesized.</p>
                   <pre>{ α := Nat, β := Bool, a := 10, b := true } : MyStruct</pre></div>
                 <code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2357", "structure MyStruct where\n    {α : Type u}\n    {β : Type v}\n    a : α\n    b : β\n\n#check { a := 10, b := true : MyStruct }");</script>
+                addCopyButtonToElement("--verso-unique-2332", "structure MyStruct where\n    {α : Type u}\n    {β : Type v}\n    a : α\n    b : β\n\n#check { a := 10, b := true : MyStruct }");</script>
               <p>
                 <em>Record update</em> is another common operation which amounts to creating
 a new record object by modifying the value of one or more fields in an
@@ -1121,7 +1122,7 @@ assignments. If more than one record object is provided, then they are
 visited in order until Lean finds one that contains the unspecified
 field. Lean raises an error if any of the field names remain
 unspecified after all the objects are visited.</p>
-              <div class="example" id="--verso-unique-2358">
+              <div class="example" id="--verso-unique-2333">
                 <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
@@ -1152,15 +1153,15 @@ unspecified after all the objects are visited.</p>
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-421">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-r" data-verso-hover="1063">r</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-Point3.z" data-verso-hover="1061">z</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">5</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2358", "structure Point (α : Type u) where\n  x : α\n  y : α\nderiving Repr\n\ndef p : Point Nat :=\n  { x := 1, y := 2 }\n\n#eval { p with y := 3 }#eval { p with x := 4 }structure Point3 (α : Type u) where\n  x : α\n  y : α\n  z : α\n\ndef q : Point3 Nat :=\n  { x := 5, y := 5, z := 5 }\n\ndef r : Point3 Nat :=\n  { p, q with x := 6 }\n\nexample : r.x = 6 := rfl\nexample : r.y = 2 := rfl\nexample : r.z = 5 := rfl\n");</script>
+                addCopyButtonToElement("--verso-unique-2333", "structure Point (α : Type u) where\n  x : α\n  y : α\nderiving Repr\n\ndef p : Point Nat :=\n  { x := 1, y := 2 }\n\n#eval { p with y := 3 }#eval { p with x := 4 }structure Point3 (α : Type u) where\n  x : α\n  y : α\n  z : α\n\ndef q : Point3 Nat :=\n  { x := 5, y := 5, z := 5 }\n\ndef r : Point3 Nat :=\n  { p, q with x := 6 }\n\nexample : r.x = 6 := rfl\nexample : r.y = 2 := rfl\nexample : r.z = 5 := rfl\n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Structures-and-Records--Inheritance">
-                9.3. Inheritance</h2>
+              <h2 id="inheritance">
+                9.3. Inheritance<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=inheritance" title="Permalink">🔗</a></span></h2>
               <p>
                 We can <em>extend</em> existing structures by adding new fields. This feature
 allows us to simulate a form of <em>inheritance</em>.</p>
-              <div class="example" id="--verso-unique-2359">
+              <div class="example" id="--verso-unique-2334">
                 <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
@@ -1172,11 +1173,11 @@ allows us to simulate a form of <em>inheritance</em>.</p>
   </span><span class="const token" data-binding="const-ColorPoint.c" data-verso-hover="1067">c</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-Color" data-verso-hover="644">Color</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2359", "structure Point (α : Type u) where\n  x : α\n  y : α\n\ninductive Color where\n  | red | green | blue\n\nstructure ColorPoint (α : Type u) extends Point α where\n  c : Color\n");</script>
+                addCopyButtonToElement("--verso-unique-2334", "structure Point (α : Type u) where\n  x : α\n  y : α\n\ninductive Color where\n  | red | green | blue\n\nstructure ColorPoint (α : Type u) extends Point α where\n  c : Color\n");</script>
               <p>
                 In the next example, we define a structure using multiple inheritance,
 and then define an object using objects of the parent structures.</p>
-              <div class="example" id="--verso-unique-2360">
+              <div class="example" id="--verso-unique-2335">
                 <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-0">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Point" data-verso-hover="1038">Point</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-7243200735919010059" data-verso-hover="26">Type</span><span class="inter-text"> </span><span class="level-var token" data-binding="level-var-u" data-verso-hover="43">u</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-null-30">where</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.x" data-verso-hover="1040">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
   </span><span class="const token" data-binding="const-Point.y" data-verso-hover="1041">y</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="42">α</span><span class="inter-text">
@@ -1200,7 +1201,7 @@ and then define an object using objects of the parent structures.</p>
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-402">example</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="const token" data-binding="const-rgp" data-verso-hover="1075">rgp</span><span class="unknown token" data-binding="">.</span><span class="const token" data-binding="const-RGBValue.red" data-verso-hover="1070">red</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=</span><span class="inter-text"> </span><span class="typed token" data-binding="" data-verso-hover="11">200</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><span class="unknown token" data-binding="">rfl</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
-                addCopyButtonToElement("--verso-unique-2360", "structure Point (α : Type u) where\n  x : α\n  y : α\n  z : α\n\nstructure RGBValue where\n  red : Nat\n  green : Nat\n  blue : Nat\n\nstructure RedGreenPoint (α : Type u) extends Point α, RGBValue where\n  no_blue : blue = 0\n\ndef p : Point Nat :=\n  { x := 10, y := 10, z := 20 }\n\ndef rgp : RedGreenPoint Nat :=\n  { p with red := 200, green := 40, blue := 0, no_blue := rfl }\n\nexample : rgp.x   = 10 := rfl\nexample : rgp.red = 200 := rfl\n");</script>
+                addCopyButtonToElement("--verso-unique-2335", "structure Point (α : Type u) where\n  x : α\n  y : α\n  z : α\n\nstructure RGBValue where\n  red : Nat\n  green : Nat\n  blue : Nat\n\nstructure RedGreenPoint (α : Type u) extends Point α, RGBValue where\n  no_blue : blue = 0\n\ndef p : Point Nat :=\n  { x := 10, y := 10, z := 20 }\n\ndef rgp : RedGreenPoint Nat :=\n  { p with red := 200, green := 40, blue := 0, no_blue := rfl }\n\nexample : rgp.x   = 10 := rfl\nexample : rgp.red = 200 := rfl\n");</script>
               </section>
             </section>
           <nav class="prev-next-buttons">

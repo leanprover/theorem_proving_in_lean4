@@ -83,6 +83,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -186,6 +195,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -594,21 +604,27 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       let xref = {"Verso.Genre.Manual.section":
  {"title": "Sections or chapters of the manual",
   "description": null,
   "contents":
-  {"wildcards-and-overlapping-patterns":
+  {"working-with-propositions-as-types":
+   [{"id": "working-with-propositions-as-types",
+     "data":
+     {"title": "Working with Propositions as Types",
+      "shortTitle": null,
+      "sectionNum": "3.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Propositions and Proofs", "shortTitle": null, "number": "3"},
+       {"title": "Working with Propositions as Types",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/Propositions-and-Proofs/"}],
+   "wildcards-and-overlapping-patterns":
    [{"id": "wildcards-and-overlapping-patterns",
      "data":
      {"title": "Wildcards and Overlapping Patterns",
@@ -623,6 +639,21 @@ a.technical-term:hover {
         "shortTitle": null,
         "number": "2"}]},
      "address": "/Induction-and-Recursion/"}],
+   "what-makes-dependent-type-theory-dependent":
+   [{"id": "what-makes-dependent-type-theory-dependent",
+     "data":
+     {"title": "What makes dependent type theory dependent?",
+      "shortTitle": null,
+      "sectionNum": "2.8.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Dependent Type Theory", "shortTitle": null, "number": "2"},
+       {"title": "What makes dependent type theory dependent?",
+        "shortTitle": null,
+        "number": "8"}]},
+     "address": "/Dependent-Type-Theory/"}],
    "well-founded-recursion-and-induction":
    [{"id": "well-founded-recursion-and-induction",
      "data":
@@ -664,6 +695,32 @@ a.technical-term:hover {
        {"title": "Tactics", "shortTitle": null, "number": "5"},
        {"title": "Using the Simplifier", "shortTitle": null, "number": "7"}]},
      "address": "/Tactics/"}],
+   "using-the-library":
+   [{"id": "using-the-library",
+     "data":
+     {"title": "Using the Library",
+      "shortTitle": null,
+      "sectionNum": "6.11.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Using the Library", "shortTitle": null, "number": "11"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "types-as-objects":
+   [{"id": "types-as-objects",
+     "data":
+     {"title": "Types as objects",
+      "shortTitle": null,
+      "sectionNum": "2.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Dependent Type Theory", "shortTitle": null, "number": "2"},
+       {"title": "Types as objects", "shortTitle": null, "number": "2"}]},
+     "address": "/Dependent-Type-Theory/"}],
    "type-classes":
    [{"id": "type-classes",
      "data":
@@ -676,6 +733,51 @@ a.technical-term:hover {
         "number": null},
        {"title": "Type Classes", "shortTitle": null, "number": "10"}]},
      "address": "/Type-Classes/"}],
+   "the-universal-quantifier":
+   [{"id": "the-universal-quantifier",
+     "data":
+     {"title": "The Universal Quantifier",
+      "shortTitle": null,
+      "sectionNum": "4.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Quantifiers and Equality", "shortTitle": null, "number": "4"},
+       {"title": "The Universal Quantifier",
+        "shortTitle": null,
+        "number": "1"}]},
+     "address": "/Quantifiers-and-Equality/"}],
+   "the-law-of-the-excluded-middle":
+   [{"id": "the-law-of-the-excluded-middle",
+     "data":
+     {"title": "The Law of the Excluded Middle",
+      "shortTitle": null,
+      "sectionNum": "12.6.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Axioms and Computation", "shortTitle": null, "number": "12"},
+       {"title": "The Law of the Excluded Middle",
+        "shortTitle": null,
+        "number": "6"}]},
+     "address": "/Axioms-and-Computation/"}],
+   "the-existential-quantifier":
+   [{"id": "the-existential-quantifier",
+     "data":
+     {"title": "The Existential Quantifier",
+      "shortTitle": null,
+      "sectionNum": "4.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Quantifiers and Equality", "shortTitle": null, "number": "4"},
+       {"title": "The Existential Quantifier",
+        "shortTitle": null,
+        "number": "4"}]},
+     "address": "/Quantifiers-and-Equality/"}],
    "tactics-for-inductive-types":
    [{"id": "tactics-for-inductive-types",
      "data":
@@ -691,6 +793,66 @@ a.technical-term:hover {
         "shortTitle": null,
         "number": "6"}]},
      "address": "/Inductive-Types/"}],
+   "tactic-combinators":
+   [{"id": "tactic-combinators",
+     "data":
+     {"title": "Tactic Combinators",
+      "shortTitle": null,
+      "sectionNum": "5.5.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Tactics", "shortTitle": null, "number": "5"},
+       {"title": "Tactic Combinators", "shortTitle": null, "number": "5"}]},
+     "address": "/Tactics/"}],
+   "sugar-for-simple-functions":
+   [{"id": "sugar-for-simple-functions",
+     "data":
+     {"title": "Sugar for Simple Functions",
+      "shortTitle": null,
+      "sectionNum": "6.14.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Sugar for Simple Functions",
+        "shortTitle": null,
+        "number": "14"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "structuring-tactic-proofs":
+   [{"id": "structuring-tactic-proofs",
+     "data":
+     {"title": "Structuring Tactic Proofs",
+      "shortTitle": null,
+      "sectionNum": "5.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Tactics", "shortTitle": null, "number": "5"},
+       {"title": "Structuring Tactic Proofs",
+        "shortTitle": null,
+        "number": "4"}]},
+     "address": "/Tactics/"}],
+   "structuring-conversion-tactics":
+   [{"id": "structuring-conversion-tactics",
+     "data":
+     {"title": "Structuring conversion tactics",
+      "shortTitle": null,
+      "sectionNum": "11.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Conversion Tactic Mode",
+        "shortTitle": null,
+        "number": "11"},
+       {"title": "Structuring conversion tactics",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/The-Conversion-Tactic-Mode/"}],
    "structures-and-records":
    [{"id": "structures-and-records",
      "data":
@@ -703,6 +865,47 @@ a.technical-term:hover {
         "number": null},
        {"title": "Structures and Records", "shortTitle": null, "number": "9"}]},
      "address": "/Structures-and-Records/"}],
+   "structural-recursion-and-induction":
+   [{"id": "structural-recursion-and-induction",
+     "data":
+     {"title": "Structural Recursion and Induction",
+      "shortTitle": null,
+      "sectionNum": "8.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Induction and Recursion", "shortTitle": null, "number": "8"},
+       {"title": "Structural Recursion and Induction",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/Induction-and-Recursion/"}],
+   "split-tactic":
+   [{"id": "split-tactic",
+     "data":
+     {"title": "Split Tactic",
+      "shortTitle": null,
+      "sectionNum": "5.8.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Tactics", "shortTitle": null, "number": "5"},
+       {"title": "Split Tactic", "shortTitle": null, "number": "8"}]},
+     "address": "/Tactics/"}],
+   "simple-type-theory":
+   [{"id": "simple-type-theory",
+     "data":
+     {"title": "Simple Type Theory",
+      "shortTitle": null,
+      "sectionNum": "2.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Dependent Type Theory", "shortTitle": null, "number": "2"},
+       {"title": "Simple Type Theory", "shortTitle": null, "number": "1"}]},
+     "address": "/Dependent-Type-Theory/"}],
    "setting-options":
    [{"id": "setting-options",
      "data":
@@ -716,6 +919,45 @@ a.technical-term:hover {
        {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
        {"title": "Setting Options", "shortTitle": null, "number": "10"}]},
      "address": "/Interacting-with-Lean/"}],
+   "scoped-instances":
+   [{"id": "scoped-instances",
+     "data":
+     {"title": "Scoped Instances",
+      "shortTitle": null,
+      "sectionNum": "10.7.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "Scoped Instances", "shortTitle": null, "number": "7"}]},
+     "address": "/Type-Classes/"}],
+   "rewriting":
+   [{"id": "rewriting",
+     "data":
+     {"title": "Rewriting",
+      "shortTitle": null,
+      "sectionNum": "5.6.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Tactics", "shortTitle": null, "number": "5"},
+       {"title": "Rewriting", "shortTitle": null, "number": "6"}]},
+     "address": "/Tactics/"}],
+   "quotients":
+   [{"id": "quotients",
+     "data":
+     {"title": "Quotients",
+      "shortTitle": null,
+      "sectionNum": "12.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Axioms and Computation", "shortTitle": null, "number": "12"},
+       {"title": "Quotients", "shortTitle": null, "number": "4"}]},
+     "address": "/Axioms-and-Computation/"}],
    "quantifiers-and-equality":
    [{"id": "quantifiers-and-equality",
      "data":
@@ -730,6 +972,19 @@ a.technical-term:hover {
         "shortTitle": null,
         "number": "4"}]},
      "address": "/Quantifiers-and-Equality/"}],
+   "propositions-as-types":
+   [{"id": "propositions-as-types",
+     "data":
+     {"title": "Propositions as Types",
+      "shortTitle": null,
+      "sectionNum": "3.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Propositions and Proofs", "shortTitle": null, "number": "3"},
+       {"title": "Propositions as Types", "shortTitle": null, "number": "1"}]},
+     "address": "/Propositions-and-Proofs/"}],
    "propositions-and-proofs":
    [{"id": "propositions-and-proofs",
      "data":
@@ -744,6 +999,49 @@ a.technical-term:hover {
         "shortTitle": null,
         "number": "3"}]},
      "address": "/Propositions-and-Proofs/"}],
+   "propositional-logic":
+   [{"id": "propositional-logic",
+     "data":
+     {"title": "Propositional Logic",
+      "shortTitle": null,
+      "sectionNum": "3.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Propositions and Proofs", "shortTitle": null, "number": "3"},
+       {"title": "Propositional Logic", "shortTitle": null, "number": "3"}]},
+     "address": "/Propositions-and-Proofs/"}],
+   "propositional-extensionality":
+   [{"id": "propositional-extensionality",
+     "data":
+     {"title": "Propositional Extensionality",
+      "shortTitle": null,
+      "sectionNum": "12.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Axioms and Computation", "shortTitle": null, "number": "12"},
+       {"title": "Propositional Extensionality",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/Axioms-and-Computation/"}],
+   "pattern-matching-conv":
+   [{"id": "pattern-matching-conv",
+     "data":
+     {"title": "Pattern matching",
+      "shortTitle": null,
+      "sectionNum": "11.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Conversion Tactic Mode",
+        "shortTitle": null,
+        "number": "11"},
+       {"title": "Pattern matching", "shortTitle": null, "number": "2"}]},
+     "address": "/The-Conversion-Tactic-Mode/"}],
    "pattern-matching":
    [{"id": "pattern-matching",
      "data":
@@ -757,6 +1055,93 @@ a.technical-term:hover {
        {"title": "Induction and Recursion", "shortTitle": null, "number": "8"},
        {"title": "Pattern Matching", "shortTitle": null, "number": "1"}]},
      "address": "/Induction-and-Recursion/"}],
+   "output-parameters":
+   [{"id": "output-parameters",
+     "data":
+     {"title": "Output Parameters",
+      "shortTitle": null,
+      "sectionNum": "10.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "Output Parameters", "shortTitle": null, "number": "4"}]},
+     "address": "/Type-Classes/"}],
+   "other-tactics-inside-conversion-mode":
+   [{"id": "other-tactics-inside-conversion-mode",
+     "data":
+     {"title": "Other tactics inside conversion mode",
+      "shortTitle": null,
+      "sectionNum": "11.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Conversion Tactic Mode",
+        "shortTitle": null,
+        "number": "11"},
+       {"title": "Other tactics inside conversion mode",
+        "shortTitle": null,
+        "number": "4"}]},
+     "address": "/The-Conversion-Tactic-Mode/"}],
+   "other-recursive-data-types":
+   [{"id": "other-recursive-data-types",
+     "data":
+     {"title": "Other Recursive Data Types",
+      "shortTitle": null,
+      "sectionNum": "7.5.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Inductive Types", "shortTitle": null, "number": "7"},
+       {"title": "Other Recursive Data Types",
+        "shortTitle": null,
+        "number": "5"}]},
+     "address": "/Inductive-Types/"}],
+   "objects":
+   [{"id": "objects",
+     "data":
+     {"title": "Objects",
+      "shortTitle": null,
+      "sectionNum": "9.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Structures and Records", "shortTitle": null, "number": "9"},
+       {"title": "Objects", "shortTitle": null, "number": "2"}]},
+     "address": "/Structures-and-Records/"}],
+   "numerals":
+   [{"id": "numerals",
+     "data":
+     {"title": "Numerals",
+      "shortTitle": null,
+      "sectionNum": "10.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "Numerals", "shortTitle": null, "number": "3"}]},
+     "address": "/Type-Classes/"}],
+   "notations-and-precedence":
+   [{"id": "notations-and-precedence",
+     "data":
+     {"title": "Notations and Precedence",
+      "shortTitle": null,
+      "sectionNum": "6.7.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Notation", "shortTitle": null, "number": "7"},
+       {"title": "Notations and Precedence",
+        "shortTitle": null,
+        "number": "1"}]},
+     "address": "/Interacting-with-Lean/"}],
    "notation":
    [{"id": "notation",
      "data":
@@ -770,6 +1155,20 @@ a.technical-term:hover {
        {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
        {"title": "Notation", "shortTitle": null, "number": "7"}]},
      "address": "/Interacting-with-Lean/"}],
+   "negation-and-falsity":
+   [{"id": "negation-and-falsity",
+     "data":
+     {"title": "Negation and Falsity",
+      "shortTitle": null,
+      "sectionNum": "3.3.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Propositions and Proofs", "shortTitle": null, "number": "3"},
+       {"title": "Propositional Logic", "shortTitle": null, "number": "3"},
+       {"title": "Negation and Falsity", "shortTitle": null, "number": "3"}]},
+     "address": "/Propositions-and-Proofs/"}],
    "namespaces":
    [{"id": "namespaces",
      "data":
@@ -783,6 +1182,255 @@ a.technical-term:hover {
        {"title": "Dependent Type Theory", "shortTitle": null, "number": "2"},
        {"title": "Namespaces", "shortTitle": null, "number": "7"}]},
      "address": "/Dependent-Type-Theory/"}],
+   "named-arguments":
+   [{"id": "named-arguments",
+     "data":
+     {"title": "Named Arguments",
+      "shortTitle": null,
+      "sectionNum": "6.15.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Named Arguments", "shortTitle": null, "number": "15"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "mutual-recursion":
+   [{"id": "mutual-recursion",
+     "data":
+     {"title": "Mutual Recursion",
+      "shortTitle": null,
+      "sectionNum": "8.7.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Induction and Recursion", "shortTitle": null, "number": "8"},
+       {"title": "Mutual Recursion", "shortTitle": null, "number": "7"}]},
+     "address": "/Induction-and-Recursion/"}],
+   "mutual-and-nested-inductive-types":
+   [{"id": "mutual-and-nested-inductive-types",
+     "data":
+     {"title": "Mutual and Nested Inductive Types",
+      "shortTitle": null,
+      "sectionNum": "7.9.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Inductive Types", "shortTitle": null, "number": "7"},
+       {"title": "Mutual and Nested Inductive Types",
+        "shortTitle": null,
+        "number": "9"}]},
+     "address": "/Inductive-Types/"}],
+   "more-tactics":
+   [{"id": "more-tactics",
+     "data":
+     {"title": "More Tactics",
+      "shortTitle": null,
+      "sectionNum": "5.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Tactics", "shortTitle": null, "number": "5"},
+       {"title": "More Tactics", "shortTitle": null, "number": "3"}]},
+     "address": "/Tactics/"}],
+   "more-on-the-proof-language":
+   [{"id": "more-on-the-proof-language",
+     "data":
+     {"title": "More on the Proof Language",
+      "shortTitle": null,
+      "sectionNum": "4.5.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Quantifiers and Equality", "shortTitle": null, "number": "4"},
+       {"title": "More on the Proof Language",
+        "shortTitle": null,
+        "number": "5"}]},
+     "address": "/Quantifiers-and-Equality/"}],
+   "more-on-sections":
+   [{"id": "more-on-sections",
+     "data":
+     {"title": "More on Sections",
+      "shortTitle": null,
+      "sectionNum": "6.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "More on Sections", "shortTitle": null, "number": "3"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "more-on-namespaces":
+   [{"id": "more-on-namespaces",
+     "data":
+     {"title": "More on Namespaces",
+      "shortTitle": null,
+      "sectionNum": "6.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "More on Namespaces", "shortTitle": null, "number": "4"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "more-on-implicit-arguments":
+   [{"id": "more-on-implicit-arguments",
+     "data":
+     {"title": "More on Implicit Arguments",
+      "shortTitle": null,
+      "sectionNum": "6.6.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "More on Implicit Arguments",
+        "shortTitle": null,
+        "number": "6"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "messages":
+   [{"id": "messages",
+     "data":
+     {"title": "Messages",
+      "shortTitle": null,
+      "sectionNum": "6.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Messages", "shortTitle": null, "number": "1"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "match-expressions":
+   [{"id": "match-expressions",
+     "data":
+     {"title": "Match Expressions",
+      "shortTitle": null,
+      "sectionNum": "8.10.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Induction and Recursion", "shortTitle": null, "number": "8"},
+       {"title": "Match Expressions", "shortTitle": null, "number": "10"}]},
+     "address": "/Induction-and-Recursion/"}],
+   "managing-type-class-inference":
+   [{"id": "managing-type-class-inference",
+     "data":
+     {"title": "Managing Type Class Inference",
+      "shortTitle": null,
+      "sectionNum": "10.9.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "Managing Type Class Inference",
+        "shortTitle": null,
+        "number": "9"}]},
+     "address": "/Type-Classes/"}],
+   "logical-equivalence":
+   [{"id": "logical-equivalence",
+     "data":
+     {"title": "Logical Equivalence",
+      "shortTitle": null,
+      "sectionNum": "3.3.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Propositions and Proofs", "shortTitle": null, "number": "3"},
+       {"title": "Propositional Logic", "shortTitle": null, "number": "3"},
+       {"title": "Logical Equivalence", "shortTitle": null, "number": "4"}]},
+     "address": "/Propositions-and-Proofs/"}],
+   "local-recursive-declarations":
+   [{"id": "local-recursive-declarations",
+     "data":
+     {"title": "Local recursive declarations",
+      "shortTitle": null,
+      "sectionNum": "8.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Induction and Recursion", "shortTitle": null, "number": "8"},
+       {"title": "Local recursive declarations",
+        "shortTitle": null,
+        "number": "4"}]},
+     "address": "/Induction-and-Recursion/"}],
+   "local-instances":
+   [{"id": "local-instances",
+     "data":
+     {"title": "Local Instances",
+      "shortTitle": null,
+      "sectionNum": "10.6.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "Local Instances", "shortTitle": null, "number": "6"}]},
+     "address": "/Type-Classes/"}],
+   "local-definitions":
+   [{"id": "local-definitions",
+     "data":
+     {"title": "Local Definitions",
+      "shortTitle": null,
+      "sectionNum": "2.5.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Dependent Type Theory", "shortTitle": null, "number": "2"},
+       {"title": "Local Definitions", "shortTitle": null, "number": "5"}]},
+     "address": "/Dependent-Type-Theory/"}],
+   "introducing-auxiliary-subgoals":
+   [{"id": "introducing-auxiliary-subgoals",
+     "data":
+     {"title": "Introducing Auxiliary Subgoals",
+      "shortTitle": null,
+      "sectionNum": "3.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Propositions and Proofs", "shortTitle": null, "number": "3"},
+       {"title": "Introducing Auxiliary Subgoals",
+        "shortTitle": null,
+        "number": "4"}]},
+     "address": "/Propositions-and-Proofs/"}],
+   "inheritance":
+   [{"id": "inheritance",
+     "data":
+     {"title": "Inheritance",
+      "shortTitle": null,
+      "sectionNum": "9.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Structures and Records", "shortTitle": null, "number": "9"},
+       {"title": "Inheritance", "shortTitle": null, "number": "3"}]},
+     "address": "/Structures-and-Records/"}],
+   "inductively-defined-propositions":
+   [{"id": "inductively-defined-propositions",
+     "data":
+     {"title": "Inductively Defined Propositions",
+      "shortTitle": null,
+      "sectionNum": "7.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Inductive Types", "shortTitle": null, "number": "7"},
+       {"title": "Inductively Defined Propositions",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/Inductive-Types/"}],
    "inductive-types":
    [{"id": "inductive-types",
      "data":
@@ -835,6 +1483,32 @@ a.technical-term:hover {
        {"title": "Induction and Recursion", "shortTitle": null, "number": "8"},
        {"title": "Inaccessible Patterns", "shortTitle": null, "number": "9"}]},
      "address": "/Induction-and-Recursion/"}],
+   "importing-files":
+   [{"id": "importing-files",
+     "data":
+     {"title": "Importing Files",
+      "shortTitle": null,
+      "sectionNum": "6.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Importing Files", "shortTitle": null, "number": "2"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "implicit-lambdas":
+   [{"id": "implicit-lambdas",
+     "data":
+     {"title": "Implicit Lambdas",
+      "shortTitle": null,
+      "sectionNum": "6.13.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Implicit Lambdas", "shortTitle": null, "number": "13"}]},
+     "address": "/Interacting-with-Lean/"}],
    "implicit-arguments":
    [{"id": "implicit-arguments",
      "data":
@@ -848,6 +1522,158 @@ a.technical-term:hover {
        {"title": "Dependent Type Theory", "shortTitle": null, "number": "2"},
        {"title": "Implicit Arguments", "shortTitle": null, "number": "9"}]},
      "address": "/Dependent-Type-Theory/"}],
+   "historical-and-philosophical-context":
+   [{"id": "historical-and-philosophical-context",
+     "data":
+     {"title": "Historical and Philosophical Context",
+      "shortTitle": null,
+      "sectionNum": "12.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Axioms and Computation", "shortTitle": null, "number": "12"},
+       {"title": "Historical and Philosophical Context",
+        "shortTitle": null,
+        "number": "1"}]},
+     "address": "/Axioms-and-Computation/"}],
+   "functional-induction":
+   [{"id": "functional-induction",
+     "data":
+     {"title": "Functional Induction",
+      "shortTitle": null,
+      "sectionNum": "8.6.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Induction and Recursion", "shortTitle": null, "number": "8"},
+       {"title": "Functional Induction", "shortTitle": null, "number": "6"}]},
+     "address": "/Induction-and-Recursion/"}],
+   "function-extensionality":
+   [{"id": "function-extensionality",
+     "data":
+     {"title": "Function Extensionality",
+      "shortTitle": null,
+      "sectionNum": "12.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Axioms and Computation", "shortTitle": null, "number": "12"},
+       {"title": "Function Extensionality",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/Axioms-and-Computation/"}],
+   "function-abstraction-and-evaluation":
+   [{"id": "function-abstraction-and-evaluation",
+     "data":
+     {"title": "Function Abstraction and Evaluation",
+      "shortTitle": null,
+      "sectionNum": "2.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Dependent Type Theory", "shortTitle": null, "number": "2"},
+       {"title": "Function Abstraction and Evaluation",
+        "shortTitle": null,
+        "number": "3"}]},
+     "address": "/Dependent-Type-Theory/"}],
+   "extensible-tactics":
+   [{"id": "extensible-tactics",
+     "data":
+     {"title": "Extensible Tactics",
+      "shortTitle": null,
+      "sectionNum": "5.9.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Tactics", "shortTitle": null, "number": "5"},
+       {"title": "Extensible Tactics", "shortTitle": null, "number": "9"}]},
+     "address": "/Tactics/"}],
+   "examples-of-propositional-validities":
+   [{"id": "examples-of-propositional-validities",
+     "data":
+     {"title": "Examples of Propositional Validities",
+      "shortTitle": null,
+      "sectionNum": "3.6.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Propositions and Proofs", "shortTitle": null, "number": "3"},
+       {"title": "Examples of Propositional Validities",
+        "shortTitle": null,
+        "number": "6"}]},
+     "address": "/Propositions-and-Proofs/"}],
+   "equality":
+   [{"id": "equality",
+     "data":
+     {"title": "Equality",
+      "shortTitle": null,
+      "sectionNum": "4.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Quantifiers and Equality", "shortTitle": null, "number": "4"},
+       {"title": "Equality", "shortTitle": null, "number": "2"}]},
+     "address": "/Quantifiers-and-Equality/"}],
+   "enumerated-types":
+   [{"id": "enumerated-types",
+     "data":
+     {"title": "Enumerated Types",
+      "shortTitle": null,
+      "sectionNum": "7.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Inductive Types", "shortTitle": null, "number": "7"},
+       {"title": "Enumerated Types", "shortTitle": null, "number": "1"}]},
+     "address": "/Inductive-Types/"}],
+   "entering-tactic-mode":
+   [{"id": "entering-tactic-mode",
+     "data":
+     {"title": "Entering Tactic Mode",
+      "shortTitle": null,
+      "sectionNum": "5.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Tactics", "shortTitle": null, "number": "5"},
+       {"title": "Entering Tactic Mode", "shortTitle": null, "number": "1"}]},
+     "address": "/Tactics/"}],
+   "displaying-information":
+   [{"id": "displaying-information",
+     "data":
+     {"title": "Displaying Information",
+      "shortTitle": null,
+      "sectionNum": "6.9.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Displaying Information", "shortTitle": null, "number": "9"}]},
+     "address": "/Interacting-with-Lean/"}],
+   "disjunction":
+   [{"id": "disjunction",
+     "data":
+     {"title": "Disjunction",
+      "shortTitle": null,
+      "sectionNum": "3.3.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Propositions and Proofs", "shortTitle": null, "number": "3"},
+       {"title": "Propositional Logic", "shortTitle": null, "number": "3"},
+       {"title": "Disjunction", "shortTitle": null, "number": "2"}]},
+     "address": "/Propositions-and-Proofs/"}],
    "dependent-type-theory":
    [{"id": "dependent-type-theory",
      "data":
@@ -875,6 +1701,19 @@ a.technical-term:hover {
         "shortTitle": null,
         "number": "8"}]},
      "address": "/Induction-and-Recursion/"}],
+   "definitions":
+   [{"id": "definitions",
+     "data":
+     {"title": "Definitions",
+      "shortTitle": null,
+      "sectionNum": "2.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Dependent Type Theory", "shortTitle": null, "number": "2"},
+       {"title": "Definitions", "shortTitle": null, "number": "4"}]},
+     "address": "/Dependent-Type-Theory/"}],
    "defining-the-natural-numbers":
    [{"id": "defining-the-natural-numbers",
      "data":
@@ -890,6 +1729,32 @@ a.technical-term:hover {
         "shortTitle": null,
         "number": "4"}]},
      "address": "/Inductive-Types/"}],
+   "default-instances":
+   [{"id": "default-instances",
+     "data":
+     {"title": "Default Instances",
+      "shortTitle": null,
+      "sectionNum": "10.5.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "Default Instances", "shortTitle": null, "number": "5"}]},
+     "address": "/Type-Classes/"}],
+   "declaring-structures":
+   [{"id": "declaring-structures",
+     "data":
+     {"title": "Declaring Structures",
+      "shortTitle": null,
+      "sectionNum": "9.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Structures and Records", "shortTitle": null, "number": "9"},
+       {"title": "Declaring Structures", "shortTitle": null, "number": "1"}]},
+     "address": "/Structures-and-Records/"}],
    "decidable-propositions":
    [{"id": "decidable-propositions",
      "data":
@@ -917,6 +1782,21 @@ a.technical-term:hover {
         "shortTitle": null,
         "number": "11"}]},
      "address": "/The-Conversion-Tactic-Mode/"}],
+   "constructors-with-arguments":
+   [{"id": "constructors-with-arguments",
+     "data":
+     {"title": "Constructors with Arguments",
+      "shortTitle": null,
+      "sectionNum": "7.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Inductive Types", "shortTitle": null, "number": "7"},
+       {"title": "Constructors with Arguments",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/Inductive-Types/"}],
    "conjunction":
    [{"id": "conjunction",
      "data":
@@ -931,6 +1811,49 @@ a.technical-term:hover {
        {"title": "Propositional Logic", "shortTitle": null, "number": "3"},
        {"title": "Conjunction", "shortTitle": null, "number": "1"}]},
      "address": "/Propositions-and-Proofs/"}],
+   "computers-and-theorem-proving":
+   [{"id": "computers-and-theorem-proving",
+     "data":
+     {"title": "Computers and Theorem Proving",
+      "shortTitle": null,
+      "sectionNum": "1.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "1"},
+       {"title": "Computers and Theorem Proving",
+        "shortTitle": null,
+        "number": "1"}]},
+     "address": "/Introduction/"}],
+   "coercions-using-type-classes":
+   [{"id": "coercions-using-type-classes",
+     "data":
+     {"title": "Coercions using Type Classes",
+      "shortTitle": null,
+      "sectionNum": "10.10.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "Coercions using Type Classes",
+        "shortTitle": null,
+        "number": "10"}]},
+     "address": "/Type-Classes/"}],
+   "coercions":
+   [{"id": "coercions",
+     "data":
+     {"title": "Coercions",
+      "shortTitle": null,
+      "sectionNum": "6.8.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Coercions", "shortTitle": null, "number": "8"}]},
+     "address": "/Interacting-with-Lean/"}],
    "classical-logic":
    [{"id": "classical-logic",
      "data":
@@ -957,6 +1880,19 @@ a.technical-term:hover {
        {"title": "Axioms and Computation", "shortTitle": null, "number": "12"},
        {"title": "Choice", "shortTitle": null, "number": "5"}]},
      "address": "/Axioms-and-Computation/"}],
+   "chaining-instances":
+   [{"id": "chaining-instances",
+     "data":
+     {"title": "Chaining Instances",
+      "shortTitle": null,
+      "sectionNum": "10.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "Chaining Instances", "shortTitle": null, "number": "1"}]},
+     "address": "/Type-Classes/"}],
    "calculational-proofs":
    [{"id": "calculational-proofs",
      "data":
@@ -970,6 +1906,36 @@ a.technical-term:hover {
        {"title": "Quantifiers and Equality", "shortTitle": null, "number": "4"},
        {"title": "Calculational Proofs", "shortTitle": null, "number": "3"}]},
      "address": "/Quantifiers-and-Equality/"}],
+   "basic-tactics":
+   [{"id": "basic-tactics",
+     "data":
+     {"title": "Basic Tactics",
+      "shortTitle": null,
+      "sectionNum": "5.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Tactics", "shortTitle": null, "number": "5"},
+       {"title": "Basic Tactics", "shortTitle": null, "number": "2"}]},
+     "address": "/Tactics/"}],
+   "basic-navigation-and-rewriting":
+   [{"id": "basic-navigation-and-rewriting",
+     "data":
+     {"title": "Basic navigation and rewriting",
+      "shortTitle": null,
+      "sectionNum": "11.1.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "The Conversion Tactic Mode",
+        "shortTitle": null,
+        "number": "11"},
+       {"title": "Basic navigation and rewriting",
+        "shortTitle": null,
+        "number": "1"}]},
+     "address": "/The-Conversion-Tactic-Mode/"}],
    "axioms-and-computation":
    [{"id": "axioms-and-computation",
      "data":
@@ -997,6 +1963,21 @@ a.technical-term:hover {
        {"title": "Inductive Types", "shortTitle": null, "number": "7"},
        {"title": "Axiomatic Details", "shortTitle": null, "number": "8"}]},
      "address": "/Inductive-Types/"}],
+   "auto-bound-implicit-arguments":
+   [{"id": "auto-bound-implicit-arguments",
+     "data":
+     {"title": "Auto Bound Implicit Arguments",
+      "shortTitle": null,
+      "sectionNum": "6.12.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
+       {"title": "Auto Bound Implicit Arguments",
+        "shortTitle": null,
+        "number": "12"}]},
+     "address": "/Interacting-with-Lean/"}],
    "attributes":
    [{"id": "attributes",
      "data":
@@ -1010,6 +1991,58 @@ a.technical-term:hover {
        {"title": "Interacting with Lean", "shortTitle": null, "number": "6"},
        {"title": "Attributes", "shortTitle": null, "number": "5"}]},
      "address": "/Interacting-with-Lean/"}],
+   "acknowledgments":
+   [{"id": "acknowledgments",
+     "data":
+     {"title": "Acknowledgments",
+      "shortTitle": null,
+      "sectionNum": "1.4.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "1"},
+       {"title": "Acknowledgments", "shortTitle": null, "number": "4"}]},
+     "address": "/Introduction/"}],
+   "about-this-book":
+   [{"id": "about-this-book",
+     "data":
+     {"title": "About this Book",
+      "shortTitle": null,
+      "sectionNum": "1.3.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "1"},
+       {"title": "About this Book", "shortTitle": null, "number": "3"}]},
+     "address": "/Introduction/"}],
+   "about-lean":
+   [{"id": "about-lean",
+     "data":
+     {"title": "About Lean",
+      "shortTitle": null,
+      "sectionNum": "1.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Introduction", "shortTitle": null, "number": "1"},
+       {"title": "About Lean", "shortTitle": null, "number": "2"}]},
+     "address": "/Introduction/"}],
+   "ToString":
+   [{"id": "ToString",
+     "data":
+     {"title": "ToString",
+      "shortTitle": null,
+      "sectionNum": "10.2.",
+      "context":
+      [{"title": "Theorem Proving in Lean 4",
+        "shortTitle": null,
+        "number": null},
+       {"title": "Type Classes", "shortTitle": null, "number": "10"},
+       {"title": "ToString", "shortTitle": null, "number": "2"}]},
+     "address": "/Type-Classes/"}],
    "Intro":
    [{"id": "Intro",
      "data":

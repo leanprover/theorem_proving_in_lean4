@@ -84,6 +84,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -187,6 +196,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -595,15 +605,6 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       
 window.onload = () => {
@@ -824,7 +825,7 @@ window.onload = () => {
             <div class="split-toc">
               <div class="title">
                 <label for="--verso-manual-toc-Theorem-Proving-in-Lean-4--Tactics" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-Theorem-Proving-in-Lean-4--Tactics" checked="checked"></label><span class="number">5.</span> <span class="current"><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics">Tactics</a></span></div>
-              <table><tr class="numbered"><td class="num">5.1.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Entering-Tactic-Mode">Entering Tactic Mode</a></td></tr><tr class="numbered"><td class="num">5.2.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Basic-Tactics">Basic Tactics</a></td></tr><tr class="numbered"><td class="num">5.3.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--More-Tactics">More Tactics</a></td></tr><tr class="numbered"><td class="num">5.4.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Structuring-Tactic-Proofs">Structuring Tactic Proofs</a></td></tr><tr class="numbered"><td class="num">5.5.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Tactic-Combinators">Tactic Combinators</a></td></tr><tr class="numbered"><td class="num">5.6.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Rewriting">Rewriting</a></td></tr><tr class="numbered"><td class="num">5.7.</td><td><a href="Tactics/#using-the-simplifier">Using the Simplifier</a></td></tr><tr class="numbered"><td class="num">5.8.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Split-Tactic">Split Tactic</a></td></tr><tr class="numbered"><td class="num">5.9.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Extensible-Tactics">Extensible Tactics</a></td></tr><tr class="numbered"><td class="num">5.10.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Exercises">Exercises</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">5.1.</td><td><a href="Tactics/#entering-tactic-mode">Entering Tactic Mode</a></td></tr><tr class="numbered"><td class="num">5.2.</td><td><a href="Tactics/#basic-tactics">Basic Tactics</a></td></tr><tr class="numbered"><td class="num">5.3.</td><td><a href="Tactics/#more-tactics">More Tactics</a></td></tr><tr class="numbered"><td class="num">5.4.</td><td><a href="Tactics/#structuring-tactic-proofs">Structuring Tactic Proofs</a></td></tr><tr class="numbered"><td class="num">5.5.</td><td><a href="Tactics/#tactic-combinators">Tactic Combinators</a></td></tr><tr class="numbered"><td class="num">5.6.</td><td><a href="Tactics/#rewriting">Rewriting</a></td></tr><tr class="numbered"><td class="num">5.7.</td><td><a href="Tactics/#using-the-simplifier">Using the Simplifier</a></td></tr><tr class="numbered"><td class="num">5.8.</td><td><a href="Tactics/#split-tactic">Split Tactic</a></td></tr><tr class="numbered"><td class="num">5.9.</td><td><a href="Tactics/#extensible-tactics">Extensible Tactics</a></td></tr><tr class="numbered"><td class="num">5.10.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics--Exercises">Exercises</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
@@ -864,8 +865,8 @@ instruction. But they can also be shorter and easier to
 write. Moreover, tactics offer a gateway to using Lean's automation,
 since automated procedures are themselves tactics.</p>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Tactics--Entering-Tactic-Mode">
-                5.1. Entering Tactic Mode</h2>
+              <h2 id="entering-tactic-mode">
+                5.1. Entering Tactic Mode<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=entering-tactic-mode" title="Permalink">🔗</a></span></h2>
               <p>
                 Conceptually, stating a theorem or introducing a <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">have</span></code> statement
 creates a goal, namely, the goal of constructing a term with the
@@ -1053,8 +1054,8 @@ structuring proofs:</p>
                 addCopyButtonToElement("--verso-unique-361", "theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by\n  apply And.intro\n  . exact hp\n  . apply And.intro\n    . exact hq\n    . exact hp\n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Tactics--Basic-Tactics">
-                5.2. Basic Tactics</h2>
+              <h2 id="basic-tactics">
+                5.2. Basic Tactics<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=basic-tactics" title="Permalink">🔗</a></span></h2>
               <p>
                 In addition to <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Tactic-Proofs/Tactic-Reference/#apply" title="Documentation for tactic in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Tactic.apply-77" data-verso-hover="344">apply</span></a></code> and <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Tactic-Proofs/Tactic-Reference/#exact" title="Documentation for tactic in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Tactic.exact-201" data-verso-hover="345">exact</span></a></code>, another useful tactic is
 <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Tactic-Proofs/Tactic-Reference/#intro" title="Documentation for tactic in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Tactic.intro-97" data-verso-hover="347">intro</span></a></code>, which introduces a hypothesis. What follows is an example
@@ -1356,8 +1357,8 @@ context:</p>
 <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.208" data-verso-hover="11">x</span></code> by <code class="hl lean inline" data-lean-context="examples"><span class="typed token" data-binding="" data-verso-hover="11">3</span></code> again. The <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Tactic-Proofs/Tactic-Reference/#rw" title="Documentation for tactic in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Tactic.rwSeq-80" data-verso-hover="255">rw</span></a></code> tactic will be discussed below.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Tactics--More-Tactics">
-                5.3. More Tactics</h2>
+              <h2 id="more-tactics">
+                5.3. More Tactics<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=more-tactics" title="Permalink">🔗</a></span></h2>
               <p>
                 Some additional tactics are useful for constructing and destructing
 propositions and data. For example, when applied to a goal of the form
@@ -1627,8 +1628,8 @@ the <a href="Inductive-Types/#tactics-for-inductive-types">Tactics for Inductive
                 addCopyButtonToElement("--verso-unique-1023", "example (p q r : Prop) : p ∧ (q ∨ r) ↔ (p ∧ q) ∨ (p ∧ r) := by\n  apply Iff.intro\n  . intro\n    | ⟨hp, Or.inl hq⟩ =>\n      apply Or.inl; constructor <;> assumption\n    | ⟨hp, Or.inr hr⟩ =>\n      apply Or.inr; constructor <;> assumption\n  . intro\n    | Or.inl ⟨hp, hq⟩ =>\n      constructor; assumption; apply Or.inl; assumption\n    | Or.inr ⟨hp, hr⟩ =>\n      constructor; assumption; apply Or.inr; assumption\n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Tactics--Structuring-Tactic-Proofs">
-                5.4. Structuring Tactic Proofs</h2>
+              <h2 id="structuring-tactic-proofs">
+                5.4. Structuring Tactic Proofs<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=structuring-tactic-proofs" title="Permalink">🔗</a></span></h2>
               <p>
                 Tactics often provide an efficient way of building a proof, but long
 sequences of instructions can obscure the structure of the
@@ -1835,8 +1836,8 @@ expect the proof to look like this:</p>
   { &lt;proof of final goal&gt;  }
 </pre></section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Tactics--Tactic-Combinators">
-                5.5. Tactic Combinators</h2>
+              <h2 id="tactic-combinators">
+                5.5. Tactic Combinators<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=tactic-combinators" title="Permalink">🔗</a></span></h2>
               <p>
                 <em>Tactic combinators</em> are operations that form new tactics from old
 ones. A sequencing combinator is already implicit in the <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">by</span></code> block:</p>
@@ -1965,8 +1966,8 @@ ordinarily only effects the current goal, <code class="hl lean inline" data-lean
 the same effect as <code>t</code>.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Tactics--Rewriting">
-                5.6. Rewriting</h2>
+              <h2 id="rewriting">
+                5.6. Rewriting<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=rewriting" title="Permalink">🔗</a></span></h2>
               <p>
                 The <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">rw</span></code> tactic and the <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">simp</span></code> tactic
 were introduced briefly in <a href="Quantifiers-and-Equality/#calculational-proofs">Calculational Proofs</a>. In this
@@ -2479,8 +2480,8 @@ note: this linter can be disabled with `set_option linter.unusedVariables false`
                 addCopyButtonToElement("--verso-unique-1537", "example : 0 < 1 + x ∧ x + y + 2 ≥ y + 1 := by\n  simp +arith\n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Tactics--Split-Tactic">
-                5.8. Split Tactic</h2>
+              <h2 id="split-tactic">
+                5.8. Split Tactic<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=split-tactic" title="Permalink">🔗</a></span></h2>
               <p>
                 The <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Tactic-Proofs/Tactic-Reference/#split" title="Documentation for tactic in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Tactic.split-229" data-verso-hover="454">split</span></a></code> tactic is useful for breaking nested <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">if</span></code>-<code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">then</span></code>-<code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">else</span></code> and <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">match</span></code> expressions in cases.
 For a <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">match</span></code> expression with <code class="math inline">n</code> cases, the <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Tactic-Proofs/Tactic-Reference/#split" title="Documentation for tactic in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Tactic.split-229" data-verso-hover="454">split</span></a></code> tactic generates at most <code class="math inline">n</code> subgoals. Here is an example:</p>
@@ -2555,8 +2556,8 @@ note: this linter can be disabled with `set_option linter.unusedVariables false`
                 addCopyButtonToElement("--verso-unique-1595", "def g (xs ys : List Nat) : Nat :=\n  match xs, ys with\n  | [a, b], _ => a+b+1\n  | _, [b, c] => b+1\n  | _, _      => 1\n\nexample (xs ys : List Nat) (h : g xs ys = 0) : False := by\n  simp [g] at h; split at h <;> simp +arith at h\n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Tactics--Extensible-Tactics">
-                5.9. Extensible Tactics</h2>
+              <h2 id="extensible-tactics">
+                5.9. Extensible Tactics<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=extensible-tactics" title="Permalink">🔗</a></span></h2>
               <p>
                 In the following example, we define the notation <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-tacticTriv-82">triv</span></code> using the command <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Notations-and-Macros/Defining-New-Syntax/#Lean___Parser___Command___syntax" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.syntax-32">syntax</span></a></code>.
 Then, we use the command <code class="hl lean inline" data-lean-context="examples"><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Notations-and-Macros/Macros/#Lean___Parser___Command___macro_rules" title="Documentation for syntax in Lean Language Reference"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.macro_rules-56">macro_rules</span></a></code> to specify what should

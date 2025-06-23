@@ -84,6 +84,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -187,6 +196,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -595,15 +605,6 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       
 window.onload = () => {
@@ -824,7 +825,7 @@ window.onload = () => {
             <div class="split-toc">
               <div class="title">
                 <label for="--verso-manual-toc-quantifiers-and-equality" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-quantifiers-and-equality" checked="checked"></label><span class="number">4.</span> <span class="current"><a href="Quantifiers-and-Equality/#quantifiers-and-equality">Quantifiers and Equality</a></span></div>
-              <table><tr class="numbered"><td class="num">4.1.</td><td><a href="Quantifiers-and-Equality/#Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--The-Universal-Quantifier">The Universal Quantifier</a></td></tr><tr class="numbered"><td class="num">4.2.</td><td><a href="Quantifiers-and-Equality/#Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--Equality">Equality</a></td></tr><tr class="numbered"><td class="num">4.3.</td><td><a href="Quantifiers-and-Equality/#calculational-proofs">Calculational Proofs</a></td></tr><tr class="numbered"><td class="num">4.4.</td><td><a href="Quantifiers-and-Equality/#Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--The-Existential-Quantifier">The Existential Quantifier</a></td></tr><tr class="numbered"><td class="num">4.5.</td><td><a href="Quantifiers-and-Equality/#Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--More-on-the-Proof-Language">More on the Proof Language</a></td></tr><tr class="numbered"><td class="num">4.6.</td><td><a href="Quantifiers-and-Equality/#Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--Exercises">Exercises</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">4.1.</td><td><a href="Quantifiers-and-Equality/#the-universal-quantifier">The Universal Quantifier</a></td></tr><tr class="numbered"><td class="num">4.2.</td><td><a href="Quantifiers-and-Equality/#equality">Equality</a></td></tr><tr class="numbered"><td class="num">4.3.</td><td><a href="Quantifiers-and-Equality/#calculational-proofs">Calculational Proofs</a></td></tr><tr class="numbered"><td class="num">4.4.</td><td><a href="Quantifiers-and-Equality/#the-existential-quantifier">The Existential Quantifier</a></td></tr><tr class="numbered"><td class="num">4.5.</td><td><a href="Quantifiers-and-Equality/#more-on-the-proof-language">More on the Proof Language</a></td></tr><tr class="numbered"><td class="num">4.6.</td><td><a href="Quantifiers-and-Equality/#Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--Exercises">Exercises</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
@@ -848,8 +849,8 @@ statements involving the propositional connectives. In this chapter,
 we extend the repertoire of logical constructions to include the
 universal and existential quantifiers, and the equality relation.</p>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--The-Universal-Quantifier">
-                4.1. The Universal Quantifier</h2>
+              <h2 id="the-universal-quantifier">
+                4.1. The Universal Quantifier<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=the-universal-quantifier" title="Permalink">🔗</a></span></h2>
               <p>
                 Notice that if <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.24" data-verso-hover="42">α</span></code> is any type, we can represent a unary predicate
 <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.50" data-verso-hover="198">p</span></code> on <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.69" data-verso-hover="42">α</span></code> as an object of type <code class="hl lean inline" data-lean-context="examples"><span class="var token" data-binding="var-_uniq.91" data-verso-hover="42">α</span><span class="inter-text"> </span><span class="unknown token" data-binding="">→</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-14430969920833713138" data-verso-hover="2">Prop</span></code>. In that case, given
@@ -1038,8 +1039,8 @@ on <code class="hl lean inline" data-lean-context="examples"><span class="var to
 considered problematic.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--Equality">
-                4.2. Equality</h2>
+              <h2 id="equality">
+                4.2. Equality<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=equality" title="Permalink">🔗</a></span></h2>
               <p>
                 Let us now turn to one of the most fundamental relations defined in
 Lean's library, namely, the equality relation. In the chapter on <a href="Inductive-Types/#inductive-types">inductive types</a>,
@@ -1477,8 +1478,8 @@ both <code class="hl lean inline" data-lean-context="examples"><span class="keyw
                 addCopyButtonToElement("--verso-unique-191", "variable (x y : Nat)\nexample : (x + y) * (x + y) = x * x + y * x + x * y + y * y := by\n  rw [Nat.mul_add, Nat.add_mul, Nat.add_mul, ←Nat.add_assoc]\n\nexample : (x + y) * (x + y) = x * x + y * x + x * y + y * y := by\n  simp [Nat.mul_add, Nat.add_mul, Nat.add_assoc]\n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--The-Existential-Quantifier">
-                4.4. The Existential Quantifier</h2>
+              <h2 id="the-existential-quantifier">
+                4.4. The Existential Quantifier<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=the-existential-quantifier" title="Permalink">🔗</a></span></h2>
               <p>
                 Finally, consider the existential quantifier, which can be written as
 either <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-«termExists_,_»-2">exists</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1123" data-verso-hover="24">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1094" data-verso-hover="42">α</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1098" data-verso-hover="198">p</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1123" data-verso-hover="24">x</span></code> or <code class="hl lean inline" data-lean-context="examples"><span class="unknown token" data-binding="">∃</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1159" data-verso-hover="24">x</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1130" data-verso-hover="42">α</span><span class="unknown token" data-binding="">,</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1134" data-verso-hover="198">p</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.1159" data-verso-hover="24">x</span></code>.  Both versions are
@@ -1878,8 +1879,8 @@ note: this linter can be disabled with `set_option linter.unusedVariables false`
                 addCopyButtonToElement("--verso-unique-214", "open Classical\n\nvariable (α : Type) (p q : α → Prop)\nvariable (a : α)\nvariable (r : Prop)\n\nexample : (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) :=\n  Iff.intro\n    (fun ⟨a, (h1 : p a ∨ q a)⟩ =>\n      Or.elim h1\n        (fun hpa : p a => Or.inl ⟨a, hpa⟩)\n        (fun hqa : q a => Or.inr ⟨a, hqa⟩))\n    (fun h : (∃ x, p x) ∨ (∃ x, q x) =>\n      Or.elim h\n        (fun ⟨a, hpa⟩ => ⟨a, (Or.inl hpa)⟩)\n        (fun ⟨a, hqa⟩ => ⟨a, (Or.inr hqa)⟩))\n\nexample : (∃ x, p x → r) ↔ (∀ x, p x) → r :=\n  Iff.intro\n    (fun ⟨b, (hb : p b → r)⟩ =>\n     fun h2 : ∀ x, p x =>\n     show r from hb (h2 b))\n    (fun h1 : (∀ x, p x) → r =>\n     show ∃ x, p x → r from\n       byCases\n         (fun hap : ∀ x, p x => ⟨a, λ h' => h1 hap⟩)\n         (fun hnap : ¬ ∀ x, p x =>\n          byContradiction\n            (fun hnex : ¬ ∃ x, p x → r =>\n              have hap : ∀ x, p x :=\n                fun x =>\n                byContradiction\n                  (fun hnp : ¬ p x =>\n                    have hex : ∃ x, p x → r := ⟨x, (fun hp => absurd hp hnp)⟩\n                    show False from hnex hex)\n              show False from hnap hap)))\n");</script>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Quantifiers-and-Equality--More-on-the-Proof-Language">
-                4.5. More on the Proof Language</h2>
+              <h2 id="more-on-the-proof-language">
+                4.5. More on the Proof Language<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=more-on-the-proof-language" title="Permalink">🔗</a></span></h2>
               <p>
                 We have seen that keywords like <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">fun</span></code>, <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">have</span></code>, and <code class="hl lean inline" data-lean-context="examples"><span class="keyword token" data-binding="">show</span></code> make
 it possible to write formal proof terms that mirror the structure of

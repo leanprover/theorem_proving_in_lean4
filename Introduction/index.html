@@ -84,6 +84,15 @@ kbd > code {
   vertical-align: middle;
 }
 </style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -187,6 +196,7 @@ kbd > code {
   text-decoration-style: wavy;
   text-decoration-line: underline;
   text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .hl.lean .has-info .hover-info {
@@ -595,15 +605,6 @@ kbd > code {
   display: inline-block;
   margin: 0 0.25em;
 }
-</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-
 </style><script>
       
 window.onload = () => {
@@ -824,7 +825,7 @@ window.onload = () => {
             <div class="split-toc">
               <div class="title">
                 <label for="--verso-manual-toc-Intro" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-Intro" checked="checked"></label><span class="number">1.</span> <span class="current"><a href="Introduction/#Intro">Introduction</a></span></div>
-              <table><tr class="numbered"><td class="num">1.1.</td><td><a href="Introduction/#Theorem-Proving-in-Lean-4--Introduction--Computers-and-Theorem-Proving">Computers and Theorem Proving</a></td></tr><tr class="numbered"><td class="num">1.2.</td><td><a href="Introduction/#Theorem-Proving-in-Lean-4--Introduction--About-Lean">About Lean</a></td></tr><tr class="numbered"><td class="num">1.3.</td><td><a href="Introduction/#Theorem-Proving-in-Lean-4--Introduction--About-this-Book">About this Book</a></td></tr><tr class="numbered"><td class="num">1.4.</td><td><a href="Introduction/#Theorem-Proving-in-Lean-4--Introduction--Acknowledgments">Acknowledgments</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">1.1.</td><td><a href="Introduction/#computers-and-theorem-proving">Computers and Theorem Proving</a></td></tr><tr class="numbered"><td class="num">1.2.</td><td><a href="Introduction/#about-lean">About Lean</a></td></tr><tr class="numbered"><td class="num">1.3.</td><td><a href="Introduction/#about-this-book">About this Book</a></td></tr><tr class="numbered"><td class="num">1.4.</td><td><a href="Introduction/#acknowledgments">Acknowledgments</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
@@ -843,8 +844,8 @@ window.onload = () => {
             <h1>
               1. Introduction<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=Intro" title="Permalink">🔗</a></span></h1>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Introduction--Computers-and-Theorem-Proving">
-                1.1. Computers and Theorem Proving</h2>
+              <h2 id="computers-and-theorem-proving">
+                1.1. Computers and Theorem Proving<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=computers-and-theorem-proving" title="Permalink">🔗</a></span></h2>
               <p>
                 <em>Formal verification</em> involves the use of logical and computational methods to establish claims that are expressed in
 precise mathematical terms. These can include ordinary mathematical theorems, as well as claims that pieces of hardware
@@ -891,8 +892,8 @@ aspects of Lean are described in the free online book, <a href="https://lean-lan
 aspects of the system will make an appearance here.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Introduction--About-Lean">
-                1.2. About Lean</h2>
+              <h2 id="about-lean">
+                1.2. About Lean<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=about-lean" title="Permalink">🔗</a></span></h2>
               <p>
                 The <em>Lean</em> project was launched by Leonardo de Moura at Microsoft Research Redmond in 2013. It is an ongoing, long-term
 effort, and much of the potential for automation will be realized only gradually over time. Lean is released under the
@@ -905,8 +906,8 @@ mathematical libraries freely.</p>
                 This tutorial describes the current version of Lean, known as Lean 4.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Introduction--About-this-Book">
-                1.3. About this Book</h2>
+              <h2 id="about-this-book">
+                1.3. About this Book<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=about-this-book" title="Permalink">🔗</a></span></h2>
               <p>
                 This book is designed to teach you to develop and verify proofs in Lean. Much of the background information you will
 need in order to do this is not specific to Lean at all. To start with, you will learn the logical system that Lean is
@@ -942,8 +943,8 @@ We recommend running the examples and experimenting with the code on your own as
 You can open this book in VS Code by using the command “Lean 4: Docs: Show Documentation Resources” and selecting “Theorem Proving in Lean 4” in the tab that opens.</p>
               </section>
             <section>
-              <h2 id="Theorem-Proving-in-Lean-4--Introduction--Acknowledgments">
-                1.4. Acknowledgments</h2>
+              <h2 id="acknowledgments">
+                1.4. Acknowledgments<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=acknowledgments" title="Permalink">🔗</a></span></h2>
               <p>
                 This tutorial is an open access project maintained on Github. Many people have contributed to the effort, providing
 corrections, suggestions, examples, and text. We are grateful to Ulrik Buchholz, Kevin Buzzard, Mario Carneiro, Nathan
