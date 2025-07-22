@@ -8,7 +8,6 @@ git = "https://github.com/leanprover/verso.git"
 rev = "main"
 
 
-
 [leanOptions]
 #weak.verso.examples.suggest = true
 weak.linter.typography.quotes = true
