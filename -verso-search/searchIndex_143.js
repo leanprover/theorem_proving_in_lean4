@@ -1,0 +1,1 @@
+window.docContents[143].resolve({"/Introduction/#Intro":{"id":"/Introduction/#Intro","header":"1. Introduction","context":"Theorem Proving in Lean 4","contents":"\n\n\n\n\n\n\n\n"}});
