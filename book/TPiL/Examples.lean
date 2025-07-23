@@ -145,7 +145,7 @@ where
 
 partial def hlIsWs (hl : Highlighted) : Bool :=
   match hl with
-  | .text s => s.all (·.isWhitespace)
+  | .text s | .unparsed s => s.all (·.isWhitespace)
   | .seq xs => xs.all hlIsWs
   | .span _ x | .tactics _ _ _ x => hlIsWs x
   | .point .. => true
@@ -498,6 +498,7 @@ def examplesCss := r#"
 
 def trimOneLeadingNl : Highlighted → Highlighted
   | .text s => .text <| if "\n".isPrefixOf s then s.drop 1 else s
+  | .unparsed s => .unparsed <| if "\n".isPrefixOf s then s.drop 1 else s
   | .seq xs =>
     let i? := xs.findIdx? (!·.isEmpty)
     match h : i? with
@@ -521,17 +522,38 @@ block_extension Block.lean
     (code : Array ExampleItem)
     (post : Option Highlighted)
     (goalVisibility : HighlightHtmlM.VisibleProofStates := .none) where
-  data := .arr #[.bool allowToggle, toJson pre, toJson code, toJson post, toJson goalVisibility]
-  traverse _ _ _ := pure none
+  data :=
+    let defined : Array (Name × String) := code.flatMap (definedNames ·.code)
+    .arr #[.bool allowToggle, toJson pre, toJson code, toJson post, toJson goalVisibility, toJson defined]
+  traverse id data _ := do
+    let .arr #[_allowToggle, _pre, _code, _post, _visibility, definesJson] := data
+      | logError s!"Expected array for Lean block, got {data.compress}"; return none
+    match FromJson.fromJson? definesJson with
+    | .error err =>
+      logError <| "Failed to deserialize code config during traversal:" ++ err
+      return none
+    | .ok (defines : Array (Name × String)) =>
+      for (d, s) in defines do
+        if d.isAnonymous then continue
+        let d := d.toString
+        let path ← (·.path) <$> read
+        let _ ← externalTag id path d
+        let context := (← read).headers.map (·.titleString)
+        modify (·.saveDomainObject exampleDomain d id)
+        if let some link := (← get).externalTags[id]? then
+          modify (·.modifyDomainObjectData exampleDomain d fun v =>
+            let v := if let .obj _ := v then v else .obj {}
+            v.setObjVal! link.link (json%{"context": $context, "display": $s}))
+    pure none
   toTeX := none
   extraCss := [highlightingStyle]
   extraJs := [highlightingJs]
-  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy), ("copybutton.js", copyButtonJs)]
+  extraJsFiles := [{filename := "popper.js", contents := popper}, {filename := "tippy.js", contents := tippy}, {filename := "copybutton.js", contents := copyButtonJs}]
   extraCssFiles := [("tippy-border.css", tippy.border.css), ("copybutton.css", copyButtonCss), ("examples.css", examplesCss)]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
-      let .arr #[.bool allowToggle, hlPreJson, hlJson, hlPostJson, goalVisibilityJson] := data
+      let .arr #[.bool allowToggle, hlPreJson, hlJson, hlPostJson, goalVisibilityJson, _defs] := data
         | HtmlT.logError "Expected five-element JSON for Lean code"
           pure .empty
       let pre ←
@@ -567,7 +589,10 @@ block_extension Block.lean
       if allowToggle then
         if let some p := pre then
           let p := p.deIndent codeIndent
-          let inner ← withVisibleProofStates visibility <|  trimOneLeadingNl p |>.blockHtml "examples" (trim := false)
+          let inner ←
+            withDefinitionsAsTargets false <|
+            withVisibleProofStates visibility <|
+            trimOneLeadingNl p |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
           codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
           codeString := codeString ++ p.toString
 
@@ -578,22 +603,28 @@ block_extension Block.lean
 
       for ⟨cmd, out?, ws⟩ in code do
         let cmd := cmd.deIndent codeIndent
-
-        codeHtml := codeHtml ++ (← withVisibleProofStates visibility <| trimOneLeadingNl cmd |>.blockHtml "examples" (trim := false))
+        let moreCode ←
+          withDefinitionsAsTargets true <|
+          withVisibleProofStates visibility <|
+          trimOneLeadingNl cmd |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
+        codeHtml := codeHtml ++ moreCode
         codeString := codeString ++ cmd.toString
         if let some (k, out) := out? then
           codeHtml := codeHtml ++ {{ <div class={{outClass k}}><pre>{{out}}</pre></div> }}
         unless ws.isEmpty do
-          codeHtml := codeHtml ++ (← (Highlighted.text ws).blockHtml "examples" (trim := false))
+          codeHtml := codeHtml ++ (← (Highlighted.text ws).blockHtml "examples" (trim := false) (g := Verso.Genre.Manual))
 
       if allowToggle then
         if let some p := post then
           let p := p.deIndent codeIndent
-          let inner ← withVisibleProofStates visibility <|  trimOneLeadingNl p |>.blockHtml "examples" (trim := false)
+          let inner ←
+            withDefinitionsAsTargets false <|
+            withVisibleProofStates visibility <|
+            trimOneLeadingNl p |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
           codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
           codeString := codeString ++ p.toString
 
-      let i ← uniqueId
+      let i ← uniqueId (g := Verso.Genre.Manual)
       let toCopy := (pre.map (·.toString)).getD "" ++ codeString
       let mut script := s!"addCopyButtonToElement({i.quote}, {toCopy.quote});"
       if allowToggle && (pre.isSome || post.isSome) then
@@ -612,7 +643,7 @@ block_extension Block.leanAnchor (code : Highlighted) (completeCode : String) wh
   toTeX := none
   extraCss := [highlightingStyle]
   extraJs := [highlightingJs]
-  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy), ("copybutton.js", copyButtonJs)]
+  extraJsFiles := [{filename := "popper.js", contents := popper}, {filename := "tippy.js", contents := tippy}, {filename := "copybutton.js", contents := copyButtonJs}]
   extraCssFiles := [("tippy-border.css", tippy.border.css), ("copybutton.css", copyButtonCss), ("examples.css", examplesCss)]
   toHtml :=
     open Verso.Output.Html in
@@ -635,9 +666,9 @@ block_extension Block.leanAnchor (code : Highlighted) (completeCode : String) wh
 
       let code := code.deIndent code.indentation
 
-      let codeHtml : Html := (← code.blockHtml "examples" (trim := false))
+      let codeHtml : Html := (← code.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual))
 
-      let i ← uniqueId
+      let i ← uniqueId (g := Verso.Genre.Manual)
       let mut script := s!"addCopyButtonToElement({i.quote}, {completeCode.quote});"
 
       return {{
@@ -684,7 +715,7 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted)) where
   toTeX := none
   extraCss := [highlightingStyle]
   extraJs := [highlightingJs]
-  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy)]
+  extraJsFiles := [{filename := "popper.js", contents := popper}, {filename := "tippy.js", contents := tippy}]
   extraCssFiles := [("tippy-border.css", tippy.border.css), ("proof-state.css", proofStateStyle)]
   toHtml :=
     open Verso.Output.Html in
@@ -702,7 +733,7 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted)) where
                 pure {{"All goals completed! 🐙"}}
               else
                 withCollapsedSubgoals .never <|
-                  .seq <$> goals.mapIndexedM (fun ⟨i, _⟩ x => x.toHtml (·.toHtml) i)}}
+                  .seq <$> goals.mapIndexedM (fun ⟨i, _⟩ x => x.toHtml (g := Verso.Genre.Manual) (·.toHtml) i)}}
           </span>
         </div>
       }}
@@ -713,7 +744,7 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted) where
   toTeX := none
   extraCss := [highlightingStyle]
   extraJs := [highlightingJs]
-  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy)]
+  extraJsFiles := [{filename := "popper.js", contents := popper}, {filename := "tippy.js", contents := tippy}]
   extraCssFiles := [("tippy-border.css", tippy.border.css)]
   toHtml :=
     open Verso.Output.Html in
@@ -729,7 +760,7 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted) where
           <span class="tactic">
             {{goal.name.map (·.toString) |>.getD "<anonymous>"}}
             <span class="tactic-state">
-              {{← goal.toHtml (·.toHtml) 0}}
+              {{← goal.toHtml (g := Verso.Genre.Manual) (·.toHtml) 0}}
             </span>
           </span>
         </code>
@@ -855,7 +886,7 @@ where
       xs.foldl (init := acc) go
     | .span _ x => go acc x
     | .tactics gs _ _ x => gs.foldl (init := (go acc x)) (fromGoal · ·)
-    | .point .. | .text .. | .token .. => acc
+    | .point .. | .text .. | .token .. | .unparsed .. => acc
   fromGoal (acc : Array Highlighted) (g : Highlighted.Goal Highlighted) :=
     g.hypotheses.foldl (init := acc.push g.conclusion) fun acc (x, k, hl) =>
       acc.push (Highlighted.token ⟨k, x.toString⟩ ++ .text " " ++ .token ⟨.unknown, ":"⟩ ++ .text " " ++ hl)
@@ -885,7 +916,7 @@ def allInfo (hl : Highlighted) : Array (Highlighted.Span.Kind × String × Optio
   | .point k str => #[(k, str, none)]
   | .tactics _ _ _ x => allInfo x
   | .span infos x => (infos.map fun (k, str) => (k, str, some x)) ++ allInfo x
-  | .text .. | .token .. => #[]
+  | .text .. | .token .. | .unparsed .. => #[]
 
 def trailingText (hl : Highlighted) : Highlighted × String :=
   match hl with
@@ -907,7 +938,7 @@ def trailingText (hl : Highlighted) : Highlighted × String :=
   | .span i hl' =>
     let (hl', txt) := trailingText hl'
     (.span i hl', txt)
-  | .text txt => (.empty, txt)
+  | .text txt | .unparsed txt => (.empty, txt)
 
 /--
 Extracts a trailing comment from code, if present.
@@ -985,7 +1016,7 @@ end
 
 def isNewline (hl : Highlighted) : Bool :=
   match hl with
-  | .text str => str == "\n"
+  | .text str | .unparsed str => str == "\n"
   | .token .. => false
   | .seq xs => Id.run do
     for h : i in [0:xs.size] do
@@ -1437,7 +1468,7 @@ def kw : RoleExpander
     ArgParse.done.run args
     let kw ← oneCodeStr inls
     let hl : Highlighted := .token ⟨.keyword none none none, kw.getString⟩ -- TODO kw xref
-    return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote kw.getString)])]
+    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getString)])]
 
 @[role_expander attr]
 def attr : RoleExpander
@@ -1445,7 +1476,7 @@ def attr : RoleExpander
     ArgParse.done.run args
     let kw ← oneCodeStr inls
     let hl : Highlighted := .token ⟨.keyword none none none, kw.getString⟩ -- TODO attr xref
-    return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote kw.getString)])]
+    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getString)])]
 
 
 @[role_expander tactic]
@@ -1454,7 +1485,7 @@ def tactic : RoleExpander
     ArgParse.done.run args
     let kw ← oneCodeStr inls
     let hl : Highlighted := .token ⟨.keyword none none none, kw.getString⟩ -- TODO kw xref
-    return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote kw.getString)])]
+    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getString)])]
 
 @[role_expander kbd]
 def kbd : RoleExpander
@@ -1548,7 +1579,7 @@ def leanInline : RoleExpander
 
       saveBackref hl
 
-      return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote hl.toString)])]
+      return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
       | .error ref e =>
         logErrorAt ref e
@@ -1585,7 +1616,7 @@ def name : RoleExpander
         | _ => pure ()
       | _ => pure ()
 
-      return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote hl.toString)])]
+      return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
       | .error ref e =>
         logErrorAt ref e
@@ -1608,7 +1639,7 @@ def leanCommand : RoleExpander
         let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
         logSilentInfo m!"{k}: {msg}"
 
-      return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote hl.toString)])]
+      return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
       | .error ref e =>
         logErrorAt ref e
@@ -1671,10 +1702,10 @@ def leanRef : RoleExpander
       if let some «in» := in? then
         if let some hl := prev.matchingExpr? «in» then
           if let some hl := hl.matchingExpr? codeStr then
-            return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote hl.toString)])]
+            return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
           else break
       else if let some hl := prev.matchingExpr? codeStr then
-        return #[← ``(Inline.other (Inline.lean $(quote hl)) #[Inline.code $(quote hl.toString)])]
+        return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
 
     throwError "Not found: '{codeStr}'"
 
