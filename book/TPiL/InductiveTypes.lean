@@ -1322,19 +1322,19 @@ example (p : Nat → Prop)
 
 In the first branch, the proof state is:
 ```proofState A
-case zero =>
-  p: Nat → Prop
-  hz: p 0
-  hs: ∀ (n : Nat), p n.succ
+case zero
+p : Nat → Prop
+hz : p 0
+hs : ∀ (n : Nat), p n.succ
 ⊢ p 0
 ```
 In the second branch, it is:
 ```proofState B
-case succ =>
-  p: Nat → Prop
-  hz: p 0
-  hs: ∀ (n : Nat), p n.succ
-  n✝: Nat
+case succ
+p : Nat → Prop
+hz : p 0
+hs : ∀ (n : Nat), p n.succ
+n✝ : Nat
 ⊢ p (n✝ + 1)
 ```
 

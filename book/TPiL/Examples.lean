@@ -512,7 +512,7 @@ def trimOneLeadingNl : Highlighted → Highlighted
 
 structure ExampleItem where
   code : Highlighted
-  output : Option (Highlighted.Span.Kind × String)
+  output : Option Highlighted.Message
   trailing : String
 deriving ToJson, FromJson, Repr, Quote
 
@@ -596,11 +596,6 @@ block_extension Block.lean
           codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
           codeString := codeString ++ p.toString
 
-      let outClass
-        | .info => "information"
-        | .warning => "warning"
-        | .error => "error"
-
       for ⟨cmd, out?, ws⟩ in code do
         let cmd := cmd.deIndent codeIndent
         let moreCode ←
@@ -609,8 +604,9 @@ block_extension Block.lean
           trimOneLeadingNl cmd |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
         codeHtml := codeHtml ++ moreCode
         codeString := codeString ++ cmd.toString
-        if let some (k, out) := out? then
-          codeHtml := codeHtml ++ {{ <div class={{outClass k}}><pre>{{out}}</pre></div> }}
+        if let some msg := out? then
+          let msgHtml ← msg.toHtml (g := Verso.Genre.Manual)
+          codeHtml := codeHtml ++ {{<pre class=s!"hl lean lean-output {msg.severity.class}">{{msgHtml}}</pre>}}
         unless ws.isEmpty do
           codeHtml := codeHtml ++ (← (Highlighted.text ws).blockHtml "examples" (trim := false) (g := Verso.Genre.Manual))
 
@@ -758,7 +754,7 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted) where
       pure {{
         <code class="proof-goal-ref hl lean">
           <span class="tactic">
-            {{goal.name.map (·.toString) |>.getD "<anonymous>"}}
+            {{goal.name |>.getD "<anonymous>"}}
             <span class="tactic-state">
               {{← goal.toHtml (g := Verso.Genre.Manual) (·.toHtml) 0}}
             </span>
@@ -888,8 +884,11 @@ where
     | .tactics gs _ _ x => gs.foldl (init := (go acc x)) (fromGoal · ·)
     | .point .. | .text .. | .token .. | .unparsed .. => acc
   fromGoal (acc : Array Highlighted) (g : Highlighted.Goal Highlighted) :=
-    g.hypotheses.foldl (init := acc.push g.conclusion) fun acc (x, k, hl) =>
-      acc.push (Highlighted.token ⟨k, x.toString⟩ ++ .text " " ++ .token ⟨.unknown, ":"⟩ ++ .text " " ++ hl)
+    g.hypotheses.foldl (init := acc.push g.conclusion) fun acc ⟨xs, hl⟩ =>
+      let names : Highlighted := xs.foldl (init := .empty) fun hl tok =>
+        if hl.isEmpty then .token tok
+        else hl ++ .text " " ++ .token tok
+      acc.push (names ++ .text " " ++ .token ⟨.unknown, ":"⟩ ++ .text " " ++ hl)
 
 
 def saveBackref (hl : Highlighted) : DocElabM Unit := do
@@ -910,12 +909,12 @@ initialize proofStatesExt : EnvExtension (HashMap String ProofState) ←
   registerEnvExtension (pure {})
 
 /-- Extracts all messages from the given code. -/
-def allInfo (hl : Highlighted) : Array (Highlighted.Span.Kind × String × Option Highlighted) :=
+def allInfo (hl : Highlighted) : Array (Highlighted.Message × Option Highlighted) :=
   match hl with
   | .seq xs => xs.flatMap allInfo
-  | .point k str => #[(k, str, none)]
+  | .point k str => #[(⟨k, str⟩, none)]
   | .tactics _ _ _ x => allInfo x
-  | .span infos x => (infos.map fun (k, str) => (k, str, some x)) ++ allInfo x
+  | .span infos x => (infos.map fun (k, str) => (⟨k, str⟩, some x)) ++ allInfo x
   | .text .. | .token .. | .unparsed .. => #[]
 
 def trailingText (hl : Highlighted) : Highlighted × String :=
@@ -1061,9 +1060,10 @@ private def showGoals (goals : Array (Highlighted.Goal Highlighted)) : MessageDa
   let mut out := m!""
   for g in goals do
     if let some n := g.name then
-      out := out ++ m!"case {n.toString}\n"
-    for (x, _, h) in g.hypotheses do
-      out := out ++ m!"  {x.toString} : {h.toString}\n"
+      out := out ++ m!"case {n}\n"
+    for ⟨xs, h⟩ in g.hypotheses do
+      let xs := " ".intercalate (xs.toList.map (fun ⟨_, x⟩ => x))
+      out := out ++ m!"{xs} : {h.toString}\n"
     out := out ++ m!"  {g.goalPrefix} {g.conclusion.toString}\n\n"
   pure out
 
@@ -1105,23 +1105,24 @@ def lean : CodeBlockExpander
       | ``Lean.Parser.Command.check | ``Lean.Parser.Command.eval | ``Lean.reduceCmd | ``Lean.Parser.Command.check_failure
       | ``Lean.Parser.Command.print | ``Lean.Parser.Command.printAxioms | ``Lean.Parser.Command.printEqns
       | ``Lean.guardMsgsCmd =>
-        let info? : Option (_ × String) := allInfo item.code |>.firstM fun (sev, str, hl?) =>
-          if hl? matches some (.token ⟨.keyword .., _⟩) then some (sev, str) else none
-        if let some (sev, txt) := info? then
+        let info? : Option Highlighted.Message := allInfo item.code |>.firstM fun (msg, hl?) =>
+          if hl? matches some (.token ⟨.keyword .., _⟩) then some msg else none
+        if let some msg := info? then
           if let (code, some (comment, ws)) := trailingComment item.code then
+            let txt := msg.toString
             if checkOutput && !eqMessages comment txt then
               throwError "Mismatch! Expected {comment} but got {txt}"
-            toShow := toShow.push ⟨code, some (sev, txt), dropOneNl ws⟩
+            toShow := toShow.push ⟨code, some msg, dropOneNl ws⟩
           else
             let (code', ws) := trailingText item.code
-            toShow := toShow.push ⟨code', some (sev, txt), dropOneNl ws⟩
+            toShow := toShow.push ⟨code', some msg, dropOneNl ws⟩
         else toShow := toShow.push ⟨item.code, none, ""⟩
         | _ => toShow := toShow.push ⟨item.code, none, ""⟩
     let post : Option Highlighted := post.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
     let visible := .seq <| toShow.map (·.1)
     saveBackref visible
-    for (_, msg, _)  in allInfo visible do
-      logSilentInfo msg
+    for (msg, _)  in allInfo visible do
+      logSilentInfo msg.toString
     if let .named xs := showProofStates then
       unless xs.isEmpty do
         logWarning m!"Unused proof state names: {m!", ".joinSep (xs.map (m!"'{·}'")).toList}"
@@ -1222,10 +1223,10 @@ def goal : RoleExpander
       | logErrorAt name m!"Not found: {name.getString}"
         return #[← ``(sorry)]
     let goal? := goals.find? fun
-      | {name := some x, ..} => caseTag.getString == x.toString
+      | {name := some x, ..} => caseTag.getString == x
       | _ => false
     let some goal := goal?
-      | let validTags := goals.filterMap (Name.toString <$> ·.name)
+      | let validTags := goals.filterMap (·.name)
         let h ←
           if validTags.isEmpty then
             pure <| MessageData.hint' m!""
@@ -1635,9 +1636,9 @@ def leanCommand : RoleExpander
       let hl ← highlightCommand codeStr
 
       saveBackref hl
-      for (k, msg, _) in allInfo hl do
-        let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
-        logSilentInfo m!"{k}: {msg}"
+      for (msg, _) in allInfo hl do
+        let k := match msg.severity with | .info => "info" | .error => "error" | .warning => "warning"
+        logSilentInfo m!"{k}: {msg.toString}"
 
       return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
@@ -1657,9 +1658,9 @@ def leanCommandBlock : CodeBlockExpander
       let hl ← highlightCommand codeStr
 
       saveBackref hl
-      for (k, msg, _) in allInfo hl do
-        let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
-        logSilentInfo m!"{k}: {msg}"
+      for (msg, _) in allInfo hl do
+        let k := match msg.severity with | .info => "info" | .error => "error" | .warning => "warning"
+        logSilentInfo m!"{k}: {msg.toString}"
 
       return #[← ``(Block.other (Block.lean false none #[ExampleItem.mk $(quote hl) none ""] none) #[])]
     catch
@@ -1679,9 +1680,9 @@ def signature : CodeBlockExpander
       let hl ← highlightSignature codeStr
 
       saveBackref hl
-      for (k, msg, _) in allInfo hl do
-        let k := match k with | .info => "info" | .error => "error" | .warning => "warning"
-        logSilentInfo m!"{k}: {msg}"
+      for (msg, _) in allInfo hl do
+        let k := match msg.severity with | .info => "info" | .error => "error" | .warning => "warning"
+        logSilentInfo m!"{k}: {msg.toString}"
 
       return #[← ``(Block.other (Block.lean false none #[ExampleItem.mk $(quote hl) none ""] none) #[])]
     catch
@@ -1776,7 +1777,7 @@ private def suggest : InlineExpander
 
       for (name, {goals := gs, ..}) in proofStatesExt.getState (← getEnv) do
         let name := if name.any (·.isWhitespace) then name.quote else name
-        if gs.any (Name.toString <$> ·.name |>.isEqSome str') then
+        if gs.any (·.name |>.isEqSome str') then
           suggs := suggs.push <| "{goal " ++ name ++ "}`" ++ str' ++ "`"
 
       if suggs.isEmpty then

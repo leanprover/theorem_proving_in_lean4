@@ -51,10 +51,10 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p := by
 You can write this goal as follows:
 
 ```proofState X
-  p: Prop
-  q: Prop
-  hp: p
-  hq: q
+p : Prop
+q : Prop
+hp : p
+hq : q
 ⊢ p ∧ q ∧ p
 ```
 
@@ -78,7 +78,7 @@ theorem test (p q : Prop) (hp : p) (hq : q) : p ∧ q ∧ p :=
      exact hp
 ```
 
-We often put the {kw}`by` keyword on the preceding line, and write the
+We often put the {leanRef}`by` keyword on the preceding line, and write the
 example above as:
 
 ```lean
@@ -99,18 +99,18 @@ them. In the example above, the command {leanRef}`apply And.intro` yields two
 subgoals:
 
 ```proofState intro
-case left =>
-  p: Prop
-  q: Prop
-  hp: p
-  hq: q
+case left
+p : Prop
+q : Prop
+hp : p
+hq : q
 ⊢ p
 
-case right =>
-  p: Prop
-  q: Prop
-  hp: p
-  hq: q
+case right
+p : Prop
+q : Prop
+hp : p
+hq : q
 ⊢ q ∧ p
 ```
 
@@ -213,10 +213,10 @@ Note that Lean hides the other goals inside the {leanRef}`case` block. After {le
 the proof state is:
 
 ```proofState leftBranch
-  p: Prop
-  q: Prop
-  hp: p
-  hq: q
+p : Prop
+q : Prop
+hp : p
+hq : q
 ⊢ q
 ```
 
@@ -446,7 +446,7 @@ After {leanRef}`revert x`, the proof state is:
 After {leanRef}`intro y`, it is:
 
 ```proofState afterRevertIntro
-  y: Nat
+y : Nat
 ⊢ y = y
 ```
 
@@ -468,17 +468,17 @@ example (x y : Nat) (h : x = y) : y = x := by
 After {leanRef}`revert h`, the proof state is:
 
 ```proofState afterRevertH
-  x: Nat
-  y: Nat
+x : Nat
+y : Nat
 ⊢ x = y → y = x
 ```
 
 After {leanRef}`intro h₁`, it is:
 
 ```proofState afterRevertHIntro
-  x: Nat
-  y: Nat
-  h₁: x = y
+x : Nat
+y : Nat
+h₁ : x = y
 ⊢ y = x
 ```
 
@@ -500,7 +500,7 @@ example (x y : Nat) (h : x = y) : y = x := by
 After {leanRef}`revert x`, the goal is:
 
 ```proofState afterRevertXH
-  y: Nat
+y : Nat
 ⊢ ∀ (x : Nat), x = y → y = x
 ```
 
@@ -543,7 +543,7 @@ example : 3 = 3 := by
 In particular, after {leanRef}`generalize`, the goal is
 
 ```proofState afterGen
-  x: Nat
+x : Nat
 ⊢ x = x
 ```
 
@@ -580,8 +580,8 @@ example : 2 + 3 = 5 := by
 Following {leanRef}`generalize h : 3 = x`, {leanRef}`h` is a proof that {leanRef}`3 = x`:
 
 ```proofState afterGen
-  x: Nat
-  h: 3 = x
+x : Nat
+h : 3 = x
 ⊢ 2 + x = 5
 ```
 
@@ -703,11 +703,11 @@ applied, with {leanRef}`h`{lit}`  :  `{leanRef}`p ∧ q` replaced by a pair of a
 {leanRef}`hp`{lit}`  :  `{leanRef}`p` and {leanRef}`hq`{lit}`  :  `{leanRef}`q`:
 
 ```proofState afterIntroCase
-case intro =>
-  p: Prop
-  q: Prop
-  hp: p
-  hq: q
+case intro
+p : Prop
+q : Prop
+hp : p
+hq : q
 ⊢ q ∧ p
 ```
 

@@ -1153,17 +1153,17 @@ theorem ack_gt_zero : ack n m > 0 := by
 
 In {goal case1}`case1`, the goal is:
 ```proofState case1
-case case1 =>
-  y: Nat
+case case1
+y : Nat
 ⊢ y + 1 > 0
 ```
 The {leanRef}`y + 1` in the goal corresponds to the value returned in the first case of {leanRef}`ack`.
 
 In {goal case2}`case2`, the goal is:
 ```proofState case2
-case case2 =>
-  x: Nat
-  ih: ack x 1 > 0
+case case2
+x : Nat
+ih : ack x 1 > 0
 ⊢ ack x 1 > 0
 ```
 The {leanRef}`ack x 1` in the goal corresponds to the value of {leanRef}`ack` applied to the pattern variables {leanRef}`x + 1` and {leanRef}`0` returned in the second case of {leanRef}`ack`.
@@ -1172,11 +1172,11 @@ Happily, the inductive hypothesis {leanRef}`ih : ack x 1 > 0` corresponds to the
 
 In {goal case3}`case3`, the goal is:
 ```proofState case3
-case case3 =>
-  x: Nat
-  y: Nat
-  ih1: ack (x + 1) y > 0
-  ih2: ack x (ack (x + 1) y) > 0
+case case3
+x : Nat
+y : Nat
+ih1 : ack (x + 1) y > 0
+ih2 : ack x (ack (x + 1) y) > 0
 ⊢ ack x (ack (x + 1) y) > 0
 ```
 The {leanRef}`ack x (ack (x + 1) y)` in the goal corresponds to the value returned in the third case of {leanRef}`ack`, when {leanRef}`ack` applied to {leanRef}`x + 1` and {leanRef}`y + 1` has been reduced.
@@ -1230,50 +1230,50 @@ theorem f_or : f b1 b2 b3 b4 b5 = (b1 || b2 || b3 || b4 || b5) := by
 Each case includes an assumption that rules out the prior cases:
 
 ```proofState fOrAll
-case case1 =>
-  b2: Bool
-  b3: Bool
-  b4: Bool
-  b5: Bool
+case case1
+b2 : Bool
+b3 : Bool
+b4 : Bool
+b5 : Bool
 ⊢ true = (true || b2 || b3 || b4 || b5)
 
-case case2 =>
-  b1: Bool
-  b3: Bool
-  b4: Bool
-  b5: Bool
-  x✝: b1 = true → False
+case case2
+b1 : Bool
+b3 : Bool
+b4 : Bool
+b5 : Bool
+x✝ : b1 = true → False
 ⊢ true = (b1 || true || b3 || b4 || b5)
 
-case case3 =>
-  b1: Bool
-  b2: Bool
-  b4: Bool
-  b5: Bool
-  x✝¹: b1 = true → False
-  x✝: b2 = true → False
+case case3
+b1 : Bool
+b2 : Bool
+b4 : Bool
+b5 : Bool
+x✝¹ : b1 = true → False
+x✝ : b2 = true → False
 ⊢ true = (b1 || b2 || true || b4 || b5)
 
-case case4 =>
-  b1: Bool
-  b2: Bool
-  b3: Bool
-  b5: Bool
-  x✝²: b1 = true → False
-  x✝¹: b2 = true → False
-  x✝: b3 = true → False
+case case4
+b1 : Bool
+b2 : Bool
+b3 : Bool
+b5 : Bool
+x✝² : b1 = true → False
+x✝¹ : b2 = true → False
+x✝ : b3 = true → False
 ⊢ true = (b1 || b2 || b3 || true || b5)
 
-case case5 =>
-  b1: Bool
-  b2: Bool
-  b3: Bool
-  b4: Bool
-  b5: Bool
-  x✝³: b1 = true → False
-  x✝²: b2 = true → False
-  x✝¹: b3 = true → False
-  x✝: b4 = true → False
+case case5
+b1 : Bool
+b2 : Bool
+b3 : Bool
+b4 : Bool
+b5 : Bool
+x✝³ : b1 = true → False
+x✝² : b2 = true → False
+x✝¹ : b3 = true → False
+x✝ : b4 = true → False
 ⊢ b5 = (b1 || b2 || b3 || b4 || b5)
 ```
 
