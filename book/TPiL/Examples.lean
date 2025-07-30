@@ -105,15 +105,15 @@ def extractFile (contents : String) (suppressNamespaces : Option String) : m (Ar
 
   let jsonString ← IO.FS.readFile (projectDir / "Examples" / jsonFile)
 
-  let .ok (.arr json) := Json.parse jsonString
+  let .ok json := Json.parse jsonString
     | if jsonString.isEmpty then
-        throwError s!"Expected JSON array in {projectDir / "Examples" / jsonFile}, got empty output"
+        throwError s!"Expected JSON in {projectDir / "Examples" / jsonFile}, got empty output"
       else
-        throwError s!"Expected JSON array in {projectDir / "Examples" / jsonFile}, got {jsonString}"
-  match json.mapM fromJson? with
+        throwError s!"Expected JSON in {projectDir / "Examples" / jsonFile}, got {jsonString}"
+  match Module.fromJson? json with
   | .error err =>
     throwError s!"Couldn't parse JSON from output file: {err}\nIn:\n{json}"
-  | .ok val => pure val
+  | .ok m => pure m.items
 
 where
   decorateOut (name : String) (out : String) : String :=

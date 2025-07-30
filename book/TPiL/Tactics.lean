@@ -1310,16 +1310,16 @@ Get the intermediate proof states from `rw` into the reference ring to help thes
 In the first example above, the first step rewrites {leanRef}`a + b + c` to
 {leanRef}`a`{lit}` + (`{leanRef}`b + c`{lit}`)`. The next step applies commutativity to the term
 {leanRef}`b + c`; without specifying the argument, the tactic would instead rewrite
-{leanRef}`a`{lit}` + (`{leanRef}`b + c`{lit})` to {lit}`(`{leanRef}`b + c`{lit}`) + `{leanRef}`a`. Finally, the last step applies
-associativity in the reverse direction, rewriting {leanRef}`a`{lit}` + (`{leanRef}c`{lit}`  +  `{leanRef}`b`{lit})` to
+{leanRef}`a`{lit}` + (`{leanRef}`b + c`{lit}`)` to {lit}`(`{leanRef}`b + c`{lit}`) + `{leanRef}`a`. Finally, the last step applies
+associativity in the reverse direction, rewriting {leanRef}`a`{lit}` + (`{leanRef}`c`{lit}`  +  `{leanRef}`b`{lit}`)` to
 {leanRef}`a + c + b`. The next two examples instead apply associativity to
-move the parenthesis to the right on both sides, and then switch `b`
-and `c`. Notice that the last example specifies that the rewrite
+move the parenthesis to the right on both sides, and then switch {leanRef}`b`
+and {leanRef}`c`. Notice that the last example specifies that the rewrite
 should take place on the right-hand side by specifying the second
-argument to `Nat.add_comm`.
+argument to {leanRef}`Nat.add_comm`.
 
-By default, the `rw` tactic affects only the goal. The notation
-{tactic}`rw`{lit}`  [t]  `{kw}`at`{lit} h` applies the rewrite `t` at hypothesis `h`.
+By default, the {leanRef}`rw` tactic affects only the goal. The notation
+{tactic}`rw`{lit}`  [t]  `{kw}`at`{lit}` h` applies the rewrite
 
 ```lean
 example (f : Nat → Nat) (a : Nat) (h : a + 0 = 0) : f a = f 0 := by
