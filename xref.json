@@ -1548,7 +1548,7 @@
         "Types as objects"]}},
      "address": "/Dependent-Type-Theory/"}],
    "zero_add":
-   [{"id": "add-next-next",
+   [{"id": "zero_add",
      "data":
      {"/Induction-and-Recursion/#zero_add":
       {"display": "zero_add",
@@ -1563,7 +1563,7 @@
         "Induction and Recursion",
         "Structural Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "zero_add",
+    {"id": "add-next-next",
      "data":
      {"/Induction-and-Recursion/#zero_add":
       {"display": "zero_add",
@@ -1697,7 +1697,7 @@
         "Function Extensionality"]}},
      "address": "/Axioms-and-Computation/"}],
    "transitive":
-   [{"id": "reflexive-next",
+   [{"id": "reflexive",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "transitive",
@@ -1712,7 +1712,7 @@
         "Interacting with Lean",
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "reflexive",
+    {"id": "reflexive-next",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "transitive",
@@ -1748,7 +1748,7 @@
         "Propositional Extensionality"]}},
      "address": "/Axioms-and-Computation/"}],
    "th3":
-   [{"id": "reflexive-next",
+   [{"id": "reflexive",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "th3",
@@ -1763,7 +1763,7 @@
         "Interacting with Lean",
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "reflexive",
+    {"id": "reflexive-next",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "th3",
@@ -1779,7 +1779,7 @@
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"}],
    "th2":
-   [{"id": "reflexive-next",
+   [{"id": "reflexive",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "th2",
@@ -1794,7 +1794,7 @@
         "Interacting with Lean",
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "reflexive",
+    {"id": "reflexive-next",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "th2",
@@ -1810,7 +1810,7 @@
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"}],
    "th1":
-   [{"id": "reflexive-next",
+   [{"id": "reflexive",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "th1",
@@ -1825,7 +1825,7 @@
         "Interacting with Lean",
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "reflexive",
+    {"id": "reflexive-next",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "th1",
@@ -2122,7 +2122,7 @@
        ["Theorem Proving in Lean 4", "Tactics", "Entering Tactic Mode"]}},
      "address": "/Tactics/"}],
    "takeWhile":
-   [{"id": "takeWhile-next",
+   [{"id": "takeWhile",
      "data":
      {"/Induction-and-Recursion/#takeWhile-next":
       {"display": "takeWhile",
@@ -2137,7 +2137,7 @@
         "Induction and Recursion",
         "Well-Founded Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "takeWhile",
+    {"id": "takeWhile-next",
      "data":
      {"/Induction-and-Recursion/#takeWhile-next":
       {"display": "takeWhile",
@@ -2878,7 +2878,7 @@
         "Local Definitions"]}},
      "address": "/Dependent-Type-Theory/"}],
    "symmetric":
-   [{"id": "reflexive-next",
+   [{"id": "reflexive",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "symmetric",
@@ -2893,7 +2893,7 @@
         "Interacting with Lean",
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "reflexive",
+    {"id": "reflexive-next",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "symmetric",
@@ -3059,7 +3059,7 @@
        ["Theorem Proving in Lean 4", "Induction and Recursion", "Exercises"]}},
      "address": "/Induction-and-Recursion/"}],
    "silly":
-   [{"id": "silly-next-next",
+   [{"id": "silly-next",
      "data":
      {"/Inductive-Types/#silly-next-next":
       {"display": "silly",
@@ -3086,34 +3086,7 @@
         "Inductive Types",
         "Tactics for Inductive Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "silly",
-     "data":
-     {"/Inductive-Types/#silly-next-next":
-      {"display": "silly",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#silly-next":
-      {"display": "silly",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#silly":
-      {"display": "silly",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#Foo":
-      {"display": "silly",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "silly-next",
+    {"id": "silly-next-next",
      "data":
      {"/Inductive-Types/#silly-next-next":
       {"display": "silly",
@@ -3166,6 +3139,33 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Tactics for Inductive Types"]}},
+     "address": "/Inductive-Types/"},
+    {"id": "silly",
+     "data":
+     {"/Inductive-Types/#silly-next-next":
+      {"display": "silly",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#silly-next":
+      {"display": "silly",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#silly":
+      {"display": "silly",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#Foo":
+      {"display": "silly",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]}},
      "address": "/Inductive-Types/"}],
    "sampleVal":
    [{"id": "eval",
@@ -3184,7 +3184,7 @@
        ["Theorem Proving in Lean 4", "Induction and Recursion", "Exercises"]}},
      "address": "/Induction-and-Recursion/"}],
    "s":
-   [{"id": "List___toSet",
+   [{"id": "s",
      "data":
      {"/Type-Classes/#s":
       {"display": "s",
@@ -3199,7 +3199,7 @@
         "Type Classes",
         "Coercions using Type Classes"]}},
      "address": "/Type-Classes/"},
-    {"id": "s",
+    {"id": "List___toSet",
      "data":
      {"/Type-Classes/#s":
       {"display": "s",
@@ -3223,7 +3223,7 @@
        ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]}},
      "address": "/Structures-and-Records/"}],
    "reverse_mk_symm":
-   [{"id": "reverse_mk_symm-next-next-next-next",
+   [{"id": "mk_symm-next",
      "data":
      {"/Tactics/#reverse_mk_symm-next-next-next-next":
       {"display": "reverse_mk_symm",
@@ -3250,34 +3250,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]}},
      "address": "/Tactics/"},
-    {"id": "mk_symm-next",
-     "data":
-     {"/Tactics/#reverse_mk_symm-next-next-next-next":
-      {"display": "reverse_mk_symm",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
-      "/Tactics/#reverse_mk_symm-next-next-next":
-      {"display": "reverse_mk_symm",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
-      "/Tactics/#reverse_mk_symm-next-next":
-      {"display": "reverse_mk_symm",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
-      "/Tactics/#reverse_mk_symm-next":
-      {"display": "reverse_mk_symm",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
-      "/Tactics/#reverse_mk_symm":
-      {"display": "reverse_mk_symm",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
-      "/Tactics/#mk_symm-next":
-      {"display": "reverse_mk_symm",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]}},
-     "address": "/Tactics/"},
-    {"id": "reverse_mk_symm-next-next-next",
+    {"id": "reverse_mk_symm-next",
      "data":
      {"/Tactics/#reverse_mk_symm-next-next-next-next":
       {"display": "reverse_mk_symm",
@@ -3358,7 +3331,34 @@
        "context":
        ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]}},
      "address": "/Tactics/"},
-    {"id": "reverse_mk_symm-next",
+    {"id": "reverse_mk_symm-next-next-next-next",
+     "data":
+     {"/Tactics/#reverse_mk_symm-next-next-next-next":
+      {"display": "reverse_mk_symm",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
+      "/Tactics/#reverse_mk_symm-next-next-next":
+      {"display": "reverse_mk_symm",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
+      "/Tactics/#reverse_mk_symm-next-next":
+      {"display": "reverse_mk_symm",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
+      "/Tactics/#reverse_mk_symm-next":
+      {"display": "reverse_mk_symm",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
+      "/Tactics/#reverse_mk_symm":
+      {"display": "reverse_mk_symm",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
+      "/Tactics/#mk_symm-next":
+      {"display": "reverse_mk_symm",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]}},
+     "address": "/Tactics/"},
+    {"id": "reverse_mk_symm-next-next-next",
      "data":
      {"/Tactics/#reverse_mk_symm-next-next-next-next":
       {"display": "reverse_mk_symm",
@@ -3396,7 +3396,7 @@
         "Coercions using Type Classes"]}},
      "address": "/Type-Classes/"}],
    "replicate":
-   [{"id": "replicate",
+   [{"id": "replicate-next",
      "data":
      {"/Induction-and-Recursion/#replicate-next":
       {"display": "replicate",
@@ -3411,7 +3411,7 @@
         "Induction and Recursion",
         "Local recursive declarations"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "replicate-next",
+    {"id": "replicate",
      "data":
      {"/Induction-and-Recursion/#replicate-next":
       {"display": "replicate",
@@ -3427,7 +3427,7 @@
         "Local recursive declarations"]}},
      "address": "/Induction-and-Recursion/"}],
    "reflexive":
-   [{"id": "reflexive-next",
+   [{"id": "reflexive",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "reflexive",
@@ -3442,7 +3442,7 @@
         "Interacting with Lean",
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "reflexive",
+    {"id": "reflexive-next",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "reflexive",
@@ -3529,7 +3529,36 @@
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
      "address": "/Dependent-Type-Theory/"}],
    "p":
-   [{"id": "Point___smul",
+   [{"id": "Point-next",
+     "data":
+     {"/Structures-and-Records/#p":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Structures-and-Records/#Point___smul":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Structures-and-Records/#Point-next-next-next-next-next":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
+      "/Structures-and-Records/#Point-next-next-next":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
+      "/Structures-and-Records/#Point-next":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]}},
+     "address": "/Structures-and-Records/"},
+    {"id": "Point-next-next-next",
      "data":
      {"/Structures-and-Records/#p":
       {"display": "p",
@@ -3587,65 +3616,36 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
+    {"id": "Point___smul",
+     "data":
+     {"/Structures-and-Records/#p":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Structures-and-Records/#Point___smul":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Structures-and-Records/#Point-next-next-next-next-next":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
+      "/Structures-and-Records/#Point-next-next-next":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
+      "/Structures-and-Records/#Point-next":
+      {"display": "p",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]}},
+     "address": "/Structures-and-Records/"},
     {"id": "p",
-     "data":
-     {"/Structures-and-Records/#p":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Structures-and-Records/#Point___smul":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Structures-and-Records/#Point-next-next-next-next-next":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
-      "/Structures-and-Records/#Point-next-next-next":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
-      "/Structures-and-Records/#Point-next":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]}},
-     "address": "/Structures-and-Records/"},
-    {"id": "Point-next",
-     "data":
-     {"/Structures-and-Records/#p":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Structures-and-Records/#Point___smul":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Structures-and-Records/#Point-next-next-next-next-next":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
-      "/Structures-and-Records/#Point-next-next-next":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
-      "/Structures-and-Records/#Point-next":
-      {"display": "p",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]}},
-     "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next",
      "data":
      {"/Structures-and-Records/#p":
       {"display": "p",
@@ -3695,7 +3695,7 @@
         "Mutual Recursion"]}},
      "address": "/Induction-and-Recursion/"}],
    "numberOfDay":
-   [{"id": "numberOfDay",
+   [{"id": "numberOfDay-next",
      "data":
      {"/Inductive-Types/#numberOfDay-next":
       {"display": "numberOfDay",
@@ -3706,7 +3706,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "numberOfDay-next",
+    {"id": "numberOfDay",
      "data":
      {"/Inductive-Types/#numberOfDay-next":
       {"display": "numberOfDay",
@@ -3728,7 +3728,7 @@
         "Mutual Recursion"]}},
      "address": "/Induction-and-Recursion/"}],
    "natToBin":
-   [{"id": "natToBin-next",
+   [{"id": "natToBin",
      "data":
      {"/Induction-and-Recursion/#natToBin-next":
       {"display": "natToBin",
@@ -3743,7 +3743,7 @@
         "Induction and Recursion",
         "Well-Founded Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "natToBin",
+    {"id": "natToBin-next",
      "data":
      {"/Induction-and-Recursion/#natToBin-next":
       {"display": "natToBin",
@@ -3870,7 +3870,7 @@
         "The Law of the Excluded Middle"]}},
      "address": "/Axioms-and-Computation/"}],
    "length_replicate":
-   [{"id": "length_replicate",
+   [{"id": "replicate-next",
      "data":
      {"/Induction-and-Recursion/#replicate-next":
       {"display": "length_replicate",
@@ -3885,7 +3885,7 @@
         "Induction and Recursion",
         "Local recursive declarations"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "replicate-next",
+    {"id": "length_replicate",
      "data":
      {"/Induction-and-Recursion/#replicate-next":
       {"display": "length_replicate",
@@ -4222,43 +4222,7 @@
         "Named Arguments"]}},
      "address": "/Interacting-with-Lean/"}],
    "g":
-   [{"id": "f-next-next",
-     "data":
-     {"/Tactics/#g":
-      {"display": "g",
-       "context": ["Theorem Proving in Lean 4", "Tactics", "Split Tactic"]},
-      "/Interacting-with-Lean/#f-next-next-next-next-next":
-      {"display": "g",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Named Arguments"]},
-      "/Dependent-Type-Theory/#f-next-next":
-      {"display": "g",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "What makes dependent type theory dependent?"]},
-      "/Dependent-Type-Theory/#f-next":
-      {"display": "g",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Function Abstraction and Evaluation"]},
-      "/Dependent-Type-Theory/#f":
-      {"display": "g",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Function Abstraction and Evaluation"]},
-      "/Axioms-and-Computation/#f-next-next-next-next-next-next-next-next-next-next":
-      {"display": "g",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Axioms and Computation",
-        "Function Extensionality"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "g",
+   [{"id": "g",
      "data":
      {"/Tactics/#g":
       {"display": "g",
@@ -4294,7 +4258,7 @@
         "Axioms and Computation",
         "Function Extensionality"]}},
      "address": "/Tactics/"},
-    {"id": "f-next-next-next-next-next",
+    {"id": "f-next-next",
      "data":
      {"/Tactics/#g":
       {"display": "g",
@@ -4329,7 +4293,7 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/Interacting-with-Lean/"},
+     "address": "/Dependent-Type-Theory/"},
     {"id": "f-next",
      "data":
      {"/Tactics/#g":
@@ -4437,7 +4401,43 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/Dependent-Type-Theory/"}],
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "f-next-next-next-next-next",
+     "data":
+     {"/Tactics/#g":
+      {"display": "g",
+       "context": ["Theorem Proving in Lean 4", "Tactics", "Split Tactic"]},
+      "/Interacting-with-Lean/#f-next-next-next-next-next":
+      {"display": "g",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Named Arguments"]},
+      "/Dependent-Type-Theory/#f-next-next":
+      {"display": "g",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "What makes dependent type theory dependent?"]},
+      "/Dependent-Type-Theory/#f-next":
+      {"display": "g",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Function Abstraction and Evaluation"]},
+      "/Dependent-Type-Theory/#f":
+      {"display": "g",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Function Abstraction and Evaluation"]},
+      "/Axioms-and-Computation/#f-next-next-next-next-next-next-next-next-next-next":
+      {"display": "g",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Axioms and Computation",
+        "Function Extensionality"]}},
+     "address": "/Interacting-with-Lean/"}],
    "fuse_eq":
    [{"id": "simpConst",
      "data":
@@ -4455,80 +4455,7 @@
        ["Theorem Proving in Lean 4", "Induction and Recursion", "Exercises"]}},
      "address": "/Induction-and-Recursion/"}],
    "foo":
-   [{"id": "foo-next-next-next-next-next-next-next-next-next",
-     "data":
-     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Type Classes",
-        "Managing Type Class Inference"]},
-      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
-      "/Interacting-with-Lean/#foo-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Displaying Information"]},
-      "/Induction-and-Recursion/#swap":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Match Expressions"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Dependent-Type-Theory/#foo":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Local Definitions"]}},
-     "address": "/Type-Classes/"},
-    {"id": "foo-next-next-next-next-next-next-next-next",
+   [{"id": "foo-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
       {"display": "foo",
@@ -4601,371 +4528,6 @@
         "Dependent Type Theory",
         "Local Definitions"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "foo-next-next-next-next-next-next-next",
-     "data":
-     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Type Classes",
-        "Managing Type Class Inference"]},
-      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
-      "/Interacting-with-Lean/#foo-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Displaying Information"]},
-      "/Induction-and-Recursion/#swap":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Match Expressions"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Dependent-Type-Theory/#foo":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Local Definitions"]}},
-     "address": "/Induction-and-Recursion/"},
-    {"id": "foo-next-next-next-next-next",
-     "data":
-     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Type Classes",
-        "Managing Type Class Inference"]},
-      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
-      "/Interacting-with-Lean/#foo-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Displaying Information"]},
-      "/Induction-and-Recursion/#swap":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Match Expressions"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Dependent-Type-Theory/#foo":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Local Definitions"]}},
-     "address": "/Induction-and-Recursion/"},
-    {"id": "swap",
-     "data":
-     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Type Classes",
-        "Managing Type Class Inference"]},
-      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
-      "/Interacting-with-Lean/#foo-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Displaying Information"]},
-      "/Induction-and-Recursion/#swap":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Match Expressions"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Dependent-Type-Theory/#foo":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Local Definitions"]}},
-     "address": "/Induction-and-Recursion/"},
-    {"id": "foo-next-next-next-next-next-next",
-     "data":
-     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Type Classes",
-        "Managing Type Class Inference"]},
-      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
-      "/Interacting-with-Lean/#foo-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Displaying Information"]},
-      "/Induction-and-Recursion/#swap":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Match Expressions"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Dependent-Type-Theory/#foo":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Local Definitions"]}},
-     "address": "/Induction-and-Recursion/"},
-    {"id": "foo",
-     "data":
-     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Type Classes",
-        "Managing Type Class Inference"]},
-      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
-      "/Interacting-with-Lean/#foo-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Displaying Information"]},
-      "/Induction-and-Recursion/#swap":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Match Expressions"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Wildcards and Overlapping Patterns"]},
-      "/Induction-and-Recursion/#foo-next-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Induction-and-Recursion/#foo-next-next":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Pattern Matching"]},
-      "/Dependent-Type-Theory/#foo":
-      {"display": "foo",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Local Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
     {"id": "foo-next-next",
      "data":
      {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
@@ -5112,6 +4674,79 @@
         "Dependent Type Theory",
         "Local Definitions"]}},
      "address": "/Induction-and-Recursion/"},
+    {"id": "foo-next-next-next-next-next-next-next-next",
+     "data":
+     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Type Classes",
+        "Managing Type Class Inference"]},
+      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
+      "/Interacting-with-Lean/#foo-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Displaying Information"]},
+      "/Induction-and-Recursion/#swap":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Match Expressions"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Dependent-Type-Theory/#foo":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Local Definitions"]}},
+     "address": "/Induction-and-Recursion/"},
     {"id": "foo-next",
      "data":
      {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
@@ -5185,6 +4820,298 @@
         "Dependent Type Theory",
         "Local Definitions"]}},
      "address": "/Interacting-with-Lean/"},
+    {"id": "foo",
+     "data":
+     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Type Classes",
+        "Managing Type Class Inference"]},
+      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
+      "/Interacting-with-Lean/#foo-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Displaying Information"]},
+      "/Induction-and-Recursion/#swap":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Match Expressions"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Dependent-Type-Theory/#foo":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Local Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "foo-next-next-next-next-next-next-next-next-next-next",
+     "data":
+     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Type Classes",
+        "Managing Type Class Inference"]},
+      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
+      "/Interacting-with-Lean/#foo-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Displaying Information"]},
+      "/Induction-and-Recursion/#swap":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Match Expressions"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Dependent-Type-Theory/#foo":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Local Definitions"]}},
+     "address": "/Type-Classes/"},
+    {"id": "swap",
+     "data":
+     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Type Classes",
+        "Managing Type Class Inference"]},
+      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
+      "/Interacting-with-Lean/#foo-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Displaying Information"]},
+      "/Induction-and-Recursion/#swap":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Match Expressions"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Dependent-Type-Theory/#foo":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Local Definitions"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "foo-next-next-next-next-next-next-next-next-next",
+     "data":
+     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Type Classes",
+        "Managing Type Class Inference"]},
+      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
+      "/Interacting-with-Lean/#foo-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Displaying Information"]},
+      "/Induction-and-Recursion/#swap":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Match Expressions"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Dependent-Type-Theory/#foo":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Local Definitions"]}},
+     "address": "/Type-Classes/"},
     {"id": "foo-next-next-next",
      "data":
      {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
@@ -5258,7 +5185,7 @@
         "Dependent Type Theory",
         "Local Definitions"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "foo-next-next-next-next-next-next-next-next-next-next",
+    {"id": "foo-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
       {"display": "foo",
@@ -5330,7 +5257,80 @@
        ["Theorem Proving in Lean 4",
         "Dependent Type Theory",
         "Local Definitions"]}},
-     "address": "/Type-Classes/"}],
+     "address": "/Induction-and-Recursion/"},
+    {"id": "foo-next-next-next-next-next",
+     "data":
+     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Type Classes",
+        "Managing Type Class Inference"]},
+      "/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
+      "/Interacting-with-Lean/#foo-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Displaying Information"]},
+      "/Induction-and-Recursion/#swap":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Match Expressions"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Wildcards and Overlapping Patterns"]},
+      "/Induction-and-Recursion/#foo-next-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Induction-and-Recursion/#foo-next-next":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Pattern Matching"]},
+      "/Dependent-Type-Theory/#foo":
+      {"display": "foo",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Local Definitions"]}},
+     "address": "/Induction-and-Recursion/"}],
    "filter":
    [{"id": "isNotZero-next",
      "data":
@@ -5342,7 +5342,7 @@
         "Match Expressions"]}},
      "address": "/Induction-and-Recursion/"}],
    "fibFast":
-   [{"id": "fibFast-next",
+   [{"id": "fibFast",
      "data":
      {"/Induction-and-Recursion/#fibFast-next":
       {"display": "fibFast",
@@ -5357,7 +5357,7 @@
         "Induction and Recursion",
         "Structural Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "fibFast",
+    {"id": "fibFast-next",
      "data":
      {"/Induction-and-Recursion/#fibFast-next":
       {"display": "fibFast",
@@ -5373,7 +5373,7 @@
         "Structural Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"}],
    "fib":
-   [{"id": "fib",
+   [{"id": "fib-next",
      "data":
      {"/Induction-and-Recursion/#fib-next":
       {"display": "fib",
@@ -5388,7 +5388,7 @@
         "Induction and Recursion",
         "Structural Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "fib-next",
+    {"id": "fib",
      "data":
      {"/Induction-and-Recursion/#fib-next":
       {"display": "fib",
@@ -5473,7 +5473,7 @@
         "Wildcards and Overlapping Patterns"]}},
      "address": "/Induction-and-Recursion/"}],
    "f":
-   [{"id": "f-next-next-next",
+   [{"id": "f-next-next-next-next-next-next-next-next-next",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
       {"display": "f",
@@ -5552,88 +5552,8 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/Tactics/"},
-    {"id": "Tuple-next",
-     "data":
-     {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "The Conversion Tactic Mode",
-        "Other tactics inside conversion mode"]},
-      "/Tactics/#f-next-next-next-next":
-      {"display": "f",
-       "context": ["Theorem Proving in Lean 4", "Tactics", "Split Tactic"]},
-      "/Tactics/#f-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
-      "/Structures-and-Records/#xs":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Interacting-with-Lean/#f-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Named Arguments"]},
-      "/Inductive-Types/#f-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#Tuple-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Functional Induction"]},
-      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Well-Founded Recursion and Induction"]},
-      "/Dependent-Type-Theory/#f-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "What makes dependent type theory dependent?"]},
-      "/Dependent-Type-Theory/#f-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Function Abstraction and Evaluation"]},
-      "/Dependent-Type-Theory/#f":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Function Abstraction and Evaluation"]},
-      "/Axioms-and-Computation/#mod7Rel":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4", "Axioms and Computation", "Quotients"]},
-      "/Axioms-and-Computation/#f-next-next-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Axioms and Computation",
-        "Function Extensionality"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "f-next-next-next-next-next-next-next",
+     "address": "/The-Conversion-Tactic-Mode/"},
+    {"id": "f-next-next-next-next-next-next-next-next",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
       {"display": "f",
@@ -5793,166 +5713,6 @@
         "Axioms and Computation",
         "Function Extensionality"]}},
      "address": "/Dependent-Type-Theory/"},
-    {"id": "f-next-next-next-next",
-     "data":
-     {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "The Conversion Tactic Mode",
-        "Other tactics inside conversion mode"]},
-      "/Tactics/#f-next-next-next-next":
-      {"display": "f",
-       "context": ["Theorem Proving in Lean 4", "Tactics", "Split Tactic"]},
-      "/Tactics/#f-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
-      "/Structures-and-Records/#xs":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Interacting-with-Lean/#f-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Named Arguments"]},
-      "/Inductive-Types/#f-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#Tuple-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Functional Induction"]},
-      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Well-Founded Recursion and Induction"]},
-      "/Dependent-Type-Theory/#f-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "What makes dependent type theory dependent?"]},
-      "/Dependent-Type-Theory/#f-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Function Abstraction and Evaluation"]},
-      "/Dependent-Type-Theory/#f":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Function Abstraction and Evaluation"]},
-      "/Axioms-and-Computation/#mod7Rel":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4", "Axioms and Computation", "Quotients"]},
-      "/Axioms-and-Computation/#f-next-next-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Axioms and Computation",
-        "Function Extensionality"]}},
-     "address": "/Tactics/"},
-    {"id": "f-next-next-next-next-next-next",
-     "data":
-     {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "The Conversion Tactic Mode",
-        "Other tactics inside conversion mode"]},
-      "/Tactics/#f-next-next-next-next":
-      {"display": "f",
-       "context": ["Theorem Proving in Lean 4", "Tactics", "Split Tactic"]},
-      "/Tactics/#f-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
-      "/Structures-and-Records/#xs":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Interacting-with-Lean/#f-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Named Arguments"]},
-      "/Inductive-Types/#f-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#Tuple-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Functional Induction"]},
-      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Well-Founded Recursion and Induction"]},
-      "/Dependent-Type-Theory/#f-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "What makes dependent type theory dependent?"]},
-      "/Dependent-Type-Theory/#f-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Function Abstraction and Evaluation"]},
-      "/Dependent-Type-Theory/#f":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Function Abstraction and Evaluation"]},
-      "/Axioms-and-Computation/#mod7Rel":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4", "Axioms and Computation", "Quotients"]},
-      "/Axioms-and-Computation/#f-next-next-next-next-next-next-next-next-next-next":
-      {"display": "f",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Axioms and Computation",
-        "Function Extensionality"]}},
-     "address": "/Inductive-Types/"},
     {"id": "f",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
@@ -6033,7 +5793,7 @@
         "Axioms and Computation",
         "Function Extensionality"]}},
      "address": "/Dependent-Type-Theory/"},
-    {"id": "f-next-next-next-next-next-next-next-next-next-next",
+    {"id": "f-next-next-next-next-next-next-next",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
       {"display": "f",
@@ -6112,7 +5872,167 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/Axioms-and-Computation/"},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "xs",
+     "data":
+     {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "The Conversion Tactic Mode",
+        "Other tactics inside conversion mode"]},
+      "/Tactics/#f-next-next-next-next":
+      {"display": "f",
+       "context": ["Theorem Proving in Lean 4", "Tactics", "Split Tactic"]},
+      "/Tactics/#f-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
+      "/Structures-and-Records/#xs":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Interacting-with-Lean/#f-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Named Arguments"]},
+      "/Inductive-Types/#f-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#Tuple-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Functional Induction"]},
+      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Dependent-Type-Theory/#f-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "What makes dependent type theory dependent?"]},
+      "/Dependent-Type-Theory/#f-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Function Abstraction and Evaluation"]},
+      "/Dependent-Type-Theory/#f":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Function Abstraction and Evaluation"]},
+      "/Axioms-and-Computation/#mod7Rel":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4", "Axioms and Computation", "Quotients"]},
+      "/Axioms-and-Computation/#f-next-next-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Axioms and Computation",
+        "Function Extensionality"]}},
+     "address": "/Structures-and-Records/"},
+    {"id": "f-next-next-next",
+     "data":
+     {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "The Conversion Tactic Mode",
+        "Other tactics inside conversion mode"]},
+      "/Tactics/#f-next-next-next-next":
+      {"display": "f",
+       "context": ["Theorem Proving in Lean 4", "Tactics", "Split Tactic"]},
+      "/Tactics/#f-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
+      "/Structures-and-Records/#xs":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Interacting-with-Lean/#f-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Named Arguments"]},
+      "/Inductive-Types/#f-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#Tuple-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Functional Induction"]},
+      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Dependent-Type-Theory/#f-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "What makes dependent type theory dependent?"]},
+      "/Dependent-Type-Theory/#f-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Function Abstraction and Evaluation"]},
+      "/Dependent-Type-Theory/#f":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Function Abstraction and Evaluation"]},
+      "/Axioms-and-Computation/#mod7Rel":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4", "Axioms and Computation", "Quotients"]},
+      "/Axioms-and-Computation/#f-next-next-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Axioms and Computation",
+        "Function Extensionality"]}},
+     "address": "/Tactics/"},
     {"id": "mod7Rel",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
@@ -6273,7 +6193,7 @@
         "Axioms and Computation",
         "Function Extensionality"]}},
      "address": "/Dependent-Type-Theory/"},
-    {"id": "f-next-next-next-next-next-next-next-next",
+    {"id": "Tuple-next",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
       {"display": "f",
@@ -6352,8 +6272,8 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/Induction-and-Recursion/"},
-    {"id": "xs",
+     "address": "/Inductive-Types/"},
+    {"id": "f-next-next-next-next",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
       {"display": "f",
@@ -6432,7 +6352,87 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/Structures-and-Records/"},
+     "address": "/Tactics/"},
+    {"id": "f-next-next-next-next-next-next-next-next-next-next",
+     "data":
+     {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "The Conversion Tactic Mode",
+        "Other tactics inside conversion mode"]},
+      "/Tactics/#f-next-next-next-next":
+      {"display": "f",
+       "context": ["Theorem Proving in Lean 4", "Tactics", "Split Tactic"]},
+      "/Tactics/#f-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4", "Tactics", "Using the Simplifier"]},
+      "/Structures-and-Records/#xs":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Interacting-with-Lean/#f-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Named Arguments"]},
+      "/Inductive-Types/#f-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#Tuple-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Functional Induction"]},
+      "/Induction-and-Recursion/#f-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Dependent-Type-Theory/#f-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "What makes dependent type theory dependent?"]},
+      "/Dependent-Type-Theory/#f-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Function Abstraction and Evaluation"]},
+      "/Dependent-Type-Theory/#f":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Function Abstraction and Evaluation"]},
+      "/Axioms-and-Computation/#mod7Rel":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4", "Axioms and Computation", "Quotients"]},
+      "/Axioms-and-Computation/#f-next-next-next-next-next-next-next-next-next-next":
+      {"display": "f",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Axioms and Computation",
+        "Function Extensionality"]}},
+     "address": "/Axioms-and-Computation/"},
     {"id": "f-next-next-next-next-next",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
@@ -6513,7 +6513,7 @@
         "Axioms and Computation",
         "Function Extensionality"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "f-next-next-next-next-next-next-next-next-next",
+    {"id": "f-next-next-next-next-next-next",
      "data":
      {"/The-Conversion-Tactic-Mode/#f-next-next-next-next-next-next-next-next-next":
       {"display": "f",
@@ -6592,9 +6592,26 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/The-Conversion-Tactic-Mode/"}],
+     "address": "/Inductive-Types/"}],
    "ex":
-   [{"id": "foo-next-next-next-next-next-next-next-next-next",
+   [{"id": "unsound",
+     "data":
+     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
+      {"display": "ex",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
+      "/Type-Classes/#ex":
+      {"display": "ex",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Decidable Propositions"]},
+      "/Propositions-and-Proofs/#unsound":
+      {"display": "ex",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Propositions and Proofs",
+        "Working with Propositions as Types"]}},
+     "address": "/Propositions-and-Proofs/"},
+    {"id": "foo-next-next-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
       {"display": "ex",
@@ -6627,24 +6644,7 @@
        ["Theorem Proving in Lean 4",
         "Propositions and Proofs",
         "Working with Propositions as Types"]}},
-     "address": "/Type-Classes/"},
-    {"id": "unsound",
-     "data":
-     {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next":
-      {"display": "ex",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Chaining Instances"]},
-      "/Type-Classes/#ex":
-      {"display": "ex",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Decidable Propositions"]},
-      "/Propositions-and-Proofs/#unsound":
-      {"display": "ex",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Propositions and Proofs",
-        "Working with Propositions as Types"]}},
-     "address": "/Propositions-and-Proofs/"}],
+     "address": "/Type-Classes/"}],
    "even_plus_even":
    [{"id": "even_plus_even",
      "data":
@@ -6732,7 +6732,7 @@
        ["Theorem Proving in Lean 4", "Induction and Recursion", "Exercises"]}},
      "address": "/Induction-and-Recursion/"}],
    "double":
-   [{"id": "Point-next-next-next-next-next-next",
+   [{"id": "Point-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next":
       {"display": "double",
@@ -6819,6 +6819,35 @@
        "context":
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
      "address": "/Dependent-Type-Theory/"},
+    {"id": "Point-next-next-next-next-next-next",
+     "data":
+     {"/Type-Classes/#Point-next-next-next-next-next-next-next":
+      {"display": "double",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next":
+      {"display": "double",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
+      "/Interacting-with-Lean/#double-next-next-next":
+      {"display": "double",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "More on Sections"]},
+      "/Dependent-Type-Theory/#double-next-next":
+      {"display": "double",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]},
+      "/Dependent-Type-Theory/#double-next":
+      {"display": "double",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]},
+      "/Dependent-Type-Theory/#double":
+      {"display": "double",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Type-Classes/"},
     {"id": "double-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next":
@@ -6848,35 +6877,6 @@
        "context":
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "Point-next-next-next-next-next-next-next",
-     "data":
-     {"/Type-Classes/#Point-next-next-next-next-next-next-next":
-      {"display": "double",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next":
-      {"display": "double",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
-      "/Interacting-with-Lean/#double-next-next-next":
-      {"display": "double",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "More on Sections"]},
-      "/Dependent-Type-Theory/#double-next-next":
-      {"display": "double",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]},
-      "/Dependent-Type-Theory/#double-next":
-      {"display": "double",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]},
-      "/Dependent-Type-Theory/#double":
-      {"display": "double",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Type-Classes/"},
     {"id": "double",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next":
@@ -7212,7 +7212,7 @@
         "Calculational Proofs"]}},
      "address": "/Quantifiers-and-Equality/"}],
    "div_lemma":
-   [{"id": "div_lemma",
+   [{"id": "div_lemma-next",
      "data":
      {"/Induction-and-Recursion/#div_lemma-next":
       {"display": "div_lemma",
@@ -7227,7 +7227,7 @@
         "Induction and Recursion",
         "Well-Founded Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "div_lemma-next",
+    {"id": "div_lemma",
      "data":
      {"/Induction-and-Recursion/#div_lemma-next":
       {"display": "div_lemma",
@@ -7253,7 +7253,28 @@
         "Well-Founded Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"}],
    "div":
-   [{"id": "div",
+   [{"id": "div_lemma-next",
+     "data":
+     {"/Induction-and-Recursion/#div_lemma-next":
+      {"display": "div",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Induction-and-Recursion/#div_lemma":
+      {"display": "div",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Induction-and-Recursion/#div":
+      {"display": "div",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "div",
      "data":
      {"/Induction-and-Recursion/#div_lemma-next":
       {"display": "div",
@@ -7275,27 +7296,6 @@
         "Well-Founded Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"},
     {"id": "div_lemma",
-     "data":
-     {"/Induction-and-Recursion/#div_lemma-next":
-      {"display": "div",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Well-Founded Recursion and Induction"]},
-      "/Induction-and-Recursion/#div_lemma":
-      {"display": "div",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Well-Founded Recursion and Induction"]},
-      "/Induction-and-Recursion/#div":
-      {"display": "div",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Well-Founded Recursion and Induction"]}},
-     "address": "/Induction-and-Recursion/"},
-    {"id": "div_lemma-next",
      "data":
      {"/Induction-and-Recursion/#div_lemma-next":
       {"display": "div",
@@ -7425,6 +7425,55 @@
        "context":
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
      "address": "/Dependent-Type-Theory/"},
+    {"id": "compose-next-next-next-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Interacting-with-Lean/"},
     {"id": "compose-next-next-next",
      "data":
      {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
@@ -7523,105 +7572,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
      "address": "/Dependent-Type-Theory/"},
-    {"id": "compose-next-next-next-next-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Interacting-with-Lean/"},
     {"id": "compose-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "compose",
      "data":
      {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
@@ -7718,7 +7669,56 @@
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Interacting-with-Lean/"}],
+     "address": "/Interacting-with-Lean/"},
+    {"id": "compose",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"}],
    "bs":
    [{"id": "as-next",
      "data":
@@ -7824,7 +7824,7 @@
         "Match Expressions"]}},
      "address": "/Induction-and-Recursion/"}],
    "bar":
-   [{"id": "swap",
+   [{"id": "bar",
      "data":
      {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
       {"display": "bar",
@@ -7905,7 +7905,7 @@
         "Induction and Recursion",
         "Pattern Matching"]}},
      "address": "/Type-Classes/"},
-    {"id": "bar",
+    {"id": "swap",
      "data":
      {"/Type-Classes/#foo-next-next-next-next-next-next-next-next-next-next":
       {"display": "bar",
@@ -8128,7 +8128,77 @@
        ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]}},
      "address": "/Type-Classes/"}],
    "add":
-   [{"id": "String___add",
+   [{"id": "add",
+     "data":
+     {"/Interacting-with-Lean/#String___add":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "More on Namespaces"]},
+      "/Induction-and-Recursion/#add-next-next-next-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Induction-and-Recursion/#add-next-next-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Induction-and-Recursion/#add-next-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Dependent-Type-Theory/#add-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]},
+      "/Dependent-Type-Theory/#add":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "add-next",
+     "data":
+     {"/Interacting-with-Lean/#String___add":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "More on Namespaces"]},
+      "/Induction-and-Recursion/#add-next-next-next-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Induction-and-Recursion/#add-next-next-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Induction-and-Recursion/#add-next-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Dependent-Type-Theory/#add-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]},
+      "/Dependent-Type-Theory/#add":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "String___add",
      "data":
      {"/Interacting-with-Lean/#String___add":
       {"display": "add",
@@ -8267,77 +8337,7 @@
       {"display": "add",
        "context":
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Induction-and-Recursion/"},
-    {"id": "add",
-     "data":
-     {"/Interacting-with-Lean/#String___add":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "More on Namespaces"]},
-      "/Induction-and-Recursion/#add-next-next-next-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Structural Recursion and Induction"]},
-      "/Induction-and-Recursion/#add-next-next-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Structural Recursion and Induction"]},
-      "/Induction-and-Recursion/#add-next-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Structural Recursion and Induction"]},
-      "/Dependent-Type-Theory/#add-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]},
-      "/Dependent-Type-Theory/#add":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "add-next",
-     "data":
-     {"/Interacting-with-Lean/#String___add":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "More on Namespaces"]},
-      "/Induction-and-Recursion/#add-next-next-next-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Structural Recursion and Induction"]},
-      "/Induction-and-Recursion/#add-next-next-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Structural Recursion and Induction"]},
-      "/Induction-and-Recursion/#add-next-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Structural Recursion and Induction"]},
-      "/Dependent-Type-Theory/#add-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]},
-      "/Dependent-Type-Theory/#add":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"}],
+     "address": "/Induction-and-Recursion/"}],
    "ack_gt_zero":
    [{"id": "ack_gt_zero",
      "data":
@@ -8370,7 +8370,7 @@
         "Functional Induction"]}},
      "address": "/Induction-and-Recursion/"}],
    "ack":
-   [{"id": "ack-next-next",
+   [{"id": "ack",
      "data":
      {"/Induction-and-Recursion/#ack-next-next-next":
       {"display": "ack",
@@ -8424,7 +8424,7 @@
         "Induction and Recursion",
         "Well-Founded Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "ack",
+    {"id": "ack-next-next",
      "data":
      {"/Induction-and-Recursion/#ack-next-next-next":
       {"display": "ack",
@@ -8543,7 +8543,7 @@
        ["Theorem Proving in Lean 4", "Axioms and Computation", "Quotients"]}},
      "address": "/Axioms-and-Computation/"}],
    "Weekday.wednesday":
-   [{"id": "Weekday-next",
+   [{"id": "Weekday-next-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "wednesday",
@@ -8558,7 +8558,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Weekday-next-next",
+    {"id": "Weekday-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "wednesday",
@@ -8589,7 +8589,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"}],
    "Weekday.tuesday":
-   [{"id": "Weekday-next",
+   [{"id": "Weekday-next-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "tuesday",
@@ -8604,7 +8604,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Weekday-next-next",
+    {"id": "Weekday-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "tuesday",
@@ -8635,7 +8635,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"}],
    "Weekday.thursday":
-   [{"id": "Weekday-next",
+   [{"id": "Weekday-next-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "thursday",
@@ -8650,7 +8650,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Weekday-next-next",
+    {"id": "Weekday-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "thursday",
@@ -8681,7 +8681,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"}],
    "Weekday.sunday":
-   [{"id": "Weekday-next",
+   [{"id": "Weekday-next-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "sunday",
@@ -8696,7 +8696,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Weekday-next-next",
+    {"id": "Weekday-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "sunday",
@@ -8743,7 +8743,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"}],
    "Weekday.next_previous":
-   [{"id": "Weekday___next_previous",
+   [{"id": "Weekday___next_previous-next",
      "data":
      {"/Inductive-Types/#Weekday___next_previous-next":
       {"display": "next_previous",
@@ -8754,7 +8754,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Weekday___next_previous-next",
+    {"id": "Weekday___next_previous",
      "data":
      {"/Inductive-Types/#Weekday___next_previous-next":
       {"display": "next_previous",
@@ -8774,7 +8774,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"}],
    "Weekday.monday":
-   [{"id": "Weekday-next",
+   [{"id": "Weekday-next-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "monday",
@@ -8789,7 +8789,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Weekday-next-next",
+    {"id": "Weekday-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "monday",
@@ -8820,7 +8820,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"}],
    "Weekday.friday":
-   [{"id": "Weekday-next",
+   [{"id": "Weekday-next-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "friday",
@@ -8835,7 +8835,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Weekday-next-next",
+    {"id": "Weekday-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "friday",
@@ -8866,7 +8866,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"}],
    "Weekday":
-   [{"id": "Weekday-next",
+   [{"id": "Weekday-next-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "Weekday",
@@ -8881,7 +8881,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Inductive Types", "Enumerated Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Weekday-next-next",
+    {"id": "Weekday-next",
      "data":
      {"/Inductive-Types/#Weekday-next-next":
       {"display": "Weekday",
@@ -8963,7 +8963,7 @@
         "Dependent Pattern Matching"]}},
      "address": "/Induction-and-Recursion/"}],
    "Vect.tail":
-   [{"id": "Vect___tailAux",
+   [{"id": "Vect___head",
      "data":
      {"/Induction-and-Recursion/#Vect___tailAux":
       {"display": "tail",
@@ -8984,7 +8984,7 @@
         "Induction and Recursion",
         "Dependent Pattern Matching"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "Vect___head",
+    {"id": "Vect___tailAux",
      "data":
      {"/Induction-and-Recursion/#Vect___tailAux":
       {"display": "tail",
@@ -9027,7 +9027,26 @@
         "Dependent Pattern Matching"]}},
      "address": "/Induction-and-Recursion/"}],
    "Vect.nil":
-   [{"id": "Vect-next-next",
+   [{"id": "Vect-next",
+     "data":
+     {"/Inductive-Types/#Vect":
+      {"display": "nil",
+       "context":
+       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]},
+      "/Induction-and-Recursion/#Vect-next-next":
+      {"display": "nil",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Inaccessible Patterns"]},
+      "/Induction-and-Recursion/#Vect-next":
+      {"display": "nil",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Dependent Pattern Matching"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "Vect-next-next",
      "data":
      {"/Inductive-Types/#Vect":
       {"display": "nil",
@@ -9064,26 +9083,7 @@
        ["Theorem Proving in Lean 4",
         "Induction and Recursion",
         "Dependent Pattern Matching"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "Vect-next",
-     "data":
-     {"/Inductive-Types/#Vect":
-      {"display": "nil",
-       "context":
-       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]},
-      "/Induction-and-Recursion/#Vect-next-next":
-      {"display": "nil",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Inaccessible Patterns"]},
-      "/Induction-and-Recursion/#Vect-next":
-      {"display": "nil",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Dependent Pattern Matching"]}},
-     "address": "/Induction-and-Recursion/"}],
+     "address": "/Inductive-Types/"}],
    "Vect.map":
    [{"id": "Vect___head",
      "data":
@@ -9178,7 +9178,7 @@
         "Dependent Pattern Matching"]}},
      "address": "/Induction-and-Recursion/"}],
    "Vect.add":
-   [{"id": "Vect-next-next",
+   [{"id": "Vect___add-next-next",
      "data":
      {"/Induction-and-Recursion/#Vect___add-next-next-next":
       {"display": "add",
@@ -9211,7 +9211,40 @@
         "Induction and Recursion",
         "Inaccessible Patterns"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "Vect___add-next",
+    {"id": "Vect-next-next",
+     "data":
+     {"/Induction-and-Recursion/#Vect___add-next-next-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Inaccessible Patterns"]},
+      "/Induction-and-Recursion/#Vect___add-next-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Inaccessible Patterns"]},
+      "/Induction-and-Recursion/#Vect___add-next":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Inaccessible Patterns"]},
+      "/Induction-and-Recursion/#Vect___add":
+      {"display": "add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Inaccessible Patterns"]},
+      "/Induction-and-Recursion/#Vect-next-next":
+      {"display": "Vect.add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Inaccessible Patterns"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "Vect___add-next-next-next",
      "data":
      {"/Induction-and-Recursion/#Vect___add-next-next-next":
       {"display": "add",
@@ -9277,40 +9310,7 @@
         "Induction and Recursion",
         "Inaccessible Patterns"]}},
      "address": "/Induction-and-Recursion/"},
-    {"id": "Vect___add-next-next",
-     "data":
-     {"/Induction-and-Recursion/#Vect___add-next-next-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Inaccessible Patterns"]},
-      "/Induction-and-Recursion/#Vect___add-next-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Inaccessible Patterns"]},
-      "/Induction-and-Recursion/#Vect___add-next":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Inaccessible Patterns"]},
-      "/Induction-and-Recursion/#Vect___add":
-      {"display": "add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Inaccessible Patterns"]},
-      "/Induction-and-Recursion/#Vect-next-next":
-      {"display": "Vect.add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Inaccessible Patterns"]}},
-     "address": "/Induction-and-Recursion/"},
-    {"id": "Vect___add-next-next-next",
+    {"id": "Vect___add-next",
      "data":
      {"/Induction-and-Recursion/#Vect___add-next-next-next":
       {"display": "add",
@@ -9344,7 +9344,26 @@
         "Inaccessible Patterns"]}},
      "address": "/Induction-and-Recursion/"}],
    "Vect":
-   [{"id": "Vect-next-next",
+   [{"id": "Vect-next",
+     "data":
+     {"/Inductive-Types/#Vect":
+      {"display": "Vect",
+       "context":
+       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]},
+      "/Induction-and-Recursion/#Vect-next-next":
+      {"display": "Vect",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Inaccessible Patterns"]},
+      "/Induction-and-Recursion/#Vect-next":
+      {"display": "Vect",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Dependent Pattern Matching"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "Vect-next-next",
      "data":
      {"/Inductive-Types/#Vect":
       {"display": "Vect",
@@ -9381,26 +9400,7 @@
        ["Theorem Proving in Lean 4",
         "Induction and Recursion",
         "Dependent Pattern Matching"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "Vect-next",
-     "data":
-     {"/Inductive-Types/#Vect":
-      {"display": "Vect",
-       "context":
-       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]},
-      "/Induction-and-Recursion/#Vect-next-next":
-      {"display": "Vect",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Inaccessible Patterns"]},
-      "/Induction-and-Recursion/#Vect-next":
-      {"display": "Vect",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Induction and Recursion",
-        "Dependent Pattern Matching"]}},
-     "address": "/Induction-and-Recursion/"}],
+     "address": "/Inductive-Types/"}],
    "UProd.mk_eq_mk":
    [{"id": "UProd___mk_eq_mk",
      "data":
@@ -9533,7 +9533,7 @@
         "Mutual and Nested Inductive Types"]}},
      "address": "/Inductive-Types/"}],
    "Tree":
-   [{"id": "Tree",
+   [{"id": "Tree-next",
      "data":
      {"/Inductive-Types/#Tree-next":
       {"display": "Tree",
@@ -9548,7 +9548,7 @@
         "Inductive Types",
         "Mutual and Nested Inductive Types"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Tree-next",
+    {"id": "Tree",
      "data":
      {"/Inductive-Types/#Tree-next":
       {"display": "Tree",
@@ -9961,7 +9961,7 @@
         "Function Extensionality"]}},
      "address": "/Axioms-and-Computation/"}],
    "Set":
-   [{"id": "Set",
+   [{"id": "Set-next",
      "data":
      {"/Type-Classes/#Set":
       {"display": "Set",
@@ -9975,8 +9975,8 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/Type-Classes/"},
-    {"id": "Set-next",
+     "address": "/Axioms-and-Computation/"},
+    {"id": "Set",
      "data":
      {"/Type-Classes/#Set":
       {"display": "Set",
@@ -9990,9 +9990,9 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "Function Extensionality"]}},
-     "address": "/Axioms-and-Computation/"}],
+     "address": "/Type-Classes/"}],
    "Semigroup.mul_assoc":
-   [{"id": "Semigroup",
+   [{"id": "Semigroup-next",
      "data":
      {"/Type-Classes/#Semigroup-next":
       {"display": "mul_assoc",
@@ -10006,8 +10006,8 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Constructors with Arguments"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "Semigroup-next",
+     "address": "/Type-Classes/"},
+    {"id": "Semigroup",
      "data":
      {"/Type-Classes/#Semigroup-next":
       {"display": "mul_assoc",
@@ -10021,9 +10021,9 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Constructors with Arguments"]}},
-     "address": "/Type-Classes/"}],
+     "address": "/Inductive-Types/"}],
    "Semigroup.mul":
-   [{"id": "Semigroup",
+   [{"id": "Semigroup-next",
      "data":
      {"/Type-Classes/#Semigroup-next":
       {"display": "mul",
@@ -10037,8 +10037,8 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Constructors with Arguments"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "Semigroup-next",
+     "address": "/Type-Classes/"},
+    {"id": "Semigroup",
      "data":
      {"/Type-Classes/#Semigroup-next":
       {"display": "mul",
@@ -10052,9 +10052,9 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Constructors with Arguments"]}},
-     "address": "/Type-Classes/"}],
+     "address": "/Inductive-Types/"}],
    "Semigroup.carrier":
-   [{"id": "Semigroup",
+   [{"id": "Semigroup-next",
      "data":
      {"/Type-Classes/#Semigroup-next":
       {"display": "carrier",
@@ -10068,8 +10068,8 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Constructors with Arguments"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "Semigroup-next",
+     "address": "/Type-Classes/"},
+    {"id": "Semigroup",
      "data":
      {"/Type-Classes/#Semigroup-next":
       {"display": "carrier",
@@ -10083,9 +10083,9 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Constructors with Arguments"]}},
-     "address": "/Type-Classes/"}],
+     "address": "/Inductive-Types/"}],
    "Semigroup":
-   [{"id": "Semigroup",
+   [{"id": "Semigroup-next",
      "data":
      {"/Type-Classes/#Semigroup-next":
       {"display": "Semigroup",
@@ -10099,8 +10099,8 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Constructors with Arguments"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "Semigroup-next",
+     "address": "/Type-Classes/"},
+    {"id": "Semigroup",
      "data":
      {"/Type-Classes/#Semigroup-next":
       {"display": "Semigroup",
@@ -10114,7 +10114,7 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Constructors with Arguments"]}},
-     "address": "/Type-Classes/"}],
+     "address": "/Inductive-Types/"}],
    "RedGreenPoint.no_blue":
    [{"id": "Point-next-next-next-next-next",
      "data":
@@ -10132,7 +10132,7 @@
        ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]}},
      "address": "/Structures-and-Records/"}],
    "Rational.num":
-   [{"id": "Rational",
+   [{"id": "Rational-next",
      "data":
      {"/Type-Classes/#Rational-next":
       {"display": "num",
@@ -10142,7 +10142,7 @@
       {"display": "num",
        "context": ["Theorem Proving in Lean 4", "Type Classes", "Numerals"]}},
      "address": "/Type-Classes/"},
-    {"id": "Rational-next",
+    {"id": "Rational",
      "data":
      {"/Type-Classes/#Rational-next":
       {"display": "num",
@@ -10153,7 +10153,7 @@
        "context": ["Theorem Proving in Lean 4", "Type Classes", "Numerals"]}},
      "address": "/Type-Classes/"}],
    "Rational.inv":
-   [{"id": "Rational",
+   [{"id": "Rational-next",
      "data":
      {"/Type-Classes/#Rational-next":
       {"display": "inv",
@@ -10163,7 +10163,7 @@
       {"display": "inv",
        "context": ["Theorem Proving in Lean 4", "Type Classes", "Numerals"]}},
      "address": "/Type-Classes/"},
-    {"id": "Rational-next",
+    {"id": "Rational",
      "data":
      {"/Type-Classes/#Rational-next":
       {"display": "inv",
@@ -10174,7 +10174,7 @@
        "context": ["Theorem Proving in Lean 4", "Type Classes", "Numerals"]}},
      "address": "/Type-Classes/"}],
    "Rational.den":
-   [{"id": "Rational",
+   [{"id": "Rational-next",
      "data":
      {"/Type-Classes/#Rational-next":
       {"display": "den",
@@ -10184,7 +10184,7 @@
       {"display": "den",
        "context": ["Theorem Proving in Lean 4", "Type Classes", "Numerals"]}},
      "address": "/Type-Classes/"},
-    {"id": "Rational-next",
+    {"id": "Rational",
      "data":
      {"/Type-Classes/#Rational-next":
       {"display": "den",
@@ -10195,7 +10195,7 @@
        "context": ["Theorem Proving in Lean 4", "Type Classes", "Numerals"]}},
      "address": "/Type-Classes/"}],
    "Rational":
-   [{"id": "Rational",
+   [{"id": "Rational-next",
      "data":
      {"/Type-Classes/#Rational-next":
       {"display": "Rational",
@@ -10205,7 +10205,7 @@
       {"display": "Rational",
        "context": ["Theorem Proving in Lean 4", "Type Classes", "Numerals"]}},
      "address": "/Type-Classes/"},
-    {"id": "Rational-next",
+    {"id": "Rational",
      "data":
      {"/Type-Classes/#Rational-next":
       {"display": "Rational",
@@ -10288,7 +10288,7 @@
        ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]}},
      "address": "/Structures-and-Records/"}],
    "Point.y":
-   [{"id": "Point",
+   [{"id": "Point-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "y",
@@ -10335,7 +10335,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next-next",
+    {"id": "Point-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "y",
@@ -10382,6 +10382,53 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
+    {"id": "Point-next",
+     "data":
+     {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next-next-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
+      "/Structures-and-Records/#Point-next-next-next-next-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
+      "/Structures-and-Records/#Point-next-next-next-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
+      "/Structures-and-Records/#Point-next-next-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
+      "/Structures-and-Records/#Point-next-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
+      "/Structures-and-Records/#Point-next":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Structures-and-Records/#Point":
+      {"display": "y",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]}},
+     "address": "/Structures-and-Records/"},
     {"id": "Point-next-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
@@ -10476,7 +10523,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next",
+    {"id": "Point-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "y",
@@ -10523,54 +10570,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next",
-     "data":
-     {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next-next-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
-      "/Structures-and-Records/#Point-next-next-next-next-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
-      "/Structures-and-Records/#Point-next-next-next-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
-      "/Structures-and-Records/#Point-next-next-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
-      "/Structures-and-Records/#Point-next-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
-      "/Structures-and-Records/#Point-next":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Structures-and-Records/#Point":
-      {"display": "y",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]}},
-     "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next-next-next",
+    {"id": "Point-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "y",
@@ -10617,7 +10617,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
-    {"id": "Point-next-next",
+    {"id": "Point",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "y",
@@ -10711,7 +10711,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
-    {"id": "Point-next-next-next",
+    {"id": "Point-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "y",
@@ -10759,7 +10759,7 @@
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"}],
    "Point.x":
-   [{"id": "Point",
+   [{"id": "Point-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "x",
@@ -10806,7 +10806,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next-next",
+    {"id": "Point-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "x",
@@ -10853,6 +10853,53 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
+    {"id": "Point-next",
+     "data":
+     {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next-next-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
+      "/Structures-and-Records/#Point-next-next-next-next-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
+      "/Structures-and-Records/#Point-next-next-next-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
+      "/Structures-and-Records/#Point-next-next-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
+      "/Structures-and-Records/#Point-next-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
+      "/Structures-and-Records/#Point-next":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Structures-and-Records/#Point":
+      {"display": "x",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]}},
+     "address": "/Structures-and-Records/"},
     {"id": "Point-next-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
@@ -10947,7 +10994,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next",
+    {"id": "Point-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "x",
@@ -10994,54 +11041,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next",
-     "data":
-     {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next-next-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
-      "/Structures-and-Records/#Point-next-next-next-next-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
-      "/Structures-and-Records/#Point-next-next-next-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
-      "/Structures-and-Records/#Point-next-next-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
-      "/Structures-and-Records/#Point-next-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
-      "/Structures-and-Records/#Point-next":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Structures-and-Records/#Point":
-      {"display": "x",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]}},
-     "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next-next-next",
+    {"id": "Point-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "x",
@@ -11088,7 +11088,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
-    {"id": "Point-next-next",
+    {"id": "Point",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "x",
@@ -11182,7 +11182,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
-    {"id": "Point-next-next-next",
+    {"id": "Point-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "x",
@@ -11283,7 +11283,7 @@
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"}],
    "Point":
-   [{"id": "Point",
+   [{"id": "Point-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "Point",
@@ -11330,7 +11330,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next-next",
+    {"id": "Point-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "Point",
@@ -11377,6 +11377,53 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
+    {"id": "Point-next",
+     "data":
+     {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next-next-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
+      "/Type-Classes/#Point-next-next-next-next-next-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
+      "/Structures-and-Records/#Point-next-next-next-next-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
+      "/Structures-and-Records/#Point-next-next-next-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
+      "/Structures-and-Records/#Point-next-next-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
+      "/Structures-and-Records/#Point-next-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
+      "/Structures-and-Records/#Point-next":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]},
+      "/Structures-and-Records/#Point":
+      {"display": "Point",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Structures and Records",
+        "Declaring Structures"]}},
+     "address": "/Structures-and-Records/"},
     {"id": "Point-next-next-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
@@ -11471,7 +11518,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next",
+    {"id": "Point-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "Point",
@@ -11518,54 +11565,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Structures-and-Records/"},
-    {"id": "Point-next",
-     "data":
-     {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next-next-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Scoped Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
-      "/Type-Classes/#Point-next-next-next-next-next-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Local Instances"]},
-      "/Structures-and-Records/#Point-next-next-next-next-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
-      "/Structures-and-Records/#Point-next-next-next-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Inheritance"]},
-      "/Structures-and-Records/#Point-next-next-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
-      "/Structures-and-Records/#Point-next-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4", "Structures and Records", "Objects"]},
-      "/Structures-and-Records/#Point-next":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]},
-      "/Structures-and-Records/#Point":
-      {"display": "Point",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Structures and Records",
-        "Declaring Structures"]}},
-     "address": "/Structures-and-Records/"},
-    {"id": "Point-next-next-next-next-next-next-next",
+    {"id": "Point-next-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "Point",
@@ -11612,7 +11612,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
-    {"id": "Point-next-next",
+    {"id": "Point",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "Point",
@@ -11706,7 +11706,7 @@
         "Structures and Records",
         "Declaring Structures"]}},
      "address": "/Type-Classes/"},
-    {"id": "Point-next-next-next",
+    {"id": "Point-next-next-next-next-next",
      "data":
      {"/Type-Classes/#Point-next-next-next-next-next-next-next-next-next":
       {"display": "Point",
@@ -11978,26 +11978,7 @@
         "Coercions using Type Classes"]}},
      "address": "/Type-Classes/"}],
    "List.isPrefix_self":
-   [{"id": "List___isPrefix_self-next",
-     "data":
-     {"/Interacting-with-Lean/#isPrefix-next":
-      {"display": "List.isPrefix_self",
-       "context":
-       ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]},
-      "/Interacting-with-Lean/#isPrefix":
-      {"display": "List.isPrefix_self",
-       "context":
-       ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]},
-      "/Interacting-with-Lean/#List___isPrefix_self-next":
-      {"display": "List.isPrefix_self",
-       "context":
-       ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]},
-      "/Interacting-with-Lean/#List___isPrefix_self":
-      {"display": "List.isPrefix_self",
-       "context":
-       ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]}},
-     "address": "/Interacting-with-Lean/"},
-    {"id": "List___isPrefix_self",
+   [{"id": "List___isPrefix_self",
      "data":
      {"/Interacting-with-Lean/#isPrefix-next":
       {"display": "List.isPrefix_self",
@@ -12017,6 +11998,25 @@
        ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]}},
      "address": "/Interacting-with-Lean/"},
     {"id": "isPrefix-next",
+     "data":
+     {"/Interacting-with-Lean/#isPrefix-next":
+      {"display": "List.isPrefix_self",
+       "context":
+       ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]},
+      "/Interacting-with-Lean/#isPrefix":
+      {"display": "List.isPrefix_self",
+       "context":
+       ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]},
+      "/Interacting-with-Lean/#List___isPrefix_self-next":
+      {"display": "List.isPrefix_self",
+       "context":
+       ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]},
+      "/Interacting-with-Lean/#List___isPrefix_self":
+      {"display": "List.isPrefix_self",
+       "context":
+       ["Theorem Proving in Lean 4", "Interacting with Lean", "Attributes"]}},
+     "address": "/Interacting-with-Lean/"},
+    {"id": "List___isPrefix_self-next",
      "data":
      {"/Interacting-with-Lean/#isPrefix-next":
       {"display": "List.isPrefix_self",
@@ -12085,40 +12085,7 @@
         "Inaccessible Patterns"]}},
      "address": "/Induction-and-Recursion/"}],
    "Hidden.zero_add":
-   [{"id": "Hidden___zero_add-next-next",
-     "data":
-     {"/Inductive-Types/#Hidden___zero_add-next-next-next-next":
-      {"display": "zero_add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#Hidden___zero_add-next-next-next":
-      {"display": "zero_add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#Hidden___zero_add-next-next":
-      {"display": "zero_add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Tactics for Inductive Types"]},
-      "/Inductive-Types/#Hidden___zero_add-next":
-      {"display": "zero_add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Defining the Natural Numbers"]},
-      "/Inductive-Types/#Hidden___zero_add":
-      {"display": "zero_add",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Inductive Types",
-        "Defining the Natural Numbers"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "Hidden___zero_add",
+   [{"id": "Hidden___zero_add-next-next-next",
      "data":
      {"/Inductive-Types/#Hidden___zero_add-next-next-next-next":
       {"display": "zero_add",
@@ -12184,7 +12151,7 @@
         "Inductive Types",
         "Defining the Natural Numbers"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Hidden___zero_add-next-next-next",
+    {"id": "Hidden___zero_add-next-next",
      "data":
      {"/Inductive-Types/#Hidden___zero_add-next-next-next-next":
       {"display": "zero_add",
@@ -12249,6 +12216,39 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Defining the Natural Numbers"]}},
+     "address": "/Inductive-Types/"},
+    {"id": "Hidden___zero_add",
+     "data":
+     {"/Inductive-Types/#Hidden___zero_add-next-next-next-next":
+      {"display": "zero_add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#Hidden___zero_add-next-next-next":
+      {"display": "zero_add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#Hidden___zero_add-next-next":
+      {"display": "zero_add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Tactics for Inductive Types"]},
+      "/Inductive-Types/#Hidden___zero_add-next":
+      {"display": "zero_add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Defining the Natural Numbers"]},
+      "/Inductive-Types/#Hidden___zero_add":
+      {"display": "zero_add",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Inductive Types",
+        "Defining the Natural Numbers"]}},
      "address": "/Inductive-Types/"}],
    "Hidden.trans":
    [{"id": "Hidden___symm",
@@ -12267,7 +12267,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]}},
      "address": "/Inductive-Types/"}],
    "Hidden.succ_add":
-   [{"id": "Hidden___zero_add-next-next-next-next",
+   [{"id": "Hidden___succ_add",
      "data":
      {"/Inductive-Types/#Hidden___zero_add-next-next-next-next":
       {"display": "succ_add",
@@ -12282,7 +12282,7 @@
         "Inductive Types",
         "Defining the Natural Numbers"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Hidden___succ_add",
+    {"id": "Hidden___zero_add-next-next-next-next",
      "data":
      {"/Inductive-Types/#Hidden___zero_add-next-next-next-next":
       {"display": "succ_add",
@@ -12298,22 +12298,7 @@
         "Defining the Natural Numbers"]}},
      "address": "/Inductive-Types/"}],
    "Hidden.subst":
-   [{"id": "Hidden___subst-next",
-     "data":
-     {"/Inductive-Types/#Hidden___subst-next-next":
-      {"display": "subst",
-       "context":
-       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]},
-      "/Inductive-Types/#Hidden___subst-next":
-      {"display": "subst",
-       "context":
-       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]},
-      "/Inductive-Types/#Hidden___subst":
-      {"display": "subst",
-       "context":
-       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]}},
-     "address": "/Inductive-Types/"},
-    {"id": "Hidden___subst-next-next",
+   [{"id": "Hidden___subst-next-next",
      "data":
      {"/Inductive-Types/#Hidden___subst-next-next":
       {"display": "subst",
@@ -12329,6 +12314,21 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]}},
      "address": "/Inductive-Types/"},
     {"id": "Hidden___subst",
+     "data":
+     {"/Inductive-Types/#Hidden___subst-next-next":
+      {"display": "subst",
+       "context":
+       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]},
+      "/Inductive-Types/#Hidden___subst-next":
+      {"display": "subst",
+       "context":
+       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]},
+      "/Inductive-Types/#Hidden___subst":
+      {"display": "subst",
+       "context":
+       ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]}},
+     "address": "/Inductive-Types/"},
+    {"id": "Hidden___subst-next",
      "data":
      {"/Inductive-Types/#Hidden___subst-next-next":
       {"display": "subst",
@@ -12511,7 +12511,7 @@
         "Pattern Matching"]}},
      "address": "/Inductive-Types/"}],
    "Hidden.add_comm":
-   [{"id": "Hidden___zero_add-next-next-next-next",
+   [{"id": "Hidden___succ_add",
      "data":
      {"/Inductive-Types/#Hidden___zero_add-next-next-next-next":
       {"display": "add_comm",
@@ -12526,7 +12526,7 @@
         "Inductive Types",
         "Defining the Natural Numbers"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Hidden___succ_add",
+    {"id": "Hidden___zero_add-next-next-next-next",
      "data":
      {"/Inductive-Types/#Hidden___zero_add-next-next-next-next":
       {"display": "add_comm",
@@ -12695,7 +12695,7 @@
         "Inductively Defined Propositions"]}},
      "address": "/Inductive-Types/"}],
    "Hidden.Subtype":
-   [{"id": "Hidden___Subtype-next",
+   [{"id": "Hidden___Subtype",
      "data":
      {"/Inductive-Types/#Hidden___Subtype-next":
       {"display": "Subtype",
@@ -12710,7 +12710,7 @@
         "Inductive Types",
         "Inductively Defined Propositions"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Hidden___Subtype",
+    {"id": "Hidden___Subtype-next",
      "data":
      {"/Inductive-Types/#Hidden___Subtype-next":
       {"display": "Subtype",
@@ -12852,7 +12852,7 @@
         "Constructors with Arguments"]}},
      "address": "/Inductive-Types/"}],
    "Hidden.Prod.mk":
-   [{"id": "Hidden___Prod-next",
+   [{"id": "Hidden___Prod-next-next",
      "data":
      {"/Inductive-Types/#Hidden___Prod-next-next":
       {"display": "mk",
@@ -12873,7 +12873,7 @@
         "Inductive Types",
         "Constructors with Arguments"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Hidden___Prod-next-next",
+    {"id": "Hidden___Prod-next",
      "data":
      {"/Inductive-Types/#Hidden___Prod-next-next":
       {"display": "mk",
@@ -12926,7 +12926,7 @@
         "Constructors with Arguments"]}},
      "address": "/Inductive-Types/"}],
    "Hidden.Prod":
-   [{"id": "Hidden___Prod-next",
+   [{"id": "Hidden___Prod-next-next",
      "data":
      {"/Inductive-Types/#Hidden___Prod-next-next":
       {"display": "Prod",
@@ -12947,7 +12947,7 @@
         "Inductive Types",
         "Constructors with Arguments"]}},
      "address": "/Inductive-Types/"},
-    {"id": "Hidden___Prod-next-next",
+    {"id": "Hidden___Prod-next",
      "data":
      {"/Inductive-Types/#Hidden___Prod-next-next":
       {"display": "Prod",
@@ -13294,7 +13294,7 @@
        ["Theorem Proving in Lean 4", "Inductive Types", "Inductive Families"]}},
      "address": "/Inductive-Types/"}],
    "Hidden.Decidable.isFalse":
-   [{"id": "Hidden___Decidable",
+   [{"id": "Hidden___Decidable-next",
      "data":
      {"/Type-Classes/#Hidden___Decidable":
       {"display": "isFalse",
@@ -13306,8 +13306,8 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "The Law of the Excluded Middle"]}},
-     "address": "/Type-Classes/"},
-    {"id": "Hidden___Decidable-next",
+     "address": "/Axioms-and-Computation/"},
+    {"id": "Hidden___Decidable",
      "data":
      {"/Type-Classes/#Hidden___Decidable":
       {"display": "isFalse",
@@ -13319,9 +13319,9 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "The Law of the Excluded Middle"]}},
-     "address": "/Axioms-and-Computation/"}],
+     "address": "/Type-Classes/"}],
    "Hidden.Decidable":
-   [{"id": "Hidden___Decidable",
+   [{"id": "Hidden___Decidable-next",
      "data":
      {"/Type-Classes/#Hidden___Decidable":
       {"display": "Decidable",
@@ -13333,8 +13333,8 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "The Law of the Excluded Middle"]}},
-     "address": "/Type-Classes/"},
-    {"id": "Hidden___Decidable-next",
+     "address": "/Axioms-and-Computation/"},
+    {"id": "Hidden___Decidable",
      "data":
      {"/Type-Classes/#Hidden___Decidable":
       {"display": "Decidable",
@@ -13346,7 +13346,7 @@
        ["Theorem Proving in Lean 4",
         "Axioms and Computation",
         "The Law of the Excluded Middle"]}},
-     "address": "/Axioms-and-Computation/"}],
+     "address": "/Type-Classes/"}],
    "Hidden.Bool.false":
    [{"id": "Hidden___Bool",
      "data":
@@ -13527,7 +13527,7 @@
         "Tactics for Inductive Types"]}},
      "address": "/Inductive-Types/"}],
    "Foo.bar":
-   [{"id": "Foo___bar",
+   [{"id": "Foo___bar-next",
      "data":
      {"/Interacting-with-Lean/#Foo___bar-next-next-next":
       {"display": "Foo.bar",
@@ -13554,34 +13554,7 @@
         "Interacting with Lean",
         "More on Namespaces"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "Foo___bar-next-next-next",
-     "data":
-     {"/Interacting-with-Lean/#Foo___bar-next-next-next":
-      {"display": "Foo.bar",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "More on Namespaces"]},
-      "/Interacting-with-Lean/#Foo___bar-next-next":
-      {"display": "bar",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "More on Namespaces"]},
-      "/Interacting-with-Lean/#Foo___bar-next":
-      {"display": "Foo.bar",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "More on Namespaces"]},
-      "/Interacting-with-Lean/#Foo___bar":
-      {"display": "bar",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "More on Namespaces"]}},
-     "address": "/Interacting-with-Lean/"},
-    {"id": "Foo___bar-next",
+    {"id": "Foo___bar",
      "data":
      {"/Interacting-with-Lean/#Foo___bar-next-next-next":
       {"display": "Foo.bar",
@@ -13609,6 +13582,33 @@
         "More on Namespaces"]}},
      "address": "/Interacting-with-Lean/"},
     {"id": "Foo___bar-next-next",
+     "data":
+     {"/Interacting-with-Lean/#Foo___bar-next-next-next":
+      {"display": "Foo.bar",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "More on Namespaces"]},
+      "/Interacting-with-Lean/#Foo___bar-next-next":
+      {"display": "bar",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "More on Namespaces"]},
+      "/Interacting-with-Lean/#Foo___bar-next":
+      {"display": "Foo.bar",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "More on Namespaces"]},
+      "/Interacting-with-Lean/#Foo___bar":
+      {"display": "bar",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "More on Namespaces"]}},
+     "address": "/Interacting-with-Lean/"},
+    {"id": "Foo___bar-next-next-next",
      "data":
      {"/Interacting-with-Lean/#Foo___bar-next-next-next":
       {"display": "Foo.bar",
@@ -13667,27 +13667,6 @@
        "context":
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]}},
      "address": "/Dependent-Type-Theory/"},
-    {"id": "Foo-next",
-     "data":
-     {"/Type-Classes/#Foo-next":
-      {"display": "a",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Type Classes",
-        "Managing Type Class Inference"]},
-      "/Dependent-Type-Theory/#Foo___a-next-next":
-      {"display": "a",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]},
-      "/Dependent-Type-Theory/#Foo___a-next":
-      {"display": "a",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]},
-      "/Dependent-Type-Theory/#Foo___a":
-      {"display": "a",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]}},
-     "address": "/Type-Classes/"},
     {"id": "Foo___a",
      "data":
      {"/Type-Classes/#Foo-next":
@@ -13709,6 +13688,27 @@
        "context":
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]}},
      "address": "/Dependent-Type-Theory/"},
+    {"id": "Foo-next",
+     "data":
+     {"/Type-Classes/#Foo-next":
+      {"display": "a",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Type Classes",
+        "Managing Type Class Inference"]},
+      "/Dependent-Type-Theory/#Foo___a-next-next":
+      {"display": "a",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]},
+      "/Dependent-Type-Theory/#Foo___a-next":
+      {"display": "a",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]},
+      "/Dependent-Type-Theory/#Foo___a":
+      {"display": "a",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]}},
+     "address": "/Type-Classes/"},
     {"id": "Foo___a-next-next",
      "data":
      {"/Type-Classes/#Foo-next":
@@ -13739,7 +13739,7 @@
        ["Theorem Proving in Lean 4", "Dependent Type Theory", "Namespaces"]}},
      "address": "/Dependent-Type-Theory/"}],
    "Foo":
-   [{"id": "Foo-next",
+   [{"id": "Foo",
      "data":
      {"/Type-Classes/#Foo-next":
       {"display": "Foo",
@@ -13753,8 +13753,8 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Tactics for Inductive Types"]}},
-     "address": "/Type-Classes/"},
-    {"id": "Foo",
+     "address": "/Inductive-Types/"},
+    {"id": "Foo-next",
      "data":
      {"/Type-Classes/#Foo-next":
       {"display": "Foo",
@@ -13768,7 +13768,7 @@
        ["Theorem Proving in Lean 4",
         "Inductive Types",
         "Tactics for Inductive Types"]}},
-     "address": "/Inductive-Types/"}],
+     "address": "/Type-Classes/"}],
    "Fermat_prime":
    [{"id": "even",
      "data":
@@ -13950,7 +13950,7 @@
        ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]}},
      "address": "/Type-Classes/"}],
    "Ex.double":
-   [{"id": "Ex___double-next",
+   [{"id": "Ex___double",
      "data":
      {"/Type-Classes/#Ex___double-next":
       {"display": "double",
@@ -13959,7 +13959,7 @@
       {"display": "double",
        "context": ["Theorem Proving in Lean 4", "Type Classes"]}},
      "address": "/Type-Classes/"},
-    {"id": "Ex___double",
+    {"id": "Ex___double-next",
      "data":
      {"/Type-Classes/#Ex___double-next":
       {"display": "double",
@@ -14038,29 +14038,6 @@
        "context":
        ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
      "address": "/Type-Classes/"},
-    {"id": "Ex___OfNat",
-     "data":
-     {"/Type-Classes/#Ex___OfNat":
-      {"display": "hMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
-      "/Type-Classes/#Ex___HMul-next-next-next":
-      {"display": "hMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
-      "/Type-Classes/#Ex___HMul-next-next":
-      {"display": "hMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
-      "/Type-Classes/#Ex___HMul-next":
-      {"display": "hMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]},
-      "/Type-Classes/#Ex___HMul":
-      {"display": "hMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
-     "address": "/Type-Classes/"},
     {"id": "Ex___HMul-next-next",
      "data":
      {"/Type-Classes/#Ex___OfNat":
@@ -14084,7 +14061,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
      "address": "/Type-Classes/"},
-    {"id": "Ex___HMul-next",
+    {"id": "Ex___OfNat",
      "data":
      {"/Type-Classes/#Ex___OfNat":
       {"display": "hMul",
@@ -14108,6 +14085,29 @@
        ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
      "address": "/Type-Classes/"},
     {"id": "Ex___HMul",
+     "data":
+     {"/Type-Classes/#Ex___OfNat":
+      {"display": "hMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
+      "/Type-Classes/#Ex___HMul-next-next-next":
+      {"display": "hMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
+      "/Type-Classes/#Ex___HMul-next-next":
+      {"display": "hMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
+      "/Type-Classes/#Ex___HMul-next":
+      {"display": "hMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]},
+      "/Type-Classes/#Ex___HMul":
+      {"display": "hMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
+     "address": "/Type-Classes/"},
+    {"id": "Ex___HMul-next",
      "data":
      {"/Type-Classes/#Ex___OfNat":
       {"display": "hMul",
@@ -14154,29 +14154,6 @@
        "context":
        ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
      "address": "/Type-Classes/"},
-    {"id": "Ex___OfNat",
-     "data":
-     {"/Type-Classes/#Ex___OfNat":
-      {"display": "HMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
-      "/Type-Classes/#Ex___HMul-next-next-next":
-      {"display": "HMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
-      "/Type-Classes/#Ex___HMul-next-next":
-      {"display": "HMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
-      "/Type-Classes/#Ex___HMul-next":
-      {"display": "HMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]},
-      "/Type-Classes/#Ex___HMul":
-      {"display": "HMul",
-       "context":
-       ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
-     "address": "/Type-Classes/"},
     {"id": "Ex___HMul-next-next",
      "data":
      {"/Type-Classes/#Ex___OfNat":
@@ -14200,7 +14177,7 @@
        "context":
        ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
      "address": "/Type-Classes/"},
-    {"id": "Ex___HMul-next",
+    {"id": "Ex___OfNat",
      "data":
      {"/Type-Classes/#Ex___OfNat":
       {"display": "HMul",
@@ -14245,9 +14222,32 @@
       {"display": "HMul",
        "context":
        ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
+     "address": "/Type-Classes/"},
+    {"id": "Ex___HMul-next",
+     "data":
+     {"/Type-Classes/#Ex___OfNat":
+      {"display": "HMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
+      "/Type-Classes/#Ex___HMul-next-next-next":
+      {"display": "HMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
+      "/Type-Classes/#Ex___HMul-next-next":
+      {"display": "HMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Default Instances"]},
+      "/Type-Classes/#Ex___HMul-next":
+      {"display": "HMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]},
+      "/Type-Classes/#Ex___HMul":
+      {"display": "HMul",
+       "context":
+       ["Theorem Proving in Lean 4", "Type Classes", "Output Parameters"]}},
      "address": "/Type-Classes/"}],
    "Ex.Add.add":
-   [{"id": "Ex___Add",
+   [{"id": "Ex___Add-next",
      "data":
      {"/Type-Classes/#Ex___Add-next":
       {"display": "add",
@@ -14256,7 +14256,7 @@
       {"display": "add",
        "context": ["Theorem Proving in Lean 4", "Type Classes"]}},
      "address": "/Type-Classes/"},
-    {"id": "Ex___Add-next",
+    {"id": "Ex___Add",
      "data":
      {"/Type-Classes/#Ex___Add-next":
       {"display": "add",
@@ -14266,7 +14266,7 @@
        "context": ["Theorem Proving in Lean 4", "Type Classes"]}},
      "address": "/Type-Classes/"}],
    "Ex.Add":
-   [{"id": "Ex___Add",
+   [{"id": "Ex___Add-next",
      "data":
      {"/Type-Classes/#Ex___Add-next":
       {"display": "Add",
@@ -14275,7 +14275,7 @@
       {"display": "Add",
        "context": ["Theorem Proving in Lean 4", "Type Classes"]}},
      "address": "/Type-Classes/"},
-    {"id": "Ex___Add-next",
+    {"id": "Ex___Add",
      "data":
      {"/Type-Classes/#Ex___Add-next":
       {"display": "Add",
@@ -14378,7 +14378,7 @@
         "Mutual Recursion"]}},
      "address": "/Induction-and-Recursion/"}],
    "Euclidean":
-   [{"id": "reflexive-next",
+   [{"id": "reflexive",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "Euclidean",
@@ -14393,7 +14393,7 @@
         "Interacting with Lean",
         "More on Implicit Arguments"]}},
      "address": "/Interacting-with-Lean/"},
-    {"id": "reflexive",
+    {"id": "reflexive-next",
      "data":
      {"/Interacting-with-Lean/#reflexive-next":
       {"display": "Euclidean",
