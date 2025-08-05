@@ -605,7 +605,7 @@ block_extension Block.lean
         codeHtml := codeHtml ++ moreCode
         codeString := codeString ++ cmd.toString
         if let some msg := out? then
-          let msgHtml ← msg.toHtml (g := Verso.Genre.Manual)
+          let msgHtml ← msg.toHtml (g := Verso.Genre.Manual) []
           codeHtml := codeHtml ++ {{<pre class=s!"hl lean lean-output {msg.severity.class}">{{msgHtml}}</pre>}}
         unless ws.isEmpty do
           codeHtml := codeHtml ++ (← (Highlighted.text ws).blockHtml "examples" (trim := false) (g := Verso.Genre.Manual))
