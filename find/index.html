@@ -63,47 +63,6 @@ table.tabular td > p:last-child, table.tabular th > p:first-child {
   margin-bottom: 0;
 }
 </style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-/* Highlight the clicked term */
-.def-technical-term:target {
-  background-color: var(--verso-selected-color);
-  outline: auto;
-}
-</style><style>
-code.unicode-abbrev {
-  background-color: #eee;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  white-space: nowrap;
-}
-
-kbd {
-  white-space: nowrap;
-}
-
-kbd > code {
-  background-color: #eee;
-  border-radius: 3px;
-  border: 1px solid #b4b4b4;
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.2),
-    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
-  color: #333;
-  display: inline-block;
-  font-size: 0.85em;
-  font-weight: 700;
-  line-height: 1;
-  padding: 2px 4px;
-  white-space: nowrap;
-  vertical-align: middle;
-}
-</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -397,12 +356,16 @@ kbd > code {
 
 .hl.lean .tactic {
   position: relative;
-  display: inline-grid;
-  grid-template-columns: 1fr;
+  display: inline;
   vertical-align: top;
   /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+.hl.lean .tactic:has(.tactic-toggle:checked) {
+  display: inline-grid;
+  grid-template-columns: 1fr;
 }
 
 .hl.lean .tactic-toggle:checked ~ .tactic-state {
@@ -415,6 +378,7 @@ kbd > code {
 .hl.lean .tactic > label {
   position: relative;
   grid-row: 1;
+  display: inline;
 }
 
 @media (hover: hover) {
@@ -760,6 +724,47 @@ Some CSS frameworks customize details/summary in ways not compatible with Verso'
   white-space: pre-wrap;
 }
 
+</style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+/* Highlight the clicked term */
+.def-technical-term:target {
+  background-color: var(--verso-selected-color);
+  outline: auto;
+}
+</style><style>
+code.unicode-abbrev {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+kbd {
+  white-space: nowrap;
+}
+
+kbd > code {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+  color: #333;
+  display: inline-block;
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
 </style><script>
       let xref = {"Verso.Genre.Manual.section":
  {"title": "Sections or chapters of the manual",
