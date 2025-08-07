@@ -978,6 +978,7 @@ variable [Monad m] [MonadError m ] [MonadLiftT CoreM m]
 instance : FromArgVal ShowProofStates m where
   fromArgVal := {
     description := "`all`, `none`, or a string literal",
+    signature := .String ∪ .Ident
     get := fun
       | .name x =>
         match x.getId with
@@ -1181,6 +1182,7 @@ variable [Monad m] [MonadError m ] [MonadLiftT CoreM m]
 
 private def strOrName : ValDesc m StrLit where
   description := "identifier or string literal"
+  signature := .Ident ∪ .String
   get
     | .name x => pure <| Syntax.mkStrLit x.getId.toString (info := x.raw.getHeadInfo)
     | .str s => pure s
