@@ -4,6 +4,11 @@ import TPiL
 open Verso.Genre Manual
 open Verso Code External
 
+open Verso.Output.Html in
+def plausible := {{
+    <script defer="defer" data-domain="lean-lang.org" src="https://plausible.io/js/script.outbound-links.js"></script>
+  }}
+
 def config : Config where
   emitTeX := false
   emitHtmlSingle := false
@@ -17,6 +22,7 @@ def config : Config where
     "/static/fonts/source-sans/source-sans-3.css",
     "/static/fonts/noto-sans-mono/noto-sans-mono.css"
   ]
+  extraHead := #[plausible]
   logo := some "/static/lean_logo.svg"
   sourceLink := some "https://github.com/leanprover/theorem_proving_in_lean4"
   issueLink := some "https://github.com/leanprover/theorem_proving_in_lean4/issues"
