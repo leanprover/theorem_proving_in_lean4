@@ -957,8 +957,8 @@ namespace Foo
 end Foo
 ```
 
-Like sections, nested namespaces have to be closed in the order they
-are opened. Namespaces and sections serve different purposes:
+Like sections, nested namespaces have to be closed in the reverse order of their opening.
+Namespaces and sections serve different purposes:
 namespaces organize data and sections declare variables for insertion
 in definitions. Sections are also useful for delimiting the scope of
 commands such as {kw}`set_option` and {kw}`open`.
