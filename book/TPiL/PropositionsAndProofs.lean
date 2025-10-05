@@ -368,6 +368,8 @@ If {lean}`p` and {lean}`q` have been declared as {ref "variables-and-sections"}[
 generalize them for us automatically:
 
 ```lean
+set_option linter.unusedVariables false
+------
 variable {p q : Prop}
 
 theorem t1 : p → q → p := fun (hp : p) (hq : q) => hp
