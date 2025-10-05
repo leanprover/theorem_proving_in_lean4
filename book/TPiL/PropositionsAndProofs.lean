@@ -217,7 +217,7 @@ can be proved using lambda abstraction and application. In Lean, the
 
 ```lean
 set_option linter.unusedVariables false
----
+------
 variable {p : Prop}
 variable {q : Prop}
 
