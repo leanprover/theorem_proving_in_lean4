@@ -1,1 +1,1 @@
-window.docContents[143].resolve({"/Introduction/#Intro":{"id":"/Introduction/#Intro","header":"1. Introduction","context":"Theorem Proving in Lean 4","contents":"\n\n\n\n\n\n\n\n"}});
+window.docContents[143].resolve({"/Introduction/#Intro":{"contents":"\n\n\n\n\n\n\n\n","context":"Theorem Proving in Lean 4","header":"1. Introduction","id":"/Introduction/#Intro"}});

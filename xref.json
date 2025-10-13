@@ -2121,6 +2121,37 @@
        "context":
        ["Theorem Proving in Lean 4", "Tactics", "Entering Tactic Mode"]}},
      "address": "/Tactics/"}],
+   "takeWhile.go":
+   [{"id": "takeWhile",
+     "data":
+     {"/Induction-and-Recursion/#takeWhile-next":
+      {"display": "go",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Induction-and-Recursion/#takeWhile":
+      {"display": "go",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "takeWhile-next",
+     "data":
+     {"/Induction-and-Recursion/#takeWhile-next":
+      {"display": "go",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Induction-and-Recursion/#takeWhile":
+      {"display": "go",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]}},
+     "address": "/Induction-and-Recursion/"}],
    "takeWhile":
    [{"id": "takeWhile",
      "data":
@@ -3395,6 +3426,37 @@
         "Type Classes",
         "Coercions using Type Classes"]}},
      "address": "/Type-Classes/"}],
+   "replicate.loop":
+   [{"id": "replicate-next",
+     "data":
+     {"/Induction-and-Recursion/#replicate-next":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]},
+      "/Induction-and-Recursion/#replicate":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "replicate",
+     "data":
+     {"/Induction-and-Recursion/#replicate-next":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]},
+      "/Induction-and-Recursion/#replicate":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]}},
+     "address": "/Induction-and-Recursion/"}],
    "replicate":
    [{"id": "replicate-next",
      "data":
@@ -3869,6 +3931,37 @@
         "Axioms and Computation",
         "The Law of the Excluded Middle"]}},
      "address": "/Axioms-and-Computation/"}],
+   "length_replicate.aux":
+   [{"id": "replicate-next",
+     "data":
+     {"/Induction-and-Recursion/#replicate-next":
+      {"display": "aux",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]},
+      "/Induction-and-Recursion/#length_replicate":
+      {"display": "aux",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "length_replicate",
+     "data":
+     {"/Induction-and-Recursion/#replicate-next":
+      {"display": "aux",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]},
+      "/Induction-and-Recursion/#length_replicate":
+      {"display": "aux",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]}},
+     "address": "/Induction-and-Recursion/"}],
    "length_replicate":
    [{"id": "replicate-next",
      "data":
@@ -5340,6 +5433,37 @@
        ["Theorem Proving in Lean 4",
         "Induction and Recursion",
         "Match Expressions"]}},
+     "address": "/Induction-and-Recursion/"}],
+   "fibFast.loop":
+   [{"id": "fibFast",
+     "data":
+     {"/Induction-and-Recursion/#fibFast-next":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Induction-and-Recursion/#fibFast":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "fibFast-next",
+     "data":
+     {"/Induction-and-Recursion/#fibFast-next":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Induction-and-Recursion/#fibFast":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"}],
    "fibFast":
    [{"id": "fibFast",
@@ -7329,7 +7453,13 @@
    "compose":
    [{"id": "compose-next-next-next-next-next",
      "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
@@ -7378,203 +7508,13 @@
      "address": "/Interacting-with-Lean/"},
     {"id": "compose-next",
      "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
         "Interacting with Lean",
         "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "compose-next-next-next-next-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Interacting-with-Lean/"},
-    {"id": "compose-next-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "compose-next-next-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "compose-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
@@ -7623,7 +7563,288 @@
      "address": "/Dependent-Type-Theory/"},
     {"id": "compose-next-next-next-next-next-next-next",
      "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Interacting-with-Lean/"},
+    {"id": "compose-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "compose-next-next-next-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Interacting-with-Lean/"},
+    {"id": "compose-next-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "compose-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "compose-next-next-next-next-next-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
@@ -7672,7 +7893,13 @@
      "address": "/Interacting-with-Lean/"},
     {"id": "compose",
      "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
@@ -13794,6 +14021,33 @@
        ["Theorem Proving in Lean 4",
         "Dependent Type Theory",
         "Types as objects"]},
+      "/Dependent-Type-Theory/#F-next":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]},
+      "/Dependent-Type-Theory/#F":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "F-next",
+     "data":
+     {"/Dependent-Type-Theory/#___":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]},
+      "/Dependent-Type-Theory/#F-next":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]},
       "/Dependent-Type-Theory/#F":
       {"display": "F",
        "context":
@@ -13804,6 +14058,12 @@
     {"id": "F",
      "data":
      {"/Dependent-Type-Theory/#___":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]},
+      "/Dependent-Type-Theory/#F-next":
       {"display": "F",
        "context":
        ["Theorem Proving in Lean 4",

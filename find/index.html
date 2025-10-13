@@ -23,18 +23,13 @@
     <link rel="stylesheet" href="-verso-search/domain-display.css">
     <script src="-verso-data/katex/katex.js"></script>
     <script src="-verso-data/katex/math.js"></script>
-    <script src="-verso-data/popper.js"></script>
-    <script src="-verso-data/tippy.js"></script>
     <script src="-verso-data/copybutton.js"></script>
-    <link rel="stylesheet" href="static/theme.css">
-    <link rel="stylesheet" href="static/fonts/source-serif/source-serif-text.css">
-    <link rel="stylesheet" href="static/fonts/source-code-pro/source-code-pro.css">
-    <link rel="stylesheet" href="static/fonts/source-sans/source-sans-3.css">
-    <link rel="stylesheet" href="static/fonts/noto-sans-mono/noto-sans-mono.css">
+    <script src="-verso-data/popper.min.js"></script>
+    <script src="-verso-data/tippy-bundle.umd.min.js"></script>
     <link rel="stylesheet" href="-verso-data/katex/katex.css">
-    <link rel="stylesheet" href="-verso-data/tippy-border.css">
     <link rel="stylesheet" href="-verso-data/copybutton.css">
     <link rel="stylesheet" href="-verso-data/examples.css">
+    <link rel="stylesheet" href="-verso-data/tippy-border.css">
     <link rel="stylesheet" href="-verso-data/proof-state.css">
     <style>
 table.tabular {
@@ -766,6 +761,202 @@ kbd > code {
   vertical-align: middle;
 }
 </style><script>
+      
+window.onload = () => {
+
+    // Don't show hovers inside of closed tactic states
+    function blockedByTactic(elem) {
+      let parent = elem.parentNode;
+      while (parent && "classList" in parent) {
+        if (parent.classList.contains("tactic")) {
+          const toggle = parent.querySelector("input.tactic-toggle");
+          if (toggle) {
+            return !toggle.checked;
+          }
+        }
+        parent = parent.parentNode;
+      }
+      return false;
+    }
+
+    function blockedByTippy(elem) {
+      // Don't show a new hover until the old ones are all closed.
+      // Scoped to the nearest "top-level block" to avoid being O(n) in the size of the document.
+      var block = elem;
+      const topLevel = new Set(["section", "body", "html", "nav", "header"]);
+      while (block.parentNode && !topLevel.has(block.parentNode.nodeName.toLowerCase())) {
+        block = block.parentNode;
+      }
+      for (const child of block.querySelectorAll(".token, .has-info")) {
+        if (child._tippy && child._tippy.state.isVisible) { return true };
+      }
+      return false;
+    }
+
+    for (const c of document.querySelectorAll(".hl.lean .token")) {
+        if (c.dataset.binding != "") {
+            c.addEventListener("mouseover", (event) => {
+                if (blockedByTactic(c)) {return;}
+                const context = c.closest(".hl.lean").dataset.leanContext;
+                for (const example of document.querySelectorAll(".hl.lean")) {
+                    if (example.dataset.leanContext == context) {
+                        for (const tok of example.querySelectorAll(".token")) {
+                            if (c.dataset.binding == tok.dataset.binding) {
+                                tok.classList.add("binding-hl");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        c.addEventListener("mouseout", (event) => {
+            for (const tok of document.querySelectorAll(".hl.lean .token")) {
+                tok.classList.remove("binding-hl");
+            }
+        });
+    }
+    /* Render docstrings */
+    if ('undefined' !== typeof marked) {
+        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement("div");
+            rendered.classList.add("docstring");
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+        }
+    }
+    // Add hovers
+    let siteRoot = typeof __versoSiteRoot !== 'undefined' ? __versoSiteRoot : "/";
+    let docsJson = siteRoot + "-verso-docs.json";
+    fetch(docsJson).then((resp) => resp.json()).then((versoDocData) => {
+
+      function hideParentTooltips(element) {
+        let parent = element.parentElement;
+        while (parent) {
+          const tippyInstance = parent._tippy;
+          if (tippyInstance) {
+            tippyInstance.hide();
+          }
+          parent = parent.parentElement;
+        }
+      }
+
+
+
+      const defaultTippyProps = {
+        /* DEBUG -- remove the space: * /
+        onHide(any) { return false; },
+        trigger: "click",
+        // */
+        /* theme: "lean", */
+        maxWidth: "none",
+        appendTo: () => document.body,
+        interactive: true,
+        delay: [100, null],
+        /* ignoreAttributes: true, */
+        followCursor: 'initial',
+        onShow(inst) {
+          if (inst.reference.className == 'tactic') {
+
+            const toggle = inst.reference.querySelector("input.tactic-toggle");
+            if (toggle && toggle.checked) {
+              return false;
+            }
+            hideParentTooltips(inst.reference);
+            //if (blockedByTippy(inst.reference)) { return false; }
+
+          } else if (inst.reference.querySelector(".hover-info") || "versoHover" in inst.reference.dataset) {
+            if (blockedByTactic(inst.reference)) { return false };
+            if (blockedByTippy(inst.reference)) { return false; }
+          } else { // Nothing to show here!
+            return false;
+          }
+        },
+        content (tgt) {
+          const content = document.createElement("span");
+          if (tgt.className == 'tactic') {
+            const state = tgt.querySelector(".tactic-state").cloneNode(true);
+            state.style.display = "block";
+            content.appendChild(state);
+            content.style.display = "block";
+            content.className = "hl lean popup";
+          } else {
+            content.className = "hl lean";
+            content.style.display = "block";
+            content.style.maxHeight = "300px";
+            content.style.overflowY = "auto";
+            content.style.overflowX = "hidden";
+            const hoverId = tgt.dataset.versoHover;
+            const hoverInfo = tgt.querySelector(".hover-info");
+            if (hoverId) { // Docstrings from the table
+              // TODO stop doing an implicit conversion from string to number here
+              let data = versoDocData[hoverId];
+              if (data) {
+                const info = document.createElement("span");
+                info.className = "hover-info";
+                info.style.display = "block";
+                info.innerHTML = data;
+                content.appendChild(info);
+                /* Render docstrings - TODO server-side */
+                if ('undefined' !== typeof marked) {
+                    for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
+                        const str = d.innerText;
+                        const html = marked.parse(str);
+                        const rendered = document.createElement("div");
+                        rendered.classList.add("docstring");
+                        rendered.innerHTML = html;
+                        d.parentNode.replaceChild(rendered, d);
+                    }
+                }
+              } else {
+                content.innerHTML = "Failed to load doc ID: " + hoverId;
+              }
+            } else if (hoverInfo) { // The inline info, still used for compiler messages
+              content.appendChild(hoverInfo.cloneNode(true));
+            }
+            const extraLinks = tgt.parentElement.dataset['versoLinks'];
+            if (extraLinks) {
+              try {
+                const extras = JSON.parse(extraLinks);
+                const links = document.createElement('ul');
+                links.className = 'extra-doc-links';
+                extras.forEach((l) => {
+                  const li = document.createElement('li');
+                  li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
+                  links.appendChild(li);
+                });
+                content.appendChild(links);
+              } catch (error) {
+                console.error(error);
+              }
+            }
+          }
+          return content;
+        }
+      };
+
+
+      document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'lean');
+      });
+      document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'warning message');
+      });
+      document.querySelectorAll('.hl.lean .has-info.information').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'info message');
+      });
+      document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'error message');
+      });
+      document.querySelectorAll('.hl.lean .tactic').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'tactic');
+      });
+      let insts = tippy('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort', defaultTippyProps);
+  });
+}
+</script>
+    <script>
       let xref = {"Verso.Genre.Manual.section":
  {"title": "Sections or chapters of the manual",
   "description": null,
@@ -2889,6 +3080,37 @@ kbd > code {
        "context":
        ["Theorem Proving in Lean 4", "Tactics", "Entering Tactic Mode"]}},
      "address": "/Tactics/"}],
+   "takeWhile.go":
+   [{"id": "takeWhile",
+     "data":
+     {"/Induction-and-Recursion/#takeWhile-next":
+      {"display": "go",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Induction-and-Recursion/#takeWhile":
+      {"display": "go",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "takeWhile-next",
+     "data":
+     {"/Induction-and-Recursion/#takeWhile-next":
+      {"display": "go",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]},
+      "/Induction-and-Recursion/#takeWhile":
+      {"display": "go",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Well-Founded Recursion and Induction"]}},
+     "address": "/Induction-and-Recursion/"}],
    "takeWhile":
    [{"id": "takeWhile",
      "data":
@@ -4163,6 +4385,37 @@ kbd > code {
         "Type Classes",
         "Coercions using Type Classes"]}},
      "address": "/Type-Classes/"}],
+   "replicate.loop":
+   [{"id": "replicate-next",
+     "data":
+     {"/Induction-and-Recursion/#replicate-next":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]},
+      "/Induction-and-Recursion/#replicate":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "replicate",
+     "data":
+     {"/Induction-and-Recursion/#replicate-next":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]},
+      "/Induction-and-Recursion/#replicate":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]}},
+     "address": "/Induction-and-Recursion/"}],
    "replicate":
    [{"id": "replicate-next",
      "data":
@@ -4637,6 +4890,37 @@ kbd > code {
         "Axioms and Computation",
         "The Law of the Excluded Middle"]}},
      "address": "/Axioms-and-Computation/"}],
+   "length_replicate.aux":
+   [{"id": "replicate-next",
+     "data":
+     {"/Induction-and-Recursion/#replicate-next":
+      {"display": "aux",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]},
+      "/Induction-and-Recursion/#length_replicate":
+      {"display": "aux",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "length_replicate",
+     "data":
+     {"/Induction-and-Recursion/#replicate-next":
+      {"display": "aux",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]},
+      "/Induction-and-Recursion/#length_replicate":
+      {"display": "aux",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Local recursive declarations"]}},
+     "address": "/Induction-and-Recursion/"}],
    "length_replicate":
    [{"id": "replicate-next",
      "data":
@@ -6108,6 +6392,37 @@ kbd > code {
        ["Theorem Proving in Lean 4",
         "Induction and Recursion",
         "Match Expressions"]}},
+     "address": "/Induction-and-Recursion/"}],
+   "fibFast.loop":
+   [{"id": "fibFast",
+     "data":
+     {"/Induction-and-Recursion/#fibFast-next":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Induction-and-Recursion/#fibFast":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]}},
+     "address": "/Induction-and-Recursion/"},
+    {"id": "fibFast-next",
+     "data":
+     {"/Induction-and-Recursion/#fibFast-next":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]},
+      "/Induction-and-Recursion/#fibFast":
+      {"display": "loop",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Induction and Recursion",
+        "Structural Recursion and Induction"]}},
      "address": "/Induction-and-Recursion/"}],
    "fibFast":
    [{"id": "fibFast",
@@ -8097,7 +8412,13 @@ kbd > code {
    "compose":
    [{"id": "compose-next-next-next-next-next",
      "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
@@ -8146,203 +8467,13 @@ kbd > code {
      "address": "/Interacting-with-Lean/"},
     {"id": "compose-next",
      "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
         "Interacting with Lean",
         "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "compose-next-next-next-next-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Interacting-with-Lean/"},
-    {"id": "compose-next-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "compose-next-next-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Interacting-with-Lean/#compose-next-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Interacting with Lean",
-        "Auto Bound Implicit Arguments"]},
-      "/Dependent-Type-Theory/#compose-next-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose-next":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4",
-        "Dependent Type Theory",
-        "Variables and Sections"]},
-      "/Dependent-Type-Theory/#compose":
-      {"display": "compose",
-       "context":
-       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
-     "address": "/Dependent-Type-Theory/"},
-    {"id": "compose-next-next",
-     "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
@@ -8391,7 +8522,288 @@ kbd > code {
      "address": "/Dependent-Type-Theory/"},
     {"id": "compose-next-next-next-next-next-next-next",
      "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Interacting-with-Lean/"},
+    {"id": "compose-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "compose-next-next-next-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Interacting-with-Lean/"},
+    {"id": "compose-next-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "compose-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Dependent-Type-Theory/#compose-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Variables and Sections"]},
+      "/Dependent-Type-Theory/#compose":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4", "Dependent Type Theory", "Definitions"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "compose-next-next-next-next-next-next-next-next",
+     "data":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
@@ -8440,7 +8852,13 @@ kbd > code {
      "address": "/Interacting-with-Lean/"},
     {"id": "compose",
      "data":
-     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
+     {"/Interacting-with-Lean/#compose-next-next-next-next-next-next-next-next":
+      {"display": "compose",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Interacting with Lean",
+        "Auto Bound Implicit Arguments"]},
+      "/Interacting-with-Lean/#compose-next-next-next-next-next-next-next":
       {"display": "compose",
        "context":
        ["Theorem Proving in Lean 4",
@@ -14562,6 +14980,33 @@ kbd > code {
        ["Theorem Proving in Lean 4",
         "Dependent Type Theory",
         "Types as objects"]},
+      "/Dependent-Type-Theory/#F-next":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]},
+      "/Dependent-Type-Theory/#F":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]}},
+     "address": "/Dependent-Type-Theory/"},
+    {"id": "F-next",
+     "data":
+     {"/Dependent-Type-Theory/#___":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]},
+      "/Dependent-Type-Theory/#F-next":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]},
       "/Dependent-Type-Theory/#F":
       {"display": "F",
        "context":
@@ -14572,6 +15017,12 @@ kbd > code {
     {"id": "F",
      "data":
      {"/Dependent-Type-Theory/#___":
+      {"display": "F",
+       "context":
+       ["Theorem Proving in Lean 4",
+        "Dependent Type Theory",
+        "Types as objects"]},
+      "/Dependent-Type-Theory/#F-next":
       {"display": "F",
        "context":
        ["Theorem Proving in Lean 4",
@@ -15429,10 +15880,10 @@ kbd > code {
   "contents": {}}};
 let params = new URLSearchParams(document.location.search);
 let domains = params.getAll("domain");
-let name = params.get("name");
+let paramName = params.get("name");
 console.log("Domains: " + domains);
-console.log("name: " + name);
-if(name) {
+console.log("name: " + paramName);
+if(paramName) {
     let siteRoot = typeof __versoSiteRoot !== 'undefined' ? __versoSiteRoot : "";
     let options = [];
     if (domains && domains.length > 0) {
@@ -15443,14 +15894,14 @@ if(name) {
                 console.log('Found domain ' + domain);
                 let opts = xref[domain];
                 if (opts['contents'].hasOwnProperty(name)) {
-                    options = opts['contents'][name].map(x => Object.assign(x, {'domain': domain}));
+                    options = opts['contents'][paramName].map(x => Object.assign(x, {'domain': domain}));
                 }
             }
         }
     } else {
         for (const [dom, opts] of Object.entries(xref)) {
-            if (opts['contents'].hasOwnProperty(name)) {
-                for (const i of opts['contents'][name]) {
+            if (opts['contents'].hasOwnProperty(paramName)) {
+                for (const i of opts['contents'][paramName]) {
                     options.push(Object.assign(i, {'domain': dom}));
                 }
             }
@@ -15459,8 +15910,8 @@ if(name) {
 
     if (options.length == 0) {
         addEventListener('DOMContentLoaded', event => {
-            document.title = "Not found: '" + name + "'";
-            document.querySelector("#title").innerHTML = "Not found: name '" + name + "'";
+            document.title = "Not found: '" + paramName + "'";
+            document.querySelector("#title").innerHTML = "Not found: name '" + paramName + "'";
             let allDomains = [];
             for (const d in xref) {
                 allDomains.push(d);
@@ -15471,12 +15922,13 @@ if(name) {
             document.querySelector("#message").innerHTML = "<p>Searched domains:</p>" + "<ul>" + domains.map(x => "<li><code>" + x + "</code>: " + xref[x]['title'] + "</li>\n").join('') + "</ul>";
         });
     } else if (options.length == 1) {
-        let addr = siteRoot + options[0]['address'] + "#" + options[0]['id'];
+        const addr = new URL(options[0]['address'], siteRoot);
+        addr.hash = options[0]['id'];
         window.location.replace(addr);
     } else {
         addEventListener('DOMContentLoaded', event => {
-            document.title = "Ambiguous: '" + name + "'";
-            document.querySelector("#title").innerHTML = "Ambiguous: name '" + name + "'";
+            document.title = "Ambiguous: '" + paramName + "'";
+            document.querySelector("#title").innerHTML = "Ambiguous: name '" + paramName + "'";
             document.querySelector("#message").innerHTML = "<p>Options:</p><ul>" +
                 options.map((x, idx) => '<li><p><a href="' + siteRoot + x['address'] + '#' + x['id'] + '">From ' + xref[x['domain']]['title'] + '</a></p></li>').join('\n') +
                 "</ul>";
@@ -15488,202 +15940,6 @@ if(name) {
         document.querySelector("#title").innerHTML = "No name provided";
         document.querySelector("#message").innerHTML = "<p>This page expects a 'name' query parameter, along with documentation domains.</p>";
     });
-}
-</script>
-    <script>
-      
-window.onload = () => {
-
-    // Don't show hovers inside of closed tactic states
-    function blockedByTactic(elem) {
-      let parent = elem.parentNode;
-      while (parent && "classList" in parent) {
-        if (parent.classList.contains("tactic")) {
-          const toggle = parent.querySelector("input.tactic-toggle");
-          if (toggle) {
-            return !toggle.checked;
-          }
-        }
-        parent = parent.parentNode;
-      }
-      return false;
-    }
-
-    function blockedByTippy(elem) {
-      // Don't show a new hover until the old ones are all closed.
-      // Scoped to the nearest "top-level block" to avoid being O(n) in the size of the document.
-      var block = elem;
-      const topLevel = new Set(["section", "body", "html", "nav", "header"]);
-      while (block.parentNode && !topLevel.has(block.parentNode.nodeName.toLowerCase())) {
-        block = block.parentNode;
-      }
-      for (const child of block.querySelectorAll(".token, .has-info")) {
-        if (child._tippy && child._tippy.state.isVisible) { return true };
-      }
-      return false;
-    }
-
-    for (const c of document.querySelectorAll(".hl.lean .token")) {
-        if (c.dataset.binding != "") {
-            c.addEventListener("mouseover", (event) => {
-                if (blockedByTactic(c)) {return;}
-                const context = c.closest(".hl.lean").dataset.leanContext;
-                for (const example of document.querySelectorAll(".hl.lean")) {
-                    if (example.dataset.leanContext == context) {
-                        for (const tok of example.querySelectorAll(".token")) {
-                            if (c.dataset.binding == tok.dataset.binding) {
-                                tok.classList.add("binding-hl");
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        c.addEventListener("mouseout", (event) => {
-            for (const tok of document.querySelectorAll(".hl.lean .token")) {
-                tok.classList.remove("binding-hl");
-            }
-        });
-    }
-    /* Render docstrings */
-    if ('undefined' !== typeof marked) {
-        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
-            const str = d.innerText;
-            const html = marked.parse(str);
-            const rendered = document.createElement("div");
-            rendered.classList.add("docstring");
-            rendered.innerHTML = html;
-            d.parentNode.replaceChild(rendered, d);
-        }
-    }
-    // Add hovers
-    let siteRoot = typeof __versoSiteRoot !== 'undefined' ? __versoSiteRoot : "/";
-    let docsJson = siteRoot + "-verso-docs.json";
-    fetch(docsJson).then((resp) => resp.json()).then((versoDocData) => {
-
-      function hideParentTooltips(element) {
-        let parent = element.parentElement;
-        while (parent) {
-          const tippyInstance = parent._tippy;
-          if (tippyInstance) {
-            tippyInstance.hide();
-          }
-          parent = parent.parentElement;
-        }
-      }
-
-
-
-      const defaultTippyProps = {
-        /* DEBUG -- remove the space: * /
-        onHide(any) { return false; },
-        trigger: "click",
-        // */
-        /* theme: "lean", */
-        maxWidth: "none",
-        appendTo: () => document.body,
-        interactive: true,
-        delay: [100, null],
-        /* ignoreAttributes: true, */
-        followCursor: 'initial',
-        onShow(inst) {
-          if (inst.reference.className == 'tactic') {
-
-            const toggle = inst.reference.querySelector("input.tactic-toggle");
-            if (toggle && toggle.checked) {
-              return false;
-            }
-            hideParentTooltips(inst.reference);
-            //if (blockedByTippy(inst.reference)) { return false; }
-
-          } else if (inst.reference.querySelector(".hover-info") || "versoHover" in inst.reference.dataset) {
-            if (blockedByTactic(inst.reference)) { return false };
-            if (blockedByTippy(inst.reference)) { return false; }
-          } else { // Nothing to show here!
-            return false;
-          }
-        },
-        content (tgt) {
-          const content = document.createElement("span");
-          if (tgt.className == 'tactic') {
-            const state = tgt.querySelector(".tactic-state").cloneNode(true);
-            state.style.display = "block";
-            content.appendChild(state);
-            content.style.display = "block";
-            content.className = "hl lean popup";
-          } else {
-            content.className = "hl lean";
-            content.style.display = "block";
-            content.style.maxHeight = "300px";
-            content.style.overflowY = "auto";
-            content.style.overflowX = "hidden";
-            const hoverId = tgt.dataset.versoHover;
-            const hoverInfo = tgt.querySelector(".hover-info");
-            if (hoverId) { // Docstrings from the table
-              // TODO stop doing an implicit conversion from string to number here
-              let data = versoDocData[hoverId];
-              if (data) {
-                const info = document.createElement("span");
-                info.className = "hover-info";
-                info.style.display = "block";
-                info.innerHTML = data;
-                content.appendChild(info);
-                /* Render docstrings - TODO server-side */
-                if ('undefined' !== typeof marked) {
-                    for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
-                        const str = d.innerText;
-                        const html = marked.parse(str);
-                        const rendered = document.createElement("div");
-                        rendered.classList.add("docstring");
-                        rendered.innerHTML = html;
-                        d.parentNode.replaceChild(rendered, d);
-                    }
-                }
-              } else {
-                content.innerHTML = "Failed to load doc ID: " + hoverId;
-              }
-            } else if (hoverInfo) { // The inline info, still used for compiler messages
-              content.appendChild(hoverInfo.cloneNode(true));
-            }
-            const extraLinks = tgt.parentElement.dataset['versoLinks'];
-            if (extraLinks) {
-              try {
-                const extras = JSON.parse(extraLinks);
-                const links = document.createElement('ul');
-                links.className = 'extra-doc-links';
-                extras.forEach((l) => {
-                  const li = document.createElement('li');
-                  li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
-                  links.appendChild(li);
-                });
-                content.appendChild(links);
-              } catch (error) {
-                console.error(error);
-              }
-            }
-          }
-          return content;
-        }
-      };
-
-
-      document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'lean');
-      });
-      document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'warning message');
-      });
-      document.querySelectorAll('.hl.lean .has-info.information').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'info message');
-      });
-      document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'error message');
-      });
-      document.querySelectorAll('.hl.lean .tactic').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'tactic');
-      });
-      let insts = tippy('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort', defaultTippyProps);
-  });
 }
 </script>
     <script defer="defer" data-domain="lean-lang.org" src="https://plausible.io/js/script.outbound-links.js"></script>
