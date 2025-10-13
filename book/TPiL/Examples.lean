@@ -1,8 +1,10 @@
 import SubVerso.Examples
 import Lean.Data.NameMap
+import Lean.DocString.Syntax
 import VersoManual
 
 open Lean (NameMap MessageSeverity)
+open Lean.Doc.Syntax
 
 namespace TPiL
 
@@ -840,6 +842,7 @@ structure Kept (α : Type u) where
   values : Array α
   next : Nat
   in_bounds : next < values.size
+deriving Repr
 
 instance [Inhabited α] : Inhabited (Kept α) where
   default := ⟨#[default], 0, by simp⟩
@@ -1584,8 +1587,8 @@ def leanInline : RoleExpander
 
       return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1621,8 +1624,8 @@ def name : RoleExpander
 
       return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1644,8 +1647,8 @@ def leanCommand : RoleExpander
 
       return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1666,8 +1669,8 @@ def leanCommandBlock : CodeBlockExpander
 
       return #[← ``(Block.other (Block.lean false none #[ExampleItem.mk $(quote hl) none ""] none) #[])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1688,8 +1691,8 @@ def signature : CodeBlockExpander
 
       return #[← ``(Block.other (Block.lean false none #[ExampleItem.mk $(quote hl) none ""] none) #[])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1742,7 +1745,7 @@ open MessageData (hint) in
 /--
 Internal detail of suggestion mechanism.
 -/
-@[inline_expander Verso.Syntax.code]
+@[inline_expander Lean.Doc.Syntax.code]
 private def suggest : InlineExpander
   |  `(inline| code( $str )) => do
     let str' := str.getString

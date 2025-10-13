@@ -48,12 +48,12 @@ which messages are expected.
 Here is an example:
 ```lean
 /--
-error: type mismatch
+error: Type mismatch
   "Not a number"
 has type
-  String : Type
+  String
 but is expected to have type
-  Nat : Type
+  Nat
 -/
 #guard_msgs in
 def x : Nat := "Not a number"
@@ -240,7 +240,7 @@ open String
 
 #check Bool.add             -- Bool.add (a b : Bool) : Bool
 
-#check _root_.add           -- add (α β : Type) : Type
+#check _root_.add           -- _root_.add (α β : Type) : Type
 
 #check add "hello" "world"  -- "hello".add "world" : String
 
@@ -256,7 +256,7 @@ protected def Foo.bar : Nat := 1
 
 open Foo
 
-/-- error: unknown identifier 'bar' -/
+/-- error: Unknown identifier `bar` -/
 #guard_msgs in
 #check bar -- error
 
@@ -283,7 +283,7 @@ open Nat hiding succ gcd
 
 #check zero     -- Nat.zero : Nat
 
-/-- error: unknown identifier 'gcd' -/
+/-- error: Unknown identifier `gcd` -/
 #guard_msgs in
 #eval gcd 15 6  -- error
 
@@ -380,7 +380,7 @@ example : isPrefix [1, 2, 3] [1, 2, 3] := by
 
 end
 
-/-- error: simp made no progress -/
+/-- error: `simp` made no progress -/
 #guard_msgs in
 example : isPrefix [1, 2, 3] [1, 2, 3] := by
   simp
@@ -426,7 +426,7 @@ end
 error: failed to synthesize
   LE (List α)
 
-Additional diagnostic information may be available using the
+Hint: Additional diagnostic information may be available using the
 `set_option diagnostics true` command.
 -/
 #guard_msgs in
@@ -1040,17 +1040,17 @@ the command {leanCommand}`set_option autoImplicit false`.
 set_option autoImplicit false
 
 /--
-error: unknown identifier 'β'
+error: Unknown identifier `β`
 ---
-error: unknown identifier 'γ'
+error: Unknown identifier `γ`
 ---
-error: unknown identifier 'α'
+error: Unknown identifier `α`
 ---
-error: unknown identifier 'β'
+error: Unknown identifier `β`
 ---
-error: unknown identifier 'α'
+error: Unknown identifier `α`
 ---
-error: unknown identifier 'γ'
+error: Unknown identifier `γ`
 -/
 #guard_msgs in
 def compose (g : β → γ) (f : α → β) (x : α) : γ :=
@@ -1070,7 +1070,7 @@ Update this text after archaeology
 When the expected type of an expression is a function that is awaiting implicit
 arguments, the elaborator automatically introduces the corresponding lambdas.
 For example, {leanRef}`pure`'s type states that the first argument is an implicit type
-{leanRef}`α`, but {leanRef}`ReaderT.pure`'s first agument is the reader monad's context type {leanRef}`ρ`.
+{leanRef}`α`, but {leanRef}`ReaderT.pure`'s first argument is the reader monad's context type {leanRef}`ρ`.
 It is automatically surrounded with a {kw}`fun`{lit}` {α} => ...`, which allows the elaborator to
 correctly fill in the implicit arguments in the body.
 

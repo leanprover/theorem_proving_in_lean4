@@ -1116,7 +1116,7 @@ Summary:
 
 - If {leanRef}`termination_by` is specified, it maps the arguments of the function to a type {lean}`α` and type class resolution is again used. Recall that, the default instance for {lean}`β × γ` is a lexicographic order based on the well-founded relations for {lean}`β` and {lean}`γ`.
 
-- The default well-founded relation instance for {lean}`Nat` is {lean type:="Nat → Nat → Prop"}`(· < ·)`.
+- The default well-founded relation instance for {lean}`Nat` is {lean (type := "Nat → Nat → Prop")}`(· < ·)`.
 
 - By default, the tactic {tactic}`decreasing_tactic` is used to show that recursive applications are smaller with respect to the selected well-founded relation. If {tactic}`decreasing_tactic` fails, the error message includes the remaining goal {lit}`... |- G`. Note that, the {tactic}`decreasing_tactic` uses {tactic}`assumption`. So, you can include a {kw}`have`-expression to prove goal {lean}`G`. You can also provide your own tactic using {kw}`decreasing_by`.
 :::
@@ -1400,7 +1400,7 @@ end Term
 ```
 
 :::leanFirst
-As a final example, we define a function {leanRef}`replaceConst a b e` that replaces a constant {leanRef in:="replaceConst a b e"}`a` with {leanRef in:="replaceConst a b e"}`b` in a term {leanRef in:="replaceConst a b e"}`e`, and then prove the number of constants is the same. Note that, our proof uses mutual recursion (aka induction).
+As a final example, we define a function {leanRef}`replaceConst a b e` that replaces a constant {leanRef (in := "replaceConst a b e")}`a` with {leanRef (in := "replaceConst a b e")}`b` in a term {leanRef (in := "replaceConst a b e")}`e`, and then prove the number of constants is the same. Note that, our proof uses mutual recursion (aka induction).
 
 ```lean
 inductive Term where
@@ -1542,11 +1542,11 @@ def tail (v : Vect α (n+1)) : Vect α n :=
 end Vect
 ```
 
-In the {leanRef}`nil` case, {leanRef in:="m = n + 1"}`m` is instantiated to {leanRef}`0`, and
+In the {leanRef}`nil` case, {leanRef (in := "m = n + 1")}`m` is instantiated to {leanRef}`0`, and
 {leanRef}`Nat.noConfusion` makes use of the fact that {leanRef}`0 = n + 1` cannot
 occur.  Otherwise, {leanRef}`v` is of the form {lit}`cons `{leanRef}`a`{lit}` `{leanRef}`as`, and we can simply
-return {leanRef}`as`, after casting it from a vector of length {leanRef in:="m + 1 = n + 1"}`m` to a
-vector of length {leanRef in:="m + 1= n + 1"}`n`.
+return {leanRef}`as`, after casting it from a vector of length {leanRef (in := "m + 1 = n + 1")}`m` to a
+vector of length {leanRef (in := "m + 1= n + 1")}`n`.
 
 The difficulty in defining {leanRef}`tail` is to maintain the relationships between the indices.
 The hypothesis {leanRef}`m = n + 1` in {leanRef}`tailAux` is used to communicate the relationship
@@ -1639,15 +1639,15 @@ patterns. You can declare a subterm inaccessible by writing
 
 :::leanFirst
 The following example, we declare an inductive type that defines the
-property of “being in the image of {leanRef in:="(f :"}`f`”. You can view an element of
-the type {leanRef}`ImageOf f b` as evidence that {leanRef in:="ImageOf f b"}`b` is in the image of
-{leanRef in:="ImageOf f b"}`f`, whereby the constructor {leanRef}`imf` is used to build such
-evidence. We can then define any function {leanRef in:="inverse {f"}`f` with an “inverse”
-which takes anything in the image of {leanRef in:="inverse {f"}`f` to an element that is
-mapped to it. The typing rules forces us to write {leanRef in:=".(f a)"}`f a` for the
+property of “being in the image of {leanRef (in := "(f :")}`f`”. You can view an element of
+the type {leanRef}`ImageOf f b` as evidence that {leanRef (in := "ImageOf f b")}`b` is in the image of
+{leanRef (in := "ImageOf f b")}`f`, whereby the constructor {leanRef}`imf` is used to build such
+evidence. We can then define any function {leanRef (in := "inverse {f")}`f` with an “inverse”
+which takes anything in the image of {leanRef (in := "inverse {f")}`f` to an element that is
+mapped to it. The typing rules forces us to write {leanRef (in := ".(f a)")}`f a` for the
 first argument, but this term is neither a variable nor a constructor
 application, and plays no role in the pattern-matching definition. To
-define the function {leanRef}`inverse` below, we _have to_ mark {leanRef in:=".(f a)"}`f a`
+define the function {leanRef}`inverse` below, we _have to_ mark {leanRef (in := ".(f a)")}`f a`
 inaccessible.
 
 ```lean
@@ -1665,7 +1665,7 @@ def inverse' {f : α → β} : (b : β) → ImageOf f b → α
 :::
 
 In the example above, the inaccessible annotation makes it clear that
-{leanRef in:=".(f a)"}`f` is _not_ a pattern matching variable.
+{leanRef (in := ".(f a)")}`f` is _not_ a pattern matching variable.
 
 :::leanFirst
 Inaccessible patterns can be used to clarify and control definitions that

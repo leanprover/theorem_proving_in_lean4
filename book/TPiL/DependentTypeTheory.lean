@@ -1051,7 +1051,7 @@ example, the expression {leanRef}`β a` in the previous paragraph),
 {leanRef}`(a : α) → β` denotes a dependent function type. When {lean}`β` doesn't
 depend on {leanRef}`a`, {leanRef}`(a : α) → β` is no different from the type
 {lean}`α → β`.  Indeed, in dependent type theory (and in Lean), {lean}`α → β`
-is just notation for {lean}`(a : α) → β` when {lean}`β` does not depend on {leanRef in:="a : α"}`a`.
+is just notation for {lean}`(a : α) → β` when {lean}`β` does not depend on {leanRef (in := "a : α")}`a`.
 :::
 
 Returning to the example of lists, you can use the command {kw}`#check` to
@@ -1071,11 +1071,11 @@ explained momentarily.
 variable (α : Type) (β : α → Type) (a : α) (b : β a)
 ```
 Just as dependent function types {lean}`(a : α) → β a` generalize the
-notion of a function type {leanRef}`α → β` by allowing {leanRef in:="α → β"}`β` to depend on
+notion of a function type {leanRef}`α → β` by allowing {leanRef (in := "α → β")}`β` to depend on
 {lean}`α`, dependent Cartesian product types {lean}`(a : α) × β a` generalize
 the Cartesian product {lit}`α × β` in the same way. Dependent products
 are also called _sigma_ types, and you can also write them as
-{lean}`Σ a : α, β a`. You can use {lean type:="(a : α) × β a"}`⟨a, b⟩` or {lean}`Sigma.mk a b` to create a
+{lean}`Σ a : α, β a`. You can use {lean (type := "(a : α) × β a")}`⟨a, b⟩` or {lean}`Sigma.mk a b` to create a
 dependent pair.  The {lit}`⟨` and {lit}`⟩` characters may be typed with
 {kbd}`\langle` and {kbd}`\rangle` or {kbd}`\<` and {kbd}`\>`, respectively.
 :::
@@ -1281,7 +1281,7 @@ Numerals are overloaded in Lean, but when the type of a numeral cannot
 be inferred, Lean assumes, by default, that it is a natural number. So
 the expressions in the first two {kw}`#check` commands below are
 elaborated in the same way, whereas the third {kw}`#check` command
-interprets {lean type:="Int"}`2` as an integer.
+interprets {lean (type := "Int")}`2` as an integer.
 
 ```lean
 #check 2            -- 2 : Nat

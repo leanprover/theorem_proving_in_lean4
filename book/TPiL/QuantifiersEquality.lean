@@ -388,7 +388,7 @@ example (x y : Nat) :
 variable {α : Type u}
 ```
 
-```lean show:= false
+```lean (show := false)
 example {α : Type u} {x y : α} {h : x = y} {p : α → Prop} {e : p x} : p y := h ▸ e
 ```
 
@@ -684,7 +684,7 @@ example (x y z : Nat) (hxy : x < y) (hyz : y < z) : ∃ w, x < w ∧ w < z :=
 ```
 variable {t : α} {p : α → Prop} (h : p t)
 ```
-We can use the anonymous constructor notation {lean type:= "Exists (fun x : α => p x)"}`⟨t, h⟩` for
+We can use the anonymous constructor notation {lean (type := "Exists (fun x : α => p x)")}`⟨t, h⟩` for
 {lean}`Exists.intro t h`, when the type is clear from the context.
 :::
 

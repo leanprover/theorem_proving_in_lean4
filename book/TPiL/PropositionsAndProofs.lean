@@ -421,7 +421,7 @@ tag := "propositional-logic"
 
 Lean defines all the standard logical connectives and notation. The propositional connectives come with the following notation:
 
-:::table (header := true)
+:::table +header
 *
  * ASCII
  * Unicode
@@ -590,7 +590,7 @@ to apply {lean}`And.intro` to suitable arguments {lean}`hp : p` and
 {lean}`hq : q`. Lean allows us to use _anonymous constructor_ notation
 {lit}`⟨arg1, arg2, ...⟩` in situations like these, when the relevant type is an
 inductive type and can be inferred from the context. In particular, we
-can often write {lean type:="p ∧ q"}`⟨hp, hq⟩` instead of {lean}`And.intro hp hq`:
+can often write {lean (type := "p ∧ q")}`⟨hp, hq⟩` instead of {lean}`And.intro hp hq`:
 
 :::
 
