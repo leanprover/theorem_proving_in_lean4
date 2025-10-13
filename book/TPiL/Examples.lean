@@ -1,8 +1,10 @@
 import SubVerso.Examples
 import Lean.Data.NameMap
+import Lean.DocString.Syntax
 import VersoManual
 
 open Lean (NameMap MessageSeverity)
+open Lean.Doc.Syntax
 
 namespace TPiL
 
@@ -496,6 +498,28 @@ def examplesCss := r#"
 }
 "#
 
+def tpilBlock (block : BlockDescr) : BlockDescr :=
+  { block with
+    extraJsFiles :=
+      {filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none} ::
+      block.extraJsFiles
+    extraCssFiles :=
+      ("copybutton.css", copyButtonCss) ::
+      ("examples.css", examplesCss) ::
+      block.extraCssFiles
+    }
+
+def tpilInline (inline : InlineDescr) : InlineDescr :=
+  { inline with
+    extraJsFiles :=
+      {filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none} ::
+      inline.extraJsFiles
+    extraCssFiles :=
+      ("copybutton.css", copyButtonCss) ::
+      ("examples.css", examplesCss) ::
+      inline.extraCssFiles
+    }
+
 def trimOneLeadingNl : Highlighted → Highlighted
   | .text s => .text <| if "\n".isPrefixOf s then s.drop 1 else s
   | .unparsed s => .unparsed <| if "\n".isPrefixOf s then s.drop 1 else s
@@ -521,7 +545,8 @@ block_extension Block.lean
     (pre : Option Highlighted)
     (code : Array ExampleItem)
     (post : Option Highlighted)
-    (goalVisibility : HighlightHtmlM.VisibleProofStates := .none) where
+    (goalVisibility : HighlightHtmlM.VisibleProofStates := .none)
+    via withHighlighting, tpilBlock where
   data :=
     let defined : Array (Name × String) := code.flatMap (definedNames ·.code)
     .arr #[.bool allowToggle, toJson pre, toJson code, toJson post, toJson goalVisibility, toJson defined]
@@ -546,10 +571,8 @@ block_extension Block.lean
             v.setObjVal! link.link (json%{"context": $context, "display": $s}))
     pure none
   toTeX := none
-  extraCss := [highlightingStyle]
-  extraJs := [highlightingJs]
-  extraJsFiles := [{filename := "popper.js", contents := popper}, {filename := "tippy.js", contents := tippy}, {filename := "copybutton.js", contents := copyButtonJs}]
-  extraCssFiles := [("tippy-border.css", tippy.border.css), ("copybutton.css", copyButtonCss), ("examples.css", examplesCss)]
+  extraJsFiles := [{filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none}]
+  extraCssFiles := [("copybutton.css", copyButtonCss), ("examples.css", examplesCss)]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
@@ -633,14 +656,11 @@ block_extension Block.lean
         </script>
       }}
 
-block_extension Block.leanAnchor (code : Highlighted) (completeCode : String) where
+block_extension Block.leanAnchor (code : Highlighted) (completeCode : String)
+    via withHighlighting, tpilBlock where
   data := .arr #[toJson code, toJson completeCode]
   traverse _ _ _ := pure none
   toTeX := none
-  extraCss := [highlightingStyle]
-  extraJs := [highlightingJs]
-  extraJsFiles := [{filename := "popper.js", contents := popper}, {filename := "tippy.js", contents := tippy}, {filename := "copybutton.js", contents := copyButtonJs}]
-  extraCssFiles := [("tippy-border.css", tippy.border.css), ("copybutton.css", copyButtonCss), ("examples.css", examplesCss)]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
@@ -705,14 +725,12 @@ def proofStateStyle := r#"
 }
 "#
 
-block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted)) where
+block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted))
+    via withHighlighting, tpilBlock where
   data := toJson goals
   traverse _ _ _ := pure none
   toTeX := none
-  extraCss := [highlightingStyle]
-  extraJs := [highlightingJs]
-  extraJsFiles := [{filename := "popper.js", contents := popper}, {filename := "tippy.js", contents := tippy}]
-  extraCssFiles := [("tippy-border.css", tippy.border.css), ("proof-state.css", proofStateStyle)]
+  extraCssFiles := [ ("proof-state.css", proofStateStyle)]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
@@ -734,14 +752,11 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted)) where
         </div>
       }}
 
-inline_extension Inline.goal (goal : Highlighted.Goal Highlighted) where
+inline_extension Inline.goal (goal : Highlighted.Goal Highlighted)
+    via withHighlighting, tpilInline where
   data := toJson goal
   traverse _ _ _ := pure none
   toTeX := none
-  extraCss := [highlightingStyle]
-  extraJs := [highlightingJs]
-  extraJsFiles := [{filename := "popper.js", contents := popper}, {filename := "tippy.js", contents := tippy}]
-  extraCssFiles := [("tippy-border.css", tippy.border.css)]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ data _ => do
@@ -840,6 +855,7 @@ structure Kept (α : Type u) where
   values : Array α
   next : Nat
   in_bounds : next < values.size
+deriving Repr
 
 instance [Inhabited α] : Inhabited (Kept α) where
   default := ⟨#[default], 0, by simp⟩
@@ -1584,8 +1600,8 @@ def leanInline : RoleExpander
 
       return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1621,8 +1637,8 @@ def name : RoleExpander
 
       return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1644,8 +1660,8 @@ def leanCommand : RoleExpander
 
       return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote hl.toString)])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1666,8 +1682,8 @@ def leanCommandBlock : CodeBlockExpander
 
       return #[← ``(Block.other (Block.lean false none #[ExampleItem.mk $(quote hl) none ""] none) #[])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1688,8 +1704,8 @@ def signature : CodeBlockExpander
 
       return #[← ``(Block.other (Block.lean false none #[ExampleItem.mk $(quote hl) none ""] none) #[])]
     catch
-      | .error ref e =>
-        logErrorAt ref e
+      | .error refStx e =>
+        logErrorAt refStx e
         return #[← ``(sorry)]
       | e => throw e
 
@@ -1742,7 +1758,7 @@ open MessageData (hint) in
 /--
 Internal detail of suggestion mechanism.
 -/
-@[inline_expander Verso.Syntax.code]
+@[inline_expander Lean.Doc.Syntax.code]
 private def suggest : InlineExpander
   |  `(inline| code( $str )) => do
     let str' := str.getString

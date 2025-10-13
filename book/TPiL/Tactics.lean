@@ -307,7 +307,7 @@ variable {α : Sort u} {p : Prop} {e : p}
 As the {leanRef}`apply` tactic is a command for constructing function
 applications interactively, the {leanRef}`intro` tactic is a command for
 constructing function abstractions interactively (i.e., terms of the
-form {lean type:="∀ (x : α), p"}`fun x => e`).  As with lambda abstraction notation, the
+form {lean (type := "∀ (x : α), p")}`fun x => e`).  As with lambda abstraction notation, the
 {leanRef}`intro` tactic allows us to use an implicit {kw}`match`.
 :::
 
@@ -529,7 +529,7 @@ local variable or hypothesis. But you can replace an arbitrary
 expression in the goal by a fresh variable using the {leanRef}`generalize`
 tactic:
 
-```lean showProofStates:="afterGen afterRevert afterIntro"
+```lean (showProofStates := "afterGen afterRevert afterIntro")
 example : 3 = 3 := by
   generalize 3 = x
   -- ^ PROOF_STATE: afterGen
@@ -550,12 +550,12 @@ x : Nat
 :::
 
 The mnemonic in the notation above is that you are generalizing the
-goal by setting {leanRef}`3` to an arbitrary variable {leanRef in:="revert x"}`x`. Be careful: not
+goal by setting {leanRef}`3` to an arbitrary variable {leanRef (in := "revert x")}`x`. Be careful: not
 every generalization preserves the validity of the goal. Here,
 {leanRef}`generalize` replaces a goal that could be proved using
 {tactic}`rfl` with one that is not provable:
 
-```lean showProofStates := "afterGen"
+```lean (showProofStates := "afterGen")
 example : 2 + 3 = 5 := by
   generalize 3 = x
   -- ^ PROOF_STATE: afterGen
@@ -1487,12 +1487,12 @@ Here is another example:
 ```lean
 example (u w x y z : Nat) (h₁ : x = y + z) (h₂ : w = u + x)
         : w = z + y + u := by
-  simp [*, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+  simp [*, Nat.add_comm]
 ```
 
 :::leanFirst
 The simplifier will also do propositional rewriting. For example,
-using the hypothesis {leanRef in:="p ∧ q"}`p`, it rewrites {leanRef}`p ∧ q` to {leanRef in:="p ∨ q"}`q` and {leanRef}`p ∨ q` to {lean}`True`,
+using the hypothesis {leanRef (in := "p ∧ q")}`p`, it rewrites {leanRef}`p ∧ q` to {leanRef (in := "p ∨ q")}`q` and {leanRef}`p ∨ q` to {lean}`True`,
 which it then proves trivially. Iterating such
 rewrites produces nontrivial propositional reasoning.
 
@@ -1511,6 +1511,8 @@ example (p q r : Prop) (hp : p) (hq : q) : p ∧ (q ∨ r) := by
 The next example simplifies all the hypotheses, and then uses them to prove the goal.
 
 ```lean
+set_option linter.unusedVariables false
+------
 example (u w x x' y y' z : Nat) (p : Nat → Prop)
         (h₁ : x + 0 = x') (h₂ : y + 0 = y')
         : x + y + 0 = x' + y' := by
@@ -1529,7 +1531,7 @@ def mk_symm (xs : List α) :=
 ```
 
 :::leanFirst
-Then for any list {leanRef in:="mk_symm xs"}`xs`, {leanRef}`(mk_symm xs).reverse` is equal to {leanRef}`mk_symm xs`,
+Then for any list {leanRef (in := "mk_symm xs")}`xs`, {leanRef}`(mk_symm xs).reverse` is equal to {leanRef}`mk_symm xs`,
 which can easily be proved by unfolding the definition:
 
 ```lean
@@ -1779,7 +1781,7 @@ Like {leanRef}`simp`, we can apply {leanRef}`split` to a particular hypothesis:
 def g (xs ys : List Nat) : Nat :=
   match xs, ys with
   | [a, b], _ => a+b+1
-  | _, [b, c] => b+1
+  | _, [b, _] => b+1
   | _, _      => 1
 
 example (xs ys : List Nat) (h : g xs ys = 0) : False := by

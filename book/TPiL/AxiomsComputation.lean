@@ -12,7 +12,7 @@ tag := "axioms-and-computation"
 We have seen that the version of the Calculus of Constructions that
 has been implemented in Lean includes dependent function types,
 inductive types, and a hierarchy of universes that starts with an
-{tech}[impredicative], {tech key:="proof irrelevance"}[proof-irrelevant] {lean}`Prop` at the bottom. In this
+{tech}[impredicative], {tech (key := "proof irrelevance")}[proof-irrelevant] {lean}`Prop` at the bottom. In this
 chapter, we consider ways of extending the CIC with additional axioms
 and rules. Extending a foundational system in such a way is often
 convenient; it can make it possible to prove more theorems, as well as
@@ -119,7 +119,7 @@ mathematical reasoning.
 :::setup
 ```
 open Nat
-notation "... " e "..." => e
+notation "… " e "…" => e
 ```
 
 Computationally, the purest part of dependent type theory avoids the
@@ -127,7 +127,7 @@ use of {lean}`Prop` entirely. Inductive types and dependent function types
 can be viewed as data types, and terms of these types can be
 “evaluated” by applying reduction rules until no more rules can be
 applied. In principle, any closed term (that is, term with no free
-variables) of type {lean}`Nat` should evaluate to a numeral, {lean}`succ (... (succ zero)...)`.
+variables) of type {lean}`Nat` should evaluate to a numeral, {lean}`succ (… (succ zero)…)`.
 :::
 
 :::setup
@@ -269,8 +269,8 @@ library, therefore, {leanRef}`funext` is thus
 [proved from the quotient construction](https://github.com/leanprover/lean4/blob/master/src/Init/Core.lean).
 
 :::leanFirst
-Suppose that for {leanRef}`α : Type u` we define the {leanRef}`Set `{leanRef in:="(α : Type u)"}`α`{leanRef}` := α → Prop` to
-denote the type of subsets of {leanRef in:="(α : Type u)"}`α`, essentially identifying subsets
+Suppose that for {leanRef}`α : Type u` we define the {leanRef}`Set `{leanRef (in := "(α : Type u)")}`α`{leanRef}` := α → Prop` to
+denote the type of subsets of {leanRef (in := "(α : Type u)")}`α`, essentially identifying subsets
 with predicates. By combining {leanRef}`funext` and {leanRef}`propext`, we obtain an
 extensional theory of such sets:
 
@@ -414,7 +414,7 @@ theoretically, one can view {lean}`α / r` as the set of equivalence
 classes of {lean}`α` modulo {lean}`r`. If {lean}`f : α → β` is any function that
 respects the equivalence relation in the sense that for every
 {lean}`x y : α`, {lean}`r x y` implies {lean}`f x = f y`, then {lean}`f` “lifts” to a function
-{lean}`f' : α / r → β` defined on each equivalence class {lean type:="Quot r"}`⟦x⟧` by
+{lean}`f' : α / r → β` defined on each equivalence class {lean (type := "Quot r")}`⟦x⟧` by
 {lean}`f' ⟦x⟧ = f x`. Lean's standard library extends the Calculus of
 Constructions with additional constants that perform exactly these
 constructions, and installs this last equation as a definitional
@@ -583,10 +583,10 @@ end Setoid
 end Hidden
 ```
 
-Given a type {leanRef in:= "Setoid (α"}`α`, a relation {leanRef in:="Equivalence r"}`r`
-on {leanRef in:= "Setoid (α"}`α`, and a proof {leanRef}`iseqv`
-that {leanRef in:="Equivalence r"}`r` is an equivalence relation, we can define an
-instance of the {leanRef in:="class Setoid"}`Setoid` class.
+Given a type {leanRef (in := "Setoid (α")}`α`, a relation {leanRef (in := "Equivalence r")}`r`
+on {leanRef (in := "Setoid (α")}`α`, and a proof {leanRef}`iseqv`
+that {leanRef (in := "Equivalence r")}`r` is an equivalence relation, we can define an
+instance of the {leanRef (in := "class Setoid")}`Setoid` class.
 
 ```lean (suppressNamespaces := "Hidden") (allowVisible := false)
 namespace Hidden
@@ -819,9 +819,9 @@ end UProd
 
 :::leanFirst
 To complete the example, given {leanRef}`a : α` and {leanRef}`u : UProd α`, we
-define the proposition {leanRef in:="mem (a : α) (u : UProd α)"}`a`{lit}`  ∈  `{leanRef in:="mem (a : α) (u : UProd α)"}`u` which should hold if {leanRef in:="mem (a : α) (u : UProd α)"}`a` is one of
-the elements of the unordered pair {leanRef in:="mem (a : α) (u : UProd α)"}`u`. First, we define a similar
-proposition {leanRef}`mem_fn`{leanRef in:="mem (a : α) (u : UProd α)"}` a`{leanRef in:="mem (a : α) (u : UProd α)"}` u` on (ordered) pairs; then we show that
+define the proposition {leanRef (in := "mem (a : α) (u : UProd α)")}`a`{lit}`  ∈  `{leanRef (in := "mem (a : α) (u : UProd α)")}`u` which should hold if {leanRef (in := "mem (a : α) (u : UProd α)")}`a` is one of
+the elements of the unordered pair {leanRef (in := "mem (a : α) (u : UProd α)")}`u`. First, we define a similar
+proposition {leanRef}`mem_fn`{leanRef (in := "mem (a : α) (u : UProd α)")}` a`{leanRef (in := "mem (a : α) (u : UProd α)")}` u` on (ordered) pairs; then we show that
 {leanRef}`mem_fn` respects the equivalence relation {leanRef}`eqv` with the lemma
 {leanRef}`mem_respects`. This is an idiom that is used extensively in the
 Lean standard library.

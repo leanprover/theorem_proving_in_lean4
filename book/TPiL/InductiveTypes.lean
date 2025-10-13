@@ -524,7 +524,7 @@ universe u_2 u_3 u_1
 variable (b : Bool) {α : Type u} {t1 t2 : α}
 ```
 
-Here is another example where we use the recursor {lean type:="{α : Type u_2} → {β : Type u_3} → {motive : α × β → Sort u_1} → (t : α × β) → ((fst : α) → (snd : β) → motive (fst, snd)) → motive t"}`Prod.casesOn` instead
+Here is another example where we use the recursor {lean (type := "{α : Type u_2} → {β : Type u_3} → {motive : α × β → Sort u_1} → (t : α × β) → ((fst : α) → (snd : β) → motive (fst, snd)) → motive t")}`Prod.casesOn` instead
 of {kw}`match`.
 
 ```lean
@@ -729,7 +729,7 @@ at every input. The {lean}`Option` type provides a way of representing partial f
 element of {lean}`Option β` is either {lean}`none` or of the form {lean}`some b`,
 for some value {lean}`b : β`. Thus we can think of an element {lean}`f` of the
 type {lean}`α → Option β` as being a partial function from {lean}`α` to {lean}`β`:
-for every {lean}`a : α`, {lean}`f a` either returns {lean type:="Option β"}`none`, indicating
+for every {lean}`a : α`, {lean}`f a` either returns {lean (type := "Option β")}`none`, indicating
 {lean}`f a` is “undefined”, or {lean}`some b`.
 
 An element of {lean}`Inhabited α` is simply a witness to the fact that
@@ -1067,7 +1067,7 @@ As another example, let us prove the associativity of addition,
 {lean}`∀ m n k, m + n + k = m + (n + k)`.
 (The notation {leanRef}`+`, as we have defined it, associates to the left, so {leanRef}`m + n + k` is really {lean}`(m + n) + k`.)
 The hardest part is figuring out which variable to do the induction on. Since addition is defined by recursion on the second argument,
-{leanRef in:="n k,"}`k` is a good guess, and once we make that choice the proof almost writes itself:
+{leanRef (in := "n k,")}`k` is a good guess, and once we make that choice the proof almost writes itself:
 :::
 
 ```lean

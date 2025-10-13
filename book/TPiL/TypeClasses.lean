@@ -410,7 +410,7 @@ instance : ToString Rational where
   toString r := s!"{r.num}/{r.den}"
 ```
 Lean elaborates the terms {lean}`(2 : Nat)` and {lean}`(2 : Rational)` as
-{lean type:="Nat"}`@OfNat.ofNat Nat 2 (@instOfNatNat 2)` and
+{lean (type := "Nat")}`@OfNat.ofNat Nat 2 (@instOfNatNat 2)` and
 {lean}`@OfNat.ofNat Rational 2 (@instOfNatRational 2)` respectively.
 We say the numerals {lit}`2` occurring in the elaborated terms are _raw_ natural numbers.
 You can input the raw natural number {lit}`2` using the macro {lean}`nat_lit 2`.
@@ -456,7 +456,7 @@ contain missing parts. The following command produces the error
 ```lean
 /--
 error: typeclass instance problem is stuck, it is often due to metavariables
-  Inhabited (Nat × ?m.7)
+  Inhabited (Nat × ?m.2)
 -/
 #guard_msgs (error) in
 #eval (inferInstance : Inhabited (Nat × _))
@@ -564,7 +564,7 @@ def xs : List Int := [1, 2, 3]
 
 /--
 error: typeclass instance problem is stuck, it is often due to metavariables
-  HMul Int ?m.225 (?m.256 y)
+  HMul Int ?m.2 (?m.11 y)
 -/
 #guard_msgs (error) in
 #eval fun y => xs.map (fun x => hMul x y)
@@ -689,9 +689,9 @@ end -- instance `Add Point` is not active anymore
 
 /--
 error: failed to synthesize
-  HAdd Point Point ?m.627
+  HAdd Point Point ?m.5
 
-Additional diagnostic information may be available using
+Hint: Additional diagnostic information may be available using
 the `set_option diagnostics true` command.
 -/
 #guard_msgs in
@@ -718,9 +718,10 @@ attribute [-instance] addPoint
 
 /--
 error: failed to synthesize
-  HAdd Point Point ?m.627
+  HAdd Point Point ?m.5
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Additional diagnostic information may be available using
+the `set_option diagnostics true` command.
 -/
 #guard_msgs in
 def triple (p : Point) :=
@@ -755,9 +756,10 @@ end Point
 
 /--
 error: failed to synthesize
-  HAdd Point Point ?m.622
+  HAdd Point Point ?m.3
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Additional diagnostic information may be available using
+the `set_option diagnostics true` command.
 -/
 #guard_msgs (error) in
 #check fun (p : Point) => p + p + p
@@ -794,7 +796,7 @@ open scoped Point -- activates instance `Add Point`
 #check fun (p : Point) => p + p + p
 
 /--
-error: unknown identifier 'double'
+error: Unknown identifier `double`
 -/
 #guard_msgs (error) in
 #check fun (p : Point) => double p
@@ -1046,7 +1048,7 @@ def Set (α : Type u) := α → Prop
 error: failed to synthesize
   Inhabited (Set α)
 
-Additional diagnostic information may be available using
+Hint: Additional diagnostic information may be available using
 the `set_option diagnostics true` command.
 -/
 #guard_msgs in

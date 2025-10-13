@@ -1,4 +1,4 @@
-name: mdbook test using latest lean4 bits
+name: build and test book content
 
 # Controls when the action will run.
 on:
