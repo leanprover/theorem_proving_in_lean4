@@ -24,7 +24,7 @@ def hashString (n : UInt64) : String := Id.run do
   let mut n : Nat := n.toNat
   let mut out : String := "Example" -- always start with a letter
   while n > 0 do
-    out := out.push (alphabet.get! ⟨n % 36⟩)
+    out := out.push ({ byteIdx := n % 36 : String.Pos.Raw} |>.get! alphabet )
     n := n / 36
   return out
 
@@ -93,7 +93,7 @@ def extractFile (contents : String) (suppressNamespaces : Option String) : m (Ar
 
       let suppressArgs :=
         if let some nss := suppressNamespaces then
-          nss |>.split (· == ' ') |>.filter (!String.isEmpty ·) |>.map (#["--suppress-namespace", ·]) |>.toArray |>.flatten
+          nss |>.splitToList (· == ' ') |>.filter (!String.isEmpty ·) |>.map (#["--suppress-namespace", ·]) |>.toArray |>.flatten
         else #[]
 
       withTraceNode `Elab.Verso.Code.External.loadModule (fun _ => pure m!"loadModuleContent': extracting '{mod}'") do
@@ -1539,13 +1539,13 @@ def multiVar? (str : String) : Option (Array String × String) := do
     let pref2 := str.takeWhile (fun c => alpha c || c.isDigit)
     str := str.drop pref2.length
     let pref := pref1 ++ pref2
-    let c := str.get? ⟨0⟩
+    let c := str.startValidPos.get?
     if pref.length > 0 && (c.isEqSome ' ' || c.isEqSome ':') then
       out := out.push pref
       str := str.dropWhile (· == ' ')
     else failure
 
-    if str.get? ⟨0⟩ |>.isEqSome ':' then
+    if str.startValidPos.get? |>.isEqSome ':' then
       str := str.drop 1
       str := str.dropWhile (· == ' ')
       if str.isEmpty then failure
