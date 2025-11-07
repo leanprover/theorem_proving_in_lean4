@@ -72,7 +72,7 @@ effort, and much of the potential for automation will be realized only gradually
 [Apache 2.0 license](LICENSE), a permissive open source license that permits others to use and extend the code and
 mathematical libraries freely.
 
-To install Lean in your computer consider using the [Quickstart](https://github.com/leanprover/lean4/blob/master/doc/quickstart.md) instructions. The Lean source code, and instructions for building Lean, are available at
+To install Lean in your computer consider using the [Quickstart](https://lean-lang.org/install/) instructions. The Lean source code, and instructions for building Lean, are available at
 [https://github.com/leanprover/lean4/](https://github.com/leanprover/lean4/).
 
 This tutorial describes the current version of Lean, known as Lean 4.
