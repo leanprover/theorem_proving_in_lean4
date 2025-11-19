@@ -56,7 +56,7 @@ def b2 : Bool := false
 -- Boolean "true"
 #check true         -- Bool.true : Bool
 
-/- Evaluate -/
+/- Evaluate. -/
 
 #eval 5 * 4         -- 20
 #eval m + 2         -- 3
