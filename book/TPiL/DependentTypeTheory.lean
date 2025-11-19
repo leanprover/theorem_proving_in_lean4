@@ -145,7 +145,7 @@ variable (α β : Type) (f : α → β) (x : α) (m n : Nat) (p : Nat × Nat)
 There are a few more things to notice here. First, the application of
 a function {lean}`f` to a value {lean}`x` is denoted {lean}`f x` (e.g., {lean}`Nat.succ 2`).
 Second, when writing type expressions, arrows associate to the _right_; for
-example, the type of {lean}`Nat.add` is {lean}`Nat → Nat → Nat` which is equivalent
+example, the type of {lean}`Nat.add` is {lean}`Nat → Nat → Nat`, which is equivalent
 to {lean}`Nat → (Nat → Nat)`. Thus you can
 view {lean}`Nat.add` as a function that takes a natural number and returns
 another function that takes a natural number and returns a natural
