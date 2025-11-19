@@ -393,11 +393,11 @@ Creating a function from another expression is a process known as
 _lambda abstraction_. Suppose you have the variable {lean}`x : α` and you can
 construct an expression {lean}`t : β`, then the expression {lean}`fun (x : α) => t`,
 or, equivalently, {lean}`λ (x : α) => t`, is an object of type {lean}`α → β`. Think of
-this as the function from {lean}`α` to {lean}`β` which maps
+this as the function from {lean}`α` to {lean}`β` that maps
 any value {leanRef}`x` to the value {leanRef}`t`.
 :::
 
-Here are some more examples
+Here are some more examples.
 
 ```lean
 #check fun x : Nat => fun y : Bool => if not y then x + 1 else x + 2
@@ -657,8 +657,8 @@ that the type of the output of the second function must match the
 type of the input to the first function—which makes sense, otherwise
 the two functions would not be composable.
 
-{leanRef}`compose` also takes a 3rd argument of type {leanRef}`α` which
-it uses to invoke the second function (locally named {leanRef}`f`) and it
+{leanRef}`compose` also takes a 3rd argument of type {leanRef}`α`, which
+it uses to invoke the second function (locally named {leanRef}`f`), and it
 passes the result of that function (which is type {leanRef}`β`) as input to the
 first function (locally named {leanRef}`g`).  The first function returns a type
 {leanRef}`γ` so that is also the return type of the {leanRef}`compose` function.
@@ -997,7 +997,7 @@ variable (α : Type) (a : α) (as : List α)
 ```
 :::leanFirst
 
-Suppose you wish to write a function {leanRef}`cons` which inserts a new
+Suppose you wish to write a function {leanRef}`cons` that inserts a new
 element at the head of a list. What type should {leanRef}`cons` have? Such a
 function is _polymorphic_: you expect the {leanRef}`cons` function for
 {lean}`Nat`, {lean}`Bool`, or an arbitrary type {leanRef}`α` to behave the same way.
