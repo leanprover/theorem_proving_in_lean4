@@ -166,7 +166,7 @@ known as _currying_. -->
 
 
 You have seen that if you have {lean}`m : Nat` and {lean}`n : Nat`, then
-{lean}`(m, n)` denotes the ordered pair of {lean}`m` and {lean}`n` which is of
+{lean}`(m, n)` denotes the ordered pair of {lean}`m` and {lean}`n`, which is of
 type {lean}`Nat × Nat`. This gives you a way of creating pairs of natural
 numbers. Conversely, if you have {lean}`p : Nat × Nat`, then you can write
 {lean}`p.1 : Nat` and {lean}`p.2 : Nat`. This gives you a way of extracting
