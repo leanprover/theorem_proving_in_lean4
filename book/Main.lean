@@ -15,7 +15,7 @@ def config : Config where
   emitHtmlMulti := true
   htmlDepth := 1
   extraFiles := [("static", "static")]
-  extraCss := [
+  extraCss := Std.HashSet.ofList [
     "/static/theme.css",
     "/static/fonts/source-serif/source-serif-text.css",
     "/static/fonts/source-code-pro/source-code-pro.css",

@@ -746,8 +746,8 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted))
             {{← if goals.isEmpty then
                 pure {{"All goals completed! 🐙"}}
               else
-                withCollapsedSubgoals .never <|
-                  .seq <$> goals.mapIndexedM (fun ⟨i, _⟩ x => x.toHtml (g := Verso.Genre.Manual) (·.toHtml) i)}}
+                withCollapsedSubgoals (g := Verso.Genre.Manual) .never <|
+                  .seq <$> (goals.mapIdxM (fun i x => x.toHtml (·.toHtml) i))}}
           </span>
         </div>
       }}
