@@ -2,6 +2,7 @@ import SubVerso.Examples
 import Lean.Data.NameMap
 import Lean.DocString.Syntax
 import VersoManual
+import Verso.Code.HighlightedToTex
 
 open Lean (NameMap MessageSeverity)
 open Lean.Doc.Syntax
@@ -520,25 +521,15 @@ def tpilInline (inline : InlineDescr) : InlineDescr :=
       inline.extraCssFiles
     }
 
-def trimOneLeadingNl : Highlighted → Highlighted
-  | .text s => .text <| if "\n".isPrefixOf s then s.drop 1 else s
-  | .unparsed s => .unparsed <| if "\n".isPrefixOf s then s.drop 1 else s
-  | .seq xs =>
-    let i? := xs.findIdx? (!·.isEmpty)
-    match h : i? with
-    | some i =>
-      have : i < xs.size := (Array.findIdx?_eq_some_iff_findIdx_eq.mp h).left
-      xs.extract (i+1) |>.foldl (init := trimOneLeadingNl xs[i]) (· ++ ·)
-    | none => .empty
-  | hl@(.point ..) | hl@(.token ..) => hl
-  | .tactics i s e hl => .tactics i s e (trimOneLeadingNl hl)
-  | .span i hl => .span i (trimOneLeadingNl hl)
-
 structure ExampleItem where
   code : Highlighted
   output : Option Highlighted.Message
   trailing : String
 deriving ToJson, FromJson, Repr, Quote
+
+def verbatimBlock (cmd : Highlighted) : TeX :=
+  let contents := cmd.trimOneTrailingNl.trimOneLeadingNl.toVerbatimTeX
+  .seq #[.raw s!"\\begin\{LeanVerbatim}[vspace=0pt]\n", contents, .raw "\n\\end{LeanVerbatim}\n"]
 
 block_extension Block.lean
     (allowToggle : Bool)
@@ -570,7 +561,50 @@ block_extension Block.lean
             let v := if let .obj _ := v then v else .obj {}
             v.setObjVal! link.link (json%{"context": $context, "display": $s}))
     pure none
-  toTeX := none
+  toTeX :=
+    open Verso.Output.TeX in
+    open Verso.Doc.TeX in
+    some <| fun _ _ _ data _ => do
+      let .arr #[.bool _allowToggle, hlPreJson, hlJson, hlPostJson, goalVisibilityJson, _defs] := data
+        | logError "Expected five-element JSON for Lean code"
+          pure .empty
+      let pre ←
+        match FromJson.fromJson? (α := Option Highlighted) hlPreJson with
+        | .error err =>
+          logError <| "Couldn't deserialize Lean code intro block while rendering HTML: " ++ err
+          return .empty
+        | .ok hl => pure hl
+      let code ←
+        match FromJson.fromJson? (α := Array ExampleItem) hlJson with
+        | .error err =>
+          logError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
+          return .empty
+        | .ok hl => pure hl
+      let post ←
+        match FromJson.fromJson? (α := Option Highlighted) hlPostJson with
+        | .error err =>
+          logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
+          return .empty
+        | .ok hl => pure hl
+      let visibility ←
+        match FromJson.fromJson? (α := HighlightHtmlM.VisibleProofStates) goalVisibilityJson with
+        | .error err =>
+          logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
+          return .empty
+        | .ok hl => pure hl
+      let codeIndent := code.foldl (init := pre.map (·.indentation)) (fun i? y => i?.map (min · y.1.indentation)) |>.getD 0
+      let mut codeTeX : TeX := .empty
+
+      for ⟨cmd, out?, ws⟩ in code do
+        let cmd := cmd.deIndent codeIndent
+        codeTeX := codeTeX ++ verbatimBlock cmd
+        if let some msg := out? then
+          codeTeX := codeTeX ++ msg.toTeX
+        unless ws.isEmpty do
+          codeTeX := codeTeX ++ (Highlighted.text ws).toTeX
+
+      pure codeTeX
+
   extraJsFiles := [{filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none}]
   extraCssFiles := [("copybutton.css", copyButtonCss), ("examples.css", examplesCss)]
   toHtml :=
@@ -615,7 +649,7 @@ block_extension Block.lean
           let inner ←
             withDefinitionsAsTargets false <|
             withVisibleProofStates visibility <|
-            trimOneLeadingNl p |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
+            p.trimOneLeadingNl |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
           codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
           codeString := codeString ++ p.toString
 
@@ -624,7 +658,7 @@ block_extension Block.lean
         let moreCode ←
           withDefinitionsAsTargets true <|
           withVisibleProofStates visibility <|
-          trimOneLeadingNl cmd |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
+          cmd.trimOneLeadingNl |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
         codeHtml := codeHtml ++ moreCode
         codeString := codeString ++ cmd.toString
         if let some msg := out? then
@@ -639,7 +673,7 @@ block_extension Block.lean
           let inner ←
             withDefinitionsAsTargets false <|
             withVisibleProofStates visibility <|
-            trimOneLeadingNl p |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
+            p.trimOneLeadingNl |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
           codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
           codeString := codeString ++ p.toString
 
@@ -660,7 +694,29 @@ block_extension Block.leanAnchor (code : Highlighted) (completeCode : String)
     via withHighlighting, tpilBlock where
   data := .arr #[toJson code, toJson completeCode]
   traverse _ _ _ := pure none
-  toTeX := none
+  toTeX :=
+    open Verso.Output.TeX in
+    open Verso.Doc.TeX in
+    some <| fun _ _ _ data _ => do
+      let .arr #[hlJson, completeCodeJson] := data
+        | logError "Expected two-element JSON for Lean code"
+          pure .empty
+      let code ←
+        match FromJson.fromJson? (α := Highlighted) hlJson with
+        | .error err =>
+          logError <| "Couldn't deserialize Lean code block while rendering TeX: " ++ err
+          return .empty
+        | .ok hl => pure hl
+      let completeCode ←
+        match FromJson.fromJson? (α := String) completeCodeJson with
+        | .error err =>
+          logError <| "Couldn't deserialize Lean code string while rendering TeX: " ++ err
+          return .empty
+        | .ok hl => pure hl
+
+      let code := code.deIndent code.indentation
+      pure (verbatimBlock code)
+
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
@@ -729,7 +785,18 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted))
     via withHighlighting, tpilBlock where
   data := toJson goals
   traverse _ _ _ := pure none
-  toTeX := none
+  toTeX :=
+    open Verso.Output.TeX in
+    open Verso.Doc.TeX in
+    some <| fun _ _ _ data _ => do
+      let goals ←
+        match fromJson? (α := Array (Highlighted.Goal Highlighted)) data with
+        | .ok v => pure v
+        | .error e =>
+          logError <| "Failed to deserialize proof state: " ++ e
+          return .empty
+      -- TODO: lay these out side-by-side
+      pure <| .seq (goals.map (·.toTeX))
   extraCssFiles := [ ("proof-state.css", proofStateStyle)]
   toHtml :=
     open Verso.Output.Html in
@@ -756,7 +823,18 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted)
     via withHighlighting, tpilInline where
   data := toJson goal
   traverse _ _ _ := pure none
-  toTeX := none
+  toTeX :=
+    open Verso.Doc.TeX in
+    open Verso.Output.TeX in
+    some <| fun _ _ data _ => do
+      let goal ←
+        match fromJson? (α := Highlighted.Goal Highlighted) data with
+        | .ok v => pure v
+        | .error e =>
+          logError <| "Failed to deserialize proof goal: " ++ e
+          return .empty
+      pure (SubVerso.Highlighting.verbatim (goal.name.getD "<anonymous>"))
+
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ data _ => do
@@ -810,7 +888,27 @@ kbd > code {
 inline_extension Inline.kbd (items : Array String) where
   data := toJson items
   traverse _ _ _ := pure none
-  toTeX := none
+  toTeX :=
+    open Verso.Output.TeX in
+    open Verso.Doc.TeX in
+    let verb (s : String) : TeX := .seq #[.raw "\\verb|", .raw s, raw "|"] -- Fails if s contains "|"
+    let verbs (ss : List String) : TeX := List.intersperse (TeX.text " ") (ss.map verb)
+    some <| fun _ _ data _ => do
+      let items ←
+        match fromJson? (α := Array String) data with
+        | .ok v => pure v
+        | .error e =>
+          logError <| "Failed to deserialize keyboard shortcut: " ++ e
+          return .empty
+      if let #[item] := items then
+        if item.startsWith "\\" then
+          pure (verb item)
+        else
+          let items : List String := item.toList.map fun c => s!"{c}"
+          pure (verbs items)
+      else
+        pure (verbs items.toList)
+
   extraCss := [kbdCSS]
   toHtml :=
     open Verso.Output.Html in

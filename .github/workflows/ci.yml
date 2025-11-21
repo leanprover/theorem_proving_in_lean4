@@ -68,6 +68,7 @@ jobs:
 
     - name: Deploy to Netlify hosting
       uses: nwtgck/actions-netlify@v2.0
+      if: github.event_name == 'push' && github.ref_name == 'master'
       with:
         publish-dir: book/_out/html-multi
         production-branch: master
@@ -85,7 +86,7 @@ jobs:
 
     - name: GH pages deploy
       uses: JamesIves/github-pages-deploy-action@4.1.5
+      if: github.event_name == 'push' && github.ref_name == 'master'
       with:
         branch: gh-pages
         folder: book/_out/html-multi
-
