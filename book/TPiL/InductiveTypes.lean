@@ -921,7 +921,7 @@ In type theory it is common to say {leanRef}`motive` is the _motive_ for the eli
 since it describes the kind of object we wish to construct.
 The next two arguments specify how to compute the zero and successor cases, as described above.
 They are also known as the _minor premises_.
-Finally, the {leanRef}`t : Nat`, is the input to the function. It is also known as the _major premise_.
+Finally, the {leanRef}`t : Nat` is the input to the function. It is also known as the _major premise_.
 
 The {name}`Nat.recOn` is similar to {name}`Nat.rec` but the major premise occurs before the minor premises.
 
