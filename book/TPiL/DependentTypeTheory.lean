@@ -56,7 +56,7 @@ def b2 : Bool := false
 -- Boolean "true"
 #check true         -- Bool.true : Bool
 
-/- Evaluate -/
+/- Evaluate. -/
 
 #eval 5 * 4         -- 20
 #eval m + 2         -- 3
@@ -145,7 +145,7 @@ variable (α β : Type) (f : α → β) (x : α) (m n : Nat) (p : Nat × Nat)
 There are a few more things to notice here. First, the application of
 a function {lean}`f` to a value {lean}`x` is denoted {lean}`f x` (e.g., {lean}`Nat.succ 2`).
 Second, when writing type expressions, arrows associate to the _right_; for
-example, the type of {lean}`Nat.add` is {lean}`Nat → Nat → Nat` which is equivalent
+example, the type of {lean}`Nat.add` is {lean}`Nat → Nat → Nat`, which is equivalent
 to {lean}`Nat → (Nat → Nat)`. Thus you can
 view {lean}`Nat.add` as a function that takes a natural number and returns
 another function that takes a natural number and returns a natural
@@ -166,7 +166,7 @@ known as _currying_. -->
 
 
 You have seen that if you have {lean}`m : Nat` and {lean}`n : Nat`, then
-{lean}`(m, n)` denotes the ordered pair of {lean}`m` and {lean}`n` which is of
+{lean}`(m, n)` denotes the ordered pair of {lean}`m` and {lean}`n`, which is of
 type {lean}`Nat × Nat`. This gives you a way of creating pairs of natural
 numbers. Conversely, if you have {lean}`p : Nat × Nat`, then you can write
 {lean}`p.1 : Nat` and {lean}`p.2 : Nat`. This gives you a way of extracting
@@ -393,11 +393,11 @@ Creating a function from another expression is a process known as
 _lambda abstraction_. Suppose you have the variable {lean}`x : α` and you can
 construct an expression {lean}`t : β`, then the expression {lean}`fun (x : α) => t`,
 or, equivalently, {lean}`λ (x : α) => t`, is an object of type {lean}`α → β`. Think of
-this as the function from {lean}`α` to {lean}`β` which maps
+this as the function from {lean}`α` to {lean}`β` that maps
 any value {leanRef}`x` to the value {leanRef}`t`.
 :::
 
-Here are some more examples
+Here are some more examples.
 
 ```lean
 #check fun x : Nat => fun y : Bool => if not y then x + 1 else x + 2
@@ -657,8 +657,8 @@ that the type of the output of the second function must match the
 type of the input to the first function—which makes sense, otherwise
 the two functions would not be composable.
 
-{leanRef}`compose` also takes a 3rd argument of type {leanRef}`α` which
-it uses to invoke the second function (locally named {leanRef}`f`) and it
+{leanRef}`compose` also takes a 3rd argument of type {leanRef}`α`, which
+it uses to invoke the second function (locally named {leanRef}`f`), and it
 passes the result of that function (which is type {leanRef}`β`) as input to the
 first function (locally named {leanRef}`g`).  The first function returns a type
 {leanRef}`γ` so that is also the return type of the {leanRef}`compose` function.
@@ -997,7 +997,7 @@ variable (α : Type) (a : α) (as : List α)
 ```
 :::leanFirst
 
-Suppose you wish to write a function {leanRef}`cons` which inserts a new
+Suppose you wish to write a function {leanRef}`cons` that inserts a new
 element at the head of a list. What type should {leanRef}`cons` have? Such a
 function is _polymorphic_: you expect the {leanRef}`cons` function for
 {lean}`Nat`, {lean}`Bool`, or an arbitrary type {leanRef}`α` to behave the same way.
