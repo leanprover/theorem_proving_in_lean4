@@ -690,7 +690,7 @@ structure Semigroup where
 We will see more examples in the chapter on {ref "structures-and-records"}[structures and records].
 
 :::leanFirst
-We have already discussed the dependent product type {leanRef}`Sigma`:
+We have already discussed the dependent sum type {leanRef}`Sigma`:
 
 ```lean
 namespace Hidden
