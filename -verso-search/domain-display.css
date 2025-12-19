@@ -1,3 +1,9 @@
+#search-wrapper .suggestion-domain {
+  font-family: var(--verso-code-font-family);
+  font-style: normal;
+  font-weight: normal;
+}
+
 #search-wrapper .doc-domain {
   font-family: var(--verso-code-font-family);
   font-style: normal;

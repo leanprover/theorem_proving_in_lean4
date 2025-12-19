@@ -14,23 +14,23 @@
     <link rel="stylesheet" href="verso-vars.css">
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script>
     <script src="-verso-search/elasticlunr.min.js"></script>
-    <script src="-verso-search/fuzzysort.js"></script>
+    <script src="-verso-search/fuzzysort.min.js"></script>
     <script src="-verso-search/searchIndex.js"></script>
     <script type="module" src="-verso-search/search-init.js"></script>
     <link rel="stylesheet" href="-verso-search/search-box.css">
     <link rel="stylesheet" href="-verso-search/search-highlight.css">
     <link rel="stylesheet" href="-verso-search/domain-display.css">
-    <script src="-verso-data/katex/math.js"></script>
     <script src="-verso-data/popper.min.js"></script>
-    <script src="-verso-data/katex/katex.js"></script>
+    <script src="-verso-data/katex/math.js"></script>
     <script src="-verso-data/copybutton.js"></script>
     <script src="-verso-data/tippy-bundle.umd.min.js"></script>
-    <link rel="stylesheet" href="-verso-data/examples.css">
+    <script src="-verso-data/katex/katex.js"></script>
+    <link rel="stylesheet" href="-verso-data/tippy-border.css">
+    <link rel="stylesheet" href="-verso-data/katex/katex.css">
     <link rel="stylesheet" href="-verso-data/proof-state.css">
     <link rel="stylesheet" href="-verso-data/copybutton.css">
-    <link rel="stylesheet" href="-verso-data/katex/katex.css">
-    <link rel="stylesheet" href="-verso-data/tippy-border.css">
-    <style>/static/fonts/source-sans/source-sans-3.css</style><style>
+    <link rel="stylesheet" href="-verso-data/examples.css">
+    <style>/static/fonts/source-code-pro/source-code-pro.css</style><style>
 table.tabular {
   margin: auto;
   border-spacing: 1rem;
@@ -57,6 +57,47 @@ table.tabular td > p:last-child, table.tabular th > p:first-child {
   margin-bottom: 0;
 }
 </style><style>
+code.unicode-abbrev {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+kbd {
+  white-space: nowrap;
+}
+
+kbd > code {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+  color: #333;
+  display: inline-block;
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+</style><style>/static/fonts/source-serif/source-serif-text.css</style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+/* Highlight the clicked term */
+.def-technical-term:target {
+  background-color: var(--verso-selected-color);
+  outline: auto;
+}
+</style><style>/static/fonts/source-sans/source-sans-3.css</style><style>/static/theme.css</style><style>/static/fonts/noto-sans-mono/noto-sans-mono.css</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -718,48 +759,7 @@ Some CSS frameworks customize details/summary in ways not compatible with Verso'
   white-space: pre-wrap;
 }
 
-</style><style>/static/fonts/noto-sans-mono/noto-sans-mono.css</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-/* Highlight the clicked term */
-.def-technical-term:target {
-  background-color: var(--verso-selected-color);
-  outline: auto;
-}
-</style><style>
-code.unicode-abbrev {
-  background-color: #eee;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  white-space: nowrap;
-}
-
-kbd {
-  white-space: nowrap;
-}
-
-kbd > code {
-  background-color: #eee;
-  border-radius: 3px;
-  border: 1px solid #b4b4b4;
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.2),
-    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
-  color: #333;
-  display: inline-block;
-  font-size: 0.85em;
-  font-weight: 700;
-  line-height: 1;
-  padding: 2px 4px;
-  white-space: nowrap;
-  vertical-align: middle;
-}
-</style><style>/static/fonts/source-serif/source-serif-text.css</style><style>/static/theme.css</style><style>/static/fonts/source-code-pro/source-code-pro.css</style><script>
+</style><script>
       
 window.onload = () => {
 
@@ -1084,9 +1084,9 @@ with the system, and the mechanisms Lean offers for managing complex theories an
               <div class="example" id="--verso-unique-0">
                 <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.theorem-0">theorem</span><span class="inter-text"> </span><span class="const token" data-binding="const-and_commutative" data-verso-hover="0" id="and_commutative">and_commutative</span><span class="inter-text"> </span><span class="unknown token" data-binding="">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="sort token" data-binding="sort-14430969920833713138" data-verso-hover="2">Prop</span><span class="unknown token" data-binding="">)</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">∧</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">→</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">∧</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text">
   </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.fun-64">fun</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.12" data-verso-hover="3">hpq</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">∧</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">=&gt;</span><span class="inter-text">
-  </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.have-87" data-verso-hover="4">have</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.18" data-verso-hover="5">hp</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Logical-Connectives/#And___intro" title="Documentation for And.left in Lean Language Reference"><span class="const token" data-binding="const-And.left" data-verso-hover="6">And.left</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.12" data-verso-hover="3">hpq</span><span class="inter-text">
-  </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.have-117" data-verso-hover="4">have</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.22" data-verso-hover="7">hq</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Logical-Connectives/#And___intro" title="Documentation for And.right in Lean Language Reference"><span class="const token" data-binding="const-And.right" data-verso-hover="8">And.right</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.12" data-verso-hover="3">hpq</span><span class="inter-text">
-  </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.show-148">show</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">∧</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.fromTerm-161">from</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.21.0-rc3/Basic-Propositions/Logical-Connectives/#And___intro" title="Documentation for And.intro in Lean Language Reference"><span class="const token" data-binding="const-And.intro" data-verso-hover="9">And.intro</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.22" data-verso-hover="7">hq</span><span class="inter-text"> </span><span class="unknown token" data-binding="">hp</span><span class="inter-text">
+  </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.have-87" data-verso-hover="4">have</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.16" data-verso-hover="5">hp</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.26.0/Basic-Propositions/Logical-Connectives/#And___intro" title="Documentation for And.left in Lean Language Reference"><span class="const token" data-binding="const-And.left" data-verso-hover="6">And.left</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.12" data-verso-hover="3">hpq</span><span class="inter-text">
+  </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.have-117" data-verso-hover="4">have</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.20" data-verso-hover="7">hq</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">:=</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.26.0/Basic-Propositions/Logical-Connectives/#And___intro" title="Documentation for And.right in Lean Language Reference"><span class="const token" data-binding="const-And.right" data-verso-hover="8">And.right</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.12" data-verso-hover="3">hpq</span><span class="inter-text">
+  </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.show-148">show</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="1">q</span><span class="inter-text"> </span><span class="unknown token" data-binding="">∧</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="1">p</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Term.fromTerm-161">from</span><span class="inter-text"> </span><a href="https://lean-lang.org/doc/reference/4.26.0/Basic-Propositions/Logical-Connectives/#And___intro" title="Documentation for And.intro in Lean Language Reference"><span class="const token" data-binding="const-And.intro" data-verso-hover="9">And.intro</span></a><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.20" data-verso-hover="7">hq</span><span class="inter-text"> </span><span class="unknown token" data-binding="">hp</span><span class="inter-text">
 </span></code><code class="hl lean block" data-lean-context="examples"><span class="unknown token" data-binding=""></span></code></div>
               <script>
                 addCopyButtonToElement("--verso-unique-0", "theorem and_commutative (p q : Prop) : p ∧ q → q ∧ p :=\n  fun hpq : p ∧ q =>\n  have hp : p := And.left hpq\n  have hq : q := And.right hpq\n  show q ∧ p from And.intro hq hp\n");</script>

@@ -3,6 +3,22 @@
 /**
  * @type {DomainMapper}
  */
+const Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_suggestion = {
+    dataToSearchables:
+      (domainData) =>
+          Object.entries(domainData.contents).map(([key, value]) => ({
+            searchKey: value[0].data.searchTerm,
+            address: `${value[0].address}#${value[0].id}`,
+            domainId: 'Verso.Genre.Manual.doc.suggestion',
+            ref: value[0].data.suggestedRedirect,
+          })),
+    className: "suggestion-domain",
+    displayName: "Suggestion"
+    };
+
+/**
+ * @type {DomainMapper}
+ */
 const Verso_DOT_Genre_DOT_Manual_DOT_doc = {
     dataToSearchables:
       (domainData) =>
@@ -134,8 +150,9 @@ const Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_tactic = {
     displayName: "Tactic"
     };
 
-export const domainMappers = {"Verso.Genre.Manual.doc":
-    Verso_DOT_Genre_DOT_Manual_DOT_doc,
+export const domainMappers = {"Verso.Genre.Manual.doc.suggestion":
+    Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_suggestion,
+  "Verso.Genre.Manual.doc": Verso_DOT_Genre_DOT_Manual_DOT_doc,
   "Verso.Genre.Manual.doc.option":
     Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_option,
   "Verso.Genre.Manual.doc.tech":

@@ -14913,6 +14913,10 @@
  {"title": "Tactic Documentation",
   "description": "Detailed descriptions of tactics",
   "contents": {}},
+ "Verso.Genre.Manual.doc.suggestion":
+ {"title": "Lean constant suggestions",
+  "description": "Search suggestions for Lean constants",
+  "contents": {}},
  "Verso.Genre.Manual.doc.option":
  {"title": "Compiler options", "description": null, "contents": {}},
  "Verso.Genre.Manual.doc":

@@ -14,23 +14,23 @@
     <link rel="stylesheet" href="verso-vars.css">
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script>
     <script src="-verso-search/elasticlunr.min.js"></script>
-    <script src="-verso-search/fuzzysort.js"></script>
+    <script src="-verso-search/fuzzysort.min.js"></script>
     <script src="-verso-search/searchIndex.js"></script>
     <script type="module" src="-verso-search/search-init.js"></script>
     <link rel="stylesheet" href="-verso-search/search-box.css">
     <link rel="stylesheet" href="-verso-search/search-highlight.css">
     <link rel="stylesheet" href="-verso-search/domain-display.css">
-    <script src="-verso-data/katex/math.js"></script>
     <script src="-verso-data/popper.min.js"></script>
-    <script src="-verso-data/katex/katex.js"></script>
+    <script src="-verso-data/katex/math.js"></script>
     <script src="-verso-data/copybutton.js"></script>
     <script src="-verso-data/tippy-bundle.umd.min.js"></script>
-    <link rel="stylesheet" href="-verso-data/examples.css">
+    <script src="-verso-data/katex/katex.js"></script>
+    <link rel="stylesheet" href="-verso-data/tippy-border.css">
+    <link rel="stylesheet" href="-verso-data/katex/katex.css">
     <link rel="stylesheet" href="-verso-data/proof-state.css">
     <link rel="stylesheet" href="-verso-data/copybutton.css">
-    <link rel="stylesheet" href="-verso-data/katex/katex.css">
-    <link rel="stylesheet" href="-verso-data/tippy-border.css">
-    <style>/static/fonts/source-sans/source-sans-3.css</style><style>
+    <link rel="stylesheet" href="-verso-data/examples.css">
+    <style>/static/fonts/source-code-pro/source-code-pro.css</style><style>
 table.tabular {
   margin: auto;
   border-spacing: 1rem;
@@ -57,6 +57,47 @@ table.tabular td > p:last-child, table.tabular th > p:first-child {
   margin-bottom: 0;
 }
 </style><style>
+code.unicode-abbrev {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+kbd {
+  white-space: nowrap;
+}
+
+kbd > code {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+  color: #333;
+  display: inline-block;
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+</style><style>/static/fonts/source-serif/source-serif-text.css</style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+/* Highlight the clicked term */
+.def-technical-term:target {
+  background-color: var(--verso-selected-color);
+  outline: auto;
+}
+</style><style>/static/fonts/source-sans/source-sans-3.css</style><style>/static/theme.css</style><style>/static/fonts/noto-sans-mono/noto-sans-mono.css</style><style>
 
 .hl.lean {
   white-space: pre;
@@ -718,48 +759,7 @@ Some CSS frameworks customize details/summary in ways not compatible with Verso'
   white-space: pre-wrap;
 }
 
-</style><style>/static/fonts/noto-sans-mono/noto-sans-mono.css</style><style>
-a.technical-term {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.technical-term:hover {
-  text-decoration: currentcolor underline solid;
-}
-/* Highlight the clicked term */
-.def-technical-term:target {
-  background-color: var(--verso-selected-color);
-  outline: auto;
-}
-</style><style>
-code.unicode-abbrev {
-  background-color: #eee;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  white-space: nowrap;
-}
-
-kbd {
-  white-space: nowrap;
-}
-
-kbd > code {
-  background-color: #eee;
-  border-radius: 3px;
-  border: 1px solid #b4b4b4;
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.2),
-    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
-  color: #333;
-  display: inline-block;
-  font-size: 0.85em;
-  font-weight: 700;
-  line-height: 1;
-  padding: 2px 4px;
-  white-space: nowrap;
-  vertical-align: middle;
-}
-</style><style>/static/fonts/source-serif/source-serif-text.css</style><style>/static/theme.css</style><style>/static/fonts/source-code-pro/source-code-pro.css</style><script>
+</style><script>
       
 window.onload = () => {
 
@@ -1001,7 +1001,7 @@ window.onload = () => {
                   with contributions from the Lean Community</p>
                 </div>
               <p>
-                This version of the text assumes you’re using Lean 4 (specifically <code>v4.23.0</code>). See the
+                This version of the text assumes you’re using Lean 4 (specifically <code>4.26.0</code>). See the
 <a href="https://lean-lang.org/documentation/setup/">Quickstart section</a> of
 the Lean documentation to install Lean. The first version of this book was
 written for Lean 2, and the Lean 3 version is available
