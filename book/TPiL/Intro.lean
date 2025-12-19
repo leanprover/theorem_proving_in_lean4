@@ -91,8 +91,8 @@ mathematical assertions in dependent type theory, but it also can be used as a l
 
 Because fully detailed axiomatic proofs are so complicated, the challenge of theorem proving is to have the computer
 fill in as many of the details as possible. You will learn various methods to support this in [dependent type
-theory](dependent_type_theory.md). For example, term rewriting, and Lean's automated methods for simplifying terms and
-expressions automatically. Similarly, methods of _elaboration_ and _type inference_, which can be used to support
+theory](dependent_type_theory.md): for example, term rewriting and Lean's automated methods for simplifying terms and
+expressions automatically; similarly, methods of _elaboration_ and _type inference_, which can be used to support
 flexible forms of algebraic reasoning.
 
 Finally, you will learn about features that are specific to Lean, including the language you use to communicate
