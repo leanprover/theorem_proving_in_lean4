@@ -1696,7 +1696,7 @@ example (m n k : Nat) (h : succ (succ m) = succ (succ n))
 ```
 :::
 
-The first instance of the tactic adds {leanRef}`h' : m + 1 = n + 1` to the
+The first instance of the tactic adds {leanRef}`h' : m.succ = n.succ` to the
 context, and the second adds {leanRef}`h'' : m = n`.
 
 The {leanRef}`injection` tactic also detects contradictions that arise when different constructors

@@ -563,8 +563,12 @@ instance : HMul Int Int Int where
 def xs : List Int := [1, 2, 3]
 
 /--
-error: typeclass instance problem is stuck, it is often due to metavariables
+error: typeclass instance problem is stuck
   HMul Int ?m.2 (?m.11 y)
+
+Note: Lean will not try to resolve this typeclass instance problem because the second type argument to `HMul` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
 -/
 #guard_msgs (error) in
 #eval fun y => xs.map (fun x => hMul x y)
