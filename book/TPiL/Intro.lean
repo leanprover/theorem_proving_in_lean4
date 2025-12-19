@@ -69,10 +69,10 @@ tag := "about-lean"
 
 The _Lean_ project was launched by Leonardo de Moura at Microsoft Research Redmond in 2013. It is an ongoing, long-term
 effort, and much of the potential for automation will be realized only gradually over time. Lean is released under the
-[Apache 2.0 license](LICENSE), a permissive open source license that permits others to use and extend the code and
+[Apache 2.0 license](https://github.com/leanprover/lean4/blob/master/LICENSE), a permissive open source license that permits others to use and extend the code and
 mathematical libraries freely.
 
-To install Lean in your computer consider using the [Quickstart](https://github.com/leanprover/lean4/blob/master/doc/quickstart.md) instructions. The Lean source code, and instructions for building Lean, are available at
+To install Lean in your computer consider using the [Quickstart](https://lean-lang.org/install/) instructions. The Lean source code, and instructions for building Lean, are available at
 [https://github.com/leanprover/lean4/](https://github.com/leanprover/lean4/).
 
 This tutorial describes the current version of Lean, known as Lean 4.
@@ -91,7 +91,7 @@ mathematical assertions in dependent type theory, but it also can be used as a l
 
 Because fully detailed axiomatic proofs are so complicated, the challenge of theorem proving is to have the computer
 fill in as many of the details as possible. You will learn various methods to support this in [dependent type
-theory](dependent_type_theory.md). For example, term rewriting, and Lean's automated methods for simplifying terms and
+theory](Dependent-Type-Theory). For example, term rewriting, and Lean's automated methods for simplifying terms and
 expressions automatically. Similarly, methods of _elaboration_ and _type inference_, which can be used to support
 flexible forms of algebraic reasoning.
 
