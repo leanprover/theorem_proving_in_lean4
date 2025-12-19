@@ -1072,7 +1072,7 @@ variable (α : Type) (β : α → Type) (a : α) (b : β a)
 ```
 Just as dependent function types {lean}`(a : α) → β a` generalize the
 notion of a function type {leanRef}`α → β` by allowing {leanRef (in := "α → β")}`β` to depend on
-{lean}`α`, dependent Cartesian product types {lean}`(a : α) × β a` generalize
+{lean}`a`, dependent Cartesian product types {lean}`(a : α) × β a` generalize
 the Cartesian product {lit}`α × β` in the same way. Dependent products
 are also called _sigma_ types, and you can also write them as
 {lean}`Σ a : α, β a`. You can use {lean (type := "(a : α) × β a")}`⟨a, b⟩` or {lean}`Sigma.mk a b` to create a
