@@ -21,7 +21,7 @@ open Lean (quote) in
 def versionString : RoleExpander
   | #[], #[] => do
     let version ← IO.FS.readFile "../examples/lean-toolchain"
-    let version := version.stripPrefix "leanprover/lean4:" |>.trim
+    let version := version.dropPrefix "leanprover/lean4:" |>.dropPrefix "v" |>.trimAscii |>.copy
     pure #[← ``(Verso.Doc.Inline.code $(quote version))]
   | _, _ => throwError "Unexpected arguments"
 

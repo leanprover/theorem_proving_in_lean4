@@ -60,7 +60,7 @@ def extractFile (contents : String) (suppressNamespaces : Option String) : m (Ar
     let toolchain ← do
         if !(← toolchainfile.pathExists) then
           throwError m!"File {toolchainfile} doesn't exist, couldn't load project"
-        pure (← IO.FS.readFile toolchainfile).trim
+        pure (← IO.FS.readFile toolchainfile).trimAscii.copy
 
     -- Kludge: remove variables introduced by Lake. Clearing out DYLD_LIBRARY_PATH and
     -- LD_LIBRARY_PATH is useful so the version selected by Elan doesn't get the wrong shared
@@ -132,6 +132,20 @@ where
 
 end
 
+open Std.Iterators in
+private def hasAtLeastM [Monad m] [Iterator α m β] [Productive α m] (it : IterM (α := α) m β) : Nat → m Bool
+  | 0 => pure true
+  | n + 1 => do
+    match (← it.step).inflate with
+    | .done .. => pure false
+    | .skip it' .. => hasAtLeastM it' (n + 1)
+    | .yield it' .. => hasAtLeastM it' n
+termination_by n => (n, it.finitelyManySkips)
+
+open Std.Iterators in
+private def hasAtLeast [Iterator α Id β] [Productive α Id] (it : Iter (α := α) β) (n : Nat) : Bool :=
+  hasAtLeastM it.toIterM n
+
 def splitExample (code : Highlighted) : Option Highlighted × Highlighted := Id.run do
   let lines := code.lines
   let mut out := .empty
@@ -143,12 +157,12 @@ def splitExample (code : Highlighted) : Option Highlighted × Highlighted := Id.
   return (none, out)
 where
   isSplit (line : Highlighted) : Bool :=
-    let trimmed := line.toString.trim
-    trimmed.length ≥ 4 && trimmed.all (· == '-')
+    let trimmed := line.toString.trimAscii
+    hasAtLeast trimmed.positions 4 && trimmed.all (· == '-')
 
 partial def hlIsWs (hl : Highlighted) : Bool :=
   match hl with
-  | .text s | .unparsed s => s.all (·.isWhitespace)
+  | .text s | .unparsed s => s.all Char.isWhitespace
   | .seq xs => xs.all hlIsWs
   | .span _ x | .tactics _ _ _ x => hlIsWs x
   | .point .. => true
@@ -165,9 +179,9 @@ private inductive LineType where
   | other
 
 private def lineType (line : Highlighted) : LineType :=
-  let trimmed := line.toString.trim
+  let trimmed := line.toString.trimAscii
   if trimmed.isEmpty then .whitespace
-  else if trimmed.length ≥ 4 && trimmed.all (· == '-') then .split
+  else if hasAtLeast trimmed.positions 4 && trimmed.all (· == '-') then .split
   else .other
 
 
@@ -502,23 +516,24 @@ def examplesCss := r#"
 def tpilBlock (block : BlockDescr) : BlockDescr :=
   { block with
     extraJsFiles :=
-      {filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none} ::
       block.extraJsFiles
+        |>.insert { filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none }
     extraCssFiles :=
-      ("copybutton.css", copyButtonCss) ::
-      ("examples.css", examplesCss) ::
       block.extraCssFiles
+        |>.insert { filename := "copybutton.css", contents := copyButtonCss }
+        |>.insert { filename := "examples.css", contents := examplesCss }
+
     }
 
 def tpilInline (inline : InlineDescr) : InlineDescr :=
   { inline with
     extraJsFiles :=
-      {filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none} ::
       inline.extraJsFiles
+        |>.insert {filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none}
     extraCssFiles :=
-      ("copybutton.css", copyButtonCss) ::
-      ("examples.css", examplesCss) ::
       inline.extraCssFiles
+        |>.insert { filename := "copybutton.css", contents := copyButtonCss }
+        |>.insert { filename := "examples.css", contents := examplesCss }
     }
 
 structure ExampleItem where
@@ -580,13 +595,13 @@ block_extension Block.lean
           logError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
-      let post ←
+      let _post ←
         match FromJson.fromJson? (α := Option Highlighted) hlPostJson with
         | .error err =>
           logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
-      let visibility ←
+      let _visibility ←
         match FromJson.fromJson? (α := HighlightHtmlM.VisibleProofStates) goalVisibilityJson with
         | .error err =>
           logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
@@ -599,14 +614,17 @@ block_extension Block.lean
         let cmd := cmd.deIndent codeIndent
         codeTeX := codeTeX ++ verbatimBlock cmd
         if let some msg := out? then
-          codeTeX := codeTeX ++ msg.toTeX
+          codeTeX := codeTeX ++ (← msg.toTeX)
         unless ws.isEmpty do
-          codeTeX := codeTeX ++ (Highlighted.text ws).toTeX
+          codeTeX := codeTeX ++ (← (Highlighted.text ws).toTeX)
 
       pure codeTeX
 
-  extraJsFiles := [{filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none}]
-  extraCssFiles := [("copybutton.css", copyButtonCss), ("examples.css", examplesCss)]
+  extraJsFiles := .ofList [{ filename := "copybutton.js", contents := copyButtonJs, sourceMap? := none }]
+  extraCssFiles := .ofList [
+    { filename := "copybutton.css", contents := copyButtonCss },
+    { filename := "examples.css", contents := examplesCss }
+  ]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
@@ -707,7 +725,7 @@ block_extension Block.leanAnchor (code : Highlighted) (completeCode : String)
           logError <| "Couldn't deserialize Lean code block while rendering TeX: " ++ err
           return .empty
         | .ok hl => pure hl
-      let completeCode ←
+      let _completeCode ←
         match FromJson.fromJson? (α := String) completeCodeJson with
         | .error err =>
           logError <| "Couldn't deserialize Lean code string while rendering TeX: " ++ err
@@ -796,8 +814,8 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted))
           logError <| "Failed to deserialize proof state: " ++ e
           return .empty
       -- TODO: lay these out side-by-side
-      pure <| .seq (goals.map (·.toTeX))
-  extraCssFiles := [ ("proof-state.css", proofStateStyle)]
+      pure <| .seq (← goals.mapM (·.toTeX))
+  extraCssFiles := .ofList [{ filename := "proof-state.css", contents := proofStateStyle }]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
@@ -833,7 +851,7 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted)
         | .error e =>
           logError <| "Failed to deserialize proof goal: " ++ e
           return .empty
-      pure (SubVerso.Highlighting.verbatim (goal.name.getD "<anonymous>"))
+      verbatimInline (goal.name.getD "<anonymous>")
 
   toHtml :=
     open Verso.Output.Html in
@@ -966,7 +984,7 @@ def Kept.add (kept : Kept α) (val : α) : Kept α where
     rw [Array.size_set]
     split <;> omega
 
-instance : ForM m (Kept α) α where
+instance [Monad m] : ForM m (Kept α) α where
   forM kept f := do
     for h : i in [kept.next:kept.values.size] do
       f kept.values[i]
@@ -975,7 +993,7 @@ instance : ForM m (Kept α) α where
       have : i < kept.next := by get_elem_tactic
       f kept.values[i]
 
-instance : ForIn m (Kept α) α := ⟨ForM.forIn⟩
+instance [Monad m] : ForIn m (Kept α) α := ⟨ForM.forIn⟩
 
 initialize recentHighlightsExt : EnvExtension (Kept Highlighted) ←
   registerEnvExtension (pure ⟨.replicate 12 .empty, 0, by simp⟩)
@@ -1038,7 +1056,7 @@ def trailingText (hl : Highlighted) : Highlighted × String :=
     for h : i in [0:xs.size] do
       let i' := xs.size - (i + 1)
       have : i < xs.size := by get_elem_tactic
-      have : i' < xs.size := by omega
+      have : i' < xs.size := by grind
       let (hl', txt') := trailingText xs[i']
       txt := txt' ++ txt
       if hl'.isEmpty then continue
@@ -1053,25 +1071,26 @@ def trailingText (hl : Highlighted) : Highlighted × String :=
     (.span i hl', txt)
   | .text txt | .unparsed txt => (.empty, txt)
 
+private def commentContents (s : String) : Option (String × String) :=
+  let s := s.trimAsciiStart
+  if s.startsWith "--" then
+    let s := s.dropWhile (· == '-') |>.trimAsciiStart
+    let ws := s.takeEndWhile (·.isWhitespace)
+    some (s.dropEnd ws.positions.count |>.copy, ws.copy)
+  else
+    none
+
 /--
 Extracts a trailing comment from code, if present.
 
 Returns the code along with the comment and its trailing whitespace.
 -/
 def trailingComment (hl : Highlighted) : Highlighted × Option (String × String) :=
-  let (hl', txt) := trailingText hl
-  if let some txt' := commentContents txt then
-    (hl', some txt')
-  else (hl, none)
-where
-  commentContents s :=
-    let s := s.trimLeft
-    if "--".isPrefixOf s then
-      let s := s.dropWhile (· == '-') |>.trimLeft
-      let ws := s.takeRightWhile (·.isWhitespace)
-      some (s.dropRight ws.length, ws)
-    else
-      none
+  let x := trailingText hl
+  match commentContents x.2 with
+  | some txt' => (x.1, some txt')
+  | none => (hl, none)
+
 
 section
 
@@ -1248,7 +1267,7 @@ def lean : CodeBlockExpander
 where
   eqMessages (s1 s2 : String) := SubVerso.Examples.Messages.messagesMatch (s1.replace "\n" " ") (s2.replace "\n" " ")
   dropOneNl (s : String) : String :=
-    if s.back == '\n' then s.dropRight 1 else s
+    if s.back == '\n' then (s.dropEnd 1).copy else s
 
 
 @[code_block_expander save]
@@ -1326,7 +1345,7 @@ def proofState : CodeBlockExpander
     let mut goalView := ""
     for g in goals do
       goalView := goalView ++ g.toString ++ "\n\n"
-    goalView := goalView.trimRight ++ "\n"
+    goalView := goalView.trimAsciiEnd.copy ++ "\n"
     _ ← ExpectString.expectString "proof" code goalView
     return #[← ``(Block.other (Block.goals $(quote goals)) #[])]
 
@@ -1375,7 +1394,7 @@ def Helper.fromModule (setup : String) : IO Helper := do
   let toolchain ← do
       if !(← toolchainfile.pathExists) then
         throw <| .userError s!"File {toolchainfile} doesn't exist, couldn't load project"
-      pure (← IO.FS.readFile toolchainfile).trim
+      pure (← IO.FS.readFile toolchainfile).trimAscii.copy
 
   IO.FS.writeFile (projectDir / "Examples" / filename) setup
 
@@ -1629,25 +1648,27 @@ def currentHelper : DocElabM Helper := do
 
 def multiVar? (str : String) : Option (Array String × String) := do
   let mut out := #[]
-  let mut str := str.trim
+  let mut str := str.trimAscii
   repeat
     let pref1 := str.takeWhile alpha
-    if pref1.length < 1 then failure
-    str := str.drop pref1.length
+    let length1 := pref1.positions.count
+    if length1 < 1 then failure
+    str := str.drop length1
     let pref2 := str.takeWhile (fun c => alpha c || c.isDigit)
-    str := str.drop pref2.length
-    let pref := pref1 ++ pref2
-    let c := str.startValidPos.get?
+    let length2 := pref2.positions.count
+    str := str.drop length2
+    let pref := pref1.copy ++ pref2.copy
+    let c := str.startPos.get?
     if pref.length > 0 && (c.isEqSome ' ' || c.isEqSome ':') then
       out := out.push pref
       str := str.dropWhile (· == ' ')
     else failure
 
-    if str.startValidPos.get? |>.isEqSome ':' then
+    if str.startPos.get? |>.isEqSome ':' then
       str := str.drop 1
       str := str.dropWhile (· == ' ')
       if str.isEmpty then failure
-      return (out, str)
+      return (out, str.copy)
   failure
 where
   alpha c := c.isAlpha || c ∈ ['α', 'β', 'γ']
@@ -1870,7 +1891,7 @@ private def suggest : InlineExpander
     else if str'.startsWith "\\" then
       let h ← hint m!"Add the `kbd` role:" #["{kbd}`" ++ str' ++ "`"]
       logWarning <| m!"Code element could be a Unicode abbreviation." ++ h
-    else if (← getOptionDecls).any (fun x _ => x.toString == str'.trim) then
+    else if (← getOptionDecls).any (fun x _ => x.toString == str'.trimAscii) then
       let h ← hint m!"Add the `option` role:" #["{option}`" ++ str' ++ "`"]
       logWarning <| m!"Code element could be a compiler option." ++ h
     else

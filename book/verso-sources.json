@@ -2,7 +2,7 @@
     "version": 0,
     "sources": {
         "manual": {
-            "root": "https://lean-lang.org/doc/reference/4.21.0-rc3/",
+            "root": "https://lean-lang.org/doc/reference/4.26.0/",
             "updateFrequency": "manual",
             "shortName": "ref",
             "longName": "Lean Language Reference"

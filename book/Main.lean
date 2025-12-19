@@ -28,4 +28,4 @@ def config : Config where
   issueLink := some "https://github.com/leanprover/theorem_proving_in_lean4/issues"
   linkTargets := fun st => st.localTargets ++ st.remoteTargets
 
-def main := manualMain (%doc TPiL) (config := config.addKaTeX)
+def main := manualMain (%doc TPiL) (config := config)
