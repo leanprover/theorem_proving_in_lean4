@@ -90,8 +90,8 @@ known as the Calculus of Constructions with inductive types. Lean can not only d
 mathematical assertions in dependent type theory, but it also can be used as a language for writing proofs.
 
 Because fully detailed axiomatic proofs are so complicated, the challenge of theorem proving is to have the computer
-fill in as many of the details as possible. You will learn various methods to support this in [dependent type
-theory](Dependent-Type-Theory). For example, term rewriting, and Lean's automated methods for simplifying terms and
+fill in as many of the details as possible. You will learn various methods to support this in {ref "dependent-type-theory"}[dependent type
+theory]. For example, term rewriting, and Lean's automated methods for simplifying terms and
 expressions automatically. Similarly, methods of _elaboration_ and _type inference_, which can be used to support
 flexible forms of algebraic reasoning.
 
