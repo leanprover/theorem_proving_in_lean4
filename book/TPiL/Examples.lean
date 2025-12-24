@@ -684,6 +684,7 @@ block_extension Block.lean
           codeHtml := codeHtml ++ {{<pre class=s!"hl lean lean-output {msg.severity.class}">{{msgHtml}}</pre>}}
         unless ws.isEmpty do
           codeHtml := codeHtml ++ (← (Highlighted.text ws).blockHtml "examples" (trim := false) (g := Verso.Genre.Manual))
+          codeString := codeString ++ ws
 
       if allowToggle then
         if let some p := post then
@@ -1218,7 +1219,8 @@ def lean : CodeBlockExpander
       | .none => .none
       | .all => .all
       | .named _ => .states #[]
-    for item in mid do
+    for i in [:mid.size] do
+      let item := mid[i]!
       let code ←
         match item.code.anchored (textAnchors := false) with
         | .ok a =>
@@ -1246,12 +1248,16 @@ def lean : CodeBlockExpander
             let txt := msg.toString
             if checkOutput && !eqMessages comment txt then
               throwError "Mismatch! Expected {comment} but got {txt}"
-            toShow := toShow.push ⟨code, some msg, dropOneNl ws⟩
+            toShow := toShow.push ⟨code, some msg, ws⟩
           else
             let (code', ws) := trailingText item.code
-            toShow := toShow.push ⟨code', some msg, dropOneNl ws⟩
-        else toShow := toShow.push ⟨item.code, none, ""⟩
-        | _ => toShow := toShow.push ⟨item.code, none, ""⟩
+            toShow := toShow.push ⟨code', some msg, ws⟩
+        else
+          let (code', ws) := trailingText item.code
+          toShow := toShow.push ⟨code', none, ws⟩
+        | _ =>
+          let (code', ws) := trailingText item.code
+          toShow := toShow.push ⟨code', none, ws⟩
     let post : Option Highlighted := post.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
     let visible := .seq <| toShow.map (·.1)
     saveBackref visible
@@ -1266,8 +1272,6 @@ def lean : CodeBlockExpander
       return #[]
 where
   eqMessages (s1 s2 : String) := SubVerso.Examples.Messages.messagesMatch (s1.replace "\n" " ") (s2.replace "\n" " ")
-  dropOneNl (s : String) : String :=
-    if s.back == '\n' then (s.dropEnd 1).copy else s
 
 
 @[code_block_expander save]
