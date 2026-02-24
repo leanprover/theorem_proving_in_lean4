@@ -1309,8 +1309,8 @@ Get the intermediate proof states from `rw` into the reference ring to help thes
 
 In the first example above, the first step rewrites {leanRef}`a + b + c` to
 {leanRef}`a`{lit}` + (`{leanRef}`b + c`{lit}`)`. The next step applies commutativity to the term
-{leanRef}`b + c`; without specifying the argument, the tactic would instead rewrite
-{leanRef}`a`{lit}` + (`{leanRef}`b + c`{lit}`)` to {lit}`(`{leanRef}`b + c`{lit}`) + `{leanRef}`a`. Finally, the last step applies
+{leanRef}`b + c`; the tactic would instead rewrite
+{leanRef}`a`{lit}` + (`{leanRef}`b + c`{lit}`)` to {leanRef}`a`{lit}` + (`{leanRef}`c + b`{lit}`)`. Finally, the last step applies
 associativity in the reverse direction, rewriting {leanRef}`a`{lit}` + (`{leanRef}`c`{lit}`  +  `{leanRef}`b`{lit}`)` to
 {leanRef}`a + c + b`. The next two examples instead apply associativity to
 move the parenthesis to the right on both sides, and then switch {leanRef}`b`
