@@ -9,3 +9,4 @@ To build the book, change to the `book` directory and run `lake exe tpil`.
 After this, `book/_out/html-multi` contains a multi-page Web
 version of the book.
 
+You can then use `python -m http.server` to run a local offline copy of the website.
