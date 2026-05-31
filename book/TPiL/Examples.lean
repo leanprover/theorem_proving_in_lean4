@@ -659,44 +659,43 @@ block_extension Block.lean
       let codeIndent := code.foldl (init := pre.map (·.indentation)) (fun i? y => i?.map (min · y.1.indentation)) |>.getD 0
 
       let mut codeHtml : Html := .empty
-      let mut codeString := ""
+      let mut toCopy := ""
 
-      if allowToggle then
-        if let some p := pre then
-          let p := p.deIndent codeIndent
+      if let some p := pre then
+        let p := p.deIndent codeIndent
+        toCopy := toCopy ++ p.toString
+        if allowToggle then
           let inner ←
             withDefinitionsAsTargets false <|
             withVisibleProofStates visibility <|
             p.trimOneLeadingNl |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
           codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
-          codeString := codeString ++ p.toString
 
       for ⟨cmd, out?, ws⟩ in code do
         let cmd := cmd.deIndent codeIndent
+        toCopy := toCopy ++ cmd.toString
         let moreCode ←
           withDefinitionsAsTargets true <|
           withVisibleProofStates visibility <|
           cmd.trimOneLeadingNl |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
         codeHtml := codeHtml ++ moreCode
-        codeString := codeString ++ cmd.toString
         if let some msg := out? then
           let msgHtml ← msg.toHtml (g := Verso.Genre.Manual) []
           codeHtml := codeHtml ++ {{<pre class=s!"hl lean lean-output {msg.severity.class}">{{msgHtml}}</pre>}}
         unless ws.isEmpty do
           codeHtml := codeHtml ++ (← (Highlighted.text ws).blockHtml "examples" (trim := false) (g := Verso.Genre.Manual))
 
-      if allowToggle then
-        if let some p := post then
-          let p := p.deIndent codeIndent
+      if let some p := post then
+        let p := p.deIndent codeIndent
+        toCopy := toCopy ++ p.toString
+        if allowToggle then
           let inner ←
             withDefinitionsAsTargets false <|
             withVisibleProofStates visibility <|
             p.trimOneLeadingNl |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
           codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
-          codeString := codeString ++ p.toString
 
       let i ← uniqueId (g := Verso.Genre.Manual)
-      let toCopy := (pre.map (·.toString)).getD "" ++ codeString
       let mut script := s!"addCopyButtonToElement({i.quote}, {toCopy.quote});"
       if allowToggle && (pre.isSome || post.isSome) then
         script := script ++ s!"\naddToggleButtonToElement({i.quote});"
