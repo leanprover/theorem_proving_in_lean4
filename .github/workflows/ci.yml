@@ -57,6 +57,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-lake-${{ hashFiles('book_zh/lake-manifest.json', 'book_zh/lean-toolchain', 'examples/lake-manifest.json', 'examples/lean-toolchain') }}-
 
+      - name: Build examples helper tools
+        run: |
+          cd examples
+          lake build subverso-extract-mod subverso-helper --no-ansi
+
       - name: Build Chinese book
         run: |
           cd book_zh
