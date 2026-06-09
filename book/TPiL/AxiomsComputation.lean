@@ -1086,13 +1086,11 @@ satisfying {leanRef}`p` if there is one. The data component of this
 definition is conventionally known as *Hilbert's epsilon function*:
 
 ```signature
-epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α
+Classical.epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α
 ```
 
-```signature
-epsilon_spec {α : Sort u} {p : α → Prop}
-  (hex : ∃ (y : α), p y) :
-  p (@epsilon _ (nonempty_of_exists hex) p)
+```lean
+#check @Classical.epsilon_spec
 ```
 
 

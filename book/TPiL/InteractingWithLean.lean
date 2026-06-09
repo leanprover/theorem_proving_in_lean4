@@ -66,11 +66,9 @@ due to the presence of {lean}`sorry`, but the warning that is always issued for 
 as usual:
 ```lean
 /--
-error: aborting evaluation since the expression depends on the
-'sorry' axiom, which can lead to runtime instability and crashes.
+error: aborting evaluation since the expression depends on the 'sorry' axiom, which can lead to runtime instability and crashes.
 
-To attempt to evaluate anyway despite the risks, use the '#eval!'
-command.
+To attempt to evaluate anyway despite the risks, use the '#eval!' command.
 -/
 #guard_msgs(error) in
 #eval (sorry : Nat)
@@ -80,13 +78,11 @@ command.
 Without the configuration, both messages are captured:
 ```lean
 /--
-error: aborting evaluation since the expression depends on the
-'sorry' axiom, which can lead to runtime instability and crashes.
+error: aborting evaluation since the expression depends on the 'sorry' axiom, which can lead to runtime instability and crashes.
 
-To attempt to evaluate anyway despite the risks, use the '#eval!'
-command.
+To attempt to evaluate anyway despite the risks, use the '#eval!' command.
 ---
-warning: declaration uses 'sorry'
+warning: declaration uses `sorry`
 -/
 #guard_msgs in
 #eval (sorry : Nat)
@@ -423,11 +419,10 @@ example (as : List α) : as ≤ as :=
 end
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   LE (List α)
 
-Hint: Additional diagnostic information may be available using the
-`set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs in
 example (as : List α) : as ≤ as :=
@@ -1041,16 +1036,28 @@ set_option autoImplicit false
 
 /--
 error: Unknown identifier `β`
+
+Note: It is not possible to treat `β` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `γ`
+
+Note: It is not possible to treat `γ` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `α`
+
+Note: It is not possible to treat `α` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `β`
+
+Note: It is not possible to treat `β` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `α`
+
+Note: It is not possible to treat `α` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `γ`
+
+Note: It is not possible to treat `γ` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 -/
 #guard_msgs in
 def compose (g : β → γ) (f : α → β) (x : α) : γ :=

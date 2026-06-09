@@ -1,6 +1,5 @@
-name: build and test book content
+name: build and deploy Chinese book
 
-# Controls when the action will run.
 on:
   push:
     branches:
@@ -8,85 +7,79 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  Build:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        # interferes with lean4-nightly authentication
-        persist-credentials: false
-        submodules: true
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
 
+      - name: Setup elan
+        run: |
+          curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
+          chmod u+x elan-init.sh
+          ./elan-init.sh -y --default-toolchain none
 
-    - name: Setup elan toolchain on this build
-      run: |
-        curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
-        chmod u+x elan-init.sh
-        ./elan-init.sh -y --default-toolchain none
+      - name: Set elan paths
+        run: |
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-    - name: Set elan paths
-      run: |
-        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Install Lean toolchain for examples
+        run: |
+          cd examples
+          lean --version
 
-    - name: Install lean toolchain for examples
-      run: |
-        cd examples
-        lean --version
+      - name: Install Lean toolchain for Chinese book
+        run: |
+          cd book_zh
+          lean --version
 
-    - name: Install lean toolchain for text
-      run: |
-        cd book
-        lean --version
+      - name: Cache Lake build directories
+        uses: actions/cache@v4
+        with:
+          path: |
+            book_zh/.lake
+            examples/.lake
+          key: ${{ runner.os }}-lake-${{ hashFiles('book_zh/lake-manifest.json', 'book_zh/lean-toolchain', 'examples/lake-manifest.json', 'examples/lean-toolchain') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-lake-${{ hashFiles('book_zh/lake-manifest.json', 'book_zh/lean-toolchain', 'examples/lake-manifest.json', 'examples/lean-toolchain') }}-
 
-    - name: Cache book/.lake
-      uses: actions/cache@v4
-      with:
-        path: book/.lake
-        # The SHA is in the key to get the most recent cache possible, rather than just saving a single one for each Lean/deps version and not touching it.
-        key: ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-${{ steps.shortSHA.outputs.short_sha }}
-        # Try to restore cache for same OS/Lean/deps, but don't get less specific, because Lake isn't always happy to get build product version mismatches
-        restore-keys: |
-          ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-
+      - name: Build Chinese book
+        run: |
+          cd book_zh
+          lake exe tpil --no-ansi
 
+      - name: Configure GitHub Pages
+        if: github.event_name == 'push' && github.ref_name == 'master'
+        uses: actions/configure-pages@v5
 
-    - name: Build book
-      run: |
-        pushd book
-        lake exe tpil --verbose
-        popd
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push' && github.ref_name == 'master'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: book_zh/_out/html-multi
 
-    - name: Save book/.lake
-      uses: actions/cache/save@v4
-      with:
-        path: book/.lake
-        # The SHA is in the key to get the most recent cache possible, rather than just saving a single one for each Lean/deps version and not touching it.
-        key: ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-${{ steps.shortSHA.outputs.short_sha }}
-
-    - name: Deploy to Netlify hosting
-      uses: nwtgck/actions-netlify@v2.0
-      if: github.event_name == 'push' && github.ref_name == 'master'
-      with:
-        publish-dir: book/_out/html-multi
-        production-branch: master
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        deploy-message: |
-          ${{ github.event_name == 'pull_request' && format('pr#{0}: {1}', github.event.number, github.event.pull_request.title) || format('ref/{0}: {1}', github.ref_name, steps.deploy-info.outputs.message) }}
-        alias: ${{ steps.deploy-info.outputs.alias }}
-        enable-commit-comment: false
-        enable-pull-request-comment: false
-        github-deployment-environment: "lean-lang.org/theorem_proving_in_lean4"
-        fails-without-credentials: true
-      env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: "51300c89-2f6c-4bba-a575-8cf12e434502"
-
-    - name: GH pages deploy
-      uses: JamesIves/github-pages-deploy-action@4.1.5
-      if: github.event_name == 'push' && github.ref_name == 'master'
-      with:
-        branch: gh-pages
-        folder: book/_out/html-multi
+  deploy:
+    if: github.event_name == 'push' && github.ref_name == 'master'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

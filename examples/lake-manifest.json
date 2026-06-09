@@ -1,15 +1,16 @@
-{"version": "1.1.0",
+{"version": "1.2.0",
  "packagesDir": ".lake/packages",
  "packages":
  [{"url": "https://github.com/leanprover/subverso.git",
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "eb77622e97e942ba2cfe02f60637705fc2d9481b",
+   "rev": "a86770a5eba721c8554d1d7fce741bc4dde3bb61",
    "name": "subverso",
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": false,
    "configFile": "lakefile.lean"}],
  "name": "«tpil-examples»",
- "lakeDir": ".lake"}
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

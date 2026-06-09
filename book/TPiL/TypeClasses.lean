@@ -692,11 +692,10 @@ def double (p : Point) :=
 end -- instance `Add Point` is not active anymore
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   HAdd Point Point ?m.5
 
-Hint: Additional diagnostic information may be available using
-the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs in
 def triple (p : Point) :=
@@ -721,11 +720,10 @@ def double (p : Point) :=
 attribute [-instance] addPoint
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   HAdd Point Point ?m.5
 
-Hint: Additional diagnostic information may be available using
-the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs in
 def triple (p : Point) :=
@@ -759,11 +757,10 @@ end Point
 -- instance `Add Point` is not active anymore
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   HAdd Point Point ?m.3
 
-Hint: Additional diagnostic information may be available using
-the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs (error) in
 #check fun (p : Point) => p + p + p
@@ -1031,12 +1028,10 @@ in a concise manner:
 #check (inferInstance : Add Nat)
 ```
 
-You can also use the auxiliary definition {lean}`inferInstanceAs`:
+You can also use the auxiliary definition {lit}`inferInstanceAs`:
 
 ```lean
-#check inferInstanceAs (Add Nat)
-
-#check @inferInstanceAs -- inferInstanceAs : (α : Sort u_1) → [i : α] → α
+#check (inferInstanceAs (Add Nat) : Add Nat)
 ```
 
 :::leanFirst
@@ -1049,18 +1044,17 @@ explicitly:
 def Set (α : Type u) := α → Prop
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   Inhabited (Set α)
 
-Hint: Additional diagnostic information may be available using
-the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs in
 example : Inhabited (Set α) :=
   inferInstance
 
 instance : Inhabited (Set α) :=
-  inferInstanceAs (Inhabited (α → Prop))
+  inferInstanceAs $ Inhabited (α → Prop)
 ```
 :::
 
