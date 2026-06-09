@@ -1,4 +1,4 @@
-name: build and deploy Chinese book
+name: build and deploy Chinese book to gh-pages
 
 on:
   push:
@@ -10,13 +10,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -67,24 +65,17 @@ jobs:
           cd book_zh
           lake exe tpil --no-ansi
 
-      - name: Configure GitHub Pages
+      - name: Deploy Chinese book to gh-pages
         if: github.event_name == 'push' && github.ref_name == 'master'
-        uses: actions/configure-pages@v5
-
-      - name: Upload GitHub Pages artifact
-        if: github.event_name == 'push' && github.ref_name == 'master'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: book_zh/_out/html-multi
-
-  deploy:
-    if: github.event_name == 'push' && github.ref_name == 'master'
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        run: |
+          touch book_zh/_out/html-multi/.nojekyll
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-worktree origin/gh-pages
+          find gh-pages-worktree -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a book_zh/_out/html-multi/. gh-pages-worktree/
+          cd gh-pages-worktree
+          git add -A
+          git commit -m "Deploy Chinese book to GitHub Pages" || exit 0
+          git push origin gh-pages
