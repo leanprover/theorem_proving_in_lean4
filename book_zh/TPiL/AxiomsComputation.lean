@@ -1152,7 +1152,7 @@ open Classical (choose propDecidable)
 
 作为经典推理的一个例子，我们使用 {lean}`choose` 说明：如果 {lean}`f : α → β` 是单射且
 {lean}`α` 是有居留元的，那么 {lean}`f` 有左逆。为了定义左逆 {leanRef}`linv`，
-我们使用依值 if-then-else 表达式。回忆 {lean}`if h : c then t else e` 是
+我们使用依值的 if-then-else 表达式。回忆 {lean}`if h : c then t else e` 是
 {lean}`dite c (fun h : c => t) (fun h : ¬ c => e)` 的记号。
 在 {leanRef}`linv` 的定义中，选择被使用了两次：首先，用来说明
 {leanRef}`(∃ a : α, f a = b)` 是“可判定的”；然后，用来选择一个满足

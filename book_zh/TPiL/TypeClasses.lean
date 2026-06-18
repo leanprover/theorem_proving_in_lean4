@@ -754,7 +754,7 @@ end Hidden
 ```
 
 :::leanFirst
-标准库还包含 {leanRef}`ite` 的一个变体，称为 {leanRef}`dite`，即依赖的 if-then-else 表达式。它定义如下：
+标准库还包含 {leanRef}`ite` 的一个变体，称为 {leanRef}`dite`，即依值的 if-then-else 表达式。它定义如下：
 
 ```lean
 namespace Hidden
@@ -1052,14 +1052,14 @@ def s : Set Nat := {1}
 ```
 
 
-Lean 还通过类型类 {lean}`CoeDep` 支持依赖强制转换。例如，不能把任意命题强制转换为 {lean}`Bool`，只能转换那些实现了 {lean}`Decidable` 类型类的命题。
+Lean 还通过类型类 {lean}`CoeDep` 支持依值强制转换。例如，不能把任意命题强制转换为 {lean}`Bool`，只能转换那些实现了 {lean}`Decidable` 类型类的命题。
 
 ```lean
 instance (p : Prop) [Decidable p] : CoeDep Prop p Bool where
   coe := decide p
 ```
 
-必要时，Lean 还会链接（非依赖的）强制转换。实际上，类型类 {lean}`CoeT` 是 {lean}`Coe` 的传递闭包。
+必要时，Lean 还会链接（非依值的）强制转换。实际上，类型类 {lean}`CoeT` 是 {lean}`Coe` 的传递闭包。
 
 现在考虑第二类强制转换。所谓 _sort 类_，是指宇宙 {lean}`Type u` 的集合。第二类强制转换具有如下形式：
 

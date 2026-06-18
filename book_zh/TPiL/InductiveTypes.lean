@@ -19,11 +19,11 @@ variable {α : Sort u} {β : Sort v}
 
 我们已经看到，Lean 的形式化基础包括基本类型
 {lean}`Prop`、{lean}`Type 0`、{lean}`Type 1`、{lean}`Type 2`、……，并允许形成
-依赖函数类型 {lean}`(x : α) → β`。在例子中，我们还使用了诸如 {lean}`Bool`、
+依值函数类型 {lean}`(x : α) → β`。在例子中，我们还使用了诸如 {lean}`Bool`、
 {lean}`Nat` 和 {lean}`Int` 这样的其他类型，以及诸如 {lean}`List` 和乘积
 {lit}`×` 这样的类型构造子。事实上，在 Lean 的库中，除宇宙之外的每个具体类型，
-以及除依赖箭头之外的每个类型构造子，都是称为_归纳类型_的一般类型构造族的实例。
-值得注意的是，仅凭类型宇宙、依赖箭头类型和归纳类型，就可以构筑起相当宏大的数学大厦；
+以及除依值箭头之外的每个类型构造子，都是称为_归纳类型_的一般类型构造族的实例。
+值得注意的是，仅凭类型宇宙、依值箭头类型和归纳类型，就可以构筑起相当宏大的数学大厦；
 其余一切都由此而来。
 :::
 
@@ -56,7 +56,7 @@ inductive Foo where
 我们将在下文看到，构造子的参数可以包含类型 {lean}`Foo` 的对象，但须满足某种
 “正性”约束；该约束保证 {lean}`Foo` 的元素是自底向上构造的。粗略地说，每个
 {lit}`...` 都可以是由 {lean}`Foo` 和先前定义的类型构成的任意箭头类型，其中
-{lean}`Foo` 即便出现，也只能作为依赖箭头类型的“目标”。
+{lean}`Foo` 即便出现，也只能作为依值箭头类型的“目标”。
 :::
 
 我们将给出若干归纳类型的例子。我们还会考察上述模式的轻微推广，包括相互定义的归纳类型，
@@ -473,7 +473,7 @@ end Hidden
 ```
 
 函数 {leanRef}`fst` 接受一个对 {leanRef}`p`。{kw}`match` 将 {leanRef}`p` 解释为一个对
-{leanRef}`Prod.mk a b`。还请回忆 {ref "dependent-type-theory"}[依赖类型论] 中的内容：
+{leanRef}`Prod.mk a b`。还请回忆 {ref "dependent-type-theory"}[依值类型论] 中的内容：
 为了使这些定义尽可能一般，我们允许类型 {leanRef}`α` 和 {leanRef}`β` 属于任意宇宙。
 
 :::
@@ -626,7 +626,7 @@ structure Semigroup where
 我们将在 {ref "structures-and-records"}[结构与记录] 一章中看到更多例子。
 
 :::leanFirst
-我们已经讨论过依赖乘积类型 {leanRef}`Sigma`：
+我们已经讨论过依值积类型 {leanRef}`Sigma`：
 
 ```lean
 namespace Hidden
@@ -658,7 +658,7 @@ end Hidden
 variable {α : Type u} {β : Type v} {γ : Type u'} (b : β) (f : α → Option β) (a : α)
 ```
 
-在依赖类型论的语义中，没有内建的偏函数概念。函数类型 {lean}`α → β` 或依赖函数类型
+在依值类型论的语义中，没有内建的偏函数概念。函数类型 {lean}`α → β` 或依值函数类型
 {lean}`(a : α) → β` 的每个元素，都被假定在每个输入上有值。{lean}`Option` 类型提供了一种表示偏函数的方法。
 {lean}`Option β` 的元素要么是 {lean}`none`，要么形如 {lean}`some b`，其中
 {lean}`b : β`。因此，我们可以把类型 {lean}`α → Option β` 的元素 {lean}`f`
@@ -809,7 +809,7 @@ variable {motive : Nat → Sort u} {f : (n : Nat) → motive n} {n : Nat}
 也就是说，它从 {lean}`zero` 出发、反复应用 {lean}`succ` 而被穷尽地（且自由地）生成。
 
 
-和前面一样，{lean}`Nat` 的递归子旨在定义从 {lean}`Nat` 到任意论域的依赖函数
+和前面一样，{lean}`Nat` 的递归子旨在定义从 {lean}`Nat` 到任意论域的依值函数
 {lean}`f`，也就是对某个 {lean}`motive : Nat → Sort u` 而言，类型
 {lean}`(n : Nat) → motive n` 的元素 {lean}`f`。它必须处理两种情况：输入为
 {lean}`zero` 的情况，以及输入形如 {lean}`succ n`、其中 {lean}`n : Nat` 的情况。
@@ -1761,7 +1761,7 @@ tag := "axiomatic-details"
 以及_索引_，即为同时正在构造的类型族作参数化的参数。每个构造子都应具有一个类型，
 其中参数类型由先前定义的类型、参数类型与索引类型，以及当前正在定义的归纳族构成。
 要求是：如果后者出现，它只能_严格正向_地出现。简单来说，这意味着凡是包含它的构造子参数，
-都必须是一个依赖箭头类型，并且正在定义的归纳类型只出现在该依赖箭头类型的结果类型位置；
+都必须是一个依值箭头类型，并且正在定义的归纳类型只出现在该依值箭头类型的结果类型位置；
 其中索引由常量和先前的参数给出。
 
 由于归纳类型位于某个 {leanRef}`u` 下的 {leanRef}`Sort u` 中，自然要问：

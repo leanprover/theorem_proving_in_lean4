@@ -13,7 +13,7 @@ file := "The-Conversion-Tactic-Mode"
 
 在策略块中，可以使用关键字 {tactic}`conv` 进入
 _转换模式_。该模式允许在假设和目标的内部移动，
-甚至可以进入函数抽象和依赖箭头的内部，以应用重写或
+甚至可以进入函数抽象和依值箭头的内部，以应用重写或
 化简步骤。
 
 # 基本导航与重写
@@ -55,7 +55,7 @@ example (a b c : Nat) : a * (b * c) = a * (c * b) := by
 
 - {leanRef}`lhs` 导航到关系的左侧（在这里是等式）。
    也有一个 {tactic}`rhs` 用来导航到右侧。
-- {leanRef}`congr` 会按照当前头函数的（非依赖且显式的）参数数量创建相应数量的目标
+- {leanRef}`congr` 会按照当前头函数的（非依值且显式的）参数数量创建相应数量的目标
   （这里的头函数是乘法）。
 - {leanRef}`rfl` 使用自反性关闭目标。
 
@@ -155,7 +155,7 @@ tag := "other-tactics-inside-conversion-mode"
 %%%
 
 - :::leanFirst
-  {leanRef}`arg`{lit}` i` 进入应用的第 {lit}`i` 个非依赖显式参数。
+  {leanRef}`arg`{lit}` i` 进入应用的第 {lit}`i` 个非依值显式参数。
 
   ```lean (showProofStates := "arg2 arg3")
   example (a b c : Nat) : a * (b * c) = a * (c * b) := by

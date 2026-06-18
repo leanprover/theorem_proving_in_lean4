@@ -6,16 +6,16 @@ open TPiL
 
 open Verso.Genre Manual
 
-#doc (Manual) "依赖类型论" =>
+#doc (Manual) "依值类型论" =>
 %%%
 tag := "dependent-type-theory"
 file := "Dependent-Type-Theory"
 htmlSplit := .never
 %%%
 
-依赖类型论是一种强大而富有表现力的语言，使你能够表达复杂的数学断言，
+依值类型论是一种强大而富有表现力的语言，使你能够表达复杂的数学断言，
 编写复杂的硬件与软件规约，并以自然且统一的方式对二者进行推理。
-Lean 基于依赖类型论的一个版本，即_构造演算_，并带有可数的、
+Lean 基于依值类型论的一个版本，即_构造演算_，并带有可数的、
 非累积宇宙层级以及归纳类型。到本章结束时，你将理解这些说法的大部分含义。
 
 # 简单类型论
@@ -156,7 +156,7 @@ known as _currying_. -->
 tag := "types-as-objects"
 %%%
 
-Lean 的依赖类型论扩展简单类型论的一种方式是：类型本身——如 {lean}`Nat`
+Lean 的依值类型论扩展简单类型论的一种方式是：类型本身——如 {lean}`Nat`
 和 {lean}`Bool` 这样的实体——是一等公民；也就是说，它们自身也是对象。
 为使这一点成立，它们每一个也都必须有一个类型。
 
@@ -409,7 +409,7 @@ def g (s : String) : Bool := s.length > 0
 ```
 例如，最后一个表达式表示这样一个函数：它接受三个类型 {leanRef}`α`、
 {leanRef}`β` 和 {leanRef}`γ`，以及两个函数 {leanRef}`g : β → γ` 和 {leanRef}`f : α → β`，
-并返回 {leanRef}`g` 与 {leanRef}`f` 的复合。（理解这个函数的类型需要理解_依赖积_，
+并返回 {leanRef}`g` 与 {leanRef}`f` 的复合。（理解这个函数的类型需要理解_依值积_，
 这将在下文解释。）
 
 :::setup
@@ -459,7 +459,7 @@ def g (s : String) : Bool := s.length > 0
 #eval (fun x : Nat => true) 1  -- true
 ```
 
-稍后你会看到这些项是如何被求值的。现在请注意，这是依赖类型论的一个重要特征：
+稍后你会看到这些项是如何被求值的。现在请注意，这是依值类型论的一个重要特征：
 每个项都有计算行为，并支持_规范化_的概念。原则上，两个能化简到同一值的项称为
 _定义等价_。Lean 的类型检查器会把它们视为“相同”，并尽力识别和支持这些同一性。
 
@@ -885,7 +885,7 @@ end Foo
 {kw}`variable` 命令，其作用域会被限制在该命名空间内。类似地，如果在命名空间内使用
 {kw}`open` 命令，当命名空间关闭时，其效果也会消失。
 
-# 依赖类型论为何“依赖”？
+# 依值类型论为何“依值”？
 %%%
 tag := "what-makes-dependent-type-theory-dependent"
 %%%
@@ -895,7 +895,7 @@ tag := "what-makes-dependent-type-theory-dependent"
 variable (α : Type) (n : Nat)
 ```
 
-简短的解释是：类型可以依赖于参数。你已经见过一个很好的例子：
+简短的解释是：类型可以依赖于参数的值。你已经见过一个很好的例子：
 类型 {lean}`List α` 依赖于参数 {lean}`α`，正是这种依赖区分了 {lean}`List Nat`
 和 {lean}`List Bool`。再举一例，考虑类型 {lean}`Vector α n`，它表示长度为
 {lean}`n`、元素类型为 {lean}`α` 的向量类型。这个类型依赖于_两个_参数：
@@ -941,7 +941,7 @@ def cons (α : Type) (a : α) (as : List α) : List α :=
 variable (α : Type) (β : α → Type) (a : α) (f : (a : α) → β a)
 ```
 
-这是_依赖函数类型_，或称*依赖箭头类型*的一个实例。给定 {lean}`α : Type`
+这是_依值函数类型_，或称*依值箭头类型*的一个实例。给定 {lean}`α : Type`
 和 {lean}`β : α → Type`，可以把 {lean}`β` 看作 {lean}`α` 上的一个类型族，
 也就是说，对每个 {lean}`a : α` 都有一个类型 {lean}`β a`。在这种情况下，
 类型 {lean}`(a : α) → β a` 表示具有如下性质的函数 {lean}`f` 的类型：
@@ -955,8 +955,8 @@ variable (α : Type) (β : Type) (a : α) (f : (a : α) → β a)
 ```
 注意，对任意表达式 {lean}`β : Type`，{lean}`(a : α) → β` 都有意义。
 当 {lean}`β` 的值依赖于 {leanRef}`a` 时（例如上一段中的表达式 {leanRef}`β a`），
-{leanRef}`(a : α) → β` 表示一个依赖函数类型。当 {lean}`β` 不依赖于 {leanRef}`a` 时，
-{leanRef}`(a : α) → β` 与类型 {lean}`α → β` 没有区别。事实上，在依赖类型论
+{leanRef}`(a : α) → β` 表示一个依值函数类型。当 {lean}`β` 不依赖于 {leanRef}`a` 时，
+{leanRef}`(a : α) → β` 与类型 {lean}`α → β` 没有区别。事实上，在依值类型论
 （以及 Lean）中，当 {lean}`β` 不依赖于 {leanRef (in := "a : α")}`a` 时，
 {lean}`α → β` 只是 {lean}`(a : α) → β` 的记号。
 :::
@@ -975,12 +975,12 @@ variable (α : Type) (β : Type) (a : α) (f : (a : α) → β a)
 ```
 variable (α : Type) (β : α → Type) (a : α) (b : β a)
 ```
-正如依赖函数类型 {lean}`(a : α) → β a` 通过允许 {lit}`β`
-依赖于 {leanRef}`a` 来推广函数类型 {lit}`α → β` 一样，依赖笛卡尔积类型
+正如依值函数类型 {lean}`(a : α) → β a` 通过允许 {lit}`β`
+依赖于 {leanRef}`a` 来推广函数类型 {lit}`α → β` 一样，依值笛卡尔积类型
 {lean}`(a : α) × β a` 也以同样方式推广笛卡尔积 {lit}`α × β`。
-依赖积也称为 _sigma_ 类型，并且也可以写作 {lean}`Σ a : α, β a`。
+依值积也称为 _sigma_ 类型，并且也可以写作 {lean}`Σ a : α, β a`。
 可以使用 {lean (type := "(a : α) × β a")}`⟨a, b⟩` 或 {lean}`Sigma.mk a b`
-创建依赖对。字符 {lit}`⟨` 和 {lit}`⟩` 可分别通过 {kbd}`\langle` 与 {kbd}`\rangle`
+创建依值对。字符 {lit}`⟨` 和 {lit}`⟩` 可分别通过 {kbd}`\langle` 与 {kbd}`\rangle`
 或 {kbd}`\<` 与 {kbd}`\>` 输入。
 :::
 
@@ -1055,7 +1055,7 @@ variable (α : Type)
 类型为 {lean}`Lst α` 的元素。
 :::
 
-这是依赖类型论的一个核心特征：项携带大量信息，而且其中一些信息常常可以从上下文推断出来。
+这是依值类型论的一个核心特征：项携带大量信息，而且其中一些信息常常可以从上下文推断出来。
 在 Lean 中，可以使用下划线 {lit}`_` 来指定系统应当自动填入这些信息。
 这称为“隐式参数”。
 

@@ -32,7 +32,7 @@ tag := "the-universal-quantifier"
 
 > 给定 {lean}`∀ x : α, p x` 的一个证明以及任意项 {lean}`t : α`，我们得到 {lean}`p t` 的一个证明。
 
-与蕴含的情形一样，命题即类型的解释现在发挥作用。回忆依赖箭头类型的引入规则和消去规则：
+与蕴含的情形一样，命题即类型的解释现在发挥作用。回忆依值箭头类型的引入规则和消去规则：
 
 ```setup
 variable {α : Type u} (p : α → Prop) (x y : α) (r : α → α → Prop) {β : α → Type v} {t : {x : α} → β x}
@@ -53,7 +53,7 @@ variable {α : Type u} (p : α → Prop) (x y : α) (r : α → α → Prop) {β
 ```
 variable {α : Type u} {β : Type v} {p : {x : α} → Prop} (q : Prop)
 ```
-因此，构造演算以这种方式把依赖箭头类型与全称表达式等同起来。如果 {lean}`p` 是任意表达式，{lean}`∀ x : α, p` 只不过是 {lean}`(x : α) → p` 的另一种记法；当 {lean}`p` 是命题时，前一种记法通常比后一种更自然。典型地，表达式 {lean}`p` 会依赖于 {leanRef}`x : α`。回忆普通函数空间的情形：我们可以把 {lean}`α → β` 解释为 {lean}`(x : α) → β` 的特殊情形，其中 {lean}`β` 不依赖于 {leanRef}`x`。类似地，命题之间的蕴含 {lean}`p → q` 可看作 {lean}`∀ x : p, q` 的特殊情形，其中表达式 {lean}`q` 不依赖于 {leanRef}`x`。
+因此，构造演算以这种方式把依值箭头类型与全称表达式等同起来。如果 {lean}`p` 是任意表达式，{lean}`∀ x : α, p` 只不过是 {lean}`(x : α) → p` 的另一种记法；当 {lean}`p` 是命题时，前一种记法通常比后一种更自然。典型地，表达式 {lean}`p` 会依赖于 {leanRef}`x : α`。回忆普通函数空间的情形：我们可以把 {lean}`α → β` 解释为 {lean}`(x : α) → β` 的特殊情形，其中 {lean}`β` 不依赖于 {leanRef}`x`。类似地，命题之间的蕴含 {lean}`p → q` 可看作 {lean}`∀ x : p, q` 的特殊情形，其中表达式 {lean}`q` 不依赖于 {leanRef}`x`。
 :::
 
 下面的例子展示了 {tech}[propositions-as-types] 对应如何在实践中使用。
@@ -143,9 +143,9 @@ universe i j
 variable (α : Sort i) (β : {x : α} → Sort j) {x : α}
 ```
 
-正是依赖箭头类型，尤其是全称量词的类型规则，将 {lean}`Prop` 与其他类型区分开来。假设有 {lean}`α : Sort i` 和 {lean}`β : Sort j`，其中表达式 {lean}`β` 可以依赖于变量 {lean}`x : α`。那么 {lean}`(x : α) → β` 是 {lean}`Sort (imax i j)` 的元素；这里若 {lit}`j` 不是 {lit}`0`，则 {lit}`imax i j` 是 {lit}`i` 与 {lit}`j` 的最大值，否则为 {lit}`0`。
+正是依值箭头类型，尤其是全称量词的类型规则，将 {lean}`Prop` 与其他类型区分开来。假设有 {lean}`α : Sort i` 和 {lean}`β : Sort j`，其中表达式 {lean}`β` 可以依赖于变量 {lean}`x : α`。那么 {lean}`(x : α) → β` 是 {lean}`Sort (imax i j)` 的元素；这里若 {lit}`j` 不是 {lit}`0`，则 {lit}`imax i j` 是 {lit}`i` 与 {lit}`j` 的最大值，否则为 {lit}`0`。
 
-其思想如下。如果 {lit}`j` 不是 {lit}`0`，那么 {lean}`(x : α) → β` 是 {lean}`Sort (max i j)` 的元素。换言之，从 {lean}`α` 到 {lean}`β` 的依赖函数类型“位于”下标为 {lit}`i` 与 {lit}`j` 最大值的宇宙中。然而，若 {lean}`β` 属于 {lean}`Sort 0`，即是 {lean}`Prop` 的元素，那么无论 {lean}`α` 位于哪个类型宇宙，{lean}`(x : α) → β` 也都是 {lean}`Sort 0` 的元素。换言之，如果 {lean}`β` 是依赖于 {lean}`α` 的命题，那么 {lean}`∀ x : α, β` 仍然是命题。这反映了把 {lean}`Prop` 解释为命题而非数据的类型，也正是它使 {lean}`Prop` 成为 {deftech}_impredicative_。
+其思想如下。如果 {lit}`j` 不是 {lit}`0`，那么 {lean}`(x : α) → β` 是 {lean}`Sort (max i j)` 的元素。换言之，从 {lean}`α` 到 {lean}`β` 的依值函数类型“位于”下标为 {lit}`i` 与 {lit}`j` 最大值的宇宙中。然而，若 {lean}`β` 属于 {lean}`Sort 0`，即是 {lean}`Prop` 的元素，那么无论 {lean}`α` 位于哪个类型宇宙，{lean}`(x : α) → β` 也都是 {lean}`Sort 0` 的元素。换言之，如果 {lean}`β` 是依赖于 {lean}`α` 的命题，那么 {lean}`∀ x : α, β` 仍然是命题。这反映了把 {lean}`Prop` 解释为命题而非数据的类型，也正是它使 {lean}`Prop` 成为 {deftech}_impredicative_。
 
 术语“{deftech}[predicative]”源自二十世纪之交的基础研究。当时，Poincaré 和 Russell 等逻辑学家把集合论悖论归咎于一种“恶性循环”：我们通过对一个包含待定义性质本身的集合进行量化来定义某个性质。注意，如果 {lean}`α` 是任意类型，我们可以形成 {lean}`α` 上所有谓词的类型 {lean}`α → Prop`（即“{lean}`α` 的幂类型”）。{lean}`Prop` 的非谓性意味着，我们可以形成对 {lean}`α → Prop` 量化的命题。特别地，我们可以通过对 {lean}`α` 上所有谓词量化来定义 {lean}`α` 上的谓词；这正是曾经被认为有问题的那种循环性。
 :::
@@ -604,7 +604,7 @@ variable {α : Type u} (p : α → Prop) {β : α → Type} (a : α) (h : p a) (
 
 把存在量词消去规则与析取消去规则比较会有所帮助：断言 {lean}`∃ x : α, p x` 可以看作命题 {lean}`p a` 的“大析取”，其中 {lean}`a` 遍历 {lean}`α` 的所有元素。注意，匿名构造子记法 {leanRef}`⟨w, hw.right, hw.left⟩` 缩写了一个嵌套构造子应用；我们同样可以写成 {lit}`⟨`{leanRef}`w`{lit}`, ⟨`{leanRef}`hw.right`{lit}`, `{leanRef}`hw.left`{lit}`⟩⟩`。
 
-注意，存在命题与依赖类型一节中描述的 Sigma 类型非常相似。区别在于，存在命题是_命题_，而 Sigma 类型是_类型_。除此之外，它们非常相似。给定谓词 {lean}`p : α → Prop` 和类型族 {lean}`β : α → Type`，对于项 {lean}`a : α` 以及 {lean}`h : p a`、{lean}`h' : β a`，项 {lean}`Exists.intro a h` 的类型是 {lean}`(∃ x : α, p x) : Prop`，而 {lean}`Sigma.mk a h'` 的类型是 {lean}`(Σ x : α, β x)`。{lit}`∃` 与 {lit}`Σ` 的相似性是 {tech}[Curry-Howard isomorphism] 的又一个实例。
+注意，存在命题与依值类型一节中描述的 Sigma 类型非常相似。区别在于，存在命题是_命题_，而 Sigma 类型是_类型_。除此之外，它们非常相似。给定谓词 {lean}`p : α → Prop` 和类型族 {lean}`β : α → Type`，对于项 {lean}`a : α` 以及 {lean}`h : p a`、{lean}`h' : β a`，项 {lean}`Exists.intro a h` 的类型是 {lean}`(∃ x : α, p x) : Prop`，而 {lean}`Sigma.mk a h'` 的类型是 {lean}`(Σ x : α, β x)`。{lit}`∃` 与 {lit}`Σ` 的相似性是 {tech}[Curry-Howard isomorphism] 的又一个实例。
 :::
 
 Lean 提供了利用 {kw}`match` 表达式从存在量词中消去的更便捷方式：
