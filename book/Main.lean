@@ -9,10 +9,10 @@ def plausible := {{
     <script defer="defer" data-domain="lean-lang.org" src="https://plausible.io/js/script.outbound-links.js"></script>
   }}
 
-def config : Config where
+def config : RenderConfig where
   emitTeX := false
-  emitHtmlSingle := false
-  emitHtmlMulti := true
+  emitHtmlSingle := .no
+  emitHtmlMulti := .immediately
   htmlDepth := 1
   extraFiles := [("static", "static")]
   extraCss := Std.HashSet.ofList [
@@ -26,6 +26,5 @@ def config : Config where
   logo := some "/static/lean_logo.svg"
   sourceLink := some "https://github.com/leanprover/theorem_proving_in_lean4"
   issueLink := some "https://github.com/leanprover/theorem_proving_in_lean4/issues"
-  linkTargets := fun st => st.localTargets ++ st.remoteTargets
 
 def main := manualMain (%doc TPiL) (config := config)

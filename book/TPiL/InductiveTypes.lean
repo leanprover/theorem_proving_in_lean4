@@ -208,11 +208,11 @@ def numberOfDay (d : Weekday) : Nat :=
   | friday    => 6
   | saturday  => 7
 
-#eval numberOfDay Weekday.sunday  -- 1
+#eval numberOfDay Weekday.sunday  -- message: 1
 
-#eval numberOfDay Weekday.monday  -- 2
+#eval numberOfDay Weekday.monday  -- message: 2
 
-#eval numberOfDay Weekday.tuesday -- 3
+#eval numberOfDay Weekday.tuesday -- message: 3
 ```
 
 When using Lean's logic, the {kw}`match` expression is compiled using the _recursor_ {leanRef}`Weekday.rec` generated when
@@ -271,7 +271,7 @@ deriving Repr
 
 open Weekday
 
-#eval tuesday   -- Weekday.tuesday
+#eval tuesday   -- message: Weekday.tuesday
 ```
 :::
 
@@ -315,9 +315,9 @@ def previous (d : Weekday) : Weekday :=
   | friday    => thursday
   | saturday  => friday
 
-#eval next (next tuesday)      -- Weekday.thursday
+#eval next (next tuesday)      -- message: Weekday.thursday
 
-#eval next (previous tuesday)  -- Weekday.tuesday
+#eval next (previous tuesday)  -- message: Weekday.tuesday
 
 example : next (previous tuesday) = tuesday :=
   rfl
@@ -1696,7 +1696,7 @@ example (m n k : Nat) (h : succ (succ m) = succ (succ n))
 ```
 :::
 
-The first instance of the tactic adds {leanRef}`h' : m.succ = n.succ` to the
+The first instance of the tactic adds {leanRef}`h' : m + 1 = n + 1` to the
 context, and the second adds {leanRef}`h'' : m = n`.
 
 The {leanRef}`injection` tactic also detects contradictions that arise when different constructors
@@ -1834,8 +1834,6 @@ Actually, Lean compiles the {kw}`match` expressions using a definition based on 
 such as {name}`Eq.casesOn` and {name}`Eq.ndrec`, which are themselves defined using {leanRef}`Eq.rec`.
 
 ```lean
-namespace Hidden
-------
 theorem subst {α : Type u} {a b : α} {p : α → Prop}
     (h₁ : a = b) (h₂ : p a) : p b :=
   match h₁ with
@@ -1849,8 +1847,6 @@ set_option pp.all true
 #print Eq.casesOn
 
 #print Eq.ndrec
--------
-end Hidden
 ```
 
 Using the recursor or {kw}`match` with {leanRef}`h₁ : a = b`, we may assume {leanRef}`a` and {leanRef}`b` are the same,

@@ -1,0 +1,181 @@
+name: Deploy
+
+# Publishes the HTML that CI built. This workflow runs in the base repository,
+# where the Netlify credentials live, and takes the build artifact as its only
+# input.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  deploy:
+    name: Deploy to Netlify
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    # Publications serialize against each other, previews against their own ref.
+    concurrency:
+      group: >-
+        deploy-${{ (github.event.workflow_run.event == 'push' &&
+        startsWith(github.event.workflow_run.head_branch, 'release-'))
+        && 'production' || github.event.workflow_run.head_branch }}
+      cancel-in-progress: false
+    permissions:
+      actions: read # download the artifact belonging to the CI run
+      contents: write # read the commit subject for the deploy message; push the book to gh-pages
+      pull-requests: read # read the pull request title for the deploy message
+      deployments: write # record the deployment against its environment
+      statuses: write # report the resulting URL on the commit that was built
+    env:
+      REPO: ${{ github.repository }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+      TRIGGERING_EVENT: ${{ github.event.workflow_run.event }}
+      ENVIRONMENT: lean-lang.org/theorem_proving_in_lean4
+    steps:
+      - name: Download book HTML
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: book-html
+          path: html-multi
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - id: info
+        name: Compute deployment metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          # Netlify caps an alias at 37 characters.
+          echo "alias=${HEAD_SHA:0:32}" >> "$GITHUB_OUTPUT"
+
+          # Pushing a release- tag publishes the book. Everything else, master
+          # included, goes to a preview alias. A tag push arrives here with the
+          # tag name in head_branch.
+          case "$TRIGGERING_EVENT:$HEAD_BRANCH" in
+            push:release-*) echo "production=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "production=false" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+          # The pull request number comes from the commit that was built. The
+          # message goes to a file because it carries a pull request title or a
+          # commit subject.
+          message=""
+          if [ "$TRIGGERING_EVENT" = pull_request ]; then
+            message=$(gh api "repos/$REPO/commits/$HEAD_SHA/pulls" \
+              --jq 'first(.[] | select(.state == "open")) | "pr#\(.number): \(.title)"')
+          fi
+          if [ -z "$message" ]; then
+            subject=$(gh api "repos/$REPO/commits/$HEAD_SHA" --jq '.commit.message | split("\n")[0]')
+            message="ref/$HEAD_BRANCH: $subject"
+          fi
+          printf '%s' "$message" > deploy-message.txt
+
+      # Search engines index the published book, reached through the release-
+      # tag path below, which leaves this for the preview deploys.
+      - name: Keep previews out of search results
+        if: steps.info.outputs.production != 'true'
+        run: |
+          printf '/*\n  X-Robots-Tag: noindex\n' > html-multi/_headers
+
+      - name: Install the Netlify CLI
+        run: npm install --global netlify-cli@27.0.3
+
+      - id: netlify
+        name: Deploy to Netlify hosting
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: 51300c89-2f6c-4bba-a575-8cf12e434502
+          ALIAS: ${{ steps.info.outputs.alias }}
+          PRODUCTION: ${{ steps.info.outputs.production }}
+        run: |
+          set -euo pipefail
+
+          args=(deploy --dir html-multi --no-build --json --message "$(cat deploy-message.txt)")
+          if [ "$PRODUCTION" = true ]; then
+            args+=(--prod)
+          else
+            args+=(--alias "$ALIAS")
+          fi
+          netlify "${args[@]}" > deploy.json
+
+          # The Netlify CLI may precede its result with progress output, so the
+          # first object carrying the wanted key is the result.
+          python3 - >> "$GITHUB_OUTPUT" <<'PY'
+          import json, os, sys
+          key = "url" if os.environ["PRODUCTION"] == "true" else "deploy_url"
+          text = open("deploy.json").read()
+          decoder = json.JSONDecoder()
+          for start in (i for i, c in enumerate(text) if c == "{"):
+              try:
+                  deploy, _ = decoder.raw_decode(text[start:])
+              except ValueError:
+                  continue
+              if isinstance(deploy, dict) and key in deploy:
+                  print("url=" + deploy[key])
+                  break
+          else:
+              sys.exit(f"the Netlify CLI output carries no {key}")
+          PY
+
+      # The gh-pages branch serves the book's original address,
+      # leanprover.github.io/theorem_proving_in_lean4, so a publication
+      # refreshes it too.
+      - name: Publish to GitHub Pages
+        if: steps.info.outputs.production == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          touch html-multi/.nojekyll
+          git -C html-multi init --quiet --initial-branch gh-pages
+          git -C html-multi config user.name "github-actions[bot]"
+          git -C html-multi config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C html-multi add --all
+          git -C html-multi commit --quiet --message "Book built from $HEAD_SHA"
+          git -C html-multi push --force \
+            "https://x-access-token:${GH_TOKEN}@github.com/$REPO" gh-pages
+
+      - name: Record the deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ steps.netlify.outputs.url }}
+        run: |
+          set -euo pipefail
+          deployment=$(gh api "repos/$REPO/deployments" --method POST --input - --jq .id <<JSON
+          {
+            "ref": "$HEAD_SHA",
+            "environment": "$ENVIRONMENT",
+            "description": "Book",
+            "auto_merge": false,
+            "required_contexts": []
+          }
+          JSON
+          )
+          gh api "repos/$REPO/deployments/$deployment/statuses" \
+            -f state=success \
+            -f environment_url="$URL" \
+            -f description="Book"
+
+          gh api "repos/$REPO/statuses/$HEAD_SHA" \
+            -f state=success \
+            -f context="netlify/deploy" \
+            -f target_url="$URL" \
+            -f description="Book"
+
+      - name: Report failure on the commit
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$REPO/statuses/$HEAD_SHA" \
+            -f state=failure \
+            -f context="netlify/deploy" \
+            -f target_url="$RUN_URL" \
+            -f description="Book"

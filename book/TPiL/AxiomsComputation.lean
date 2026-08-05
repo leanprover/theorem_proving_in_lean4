@@ -1092,7 +1092,7 @@ epsilon {α : Sort u} [h : Nonempty α] (p : α → Prop) : α
 ```signature
 epsilon_spec {α : Sort u} {p : α → Prop}
   (hex : ∃ (y : α), p y) :
-  p (@epsilon _ (nonempty_of_exists hex) p)
+  p (@epsilon _ hex.nonempty p)
 ```
 
 

@@ -38,21 +38,21 @@ from others.
 ```lean
 def Implies (p q : Prop) : Prop := p → q
 ------
-#check And     -- And (a b : Prop) : Prop
+#check And     -- message: And (a b : Prop) : Prop
 
-#check Or      -- Or (a b : Prop) : Prop
+#check Or      -- message: Or (a b : Prop) : Prop
 
-#check Not     -- Not (a : Prop) : Prop
+#check Not     -- message: Not (a : Prop) : Prop
 
-#check Implies -- Implies (p q : Prop) : Prop
+#check Implies -- message: Implies (p q : Prop) : Prop
 
 variable (p q r : Prop)
 
-#check And p q                      -- p ∧ q : Prop
+#check And p q                      -- message: p ∧ q : Prop
 
-#check Or (And p q) r               -- p ∧ q ∨ r : Prop
+#check Or (And p q) r               -- message: p ∧ q ∨ r : Prop
 
-#check Implies (And p q) (And q p)  -- Implies (p ∧ q) (q ∧ p) : Prop
+#check Implies (And p q) (And q p)  -- message: Implies (p ∧ q) (q ∧ p) : Prop
 ```
 
 
@@ -76,13 +76,13 @@ def Implies (p q : Prop) : Prop := p → q
 structure Proof (p : Prop) : Type where
   proof : p
 ------
-#check Proof   -- Proof (p : Prop) : Type
+#check Proof   -- message: Proof (p : Prop) : Type
 
 axiom and_commut (p q : Prop) : Proof (Implies (And p q) (And q p))
 
 variable (p q : Prop)
 
-#check and_commut p q     -- and_commut p q : Proof (Implies (p ∧ q) (q ∧ p))
+#check and_commut p q     -- message: and_commut p q : Proof (Implies (p ∧ q) (q ∧ p))
 ```
 
 
@@ -268,7 +268,7 @@ variable {q : Prop}
 ------
 theorem t1 : p → q → p := fun hp : p => fun hq : q => hp
 
-#print t1 -- theorem t1 : ∀ {p q : Prop}, p → q → p := fun {p q} hp hq => hp
+#print t1 -- message: theorem t1 : ∀ {p q : Prop}, p → q → p := fun {p q} hp hq => hp
 ```
 
 Notice that the lambda abstractions {leanRef}`hp : p` and {leanRef}`hq : q` can be
@@ -302,7 +302,7 @@ variable {q : Prop}
 ------
 theorem t1 (hp : p) (hq : q) : p := hp
 
-#print t1    -- theorem t1 : ∀ {p q : Prop}, p → q → p := fun {p q} hp hq => hp
+#print t1    -- message: theorem t1 : ∀ {p q : Prop}, p → q → p := fun {p q} hp hq => hp
 ```
 
 We can use the theorem {leanRef}`t1` just as a function application:
@@ -384,13 +384,13 @@ theorem t1 (p q : Prop) (hp : p) (hq : q) : p := hp
 
 variable (p q r s : Prop)
 
-#check t1 p q                -- t1 p q : p → q → p
-#check t1 r s                -- t1 r s : r → s → r
-#check t1 (r → s) (s → r)    -- t1 (r → s) (s → r) : (r → s) → (s → r) → r → s
+#check t1 p q                -- message: t1 p q : p → q → p
+#check t1 r s                -- message: t1 r s : r → s → r
+#check t1 (r → s) (s → r)    -- message: t1 (r → s) (s → r) : (r → s) → (s → r) → r → s
 
 variable (h : r → s)
 
-#check t1 (r → s) (s → r) h  -- t1 (r → s) (s → r) h : (s → r) → r → s
+#check t1 (r → s) (s → r) h  -- message: t1 (r → s) (s → r) h : (s → r) → r → s
 ```
 
 Once again, using the {tech}[propositions-as-types] correspondence, the
@@ -846,7 +846,7 @@ theorem and_swap : p ∧ q ↔ q ∧ p :=
     (fun h : q ∧ p =>
      show p ∧ q from And.intro (And.right h) (And.left h))
 
-#check and_swap p q    -- and_swap p q : p ∧ q ↔ q ∧ p
+#check and_swap p q    -- message: and_swap p q : p ∧ q ↔ q ∧ p
 
 variable (h : p ∧ q)
 example : q ∧ p := Iff.mp (and_swap p q) h

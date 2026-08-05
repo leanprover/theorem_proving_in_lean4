@@ -44,23 +44,23 @@ def b2 : Bool := false
 
 /- Check their types. -/
 
-#check m            -- m : Nat
+#check m            -- message: m : Nat
 #check n
-#check n + 0        -- n + 0 : Nat
-#check m * (n + 0)  -- m * (n + 0) : Nat
-#check b1           -- b1 : Bool
+#check n + 0        -- message: n + 0 : Nat
+#check m * (n + 0)  -- message: m * (n + 0) : Nat
+#check b1           -- message: b1 : Bool
 -- "&&" is the Boolean and
-#check b1 && b2     -- b1 && b2 : Bool
+#check b1 && b2     -- message: b1 && b2 : Bool
 -- Boolean or
-#check b1 || b2     -- b1 || b2 : Bool
+#check b1 || b2     -- message: b1 || b2 : Bool
 -- Boolean "true"
-#check true         -- Bool.true : Bool
+#check true         -- message: Bool.true : Bool
 
 /- Evaluate -/
 
-#eval 5 * 4         -- 20
-#eval m + 2         -- 3
-#eval b1 && b2      -- false
+#eval 5 * 4         -- message: 20
+#eval m + 2         -- message: 3
+#eval b1 && b2      -- message: false
 ```
 
 Any text between {lit}`/-` and {lit}`-/` constitutes a comment block that is
@@ -104,26 +104,26 @@ and the Unicode symbol {lit}`→` as a more compact version of {lit}`->`.
 #check Prod Nat Nat   -- alternative notation
 
 #check Nat → Nat → Nat
-#check Nat → (Nat → Nat)  --  same type as above
+#check Nat → (Nat → Nat)  -- same type as above
 
 #check Nat × Nat → Nat
 #check (Nat → Nat) → Nat -- a "functional"
 ```
 ```lean
-#check Nat.succ     -- Nat.succ (n : Nat) : Nat
-#check (0, 1)       -- (0, 1) : Nat × Nat
-#check Nat.add      -- Nat.add : Nat → Nat → Nat
+#check Nat.succ     -- message: Nat.succ (n : Nat) : Nat
+#check (0, 1)       -- message: (0, 1) : Nat × Nat
+#check Nat.add      -- message: Nat.add : Nat → Nat → Nat
 
-#check Nat.succ 2   -- Nat.succ 2 : Nat
-#check Nat.add 3    -- Nat.add 3 : Nat → Nat
-#check Nat.add 5 2  -- Nat.add 5 2 : Nat
-#check (5, 9).1     -- (5, 9).fst : Nat
-#check (5, 9).2     -- (5, 9).snd : Nat
+#check Nat.succ 2   -- message: Nat.succ 2 : Nat
+#check Nat.add 3    -- message: Nat.add 3 : Nat → Nat
+#check Nat.add 5 2  -- message: Nat.add 5 2 : Nat
+#check (5, 9).1     -- message: (5, 9).fst : Nat
+#check (5, 9).2     -- message: (5, 9).snd : Nat
 
-#eval Nat.succ 2   -- 3
-#eval Nat.add 5 2  -- 7
-#eval (5, 9).1     -- 5
-#eval (5, 9).2     -- 9
+#eval Nat.succ 2   -- message: 3
+#eval Nat.add 5 2  -- message: 7
+#eval (5, 9).1     -- message: 5
+#eval (5, 9).2     -- message: 9
 ```
 
 Once again, you should try some examples on your own.
@@ -205,12 +205,12 @@ def β : Type := Bool
 def F : Type → Type := List
 def G : Type → Type → Type := Prod
 
-#check α        -- α : Type
-#check F α      -- F α : Type
-#check F Nat    -- F Nat : Type
-#check G α      -- G α : Type → Type
-#check G α β    -- G α β : Type
-#check G α Nat  -- G α Nat : Type
+#check α        -- message: α : Type
+#check F α      -- message: F α : Type
+#check F Nat    -- message: F Nat : Type
+#check G α      -- message: G α : Type → Type
+#check G α β    -- message: G α β : Type
+#check G α Nat  -- message: G α Nat : Type
 ```
 
 As the example above suggests, you have already seen an example of a function of type
@@ -220,11 +220,11 @@ As the example above suggests, you have already seen an example of a function of
 def α : Type := Nat
 def β : Type := Bool
 
-#check Prod α β       -- α × β : Type
-#check α × β          -- α × β : Type
+#check Prod α β       -- message: α × β : Type
+#check α × β          -- message: α × β : Type
 
-#check Prod Nat Nat   -- Nat × Nat : Type
-#check Nat × Nat      -- Nat × Nat : Type
+#check Prod Nat Nat   -- message: Nat × Nat : Type
+#check Nat × Nat      -- message: Nat × Nat : Type
 ```
 
 :::leanFirst
@@ -234,8 +234,8 @@ denotes the type of lists of elements of type {leanRef}`α`.
 ```lean
 def α : Type := Nat
 
-#check List α    -- List α : Type
-#check List Nat  -- List Nat : Type
+#check List α    -- message: List α : Type
+#check List Nat  -- message: List Nat : Type
 ```
 :::
 
@@ -243,7 +243,7 @@ Given that every expression in Lean has a type, it is natural to ask:
 what type does {lean}`Type` itself have?
 
 ```lean
-#check Type      -- Type : Type 1
+#check Type      -- message: Type : Type 1
 ```
 
 You have actually come up against one of the most subtle aspects of
@@ -251,11 +251,11 @@ Lean's typing system. Lean's underlying foundation has an infinite
 hierarchy of types:
 
 ```lean
-#check Type     -- Type : Type 1
-#check Type 1   -- Type 1 : Type 2
-#check Type 2   -- Type 2 : Type 3
-#check Type 3   -- Type 3 : Type 4
-#check Type 4   -- Type 4 : Type 5
+#check Type     -- message: Type : Type 1
+#check Type 1   -- message: Type 1 : Type 2
+#check Type 2   -- message: Type 2 : Type 3
+#check Type 3   -- message: Type 3 : Type 4
+#check Type 4   -- message: Type 4 : Type 5
 ```
 
 :::setup
@@ -324,7 +324,7 @@ type signature of the function {lean}`List`:
 
 
 ```lean
-#check List    -- List.{u} (α : Type u) : Type u
+#check List    -- message: List.{u} (α : Type u) : Type u
 ```
 
 Here {lit}`u` is a variable ranging over type levels. The output of the
@@ -334,7 +334,7 @@ similarly polymorphic:
 :::
 
 ```lean
-#check Prod    -- Prod.{u, v} (α : Type u) (β : Type v) : Type (max u v)
+#check Prod    -- message: Prod.{u, v} (α : Type u) (β : Type v) : Type (max u v)
 ```
 
 To define polymorphic constants, Lean allows you to
@@ -345,7 +345,7 @@ universe u
 
 def F (α : Type u) : Type u := Prod α α
 
-#check F    -- F.{u} (α : Type u) : Type u
+#check F    -- message: F.{u} (α : Type u) : Type u
 ```
 
 :::leanFirst
@@ -354,7 +354,7 @@ You can avoid the {kw}`universe` command by providing the universe parameters wh
 ```lean
 def F.{u} (α : Type u) : Type u := Prod α α
 
-#check F    -- F.{u} (α : Type u) : Type u
+#check F    -- message: F.{u} (α : Type u) : Type u
 ```
 :::
 
@@ -367,21 +367,21 @@ Lean provides a {kw}`fun` (or {kw}`λ`) keyword to create a function
 from an expression as follows:
 
 ```lean
-#check fun (x : Nat) => x + 5   -- fun x => x + 5 : Nat → Nat
+#check fun (x : Nat) => x + 5   -- message: fun x => x + 5 : Nat → Nat
 -- λ and fun mean the same thing
-#check λ (x : Nat) => x + 5     -- fun x => x + 5 : Nat → Nat
+#check λ (x : Nat) => x + 5     -- message: fun x => x + 5 : Nat → Nat
 ```
 
 The type {lean}`Nat` can be inferred in this example:
 ```lean
-#check fun x => x + 5   -- fun x => x + 5 : Nat → Nat
-#check λ x => x + 5     -- fun x => x + 5 : Nat → Nat
+#check fun x => x + 5   -- message: fun x => x + 5 : Nat → Nat
+#check λ x => x + 5     -- message: fun x => x + 5 : Nat → Nat
 ```
 
 You can evaluate a lambda function by passing the required parameters:
 
 ```lean
-#eval (λ x : Nat => x + 5) 10    -- 15
+#eval (λ x : Nat => x + 5) 10    -- message: 15
 ```
 
 :::setup
@@ -402,7 +402,7 @@ Here are some more examples
 ```lean
 #check fun x : Nat => fun y : Bool => if not y then x + 1 else x + 2
 #check fun (x : Nat) (y : Bool) => if not y then x + 1 else x + 2
-#check fun x y => if not y then x + 1 else x + 2   -- fun x y => if (!y) = true then x + 1 else x + 2 : Nat → Bool → Nat
+#check fun x y => if not y then x + 1 else x + 2   -- message: fun x y => if (!y) = true then x + 1 else x + 2 : Nat → Bool → Nat
 ```
 
 Lean interprets the final three examples as the same expression; in
@@ -416,10 +416,10 @@ described in terms of lambda abstraction:
 def f (n : Nat) : String := toString n
 def g (s : String) : Bool := s.length > 0
 
-#check fun x : Nat => x        -- fun x => x : Nat → Nat
-#check fun x : Nat => true     -- fun x => true : Nat → Bool
-#check fun x : Nat => g (f x)  -- fun x => g (f x) : Nat → Bool
-#check fun x => g (f x)        -- fun x => g (f x) : Nat → Bool
+#check fun x : Nat => x        -- message: fun x => x : Nat → Nat
+#check fun x : Nat => true     -- message: fun x => true : Nat → Bool
+#check fun x : Nat => g (f x)  -- message: fun x => g (f x) : Nat → Bool
+#check fun x => g (f x)        -- message: fun x => g (f x) : Nat → Bool
 ```
 
 Think about what these expressions mean. The expression
@@ -482,8 +482,8 @@ following expressions:
 :::
 
 ```lean
-#check (fun x : Nat => x) 1     -- (fun x => x) 1 : Nat
-#check (fun x : Nat => true) 1  -- (fun x => true) 1 : Bool
+#check (fun x : Nat => x) 1     -- message: (fun x => x) 1 : Nat
+#check (fun x : Nat => true) 1  -- message: (fun x => true) 1 : Bool
 
 def f (n : Nat) : String := toString n
 def g (s : String) : Bool := s.length > 0
@@ -497,8 +497,8 @@ In fact, more should be true: applying the expression {lean}`(fun x : Nat => x)`
 {lean}`1` should “return” the value {lean}`1`. And, indeed, it does:
 
 ```lean
-#eval (fun x : Nat => x) 1     -- 1
-#eval (fun x : Nat => true) 1  -- true
+#eval (fun x : Nat => x) 1     -- message: 1
+#eval (fun x : Nat => true) 1  -- message: true
 ```
 
 You will see later how these terms are evaluated. For now, notice that
@@ -558,7 +558,7 @@ can then invoke this function using:
 def double (x : Nat) : Nat :=
  x + x
 -----
-#eval double 3    -- 6
+#eval double 3    -- message: 6
 ```
 
 In this case you can think of {kw}`def` as a kind of named {kw}`fun`.
@@ -568,7 +568,7 @@ The following yields the same result:
 def double : Nat → Nat :=
   fun x => x + x
 
-#eval double 3    -- 6
+#eval double 3    -- message: 6
 ```
 
 You can omit the type declarations when Lean has enough information to
@@ -600,7 +600,7 @@ that adds two natural numbers:
 def add (x y : Nat) :=
   x + y
 
-#eval add 3 2               -- 5
+#eval add 3 2               -- message: 5
 ```
 
 The parameter list can be separated like this:
@@ -612,7 +612,7 @@ def double (x : Nat) : Nat :=
 def add (x : Nat) (y : Nat) :=
   x + y
 
-#eval add (double 3) (7 + 9)  -- 22
+#eval add (double 3) (7 + 9)  -- message: 22
 ```
 
 Notice here we called the {leanRef}`double` function to create the first
@@ -639,7 +639,7 @@ def double (x : Nat) : Nat :=
 def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
   f (f x)
 
-#eval doTwice double 2   -- 8
+#eval doTwice double 2   -- message: 8
 ```
 
 Now to get a bit more abstract, you can also specify arguments that
@@ -677,8 +677,32 @@ def double (x : Nat) : Nat :=
 def square (x : Nat) : Nat :=
   x * x
 
-#eval compose Nat Nat Nat double square 3  -- 18
+#eval compose Nat Nat Nat double square 3  -- message: 18
 ```
+
+:::leanFirst
+While Lean fundamentally considers a defined name to be the same as its unfolding, not all names are unfolded in all contexts.
+Take this example that defines {leanRef}`Natural` as an alternative name for {leanRef}`Nat`:
+```lean
+def Natural := Nat
+```
+
+```lean +error
+def Natural := Nat
+------
+def five : Natural := 5
+-- message: failed to synthesize instance of type class
+--   OfNat Natural 5
+-- numerals are polymorphic in Lean, but the numeral `5` cannot be used in a context where the expected type is
+--   Natural
+-- due to the absence of the instance above
+--
+-- Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+```
+:::
+
+When a name is defined using {kw}`def`, it is called _semireducible_: Lean will unfold it when absolutely necessary to establish that two terms are definitionally equal, but most automated features will leave references to the defined name untouched.
+
 
 # Local Definitions
 %%%
@@ -697,13 +721,13 @@ definitionally equal to the result of replacing every occurrence of
 :::
 
 ```lean
-#check let y := 2 + 2; y * y   -- let y := 2 + 2; y * y : Nat
-#eval  let y := 2 + 2; y * y   -- 16
+#check let y := 2 + 2; y * y   -- message: let y := 2 + 2; y * y : Nat
+#eval  let y := 2 + 2; y * y   -- message: 16
 
 def twice_double (x : Nat) : Nat :=
   let y := x + x; y * y
 
-#eval twice_double 2   -- 16
+#eval twice_double 2   -- message: 16
 ```
 
 :::setup
@@ -722,7 +746,7 @@ You can combine multiple assignments by chaining {kw}`let` statements:
 
 ```lean
 #check let y := 2 + 2; let z := y + y; z * z
-#eval  let y := 2 + 2; let z := y + y; z * z   -- 64
+#eval  let y := 2 + 2; let z := y + y; z * z   -- message: 64
 ```
 
 The {lit}`;` can be omitted when a line break is used.
@@ -758,6 +782,8 @@ def foo := let a := Nat; fun x : a => x + 2
 -/
 ```
 ::::
+
+
 
 # Variables and Sections
 %%%
@@ -1020,9 +1046,9 @@ types vary depending on the first argument, {leanRef}`α`.
 def cons (α : Type) (a : α) (as : List α) : List α :=
   List.cons a as
 
-#check cons Nat        -- cons Nat : Nat → List Nat → List Nat
-#check cons Bool       -- cons Bool : Bool → List Bool → List Bool
-#check cons            -- cons (α : Type) (a : α) (as : List α) : List α
+#check cons Nat        -- message: cons Nat : Nat → List Nat → List Nat
+#check cons Bool       -- message: cons Bool : Bool → List Bool → List Bool
+#check cons            -- message: cons (α : Type) (a : α) (as : List α) : List α
 ```
 :::
 ::::
@@ -1060,10 +1086,10 @@ and the difference between the round and curly braces will be
 explained momentarily.
 
 ```lean
-#check @List.cons    -- @List.cons : {α : Type u_1} → α → List α → List α
-#check @List.nil     -- @List.nil : {α : Type u_1} → List α
-#check @List.length  -- @List.length : {α : Type u_1} → List α → Nat
-#check @List.append  -- @List.append : {α : Type u_1} → List α → List α → List α
+#check @List.cons    -- message: @List.cons : {α : Type u_1} → α → List α → List α
+#check @List.nil     -- message: @List.nil : {α : Type u_1} → List α
+#check @List.length  -- message: @List.length : {α : Type u_1} → List α → Nat
+#check @List.append  -- message: @List.append : {α : Type u_1} → List α → List α → List α
 ```
 
 :::setup
@@ -1092,12 +1118,12 @@ def g (α : Type u) (β : α → Type v) (a : α) (b : β a) : Σ a : α, β a :
 def h1 (x : Nat) : Nat :=
   (f Type (fun α => α) Nat x).2
 
-#eval h1 5 -- 5
+#eval h1 5 -- message: 5
 
 def h2 (x : Nat) : Nat :=
   (g Type (fun α => α) Nat x).2
 
-#eval h2 5 -- 5
+#eval h2 5 -- message: 5
 ```
 The functions {leanRef}`f` and {leanRef}`g` above denote the same function.
 
@@ -1116,10 +1142,10 @@ def Lst.cons (α : Type u) (a : α) (as : Lst α) : Lst α := List.cons a as
 def Lst.nil (α : Type u) : Lst α := List.nil
 def Lst.append (α : Type u) (as bs : Lst α) : Lst α := List.append as bs
 -----
-#check Lst          -- Lst.{u} (α : Type u) : Type u
-#check Lst.cons     -- Lst.cons.{u} (α : Type u) (a : α) (as : Lst α) : Lst α
-#check Lst.nil      -- Lst.nil.{u} (α : Type u) : Lst α
-#check Lst.append   -- Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
+#check Lst          -- message: Lst.{u} (α : Type u) : Type u
+#check Lst.cons     -- message: Lst.cons.{u} (α : Type u) (a : α) (as : Lst α) : Lst α
+#check Lst.nil      -- message: Lst.nil.{u} (α : Type u) : Lst α
+#check Lst.append   -- message: Lst.append.{u} (α : Type u) (as bs : Lst α) : Lst α
 ```
 
 Then, you can construct lists of {lean}`Nat` as follows:
@@ -1175,7 +1201,7 @@ def Lst.append (α : Type u) (as bs : Lst α) : Lst α := List.append as bs
 def as : Lst Nat := Lst.nil _
 def bs : Lst Nat := Lst.cons _ 5 (Lst.nil _)
 
-#check Lst.append _ as bs -- Lst.append Nat as bs : Lst Nat
+#check Lst.append _ as bs -- message: Lst.append Nat as bs : Lst Nat
 ```
 
 It is still tedious, however, to type all these underscores. When a
@@ -1214,10 +1240,10 @@ Checking the type of {leanRef}`ident` requires wrapping it in parentheses to avo
 universe u
 def ident {α : Type u} (x : α) := x
 ---------
-#check (ident)       -- ident : ?m.22 → ?m.22
-#check ident 1       -- ident 1 : Nat
-#check ident "hello" -- ident "hello" : String
-#check @ident        -- @ident : {α : Type u_1} → α → α
+#check (ident)       -- message: ident : ?m.22 → ?m.22
+#check ident 1       -- message: ident 1 : Nat
+#check ident "hello" -- message: ident "hello" : String
+#check @ident        -- message: @ident : {α : Type u_1} → α → α
 ```
 
 The makes the first argument to {leanRef}`ident` implicit. Notationally,
@@ -1270,11 +1296,11 @@ used to specify the desired types of the expressions {lean}`id` and
 :::
 
 ```lean
-#check (List.nil)             -- [] : List ?m.2
-#check (id)                   -- id : ?m.1 → ?m.1
+#check (List.nil)             -- message: [] : List ?m.2
+#check (id)                   -- message: id : ?m.1 → ?m.1
 
-#check (List.nil : List Nat)  -- [] : List Nat
-#check (id : Nat → Nat)       -- id : Nat → Nat
+#check (List.nil : List Nat)  -- message: [] : List Nat
+#check (id : Nat → Nat)       -- message: id : Nat → Nat
 ```
 
 Numerals are overloaded in Lean, but when the type of a numeral cannot
@@ -1284,9 +1310,9 @@ elaborated in the same way, whereas the third {kw}`#check` command
 interprets {lean (type := "Int")}`2` as an integer.
 
 ```lean
-#check 2            -- 2 : Nat
-#check (2 : Nat)    -- 2 : Nat
-#check (2 : Int)    -- 2 : Int
+#check 2            -- message: 2 : Nat
+#check (2 : Nat)    -- message: 2 : Nat
+#check (2 : Int)    -- message: 2 : Int
 ```
 
 :::setup
@@ -1302,12 +1328,12 @@ made explicit.
 :::
 
 ```lean
-#check @id        -- @id : {α : Sort u_1} → α → α
-#check @id Nat    -- id : Nat → Nat
-#check @id Bool   -- id : Bool → Bool
+#check @id        -- message: @id : {α : Sort u_1} → α → α
+#check @id Nat    -- message: id : Nat → Nat
+#check @id Bool   -- message: id : Bool → Bool
 
-#check @id Nat 1     -- id 1 : Nat
-#check @id Bool true -- id true : Bool
+#check @id Nat 1     -- message: id 1 : Nat
+#check @id Bool true -- message: id true : Bool
 ```
 
 Notice that now the first {kw}`#check` command gives the type of the

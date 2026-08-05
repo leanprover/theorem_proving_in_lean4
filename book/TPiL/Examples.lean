@@ -36,8 +36,52 @@ open SubVerso.Module
 variable [Monad m] [MonadError m] [MonadLiftT BaseIO m] [MonadLiftT IO m] [MonadFinally m]
 variable [MonadTrace m] [AddMessageContext m] [MonadOptions m] [MonadAlwaysExcept ε m]
 
-def extractFile (contents : String) (suppressNamespaces : Option String) : m (Array ModuleItem) := do
-  let codeHash := hash contents
+/--
+The SubVerso revision recorded in the example project's Lake manifest.
+
+That revision writes the extracted JSON, and the copy of SubVerso that Verso brings in here
+reads it back, so the serialization the two agree on is part of what an extraction depends on.
+-/
+def exampleSubversoRev : m String := do
+  let manifestPath := projectDir / "lake-manifest.json"
+  unless ← manifestPath.pathExists do
+    throwError m!"File {manifestPath} doesn't exist, couldn't determine the SubVerso revision"
+  let .ok json := Json.parse (← IO.FS.readFile manifestPath)
+    | throwError m!"Expected JSON in {manifestPath}"
+  let .ok packages := json.getObjValAs? (Array Json) "packages"
+    | throwError m!"Expected a 'packages' array in {manifestPath}"
+  for pkg in packages do
+    match pkg.getObjValAs? String "name" with
+    | .ok "subverso" =>
+      match pkg.getObjValAs? String "rev" with
+      | .ok rev => return rev
+      | .error e => throwError m!"No revision for SubVerso in {manifestPath}: {e}"
+    | _ => pure ()
+  throwError m!"No SubVerso entry in {manifestPath}"
+
+/--
+Extracts the highlighted contents of an example.
+
+When `expectErrors` is set, building the example is allowed to fail: the errors it reports are
+described in the document, and checked against the extracted messages there. Extraction itself
+must still succeed.
+-/
+def extractFile (contents : String) (suppressNamespaces : Option String)
+    (expectErrors : Bool := false) : m (Array ModuleItem) := do
+  -- Validate that the path is really a Lean project
+  let lakefile := projectDir / "lakefile.lean"
+  let lakefile' := projectDir / "lakefile.toml"
+  if !(← lakefile.pathExists) && !(← lakefile'.pathExists) then
+    throwError m!"Neither {lakefile} nor {lakefile'} exist, couldn't load project"
+  let toolchainfile := projectDir / "lean-toolchain"
+  let toolchain ← do
+      if !(← toolchainfile.pathExists) then
+        throwError m!"File {toolchainfile} doesn't exist, couldn't load project"
+      pure (← IO.FS.readFile toolchainfile).trimAscii.copy
+
+  -- Extractions are cached under a name derived from this hash, so it covers the tools that
+  -- produce them as well as the code itself. A new toolchain or SubVerso yields a new name.
+  let codeHash := hash (contents, toolchain, ← exampleSubversoRev)
   let modBase := hashString codeHash
   let filename := modBase ++ ".lean"
   let mod := "Examples." ++ modBase
@@ -50,17 +94,6 @@ def extractFile (contents : String) (suppressNamespaces : Option String) : m (Ar
 
   unless jsonExists do
     IO.FS.writeFile (projectDir / "Examples" / filename) contents
-
-    -- Validate that the path is really a Lean project
-    let lakefile := projectDir / "lakefile.lean"
-    let lakefile' := projectDir / "lakefile.toml"
-    if !(← lakefile.pathExists) && !(← lakefile'.pathExists) then
-      throwError m!"Neither {lakefile} nor {lakefile'} exist, couldn't load project"
-    let toolchainfile := projectDir / "lean-toolchain"
-    let toolchain ← do
-        if !(← toolchainfile.pathExists) then
-          throwError m!"File {toolchainfile} doesn't exist, couldn't load project"
-        pure (← IO.FS.readFile toolchainfile).trimAscii.copy
 
     -- Kludge: remove variables introduced by Lake. Clearing out DYLD_LIBRARY_PATH and
     -- LD_LIBRARY_PATH is useful so the version selected by Elan doesn't get the wrong shared
@@ -85,12 +118,23 @@ def extractFile (contents : String) (suppressNamespaces : Option String) : m (Ar
           }
           if res.exitCode != 0 then reportFail projectDir cmd args res
 
+      -- An example that reports errors builds unsuccessfully by design. Its messages are
+      -- checked against the document after extraction.
+      let runCmdAllowingErrors (args : Array String) : m Unit := do
+          let res ← IO.Process.output {
+            cmd, args, cwd := projectDir
+            env := lakeVars.map (·, none)
+          }
+          if res.exitCode != 0 && !expectErrors then reportFail projectDir cmd args res
+
       let runCmd (trace : MessageData) (args : Array String) : m Unit :=
         withTraceNode `Elab.Verso.Code.External.loadModule (fun _ => pure trace) (runCmd' args)
 
       runCmd m!"loadModuleContent': building subverso" #["run", "--install", toolchain, "lake", "build", "subverso-extract-mod"]
 
-      runCmd m!"loadModuleContent': building example project's module" #["run", "--install", toolchain, "lake", "build", "+" ++ mod]
+      withTraceNode `Elab.Verso.Code.External.loadModule
+        (fun _ => pure m!"loadModuleContent': building example project's module") do
+        runCmdAllowingErrors #["run", "--install", toolchain, "lake", "build", "+" ++ mod]
 
       let suppressArgs :=
         if let some nss := suppressNamespaces then
@@ -219,11 +263,10 @@ def detachPrefix (code : Array ModuleItem) : Option (Array ModuleItem) × Array 
 
 def detachSuffix (code : Array ModuleItem) : Array ModuleItem × Option (Array ModuleItem) := Id.run do
   let mut out : Array ModuleItem := #[]
-  for h : i in [0:code.size] do
-    let i := code.size - (i + 1)
+  for h : k in [0:code.size] do
+    let i := code.size - (k + 1)
     have : i < code.size := by
-      rename_i i' _ _
-      have : i' < code.size := by get_elem_tactic
+      have : k < code.size := by get_elem_tactic
       omega
     let lines := code[i].code.lines
     -- Check for post-split
@@ -558,10 +601,10 @@ block_extension Block.lean
     .arr #[.bool allowToggle, toJson pre, toJson code, toJson post, toJson goalVisibility, toJson defined]
   traverse id data _ := do
     let .arr #[_allowToggle, _pre, _code, _post, _visibility, definesJson] := data
-      | logError s!"Expected array for Lean block, got {data.compress}"; return none
+      | Verso.reportError s!"Expected array for Lean block, got {data.compress}"; return none
     match FromJson.fromJson? definesJson with
     | .error err =>
-      logError <| "Failed to deserialize code config during traversal:" ++ err
+      Verso.reportError <| "Failed to deserialize code config during traversal:" ++ err
       return none
     | .ok (defines : Array (Name × String)) =>
       for (d, s) in defines do
@@ -581,30 +624,30 @@ block_extension Block.lean
     open Verso.Doc.TeX in
     some <| fun _ _ _ data _ => do
       let .arr #[.bool _allowToggle, hlPreJson, hlJson, hlPostJson, goalVisibilityJson, _defs] := data
-        | logError "Expected five-element JSON for Lean code"
+        | Verso.reportError "Expected five-element JSON for Lean code"
           pure .empty
       let pre ←
         match FromJson.fromJson? (α := Option Highlighted) hlPreJson with
         | .error err =>
-          logError <| "Couldn't deserialize Lean code intro block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code intro block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
       let code ←
         match FromJson.fromJson? (α := Array ExampleItem) hlJson with
         | .error err =>
-          logError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
       let _post ←
         match FromJson.fromJson? (α := Option Highlighted) hlPostJson with
         | .error err =>
-          logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
       let _visibility ←
         match FromJson.fromJson? (α := HighlightHtmlM.VisibleProofStates) goalVisibilityJson with
         | .error err =>
-          logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
       let codeIndent := code.foldl (init := pre.map (·.indentation)) (fun i? y => i?.map (min · y.1.indentation)) |>.getD 0
@@ -629,30 +672,30 @@ block_extension Block.lean
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
       let .arr #[.bool allowToggle, hlPreJson, hlJson, hlPostJson, goalVisibilityJson, _defs] := data
-        | HtmlT.logError "Expected five-element JSON for Lean code"
+        | Verso.reportError "Expected five-element JSON for Lean code"
           pure .empty
       let pre ←
         match FromJson.fromJson? (α := Option Highlighted) hlPreJson with
         | .error err =>
-          HtmlT.logError <| "Couldn't deserialize Lean code intro block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code intro block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
       let code ←
         match FromJson.fromJson? (α := Array ExampleItem) hlJson with
         | .error err =>
-          HtmlT.logError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
       let post ←
         match FromJson.fromJson? (α := Option Highlighted) hlPostJson with
         | .error err =>
-          HtmlT.logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
       let visibility ←
         match FromJson.fromJson? (α := HighlightHtmlM.VisibleProofStates) goalVisibilityJson with
         | .error err =>
-          HtmlT.logError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code outro block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
 
@@ -717,18 +760,18 @@ block_extension Block.leanAnchor (code : Highlighted) (completeCode : String)
     open Verso.Doc.TeX in
     some <| fun _ _ _ data _ => do
       let .arr #[hlJson, completeCodeJson] := data
-        | logError "Expected two-element JSON for Lean code"
+        | Verso.reportError "Expected two-element JSON for Lean code"
           pure .empty
       let code ←
         match FromJson.fromJson? (α := Highlighted) hlJson with
         | .error err =>
-          logError <| "Couldn't deserialize Lean code block while rendering TeX: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code block while rendering TeX: " ++ err
           return .empty
         | .ok hl => pure hl
       let _completeCode ←
         match FromJson.fromJson? (α := String) completeCodeJson with
         | .error err =>
-          logError <| "Couldn't deserialize Lean code string while rendering TeX: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code string while rendering TeX: " ++ err
           return .empty
         | .ok hl => pure hl
 
@@ -739,18 +782,18 @@ block_extension Block.leanAnchor (code : Highlighted) (completeCode : String)
     open Verso.Output.Html in
     some <| fun _ _ _ data _ => do
       let .arr #[hlJson, completeCodeJson] := data
-        | HtmlT.logError "Expected two-element JSON for Lean code"
+        | Verso.reportError "Expected two-element JSON for Lean code"
           pure .empty
       let code ←
         match FromJson.fromJson? (α := Highlighted) hlJson with
         | .error err =>
-          HtmlT.logError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code block while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
       let completeCode ←
         match FromJson.fromJson? (α := String) completeCodeJson with
         | .error err =>
-          HtmlT.logError <| "Couldn't deserialize Lean code string while rendering HTML: " ++ err
+          Verso.reportError <| "Couldn't deserialize Lean code string while rendering HTML: " ++ err
           return .empty
         | .ok hl => pure hl
 
@@ -811,7 +854,7 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted))
         match fromJson? (α := Array (Highlighted.Goal Highlighted)) data with
         | .ok v => pure v
         | .error e =>
-          logError <| "Failed to deserialize proof state: " ++ e
+          Verso.reportError <| "Failed to deserialize proof state: " ++ e
           return .empty
       -- TODO: lay these out side-by-side
       pure <| .seq (← goals.mapM (·.toTeX))
@@ -823,7 +866,7 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted))
         match fromJson? (α := Array (Highlighted.Goal Highlighted)) data with
         | .ok v => pure v
         | .error e =>
-          HtmlT.logError <| "Failed to deserialize proof state: " ++ e
+          Verso.reportError <| "Failed to deserialize proof state: " ++ e
           return .empty
       pure {{
         <div class="hl lean proof-state-view" data-lean-context="examples">
@@ -849,7 +892,7 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted)
         match fromJson? (α := Highlighted.Goal Highlighted) data with
         | .ok v => pure v
         | .error e =>
-          logError <| "Failed to deserialize proof goal: " ++ e
+          Verso.reportError <| "Failed to deserialize proof goal: " ++ e
           return .empty
       verbatimInline (goal.name.getD "<anonymous>")
 
@@ -860,7 +903,7 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted)
         match fromJson? (α := Highlighted.Goal Highlighted) data with
         | .ok v => pure v
         | .error e =>
-          HtmlT.logError <| "Failed to deserialize proof goal: " ++ e
+          Verso.reportError <| "Failed to deserialize proof goal: " ++ e
           return .empty
       pure {{
         <code class="proof-goal-ref hl lean">
@@ -916,7 +959,7 @@ inline_extension Inline.kbd (items : Array String) where
         match fromJson? (α := Array String) data with
         | .ok v => pure v
         | .error e =>
-          logError <| "Failed to deserialize keyboard shortcut: " ++ e
+          Verso.reportError <| "Failed to deserialize keyboard shortcut: " ++ e
           return .empty
       if let #[item] := items then
         if item.startsWith "\\" then
@@ -935,7 +978,7 @@ inline_extension Inline.kbd (items : Array String) where
         match fromJson? (α := Array String) data with
         | .ok v => pure v
         | .error e =>
-          HtmlT.logError <| "Failed to deserialize keyboard shortcut: " ++ e
+          Verso.reportError <| "Failed to deserialize keyboard shortcut: " ++ e
           return .empty
       if let #[item] := items then
         if item.startsWith "\\" then
@@ -1016,7 +1059,7 @@ where
     | .tactics gs _ _ x => gs.foldl (init := (go acc x)) (fromGoal · ·)
     | .point .. | .text .. | .token .. | .unparsed .. => acc
   fromGoal (acc : Array Highlighted) (g : Highlighted.Goal Highlighted) :=
-    g.hypotheses.foldl (init := acc.push g.conclusion) fun acc ⟨xs, hl⟩ =>
+    g.hypotheses.foldl (init := acc.push g.conclusion) fun acc ⟨xs, hl, _⟩ =>
       let names : Highlighted := xs.foldl (init := .empty) fun hl tok =>
         if hl.isEmpty then .token tok
         else hl ++ .text " " ++ .token tok
@@ -1049,7 +1092,13 @@ def allInfo (hl : Highlighted) : Array (Highlighted.Message × Option Highlighte
   | .span infos x => (infos.map fun (k, str) => (⟨k, str⟩, some x)) ++ allInfo x
   | .text .. | .token .. | .unparsed .. => #[]
 
-def trailingText (hl : Highlighted) : Highlighted × String :=
+/--
+Splits the trailing text off some code.
+
+Comments are read as text only when `comments` is set. Everywhere else they are part of the code
+and are shown as they were written.
+-/
+def trailingText (hl : Highlighted) (comments := false) : Highlighted × String :=
   match hl with
   | .seq xs => Id.run do
     let mut txt := ""
@@ -1057,36 +1106,119 @@ def trailingText (hl : Highlighted) : Highlighted × String :=
       let i' := xs.size - (i + 1)
       have : i < xs.size := by get_elem_tactic
       have : i' < xs.size := by grind
-      let (hl', txt') := trailingText xs[i']
+      let (hl', txt') := trailingText xs[i'] comments
       txt := txt' ++ txt
       if hl'.isEmpty then continue
       else return (.seq (xs.extract 0 i' |>.push hl'), txt)
     return (.empty, txt)
-  | .point .. | .token .. => (hl, "")
+  | .token ⟨kind, content⟩ =>
+    if comments && kind.isComment then (.empty, content) else (hl, "")
+  | .point .. => (hl, "")
   | .tactics i s e hl' =>
-    let (hl', txt) := trailingText hl'
+    let (hl', txt) := trailingText hl' comments
     (.tactics i s e hl', txt)
   | .span i hl' =>
-    let (hl', txt) := trailingText hl'
+    let (hl', txt) := trailingText hl' comments
     (.span i hl', txt)
   | .text txt | .unparsed txt => (.empty, txt)
 
-private def commentContents (s : String) : Option (String × String) :=
+/--
+Splits the marker that introduces a message off a comment's text, along with the severity it
+names, if any.
+
+A comment below a command describes the message it produces only when marked this way, which
+tells it apart from a comment that remarks on the code.
+-/
+def messageComment? (s : String) : Option (Option String × String) :=
   let s := s.trimAsciiStart
-  if s.startsWith "--" then
-    let s := s.dropWhile (· == '-') |>.trimAsciiStart
-    let ws := s.takeEndWhile (·.isWhitespace)
-    some (s.dropEnd ws.positions.count |>.copy, ws.copy)
+  if !s.startsWith "message" then none
   else
-    none
+    let rest := s.drop "message".length
+    if rest.startsWith ":" then
+      some (none, (rest.drop 1).trimAsciiStart.copy)
+    else if rest.startsWith "(" then
+      match (rest.drop 1).split ')' |>.toList with
+      | [sev, after] =>
+        if !after.startsWith ":" then none
+        else
+          let named : Option String :=
+            match sev.trimAscii.copy with
+            | "info" => some "info"
+            | "error" => some "error"
+            | "warning" => some "warning"
+            | _ => none
+          named.map fun k => (some k, (after.drop 1).trimAsciiStart.copy)
+      | _ => none
+    else none
+
+/-- A comment that describes the message a command produces. -/
+structure ExpectedMessage where
+  /-- The severity the comment names, if it names one. -/
+  severity : Option String
+  /-- The message text. -/
+  text : String
+  /-- The whitespace that followed the comment. -/
+  trailing : String
+
+/--
+Extracts the text of a comment, which may span several lines.
+
+Each line contributes its content after the delimiter and the single space that conventionally
+follows it. Any further indentation is part of the text, because messages indent their details.
+-/
+private def commentContents (s : String) : Option ExpectedMessage :=
+  let ws := s.takeEndWhile (·.isWhitespace)
+  let lines : List String.Slice := (s.dropEnd ws.positions.length).split '\n' |>.toList
+    |>.filter (fun l => !l.trimAscii.isEmpty)
+  if lines.isEmpty then none
+  else if lines.all (·.trimAsciiStart.startsWith "--") then
+    let raw : List String := lines.map fun l =>
+      let l := l.trimAsciiStart.dropWhile (· == '-')
+      (if l.startsWith " " then l.drop 1 else l).copy
+    -- The marker introduces the text rather than being part of it.
+    -- Only a marked comment describes a message; any other is a remark on the code.
+    (raw.head?.bind messageComment?).map fun m =>
+      { severity := m.1, text := "\n".intercalate (m.2 :: raw.tail), trailing := ws.copy }
+  else none
+
+/--
+The comment that describes a message.
+
+A message of one line is written on the command's own line; a longer one is written on the lines
+below it, at the command's indentation.
+-/
+def expectedComment (indent severity : String) (msg : String) : String :=
+  let marker := "-- message(" ++ severity ++ "): "
+  let lines := msg.split '\n' |>.toList |>.map (·.copy)
+  match lines with
+  | [] => ""
+  | [one] => " " ++ marker ++ one
+  | first :: rest =>
+    let head := indent ++ marker ++ first
+    let tail := rest.map fun l =>
+      if l.trimAscii.isEmpty then indent ++ "--" else indent ++ "-- " ++ l
+    "\n" ++ "\n".intercalate (head :: tail)
+
+/-- The name of a message's severity. -/
+def messageSeverityName (msg : Highlighted.Message) : String :=
+  match msg.severity with
+  | .info => "info"
+  | .error => "error"
+  | .warning => "warning"
+
+/-- The indentation of the last line of some code. -/
+def lastLineIndent (s : String) : String :=
+  match s.split '\n' |>.toList |>.getLast? with
+  | none => ""
+  | some l => (l.takeWhile (· == ' ')).copy
 
 /--
 Extracts a trailing comment from code, if present.
 
 Returns the code along with the comment and its trailing whitespace.
 -/
-def trailingComment (hl : Highlighted) : Highlighted × Option (String × String) :=
-  let x := trailingText hl
+def trailingComment (hl : Highlighted) : Highlighted × Option ExpectedMessage :=
+  let x := trailingText hl (comments := true)
   match commentContents x.2 with
   | some txt' => (x.1, some txt')
   | none => (hl, none)
@@ -1105,6 +1237,11 @@ structure LeanConfig where
   allowVisible : Bool
   showProofStates : ShowProofStates
   «show» : Bool
+  /--
+  Whether the example is expected to report errors. Each error is described by a trailing
+  comment on the command that reports it, and is shown along with the code.
+  -/
+  expectErrors : Bool
 
 variable [Monad m] [MonadError m ] [MonadLiftT CoreM m]
 
@@ -1133,7 +1270,8 @@ instance : FromArgs LeanConfig m where
       .named `suppressNamespaces .string true <*>
       .namedD `allowVisible .bool true <*>
       .namedD' `showProofStates .none <*>
-      .namedD' `show .true
+      .namedD' `show .true <*>
+      .flag `error false
 
 structure SavedLeanConfig where
   name : Option Ident
@@ -1162,10 +1300,50 @@ def isNewline (hl : Highlighted) : Bool :=
 
 
 
+/-- The column at which the comment on a line begins, if it has one. -/
+def commentColumn (hl : Highlighted) : Option Nat := (go 0 hl).2
+where
+  go (col : Nat) : Highlighted → Nat × Option Nat
+    | .token ⟨k, content⟩ =>
+      (col + content.length, if k.isComment then some col else none)
+    | .text s | .unparsed s => (col + s.length, none)
+    | .seq xs =>
+      xs.foldl (init := (col, none)) fun (c, found) x =>
+        let (c', f) := go c x
+        (c', found.orElse (fun _ => f))
+    | .span _ x | .tactics _ _ _ x => go col x
+    | .point .. => (col, none)
+
+/-- Whether a line is a comment that introduces a message. -/
+def isMessageCommentLine (hl : Highlighted) : Bool :=
+  let s := hl.toString.trimAsciiStart
+  s.startsWith "--" && (messageComment? (s.dropWhile (· == '-')).copy).isSome
+
+/-- Whether a line consists of a comment, along with any surrounding whitespace. -/
+def isCommentLine (hl : Highlighted) : Bool :=
+  hasComment hl && !hasCode hl
+where
+  hasComment : Highlighted → Bool
+    | .token ⟨k, _⟩ => k.isComment
+    | .seq xs => xs.any hasComment
+    | .span _ x | .tactics _ _ _ x => hasComment x
+    | _ => false
+  hasCode : Highlighted → Bool
+    | .token ⟨k, _⟩ => !k.isComment
+    | .unparsed s => !s.all Char.isWhitespace
+    | .seq xs => xs.any hasCode
+    | .span _ x | .tactics _ _ _ x => hasCode x
+    | _ => false
+
 open SubVerso.Module in
 /--
 Leading anchor comments are always incorrect. They probably result from Lean placing them with the
 _next_ command, so we should move them back up before processing them.
+
+Line comments form one comment when they share a column, and a comment that describes a command
+follows it directly: on the command's own line, on the lines below it, or both. Those move back as
+well. A comment at some other column, or one held off by a blank line, is a separate comment that
+belongs to the command below it.
 -/
 def fixupAnchorComments (items : Array ModuleItem) : Array ModuleItem := Id.run do
   let mut out := #[]
@@ -1175,8 +1353,32 @@ def fixupAnchorComments (items : Array ModuleItem) : Array ModuleItem := Id.run 
     let mut i := i
     if prev?.isSome then
       let mut lines := i.code.lines
+      -- The column of the comment these lines belong to. A comment on the command's own line
+      -- fixes it; otherwise the first of these lines does.
+      let mut anchorCol? : Option Nat := prev?.bind fun p =>
+        p.code.lines.filter (fun l => !l.toString.trimAscii.isEmpty) |>.back?.bind commentColumn
+      let mut sawTerminator := false
+      let mut sawBlank := false
       while h : lines.size > 0 do
-        if isNewline lines[0] || (proofState? lines[0].toString |>.isOk) then
+        let mut take := false
+        if isNewline lines[0] then
+          -- The first one ends the previous command's own line; a second is a blank line, which
+          -- separates a comment from the command above it.
+          if sawTerminator then sawBlank := true
+          sawTerminator := true
+          take := true
+        else if proofState? lines[0].toString |>.isOk then
+          take := true
+        else if !sawBlank && isCommentLine lines[0] then
+          if let some col := commentColumn lines[0] then
+            match anchorCol? with
+            | some anchor => if anchor == col then take := true
+            | none =>
+              -- With no comment on the command's own line, only a marked one describes it.
+              if isMessageCommentLine lines[0] then
+                anchorCol? := some col
+                take := true
+        if take then
           prev? := prev?.map (fun i => {i with code := i.code ++ lines[0]})
           lines := lines.drop 1
         else break
@@ -1189,13 +1391,50 @@ def fixupAnchorComments (items : Array ModuleItem) : Array ModuleItem := Id.run 
 
   return out
 
+/--
+Reports a comment that doesn't describe the message its command produced.
+
+The corrected block is offered when the command occurs just once, so that replacing it is
+unambiguous. Any existing comment is dropped, which moves it to the place that suits the message.
+-/
+def logCommentMismatch (block : StrLit) (itemText strippedText severity msg : String)
+    (what : MessageData) : DocElabM Unit := do
+  -- Replacing the command is unambiguous only when it occurs once.
+  let parts := block.getString.split itemText |>.toList
+  if parts.length == 2 then
+    -- The comment describes the command, so it goes directly below it rather than past the blank
+    -- lines that follow, which would attach it to whatever comes next.
+    let ws := strippedText.takeEndWhile (·.isWhitespace)
+    let body := (strippedText.dropEnd ws.positions.length).copy
+    -- A comment runs to the end of its line, so what follows has to start on a new one.
+    let sep := if ws.startsWith "\n" then "" else "\n"
+    let fixed := body ++ expectedComment (lastLineIndent body) severity msg ++ sep ++ ws.copy
+    let corrected := parts[0]!.copy ++ fixed ++ parts[1]!.copy
+    let hint ← MessageData.hint "Describe the message that this command produces:"
+      #[{suggestion := .string corrected}] (ref? := some block)
+    logErrorAt block (what ++ hint)
+  else logErrorAt block what
+
+/--
+Reports a comment that names a severity other than the one its command produced.
+
+A comment that names no severity describes a message of any kind.
+-/
+def checkSeverity (block : StrLit) (itemText strippedText : String)
+    (expected : ExpectedMessage) (msg : Highlighted.Message) : DocElabM Unit := do
+  let actual := messageSeverityName msg
+  if let some declared := expected.severity then
+    unless declared == actual do
+      logCommentMismatch block itemText strippedText actual msg.toString
+        m!"This message is {actual}, but the comment describes {declared}."
+
 private def showGoals (goals : Array (Highlighted.Goal Highlighted)) : MessageData := Id.run do
   if goals.isEmpty then return m!"No goals"
   let mut out := m!""
   for g in goals do
     if let some n := g.name then
       out := out ++ m!"case {n}\n"
-    for ⟨xs, h⟩ in g.hypotheses do
+    for ⟨xs, h, _⟩ in g.hypotheses do
       let xs := " ".intercalate (xs.toList.map (fun ⟨_, x⟩ => x))
       out := out ++ m!"{xs} : {h.toString}\n"
     out := out ++ m!"  {g.goalPrefix} {g.conclusion.toString}\n\n"
@@ -1204,15 +1443,18 @@ private def showGoals (goals : Array (Highlighted.Goal Highlighted)) : MessageDa
 @[code_block_expander lean]
 def lean : CodeBlockExpander
   | args, code => do
-    let {checkOutput, suppressNamespaces, allowVisible, showProofStates, «show»} ← parseThe LeanConfig args
+    let {checkOutput, suppressNamespaces, allowVisible, showProofStates, «show», expectErrors} ←
+      parseThe LeanConfig args
     let mut showProofStates := showProofStates
+    let codeBlock := code
     let codeStr := code.getString
-    let contents ← extractFile codeStr suppressNamespaces
+    let contents ← extractFile codeStr suppressNamespaces expectErrors
     let contents := contents.filter (!·.code.isEmpty)
     let (pre, mid, post) := splitExample' contents
     let mid := fixupAnchorComments mid
     let pre : Option Highlighted := pre.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
     let mut toShow : Array ExampleItem := #[]
+    let mut sawError := false
     let mut visibility : HighlightHtmlM.VisibleProofStates :=
       match showProofStates with
       | .none => .none
@@ -1235,23 +1477,50 @@ def lean : CodeBlockExpander
         | .error e =>
           throwError "Error while extracting proof states:{indentD e}"
       let item := {item with code}
-      match item.kind with
-      | ``Lean.Parser.Command.check | ``Lean.Parser.Command.eval | ``Lean.reduceCmd | ``Lean.Parser.Command.check_failure
-      | ``Lean.Parser.Command.print | ``Lean.Parser.Command.printAxioms | ``Lean.Parser.Command.printEqns
-      | ``Lean.guardMsgsCmd =>
-        let info? : Option Highlighted.Message := allInfo item.code |>.firstM fun (msg, hl?) =>
-          if hl? matches some (.token ⟨.keyword .., _⟩) then some msg else none
-        if let some msg := info? then
-          if let (code, some (comment, ws)) := trailingComment item.code then
-            let txt := msg.toString
-            if checkOutput && !eqMessages comment txt then
-              throwError "Mismatch! Expected {comment} but got {txt}"
-            toShow := toShow.push ⟨code, some msg, dropOneNl ws⟩
-          else
-            let (code', ws) := trailingText item.code
-            toShow := toShow.push ⟨code', some msg, dropOneNl ws⟩
-        else toShow := toShow.push ⟨item.code, none, ""⟩
+      -- An error is attached to the code that provoked it rather than to a command keyword, so
+      -- it is found separately from the output of commands like `#check`.
+      let error? : Option Highlighted.Message := allInfo item.code |>.firstM fun (msg, _) =>
+        if msg.severity matches .error then some msg else none
+      if let some msg := error? then
+        sawError := true
+        let txt := msg.toString
+        unless expectErrors do
+          throwError "Unexpected error in example:{indentD txt}\n\
+            Mark the code block with '+error' if the error is intended."
+        let (code, comment?) := trailingComment item.code
+        let some expected := comment?
+          | logCommentMismatch codeBlock item.code.toString item.code.toString (messageSeverityName msg) txt
+              m!"Undescribed error in example:{indentD txt}"
+            toShow := toShow.push ⟨item.code, some msg, ""⟩
+            continue
+        checkSeverity codeBlock item.code.toString code.toString expected msg
+        if checkOutput && !eqMessages expected.text txt then
+          logCommentMismatch codeBlock item.code.toString code.toString (messageSeverityName msg) txt
+            m!"Mismatch! Expected{indentD expected.text}\nbut got{indentD txt}"
+        toShow := toShow.push ⟨code, some msg, dropOneNl expected.trailing⟩
+      else
+        match item.kind with
+        | ``Lean.Parser.Command.check | ``Lean.Parser.Command.eval | ``Lean.reduceCmd | ``Lean.Parser.Command.check_failure
+        | ``Lean.Parser.Command.print | ``Lean.Parser.Command.printAxioms | ``Lean.Parser.Command.printEqns
+        | ``Lean.guardMsgsCmd =>
+          let info? : Option Highlighted.Message := allInfo item.code |>.firstM fun (msg, hl?) =>
+            if hl? matches some (.token ⟨.keyword .., _⟩) then some msg else none
+          if let some msg := info? then
+            if let (code, some expected) := trailingComment item.code then
+              let txt := msg.toString
+              checkSeverity codeBlock item.code.toString code.toString expected msg
+              if checkOutput && !eqMessages expected.text txt then
+                logCommentMismatch codeBlock item.code.toString code.toString (messageSeverityName msg) txt
+                  m!"Mismatch! Expected{indentD expected.text}\nbut got{indentD txt}"
+              toShow := toShow.push ⟨code, some msg, dropOneNl expected.trailing⟩
+            else
+              let (code', ws) := trailingText item.code
+              toShow := toShow.push ⟨code', some msg, dropOneNl ws⟩
+          else toShow := toShow.push ⟨item.code, none, ""⟩
         | _ => toShow := toShow.push ⟨item.code, none, ""⟩
+    if expectErrors && !sawError then
+      throwError "No error in example marked '+error'.\n\
+        Remove the flag, so that an error here is reported."
     let post : Option Highlighted := post.map fun p => p.foldl (init := .empty) fun acc c => acc ++ c.code
     let visible := .seq <| toShow.map (·.1)
     saveBackref visible
@@ -1265,7 +1534,11 @@ def lean : CodeBlockExpander
     else
       return #[]
 where
-  eqMessages (s1 s2 : String) := SubVerso.Examples.Messages.messagesMatch (s1.replace "\n" " ") (s2.replace "\n" " ")
+  -- A comment that spans several lines lines up with the message; one that is written on a
+  -- single line is compared as if the message were too.
+  eqMessages (s1 s2 : String) :=
+    SubVerso.Examples.Messages.messagesMatch s1 s2 ||
+    SubVerso.Examples.Messages.messagesMatch (s1.replace "\n" " ") (s2.replace "\n" " ")
   dropOneNl (s : String) : String :=
     if s.back == '\n' then (s.dropEnd 1).copy else s
 
@@ -1651,11 +1924,11 @@ def multiVar? (str : String) : Option (Array String × String) := do
   let mut str := str.trimAscii
   repeat
     let pref1 := str.takeWhile alpha
-    let length1 := pref1.positions.count
+    let length1 := pref1.positions.length
     if length1 < 1 then failure
     str := str.drop length1
     let pref2 := str.takeWhile (fun c => alpha c || c.isDigit)
-    let length2 := pref2.positions.count
+    let length2 := pref2.positions.length
     str := str.drop length2
     let pref := pref1.copy ++ pref2.copy
     let c := str.startPos.get?
@@ -1744,11 +2017,11 @@ def name : RoleExpander
       match hl with
       | .token ⟨k, _⟩ =>
         match k with
-        | .const _ sig doc? _ =>
+        | .const _ sig doc? _ _ =>
           Hover.addCustomHover code <|
             s!"```\n{sig}\n```\n" ++
             (doc?.map ("\n\n***\n\n" ++ ·) |>.getD "")
-        | .var _ sig =>
+        | .var _ sig _ =>
           Hover.addCustomHover code <|
             s!"```\n{sig}\n```\n"
         | _ => pure ()

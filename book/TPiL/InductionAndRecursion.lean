@@ -606,7 +606,7 @@ where
     | 0   => (0, 1)
     | n+1 => let p := loop n; (p.2, p.1 + p.2)
 
-#eval fibFast 100 -- 573147844013817084101
+#eval fibFast 100 -- message: 573147844013817084101
 ```
 
 Here is the same definition using a {kw}`let rec` instead of a {kw}`where`.
@@ -690,7 +690,7 @@ def listAdd [Add α] : List α → List α → List α
   | _,       []      => []
   | a :: as, b :: bs => (a + b) :: listAdd as bs
 
-#eval listAdd [1, 2, 3] [4, 5, 6, 6, 9, 10] -- [5, 7, 9]
+#eval listAdd [1, 2, 3] [4, 5, 6, 6, 9, 10] -- message: [5, 7, 9]
 ```
 
 You are encouraged to experiment with similar examples in the exercises below.
@@ -709,7 +709,7 @@ def replicate (n : Nat) (a : α) : List α :=
     | n+1, as => loop n (a::as)
   loop n []
 
-#check @replicate.loop -- @replicate.loop : {α : Type u_1} → α → Nat → List α → List α
+#check @replicate.loop -- message: @replicate.loop : {α : Type u_1} → α → Nat → List α → List α
 ```
 
 Lean creates an auxiliary declaration for each {leanRef}`let rec`. In the example above,
@@ -885,19 +885,59 @@ def div.F (x : Nat) (f : (x₁ : Nat) → x₁ < x → Nat → Nat) (y : Nat) : 
     zero
 
 noncomputable def div := WellFounded.fix (measure id).wf div.F
-
-#reduce div 8 2 -- 4
 ```
 
-:::TODO
-Missing HL for example
-:::
 The definition is somewhat inscrutable. Here the recursion is on
 {leanRef (in:="def div.F (x")}`x`, and {lit}`div.F x f : Nat → Nat` returns the “divide by {leanRef}`y`”
 function for that fixed {leanRef (in:="def div.F (x")}`x`. You have to remember that the second
 argument to {leanRef}`div.F`, the recipe for the recursion, is a function
 that is supposed to return the divide by {leanRef}`y` function for all values
 {leanRef}`x₁` smaller than {leanRef}`x`.
+
+:::leanFirst
+In addition to being difficult to read, this definition of {leanRef}`div` does not lead to {leanRef}`div 8 2` being definitionally equal to {leanRef}`4`:
+```lean +error
+open Nat
+
+theorem div_lemma {x y : Nat} : 0 < y ∧ y ≤ x → x - y < x :=
+  fun h => sub_lt (Nat.lt_of_lt_of_le h.left h.right) h.left
+
+def div.F (x : Nat) (f : (x₁ : Nat) → x₁ < x → Nat → Nat) (y : Nat) : Nat :=
+  if h : 0 < y ∧ y ≤ x then
+    f (x - y) (div_lemma h) y + 1
+  else
+    zero
+
+noncomputable def div := WellFounded.fix (measure id).wf div.F
+-----
+example : div 8 2 = 4 := by rfl
+-- message(error): Tactic `rfl` failed: The left-hand side
+--   div 8 2
+-- is not definitionally equal to the right-hand side
+--   4
+--
+-- ⊢ div 8 2 = 4
+```
+Instead, the equation holds only propositionally, and must be proved using standard-library theorems about accessible relations:
+```lean
+open Nat
+
+theorem div_lemma {x y : Nat} : 0 < y ∧ y ≤ x → x - y < x :=
+  fun h => sub_lt (Nat.lt_of_lt_of_le h.left h.right) h.left
+
+def div.F (x : Nat) (f : (x₁ : Nat) → x₁ < x → Nat → Nat) (y : Nat) : Nat :=
+  if h : 0 < y ∧ y ≤ x then
+    f (x - y) (div_lemma h) y + 1
+  else
+    zero
+
+noncomputable def div := WellFounded.fix (measure id).wf div.F
+-----
+example : div 8 2 = 4 := by
+  simp [div, WellFounded.fix, WellFounded.fixF, Acc.rec_eq_recC, div.F, Acc.recC]
+```
+:::
+
 
 The elaborator is designed to make definitions like this more
 convenient. It accepts the following:
@@ -917,6 +957,7 @@ back on well-founded recursion. Lean uses the tactic {tactic}`decreasing_tactic`
 to show that the recursive applications are smaller. The auxiliary
 proposition {leanRef}`x - y < x` in the example above should be viewed as a hint
 for this tactic.
+The elaborator also proves a set of equational lemmas about the recursive definition, allowing it to be manipulated without resorting to low-level lemmas about accessible relations.
 
 The defining equation for {leanRef}`div` does _not_ hold definitionally, but
 we can unfold {leanRef}`div` using the {tactic}`unfold` tactic. We use {ref "conv"}[{tactic}`conv`] to select which
@@ -1101,7 +1142,7 @@ decreasing_by sorry
 #check unsound 0
 -- `unsound 0` is a proof of `False`
 
-#print axioms unsound -- 'unsound' depends on axioms: [sorryAx]
+#print axioms unsound -- message: 'unsound' depends on axioms: [sorryAx]
 ```
 :::
 

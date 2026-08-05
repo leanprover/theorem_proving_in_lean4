@@ -2,6 +2,9 @@ name = "tpil-examples"
 version = "0.1.0"
 defaultTargets = ["Examples"]
 
+# The JSON written by `subverso-extract-mod` here is read back by the book, so this
+# package's manifest must record the same SubVerso revision as the book's.
+# `scripts/subverso-rev.sh` copies that revision over and checks that it agrees.
 [[require]]
 name = "subverso"
 git = "https://github.com/leanprover/subverso.git"
