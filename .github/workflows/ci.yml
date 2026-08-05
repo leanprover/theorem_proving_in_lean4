@@ -69,10 +69,11 @@ jobs:
         with:
           path: book/.lake
           # The SHA is in the key to get the most recent cache possible, rather than just saving a single one for each Lean/deps version and not touching it.
-          key: ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-${{ github.sha }}
+          # The examples files are in the key because book elaboration reads them (the advertised Lean version and the extraction hash), invisibly to Lake's traces.
+          key: ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-${{ hashFiles('examples/lake-manifest.json') }}-${{ hashFiles('examples/lean-toolchain') }}-${{ github.sha }}
           # Try to restore cache for same OS/Lean/deps, but don't get less specific, because Lake isn't always happy to get build product version mismatches
           restore-keys: |
-            ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-
+            ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-${{ hashFiles('examples/lake-manifest.json') }}-${{ hashFiles('examples/lean-toolchain') }}-
 
       - name: Build example code
         run: |
@@ -101,13 +102,16 @@ jobs:
           # The SHA is in the key to get the most recent cache possible, rather than just saving a single one for each Lean/deps version and not touching it.
           key: ${{ runner.os }}-${{ hashFiles('book/lake-manifest.json') }}-${{ hashFiles('book/lean-toolchain') }}-${{ github.sha }}
 
-      # This is to get the cached highlight JSON files
+      # Save the example oleans and highlight JSON files produced during the book build.
+      # The key needs a suffix because a save with an already-reserved key is silently rejected.
       - name: Save examples/.lake again
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: examples/.lake
+          path: |
+            examples/.lake
+            examples/Examples
           # The SHA is in the key to get the most recent cache possible, rather than just saving a single one for each Lean/deps version and not touching it.
-          key: ${{ runner.os }}-${{ hashFiles('examples/lake-manifest.json') }}-${{ hashFiles('examples/lean-toolchain') }}-${{ github.sha }}
+          key: ${{ runner.os }}-${{ hashFiles('examples/lake-manifest.json') }}-${{ hashFiles('examples/lean-toolchain') }}-${{ github.sha }}-post-book
 
       - name: Upload book HTML
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
