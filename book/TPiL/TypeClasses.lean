@@ -23,7 +23,7 @@ namespace Ex
 structure Add (α : Type) where
   add : α → α → α
 
-#check @Add.add -- @Add.add : {α : Type} → Add α → α → α → α
+#check @Add.add -- message: @Add.add : {α : Type} → Add α → α → α → α
 ------
 end Ex
 ```
@@ -53,11 +53,11 @@ structure Add (α : Type) where
 def double (s : Add α) (x : α) : α :=
   s.add x x
 
-#eval double { add := Nat.add } 10 -- 20
+#eval double { add := Nat.add } 10 -- message: 20
 
-#eval double { add := Nat.mul } 10 -- 100
+#eval double { add := Nat.mul } 10 -- message: 100
 
-#eval double { add := Int.add } 10 -- 20
+#eval double { add := Int.add } 10 -- message: 20
 ------
 end Ex
 ```
@@ -82,7 +82,7 @@ namespace Ex
 class Add (α : Type) where
   add : α → α → α
 
-#check @Add.add -- @Add.add : {α : Type} → [self : Add α] → α → α → α
+#check @Add.add -- message: @Add.add : {α : Type} → [self : Add α] → α → α → α
 ------
 end Ex
 ```
@@ -147,15 +147,15 @@ instance : Add Float where
 def double [Add α] (x : α) : α :=
   Add.add x x
 
-#check @double -- @double : {α : Type} → [Add α] → α → α
+#check @double -- message: @double : {α : Type} → [Add α] → α → α
 
-#eval double 10 -- 20
+#eval double 10 -- message: 20
 
-#eval double (10 : Int) -- 20
+#eval double (10 : Int) -- message: 20
 
-#eval double (7 : Float) -- 14.000000
+#eval double (7 : Float) -- message: 14.000000
 
-#eval double (239.0 + 2) -- 482.000000
+#eval double (239.0 + 2) -- message: 482.000000
 
 ------
 end Ex
@@ -171,9 +171,9 @@ has addition:
 instance [Add α] : Add (Array α) where
   add x y := Array.zipWith (· + ·) x y
 
-#eval Add.add #[1, 2] #[3, 4] -- #[4, 6]
+#eval Add.add #[1, 2] #[3, 4] -- message: #[4, 6]
 
-#eval #[1, 2] + #[3, 4] -- #[4, 6]
+#eval #[1, 2] + #[3, 4] -- message: #[4, 6]
 ```
 :::
 
@@ -205,7 +205,7 @@ namespace Ex
 class Inhabited (α : Type u) where
   default : α
 
-#check @Inhabited.default -- @Inhabited.default : {α : Type u_1} → [self : Inhabited α] → α
+#check @Inhabited.default -- message: @Inhabited.default : {α : Type u_1} → [self : Inhabited α] → α
 ------
 end Ex
 ```
@@ -234,9 +234,9 @@ instance : Inhabited Unit where
 instance : Inhabited Prop where
   default := True
 
-#eval (Inhabited.default : Nat) -- 0
+#eval (Inhabited.default : Nat) -- message: 0
 
-#eval (Inhabited.default : Bool) -- true
+#eval (Inhabited.default : Bool) -- message: true
 --------
 end Ex
 ```
@@ -258,9 +258,9 @@ instance : Inhabited Prop where
 ------
 export Inhabited (default)
 
-#eval (default : Nat) -- 0
+#eval (default : Nat) -- message: 0
 
-#eval (default : Bool) -- true
+#eval (default : Bool) -- message: true
 ------
 end Ex
 ```
@@ -301,7 +301,7 @@ opaque default [Inhabited α] : α :=
 instance [Inhabited α] [Inhabited β] : Inhabited (α × β) where
   default := (default, default)
 
-#eval (default : Nat × Bool) -- (0, true)
+#eval (default : Nat × Bool) -- message: (0, true)
 ------
 end Ex
 ```
@@ -325,7 +325,7 @@ and is useful for triggering the type class resolution procedure when the expect
 :::
 
 ```lean
-#check (inferInstance : Inhabited Nat) -- inferInstance : Inhabited Nat
+#check (inferInstance : Inhabited Nat) -- message: inferInstance : Inhabited Nat
 
 def foo : Inhabited (Nat × Nat) :=
   inferInstance
@@ -363,9 +363,9 @@ structure Person where
 instance : ToString Person where
   toString p := p.name ++ "@" ++ toString p.age
 
-#eval toString { name := "Leo", age := 542 : Person } -- "Leo@542"
+#eval toString { name := "Leo", age := 542 : Person } -- message: "Leo@542"
 
-#eval toString ({ name := "Daniel", age := 18 : Person }, "hello") -- "(Daniel@18, hello)"
+#eval toString ({ name := "Daniel", age := 18 : Person }, "hello") -- message: "(Daniel@18, hello)"
 ```
 :::
 
@@ -389,11 +389,11 @@ instance : OfNat Rational n where
 instance : ToString Rational where
   toString r := s!"{r.num}/{r.den}"
 
-#eval (2 : Rational) -- 2/1
+#eval (2 : Rational) -- message: 2/1
 
-#check (2 : Rational) -- 2 : Rational
+#check (2 : Rational) -- message: 2 : Rational
 
-#check (2 : Nat)      -- 2 : Nat
+#check (2 : Nat)      -- message: 2 : Nat
 ```
 
 :::setup
@@ -417,7 +417,7 @@ You can input the raw natural number {lit}`2` using the macro {lean}`nat_lit 2`.
 :::
 
 ```lean
-#check nat_lit 2  -- 2 : Nat
+#check nat_lit 2  -- message: 2 : Nat
 ```
 
 Raw natural numbers are _not_ polymorphic.
@@ -482,9 +482,9 @@ instance : HMul Nat Nat Nat where
 instance : HMul Nat (Array Nat) (Array Nat) where
   hMul a bs := bs.map (fun b => hMul a b)
 
-#eval hMul 4 3           -- 12
+#eval hMul 4 3           -- message: 12
 
-#eval hMul 4 #[2, 3, 4]  -- #[8, 12, 16]
+#eval hMul 4 #[2, 3, 4]  -- message: #[8, 12, 16]
 ------
 end Ex
 ```
@@ -513,13 +513,13 @@ instance : HMul Int Int Int where
 instance [HMul α β γ] : HMul α (Array β) (Array γ) where
   hMul a bs := bs.map (fun b => hMul a b)
 
-#eval hMul 4 3                    -- 12
+#eval hMul 4 3                    -- message: 12
 
-#eval hMul 4 #[2, 3, 4]           -- #[8, 12, 16]
+#eval hMul 4 #[2, 3, 4]           -- message: #[8, 12, 16]
 
-#eval hMul (-2) #[3, -1, 4]       -- #[-6, 2, -8]
+#eval hMul (-2) #[3, -1, 4]       -- message: #[-6, 2, -8]
 
-#eval hMul 2 #[#[2, 3], #[0, 4]]  -- #[#[4, 6], #[0, 8]]
+#eval hMul 2 #[#[2, 3], #[0, 4]]  -- message: #[#[4, 6], #[0, 8]]
 ------
 end Ex
 ```
@@ -594,7 +594,7 @@ instance : HMul Int Int Int where
 
 def xs : List Int := [1, 2, 3]
 
-#check fun y => xs.map (fun x => hMul x y)  -- fun y => List.map (fun x => hMul x y) xs : Int → List Int
+#check fun y => xs.map (fun x => hMul x y)  -- message: fun y => List.map (fun x => hMul x y) xs : Int → List Int
 ------
 end Ex
 ```
@@ -625,7 +625,7 @@ instance : OfNat Rational n where
 instance : ToString Rational where
   toString r := s!"{r.num}/{r.den}"
 
-#check 2 -- 2 : Rational
+#check 2 -- message: 2 : Rational
 ```
 
 :::setup
@@ -692,11 +692,10 @@ def double (p : Point) :=
 end -- instance `Add Point` is not active anymore
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   HAdd Point Point ?m.5
 
-Hint: Additional diagnostic information may be available using
-the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs in
 def triple (p : Point) :=
@@ -721,11 +720,10 @@ def double (p : Point) :=
 attribute [-instance] addPoint
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   HAdd Point Point ?m.5
 
-Hint: Additional diagnostic information may be available using
-the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs in
 def triple (p : Point) :=
@@ -759,11 +757,10 @@ end Point
 -- instance `Add Point` is not active anymore
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   HAdd Point Point ?m.3
 
-Hint: Additional diagnostic information may be available using
-the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs (error) in
 #check fun (p : Point) => p + p + p
@@ -899,7 +896,7 @@ the integers. Moreover, decidability is preserved under propositional
 connectives:
 
 ```lean
-#check @instDecidableAnd -- @instDecidableAnd : {p q : Prop} → [dp : Decidable p] → [dq : Decidable q] → Decidable (p ∧ q)
+#check @instDecidableAnd -- message: @instDecidableAnd : {p q : Prop} → [dp : Decidable p] → [dq : Decidable q] → Decidable (p ∧ q)
 
 #check @instDecidableOr
 #check @instDecidableNot
@@ -981,9 +978,9 @@ theorem ex : True ∧ 2 = 1 + 1 := by
 
 #print ex
 
-#check @of_decide_eq_true -- @of_decide_eq_true : ∀ {p : Prop} [inst : Decidable p], decide p = true → p
+#check @of_decide_eq_true -- message: @of_decide_eq_true : ∀ {p : Prop} [inst : Decidable p], decide p = true → p
 
-#check @decide -- decide : (p : Prop) → [h : Decidable p] → Bool
+#check @decide -- message: decide : (p : Prop) → [h : Decidable p] → Bool
 ```
 
 :::setup
@@ -1015,7 +1012,7 @@ out the inference using {name}`inferInstance`:
 def foo : Add Nat := inferInstance
 def bar : Inhabited (Nat → Nat) := inferInstance
 
-#check @inferInstance -- @inferInstance : {α : Sort u_1} → [i : α] → α
+#check @inferInstance -- message: @inferInstance : {α : Sort u_1} → [i : α] → α
 ```
 
 :::setup
@@ -1031,14 +1028,6 @@ in a concise manner:
 #check (inferInstance : Add Nat)
 ```
 
-You can also use the auxiliary definition {lean}`inferInstanceAs`:
-
-```lean
-#check inferInstanceAs (Add Nat)
-
-#check @inferInstanceAs -- inferInstanceAs : (α : Sort u_1) → [i : α] → α
-```
-
 :::leanFirst
 Sometimes Lean can't find an instance because the class is buried
 under a definition. For example, Lean cannot
@@ -1049,11 +1038,10 @@ explicitly:
 def Set (α : Type u) := α → Prop
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   Inhabited (Set α)
 
-Hint: Additional diagnostic information may be available using
-the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs in
 example : Inhabited (Set α) :=
@@ -1197,7 +1185,7 @@ instance : Coe (List α) (Set α) where
 
 def s : Set Nat := {1}
 
-#check s ∪ [2, 3] -- s ∪ [2, 3].toSet : Set Nat
+#check s ∪ [2, 3] -- message: s ∪ [2, 3].toSet : Set Nat
 ```
 :::
 
@@ -1219,9 +1207,9 @@ instance : Coe (List α) (Set α) where
 ------
 def s : Set Nat := {1}
 
-#check let x := ↑[2, 3]; s ∪ x -- let x := [2, 3].toSet; s ∪ x : Set Nat
+#check let x := ↑[2, 3]; s ∪ x -- message: let x := [2, 3].toSet; s ∪ x : Set Nat
 
-#check let x := [2, 3]; s ∪ x -- let x := [2, 3]; s ∪ x.toSet : Set Nat
+#check let x := [2, 3]; s ∪ x -- message: let x := [2, 3]; s ∪ x.toSet : Set Nat
 ```
 
 
@@ -1279,7 +1267,7 @@ structure Semigroup where
 instance (S : Semigroup) : Mul S.carrier where
   mul a b := S.mul a b
 ------
-#check Semigroup.carrier -- Semigroup.carrier.{u} (self : Semigroup) : Type u
+#check Semigroup.carrier -- message: Semigroup.carrier.{u} (self : Semigroup) : Type u
 ```
 
 If we declare this function to be a coercion, then whenever we have a semigroup {lean}`S : Semigroup`, we can write {lean}`a : S` instead of {lean}`a : S.carrier`:

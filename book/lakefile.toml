@@ -2,6 +2,8 @@ name = "tpil"
 version = "0.1.0"
 defaultTargets = ["tpil"]
 
+# SubVerso is inherited from Verso. The examples project is built against the same revision,
+# which `scripts/subverso-rev.sh` copies out of this package's manifest.
 [[require]]
 name = "verso"
 git = "https://github.com/leanprover/verso.git"

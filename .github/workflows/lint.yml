@@ -1,0 +1,33 @@
+name: Lint
+
+# Checks the workflows themselves with actionlint, which also runs shellcheck
+# over the shell in each run: block.
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - '.github/workflows/**'
+  pull_request:
+    branches: [master]
+    paths:
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: Lint workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run actionlint
+        uses: docker://rhysd/actionlint@sha256:96d4a8c87dbbfb3bdd324f8fdc285fc3df5261e2decc619a4dd7e8ee52bbfd46 # v1.7.8
+        with:
+          args: -color

@@ -129,13 +129,13 @@ variable (trans_r : ∀ x y z, r x y → r y z → r x z)
 variable (a b c : α)
 variable (hab : r a b) (hbc : r b c)
 
-#check trans_r    -- trans_r : ∀ (x y z : α), r x y → r y z → r x z
+#check trans_r    -- message: trans_r : ∀ (x y z : α), r x y → r y z → r x z
 
-#check trans_r a b c -- trans_r a b c : r a b → r b c → r a c
+#check trans_r a b c -- message: trans_r a b c : r a b → r b c → r a c
 
-#check trans_r a b c hab -- trans_r a b c hab : r b c → r a c
+#check trans_r a b c hab -- message: trans_r a b c hab : r b c → r a c
 
-#check trans_r a b c hab hbc -- trans_r a b c hab hbc : r a c
+#check trans_r a b c hab hbc -- message: trans_r a b c hab hbc : r a c
 ```
 
 Think about what is going on here. When we instantiate {leanRef}`trans_r` at
@@ -236,11 +236,11 @@ In the meanwhile, here we explain how to use it.
 Of course, a fundamental property of equality is that it is an equivalence relation:
 
 ```lean
-#check Eq.refl    -- Eq.refl.{u_1} {α : Sort u_1} (a : α) : a = a
+#check Eq.refl    -- message: Eq.refl.{u_1} {α : Sort u_1} (a : α) : a = a
 
-#check Eq.symm    -- Eq.symm.{u} {α : Sort u} {a b : α} (h : a = b) : b = a
+#check Eq.symm    -- message: Eq.symm.{u} {α : Sort u} {a b : α} (h : a = b) : b = a
 
-#check Eq.trans   -- Eq.trans.{u} {α : Sort u} {a b c : α} (h₁ : a = b) (h₂ : b = c) : a = c
+#check Eq.trans   -- message: Eq.trans.{u} {α : Sort u} {a b c : α} (h₁ : a = b) (h₂ : b = c) : a = c
 ```
 
 We can make the output easier to read by telling Lean not to insert
@@ -249,11 +249,11 @@ the implicit arguments (which are displayed here as metavariables).
 ```lean
 universe u
 
-#check @Eq.refl.{u}   -- @Eq.refl : ∀ {α : Sort u} (a : α), a = a
+#check @Eq.refl.{u}   -- message: @Eq.refl : ∀ {α : Sort u} (a : α), a = a
 
-#check @Eq.symm.{u}   -- @Eq.symm : ∀ {α : Sort u} {a b : α}, a = b → b = a
+#check @Eq.symm.{u}   -- message: @Eq.symm : ∀ {α : Sort u} {a b : α}, a = b → b = a
 
-#check @Eq.trans.{u}  -- @Eq.trans : ∀ {α : Sort u} {a b c : α}, a = b → b = c → a = c
+#check @Eq.trans.{u}  -- message: @Eq.trans : ∀ {α : Sort u} {a b c : α}, a = b → b = c → a = c
 ```
 
 The inscription {lit}`.{u}` tells Lean to instantiate the constants at the universe {lit}`u`.
@@ -677,7 +677,7 @@ example (x : Nat) (h : x > 0) : ∃ y, y < x :=
 example (x y z : Nat) (hxy : x < y) (hyz : y < z) : ∃ w, x < w ∧ w < z :=
   Exists.intro y (And.intro hxy hyz)
 
-#check @Exists.intro -- @Exists.intro : ∀ {α : Sort u_1} {p : α → Prop} (w : α), p w → Exists p
+#check @Exists.intro -- message: @Exists.intro : ∀ {α : Sort u_1} {p : α → Prop} (w : α), p w → Exists p
 ```
 
 :::setup

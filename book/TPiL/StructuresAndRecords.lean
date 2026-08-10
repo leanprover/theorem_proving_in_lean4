@@ -87,13 +87,13 @@ structure Point (α : Type u) where
 #check @Point.rec
 
 -- the constructor
-#check @Point.mk -- @Point.mk : {α : Type u_1} → α → α → Point α
+#check @Point.mk -- message: @Point.mk : {α : Type u_1} → α → α → Point α
 
 -- a projection
-#check @Point.x -- @Point.x : {α : Type u_1} → Point α → α
+#check @Point.x -- message: @Point.x : {α : Type u_1} → Point α → α
 
 -- a projection
-#check @Point.y -- @Point.y : {α : Type u_1} → Point α → α
+#check @Point.y -- message: @Point.y : {α : Type u_1} → Point α → α
 ```
 
 If the constructor name is not provided, then a constructor is named
@@ -109,9 +109,9 @@ structure Point (α : Type u) where
   x : α
   y : α
 ------
-#eval Point.x (Point.mk 10 20) -- 10
+#eval Point.x (Point.mk 10 20) -- message: 10
 
-#eval Point.y (Point.mk 10 20) -- 20
+#eval Point.y (Point.mk 10 20) -- message: 20
 
 open Point
 
@@ -145,9 +145,9 @@ structure Point (α : Type u) where
 ------
 def p := Point.mk 10 20
 
-#check p.x  -- p.x : Nat
-#eval p.x   -- 10
-#eval p.y   -- 20
+#check p.x  -- message: p.x : Nat
+#eval p.x   -- message: 10
+#eval p.y   -- message: 20
 ```
 
 :::leanFirst
@@ -171,7 +171,7 @@ def Point.add (p q : Point Nat) :=
 def p : Point Nat := Point.mk 1 2
 def q : Point Nat := Point.mk 3 4
 
-#eval p.add q  -- { x := 4, y := 6 }
+#eval p.add q  -- message: { x := 4, y := 6 }
 ```
 :::
 
@@ -208,7 +208,7 @@ def Point.smul (n : Nat) (p : Point Nat) :=
 
 def p : Point Nat := Point.mk 1 2
 
-#eval p.smul 3  -- { x := 3, y := 6 }
+#eval p.smul 3  -- message: { x := 3, y := 6 }
 
 example {p : Point Nat} : p.smul 3 = Point.smul 3 p := rfl
 ```
@@ -223,7 +223,7 @@ which takes a list as its second non-implicit argument:
 def xs : List Nat := [1, 2, 3]
 def f : Nat → Nat := fun x => x * x
 
-#eval xs.map f  -- [1, 4, 9]
+#eval xs.map f  -- message: [1, 4, 9]
 
 example {xs : List α} {f : α → β} :
     xs.map f = List.map f xs :=
@@ -260,11 +260,11 @@ structure Point (α : Type u) where
   x : α
   y : α
 
-#check { x := 10, y := 20 : Point Nat }  -- { x := 10, y := 20 } : Point Nat
+#check { x := 10, y := 20 : Point Nat }  -- message: { x := 10, y := 20 } : Point Nat
 
-#check { y := 20, x := 10 : Point _ } -- { x := 10, y := 20 } : Point Nat
+#check { y := 20, x := 10 : Point _ } -- message: { x := 10, y := 20 } : Point Nat
 
-#check ({ x := 10, y := 20 } : Point Nat) -- { x := 10, y := 20 } : Point Nat
+#check ({ x := 10, y := 20 } : Point Nat) -- message: { x := 10, y := 20 } : Point Nat
 
 example : Point Nat :=
   { y := 20, x := 10 }
@@ -306,9 +306,9 @@ deriving Repr
 def p : Point Nat :=
   { x := 1, y := 2 }
 
-#eval { p with y := 3 }  -- { x := 1, y := 3 }
+#eval { p with y := 3 }  -- message: { x := 1, y := 3 }
 
-#eval { p with x := 4 }  -- { x := 4, y := 2 }
+#eval { p with x := 4 }  -- message: { x := 4, y := 2 }
 
 structure Point3 (α : Type u) where
   x : α

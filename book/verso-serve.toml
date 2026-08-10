@@ -1,0 +1,5 @@
+banner = "Theorem Proving in Lean 4"
+
+[[mounts]]
+path = "/"
+dir = "_out/html-multi"

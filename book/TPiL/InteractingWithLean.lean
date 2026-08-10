@@ -66,7 +66,7 @@ due to the presence of {lean}`sorry`, but the warning that is always issued for 
 as usual:
 ```lean
 /--
-error: aborting evaluation since the expression depends on the
+error: Aborting evaluation since the expression depends on the
 'sorry' axiom, which can lead to runtime instability and crashes.
 
 To attempt to evaluate anyway despite the risks, use the '#eval!'
@@ -80,13 +80,13 @@ command.
 Without the configuration, both messages are captured:
 ```lean
 /--
-error: aborting evaluation since the expression depends on the
-'sorry' axiom, which can lead to runtime instability and crashes.
+error: Aborting evaluation since the expression depends on the 'sorry'
+axiom, which can lead to runtime instability and crashes.
 
 To attempt to evaluate anyway despite the risks, use the '#eval!'
 command.
 ---
-warning: declaration uses 'sorry'
+warning: declaration uses `sorry`
 -/
 #guard_msgs in
 #eval (sorry : Nat)
@@ -236,17 +236,17 @@ open String
 -- This reference is ambiguous:
 -- #check add
 
-#check String.add           -- String.add (a b : String) : String
+#check String.add           -- message: String.add (a b : String) : String
 
-#check Bool.add             -- Bool.add (a b : Bool) : Bool
+#check Bool.add             -- message: Bool.add (a b : Bool) : Bool
 
-#check _root_.add           -- _root_.add (α β : Type) : Type
+#check _root_.add           -- message: _root_.add (α β : Type) : Type
 
-#check add "hello" "world"  -- "hello".add "world" : String
+#check add "hello" "world"  -- message: "hello".add "world" : String
 
-#check add true false       -- true.add false : Bool
+#check add true false       -- message: true.add false : Bool
 
-#check add Nat Nat          -- _root_.add Nat Nat : Type
+#check add Nat Nat          -- message: _root_.add Nat Nat : Type
 ```
 
 We can prevent the shorter alias from being created by using the {kw}`protected` keyword:
@@ -258,7 +258,7 @@ open Foo
 
 /-- error: Unknown identifier `bar` -/
 #guard_msgs in
-#check bar -- error
+#check bar -- message: error
 
 #check Foo.bar
 ```
@@ -271,9 +271,9 @@ The {leanRef}`open` command admits variations. The command
 ```lean
 open Nat (succ zero gcd)
 
-#check zero     -- Nat.zero : Nat
+#check zero     -- message: Nat.zero : Nat
 
-#eval gcd 15 6  -- 3
+#eval gcd 15 6  -- message: 3
 ```
 
 creates aliases for only the identifiers listed. The command
@@ -281,13 +281,13 @@ creates aliases for only the identifiers listed. The command
 ```lean
 open Nat hiding succ gcd
 
-#check zero     -- Nat.zero : Nat
+#check zero     -- message: Nat.zero : Nat
 
 /-- error: Unknown identifier `gcd` -/
 #guard_msgs in
-#eval gcd 15 6  -- error
+#eval gcd 15 6  -- message: error
 
-#eval Nat.gcd 15 6  -- 3
+#eval Nat.gcd 15 6  -- message: 3
 ```
 
 creates aliases for everything in the {lit}`Nat` namespace _except_ the identifiers listed.
@@ -295,7 +295,7 @@ creates aliases for everything in the {lit}`Nat` namespace _except_ the identifi
 ```lean
 open Nat renaming mul → times, add → plus
 
-#eval plus (times 2 2) 3  -- 7
+#eval plus (times 2 2) 3  -- message: 7
 ```
 
 creates aliases renaming {lean}`Nat.mul` to {leanRef}`times` and {lean}`Nat.add` to {leanRef}`plus`.
@@ -411,7 +411,7 @@ That assignment can also be made local:
 def isPrefix (l₁ : List α) (l₂ : List α) : Prop :=
   ∃ t, l₁ ++ t = l₂
 ------
-def instLe : LE (List α) :=
+abbrev instLe : LE (List α) :=
   { le := isPrefix }
 
 section
@@ -423,11 +423,10 @@ example (as : List α) : as ≤ as :=
 end
 
 /--
-error: failed to synthesize
+error: failed to synthesize instance of type class
   LE (List α)
 
-Hint: Additional diagnostic information may be available using the
-`set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 -/
 #guard_msgs in
 example (as : List α) : as ≤ as :=
@@ -585,7 +584,7 @@ theorem th3 {α : Type u} {r : α → α → Prop}
 variable (r : α → α → Prop)
 variable (euclr : Euclidean r)
 
-#check euclr  -- euclr : Euclidean r
+#check euclr  -- message: euclr : Euclidean r
 ```
 
 There is a third kind of implicit argument that is denoted with square
@@ -714,7 +713,7 @@ If two notations overlap, we again apply the longest parse rule:
 
 ```lean
 notation:65 a " + " b:66 " + " c:66 => a + b - c
-#eval 1 + 2 + 3  -- 0
+#eval 1 + 2 + 3  -- message: 0
 ```
 
 The new notation is preferred to the binary notation since the latter,
@@ -739,11 +738,11 @@ requested using the overloaded {lit}`↑` operator.
 variable (m n : Nat)
 variable (i j : Int)
 
-#check i + m      -- i + ↑m : Int
+#check i + m      -- message: i + ↑m : Int
 
-#check i + m + j  -- i + ↑m + j : Int
+#check i + m + j  -- message: i + ↑m + j : Int
 
-#check i + m + n  -- i + ↑m + ↑n : Int
+#check i + m + n  -- message: i + ↑m + ↑n : Int
 ```
 
 # Displaying Information
@@ -1026,7 +1025,7 @@ Update and check details
 def compose (g : β → γ) (f : α → β) (x : α) : γ :=
   g (f x)
 
-#check @compose -- @compose : {β : Sort u_1} → {γ : Sort u_2} → {α : Sort u_3} → (β → γ) → (α → β) → α → γ
+#check @compose -- message: @compose : {β : Sort u_1} → {γ : Sort u_2} → {α : Sort u_3} → (β → γ) → (α → β) → α → γ
 ```
 
 Note that Lean inferred a more general type using {lean}`Sort` instead of {leanRef}`Type`.
@@ -1041,16 +1040,28 @@ set_option autoImplicit false
 
 /--
 error: Unknown identifier `β`
+
+Note: It is not possible to treat `β` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `γ`
+
+Note: It is not possible to treat `γ` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `α`
+
+Note: It is not possible to treat `α` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `β`
+
+Note: It is not possible to treat `β` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `α`
+
+Note: It is not possible to treat `α` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 ---
 error: Unknown identifier `γ`
+
+Note: It is not possible to treat `γ` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
 -/
 #guard_msgs in
 def compose (g : β → γ) (f : α → β) (x : α) : γ :=
@@ -1130,18 +1141,18 @@ then they are made into arguments from left to right. Here are a few examples:
 ```lean
 namespace Ex3
 ------
-#check (· + 1) -- fun x => x + 1 : Nat → Nat
+#check (· + 1) -- message: fun x => x + 1 : Nat → Nat
 
-#check (2 - ·) -- fun x => 2 - x : Nat → Nat
+#check (2 - ·) -- message: fun x => 2 - x : Nat → Nat
 
-#eval [1, 2, 3, 4, 5].foldl (· * ·) 1 -- 120
+#eval [1, 2, 3, 4, 5].foldl (· * ·) 1 -- message: 120
 
 def f (x y z : Nat) :=
   x + y + z
 
-#check (f · 1 ·) -- fun x1 x2 => f x1 1 x2 : Nat → Nat → Nat
+#check (f · 1 ·) -- message: fun x1 x2 => f x1 1 x2 : Nat → Nat → Nat
 
-#eval [(1, 2), (3, 4), (5, 6)].map (·.1) -- [1, 3, 5]
+#eval [(1, 2), (3, 4), (5, 6)].map (·.1) -- message: [1, 3, 5]
 ------
 end Ex3
 ```
@@ -1149,7 +1160,7 @@ end Ex3
 Nested parentheses introduce new functions. In the following example, two different lambda expressions are created:
 
 ```lean
-#check (Prod.mk · (· + 1)) -- fun x => (x, fun x => x + 1) : ?m.2 → ?m.2 × (Nat → Nat)
+#check (Prod.mk · (· + 1)) -- message: fun x => (x, fun x => x + 1) : ?m.2 → ?m.2 × (Nat → Nat)
 ```
 
 # Named Arguments
