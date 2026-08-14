@@ -1,0 +1,10 @@
+
+.example {
+  margin-left: 0.75em;
+}
+.example .hl.lean.block {
+  margin: 0;
+}
+.example .information pre {
+  margin: 0 0 0.25em 0;
+}

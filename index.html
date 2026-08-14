@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      (function(){
+  const {protocol:proto, host:hostName, pathname:path, search:srch, hash:hsh} = window.location;
+  if (!(path.endsWith("/") || path.endsWith(".html"))) {
+    window.location.replace(`${proto}//${hostName}${path}/${srch}${hsh}`);
+  }
+})()</script>
+    <script>
+      // Enable TypeScript checking.
+// @ts-check
+
+// Applies a saved table-of-contents width before the first paint.
+//
+// This is a tiny inline counterpart to toc-resize.js: it runs in the page head so that
+// returning desktop readers do not see the default width flash to their saved width.
+// It only records the width in the --verso-toc-user-width custom property; the
+// stylesheet clamps it and ignores it on mobile, and toc-resize.js then takes over the
+// interactive resizing. Keep the storage key in sync with toc-resize.js.
+
+(function () {
+    try {
+        const saved = localStorage.getItem("verso-toc-width");
+        // Parse to a number (as toc-resize.js does) and write that back, so a stored
+        // value with stray whitespace becomes a valid length rather than `" 420 px"`.
+        const width = saved === null ? NaN : Number(saved);
+        if (Number.isFinite(width)) {
+            document.documentElement.style.setProperty("--verso-toc-user-width", `${width}px`);
+        }
+    } catch (_) {
+        // Leave the default width in place when local storage is unavailable.
+    }
+})();
+</script>
+    <base href="./"><meta charset="utf-8">
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>Theorem Proving in Lean 4</title><link rel="stylesheet" href="book.css">
+    <link rel="stylesheet" href="verso-vars.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script>
+    <script defer="defer" src="-verso-search/elasticlunr.min.js"></script>
+    <script defer="defer" src="-verso-search/fuzzysort.min.js"></script>
+    <script defer="defer" src="-verso-search/searchIndex.js"></script>
+    <script defer="defer" src="-verso-search/search-config.js"></script>
+    <script type="module" src="-verso-search/search-init.js"></script>
+    <link rel="stylesheet" href="-verso-search/search-box.css">
+    <link rel="stylesheet" href="-verso-search/search-page.css">
+    <link rel="stylesheet" href="-verso-search/search-highlight.css">
+    <link rel="stylesheet" href="-verso-search/domain-display.css">
+    <script src="-verso-search/search-highlight.js" defer="defer"></script>
+    <script src="toc-resize.js" defer="defer"></script>
+    <script src="-verso-data/katex/katex.js"></script>
+    <script src="-verso-data/katex/math.js"></script>
+    <script src="-verso-data/popper.min.js"></script>
+    <script src="-verso-data/copybutton.js"></script>
+    <script src="-verso-data/tippy-bundle.umd.min.js"></script>
+    <link rel="stylesheet" href="-verso-data/tippy-border.css">
+    <link rel="stylesheet" href="-verso-data/proof-state.css">
+    <link rel="stylesheet" href="-verso-data/copybutton.css">
+    <link rel="stylesheet" href="-verso-data/examples.css">
+    <link rel="stylesheet" href="-verso-data/katex/katex.css">
+    <style>/static/fonts/source-code-pro/source-code-pro.css</style><style>
+table.tabular {
+  margin: auto;
+  border-spacing: 1rem;
+}
+table.tabular.left-align {
+  margin-right: auto;
+  margin-left: 0;
+}
+table.tabular.center-align {
+  margin: auto;
+}
+table.tabular.right-align {
+  margin-left auto;
+  margin-right: 0;
+}
+table.tabular td, table.tabular th {
+  text-align: left;
+  vertical-align: top;
+}
+table.tabular td > p:first-child, table.tabular th > p:first-child {
+  margin-top: 0;
+}
+table.tabular td > p:last-child, table.tabular th > p:first-child {
+  margin-bottom: 0;
+}
+</style><style>
+code.unicode-abbrev {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+kbd {
+  white-space: nowrap;
+}
+
+kbd > code {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #b4b4b4;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+  color: #333;
+  display: inline-block;
+  font-size: 0.85em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+</style><style>/static/fonts/source-serif/source-serif-text.css</style><style>
+a.technical-term {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.technical-term:hover {
+  text-decoration: currentcolor underline solid;
+}
+/* Highlight the clicked term */
+.def-technical-term:target {
+  background-color: var(--verso-selected-color);
+  outline: auto;
+}
+</style><style>/static/fonts/source-sans/source-sans-3.css</style><style>/static/theme.css</style><style>/static/fonts/noto-sans-mono/noto-sans-mono.css</style><style>
+
+.hl.lean {
+  white-space: pre;
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+}
+
+.hl.lean .keyword {
+  color: var(--verso-code-keyword-color,);
+  font-weight: var(--verso-code-keyword-weight, bold);
+  font-style: var(--verso-code-keyword-style, normal);
+  font-family: var(--verso-code-keyword-font-family,);
+}
+
+.hl.lean .const {
+  color: var(--verso-code-const-color,);
+  font-weight: var(--verso-code-const-weight, normal);
+  font-style: var(--verso-code-const-style, normal);
+  font-family: var(--verso-code-const-font-family,);
+}
+
+.hl.lean .var {
+  color: var(--verso-code-var-color,);
+  font-weight: var(--verso-code-var-weight, normal);
+  font-style: var(--verso-code-var-style, italic);
+  font-family: var(--verso-code-var-font-family,);
+
+  position: relative;
+}
+
+.hl.lean .literal, .hl.lean .unknown {
+  color: var(--verso-code-color,);
+  font-weight: normal;
+  font-style: normal;
+  font-family: var(--verso-code-font-family,);
+}
+
+/* These lexically-classified token kinds default to the `.unknown` appearance. The rule follows
+   `.const` so it wins for the `anon-ctor` tokens, which also carry the `const` class. */
+.hl.lean .anon-ctor,
+.hl.lean .number,
+.hl.lean .char,
+.hl.lean .comment,
+.hl.lean .punctuation,
+.hl.lean .delim,
+.hl.lean .wildcard {
+  color: var(--verso-code-color,);
+  font-weight: normal;
+  font-style: normal;
+  font-family: var(--verso-code-font-family,);
+}
+
+.hover-container {
+  width: 0;
+  height: 0;
+  position: relative;
+  display: inline;
+}
+
+.hl.lean a {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+
+.hl.lean a:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+/* Links inside tooltips show their underline only when hovered. */
+.tippy-box .hl.lean a {
+  text-decoration: none;
+}
+
+.hl.lean .hover-info {
+  white-space: normal;
+}
+
+.hl.lean .token .hover-info {
+  display: none;
+  position: absolute;
+  color: var(--verso-tooltip-color, black);
+  background-color: var(--verso-tooltip-bg-color, #e5e5e5);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+  padding: 0.5rem;
+  z-index: 300;
+}
+
+.hl.lean .hover-info.messages {
+  max-height: 10rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  padding: 0 0.5rem 0 0;
+  display: block;
+}
+
+.hl.lean .hover-info code {
+  white-space: pre-wrap;
+  background: none;
+}
+
+.hl.lean .hover-info code:not(.verso-message) {
+  color: var(--verso-tooltip-color, black);
+}
+
+.hl.lean .hover-info.messages > code {
+  padding: 0.5rem;
+  display: block;
+  width: fit-content;
+}
+
+.hl.lean .hover-info.messages > code:only-child {
+  margin: 0;
+}
+
+.hl.lean .hover-info.messages > code {
+  margin: 0.1rem;
+}
+
+.hl.lean .hover-info.messages > code:not(:first-child) {
+  margin-top: 0rem;
+}
+
+.hl.lean {
+}
+
+.hl.lean.block {
+  display: block;
+}
+
+.hl.lean.inline {
+  display: inline;
+  white-space: pre-wrap;
+}
+
+.hl.lean * {
+}
+
+.hl.lean .token {
+  transition: all 0.25s; /* Slight fade for highlights */
+}
+
+@media (hover: hover) {
+  /* Hovered content nested in a collapsed tactic region keeps its plain background: the
+     region's proof state is the tooltip that appears there, and its label is what
+     highlights. `:where` keeps the exclusion out of the specificity computation. */
+  .hl.lean .token.binding-hl,
+  .hl.lean :is(.literal, .token.typed, .token[data-verso-hover]):hover:not(:where(.tactic:has(> .tactic-toggle:not(:checked)) > label *)) {
+    background-color: var(--verso-code-hover-bg-color, #eeeeee);
+    border-radius: 2px;
+    transition: none;
+  }
+
+  /* Within a hovered message span, token hover backgrounds are removed so the span's own
+     hover background shows across the whole span. The exception is a hovered documented
+     token, which keeps its background because its tooltip is the one shown. */
+  .hl.lean .has-info:hover .token.binding-hl:not(:hover),
+  .hl.lean .has-info:hover .token.binding-hl:not([data-verso-hover]),
+  .hl.lean .has-info:hover .literal:hover:not([data-verso-hover]),
+  .hl.lean .has-info:hover .token.typed:hover:not([data-verso-hover]) {
+    background-color: transparent;
+  }
+}
+
+
+.hl.lean .has-info .token:not(.tactic-state):not(.tactic-state *), .hl.lean .has-info .inter-text:not(.tactic-state):not(.tactic-state *) {
+  text-decoration-style: wavy;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
+}
+
+/*
+The underline color comes from the nearest enclosing message span: each severity's span rule
+sets `--verso--region-indicator-color`, which inherits, so a region nested inside one of
+another severity keeps its own indicator color.
+*/
+.hl.lean .has-info :not(.tactic-state):not(.tactic-state *) {
+  text-decoration-color: var(--verso--region-indicator-color);
+}
+
+.hl.lean .has-info .hover-info {
+  display: none;
+  position: absolute;
+  transform: translate(0.25rem, 0.3rem);
+  color: var(--verso-tooltip-color, black);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+  padding: 0.5rem;
+  z-index: 400;
+  text-align: left;
+}
+
+.hl.lean .has-info.error {
+  --verso--region-indicator-color: var(--verso-error-indicator-color, #ff0000);
+  --verso--region-hover-color: var(--verso-code-error-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-error-hover-bg-color, #ffb3b3);
+  color: var(--verso-code-error-color, currentcolor);
+  background-color: var(--verso-code-error-bg-color, transparent);
+}
+
+/*
+The hover highlight follows the tooltip: a message span highlights only when its own tooltip
+is the one that appears. When a hovered nested message span, a hovered documented token, or
+a hovered collapsed tactic label shows its own tooltip instead, the message span does not
+highlight. A span nested in a collapsed tactic region likewise stays plain, because hovering
+it shows the region's proof state; `:where` keeps that exclusion out of the specificity
+computation.
+
+The hover colors come from `--verso--region-hover-color` and `--verso--region-hover-bg-color`,
+which each severity's span rule sets. This keeps the hover conditions in this one rule, and
+because the properties inherit, a region nested inside one of another severity keeps its own
+hover colors.
+*/
+@media (hover: hover) {
+  .hl.lean .has-info:hover:not(:has(.has-info:hover)):not(:has([data-verso-hover]:hover)):not(:has(.tactic > label:hover + .tactic-toggle:not(:checked))):not(:where(.tactic:has(> .tactic-toggle:not(:checked)) > label *)) {
+    color: var(--verso--region-hover-color, currentcolor);
+    background-color: var(--verso--region-hover-bg-color, transparent);
+  }
+}
+
+.hl.lean .hover-info.messages > code.error {
+  background-color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-error-border-color, #ffb3b3);
+}
+
+/*
+A tooltip that shows only messages of the box's own severity leaves severity styling to the
+box itself. When messages of several severities share the tooltip, or a `mixed` tooltip
+combines messages with other content (such as documentation), each message keeps its
+severity accent to distinguish them.
+*/
+.tippy-box .hl.lean.mixed > .hover-info.messages {
+  margin-bottom: 0.5rem;
+}
+
+.tippy-box[data-theme~='error'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.warning)):not(:has(> code.information)) > code.error {
+  background: none;
+  border: none;
+}
+
+.error .verso-message, .error .verso-message .token, .error .verso-message label {
+  color: var(--verso-message-error-color, #cc0000);
+}
+
+.error .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-error-color, #cc0000) !important;
+}
+
+.hl.lean .has-info.warning {
+  --verso--region-indicator-color: var(--verso-warning-indicator-color, #e7a71d);
+  --verso--region-hover-color: var(--verso-code-warning-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-warning-hover-bg-color, #ffd580);
+  color: var(--verso-code-warning-color, currentcolor);
+  background-color: var(--verso-code-warning-bg-color, transparent);
+}
+
+.hl.lean .hover-info.messages > code.warning {
+  background-color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-warning-border-color, #ffd580);
+}
+
+.lean-output {
+  border-left: 0.2em solid transparent;
+  padding: 0 0 0 0.5em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.lean-output.error {
+  border-color: var(--verso-output-error-color, var(--verso-error-indicator-color, #ff0000));
+}
+
+.lean-output.information {
+  border-color: var(--verso-output-info-color, var(--verso-info-indicator-color, #4777ff));
+}
+
+.lean-output.warning {
+  border-color: var(--verso-output-warning-color, var(--verso-warning-indicator-color, #e7a71d));
+}
+
+.tippy-box[data-theme~='warning'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.error)):not(:has(> code.information)) > code.warning {
+  background: none;
+  border: none;
+}
+
+.warning .verso-message, .warning .verso-message .token, .warning .verso-message label {
+  color: var(--verso-message-warning-color, black);
+}
+
+.warning .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-warning-color, black) !important;
+}
+
+
+.hl.lean .has-info.information {
+  --verso--region-indicator-color: var(--verso-info-indicator-color, #4777ff);
+  --verso--region-hover-color: var(--verso-code-info-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-info-hover-bg-color, #4777ff);
+  color: var(--verso-code-info-color, currentcolor);
+  background-color: var(--verso-code-info-bg-color, transparent);
+}
+
+
+.hl.lean .hover-info.messages > code.information {
+  background-color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-info-border-color, #4777ff);
+}
+
+.tippy-box[data-theme~='info'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.error)):not(:has(> code.warning)) > code.information {
+  background: none;
+  border: none;
+}
+
+.information .verso-message, .information .verso-message .token, .information .verso-message label {
+  color: var(--verso-message-info-color, black);
+}
+
+.information .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-info-color, black) !important;
+}
+
+.hl.lean div.docstring {
+  font-family: var(--verso-text-font-family, sans-serif);
+  white-space: normal;
+  max-width: calc(min(40rem, 90vw));
+  width: max-content;
+}
+
+.hl.lean div.docstring > :last-child {
+  margin-bottom: 0;
+}
+
+.hl.lean div.docstring > :first-child {
+  margin-top: 0;
+}
+
+.hl.lean .hover-info .sep {
+  display: block;
+  width: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  height: 1px;
+  border-top: 1px solid var(--verso-tooltip-separator-color, #ccc);
+}
+
+.hl.lean code {
+  font-family: var(--verso-code-font-family);
+}
+
+.hl.lean .tactic-state {
+  display: none;
+  position: relative;
+  width: fit-content;
+  border: 1px solid var(--verso-tactic-state-border-color, #888888);
+  border-radius: 0.1rem;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  color: var(--verso-tactic-state-color, black);
+  background-color: var(--verso-tactic-state-bg-color, white);
+}
+
+.hl.lean.popup .tactic-state {
+  position: static;
+  display: block;
+  width: auto;
+  border: none;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  background-color: var(--verso-tactic-state-bg-color, white);
+}
+
+
+.hl.lean .tactic {
+  position: relative;
+  display: inline;
+  vertical-align: top;
+  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.hl.lean .tactic:has(> .tactic-toggle:checked) {
+  display: inline-grid;
+  grid-template-columns: 1fr;
+}
+
+.hl.lean .tactic-toggle:checked ~ .tactic-state {
+  display: inline-block;
+  vertical-align: top;
+  grid-row: 2;
+  justify-self: start;
+}
+
+.hl.lean .tactic > label {
+  position: relative;
+  grid-row: 1;
+  display: inline;
+}
+
+@media (hover: hover) {
+  /* Highlight a region on hover only when its own toggle is unchecked, and only the innermost
+     hovered region: `label:hover` bubbles to ancestor labels, so suppress the highlight on a region
+     whose label contains a more deeply nested hovered tactic label. The region's proof state is the
+     tooltip for everything else in its label, so the label keeps its highlight while any of that
+     content is hovered. */
+  .hl.lean .tactic:has(> .tactic-toggle:not(:checked)) > label:hover:not(:has(.tactic > label:hover)) {
+    background-color: var(--verso-code-hover-bg-color, #eeeeee);
+  }
+}
+
+.hl.lean .tactic-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .tactic > label::after {
+  content: "";
+  border: 1px solid var(--verso-tactic-toggle-color, #bbbbbb);
+  /* These need to be em, not rem, to scale with the font */
+  border-radius: 1em;
+  height: 0.25em;
+  vertical-align: middle;
+  width: 0.6em;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+  display: inline-block;
+  transition: all 0.5s;
+}
+
+/*
+@media (hover: hover) {
+  .hl.lean .tactic > label:hover::after {
+    border: 1px solid #aaaaaa;
+    background-color: #aaaaaa;
+    transition: all 0.5s;
+  }
+}
+*/
+
+.hl.lean .tactic > label:has(+ .tactic-toggle:checked)::after {
+  border: 1px solid var(--verso-tactic-toggle-checked-color, #999999);
+  background-color: var(--verso-tactic-toggle-checked-color, #999999);
+  transition: all 0.5s;
+}
+
+.hl.lean .tactic-state .goal + .goal {
+  margin-top: 1.5em;
+}
+
+/*
+Some CSS frameworks customize details/summary in ways not compatible with Verso's output.
+*/
+
+.hl.lean details {
+  display: block !important;
+  margin: 0;
+}
+
+.hl.lean details summary {
+  display: list-item !important;
+  margin: 0;
+}
+
+.hl.lean details summary:focus {
+  outline: none;
+  outline-offset: none;
+  color: inherit;
+}
+
+.hl.lean ul > li {
+  margin-bottom: 0;
+}
+
+.hl.lean details summary::marker {
+  display: inline !important;
+}
+
+.hl.lean details > summary:first-of-type {
+  list-style-type: disclosure-closed;
+  list-style-position: inside;
+}
+
+.hl.lean details[open] > summary:first-of-type {
+  list-style-type: disclosure-open;
+}
+
+.hl.lean details summary::before, .hl.lean details summary::after {
+  content: "" !important;
+  background: none;
+  display: none;
+}
+
+.hl.lean .tactic-state summary {
+  /* These need to be em, not rem, to scale with the font */
+  margin-left: -0.5em;
+}
+
+.hl.lean .tactic-state details {
+  /* These need to be em, not rem, to scale with the font */
+  padding-left: 0.5em;
+}
+
+.hl.lean .case-label {
+  display: block;
+  position: relative;
+}
+
+.hl.lean .case-label input[type="checkbox"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"])::before {
+  display: inline-block;
+  background-color: currentcolor;
+  content: ' ';
+  transition: ease 0.2s;
+  margin-right: 0.7em;
+  clip-path: polygon(100% 0, 0 0, 50% 100%);
+  width: 0.6em;
+  height: 0.6em;
+  vertical-align: middle;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:not(:checked))::before {
+  transform: rotate(-90deg);
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]) {
+
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:checked) {
+
+}
+
+
+.hl.lean .labeled-case > :not(:first-child) {
+  max-height: 0px;
+  display: block;
+  overflow: hidden;
+  transition: max-height 0.1s ease-in;
+  /* These need to be em, not rem, to scale with the font */
+  margin-left: 0.5em;
+  margin-top: 0.1em;
+}
+
+.hl.lean .labeled-case:has(.case-label input[type="checkbox"]:checked) > :not(:first-child) {
+  max-height: 100%;
+}
+
+
+.hl.lean .goal-name::before {
+  font-style: normal;
+  content: "case ";
+}
+
+.hl.lean .goal-name {
+  font-style: italic;
+  font-family: var(--verso-code-font-family);
+  color: inherit;
+}
+
+.hl.lean .hypotheses {
+  display: table;
+}
+
+.hl.lean .hypothesis {
+  display: table-row;
+}
+
+.hl.lean .hypothesis > * {
+  display: table-cell;
+}
+
+
+.hl.lean .hypotheses .colon {
+  text-align: center;
+  /* This needs to be em, not rem, to scale with the font */
+  min-width: 1em;
+}
+
+.hl.lean .hypotheses .name {
+  text-align: right;
+}
+
+.hl.lean .hypotheses .name,
+.hl.lean .hypotheses .type,
+.hl.lean .conclusion .type {
+  font-family: var(--verso-code-font-family);
+}
+
+.tippy-box {
+  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/*
+Tippy's stylesheet paints each arrow's fill triangle with the arrow element's `color` (its
+placement-specific `::before` rules use `border-color: initial`, which is `currentcolor`),
+and its border extension paints the outline triangle with the box's border color. Setting
+`color` on the arrow therefore matches it to the tooltip background for every placement.
+*/
+.tippy-box[data-theme~='lean'] {
+  background-color: var(--verso-tooltip-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-color, black);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+}
+.tippy-box[data-theme~='lean'] > .tippy-arrow {
+  color: var(--verso-tooltip-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::before {
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::after {
+  bottom: -11px;
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::after {
+  top: -11px;
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::before {
+  border-width: 11px 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::after {
+  right: -11px;
+  border-width: 11px 0 11px 11px;
+}
+
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::before {
+  border-width: 11px 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::after {
+  left: -11px;
+  border-width: 11px 11px 11px 0;
+}
+
+
+
+.tippy-box[data-theme~='warning'] {
+  background-color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-warning-color, black);
+  border: 3px solid var(--verso-tooltip-warning-border-color, #ffd580);
+}
+.tippy-box[data-theme~='warning'] > .tippy-arrow {
+  color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='error'] {
+  background-color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-error-color, black);
+  border: 3px solid var(--verso-tooltip-error-border-color, #ffb3b3);
+}
+.tippy-box[data-theme~='error'] > .tippy-arrow {
+  color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='info'] {
+  background-color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-info-color, black);
+  border: 3px solid var(--verso-tooltip-info-border-color, #4777ff);
+}
+.tippy-box[data-theme~='info'] > .tippy-arrow {
+  color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='tactic'] {
+  background-color: var(--verso-tactic-state-bg-color, white);
+  color: var(--verso-tactic-state-color, black);
+  border: 1px solid var(--verso-tactic-state-border-color, #888888);
+}
+.tippy-box[data-theme~='tactic'] > .tippy-arrow {
+  color: var(--verso-tactic-state-bg-color, white);
+}
+
+.extra-doc-links {
+  list-style-type: none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.extra-doc-links > li {
+  display: inline-block;
+}
+
+.extra-doc-links > li:not(:last-child)::after {
+  content: '|';
+  display: inline-block;
+  margin: 0 0.25em;
+}
+
+.verso-message .trace {
+  display: block;
+}
+
+.verso-message .trace > summary::marker {
+  color: var(--verso-text-color, black);
+}
+
+.verso-message .trace-children {
+  margin: 0;
+  padding: 0;
+}
+
+.verso-message .trace-children > li {
+  list-style-type: none;
+  margin-left: 1.5em;
+}
+
+.verso-message .trace-children > li:not(:has(.trace)) {
+  margin-left: 0;
+}
+
+.verso-message .trace-class {
+  color: color-mix(in srgb, currentColor 70%, transparent);
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.verso-message .text {
+  white-space: pre-wrap;
+}
+
+</style><script>
+      
+window.onload = async () => {
+
+    // Don't show hovers inside of closed tactic states
+    function blockedByTactic(elem) {
+      let parent = elem.parentNode;
+      while (parent && "classList" in parent) {
+        if (parent.classList.contains("tactic")) {
+          const toggle = parent.querySelector(":scope > input.tactic-toggle");
+          if (toggle) {
+            return !toggle.checked;
+          }
+        }
+        parent = parent.parentNode;
+      }
+      return false;
+    }
+
+    // The innermost element under the pointer, used to show only the most specific hover
+    let hoverTarget = null;
+    document.addEventListener('mouseover', (e) => { hoverTarget = e.target; }, true);
+
+    // Visible tippy references; a tooltip is blocked while an unrelated one is visible
+    const visibleTippies = new Set();
+    function blockedByTippy(elem) {
+      for (const ref of visibleTippies) {
+        if (!ref.contains(elem) && !elem.contains(ref)) return true;
+      }
+      return false;
+    }
+
+    // Whether the element's tooltip would have content to show. Content nested in a
+    // collapsed tactic region is covered by the region's proof-state tooltip, whether or
+    // not a tippy instance is currently attached to it.
+    function showsContent(el) {
+      if (!el._tippy) return false;
+      if (el.classList.contains('tactic')) {
+        const toggle = el.querySelector(':scope > input.tactic-toggle');
+        return !!toggle && !toggle.checked;
+      }
+      return (!!el.querySelector('.hover-info') || 'versoHover' in el.dataset) &&
+        !blockedByTactic(el);
+    }
+
+    // The nearest enclosing element whose tooltip has content
+    function innermostShowable(el) {
+      while (el && el.nodeType === Node.ELEMENT_NODE) {
+        if (showsContent(el)) return el;
+        el = el.parentElement;
+      }
+      return null;
+    }
+
+    // Binding highlights via event delegation with cached lookups
+    const bindingCache = new Map(); // context+binding -> [token elements]
+    let highlightedTokens = [];
+    function getBindingTokens(context, binding) {
+      const key = context + "\0" + binding;
+      let tokens = bindingCache.get(key);
+      if (!tokens) {
+        tokens = [];
+        for (const example of document.querySelectorAll(".hl.lean")) {
+          if (example.dataset.leanContext == context) {
+            for (const tok of example.querySelectorAll(".token[data-binding=\"" + CSS.escape(binding) + "\"]")) {
+              tokens.push(tok);
+            }
+          }
+        }
+        bindingCache.set(key, tokens);
+      }
+      return tokens;
+    }
+    for (const container of document.querySelectorAll(".hl.lean")) {
+      container.addEventListener("mouseover", (event) => {
+        const c = event.target.closest(".token");
+        if (!c || !c.dataset.binding || c.dataset.binding === "" || !container.contains(c)) return;
+        if (blockedByTactic(c)) return;
+        const tokens = getBindingTokens(container.dataset.leanContext, c.dataset.binding);
+        for (const tok of tokens) {
+          tok.classList.add("binding-hl");
+        }
+        highlightedTokens = tokens;
+      });
+      container.addEventListener("mouseout", (event) => {
+        const c = event.target.closest(".token");
+        if (!c || !container.contains(c)) return;
+        for (const tok of highlightedTokens) {
+          tok.classList.remove("binding-hl");
+        }
+        highlightedTokens = [];
+      });
+    }
+    /* Render docstrings */
+    if ('undefined' !== typeof marked) {
+        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement("div");
+            rendered.classList.add("docstring");
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+        }
+    }
+    // Add hovers
+    const versoDocData = await (fetch("-verso-docs.json").then((resp) => resp.json()));
+
+    function hideParentTooltips(element) {
+      let parent = element.parentElement;
+      while (parent) {
+        const tippyInstance = parent._tippy;
+        if (tippyInstance) {
+          tippyInstance.hide();
+        }
+        parent = parent.parentElement;
+      }
+    }
+
+    function hideDescendantTooltips(element) {
+      for (const ref of visibleTippies) {
+        if (ref !== element && element.contains(ref)) {
+          ref._tippy.hide();
+        }
+      }
+    }
+
+    // Renders the documentation for a hover ID from the doc table
+    function docHoverContent(hoverId) {
+      const info = document.createElement('span');
+      info.className = 'hover-info';
+      info.style.display = 'block';
+      const data = versoDocData[hoverId];
+      if (data) {
+        info.innerHTML = data;
+        /* Render docstrings - TODO server-side */
+        if ('undefined' !== typeof marked) {
+          for (const d of info.querySelectorAll('code.docstring, pre.docstring')) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement('div');
+            rendered.classList.add('docstring');
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+          }
+        }
+      } else {
+        info.innerHTML = 'Failed to load doc ID: ' + hoverId;
+      }
+      return info;
+    }
+
+
+
+
+    const defaultTippyProps = {
+      /* DEBUG -- remove the space: * /
+      onHide(any) { return false; },
+      trigger: "click",
+      // */
+      /* theme: "lean", */
+      maxWidth: "none",
+      appendTo: () => document.body,
+      interactive: true,
+      delay: [100, null],
+      /* ignoreAttributes: true, */
+      followCursor: 'initial',
+      onShow(inst) {
+        const ref = inst.reference;
+        if (ref.className == 'tactic') {
+          const toggle = ref.querySelector(":scope > input.tactic-toggle");
+          if (toggle && toggle.checked) {
+            return false;
+          }
+        } else if (ref.querySelector(".hover-info") || "versoHover" in ref.dataset) {
+          if (blockedByTactic(ref)) { return false };
+        } else { // Nothing to show here!
+          return false;
+        }
+        // Show only the most specific hover under the pointer
+        if (hoverTarget && ref.contains(hoverTarget) && innermostShowable(hoverTarget) !== ref) {
+          return false;
+        }
+        hideParentTooltips(ref);
+        hideDescendantTooltips(ref);
+        if (blockedByTippy(ref)) { return false; }
+      },
+      onShown(inst) { visibleTippies.add(inst.reference); },
+      onHidden(inst) { visibleTippies.delete(inst.reference); },
+      content (tgt) {
+        const content = document.createElement("span");
+        if (tgt.className == 'tactic') {
+          const state = tgt.querySelector(":scope > .tactic-state").cloneNode(true);
+          state.style.display = "block";
+          content.appendChild(state);
+          content.style.display = "block";
+          content.className = "hl lean popup";
+        } else {
+          content.className = "hl lean";
+          content.style.display = "block";
+          content.style.maxHeight = "300px";
+          content.style.overflowY = "auto";
+          content.style.overflowX = "hidden";
+          // Messages come from the inline hover-info; documentation comes from the doc
+          // table. An element with both (a message span sharing a documented token's
+          // extent) shows both in one tooltip.
+          const hoverId = tgt.dataset.versoHover;
+          const hoverInfo = tgt.querySelector(".hover-info");
+          if (hoverInfo) {
+            content.appendChild(hoverInfo.cloneNode(true));
+          }
+          if (hoverId) {
+            // TODO stop doing an implicit conversion from string to number here
+            content.appendChild(docHoverContent(hoverId));
+          }
+          if (hoverInfo && hoverId) {
+            content.classList.add('mixed');
+          }
+          const extraLinks = tgt.dataset['versoLinks'] || tgt.parentElement.dataset['versoLinks'];
+          if (extraLinks) {
+            try {
+              const extras = JSON.parse(extraLinks);
+              const links = document.createElement('ul');
+              links.className = 'extra-doc-links';
+              extras.forEach((l) => {
+                const li = document.createElement('li');
+                li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
+                links.appendChild(li);
+              });
+              content.appendChild(links);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
+        return content;
+      }
+    };
+
+
+    document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'lean');
+    });
+    document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'warning message');
+    });
+    document.querySelectorAll('.hl.lean .has-info.information').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'info message');
+    });
+    document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'error message');
+    });
+    document.querySelectorAll('.hl.lean .tactic').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'tactic');
+    });
+    // Skip tokens inside closed tactics — they interfere with tactic tippys
+    const closedTactics = new Set();
+    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
+      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
+      if (toggle && !toggle.checked) closedTactics.add(tactic);
+    });
+    function isInsideClosedTactic(el) {
+      const tactic = el.closest('.tactic');
+      return tactic && tactic !== el && closedTactics.has(tactic);
+    }
+
+    const tokenSelector = '.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort';
+    tippy(Array.from(document.querySelectorAll(tokenSelector)).filter(el => !isInsideClosedTactic(el)), defaultTippyProps);
+
+    // Create/destroy token tippys when tactic checkbox toggles
+    const tacticTippySelector = '.const.token, .keyword.token, .literal.token, .option.token, .var.token, .typed.token, .has-info, .level-var, .level-const, .level-op, .sort';
+    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
+      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
+      if (toggle) toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+          closedTactics.delete(tactic);
+          tactic.querySelectorAll(tacticTippySelector).forEach(el => {
+            if (!el._tippy) {
+              tippy(el, defaultTippyProps);
+            }
+          });
+        } else {
+          closedTactics.add(tactic);
+          tactic.querySelectorAll(tacticTippySelector).forEach(el => {
+            if (el._tippy) el._tippy.destroy();
+          });
+        }
+        // The toggle changes which element's tooltip belongs to the pointer's position,
+        // but the pointer stays put, so no hover event announces the change. Show the
+        // right tooltip once the click that flipped the toggle has hidden the old one.
+        setTimeout(() => {
+          if (hoverTarget && hoverTarget.isConnected) {
+            const showable = innermostShowable(hoverTarget);
+            if (showable && showable._tippy) showable._tippy.show();
+          }
+        }, 0);
+      });
+  });
+}
+</script>
+    <script defer="defer" data-domain="lean-lang.org" src="https://plausible.io/js/script.outbound-links.js"></script>
+    </head>
+  <body>
+    <header>
+      <div class="header-logo-wrapper">
+        <a href="" id="logo"><img src="static/lean_logo.svg"></a></div>
+      <div class="header-title-wrapper">
+        <a href="" class="header-title"><h1>
+            Theorem Proving in Lean 4</h1>
+          </a></div>
+      </header>
+    <label for="toggle-toc" id="toggle-toc-click"><span class="line line1"></span><span class="line line2"></span><span class="line line3"></span></label><div class="with-toc">
+      <div class="toc-backdrop" onclick="document.getElementById('toggle-toc-click')?.click()"></div>
+      <nav id="toc">
+        <input type="checkbox" id="toggle-toc"><div class="first">
+          <a href="" class="toc-title"><h1>
+              Theorem Proving in Lean 4</h1>
+            </a><div class="split-tocs">
+            <div class="split-toc book">
+              <div class="title">
+                <label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot" checked="checked"></label><span class="">Table of Contents</span></div>
+              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#Intro">Introduction</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Dependent-Type-Theory/#dependent-type-theory">Dependent Type Theory</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Propositions-and-Proofs/#propositions-and-proofs">Propositions and Proofs</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="Quantifiers-and-Equality/#quantifiers-and-equality">Quantifiers and Equality</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics">Tactics</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean">Interacting with Lean</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Inductive-Types/#inductive-types">Inductive Types</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Induction-and-Recursion/#induction-and-recursion">Induction and Recursion</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Structures-and-Records/#structures-and-records">Structures and Records</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Type-Classes/#type-classes">Type Classes</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="The-Conversion-Tactic-Mode/#conv">The Conversion Tactic Mode</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Axioms-and-Computation/#axioms-and-computation">Axioms and Computation</a></td></tr></table></div>
+            </div>
+          </div>
+        <div class="last">
+          <ul id="meta-links">
+            <li>
+              <a href="https://github.com/leanprover/theorem_proving_in_lean4">Source Code</a></li>
+            <li>
+              <a href="https://github.com/leanprover/theorem_proving_in_lean4/issues">Report Issues</a></li>
+            </ul>
+          </div>
+        </nav>
+      <div class="toc-resize-handle"></div>
+      <main><div class="content-wrapper">
+          <nav class="prev-next-buttons">
+            <div></div>
+            <a class="local-button active" href="Introduction/#Intro" rel="next" title="1. Introduction"><span class="where">1. Introduction</span><span class="arrow">→</span></a></nav>
+          <section>
+            <div class="titlepage">
+              <h1>
+                 Theorem Proving in Lean 4<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=Theorem-Proving-in-Lean-4" title="Permalink">🔗</a></span></h1>
+              <div class="authors">
+                <span class="author">Jeremy Avigad</span><span class="author">Leonardo de Moura</span><span class="author">Soonho Kong</span><span class="author">Sebastian Ullrich</span><p class="note">
+                  with contributions from the Lean Community</p>
+                </div>
+              <p>
+                This version of the text assumes you’re using Lean 4 (specifically <code>4.33.0</code>). See the
+<a href="https://lean-lang.org/documentation/setup/">Quickstart section</a> of
+the Lean documentation to install Lean. The first version of this book was
+written for Lean 2, and the Lean 3 version is available
+<a href="https://leanprover.github.io/theorem_proving_in_lean/">here</a>.</p>
+              </div>
+            <section>
+              <h2>
+                Contents</h2>
+              <ol class="section-toc">
+                <li>
+                  <a href="Introduction/#Intro"><span class="number">1.</span> Introduction</a></li>
+                <li>
+                  <a href="Dependent-Type-Theory/#dependent-type-theory"><span class="number">2.</span> Dependent Type Theory</a></li>
+                <li>
+                  <a href="Propositions-and-Proofs/#propositions-and-proofs"><span class="number">3.</span> Propositions and Proofs</a></li>
+                <li>
+                  <a href="Quantifiers-and-Equality/#quantifiers-and-equality"><span class="number">4.</span> Quantifiers and Equality</a></li>
+                <li>
+                  <a href="Tactics/#Theorem-Proving-in-Lean-4--Tactics"><span class="number">5.</span> Tactics</a></li>
+                <li>
+                  <a href="Interacting-with-Lean/#Theorem-Proving-in-Lean-4--Interacting-with-Lean"><span class="number">6.</span> Interacting with Lean</a></li>
+                <li>
+                  <a href="Inductive-Types/#inductive-types"><span class="number">7.</span> Inductive Types</a></li>
+                <li>
+                  <a href="Induction-and-Recursion/#induction-and-recursion"><span class="number">8.</span> Induction and Recursion</a></li>
+                <li>
+                  <a href="Structures-and-Records/#structures-and-records"><span class="number">9.</span> Structures and Records</a></li>
+                <li>
+                  <a href="Type-Classes/#type-classes"><span class="number">10.</span> Type Classes</a></li>
+                <li>
+                  <a href="The-Conversion-Tactic-Mode/#conv"><span class="number">11.</span> The Conversion Tactic Mode</a></li>
+                <li>
+                  <a href="Axioms-and-Computation/#axioms-and-computation"><span class="number">12.</span> Axioms and Computation</a></li>
+                </ol>
+              </section>
+            </section>
+          <nav class="prev-next-buttons">
+            <div></div>
+            <a class="local-button active" href="Introduction/#Intro" rel="next" title="1. Introduction"><span class="where">1. Introduction</span><span class="arrow">→</span></a></nav>
+          </div>
+        </main></div>
+    </body>
+  </html>
+
