@@ -1065,6 +1065,7 @@ as a family of types over {lean}`α`, that is, a type {lean}`β a` for each
 of functions {lean}`f` with the property that, for each {lean}`a : α`, {lean}`f a`
 is an element of {lean}`β a`. In other words, the type of the value
 returned by {lean}`f` depends on its input.
+
 :::
 
 :::setup
@@ -1105,6 +1106,8 @@ are also called _sigma_ types, and you can also write them as
 dependent pair.  The {lit}`⟨` and {lit}`⟩` characters may be typed with
 {kbd}`\langle` and {kbd}`\rangle` or {kbd}`\<` and {kbd}`\>`, respectively.
 :::
+
+Note that there are lots of external sources referring to $`\Sigma`-types as dependent sum types and $`\Pi`-types as dependent product types, a naming convention rooted in their respective symbolic notations. In this book we employ the terms "dependent arrow type" and "dependent product type" as they more accurately align with the semantic roles of the two constructions.
 
 ```lean
 universe u v
