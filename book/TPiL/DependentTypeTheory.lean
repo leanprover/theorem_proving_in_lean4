@@ -1246,7 +1246,7 @@ def ident {α : Type u} (x : α) := x
 #check @ident        -- message: @ident : {α : Type u_1} → α → α
 ```
 
-The makes the first argument to {leanRef}`ident` implicit. Notationally,
+The curly braces make the first argument to {leanRef}`ident` implicit. Notationally,
 this hides the specification of the type, making it look as though
 {leanRef}`ident` simply takes an argument of any type. In fact, the function
 {lean}`id` is defined in the standard library in exactly this way. We have
