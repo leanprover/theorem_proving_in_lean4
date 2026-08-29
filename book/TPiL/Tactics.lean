@@ -779,7 +779,7 @@ example (p q : Nat → Prop) : (∃ x, p x ∧ q x) → ∃ x, q x ∧ p x := by
 ```
 
 These tactics can be used on data just as well as propositions. In the
-next example, they are used to define functions which swap the
+next example, they are used to define functions that swap the
 components of the product and sum types:
 
 ```lean
