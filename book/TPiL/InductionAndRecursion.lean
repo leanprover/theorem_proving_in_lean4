@@ -1188,7 +1188,7 @@ theorem ack_gt_zero : ack n m > 0 := by
     exact ih
   | case3 x y ih1 ih2 =>
 --                    ^ PROOF_STATE: case3
-    simp [ack, *]
+    exact ih2
 ```
 :::
 
@@ -1232,7 +1232,7 @@ def ack : Nat → Nat → Nat
   | x+1, y+1 => ack x (ack (x+1) y)
 -------------
 theorem ack_gt_zero : ack n m > 0 := by
-  fun_induction ack <;> simp [*, ack]
+  fun_induction ack <;> simp [*]
 ```
 
 :::leanFirst
