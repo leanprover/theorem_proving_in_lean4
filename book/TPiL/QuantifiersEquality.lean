@@ -568,12 +568,12 @@ small example demonstrates how to extend the {kw}`calc` notation using new {lean
 def divides (x y : Nat) : Prop :=
   ∃ k, k*x = y
 
-def divides_trans (h₁ : divides x y) (h₂ : divides y z) : divides x z :=
+theorem divides_trans (h₁ : divides x y) (h₂ : divides y z) : divides x z :=
   let ⟨k₁, d₁⟩ := h₁
   let ⟨k₂, d₂⟩ := h₂
   ⟨k₁ * k₂, by rw [Nat.mul_comm k₁ k₂, Nat.mul_assoc, d₁, d₂]⟩
 
-def divides_mul (x : Nat) (k : Nat) : divides x (k*x) :=
+theorem divides_mul (x : Nat) (k : Nat) : divides x (k*x) :=
   ⟨k, rfl⟩
 
 instance : Trans divides divides divides where
