@@ -5,7 +5,7 @@ import VersoManual
 import Verso.Code.HighlightedToTex
 
 open Lean (NameMap MessageSeverity)
-open Lean.Doc.Syntax
+open Lean.Doc (VersoBlock VersoCodeBlock onlyCode onlyCodes)
 
 namespace TPiL
 
@@ -711,7 +711,7 @@ block_extension Block.lean
             withDefinitionsAsTargets false <|
             withVisibleProofStates visibility <|
             p.trimOneLeadingNl |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
-          codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
+          codeHtml := codeHtml ++ html%{<div class="hidden">{inner}</div>}
           codeString := codeString ++ p.toString
 
       for ⟨cmd, out?, ws⟩ in code do
@@ -724,7 +724,7 @@ block_extension Block.lean
         codeString := codeString ++ cmd.toString
         if let some msg := out? then
           let msgHtml ← msg.toHtml (g := Verso.Genre.Manual) []
-          codeHtml := codeHtml ++ {{<pre class=s!"hl lean lean-output {msg.severity.class}">{{msgHtml}}</pre>}}
+          codeHtml := codeHtml ++ html%{<pre class={s!"hl lean lean-output {msg.severity.class}"}>{msgHtml}</pre>}
         unless ws.isEmpty do
           codeHtml := codeHtml ++ (← (Highlighted.text ws).blockHtml "examples" (trim := false) (g := Verso.Genre.Manual))
 
@@ -735,7 +735,7 @@ block_extension Block.lean
             withDefinitionsAsTargets false <|
             withVisibleProofStates visibility <|
             p.trimOneLeadingNl |>.blockHtml "examples" (trim := false) (g := Verso.Genre.Manual)
-          codeHtml := codeHtml ++ {{ <div class="hidden">{{ inner }}</div> }}
+          codeHtml := codeHtml ++ html%{<div class="hidden">{inner}</div>}
           codeString := codeString ++ p.toString
 
       let i ← uniqueId (g := Verso.Genre.Manual)
@@ -744,12 +744,12 @@ block_extension Block.lean
       if allowToggle && (pre.isSome || post.isSome) then
         script := script ++ s!"\naddToggleButtonToElement({i.quote});"
 
-      return {{
-        <div class="example" id={{i}}>{{codeHtml}}</div>
+      return html%{
+        <div class="example" id={i}>{codeHtml}</div>
         <script>
-        {{Html.text false script}}
+        {Html.raw script}
         </script>
-      }}
+      }
 
 block_extension Block.leanAnchor (code : Highlighted) (completeCode : String)
     via withHighlighting, tpilBlock where
@@ -804,12 +804,12 @@ block_extension Block.leanAnchor (code : Highlighted) (completeCode : String)
       let i ← uniqueId (g := Verso.Genre.Manual)
       let mut script := s!"addCopyButtonToElement({i.quote}, {completeCode.quote});"
 
-      return {{
-        <div class="example" id={{i}}>{{codeHtml}}</div>
+      return html%{
+        <div class="example" id={i}>{codeHtml}</div>
         <script>
-        {{Html.text false script}}
+        {Html.raw script}
         </script>
-      }}
+      }
 
 def proofStateStyle := r#"
 .hl.lean.proof-state-view {
@@ -868,17 +868,17 @@ block_extension Block.goals (goals : Array (Highlighted.Goal Highlighted))
         | .error e =>
           Verso.reportError <| "Failed to deserialize proof state: " ++ e
           return .empty
-      pure {{
+      pure html%{
         <div class="hl lean proof-state-view" data-lean-context="examples">
           <span class="tactic-state">
-            {{← if goals.isEmpty then
-                pure {{"All goals completed! 🐙"}}
+            {← if goals.isEmpty then
+                pure html%{All goals completed! 🐙}
               else
                 withCollapsedSubgoals (g := Verso.Genre.Manual) .never <|
-                  .seq <$> (goals.mapIdxM (fun i x => x.toHtml (·.toHtml) i))}}
+                  .seq <$> (goals.mapIdxM (fun i x => x.toHtml (·.toHtml) i))}
           </span>
         </div>
-      }}
+      }
 
 inline_extension Inline.goal (goal : Highlighted.Goal Highlighted)
     via withHighlighting, tpilInline where
@@ -905,16 +905,16 @@ inline_extension Inline.goal (goal : Highlighted.Goal Highlighted)
         | .error e =>
           Verso.reportError <| "Failed to deserialize proof goal: " ++ e
           return .empty
-      pure {{
+      pure html%{
         <code class="proof-goal-ref hl lean">
           <span class="tactic">
-            {{goal.name |>.getD "<anonymous>"}}
+            {goal.name |>.getD "<anonymous>"}
             <span class="tactic-state">
-              {{← goal.toHtml (g := Verso.Genre.Manual) (·.toHtml) 0}}
+              {← goal.toHtml (g := Verso.Genre.Manual) (·.toHtml) 0}
             </span>
           </span>
         </code>
-      }}
+      }
 
 def kbdCSS := r#"
 code.unicode-abbrev {
@@ -982,32 +982,14 @@ inline_extension Inline.kbd (items : Array String) where
           return .empty
       if let #[item] := items then
         if item.startsWith "\\" then
-          pure {{<code class="unicode-abbrev">{{item}}</code>}}
+          pure html%{<code class="unicode-abbrev">{item}</code>}
         else
-          let items : Array Html := item.toList.toArray.map fun c =>  {{<code>{{s!"{c}"}}</code>}}
-          pure {{<kbd>{{items}}</kbd>}}
+          let items : Array Html := item.toList.toArray.map fun c =>  html%{<code>{s!"{c}"}</code>}
+          pure html%{<kbd>{items}</kbd>}
       else
-        let items : Array Html := items.map (fun (s : String) => {{<code>s!"{s}"</code>}})
-        pure {{<kbd>{{items}}</kbd>}}
+        let items : Array Html := items.map (fun (s : String) => html%{<code>{s}</code>})
+        pure html%{<kbd>{items}</kbd>}
 
-private def oneCodeStr [Monad m] [MonadError m] (inlines : Array (TSyntax `inline)) : m StrLit := do
-  let #[code] := inlines
-    | (if inlines.size == 0 then (throwError ·) else (throwErrorAt (mkNullNode inlines) ·)) "Expected one code element"
-  let `(inline|code($code)) := code
-    | throwErrorAt code "Expected a code element"
-  return code
-
-private def codeStrs [Monad m] [MonadError m] (inlines : Array (TSyntax `inline)) : m (Array StrLit) := do
-  let mut out := #[]
-  for i in inlines do
-    match i with
-    | `(inline|code($code)) =>
-      out := out.push code
-    | `(inline|$s:str) =>
-      unless s.getString.all (·.isWhitespace) do
-        throwErrorAt s "Expected a code literal"
-    | other => throwErrorAt other "Expected a code literal"
-  return out
 
 
 structure Kept (α : Type u) where
@@ -1397,10 +1379,10 @@ Reports a comment that doesn't describe the message its command produced.
 The corrected block is offered when the command occurs just once, so that replacing it is
 unambiguous. Any existing comment is dropped, which moves it to the place that suits the message.
 -/
-def logCommentMismatch (block : StrLit) (itemText strippedText severity msg : String)
+def logCommentMismatch (block : VersoCodeBlock) (itemText strippedText severity msg : String)
     (what : MessageData) : DocElabM Unit := do
   -- Replacing the command is unambiguous only when it occurs once.
-  let parts := block.getString.split itemText |>.toList
+  let parts := block.getVersoCodeBlock.split itemText |>.toList
   if parts.length == 2 then
     -- The comment describes the command, so it goes directly below it rather than past the blank
     -- lines that follow, which would attach it to whatever comes next.
@@ -1420,7 +1402,7 @@ Reports a comment that names a severity other than the one its command produced.
 
 A comment that names no severity describes a message of any kind.
 -/
-def checkSeverity (block : StrLit) (itemText strippedText : String)
+def checkSeverity (block : VersoCodeBlock) (itemText strippedText : String)
     (expected : ExpectedMessage) (msg : Highlighted.Message) : DocElabM Unit := do
   let actual := messageSeverityName msg
   if let some declared := expected.severity then
@@ -1447,7 +1429,7 @@ def lean : CodeBlockExpander
       parseThe LeanConfig args
     let mut showProofStates := showProofStates
     let codeBlock := code
-    let codeStr := code.getString
+    let codeStr := code.getVersoCodeBlock
     let contents ← extractFile codeStr suppressNamespaces expectErrors
     let contents := contents.filter (!·.code.isEmpty)
     let (pre, mid, post) := splitExample' contents
@@ -1547,7 +1529,7 @@ where
 def save : CodeBlockExpander
   | args, code => do
     let {name, suppressNamespaces} ← parseThe SavedLeanConfig args
-    let codeStr := code.getString
+    let codeStr := code.getVersoCodeBlock
     let contents ← extractFile codeStr suppressNamespaces
     let contents : Highlighted := .seq <| contents.map (·.code)
     match contents.anchored with
@@ -1626,12 +1608,12 @@ def proofState : CodeBlockExpander
 def goal : RoleExpander
   | args, inls => do
     let {name} ← parseThe GoalConfig args
-    let caseTag ← oneCodeStr inls
+    let caseTag ← onlyCode inls
     let some {goals, ..} := (proofStatesExt.getState (← getEnv))[name.getString]?
       | logErrorAt name m!"Not found: {name.getString}"
         return #[← ``(sorry)]
     let goal? := goals.find? fun
-      | {name := some x, ..} => caseTag.getString == x
+      | {name := some x, ..} => caseTag.getVersoCode == x
       | _ => false
     let some goal := goal?
       | let validTags := goals.filterMap (·.name)
@@ -1640,7 +1622,7 @@ def goal : RoleExpander
             pure <| MessageData.hint' m!""
           else
             MessageData.hint m!"Use a case label:" (validTags.map ({suggestion := .string ·})) (ref? := some caseTag)
-        logErrorAt caseTag m!"Not found: {caseTag.getString}\n{h}"
+        logErrorAt caseTag m!"Not found: {caseTag.getVersoCode}\n{h}"
         return #[← ``(sorry)]
     return #[← ``(Inline.other (Inline.goal $(quote goal)) #[])]
 
@@ -1806,11 +1788,11 @@ def setup : DirectiveExpander
     else
       let first := contents[0]
       let contents := contents.extract 1 contents.size
-      let `(block|``` | $setupCode ```) := first
+      let .codeblock {name? := none, args := #[], content := setupCode, ..} := first.view
         | throwErrorAt first "Expected undecorated code block"
       if helperExt.getState (← getEnv) |>.isSome then
         throwError "Already highlighting Lean"
-      let helper ← Helper.fromModule setupCode.getString
+      let helper ← Helper.fromModule setupCode.getVersoCodeBlock
       modifyEnv fun env => helperExt.setState env (some helper)
       try
         contents.mapM elabBlock
@@ -1832,8 +1814,9 @@ def prioritizedElab [Monad m] (prioritize : α → m Bool) (act : α  → m β) 
   return out.map (·.2)
 
 open Lean Elab in
-def isLeanBlock : TSyntax `block → CoreM Bool
-  | `(block|```$nameStx:ident $_args*|$_contents:str```) => do
+def isLeanBlock (block : VersoBlock) : CoreM Bool :=
+  match block.view with
+  | .codeblock {name? := some nameStx, ..} => do
     let name ← realizeGlobalConstNoOverloadWithInfo nameStx
     return name == ``TPiL.lean || name == `TPiL.signature || name == `TPiL.savedAnchor
   | _ => pure false
@@ -1855,7 +1838,7 @@ def leanFirst : DirectiveExpander
 def setupCode : CodeBlockExpander
   | args, code => do
     ArgParse.done.run args
-    let helper ← Helper.fromModule code.getString
+    let helper ← Helper.fromModule code.getVersoCodeBlock
     modifyEnv fun env => defaultHelperExt.setState env (some helper)
     return #[]
 
@@ -1875,40 +1858,40 @@ def TODOinline : RoleExpander
 def kw : RoleExpander
   | args, inls => do
     ArgParse.done.run args
-    let kw ← oneCodeStr inls
-    let hl : Highlighted := .token ⟨.keyword none none none, kw.getString⟩ -- TODO kw xref
-    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getString)])]
+    let kw ← onlyCode inls
+    let hl : Highlighted := .token ⟨.keyword none none none, kw.getVersoCode⟩ -- TODO kw xref
+    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getVersoCode)])]
 
 @[role_expander attr]
 def attr : RoleExpander
   | args, inls => do
     ArgParse.done.run args
-    let kw ← oneCodeStr inls
-    let hl : Highlighted := .token ⟨.keyword none none none, kw.getString⟩ -- TODO attr xref
-    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getString)])]
+    let kw ← onlyCode inls
+    let hl : Highlighted := .token ⟨.keyword none none none, kw.getVersoCode⟩ -- TODO attr xref
+    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getVersoCode)])]
 
 
 @[role_expander tactic]
 def tactic : RoleExpander
   | args, inls => do
     ArgParse.done.run args
-    let kw ← oneCodeStr inls
-    let hl : Highlighted := .token ⟨.keyword none none none, kw.getString⟩ -- TODO kw xref
-    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getString)])]
+    let kw ← onlyCode inls
+    let hl : Highlighted := .token ⟨.keyword none none none, kw.getVersoCode⟩ -- TODO kw xref
+    return #[← ``(Inline.other (Inline.lean $(quote hl) {}) #[Inline.code $(quote kw.getVersoCode)])]
 
 @[role_expander kbd]
 def kbd : RoleExpander
   | args, inls => do
     ArgParse.done.run args
-    let kbd ← codeStrs inls
-    return #[← ``(Inline.other (Inline.kbd $(quote <| kbd.map (·.getString))) #[])]
+    let kbd ← onlyCodes inls
+    return #[← ``(Inline.other (Inline.kbd $(quote <| kbd.map (·.getVersoCode))) #[])]
 
 @[role_expander option]
 def option : RoleExpander
   | args, inls => do
     ArgParse.done.run args
-    let kw ← oneCodeStr inls
-    return #[← ``(Inline.code $(quote kw.getString))]
+    let kw ← onlyCode inls
+    return #[← ``(Inline.code $(quote kw.getVersoCode))]
 
 
 def currentHelper : DocElabM Helper := do
@@ -1982,8 +1965,8 @@ def highlightName (code : String) : DocElabM Highlighted := do
 def leanInline : RoleExpander
   | args, inls => do
     let type? ← ArgParse.run (.named `type .string true) args
-    let code ← oneCodeStr inls
-    let codeStr := code.getString
+    let code ← onlyCode inls
+    let codeStr := code.getVersoCode
 
     try
       let hl ← highlightInline codeStr type?
@@ -2001,8 +1984,8 @@ def leanInline : RoleExpander
 def name : RoleExpander
   | args, inls => do
     let show? ← ArgParse.run (.named `show .string true) args
-    let code ← oneCodeStr inls
-    let codeStr := code.getString
+    let code ← onlyCode inls
+    let codeStr := code.getVersoCode
 
     try
       let hl ← highlightName codeStr
@@ -2039,8 +2022,8 @@ def name : RoleExpander
 def leanCommand : RoleExpander
   | args, inls => do
     let type? ← ArgParse.done.run args
-    let code ← oneCodeStr inls
-    let codeStr := code.getString
+    let code ← onlyCode inls
+    let codeStr := code.getVersoCode
 
     try
       let hl ← highlightCommand codeStr
@@ -2062,7 +2045,7 @@ def leanCommand : RoleExpander
 def leanCommandBlock : CodeBlockExpander
   | args, code => do
     let type? ← ArgParse.done.run args
-    let codeStr := code.getString
+    let codeStr := code.getVersoCodeBlock
 
     try
       let hl ← highlightCommand codeStr
@@ -2084,7 +2067,7 @@ def leanCommandBlock : CodeBlockExpander
 def signature : CodeBlockExpander
   | args, code => do
     let type? ← ArgParse.done.run args
-    let codeStr := code.getString
+    let codeStr := code.getVersoCodeBlock
 
     try
       let hl ← highlightSignature codeStr
@@ -2106,8 +2089,8 @@ def signature : CodeBlockExpander
 def leanRef : RoleExpander
   | args, inls => do
     let in? ← ArgParse.run (.named `in .string true) args
-    let code ← oneCodeStr inls
-    let codeStr := code.getString
+    let code ← onlyCode inls
+    let codeStr := code.getVersoCode
 
     for prev in recentHighlightsExt.getState (← getEnv) do
       if let some «in» := in? then
@@ -2150,10 +2133,11 @@ open MessageData (hint) in
 /--
 Internal detail of suggestion mechanism.
 -/
-@[inline_expander Lean.Doc.Syntax.code]
-private def suggest : InlineExpander
-  |  `(inline| code( $str )) => do
-    let str' := str.getString
+@[inline_expander Lean.Doc.Parser.Inline.code]
+private def suggest : InlineExpander := fun inline => do
+    let .code v := inline
+      | Elab.throwUnsupportedSyntax
+    let str' := v.getVersoCode
 
     -- unless verso.examples.suggest.get (← getOptions) do
     --   -- Delegate to the next handler
@@ -2186,7 +2170,7 @@ private def suggest : InlineExpander
         suggs := suggs.push <| "{lit}`" ++ str' ++ "`"
 
       for (name, {goals := gs, ..}) in proofStatesExt.getState (← getEnv) do
-        let name := if name.any (·.isWhitespace) then name.quote else name
+        let name := if name.any Char.isWhitespace then name.quote else name
         if gs.any (·.name |>.isEqSome str') then
           suggs := suggs.push <| "{goal " ++ name ++ "}`" ++ str' ++ "`"
 
@@ -2198,5 +2182,4 @@ private def suggest : InlineExpander
         logWarning <| m!"Code element could be highlighted." ++ h
 
 
-    return (← ``(Inline.code $(quote str.getString)))
-  | _ => Elab.throwUnsupportedSyntax
+    return (← ``(Inline.code $(quote str')))
