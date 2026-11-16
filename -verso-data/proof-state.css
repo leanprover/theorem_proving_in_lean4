@@ -1,0 +1,29 @@
+
+.hl.lean.proof-state-view {
+  white-space: collapse;
+  margin-left: 0.75em;
+}
+.hl.lean.proof-state-view .hypothesis {
+  display: table !important;
+  border-spacing: 0 0.2rem;
+  border-collapse: separate;
+}
+.hl.lean.proof-state-view .tactic-state {
+  display: block;
+  left: 0;
+  padding: 0;
+  border: none;
+}
+
+.hl.lean.proof-state-view .tactic-state:has(.goal + .goal) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.hl.lean.proof-state-view .tactic-state .goal {
+  margin: 0 !important;
+  align-self: flex-start;
+  width: fit-content;
+}
