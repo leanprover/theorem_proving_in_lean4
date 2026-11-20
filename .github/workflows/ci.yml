@@ -114,7 +114,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('examples/lake-manifest.json') }}-${{ hashFiles('examples/lean-toolchain') }}-${{ github.sha }}-post-book
 
       - name: Upload book HTML
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: book-html
           path: book/_out/html-multi

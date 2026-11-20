@@ -39,7 +39,7 @@ jobs:
       production: ${{ steps.info.outputs.production }}
     steps:
       - name: Download book HTML
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@v8.0.2
         with:
           name: book-html
           path: html-multi
@@ -185,7 +185,7 @@ jobs:
       HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
       - name: Download book HTML
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@v8.0.2
         with:
           name: book-html
           path: html-multi
