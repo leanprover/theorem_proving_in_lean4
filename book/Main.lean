@@ -6,7 +6,11 @@ open Verso Code External
 
 open Verso.Output.Html in
 def plausible := {{
-    <script defer="defer" data-domain="lean-lang.org" src="https://plausible.io/js/script.outbound-links.js"></script>
+    <script async src="https://plausible.io/js/pa-RTua_4FfKHhfAvAc3liZd.js"></script>
+    <script>{{Verso.Output.Html.text false r#"
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    "#}}</script>
   }}
 
 def config : RenderConfig where
