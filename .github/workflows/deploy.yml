@@ -15,16 +15,17 @@ jobs:
     name: Deploy to Netlify
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    # Publications serialize against each other, previews against their own ref.
+    # This concurrency group setting ensures that there's no races between jobs
+    # for production or a given PR's preview
     concurrency:
       group: >-
         deploy-${{ (github.event.workflow_run.event == 'push' &&
         startsWith(github.event.workflow_run.head_branch, 'release-'))
-        && 'production' || github.event.workflow_run.head_branch }}
+        && 'production' || format('preview-{0}', github.event.workflow_run.head_sha) }}
       cancel-in-progress: false
     permissions:
       actions: read # download the artifact belonging to the CI run
-      contents: write # read the commit subject for the deploy message; push the book to gh-pages
+      contents: read # read the commit subject for the deploy message
       pull-requests: read # read the pull request title for the deploy message
       deployments: write # record the deployment against its environment
       statuses: write # report the resulting URL on the commit that was built
@@ -34,9 +35,11 @@ jobs:
       HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
       TRIGGERING_EVENT: ${{ github.event.workflow_run.event }}
       ENVIRONMENT: lean-lang.org/theorem_proving_in_lean4
+    outputs:
+      production: ${{ steps.info.outputs.production }}
     steps:
       - name: Download book HTML
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@v8.0.1
         with:
           name: book-html
           path: html-multi
@@ -122,24 +125,6 @@ jobs:
               sys.exit(f"the Netlify CLI output carries no {key}")
           PY
 
-      # The gh-pages branch serves the book's original address,
-      # leanprover.github.io/theorem_proving_in_lean4, so a publication
-      # refreshes it too.
-      - name: Publish to GitHub Pages
-        if: steps.info.outputs.production == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          touch html-multi/.nojekyll
-          git -C html-multi init --quiet --initial-branch gh-pages
-          git -C html-multi config user.name "github-actions[bot]"
-          git -C html-multi config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git -C html-multi add --all
-          git -C html-multi commit --quiet --message "Book built from $HEAD_SHA"
-          git -C html-multi push --force \
-            "https://x-access-token:${GH_TOKEN}@github.com/$REPO" gh-pages
-
       - name: Record the deployment
         env:
           GH_TOKEN: ${{ github.token }}
@@ -179,3 +164,47 @@ jobs:
             -f context="netlify/deploy" \
             -f target_url="$RUN_URL" \
             -f description="Book"
+
+  # The gh-pages branch serves the book's original address,
+  # leanprover.github.io/theorem_proving_in_lean4, so a publication refreshes
+  # it too. The job has the only token of this workflow that can write to the
+  # repository, and it runs for publications alone.
+  pages:
+    name: Publish to GitHub Pages
+    needs: deploy
+    if: needs.deploy.outputs.production == 'true'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-pages
+      cancel-in-progress: false
+    permissions:
+      actions: read # download the artifact belonging to the CI run
+      contents: write # push the book to gh-pages
+    env:
+      REPO: ${{ github.repository }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Download book HTML
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: book-html
+          path: html-multi
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Push the book to gh-pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # The branch gets a repository of its own, so git reads no
+          # configuration or hooks from the artifact.
+          rm -rf html-multi/.git
+          touch html-multi/.nojekyll
+          git -C html-multi init --quiet --initial-branch gh-pages
+          git -C html-multi config user.name "github-actions[bot]"
+          git -C html-multi config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C html-multi add --all
+          git -C html-multi commit --quiet --message "Book built from $HEAD_SHA"
+          git -C html-multi push --force \
+            "https://x-access-token:${GH_TOKEN}@github.com/$REPO" gh-pages
