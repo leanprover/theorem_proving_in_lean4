@@ -10,3 +10,4 @@ After this, `book/_out/html-multi` contains a multi-page Web
 version of the book. From the `book` directory, run `lake exe verso-serve`
 to view it.
 
+You can then use `python -m http.server` to run a local offline copy of the website.
