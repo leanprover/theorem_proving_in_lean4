@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./NotoSansMono-VariableFont_wdth,wght.ttf') format('truetype');
+  unicode-range: U+207a-207F, U+208a-208f, U+2090-209c;
+}
+
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('./NotoSansMono-VariableFont_wdth,wght.ttf') format('truetype');
+  unicode-range: U+207a-207F, U+208a-208f, U+2090-209c;
+}
