@@ -85,9 +85,6 @@ jobs:
         run: |
           printf '/*\n  X-Robots-Tag: noindex\n' > html-multi/_headers
 
-      - name: Install the Netlify CLI
-        run: npm install --global netlify-cli@27.0.3
-
       - id: netlify
         name: Deploy to Netlify hosting
         env:
@@ -98,32 +95,71 @@ jobs:
         run: |
           set -euo pipefail
 
-          args=(deploy --dir html-multi --no-build --json --message "$(cat deploy-message.txt)")
-          if [ "$PRODUCTION" = true ]; then
-            args+=(--prod)
-          else
-            args+=(--alias "$ALIAS")
-          fi
-          netlify "${args[@]}" > deploy.json
+          api=https://api.netlify.com/api/v1
+          call_netlify() {
+            curl --fail-with-body --silent --show-error \
+              --header "Authorization: Bearer $NETLIFY_AUTH_TOKEN" "$@"
+          }
 
-          # The Netlify CLI may precede its result with progress output, so the
-          # first object carrying the wanted key is the result.
-          python3 - >> "$GITHUB_OUTPUT" <<'PY'
-          import json, os, sys
-          key = "url" if os.environ["PRODUCTION"] == "true" else "deploy_url"
-          text = open("deploy.json").read()
-          decoder = json.JSONDecoder()
-          for start in (i for i, c in enumerate(text) if c == "{"):
-              try:
-                  deploy, _ = decoder.raw_decode(text[start:])
-              except ValueError:
-                  continue
-              if isinstance(deploy, dict) and key in deploy:
-                  print("url=" + deploy[key])
-                  break
-          else:
-              sys.exit(f"the Netlify CLI output carries no {key}")
-          PY
+          # Polls the deploy until it reaches one of the states in $1, and
+          # leaves Netlify's description of it in deploy.json.
+          await_deploy() {
+            local state
+            for _ in $(seq 600); do
+              call_netlify "$api/sites/$NETLIFY_SITE_ID/deploys/$id" > deploy.json
+              state=$(jq --raw-output .state deploy.json)
+              case " $1 " in *" $state "*) return ;; esac
+              if [ "$state" = error ]; then
+                echo "::error::Netlify deploy failed: $(jq --raw-output .error_message deploy.json)"
+                exit 1
+              fi
+              sleep 2
+            done
+            echo "::error::Netlify deploy $id is still in state $state"
+            exit 1
+          }
+
+          # Deploy a preview to a branch named after its alias. Netlify serves
+          # it under that name and leaves the published book in place.
+          if [ "$PRODUCTION" = true ]; then
+            target='{"draft": false}'
+          else
+            target=$(jq --null-input --arg alias "$ALIAS" '{draft: false, branch: $alias}')
+          fi
+          id=$(call_netlify --url-query title@deploy-message.txt --json "$target" \
+            "$api/sites/$NETLIFY_SITE_ID/deploys" | jq --raw-output .id)
+
+          # Send the SHA-1 digest of every file. Netlify answers with the
+          # digests of the files that it lacks.
+          (cd html-multi && find . -type f -exec sha1sum {} +) |
+            jq --raw-input --null-input --argjson target "$target" '
+              [ inputs
+                | capture("^(?<sha>[0-9a-f]{40})  \\.(?<path>/[^#?]*)$") // error("unusable file: \(.)")
+                | {key: .path, value: .sha} ]
+              | $target + {async: true, files: from_entries}' > manifest.json
+          call_netlify --request PUT --json @manifest.json \
+            "$api/sites/$NETLIFY_SITE_ID/deploys/$id" > /dev/null
+          await_deploy "prepared uploading uploaded ready"
+
+          jq --raw-output --slurpfile manifest manifest.json --arg base "$api/deploys/$id/files" '
+            ($manifest[0].files | to_entries | map({key: .value, value: .key}) | from_entries) as $path
+            | (.required // []) | unique[] | $path[.]
+            | "upload-file = \("html-multi" + . | @json)",
+              "url = \($base + (split("/") | map(@uri) | join("/")) | @json)",
+              "output = \"/dev/null\""' deploy.json > uploads.txt
+          echo "Netlify lacks $(grep --count '^url' uploads.txt || true) files"
+          if [ -s uploads.txt ]; then
+            call_netlify --config uploads.txt --parallel --parallel-max 5 --fail-early --retry 5 \
+              --header "Content-Type: application/octet-stream"
+          fi
+          await_deploy ready
+
+          if [ "$PRODUCTION" = true ]; then
+            url=$(jq --raw-output '.ssl_url // .url' deploy.json)
+          else
+            url=$(jq --raw-output '.deploy_ssl_url // .deploy_url' deploy.json)
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
 
       - name: Record the deployment
         env:
