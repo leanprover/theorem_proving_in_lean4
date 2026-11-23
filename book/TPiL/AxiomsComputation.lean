@@ -449,10 +449,10 @@ end Hidden
 variable (α : Type u) (r : α → α → Prop) (a : α) (f : α → β) (h : ∀ a b, r a b → f a = f b)
 ```
 The first one forms a type {lean}`Quot r` given a type {lean}`α` by any binary
-relation {lean}`r` on {lean}`α`. The second maps {lean}`α` to {lit}`Quot α`, so that
+relation {lean}`r` on {lean}`α`. The second maps {lean}`α` to {lean}`Quot r`, so that
 if {lean}`r : α → α → Prop` and {lit}`a : α`, then {lean}`Quot.mk r a` is an
 element of {lean}`Quot r`. The third principle, {lean}`Quot.ind`, says that
-every element of {lean}`Quot.mk r a` is of this form.  As for
+every element of {lean}`Quot r` is of this form.  As for
 {lean}`Quot.lift`, given a function {lean}`f : α → β`, if {lean}`h` is a proof
 that {lean}`f` respects the relation {lean}`r`, then {lean}`Quot.lift f h` is the
 corresponding function on {lean}`Quot r`. The idea is that for each
@@ -903,7 +903,7 @@ end UProd
 :::
 
 For convenience, the standard library also defines {lean}`Quotient.lift₂`
-for lifting binary functions, and {lit}`Quotient.ind₂` for induction on
+for lifting binary functions, and {name}`Quotient.ind₂` for induction on
 two variables.
 
 :::setup
